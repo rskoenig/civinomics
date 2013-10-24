@@ -24,10 +24,10 @@ log = logging.getLogger(__name__)
 class InitiativeController(BaseController):
     
     @h.login_required
-    def __before__(self, action, id1 = None, id2 = None):
+    def __before__(self, action, id1 = None, id2 = None, id3 = None):
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler']
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
@@ -277,4 +277,17 @@ class InitiativeController(BaseController):
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
             
         return render('/derived/6_initiative_home.bootstrap')
+        
+
+    @h.login_required
+    def resourceEdit(self, id1, id2, id3):
+        log.info("inside resourceEdit")
+        if id3 == 'new':
+            c.resource = None
+            
+        return render('/derived/6_initiative_resource.bootstrap')
+        
+    @h.login_required
+    def resourceEditHandler(self, id1, id2, id3):
+        foo = "bar"
  

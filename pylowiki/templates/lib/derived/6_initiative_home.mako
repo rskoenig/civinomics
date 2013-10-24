@@ -57,8 +57,20 @@
     % endif
 </%def>
 
+<%def name="addResourceButton()">
+    <% 
+        if 'user' in session:
+            printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
+        else:
+            printStr = '<a href="/initiative/' + c.initiative['urlCode'] + '/' + c.initiative['url'] + '/login/' + '"'
+
+        printStr += ' title="Click to add a resource to this initiative" class="btn btn-success pull-right"><i class="icon icon-plus"></i></a>'
+    %>
+    ${printStr | n}
+</%def>
+
 <%def name="iResources()">
-    Resources go here
+resources go here
 </%def>
 
 <%def name="listInitiative(item)">
@@ -284,4 +296,37 @@
             ${lib_6.adminThing(thing)}
         % endif
     % endif
+</%def>
+
+<%def name="editResource()">
+    <%
+        if not c.resource:
+            resourceTitle = ""
+            resourceLink = ""
+            resourceText = ""
+        else:
+            resourceTitle = c.resource['title']
+            resourceLink = c.resource['link']
+            resourceText = c.resource['text']
+            
+    %>
+    <div class="row-fluid">
+        <div class="span11 offset1">
+            <div class="spacer"></div>
+            <form action="" method="post" class="form">
+                <fieldset>
+                <label>Edit</label>
+                <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
+                    <label>Resource title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${resourceTitle}" maxlength="120" id="title" required>
+                    <label>Resource URL</label>
+                    <input type="url" class="input-block-level" name="link" value = "${resourceLink}" id = "link" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                    <textarea name="text" rows="3" class="input-block-level">${resourceText}</textarea>
+                </fieldset>
+                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
+            </form>
+        </div>
+    </div>
+
 </%def>

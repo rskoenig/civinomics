@@ -15,13 +15,13 @@ log = logging.getLogger(__name__)
 # getter
 def getInitiative(initiativeCode):
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('urlCode', initiativeCode))).one()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('urlCode', initiativeCode))).one()
     except:
         return False
 
 def getInitiativesForUser(user):
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter_by(owner = user.id).all()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
     except:
         return False
         
@@ -70,5 +70,5 @@ def Initiative(owner, title, description, scope, workshop = None):
     i['ups'] = '0'
     i['downs'] = '0'
     commit(i)
-    i = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
+    d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
     return i

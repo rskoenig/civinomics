@@ -245,6 +245,9 @@ class AdminController(BaseController):
         if thing.objType.replace("Unpublished", "") == 'photo':
             extraInfo = action + 'Photo'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, photoCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'initiative':
+            extraInfo = action + 'Initiative'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, initiativeCode = thing['urlCode'])
         else:
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
         eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
@@ -253,7 +256,7 @@ class AdminController(BaseController):
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
-                if thing.objType.replace("Unpublished", "") == 'photo':
+                if thing.objType.replace("Unpublished", "") == 'photo' or thing.objType.replace("Unpublished", "") == 'initiative':
                     flagLib.Flag(thing, user)
                 else:
                     flagLib.Flag(thing, user, workshop = c.w)

@@ -229,7 +229,8 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
         a['text'] = ''
     else:
         a['text'] = text
-    a = generic.linkChildToParent(a, workshop)
+    if workshop is not None:
+        a = generic.linkChildToParent(a, workshop)
     a = generic.linkChildToParent(a, owner)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
@@ -241,5 +242,8 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     commit(a)
     a['urlCode'] = toBase62(a)
     commit(a)
-    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
+    if workshop is not None:
+        d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
+    else:
+        d = discussionLib.Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
     return a
