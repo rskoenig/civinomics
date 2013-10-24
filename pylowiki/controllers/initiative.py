@@ -10,6 +10,7 @@ import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
@@ -281,13 +282,39 @@ class InitiativeController(BaseController):
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):
-        log.info("inside resourceEdit")
+        if 'user' not in session:
+            log.info("someone not logged in tried to add a resource to an initiative...")
+            abort(404)
+            
         if id3 == 'new':
             c.resource = None
+            
+        else:
+            c.resource = resourceLib.getResource(id3)
+            if not c.resource:
+                log.info("no resource with this code: %s"%id3)
+                abort(404)
             
         return render('/derived/6_initiative_resource.bootstrap')
         
     @h.login_required
     def resourceEditHandler(self, id1, id2, id3):
-        foo = "bar"
+        
+        if 'user' not in session:
+            abort(404)
+        if 'resourceTitle' in request.params():
+            title = request.params('resourceTitle')
+        else:
+            title = "Sample title"
+            
+        if 'resourceLink' in request.params():
+            link = request.params('resourceLink')
+        else:
+            title = "http://example.com"
+            
+        if 'resourceText' in request.params():
+            title = request.params('resourceText')
+        else:
+            title = "Sample text"
+            
  

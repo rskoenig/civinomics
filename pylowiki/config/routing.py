@@ -161,11 +161,12 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{activity:activity?/?}', controller = 'workshop', action = 'activity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # resources
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{resource:resource/?}', controller = 'resource', action = 'addResource') 
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler') 
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource') 
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{resource:resources?}/{resourceCode}/{resourceURL}/thread/{commentCode}{end:/?}', controller = 'resource', action = 'thread') 
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/{resource:resource/?}', controller = 'resource', action = 'addResource') 
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler')
+    map.connect('/{initiative:initiatives?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler') 
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource') 
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}/thread/{commentCode}{end:/?}', controller = 'resource', action = 'thread') 
     
     # discussions
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?/?}', controller = 'discussion', action = 'index', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
