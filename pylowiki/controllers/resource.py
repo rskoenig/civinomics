@@ -146,6 +146,7 @@ class ResourceController(BaseController):
             parent = c.w
         else:
             parent = c.initiative
+            userLib.setUserPrivs()
             c.w = None
         payload = json.loads(request.body)
         if 'title' not in payload:

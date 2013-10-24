@@ -239,5 +239,5 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     if workshop is not None:
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
     else:
-        d = discussionLib.Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
+        d = Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
     return a
