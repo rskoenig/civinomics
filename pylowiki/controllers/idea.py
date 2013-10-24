@@ -14,7 +14,11 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.helpers as h
+
+import simplejson as json
+import misaka as m
 
 from pylowiki.lib.base import BaseController, render
 
@@ -87,6 +91,8 @@ class IdeaController(BaseController):
         return redirect(utils.thingURL(c.w, newIdea))
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -118,13 +124,58 @@ class IdeaController(BaseController):
         c.thing['views'] = str(views)
         dbHelpers.commit(c.thing)
 
-        c.discussion = discussionLib.getDiscussionForThing(c.thing)
-        c.listingType = 'idea'
-        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        if not iPhoneApp:
+            c.discussion = discussionLib.getDiscussionForThing(c.thing)
         
-        if 'comment' in request.params:
-            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
-            if not c.rootComment:
-                abort(404)
-                
-        return render('/derived/6_item_in_listing.bootstrap')
+        c.listingType = 'idea'
+        
+        if not iPhoneApp:
+            c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        
+        if not iPhoneApp:
+            if 'comment' in request.params:
+                c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+                if not c.rootComment:
+                    abort(404)
+
+        if iPhoneApp:
+            log.info("iphone idea")
+            entry = {}
+            # if this person has voted on the idea, we need to pack their vote data in
+            if 'user' in session:
+                log.info("iphone idea: user in session")
+                rated = ratingLib.getRatingForThing(c.authuser, c.thing)
+                if rated:
+                    if rated['amount'] == '1':
+                        entry['rated'] = "1"
+                    elif rated['amount'] == '-1':
+                        entry['rated'] = "-1"
+                    elif rated['amount'] == '0' :
+                        entry['rated'] = "0"
+                    else:
+                        entry['rated'] = "0"
+                else:
+                    entry['rated'] = "0"
+            #    utils.isWatching(c.authuser, c.w)
+            #if c.authuser:
+                #
+            # rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            
+            entry['thingCode'] = c.thingCode
+            entry['backgroundImage'] = c.backgroundImage
+            #entry['title'] = c.thing['title']
+            #entry['text'] = c.thing['text']
+            ideaTextHtml = m.html(c.thing['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['ideaText'] = ideaTextHtml
+            entry['thing'] = dict(c.thing)
+            entry['discussion'] = dict(c.discussion)
+            #entry['revisions'] = c.revisions
+            entry['rootComment'] = c.rootComment
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:    
+            return render('/derived/6_item_in_listing.bootstrap')

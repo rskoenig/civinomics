@@ -29,7 +29,7 @@
       <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
       <!--[if lt IE 9]>
          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-      <![endif]-->
+      <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
 
@@ -141,7 +141,7 @@
                    // this code is used when a person arrives and it is seen that they have 
                    // auth'd our app and are logged into facebook 
                    // replace current button with returned result
-                   var newButton = '<div><a href="/fbLogin"><img src="/images/fb_signin.png"></a></div>'
+                   var newButton = '<div><a href="/fbLogin"><img src="/images/f-login.png"></a></div>'
                    $('#fbLoginButton1').html(newButton);
                    $('#fbLoginButton2').html(newButton);
                  }

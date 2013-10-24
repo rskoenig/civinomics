@@ -20,7 +20,7 @@ function fbCheckAccount(response, authResponse, smallPic, bigPic){
     //document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
 }
 
-function postShared(response, itemCode, itemURL, postId, userCode, workshopCode){
+function postShared(response, itemCode, itemURL, postId, userCode, workshopCode, shareType){
     // someone shared something. record this in the db
     // needing info to define the object that is being shared. could be a workshop, could be an 
     // object within a workshop
@@ -28,7 +28,7 @@ function postShared(response, itemCode, itemURL, postId, userCode, workshopCode)
     var encodedUrl = encodeURIComponent(itemURL)
     encodedUrl = encodedUrl.replace(/\%/g, ",")
     
-    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId
+    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId + "/" + shareType
     //var checkURL = "/share/facebook"
     var checkResult = $.ajax({
         type : 'POST',
