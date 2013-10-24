@@ -650,12 +650,15 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchIdeas(self):
+        log.info('in searchIdeas')
         #: this function returns json data so we set the headers appropriately
         response.headers['Content-type'] = 'application/json'
         if self.noQuery:
+            log.info('return self.noQuery')
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
+            log.info('return no wildcard searches')
             return json.dumps({'statusCode':2})
         result = []
         if self.searchType == 'tag':
