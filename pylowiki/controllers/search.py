@@ -43,6 +43,7 @@ class SearchController(BaseController):
 
     def __before__(self, action, searchType = None, **kwargs):
         #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
+        log.info("controllers/search __before__")
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
@@ -119,6 +120,7 @@ class SearchController(BaseController):
         #log.info("S E A R C H + Q U E R Y 5:  %s %s"%(self.query, self.noQuery))
         #log.info("****SEARCH QUERY**** %s"%self.query)
         c.searchQuery = self.query
+        log.info("controllers/search __before__ complete")
 
     def _noSearch(self, noRender = False):
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -432,29 +434,37 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchWorkshops(self):
+        log.info("controllers/search: in searchWorkshops")
         #: this function returns json data so we set the headers appropriately
         response.headers['Content-type'] = 'application/json'
         if self.noQuery:
+            log.info("return no query")
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
+            log.info("return no wildcard")
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
         #log.info("searchWorkshops: self.searchType: %s"%self.searchType)
         if self.searchType == 'tag':
+            log.info("search type tag")
             keys = ['workshop_category_tags']
             values = [self.query]
         elif self.searchType == 'geo':
+            log.info("search type geo")
             keys = ['workshop_public_scope']
             values = [self.query]
             #log.info("self.query is %s"%self.query)
-        else:    
+        else:
+            log.info("search type generic")    
             keys = ['title', 'description', 'workshop_category_tags']
             values = [self.query, self.query, self.query]
         workshops = workshopLib.searchWorkshops(keys, values)
         if not workshops:
+            log.info("return not workshops")
             return json.dumps({'statusCode':2})
         if len(workshops) == 0:
+            log.info("return len workshops 0")
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for w in workshops:
@@ -495,6 +505,7 @@ class SearchController(BaseController):
             result.append(entry)
 
         if len(result) == 0:
+            log.info("return len result 0")
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
     
@@ -652,21 +663,29 @@ class SearchController(BaseController):
     def searchIdeas(self):
         #: this function returns json data so we set the headers appropriately
         response.headers['Content-type'] = 'application/json'
+        log.info("controllers/search: searchIdeas")
         if self.noQuery:
+            log.info("searchIdeas return no query")
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
+            log.info("searchIdeas return no wildcard search")
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
         if self.searchType == 'tag':
+            log.info("searchIdeas type tag")
             ideas = ideaLib.searchIdeas('workshop_category_tags', self.query)
         elif self.searchType == 'geo':
+            log.info("searchIdeas type geo")
             ideas = ideaLib.searchIdeas('workshop_public_scope', self.query)
         else:
+            log.info("searchIdeas type title")
             ideas = ideaLib.searchIdeas('title', self.query)
         if not ideas:
+            log.info("searchIdeas return NOT ideas")
             return json.dumps({'statusCode':2})
         if len(ideas) == 0:
+            log.info("searchIdeas return len ideas == 0")
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for idea in ideas:
@@ -719,7 +738,9 @@ class SearchController(BaseController):
             entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
+            log.info("searchIdeas return len result == 0")
             return json.dumps({'statusCode':2})
+        log.info("searchIdeas return result")
         return json.dumps({'statusCode':0, 'result':result})
         
     def searchPhotos(self):
