@@ -1,0 +1,71 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<div id="login-bg"></div>
+<div class="login">
+  <div class="container">
+      <div class="row">
+          <div>
+              <div class="well main-well login">
+                  % if c.splashMsg:
+                      <% message = c.splashMsg %>
+                      <div class="alert alert-${message['type']}">
+                          <button data-dismiss="alert" class="close">x</button>
+                          <strong>${message['title']}</strong> ${message['content']}
+                      </div>
+                  % endif
+                  <div class="login-top">
+                      <h2> Login </h2>
+                  </div>
+                  <div class="login-body">
+                      % if c.conf['read_only.value'] == 'true':
+                          <h1> Sorry, Civinomics is in read only mode right now </h1>
+                      % else:
+                          <div class="row-fluid social-login centered">
+                            <div id="fbLoginButton2">
+                                <a href="#" onclick="FB.login()"><img src="/images/f-login.png"></a>
+                            </div>
+                            <div id="twtLoginButton1">
+                                <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
+                            </div>
+                          </div>
+                          <div class="social-sign-in-separator sc-font-light sc-text-light">
+                              <span>Or sign in with your email</span>
+                          </div>
+                          <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
+                              <div class="control-group">
+                                  <label class="control-label" for="email"> Email: </label>
+                                  <div class="controls">
+                                      <input type="email" name="email" id="email" required>
+                                  </div>
+                              </div>
+                              <div class="control-group">
+                                  <label class="control-label" for="passphrase"> Password: </label>
+                                  <div class="controls">
+                                      <input type="password" name="password" id="password">
+                                  </div>
+                              </div>
+                              <div class="control-group">
+                                  <div class="controls">
+                                      <button type="submit" class="btn btn-civ login"> Log in </button>
+                                      
+                                  </div>
+                              </div>
+                          </form>
+                      % endif
+                  </div>
+                  <div class="login-bottom">
+                      
+                      <text class="form-subtext"><a href="/forgotPassword" style="color: #075D00; padding-top:20px;"> Forgot password?</a></text>
+                      <text class="form-subtext pull-right"><a href="/signup" style="color: #075D00; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
+                      </label>
+                      
+                  </div>
+              </div><!-- main-well -->
+          </div><!-- sapn6 -->
+      </div><!-- row -->
+  </div><!-- container -->
+</div><!-- login -->

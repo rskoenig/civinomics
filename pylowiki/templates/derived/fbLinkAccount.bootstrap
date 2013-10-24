@@ -1,0 +1,64 @@
+<%inherit file="/base/base.bootstrap"/>
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<div id="bg">
+    <img src='/images/splash/Large_CityHall.jpg' alt="">
+</div>
+<div class="login">
+  <div class="container">
+      <div class="row">
+          <div class="span6 offset3" style="padding-top:100px;">
+              <div class="well main-well">
+                  % if c.splashMsg:
+                      <% message = c.splashMsg %>
+                      <div class="alert alert-${message['type']}">
+                          <button data-dismiss="alert" class="close">x</button>
+                          <strong>${message['title']}</strong> ${message['content']}
+                      </div>
+                  % endif
+                  <div class="login-top">
+                      <h2> Link your account with Facebook Login</h2>
+                      <p>Since you haven't used Facebook to log in on Civinomics 
+                        yet, we need you to verify your identity by asking you enter the password you use on our site. After this, pressing the 'Sign in with Facebook' button will log you in directly.</p>
+                  </div>
+                  <div class="login-body">
+                      % if c.conf['read_only.value'] == 'true':
+                          <h1> Sorry, Civinomics is in read only mode right now </h1>
+                      % else:
+                          <form id="sign_in" action="/fbLinkAccountHandler" class="form form-horizontal" method="post">
+                              <div class="control-group">
+                                  <label class="control-label" for="email"> Email: </label>
+                                  <div class="controls">
+                                      ${c.email}
+                                  </div>
+                              </div>
+                              <div class="control-group">
+                                  <label class="control-label" for="passphrase"> Password: </label>
+                                  <div class="controls">
+                                      <input type="password" name="password" id="password">
+                                  </div>
+                              </div>
+                              <div class="control-group">
+                                  <div class="controls">
+                                      <button type="submit" class="btn btn-primary"> Log in </button>
+                                      
+                                  </div>
+                              </div>
+                          </form>
+                      % endif
+                  </div>
+                  <div class="login-bottom">
+                      
+                      <text class="form-subtext"><a href="/forgotPassword" style="color: #075D00; padding-top:20px;"> Forgot password?</a></text>
+                      <text class="form-subtext pull-right"><a href="/signup" style="color: #075D00; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
+                      </label>
+                      
+                  </div>
+              </div><!-- main-well -->
+          </div><!-- sapn6 -->
+      </div><!-- row -->
+  </div><!-- container -->
+</div><!-- login -->
