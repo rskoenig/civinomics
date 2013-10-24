@@ -2,6 +2,7 @@
    import pylowiki.lib.db.workshop     as workshopLib
    import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
+   from pylowiki.lib.db.generic import getThing
    import pylowiki.lib.db.activity as activityLib
    import pylowiki.lib.db.facilitator   as facilitatorLib
    import misaka as m
@@ -18,7 +19,8 @@
         pending = []
         for listener in c.listeners:
             if 'userCode' in listener:
-                users.append(listener)
+                user = getThing(listener['userCode'])
+                users.append(user)
             else:
                 pending.append(listener)
     %>
@@ -27,7 +29,7 @@
         <ul class="media-list" id="workshopNotables">
         % for person in users:
             <%
-                personTitle = person['title']
+                personTitle = person['name']
                 personClass = 'listener'
             %>
             <li class="media notables-item">
