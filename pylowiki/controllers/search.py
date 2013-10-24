@@ -479,10 +479,10 @@ class SearchController(BaseController):
             entry['url'] = w['url']
             # for consitency, this is the entry that should hold the workshop's url
             entry['workshopURL'] = w['url']
-            #entry['activity'] = w['numPosts']
-            #entry['bookmarks'] = w['numBookmarks']
-            entry['activity'] = '555'
-            entry['bookmarks'] = '3000'
+            entry['activity'] = w['numPosts']
+            entry['bookmarks'] = w['numBookmarks']
+            #entry['activity'] = '555'
+            #entry['bookmarks'] = '3000'
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             entry['startTime'] = w['startTime']
