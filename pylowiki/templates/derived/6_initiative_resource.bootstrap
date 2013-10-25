@@ -25,6 +25,7 @@
 </div><!-- row-fluid -->
 <div class="row-fluid">
     <div class="span12">
+        
         <h4 class="section-header smaller">Add New Resource</h4>
         ${ihelpers.editResource()}
         

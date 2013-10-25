@@ -59,7 +59,7 @@
     </div><!-- span8 -->
     <div class="span4">
         <h4 class="section-header smaller">Resources ${ihelpers.addResourceButton()}</h4>
-        ${ihelpers.iResources()}
+        ${ihelpers.listResources()}
     </div><!-- span4 -->
 </div><!-- row-fluid -->
 

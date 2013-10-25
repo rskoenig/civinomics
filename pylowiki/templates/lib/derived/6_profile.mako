@@ -284,11 +284,14 @@
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
                             'photo': 'added the picture',
+                            'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
+
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
                             'photo':'photo',
+                            'initiative':'initiative',
                             'comment':'comment'}
     %>
     <table class="table table-hover table-condensed">
@@ -305,6 +308,7 @@
                     workshopCode = "photo"
                     workshopLink = "/foo/photo"
                 parent = False
+
                 if objType == 'comment':
                     if 'ideaCode' in item:
                         parentCode = item['ideaCode']
@@ -318,15 +322,14 @@
                         parentCode = item['photoCode']
                         parentURL = item['parent_url']
                         parentObjType = 'photo'
-                    elif 'initiativeCode' in item:
-                        parentCode = item['initiativeCode']
-                        parentURL = item['parent_url']
-                        parentObjType = 'initiative'
                     elif 'discussionCode' in item:
                         parentCode = item['discussionCode']
                         parentURL = item['parent_url']
                         parentObjType = 'discussion'
                     if 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'initiative'
                         parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
@@ -334,12 +337,15 @@
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                     title = lib_6.ellipsisIZE(item['data'], 40)
                     itemLink = parentLink + '?comment=' + item['urlCode']
+                elif objType == 'resource' and 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['initiative_url']
+                        parentObjType = 'initiative'
+                        title = lib_6.ellipsisIZE(item['title'], 40)
                 else:
                     parentCode = False
                     title = lib_6.ellipsisIZE(item['title'], 40)
                     itemLink = workshopLink + "/" + objType + "/" + item['urlCode'] + "/" + item['url']
-
-                
             %>
 
             % if objType == 'photo':
@@ -353,8 +359,17 @@
                 % endif
             % elif objType == 'initiative':
                 <% 
-                    link = "/initiative/" + item['userCode'] + "/" + item['user_url'] + "/show"
-                    activityStr = "added the initiative <a href=\"" + link + "\">" + title + "</a>"
+                    link = "/initiative/" + item['urlCode'] + "/" + item['url'] + "/show"
+                    activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0' and item['public'] == '1':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'resource' and 'initiativeCode' in item:
+                <% 
+                    link = "/initiative/" + parentCode + "/" + parentURL + "/resource/" + item['userCode'] + "/" + item['user_url']
+                    activityStr = "added the resource <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
                 % if item['deleted'] == '0' and item['public'] == '1':

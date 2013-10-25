@@ -27,6 +27,7 @@ def linkChildToParent(child, parent):
         log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
     if parent.objType == 'initiative':
         child['public'] = parent['public']
+        child['initiative_url'] = parent['url']
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:

@@ -69,8 +69,36 @@
     ${printStr | n}
 </%def>
 
-<%def name="iResources()">
-resources go here
+<%def name="listResources()">
+
+    % for item in c.resources:
+        <% 
+            iconClass = ""
+            if item['type'] == 'link' or item['type'] == 'general':
+                iconClass="icon-link"
+            elif item['type'] == 'photo':
+                iconClass="icon-picture"
+            elif item['type'] == 'video':
+                iconClass="icon-youtube-play"
+            elif item['type'] == 'rich':
+                iconClass="icon-file"
+            endif
+            rURL = "/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/resource/${item['urlCode']}/${item['url']}"
+        %>
+        <div class="row-fluid">
+        <div class="span1">
+            <div class="spacer"></div>
+                <i class="${iconClass} icon-3x"></i>
+            </div><!- span1 ->
+            <div class="span11">
+                <h4 class="media-heading general">
+                <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
+                ${itemTitle | n}
+   
+                </h4>
+            </div><!- span11 ->
+        </div><!- row-fluid ->
+    % endfor
 </%def>
 
 <%def name="listInitiative(item)">

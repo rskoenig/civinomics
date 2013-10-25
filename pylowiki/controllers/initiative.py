@@ -62,6 +62,7 @@ class InitiativeController(BaseController):
             # for compatibility with comments
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
+            c.resources = resourceLib.getResourcesByParentID(c.initiative.id)
             
         userLib.setUserPrivs()
 
