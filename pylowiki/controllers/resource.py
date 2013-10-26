@@ -83,7 +83,7 @@ class ResourceController(BaseController):
             c.baseUrl = c.baseUrl[:-1]
         c.requestUrl = request.url
         c.thingCode = resourceCode
-        
+        log.info("in showResource")
         if c.w:
             #get the scope to display jurisidction flag
             if c.w['public_private'] == 'public':
@@ -112,7 +112,7 @@ class ResourceController(BaseController):
         views = int(c.thing['views']) + 1
         c.thing['views'] = str(views)
         dbHelpers.commit(c.thing)
-
+        log.info("before c.discussion")
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'resource'
         c.revisions = revisionLib.getRevisionsForThing(c.thing)

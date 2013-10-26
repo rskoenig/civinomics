@@ -64,7 +64,7 @@
         else:
             printStr = '<a href="/initiative/' + c.initiative['urlCode'] + '/' + c.initiative['url'] + '/login/' + '"'
 
-        printStr += ' title="Click to add a resource to this initiative" class="btn btn-success pull-right"><i class="icon icon-plus"></i></a>'
+        printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
     %>
     ${printStr | n}
 </%def>
@@ -83,22 +83,40 @@
             elif item['type'] == 'rich':
                 iconClass="icon-file"
             endif
-            rURL = "/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/resource/${item['urlCode']}/${item['url']}"
+            rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
         %>
         <div class="row-fluid">
-        <div class="span1">
+        <div class="span2">
             <div class="spacer"></div>
                 <i class="${iconClass} icon-3x"></i>
-            </div><!- span1 ->
-            <div class="span11">
+            </div><!- span2 ->
+            <div class="span10">
                 <h4 class="media-heading general">
                 <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
                 ${itemTitle | n}
-   
                 </h4>
-            </div><!- span11 ->
+                <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
+            </div><!- span10 ->
         </div><!- row-fluid ->
     % endfor
+</%def>
+
+<%def name="showResource()">
+        <% 
+            link = ""
+            rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + c.thing['urlCode'] + "/" + c.thing['url']
+            title = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, c.thing['title'])
+            if c.thing.objType == 'resource':
+                    link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(c.thing['link'], lib_6.ellipsisIZE(c.thing['link'], 75))
+                    if c.thing['type'] == 'rich' or c.thing['type'] == 'video':
+                        link = link + '<div class="spacer"></div>' + c.thing['info']
+                    if c.thing['type'] == 'photo':
+                        link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
+        %>
+        ${title | n}<br>
+        <div class="spacer"></div>
+        ${link | n}
+        ${m.html(c.thing['text']) | n}
 </%def>
 
 <%def name="listInitiative(item)">

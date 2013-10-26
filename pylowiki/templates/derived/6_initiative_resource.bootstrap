@@ -25,10 +25,18 @@
 </div><!-- row-fluid -->
 <div class="row-fluid">
     <div class="span12">
-        
-        <h4 class="section-header smaller">Add New Resource</h4>
-        ${ihelpers.editResource()}
-        
+        <div class="section-wrapper overview">
+            <div class="browse">
+                <h4 class="section-header smaller">Resource</h4>
+                % if c.thing:
+                    ${ihelpers.showResource()}
+                    ${comments(c.thing, c.discussion)}
+                % else:
+                    <h4 class="section-header smaller">Add New Resource</h4>
+                    ${ihelpers.editResource()}
+                % endif
+            </div><!- browse ->
+        </div><!- section-header ->
     </div><!-- span12 -->
 </div><!-- row-fluid -->
 

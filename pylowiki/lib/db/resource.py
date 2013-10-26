@@ -76,6 +76,17 @@ def getResourcesByWorkshopCode(workshopCode, disabled = '0', deleted = '0'):
             .all()
     except:
         return False
+        
+def getResourcesByInitiativeCode(initiativeCode, disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('initiativeCode', initiativeCode)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
+    except:
+        return False
 
 def getActiveResourcesByWorkshopCode(workshopCode):
     try:

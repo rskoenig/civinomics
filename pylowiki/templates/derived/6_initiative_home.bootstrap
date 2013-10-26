@@ -58,8 +58,13 @@
         % endif
     </div><!-- span8 -->
     <div class="span4">
-        <h4 class="section-header smaller">Resources ${ihelpers.addResourceButton()}</h4>
-        ${ihelpers.listResources()}
+        <div class="section-wrapper overview">
+            <div class="browse">
+                <h4 class="section-header smaller">Resources ${ihelpers.addResourceButton()}</h4>
+                <div class="spacer"></div>
+                ${ihelpers.listResources()}
+            </div><!- browse ->
+        </div><!- section-wrapper ->
     </div><!-- span4 -->
 </div><!-- row-fluid -->
 
