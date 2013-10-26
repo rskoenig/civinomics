@@ -356,6 +356,7 @@ def getPublicScope(workshop):
         else:
             scopeLevel = 'earth'
             scopeName  = 'earth'
+            href += '/0'
             flag += 'earth.gif'
 
         # make sure the flag exists
