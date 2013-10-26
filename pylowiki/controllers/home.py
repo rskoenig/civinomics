@@ -15,13 +15,17 @@ from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.workshop import getActiveWorkshops
 
-import pylowiki.lib.db.user         as userLib
-import pylowiki.lib.db.message      as messageLib
-import pylowiki.lib.db.photo        as photoLib
-import pylowiki.lib.sort            as sort
-import pylowiki.lib.db.mainImage    as mainImageLib
-import pylowiki.lib.db.follow       as followLib
-import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.user         	as userLib
+import pylowiki.lib.db.message      	as messageLib
+import pylowiki.lib.db.photo        	as photoLib
+import pylowiki.lib.db.pmember      	as pMemberLib
+import pylowiki.lib.sort            	as sort
+import pylowiki.lib.db.mainImage    	as mainImageLib
+import pylowiki.lib.db.follow       	as followLib
+import pylowiki.lib.db.workshop     	as workshopLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
+
 
 
 log = logging.getLogger(__name__)
@@ -69,7 +73,10 @@ class HomeController(BaseController):
 					level = 'Zip Code'
 				fix = scope['name'].replace('-',' ')
 				name = fix.title()
-				scopeTitle = level + ' of ' + name
+				if level == 'Earth':
+					scopeTitle = 'Planet ' + name
+				else:
+					scopeTitle = level + ' of ' + name
 				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle}
 			c.newWorkshops = newWorkshops
 
@@ -151,6 +158,36 @@ class HomeController(BaseController):
 			c.bookmarks = []
 			for workshop in watchList:
 				c.bookmarks.append(workshop)
+
+			c.privateWorkshops = []
+			privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
+			if privateList:
+				c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+
+			listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+	        c.pendingListeners = []
+	        c.listeningWorkshops = []
+	        for l in listenerList:
+	            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+	            c.listeningWorkshops.append(lw)
+            
+	        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+	        c.facilitatorWorkshops = []
+	        c.pendingFacilitators = []
+	        for f in facilitatorList:
+	           if 'pending' in f and f['pending'] == '1':
+	              c.pendingFacilitators.append(f)
+	           elif f['disabled'] == '0':
+	              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+	              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+	                 # show to the workshop owner, show to the facilitator owner, show to admin
+	                 if 'user' in session: 
+	                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+	                         c.facilitatorWorkshops.append(myW)
+	              else:
+	                    c.facilitatorWorkshops.append(myW)
+
+
 		
 
 		return render('/derived/6_home.bootstrap')
