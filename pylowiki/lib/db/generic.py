@@ -2,6 +2,8 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
+#from pylowiki.lib.images import userImageSource
+#from pylowiki.lib.db.user import getUserByCode
 import sqlalchemy as sa
 from dbHelpers import with_characteristic as wc, commit
 from hashlib import md5
@@ -42,6 +44,8 @@ def linkChildToParent(child, parent):
     if parent.objType == 'user':
         child['user_name'] = parent['name']
         child['user_url'] = parent['url']
+        #parentUser = getUserByCode(parent['urlCode'])
+        #child['user_avatar'] = userImageSource(parentUser)
         if child.objType in counters:
             doit = 1
             if 'discType' in child and child['discType'] != 'general':

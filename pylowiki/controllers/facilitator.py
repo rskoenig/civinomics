@@ -155,6 +155,9 @@ class FacilitatorController(BaseController):
         
     @h.login_required
     def facilitatorNotificationHandler(self, code, url, userCode):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utilsLib.iPhoneRequestTest(request)
+
         user = userLib.getUserByCode(userCode)
         facilitator = facilitatorLib.getFacilitatorInWorkshop(user, c.w)
         # initialize to current value if any, '0' if not set in object
@@ -169,10 +172,19 @@ class FacilitatorController(BaseController):
         if 'digest' in facilitator:
             fDigest = facilitator['digest']
         
-        payload = json.loads(request.body)
-        if 'alert' not in payload:
-            return "Error"
-        alert = payload['alert']
+        if iPhoneApp:
+            try:
+                alert = request.params['alert']
+            except:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+        else:
+            payload = json.loads(request.body)
+            if 'alert' not in payload:
+                return "Error"
+            alert = payload['alert']
         if alert == 'flags':
             if 'flagAlerts' in facilitator.keys(): # Not needed after DB reset
                 if facilitator['flagAlerts'] == u'1':
@@ -207,10 +219,23 @@ class FacilitatorController(BaseController):
                 facilitator['digest'] = u'1'
                 eAction = 'Turned on'
         else:
-            return "Error"   
+            if iPhoneApp:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+            else:
+                return "Error"   
             
         dbhelpersLib.commit(facilitator)
         if eAction != '':
             eventLib.Event('Facilitator notifications set', eAction, facilitator, c.authuser)
-        return eAction
+
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            result = eAction
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return eAction
 
