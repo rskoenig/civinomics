@@ -310,23 +310,31 @@
                 parent = False
 
                 if objType == 'comment':
-                    if 'ideaCode' in item:
-                        parentCode = item['ideaCode']
-                        parentURL = item['parent_url']
-                        parentObjType = 'idea'
-                    elif 'resourceCode' in item:
-                        parentCode = item['resourceCode']
-                        parentURL = item['parent_url']
-                        parentObjType = 'resource'
+                    if 'workshopCode' in item:
+                        if 'ideaCode' in item:
+                            parentCode = item['ideaCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'idea'
+                        elif 'resourceCode' in item:
+                            parentCode = item['resourceCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'resource'
+                        elif 'discussionCode' in item:
+                            parentCode = item['discussionCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'discussion'
+                        parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                     elif 'photoCode' in item:
                         parentCode = item['photoCode']
                         parentURL = item['parent_url']
                         parentObjType = 'photo'
-                    elif 'discussionCode' in item:
-                        parentCode = item['discussionCode']
+                    elif 'initiativeCode' in item and 'resourceCode' in item:
+                        parentCode = item['resourceCode']
                         parentURL = item['parent_url']
-                        parentObjType = 'discussion'
-                    if 'initiativeCode' in item:
+                        parentObjType = 'resource'
+                        parentLink = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
+                    elif 'initiativeCode' in item:
+                        log.info("item is %s"%item)
                         parentCode = item['initiativeCode']
                         parentURL = item['parent_url']
                         parentObjType = 'initiative'
@@ -334,6 +342,7 @@
                     elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
+                        log.info("no parentObjType item is %s"%item.keys())
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                     title = lib_6.ellipsisIZE(item['data'], 40)
                     itemLink = parentLink + '?comment=' + item['urlCode']

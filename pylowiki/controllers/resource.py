@@ -98,6 +98,7 @@ class ResourceController(BaseController):
                 c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
 
         c.thing = resourceLib.getResourceByCode(resourceCode)
+        c.resource = c.thing
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
             if not c.thing:

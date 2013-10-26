@@ -28,6 +28,9 @@ def linkChildToParent(child, parent):
     if parent.objType == 'initiative':
         child['public'] = parent['public']
         child['initiative_url'] = parent['url']
+    if 'initiativeCode' in parent and 'initiative_url' in parent:
+        child['initiativeCode'] = parent['initiativeCode']
+        child['initiative_url'] = parent['initiative_url']
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:

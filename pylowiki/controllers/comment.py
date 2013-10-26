@@ -53,8 +53,10 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
-            elif thing.objType == 'photo' or thing.objType == 'initiative':
+            elif thing.objType == 'photo' or thing.objType == 'initiative' or 'initiativeCode' in thing:
                 userLib.setUserPrivs()
+                if 'initiativeCode' in thing:
+                    initiative = genericLib.getThing(thing['initiativeCode'])
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':
@@ -75,7 +77,7 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
-            log.info('before comment')
+            log.info('before comment c.privs is %s'%c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             if thing.objType == 'idea' or thing.objType == 'initiative':
                 if 'commentRole' in request.params:
@@ -95,6 +97,9 @@ class CommentController(BaseController):
             elif thing.objType.replace("Unpublished", "") == 'initiative':
                 title = ' commented on one of your initiatives'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
+            elif thing.objType.replace("Unpublished", "") == 'resource':
+                title = ' commented on a post you made'
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
             message = genericLib.linkChildToParent(message, comment)
             dbHelpers.commit(message)
             alertsLib.emailAlerts(comment)

@@ -277,6 +277,7 @@ class InitiativeController(BaseController):
     def initiativeShowHandler(self):
         
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
+        log.info("c.discussion is %s"%c.discussion)
             
         return render('/derived/6_initiative_home.bootstrap')
         
