@@ -324,10 +324,10 @@ def getWorkshopsByScope(searchScope, scopeLevel):
         return False
     
 def getPublicScope(workshop):
+    flag = '/images/flags/'
+    href = '/workshops/geo/earth'
     if 'workshop_public_scope' in workshop and workshop['workshop_public_scope'] != '':
         scope = workshop['workshop_public_scope'].split('|')
-        flag = '/images/flags/'
-        href = '/workshops/geo/earth'
         if scope[9] != '0':
             scopeLevel = 'postalCode'
             scopeName  = scope[9]
@@ -356,6 +356,7 @@ def getPublicScope(workshop):
         else:
             scopeLevel = 'earth'
             scopeName  = 'earth'
+            href += '/0'
             flag += 'earth.gif'
 
         # make sure the flag exists
@@ -440,6 +441,8 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['allowDiscussions']  = u'1'
     w['workshop_category_tags'] = ''
     w['workshop_searchable'] = u'0'
+    w['numPosts'] = 0
+    w['numBookmarks'] = 0
     commit(w)
     w['urlCode'] = utils.toBase62(w)
     background = utils.workshopInfo

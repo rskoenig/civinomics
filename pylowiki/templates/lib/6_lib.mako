@@ -1456,3 +1456,24 @@
     % endfor
   </table>
 </%def>
+<%def name="listPrivateWorkshops(workshops)">
+  <table class="table plain">
+    % for item in workshops:
+      <tr>
+        <td>
+          <div class="media well searchListing bookmarks" style="overflow:visible;">
+              <a class="pull-left" ${workshopLink(item)}>
+                <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+              </a>
+            <div class="span6">
+              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            </div>
+            <div>
+              ${bookmarkOptions(c.authuser, item)}
+            </div>
+          </div>
+        </td>
+      </tr>
+    % endfor
+  </table>
+</%def>
