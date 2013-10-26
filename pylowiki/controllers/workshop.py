@@ -343,7 +343,7 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
-            c.w['workshop_public_scope'] =  "||0|0|0|0|0|0|0|0"
+            c.w['workshop_public_scope'] =  "||0||0||0||0|0"
             workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             if c.w['disabled'] == '0' and c.w['deleted'] == '0' and c.w['published'] == '1':
                 c.w['workshop_searchable'] = '1'
