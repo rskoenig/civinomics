@@ -71,7 +71,10 @@ class HomeController(BaseController):
 					level = 'Zip Code'
 				fix = scope['name'].replace('-',' ')
 				name = fix.title()
-				scopeTitle = level + ' of ' + name
+				if level == 'Earth':
+					scopeTitle = 'Planet ' + name
+				else:
+					scopeTitle = level + ' of ' + name
 				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle}
 			c.newWorkshops = newWorkshops
 
