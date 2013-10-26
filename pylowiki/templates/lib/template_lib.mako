@@ -63,6 +63,15 @@
                                 </ul>
                             </li>
                         % endif
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Create <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                <li><a href="/workshop/display/create/form"> New Workshop</a></li>
+                            </ul>
+                        </li>
+
                         <li class="${mSelected}">
                             <%
                                 messageCount = ''

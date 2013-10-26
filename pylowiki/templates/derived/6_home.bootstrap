@@ -86,22 +86,22 @@
           ### Bookmarks
           ###
           % if len(c.facilitatorWorkshops) != 0:
-            <span class="lead"><i class="icon-dashboard"></i> Facilitating</span>
+            <span class="lead"><i class="icon-dashboard"></i> Facilitating (${c.numFW})</span>
             ${lib_6.listPrivateWorkshops(c.facilitatorWorkshops)}
             <br>
           % endif
           % if len(c.listeningWorkshops) != 0:
-            <span class="lead"><i class="icon-headphones"></i> Listening</span>
+            <span class="lead"><i class="icon-headphones"></i> Listening (${c.numLW})</span>
             ${lib_6.listPrivateWorkshops(c.listeningWorkshops)}
             <br>
           % endif
           % if len(c.privateWorkshops) != 0:
-            <span class="lead"><i class="icon-group"></i> Private</span>
+            <span class="lead"><i class="icon-group"></i> Private (${c.numPW})</span>
             ${lib_6.listPrivateWorkshops(c.privateWorkshops)}
             <br>
           % endif
           % if len(c.bookmarks) != 0:
-            <span class="lead"><i class="icon-bookmark"></i> Bookmarks</span>
+            <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numBW})</span>
             ${lib_6.listBookmarks(c.bookmarks)}
           % endif
         </div><!-- /row-fluid -->
