@@ -85,8 +85,18 @@
           ###
           ### Bookmarks
           ###
+          % if len(c.facilitatorWorkshops) != 0:
+            <span class="lead"><i class="icon-dashboard"></i> Facilitating</span>
+            ${lib_6.listPrivateWorkshops(c.facilitatorWorkshops)}
+            <br>
+          % endif
+          % if len(c.listeningWorkshops) != 0:
+            <span class="lead"><i class="icon-headphones"></i> Listening</span>
+            ${lib_6.listPrivateWorkshops(c.listeningWorkshops)}
+            <br>
+          % endif
           % if len(c.privateWorkshops) != 0:
-            <span class="lead"><i class="icon-group"></i> Private Workshops</span>
+            <span class="lead"><i class="icon-group"></i> Private</span>
             ${lib_6.listPrivateWorkshops(c.privateWorkshops)}
             <br>
           % endif
