@@ -15,6 +15,7 @@ import pylowiki.lib.mail        as mailLib
 from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.share    as shareLib
+import pylowiki.lib.utils       as utils
 
 # twython imports
 from twython import Twython
@@ -150,7 +151,8 @@ class LoginController(BaseController):
             else:
                 log.info("logging twt user in")
                 # log this person in
-                LoginController.logUserIn(self, user)
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
         else:
             log.info('did not find twitter id')
             c.numAccounts = 1000
@@ -305,7 +307,8 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
-                        LoginController.logUserIn(self, user)
+                        loginURL = LoginController.logUserIn(self, user)
+                        return redirect(loginURL)
                 elif 'unactivatedTwitterAuthId' in user.keys():
                     # ok, unactivatedTwitterAuthId IS in user.keys():
                     # is this an account created just with twitter signup? Is this a normal account?
@@ -401,8 +404,8 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
-                        LoginController.logUserIn(self, user)
-
+                        loginURL = LoginController.logUserIn(self, user)
+                        return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
@@ -467,8 +470,8 @@ class LoginController(BaseController):
                         
                         commit(user)
                         log.info( "Successful twitter link")
-                        LoginController.logUserIn(self, user)
-
+                        loginURL = LoginController.logUserIn(self, user)
+                        return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password")
                         splashMsg['content'] = 'incorrect username or password'
@@ -509,7 +512,8 @@ class LoginController(BaseController):
                 log.warning("disabled account attempting to login - " + email )
                 splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
             else:
-                LoginController.logUserIn(self, user)
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
         else:
             log.info("login:fbLoggingIn DID NOT FIND USER")
         session['splashMsg'] = splashMsg
@@ -558,15 +562,23 @@ class LoginController(BaseController):
         #if 'fbLogin' in kwargs:
         #    if kwargs['fbLogin'] is True:
         #        return loginURL
-        return redirect(loginURL)
+        return loginURL
 
     def loginHandler(self):
-        """ Display and Handle Login """
+        """ Display and Handle Login. 
+        JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             user's email and password are valid, session data returned?
+        """
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
+
+        iPhoneApp = utils.iPhoneRequestTest(request)
 
         try:
             email = request.params["email"].lower()
@@ -575,7 +587,6 @@ class LoginController(BaseController):
             log.info('user %s attempting to log in' % email)
             if email and password:
                 user = userLib.getUserByEmail( email )
-         
                 if user: # not none or false
                     if user['activated'] == '0':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
@@ -586,18 +597,34 @@ class LoginController(BaseController):
                     elif user['disabled'] == '1':
                         log.warning("disabled account attempting to login - " + email )
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
-                    elif userLib.checkPassword( user, password ): 
+                    elif userLib.checkPassword( user, password ):
                         # if pass is True
-                        LoginController.logUserIn(self, user)
-
+                        loginURL = LoginController.logUserIn(self, user)
+                        if iPhoneApp:
+                            response.headers['Content-type'] = 'application/json'
+                            # iphone app is having problems with the case where a user logs in after 
+                            # browsing the site first, so for now we'll just return a login url of /
+                            #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
+                        else:
+                            return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
+                        if iPhoneApp:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
+                    if iPhoneApp:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
             else:
                 splashMsg['content'] = 'missing username or password'
+                if iPhoneApp:
+                    response.headers['Content-type'] = 'application/json'
+                    return json.dumps({'statusCode':1, 'message':'missing username or password'})
             
             session['splashMsg'] = splashMsg
             session.save()
@@ -605,16 +632,26 @@ class LoginController(BaseController):
             return redirect("/login")
 
         except KeyError:
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':1, 'message':'keyerror'})
             return redirect('/')
 
     @login_required
     def logout(self):
         """ Action will logout the user. """
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         return_url = '/'
         username = session['user']
         log.info( "Successful logout by - " + username )
         session.delete()
-        return redirect( return_url )
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode})
+        else:
+            return redirect( return_url )
 
     def forgot_handler(self):
         c.title = c.heading = "Forgot Password"

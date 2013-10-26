@@ -72,10 +72,11 @@ def isFollowing(user, thing):
             .filter(Thing.data.any(wc('disabled', False)))\
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).all()
         if f:
-           return True
+            return True
         else:
-           return False
+            return False
     except:
+        log.info("broken following query")
         return False
 
 # Object creation/modification here

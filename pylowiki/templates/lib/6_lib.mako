@@ -21,7 +21,8 @@
 %>
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
-<%def name="facebookDialogShare(link, picture, iconClass)">
+
+<%def name="facebookDialogShare(link, picture, **kwargs)">
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
@@ -29,7 +30,32 @@
         channelUrl = c.channelUrl
         thingCode = c.thingCode
         userCode = ''
-        workshopCode = c.w['urlCode']
+        if c.w:
+            if 'urlCode' in c.w.keys():
+                workshopCode = c.w['urlCode']
+            else:
+                workshopCode = ''
+        else:
+            workshopCode = ''
+        # in order to prevent the javascript for these buttons from being included multiple
+        # times, these kwargs are now used to activate either or both of the buttons
+        if 'shareOnWall' in kwargs:
+            if kwargs['shareOnWall'] is True:
+                shareOnWall = True
+            else:
+                shareOnWall = False
+        else:
+            shareOnWall = False
+
+        if 'sendMessage' in kwargs:
+            if kwargs['sendMessage'] is True:
+                sendMessage = True
+            else:
+                sendMessage = False
+        else:
+            sendMessage = False
+        
+
         # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
         name = c.name
         # this is an elaborate way to get the item or workshop's description loaded as the caption
@@ -49,9 +75,16 @@
                 caption = c.w['description'].replace("'", "\\'")
             else:
                 caption = ''
-        
+
+        shareOk = False
+        if 'photoShare' in kwargs:
+            if kwargs['photoShare'] == True:
+                shareOk = True
+        if c.w:
+            if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+                shareOk = True
     %>
-    % if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+    % if shareOk:
         <div id="fb-root"></div>
         <script src="/js/extauth.js" type="text/javascript"></script>
         <script>
@@ -91,30 +124,57 @@
             }(document));
 
             function shareOnWall() {
-            FB.ui(
-                {
-                  method: 'feed',
-                  name: "${name}",
-                  link: "${link}",
-                  picture: "${picture}",
-                  caption: "",
-                  description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
-                },
-                function(response) 
-                {
-                    if (response && response.post_id) {
-                      // if there's a post_id, create share object
-                      var thingCode = "${thingCode}";
-                      var link = "${link}"
-                      var userCode = fbAuthId;
-                      var workshopCode = "${workshopCode}"
-                      result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
+                FB.ui(
+                    {
+                      method: 'feed',
+                      name: "${name}",
+                      link: "${link}",
+                      picture: "${picture}",
+                      caption: "",
+                      description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                    },
+                    function(response) 
+                    {
+                        if (response && response.post_id) {
+                          // if there's a post_id, create share object
+                          var thingCode = "${thingCode}";
+                          var link = "${link}"
+                          var userCode = fbAuthId;
+                          var workshopCode = "${workshopCode}"
+                          result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
+                        }
                     }
-                }
-            );
-        };
+                );
+            };
+
+            function messageFriends() {
+                // there is no callback for messages sent
+                // we can simply record that the message dialog was brought up
+                var thingCode = "${thingCode}";
+                var link = "${link}"
+                var userCode = fbAuthId;
+                var workshopCode = "${workshopCode}"
+                result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
+                FB.ui(
+                    {
+                      method: 'send',
+                      name: "${name}",
+                      link: "${link}",
+                      picture: "${picture}"
+                      //caption: "",
+                      //description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                    }
+                );
+            };
+        
         </script>
-        <a href="#" target='_top' onClick="shareOnWall()"><i class="${iconClass}"></i></a>
+        % if shareOnWall:
+            <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon-2x"></i></a>
+        % endif
+        % if sendMessage:
+            <a href="#" target='_top' onClick="messageFriends()"><i class="icon-facebook icon-2x"></i></a>
+        % endif:
+        
     % endif
 </%def>
 

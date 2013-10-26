@@ -22,6 +22,7 @@
         tab5active = ""
         tab6active = ''
         prefactive = ''
+        linkactive = ''
                     
         if c.tab == "tab1":
             tab1active = "active"
@@ -59,8 +60,10 @@
                             </a></li>
                             <li class="${prefactive}"><a href="#pref" data-toggle="tab">4. Preferences
                             </a></li>
+                            <li class="${linkactive}"><a href="#link" data-toggle="tab">5. Sharing
+                            </a></li>
                             % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">6. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
@@ -86,10 +89,13 @@
                             </div><!-- tab4 -->
                             <div class="tab-pane ${tab6active}" id="tab6">
                                 ${helpersEdit.profilePicture()}
-                            </div><!-- tab4 -->
+                            </div><!-- tab6 -->
                             <div class="tab-pane ${prefactive}" id="pref">
                                 ${helpersEdit.preferences()}
                             </div><!-- preferences -->
+                            <div class="tab-pane ${linkactive}" id="link">
+                                ${helpersEdit.linkAccounts()}
+                            </div><!-- sharing -->
                             % if c.admin:
                                 <div class="tab-pane ${tab5active}" id="tab5">
                                     ${helpersEdit.memberAdmin()}
@@ -320,6 +326,44 @@
                         New comments added to my items: <input type="checkbox" name="commentAlerts" value="comments" ng-click="emailOnComments()" ${commentsChecked}>
                         <span ng-show="emailOnCommentsShow">{{emailOnCommentsResponse}}</span>
                     </form>
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+        </div><!-- browse -->
+    </div><!-- section-wrapper-->
+</%def>
+
+<%def name="linkAccounts()">
+    <% 
+        facebookChecked = ''
+        twitterChecked = ''
+        if 'facebookAuthId' in c.user:
+            facebookChecked = 'checked'
+        if 'twitterAuthId' in c.user:
+            twitterChecked = 'checked'
+    %>
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Social Network Sharing</h4>
+            <div class="row-fluid">
+                <div class="span3">Facebook account:</div>
+                <div class="span6">
+                    % if facebookChecked == 'checked':
+                        Email registered with facebook:
+                        <input type="text" id="fbEmail" class="span10" name="fbEmail" ng-model="fbEmail" ng-init="fbEmail='${c.user['fbEmail']}'" required>
+                    % else:
+                        Account not connected with facebook.
+                    % endif
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            <div class="row-fluid">
+                <div class="span3">Twitter account:</div>
+                <div class="span6">
+                    % if twitterChecked == 'checked':
+                        Email registered with twitter:
+                        <input type="text" id="email" class="span10" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
+                    % else:
+                        Account not connected with twitter.
+                    % endif
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
         </div><!-- browse -->

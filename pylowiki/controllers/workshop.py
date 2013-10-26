@@ -43,11 +43,25 @@ import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
 import simplejson as json
+import misaka as m
+import copy as copy
+
+from HTMLParser import HTMLParser
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
 log = logging.getLogger(__name__)
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
 class CommaSepList(validators.FancyValidator):
     cannot_be_empty=True
@@ -903,6 +917,10 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        # iphone app json data structure:
+        entry = {}
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -932,56 +950,124 @@ class WorkshopController(BaseController):
                 c.facilitators.append(f)
               
         c.listeners = []
-        for l in (listenerLib.getListenersForWorkshop(c.w)):
-            if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-                c.listeners.append(l)
+        if not iPhoneApp:
+            for l in (listenerLib.getListenersForWorkshop(c.w)):
+                if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
+                    c.listeners.append(l)
               
         c.slides = []
-        c.slideshow = slideshowLib.getSlideshow(c.w)
-        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
-        for id in slide_ids:
-            s = slideLib.getSlide(id) # Don't grab deleted slides
-            if s:
-                c.slides.append(s)
+        if not iPhoneApp:
+            c.slideshow = slideshowLib.getSlideshow(c.w)
+            slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+            for id in slide_ids:
+                s = slideLib.getSlide(id) # Don't grab deleted slides
+                if s:
+                    c.slides.append(s)
 
-        c.motd = motdLib.getMessage(c.w.id)
-        # kludge for now
-        if c.motd == False:
-           c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+        if not iPhoneApp:
+            c.motd = motdLib.getMessage(c.w.id)
+            # kludge for now
+            if c.motd == False:
+               c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        if not iPhoneApp:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        
         c.information = pageLib.getInformation(c.w)
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-        if c.w['public_private'] == 'public':
-            c.scope = workshopLib.getPublicScope(c.w)
+        
+        if not iPhoneApp:
+            c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        
+        if not iPhoneApp:
+            if c.w['public_private'] == 'public':
+                c.scope = workshopLib.getPublicScope(c.w)
+
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
+        elif iPhoneApp:
+            i = 0
+            for goal in c.goals:
+                goalEntry = "goal" + str(i)
+                entry[goalEntry] = dict(goal)
+                i = i + 1
         
-        # Demo workshop status
-        c.demo = workshopLib.isDemo(c.w)
+        if not iPhoneApp:
+            # Demo workshop status
+            c.demo = workshopLib.isDemo(c.w)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
-        
-        discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
-        if not discussions:
-            c.discussions = []
-        else:
-            discussions = sort.sortBinaryByTopPop(discussions)
-            c.discussions = discussions[0:3]
+
+        if not iPhoneApp:        
+            discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
+            if not discussions:
+                c.discussions = []
+            else:
+                discussions = sort.sortBinaryByTopPop(discussions)
+                c.discussions = discussions[0:3]
 
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
         if not ideas:
             c.ideas = []
         else:
             c.ideas = sort.sortBinaryByTopPop(ideas)
-        disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
-        if disabled:
-            c.ideas = c.ideas + disabled
+            if iPhoneApp:
+                i = 0
+                for idea in c.ideas:
+                    ideaEntry = "idea" + str(i)
+                    # so that we don't modify the original, we place this idea in a temporary variable
+                    formatIdea = []
+                    formatIdea = copy.copy(idea)
+                    ideaHtml = m.html(formatIdea['text'], render_flags=m.HTML_SKIP_HTML)
+                    s = MLStripper()
+                    s.feed(ideaHtml)
+                    formatIdea['text'] = s.get_data()
+                    # if this person has voted on the idea, we need to pack their vote data in
+                    if 'user' in session:
+                        rated = ratingLib.getRatingForThing(c.authuser, idea)
+                        if rated:
+                            if rated['amount'] == '1':
+                                formatIdea['rated'] = "1"
+                            elif rated['amount'] == '-1':
+                                formatIdea['rated'] = "-1"
+                            elif rated['amount'] == '0' :
+                                formatIdea['rated'] = "0"
+                            else:
+                                formatIdea['rated'] = "0"
+                        else:
+                            formatIdea['rated'] = "0"
+                    entry[ideaEntry] = dict(formatIdea)
+                    i = i + 1
+
+        if not iPhoneApp:
+            disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
+            if disabled:
+                c.ideas = c.ideas + disabled
+
         c.listingType = 'ideas'
-        
-        return render('/derived/6_workshop_home.bootstrap')
+        if iPhoneApp:
+            entry['mainImage'] = dict(c.mainImage)
+            entry['baseUrl'] = c.baseUrl
+            entry['thingCode'] = c.thingCode
+            entry['backgroundImage'] = c.backgroundImage
+            entry['title'] = c.w['title']
+            entry['isFollowing'] = c.isFollowing
+            #entry['facilitators'] = dict(c.facilitators)
+            #entry['listeners'] = c.listeners
+            if c.information and 'data' in c.information:         
+                entry['information'] = m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML)
+            #entry['information'] = dict(c.information)
+            #entry['goals'] = dict(c.goals)
+            #entry['ideas'] = dict(c.ideas)
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return render('/derived/6_workshop_home.bootstrap')
         
     def info(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -1171,6 +1257,9 @@ class WorkshopController(BaseController):
         
     @h.login_required
     def pmemberNotificationHandler(self, workshopCode, workshopURL, userCode):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         user = userLib.getUserByCode(userCode)
         pmember = pMemberLib.getPrivateMember(workshopCode, user['email'])
         # initialize to current value if any, '0' if not set in object
@@ -1179,10 +1268,19 @@ class WorkshopController(BaseController):
         if 'itemAlerts' in pmember:
             iAlerts = pmember['itemAlerts']
         
-        payload = json.loads(request.body)
-        if 'alert' not in payload:
-            return "Error"
-        alert = payload['alert']
+        if iPhoneApp:
+            try:
+                alert = request.params['alert']
+            except:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+        else:
+            payload = json.loads(request.body)
+            if 'alert' not in payload:
+                return "Error"
+            alert = payload['alert']
         if alert == 'items':
             if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
                 if pmember['itemAlerts'] == u'1':
@@ -1206,10 +1304,24 @@ class WorkshopController(BaseController):
                 pmember['digest'] = u'1'
                 eAction = 'Turned on'
         else:
-            return "Error"   
+            if iPhoneApp:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+            else:
+                return "Error"
+
         dbHelpers.commit(pmember)
         if eAction != '':
             eventLib.Event('Private member item notifications set', eAction, pmember, c.authuser)
-        return eAction
+        
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            result = eAction
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return eAction
 
     
