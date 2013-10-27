@@ -119,7 +119,7 @@
         ${m.html(c.thing['text']) | n}
 </%def>
 
-<%def name="listInitiative(item)">
+<%def name="listInitiative(item, ltitle)">
     <div class="media profile-workshop">
         <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
         % if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
@@ -135,9 +135,9 @@
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
                     % if item['public'] == '0':
-                        Not yet public
+                        Not yet public (${ltitle})
                     % else:
-                        Public
+                        Public (${ltitle})
                     % endif
                 % endif
             % endif

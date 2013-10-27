@@ -90,7 +90,10 @@
                             <table class="table table-hover table-condensed">
                             <tbody>
                             % for item in c.initiatives:
-                                <tr><td>${ihelpers.listInitiative(item)}</td></tr>
+                                <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+                            % endfor
+                            % for item in c.initiativeBookmarks:
+                                <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
                             % endfor
                             </tbody>
                             </table>
