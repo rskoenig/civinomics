@@ -578,6 +578,8 @@
             commentSuffix = "/comment/%s"%comment['urlCode']
         elif dparent.objType.replace("Unpublished", "") == 'user':
             parentBase = 'profile'
+        elif dparent.objType.replace("Unpublished", "") == 'initiative':
+            parentBase = 'initiative'
             
         if 'noHref' in kwargs:
             linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
@@ -1303,6 +1305,8 @@
                                         dparent = c.w
                                     elif c.user:
                                         dparent = c.user
+                                    elif c.initiative:
+                                        dparent = c.initiative
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
                             %>
                               <tr>

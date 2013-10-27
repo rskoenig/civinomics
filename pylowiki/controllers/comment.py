@@ -77,7 +77,6 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
-            log.info('before comment c.privs is %s'%c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             if thing.objType == 'idea' or thing.objType == 'initiative':
                 if 'commentRole' in request.params:

@@ -248,6 +248,8 @@
                                 dparent = c.w
                             elif c.user:
                                 dparent = c.user
+                            elif c.initiative:
+                                dparent = c.initiative
                         %>
                         <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif
