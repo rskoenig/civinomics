@@ -25,6 +25,12 @@ def getInitiativesForUser(user):
     except:
         return False
         
+def getAllInitiatives():
+    try:
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).all()
+    except:
+        return False
+        
 def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False):
     log.info("searchInititives got %s and %s and count is %s"%(keys, values, count))
     try:

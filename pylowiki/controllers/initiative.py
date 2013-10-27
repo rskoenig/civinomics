@@ -17,6 +17,7 @@ import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.images          as imageLib
+import pylowiki.lib.db.follow       as followLib
 
 import simplejson as json
 
@@ -24,7 +25,6 @@ log = logging.getLogger(__name__)
 
 class InitiativeController(BaseController):
     
-    @h.login_required
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
         c.user = None
         c.initiative = None
@@ -277,7 +277,9 @@ class InitiativeController(BaseController):
     def initiativeShowHandler(self):
         
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
-        log.info("c.discussion is %s"%c.discussion)
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.initiative)
             
         return render('/derived/6_initiative_home.bootstrap')
         

@@ -46,11 +46,11 @@
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
-            <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark">
+            <button class="btn round btn-civ pull-right followButton following" data-URL-list="initiative_${c.initiative['urlCode']}_${c.initiative['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
             <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
             </button>
         % else:
-            <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark">
+            <button class="btn round pull-right followButton" data-URL-list="initiative_${c.initiative['urlCode']}_${c.initiative['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
              <span><i class="icon-bookmark pull-left"></i> Bookmark </span>
             </button>
         % endif

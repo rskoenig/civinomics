@@ -377,12 +377,20 @@
                 % endif
             % elif objType == 'resource' and 'initiativeCode' in item:
                 <% 
-                    link = "/initiative/" + parentCode + "/" + parentURL + "/resource/" + item['userCode'] + "/" + item['user_url']
+                    link = "/initiative/" + parentCode + "/" + parentURL + "/resource/" + item['urlCode'] + "/" + item['url']
                     activityStr = "added the resource <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
                 % if item['deleted'] == '0' and item['public'] == '1':
                     <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and 'initiativeCode' in item and 'resourceCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">resource</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0' and item['public'] == '1':
+                    <tr><td>${activityStr | n} </td></tr>
                 % endif
             % elif objType == 'comment' and 'initiativeCode' in item:
                 <% 

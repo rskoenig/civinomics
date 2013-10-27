@@ -15,6 +15,7 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.idea             as ideaLib
 import pylowiki.lib.db.photo            as photoLib
+import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.resource         as resourceLib
 import pylowiki.lib.db.comment          as commentLib
@@ -36,7 +37,7 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos']:
+        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
@@ -56,6 +57,14 @@ class AdminController(BaseController):
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
             elif c.thing.objType.replace("Unpublished", "") == 'photo':
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
+            elif 'initiativeCode' in c.thing:
+                # a comment of a photo
+                parent = generic.getThing(c.thing['initiativeCode'])
+                c.user = generic.getThing(parent['userCode'])
+                userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'initiative':
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
                  
@@ -116,6 +125,8 @@ class AdminController(BaseController):
                 pass
             elif (c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
                 abort(404)
+            elif (c.thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
+                abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
                 
@@ -131,6 +142,18 @@ class AdminController(BaseController):
         
     def flaggedPhotos(self):
         c.list = flagLib.getFlaggedThings('photo')
+        if not c.list:
+            c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def initiatives(self):
+        c.list = initiativeLib.getAllInitiatives()
+        if not c.list:
+            c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def flaggedInitiatives(self):
+        c.list = flagLib.getFlaggedThings('initiative')
         if not c.list:
             c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )

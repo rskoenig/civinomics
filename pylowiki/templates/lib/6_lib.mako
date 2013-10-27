@@ -207,19 +207,19 @@
          <i class="${voteClass}"></i>
          </a>
       % else:
-        % if thing.objType == 'photo':
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
+        % if 'workshopCode' in thing:
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+        % else:
+            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
         % endif
          <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-        % if thing.objType == 'photo':
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
+        % if 'workshopCode' in thing:
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+        % else:
+            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
         % endif
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
@@ -292,12 +292,20 @@
           Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
         </div>
       % else:
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % if 'workshopCode' in thing:
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % else:
+            <a href="/login" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % endif
           <div class="vote-icon yes-icon"></div>
          </a>
          <br>
          <br>
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % if 'workshopCode' in thing:
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % else:
+            <a href="/login" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % endif
           <div class="vote-icon no-icon"></div>
          </a>
          <br>

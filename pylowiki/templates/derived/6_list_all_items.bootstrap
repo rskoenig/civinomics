@@ -62,6 +62,18 @@
             % else:
                 <li><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
             % endif
+            
+            % if itemType == 'initiative':
+                <li class="active"><a href="/admin/initiatives">Initiatives</a></li>
+            % else:
+                <li><a href="/admin/initiatives">Initiatives</a></li>
+            % endif
+            
+            % if itemType == 'flaggedinitiative':
+                <li class="active"><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+            % else:
+                <li><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+            % endif
         </ul>
     </div><!--/.span3-->
 
@@ -99,6 +111,9 @@
                         % elif itemType == 'photo':
                             <% imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png" %>
                             <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
+                        % elif itemType == 'initiative':
+                            <% imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png" %>
+                            <td><a href="/initiative/${item['urlCode']}/${item['url']}/show"><img src="${imgSrc}">${item['title']}</a></td>
                         % endif
                     </tr>
                 % endfor
