@@ -149,6 +149,18 @@ class ProfileController(BaseController):
                 else:
                     if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
                         c.initiatives.append(i)
+                        
+        c.initiativeBookmarks = []
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiativeBookmarks.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiativeBookmarks.append(i)
             
                 
         #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
@@ -336,6 +348,17 @@ class ProfileController(BaseController):
         for workshop in watchList:
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['watching'].append(workshop)
+
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        items['watching'].append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        items['watching'].append(i)
                 
         items['listening'] = []
         for workshop in c.listeningWorkshops:

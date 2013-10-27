@@ -280,6 +280,7 @@ class InitiativeController(BaseController):
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.initiative)
+            log.info("c.isFollowing is %s"%c.isFollowing)
             
         return render('/derived/6_initiative_home.bootstrap')
         
@@ -321,4 +322,3 @@ class InitiativeController(BaseController):
         else:
             title = "Sample text"
             
- 

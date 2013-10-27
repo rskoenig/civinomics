@@ -24,9 +24,13 @@
         Estimated Cost: ${c.initiative['cost']}
     </div><!-- span8 -->
     <div class="span2">
-        ${ihelpers.watchButton}
+        <div class="row-fluid">
+            ${ihelpers.watchButton()}
+        </div><!- row-fluid ->
         % if 'user' in session and (c.authuser['email'] == c.user['email'] or c.privs['admin']):
-            <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
+            <div class="row-fluid">
+                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
+            </div><!- row-fluid ->
         % endif
     </div><!-- span2 -->
 </div><!-- row-fluid -->

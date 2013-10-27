@@ -29,6 +29,34 @@
     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">${title}</a></p></div>
 </%def>
 
+<%def name="showInitiative(item)">
+    <div class="media profile-workshop">
+        <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
+        % if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+            <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos']) %>
+        % else:
+            <% thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail" %>
+        % endif
+        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
+        </a>
+        <div class="media-body">
+            Initiative: <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
+                    % if item['public'] == '0':
+                        Not yet public
+                    % else:
+                        Public
+                    % endif
+                % endif
+            % endif
+            <br />
+            Description: ${lib_6.ellipsisIZE(item['description'], 135)}
+        </div><!-- media-body -->
+    </div><!-- media -->
+</%def>
+
 <%def name="showWorkshop(workshop, **kwargs)">
     <div class="media profile-workshop">
         <a class="pull-left" ${lib_6.workshopLink(workshop)}>
@@ -237,11 +265,15 @@
                                 % else:
                                     <tr> <td>
                                 % endif
-                                
-                                ${showWorkshop(thing, imageOnly = True)}
-                                <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
-                                <br />
-                                Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                                %if thing.objType == 'workshop':
+                                    ${showWorkshop(thing, imageOnly = True)}
+                                    Workshop: <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
+                                    <br />
+                                    Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                                % elif thing.objType == 'initiative':
+                                    ${showInitiative(thing)}
+                                % endif
+
                             % endfor
                         </tbody>
                     </table>
