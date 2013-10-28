@@ -168,12 +168,24 @@
             };
         
         </script>
-        % if shareOnWall:
-            <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon-2x"></i></a>
-        % endif
-        % if sendMessage:
-            <a href="#" target='_top' onClick="messageFriends()"><i class="icon-facebook icon-2x"></i></a>
-        % endif:
+        <div class="btn-group">
+          <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+            <i class="icon-facebook-sign icon-2x"></i>
+          </a>
+          <ul class="dropdown-menu" style="margin-left: -50px;">
+            <li>
+              % if shareOnWall:
+                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+              % endif
+            </li>
+            <li>
+              % if sendMessage:
+                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+              % endif
+            <li>
+          </ul>
+        </div>
+        
         
     % endif
 </%def>

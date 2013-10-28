@@ -2066,6 +2066,9 @@ h1 .label.workshop-tag{
 .share-icons.contrast a i{
   color: #fff;
 }
+.share-icons.contrast ul a i{
+  color: #4c66a4;
+}
 .share-icons a i:hover{
   color: #007edd;
 }
@@ -2598,4 +2601,28 @@ form.inline{
 
 .set-scope-icon{
   font-size: 20px;
+}
+
+.btn-group .btn.clear, .btn-group.open .btn-clear{
+vertical-align: middle;
+cursor: pointer;
+background-color: rgba(0,0,0,0);
+background-image: none;
+border: none;
+border-color: none;
+border-bottom-color: none;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe6e6e6', GradientType=0);
+filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+-webkit-box-shadow: none;
+-moz-box-shadow: none;
+box-shadow: none;
+margin-top: -3px;
+margin-right: -13px;
+}
+
+.btn-group.open .btn.dropdown-toggle{
+  background-color: rgba(0,0,0,0);
 }

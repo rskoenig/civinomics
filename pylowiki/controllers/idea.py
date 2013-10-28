@@ -78,17 +78,37 @@ class IdeaController(BaseController):
 
     @h.login_required
     def addIdeaHandler(self, workshopCode, workshopURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         if 'submit' not in request.params or 'title' not in request.params:
+            log.info("submit or title not in req params")
             return redirect(session['return_to'])
         title = request.params['title'].strip()
         text = request.params['text']
         if title == '':
+            log.info("title is blank")
             return redirect(session['return_to'])
         if len(title) > 120:
             title = title[:120]
         newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
+        log.info("made new idea")
         alertsLib.emailAlerts(newIdea)
-        return redirect(utils.thingURL(c.w, newIdea))
+        if iPhoneApp:
+            log.info("in iphone app")
+            entry = {}
+            entry['workshopCode'] = newIdea['workshopCode']
+            entry['workshop_url'] = newIdea['workshop_url']
+            entry['thingCode'] = newIdea['urlCode']
+            entry['url'] = newIdea['url']
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return redirect(utils.thingURL(c.w, newIdea))
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         # check to see if this is a request from the iphone app

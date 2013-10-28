@@ -158,11 +158,15 @@ class HomeController(BaseController):
 			c.bookmarks = []
 			for workshop in watchList:
 				c.bookmarks.append(workshop)
+			c.numBW = len(c.bookmarks)
 
-			c.privateWorkshops = []
+
 			privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
 			if privateList:
-				c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+				pmemberWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+				c.privateWorkshops = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+			c.numPW = len(c.privateWorkshops)
+
 
 			listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
 	        c.pendingListeners = []
@@ -170,7 +174,8 @@ class HomeController(BaseController):
 	        for l in listenerList:
 	            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
 	            c.listeningWorkshops.append(lw)
-            
+	        c.numLW = len(c.listeningWorkshops)
+
 	        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
 	        c.facilitatorWorkshops = []
 	        c.pendingFacilitators = []
@@ -186,6 +191,7 @@ class HomeController(BaseController):
 	                         c.facilitatorWorkshops.append(myW)
 	              else:
 	                    c.facilitatorWorkshops.append(myW)
+	        c.numFW = len(c.facilitatorWorkshops)
 
 
 		
