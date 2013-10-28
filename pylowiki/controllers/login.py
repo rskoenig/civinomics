@@ -534,22 +534,35 @@ class LoginController(BaseController):
         c.authuser = user
 
         log.info("login:logUserIn")
-        if 'externalAuthType' in user.keys():
-            log.info("login:logUserIn externalAuthType in user keys")
-            if user['externalAuthType'] == 'facebook':
-                log.info("login:logUserIn externalAuthType facebook")
-                user['facebookAccessToken'] = session['fbAccessToken']
-                if 'fbSmallPic' in session:
-                    user['facebookProfileSmall'] = session['fbSmallPic']
-                    user['facebookProfileBig'] = session['fbBigPic']
-            else:
-                user['externalAuthType'] = ''
+        if 'iPhoneApp' in kwargs:
+            if kwargs['iPhoneApp'] != True:
+                if 'externalAuthType' in user.keys():
+                    log.info("login:logUserIn externalAuthType in user keys")
+                    if user['externalAuthType'] == 'facebook':
+                        log.info("login:logUserIn externalAuthType facebook")
+                        user['facebookAccessToken'] = session['fbAccessToken']
+                        if 'fbSmallPic' in session:
+                            user['facebookProfileSmall'] = session['fbSmallPic']
+                            user['facebookProfileBig'] = session['fbBigPic']
+                    else:
+                        user['externalAuthType'] = ''
+        else:
+            if 'externalAuthType' in user.keys():
+                log.info("login:logUserIn externalAuthType in user keys")
+                if user['externalAuthType'] == 'facebook':
+                    log.info("login:logUserIn externalAuthType facebook")
+                    user['facebookAccessToken'] = session['fbAccessToken']
+                    if 'fbSmallPic' in session:
+                        user['facebookProfileSmall'] = session['fbSmallPic']
+                        user['facebookProfileBig'] = session['fbBigPic']
+                else:
+                    user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
         commit(user)
         log.info("login:logUserIn commit user")
-        
+
         
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
@@ -599,7 +612,7 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
-                        loginURL = LoginController.logUserIn(self, user)
+                        loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             # iphone app is having problems with the case where a user logs in after 
