@@ -360,13 +360,13 @@
                         parentCode = item['photoCode']
                         parentURL = item['parent_url']
                         parentObjType = 'photo'
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     elif 'initiativeCode' in item and 'resourceCode' in item:
                         parentCode = item['resourceCode']
                         parentURL = item['parent_url']
                         parentObjType = 'resource'
                         parentLink = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
                     elif 'initiativeCode' in item:
-                        log.info("item is %s"%item)
                         parentCode = item['initiativeCode']
                         parentURL = item['parent_url']
                         parentObjType = 'initiative'
