@@ -40,7 +40,7 @@
         <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
         </a>
         <div class="media-body">
-            Initiative: <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            <span class="label label-inverse">Initiative</span> <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
@@ -267,7 +267,7 @@
                                 % endif
                                 %if thing.objType == 'workshop':
                                     ${showWorkshop(thing, imageOnly = True)}
-                                    Workshop: <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
+                                    <span class="label label-inverse">Workshop</span> <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
                                     <br />
                                     Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
                                 % elif thing.objType == 'initiative':

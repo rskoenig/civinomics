@@ -217,7 +217,7 @@ def make_map():
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
-    map.connect('/profile/{userCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto')
+    map.connect('/profile/{urlCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto', urlCode = '{urlCode}')
 
     # Ratings
     #map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
@@ -369,6 +369,7 @@ def make_map():
     map.connect('/initiative/{code}/{id2}/follow/handler{end:/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/initiative/{id1}/{id2}/resourceEdit/{id3}{end:/?}', controller = 'initiative', action = 'resourceEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/resourceEditHandler{end:/?}', controller = 'initiative', action = 'resourceEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/initiative/{urlCode}/{id2}/comment/{revisionCode}{end:/?}', controller = 'comment', action = 'permaLink', urlCode = '{urlCode}', revisionCode = '{revisionCode}')
 
     
     ################

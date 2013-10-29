@@ -583,12 +583,12 @@
    <% 
         if dparent.objType.replace("Unpublished", "") == 'workshop':
             parentBase = 'workshop'
-            commentSuffix = "/comment/%s"%comment['urlCode']
-        elif dparent.objType.replace("Unpublished", "") == 'user':
-            parentBase = 'profile'
         elif dparent.objType.replace("Unpublished", "") == 'initiative':
             parentBase = 'initiative'
-            
+            #commentSuffix = "/comment/%s"%comment['urlCode']
+        elif dparent.objType.replace("Unpublished", "") == 'user':
+            parentBase = 'profile'
+
         if 'noHref' in kwargs:
             linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
         else:
@@ -1311,10 +1311,11 @@
                             <% 
                                     if c.w:
                                         dparent = c.w
-                                    elif c.user:
-                                        dparent = c.user
                                     elif c.initiative:
                                         dparent = c.initiative
+                                    elif c.user:
+                                        dparent = c.user
+
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
                             %>
                               <tr>

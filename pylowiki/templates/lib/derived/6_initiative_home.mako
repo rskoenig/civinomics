@@ -130,14 +130,14 @@
         <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
         </a>
         <div class="media-body">
-            <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a><span class="label label-inverse pull-right">${ltitle}</span>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
                     % if item['public'] == '0':
-                        Not yet public (${ltitle})
+                        Not yet public
                     % else:
-                        Public (${ltitle})
+                        Public
                     % endif
                 % endif
             % endif

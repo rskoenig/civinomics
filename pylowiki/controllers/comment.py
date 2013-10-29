@@ -25,16 +25,25 @@ import pylowiki.lib.helpers as h
 
 class CommentController(BaseController):
     
-    def __before__(self, action, workshopCode = None, workshopURL = None):
+    def __before__(self, action, workshopCode = None, workshopURL = None, urlCode = None):
         if action in ['permalink', 'showThread']:
-            c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
-            c.mainImage = mainImageLib.getMainImage(c.w)
-            if not c.w:
-                abort(404)
-            workshopLib.setWorkshopPrivs(c.w)
-            if c.w['public_private'] != 'public':
-                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+            if workshopCode is not None:
+                c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
+                c.mainImage = mainImageLib.getMainImage(c.w)
+                if not c.w:
                     abort(404)
+                workshopLib.setWorkshopPrivs(c.w)
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+            elif urlCode is not None:
+                thing = genericLib.getThing(urlCode)
+                if not thing:
+                    abort(404)
+                if thing.objType == 'initiative':
+                    c.initiative = thing
+                elif thing.objType == 'profile':
+                    c.user
     
     @h.login_required
     def commentAddHandler(self):
@@ -127,9 +136,9 @@ class CommentController(BaseController):
             c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_permaComment.bootstrap')
         
-    def permalinkPhoto(self, userCode, userURL, revisionCode):
+    def permalinkPhoto(self, urlCode, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
-        c.user = userLib.getUserByCode(userCode)
+        c.user = userLib.getUserByCode(urlCode)
         return render('/derived/6_permaPhotoComment.bootstrap')
         
     def permalinkInitiative(self, urlCode, url, revisionCode):

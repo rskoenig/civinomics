@@ -112,7 +112,12 @@
                             <% imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png" %>
                             <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
                         % elif itemType == 'initiative':
-                            <% imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png" %>
+                            <% 
+                                if 'directoryNum_photos' in item:
+                                    imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png"
+                                else:
+                                    imgSrc = "/images/slide/thumbnail/supDawg.thumbnail"
+                            %>
                             <td><a href="/initiative/${item['urlCode']}/${item['url']}/show"><img src="${imgSrc}">${item['title']}</a></td>
                         % endif
                     </tr>
