@@ -1299,7 +1299,7 @@
                   <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
                       <small>Click to show revisions</small>
                   </a>
-              </div>
+              </div><!- accordian-heading ->
               <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
                   <div class="accordion-inner no-border">
                       <table class="table table-hover table-condensed">
@@ -1324,9 +1324,10 @@
                               </tr>
                           % endfor
                       </table>
-                  </div>
-              </div>
-          </div>
+                  </div><!- accordian-inner ->
+              </div><!- accordian-body ->
+          </div><!- accordian-group ->
+       </div><!- accordian ->
     % endif
 </%def>
 
