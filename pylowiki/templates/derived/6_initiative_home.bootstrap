@@ -9,8 +9,8 @@
 <div class="spacer"></div>
 <div class="row-fluid well workshop-panel" >
     <div class="row-fluid" ng-app="civ">
-        ${lib_6.displayScopeFlag(c.initiative, 'med-flag')}
-        <div class="span2">
+        
+        <div class="span1">
             <%
                 if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
                     thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
@@ -20,7 +20,8 @@
             <img src="${thumbnail_url}">
         </div><!-- span2 -->
         <div class="span8">
-            <h2>Initiative: ${c.initiative['title']}</h2><br />
+            <h4>${lib_6.displayScopeFlag(c.initiative, 'small')} Initiative for the County of Santa Cruz</h4>
+            <h2>${c.initiative['title']}</h2><br>
             ${c.initiative['description']}
             <div class="spacer"></div>
             Estimated Cost: ${c.initiative['cost']}
