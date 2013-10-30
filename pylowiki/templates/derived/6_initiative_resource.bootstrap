@@ -41,6 +41,9 @@
                 <div class="span11">
                     ${ihelpers.showResource()}
                     ${itemHelpers.showItemOwner(c.thing)}
+                    <div class="spacer"></div>
+                    ${itemHelpers.moderationPanel(c.thing)}
+                    <div class="spacer"></div>
                     ${comments(c.thing, c.discussion)}
                 </div><!- span11 ->
             </div><!-- row-fluid -->

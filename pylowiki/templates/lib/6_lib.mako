@@ -480,21 +480,31 @@
     %>
 </%def>
 
-<%def name="resourceLink(r, w, **kwargs)">
+<%def name="resourceLink(r, p, **kwargs)">
    <%
+        
+        if 'initiativeCode' in p:
+            parentBase = 'initiative'
+            parentCode = p['initiativeCode']
+            parentURL = p['initiative_url']
+        else:
+            parentBase = 'workshop'
+            parentCode = p['urlCode']
+            parentURL = p['url']
+        
         if 'directLink' in kwargs:
             if kwargs['directLink'] == True and r['type'] == 'url':
                     resourceStr = 'href="%s' %(r['info'])
             else:
                 if 'noHref' in kwargs:
-                    resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
                 else:
-                    resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
         else:
             if 'noHref' in kwargs:
-                resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
             else:
-                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
         
         resourceStr += commentLinkAppender(**kwargs)
         if 'noHref' in kwargs:

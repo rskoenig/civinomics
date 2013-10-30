@@ -127,6 +127,19 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
+                        % elif message['extraInfo'] in ['commentOnResource']:
+                            <%
+                                comment = commentLib.getCommentByCode(message['commentCode'])
+                                resource = generic.getThing(comment['resourceCode'])
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5 class="media-heading">${lib_6.userLink(sender)} ${message['title']}</h5>
+                                    <p><a ${lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
+                                    <p>${message['text']}</p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
                         % elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
                             <%
                                 photoCode = message['photoCode']
@@ -176,6 +189,34 @@
                                     <p>It was ${action} because: ${reason}</p>
                                     <p>Your initiative:
                                         <a href="/initiative/${thing['urlCode']}/${thing['url']}/show" class="green green-hover">${title}</a>
+                                    </p>
+                                    % if 'text' in message:
+                                        <p>${message['text']}</p>
+                                    % endif
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+                        % elif message['extraInfo'] in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
+                            <%
+                                resourceCode = message['resourceCode']
+                                thing = generic.getThing(resourceCode)
+                                title = thing['title']
+                                if message['extraInfo'] in ['disabledInitiativeResource']:
+                                    event = eventLib.getEventsWithAction(message, 'disabled')
+                                elif message['extraInfo'] in ['enabledInitiativeResource']:
+                                    event = eventLib.getEventsWithAction(message, 'enabled')
+                                elif message['extraInfo'] in ['deletedInitiativeResource']:
+                                    event = eventLib.getEventsWithAction(message, 'deleted')
+                                
+                                action = event[0]['action']
+                                reason = event[0]['reason']
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p>It was ${action} because: ${reason}</p>
+                                    <p>Your initiative resource:
+                                        <a href="/initiative/${thing['initiativeCode']}/${thing['initiative_url']}/resource/${thing['urlCode']}/${thing['url']}" class="green green-hover">${title}</a>
                                     </p>
                                     % if 'text' in message:
                                         <p>${message['text']}</p>

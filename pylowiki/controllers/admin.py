@@ -269,14 +269,18 @@ class AdminController(BaseController):
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
-        if thing.objType.replace("Unpublished", "") == 'photo':
+        if 'workshopCode' in thing:
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        elif thing.objType.replace("Unpublished", "") == 'photo':
             extraInfo = action + 'Photo'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, photoCode = thing['urlCode'])
         elif thing.objType.replace("Unpublished", "") == 'initiative':
             extraInfo = action + 'Initiative'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, initiativeCode = thing['urlCode'])
-        else:
-            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        elif thing.objType.replace("Unpublished", "") == 'resource':
+            extraInfo = action + 'InitiativeResource'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, resourceCode = thing['urlCode'])
+
         eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
         message = generic.linkChildToParent(message, thing)
         dbHelpers.commit(message)
