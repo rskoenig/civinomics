@@ -15,6 +15,7 @@
    import pylowiki.lib.db.photo         as photoLib
    import pylowiki.lib.db.initiative    as initiativeLib
    import pylowiki.lib.db.follow        as followLib
+   import pylowiki.lib.utils         as utilsLib
    
    from hashlib import md5
    import logging, os
@@ -1480,4 +1481,22 @@
       </tr>
     % endfor
   </table>
+</%def>
+
+<%def name="displayScopeFlag(item, *args)">
+    <%
+        if item['scope'] != '':
+            scope = utilsLib.getPublicScope(item)
+            href = scope['href']
+            scopeFlag = scope['flag']
+        else:
+            scopeFlag = '/images/flags/generalFlag.gif'
+            href = '#'
+
+        flagSize = 'med-flag'
+        if 'small' in args:
+          flagSize = 'small-flag'
+
+    %>
+    <a href="${href}"><img class="thumbnail span ${flagSize}" src="${scopeFlag}"></a>
 </%def>
