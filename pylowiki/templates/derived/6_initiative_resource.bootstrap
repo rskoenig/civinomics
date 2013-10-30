@@ -41,10 +41,12 @@
                 <div class="span11">
                     ${ihelpers.showResource()}
                     ${itemHelpers.showItemOwner(c.thing)}
-                    <div class="spacer"></div>
-                    ${itemHelpers.moderationPanel(c.thing)}
-                    <div class="spacer"></div>
-                    ${comments(c.thing, c.discussion)}
+                    % if c.resource.objType != 'revision':
+                        <div class="spacer"></div>
+                        ${itemHelpers.moderationPanel(c.thing)}
+                        <div class="spacer"></div>
+                        ${comments(c.thing, c.discussion)}
+                    % endif
                 </div><!- span11 ->
             </div><!-- row-fluid -->
         % else:

@@ -117,6 +117,17 @@
         <div class="spacer"></div>
         ${link | n}
         ${m.html(c.thing['text']) | n}
+                % if c.revisions:
+            <div class="spacer"></div>
+            <ul class="unstyled">
+            % for revision in c.revisions:
+                <li>Revision: <a href="/initiative/${revision['initiativeCode']}/${revision['initiative_url']}/resource/${revision['urlCode']}/${revision['url']}">${revision.date}</a></li>
+            % endfor
+            </ul>
+        % endif
+        % if c.thing.objType == 'revision':
+            This is a revision dated ${c.thing.date}<br />
+        % endif
 </%def>
 
 <%def name="listInitiative(item, ltitle)">

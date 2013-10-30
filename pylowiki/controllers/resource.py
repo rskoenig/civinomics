@@ -98,13 +98,13 @@ class ResourceController(BaseController):
                 c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
 
         c.thing = resourceLib.getResourceByCode(resourceCode)
-        c.resource = c.thing
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
             if not c.thing:
                 c.thing = revisionLib.getRevisionByCode(resourceCode)
                 if not c.thing:
                     abort(404)
+        c.resource = c.thing
         # name/title for facebook sharing
         c.name = c.thing['title']
         if 'views' not in c.thing:
