@@ -95,7 +95,6 @@ class CommentController(BaseController):
             title = ' replied to a post you made'
             text = '(This is an automated message)'
             extraInfo = 'commentResponse'
-            log.info('after comment')
             if 'workshopCode' in thing:
                 title = ' replied to a post you made'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)

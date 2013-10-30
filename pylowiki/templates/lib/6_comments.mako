@@ -79,6 +79,7 @@
             </div>
         </div><!-- row-fluid -->
         % if thing.objType == 'idea' or thing.objType == 'initiative':
+            <% log.info("thing type is %s"%thing.objType) %>
             <div class="row-fluid">
                 <div class="span1">
                 </div>

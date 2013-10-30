@@ -1109,7 +1109,7 @@
 
         ctype = ""
         if thing.objType == 'comment':
-            if 'initiativeCode' in thing:
+            if 'initiativeCode' in thing and 'resourceCode' not in thing:
                 ctype = "initiative"
             elif 'ideaCode' in thing:
                 ctype = "idea"
@@ -1141,7 +1141,7 @@
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
-                    % if ctype != 'regular':
+                    % if ctype == 'initiative' or ctype == 'idea':
                         <div class="row-fluid">
                                 <label class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}

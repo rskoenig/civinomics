@@ -251,9 +251,13 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
-        if c.w:
+        if 'workshopCode' in c.thing:
             return redirect(utils.thingURL(c.w, c.thing))
-        elif c.user:
+        elif 'initiativeCode' in c.thing:
+            initiative = generic.getThing(c.thing['initiativeCode'])
+            return redirect(utils.thingURL(initiative, c.thing))
+        elif 'profileCode' in c.thing:
+            user = generic.getThing(c.thing['profileCode'])
             return redirect(utils.thingURL(c.user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
