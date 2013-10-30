@@ -205,6 +205,71 @@
    </ul>
 </%def>
 
+<%def name"showIdeasJson()">
+    <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
+        <table class="table plain">
+            <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount;objType='idea';">
+                    <div class="media-body" ng-controller="yesNoVoteCtrl">
+                        <div class="span10">
+                            <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
+                                {{idea.title}}
+                            </a></p>
+                            <ul class="horizontal-list iconListing">
+                                <li><i class="icon-check-sign"></i> Total votes ({{totalVotes}})</li>
+                                <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
+                                <li>
+                                    <i class="icon-cog"></i> From workshop: <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
+                                        {{idea.workshopTitle}}
+                                    </a>
+                                </li>
+                            </ul>
+                            <small>Tags:</small>
+                                <span ng-repeat="tag in idea.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                            <p>
+                                <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
+                            </p>
+                        </div>
+                        <div class="span2 voteBlock ideaListing" >
+                            % if 'user' in session:
+                                <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                    <div class="vote-icon yes-icon"></div>
+                                </a>
+                                <br>
+                                <br>
+                                <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                    <div class="vote-icon no-icon"></div>
+                                </a>
+                            % else:
+                                <a href="/login" class="yesVote">
+                                    <div class="vote-icon yes-icon"></div>
+                                </a>
+                                <br>
+                                <br>
+                                <a href="/login" class="noVote">
+                                    <div class="vote-icon no-icon"></div>
+                                </a>
+                            % endif
+                            <br>
+                        </div>
+                    </div><!-- media-body -->
+                </div><!-- search-listing -->
+            </td></tr>
+        </table>
+        <div class="centered" ng-show="ideas.length>pageSize">
+            <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                Prev
+            </button>
+            <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+            <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= ideas.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                Next
+            </button>
+            <div class="spacer"></div>
+        </div>
+    </div>
+</%def>
+
+
 <%def name="showIdeaListing(thing)">
    <%
       target = "_self"

@@ -45,6 +45,7 @@ import pylowiki.lib.sort as sort
 import simplejson as json
 import misaka as m
 import copy as copy
+from hashlib import md5
 
 from HTMLParser import HTMLParser
 
@@ -1039,6 +1040,79 @@ class WorkshopController(BaseController):
                             formatIdea['rated'] = "0"
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
+            else:
+                titleToColourMapping = workshopLib.getWorkshopTagColouring()
+                result = []
+                for idea in c.ideas:
+                    # We don't need to look up this idea's workshop anymore.
+                    # w = generic.getThing(idea['workshopCode'])
+                    # Therefore this line,
+                    if idea['workshop_searchable'] != u'1':
+                        continue
+                    # replaces these two:
+                    #if w['public_private'] != u'public':
+                    #    continue
+                    #elif w['published'] != u'1':
+                    #    continue
+                    entry = {}
+                    entry['title'] = idea['title']
+                    entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+                    rated = ratingLib.getRatingForThing(c.authuser, idea) 
+                    if rated:
+                        entry['rated'] = rated['amount']
+                    else:
+                        entry['rated'] = 0
+                    entry['urlCode'] = idea['urlCode']
+                    entry['url'] = idea['url']
+                    entry['addedAs'] = idea['addedAs']
+                    entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
+                    #: Note in the cases here where there are multiple tags assigned to one value,
+                    #: I'm adding the standard tags to the json object here as a start for us to 
+                    #: migrate the whole system over to using the same definitions everywhere.
+                    entry['workshopCode'] = idea['workshopCode']
+                    entry['workshopURL'] = entry['workshop_url'] = idea['workshop_url']
+                    entry['workshopTitle'] = entry['workshop_title'] = idea['workshop_title']
+                    #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
+                    u = userLib.getUserByID(idea.owner)
+                    entry['authorHash'] = md5(u['email']).hexdigest()
+
+                    entry['authorCode'] = entry['userCode'] = idea['userCode']
+                    entry['authorURL'] = entry['user_url'] = idea['user_url']
+                    entry['authorName'] = entry['user_name'] = idea['user_name']
+                    # dont need to look up the idea here
+                    #thing = ideaLib.getIdea(idea['urlCode'])
+                    #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+                    entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
+                    tagList = []
+                    for title in idea['workshop_category_tags'].split('|'):
+                        if title and title != '':
+                            tagMapping = {}
+                            tagMapping['title'] = title
+                            tagMapping['colour'] = titleToColourMapping[title]
+                            tagList.append(tagMapping)
+                    entry['tags'] = tagList
+                    result.append(entry)
+                if len(result) == 0:
+                    c.ideasJson = json.dumps({'statusCode':2})
+                c.ideasJson = json.dumps({'statusCode':0, 'result':result})
+                ### ### ### ### My original interpretation ### ### ### ###
+                #ideasJson = {}
+                #i = 0
+                #for idea in c.ideas:
+                #    ideaEntry = "idea" + str(i)
+                #    # so that we don't modify the original, we place this idea in a temporary variable
+                #    formatIdea = []
+                #    formatIdea = copy.copy(idea)
+                #    ideaHtml = m.html(formatIdea['text'], render_flags=m.HTML_SKIP_HTML)
+                #    formatIdea['text'] = ideaHtml
+                #    ideasJson[ideaEntry] = dict(formatIdea)
+                #    i = i + 1
+                #ideasResult = []
+                #ideasResult.append(ideasJson)
+                #statusCode = 0
+                #log.info("ideasResult workshop: %s"%json.dumps({'statusCode':statusCode, 'result':ideasResult}))
+                #c.ideasJson = json.dumps({'statusCode':statusCode, 'result':ideasResult})
+                ### ### ### ### ### ### ### ### ### ### ### ### ### ### ###
 
         if not iPhoneApp:
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')

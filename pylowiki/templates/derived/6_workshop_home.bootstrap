@@ -27,7 +27,8 @@
              % endif
              <% 
                 lib.return_to() 
-                listingHelpers.showIdeaListing("ideas")
+                
+                listingHelpers.showIdeasJson()
              %>
           </div><!--/.browse-->
       </div><!--/.section-wrapper-->
