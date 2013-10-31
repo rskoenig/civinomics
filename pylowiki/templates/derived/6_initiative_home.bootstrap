@@ -20,7 +20,7 @@
             <img src="${thumbnail_url}">
         </div><!-- span2 -->
         <div class="span8">
-            <h4>${lib_6.displayScopeFlag(c.initiative, 'small')} Initiative for the County of Santa Cruz</h4>
+            <h4> Initiative for the County of Santa Cruz</h4>
             <h2>${c.initiative['title']}</h2><br>
             ${c.initiative['description']}
             <div class="spacer"></div>
