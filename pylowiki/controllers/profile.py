@@ -503,6 +503,19 @@ class ProfileController(BaseController):
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['watching'].append(workshop)
                 
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        items['watching'].append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        items['watching'].append(i)
+
+
+                
         items['listening'] = []
         for workshop in c.listeningWorkshops:
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
