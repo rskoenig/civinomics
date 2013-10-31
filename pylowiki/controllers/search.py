@@ -705,6 +705,8 @@ class SearchController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+            entry['ups'] = int(idea['ups'])
+            entry['downs'] = int(idea['downs'])
             rated = ratingLib.getRatingForThing(c.authuser, idea) 
             if rated:
                 entry['rated'] = rated['amount']
@@ -841,6 +843,7 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = i['title']
+            entry['description'] = i['description']
             entry['tags'] = i['tags']
             scopeList = i['scope'].split('|')
             country = scopeList[2].replace("-", " ")
@@ -861,7 +864,8 @@ class SearchController(BaseController):
                 scopeString += ', Zip code of %s'%postalCode
             entry['location'] = scopeString
             entry['voteCount'] = int(i['ups']) + int(i['downs'])
-            entry['netVotes'] = int(i['ups']) - int(i['downs'])
+            entry['ups'] = int(i['ups'])
+            entry['downs'] = int(i['downs'])
             rated = ratingLib.getRatingForThing(c.authuser, i) 
             if rated:
                 entry['rated'] = rated['amount']

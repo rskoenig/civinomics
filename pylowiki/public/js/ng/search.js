@@ -376,6 +376,16 @@ app.filter('startFrom', function() {
 });
 
 function yesNoVoteCtrl($scope) {
+    // initialize the yes/no percentages
+    if ($scope.totalVotes == 0){
+        $scope.yesPercent = 0;
+        $scope.noPercent = 0;
+    }
+    else{
+        $scope.yesPercent = $scope.yesVotes / $scope.totalVotes * 100;
+        $scope.noPercent = $scope.noVotes / $scope.totalVotes * 100;
+    }
+    // set the appropriate voting icon
     if ($scope.rated == 0) {
         $scope.yesVoted = '';
         $scope.noVoted = '';
@@ -393,47 +403,81 @@ function yesNoVoteCtrl($scope) {
 
         if ($scope.yesVoted == '')
         {
+            // the user is voting yes from a neutral vote; the score goes up by one
             if ($scope.noVoted == ''){
                 $scope.totalVotes += 1;
                 $scope.netVotes += 1;
+                $scope.yesVotes += 1;
             }
-            // if the user had previously placed a no vote, the score goes up by two
+            // the user is switching a no vote to a yes vote; the score goes up by two
             else{
                 $scope.netVotes += 2;
+                $scope.yesVotes += 1;
+                $scope.noVotes -= 1;
             }
             $scope.yesVoted = 'voted';
             $scope.noVoted = '';
         }
 
+        // the user is undoing their yes vote
         else if ($scope.yesVoted = 'voted')
         {
             $scope.totalVotes -= 1;
             $scope.netVotes -= 1;
+            $scope.yesVotes -= 1;
             $scope.yesVoted = '';
+        }
+
+        // recalculate the yes/no percentages
+        if ($scope.totalVotes == 0){
+            $scope.yesPercent = 0;
+            $scope.noPercent = 0;
+        }
+        else{
+            $scope.yesPercent = $scope.yesVotes / $scope.totalVotes * 100;
+            $scope.noPercent = $scope.noVotes / $scope.totalVotes * 100;
         }
 
         $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/1');
     }
+
     $scope.updateNoVote = function(){
         if ($scope.noVoted == '')
         {
+            // the user is voting no from a neutral vote; the score goes down by one
             if ($scope.yesVoted == ''){
-                $scope.totalVotes += 1
-                $scope.netVotes -= 1
+                $scope.totalVotes += 1;
+                $scope.netVotes -= 1;
+                $scope.noVotes += 1;
             }
             // if the user had previously placed a yes vote, the score goes down by two
             else{
-                $scope.netVotes -= 2
+                $scope.netVotes -= 2;
+                $scope.yesVotes -= 1;
+                $scope.noVotes += 1;
             }
             $scope.noVoted = 'voted';
             $scope.yesVoted = ''
         }
+        // the user is undoing a no vote
         else if ($scope.noVoted = 'voted')
         {
             $scope.totalVotes -= 1
             $scope.netVotes += 1
+            $scope.noVotes -=1
             $scope.noVoted = '';
         }
+
+        // recalculate the yes/no percentages
+        if ($scope.totalVotes == 0){
+            $scope.yesPercent = 0;
+            $scope.noPercent = 0;
+        }
+        else{
+            $scope.yesPercent = $scope.yesVotes / $scope.totalVotes * 100;
+            $scope.noPercent = $scope.noVotes / $scope.totalVotes * 100;
+        }
+
         $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
     }
 };
