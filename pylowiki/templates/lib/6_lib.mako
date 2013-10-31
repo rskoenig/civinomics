@@ -14,7 +14,8 @@
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
    import pylowiki.lib.db.follow        as followLib
-   import pylowiki.lib.utils
+   import pylowiki.lib.db.initiative    as initiativeLib
+   import pylowiki.lib.utils            as utilsLib
    
    from hashlib import md5
    import logging, os
@@ -544,22 +545,31 @@
     %>
 </%def>
 
-<%def name="resourceLink(r, w, **kwargs)">
+<%def name="resourceLink(r, p, **kwargs)">
    <%
+        if 'initiativeCode' in p:
+            parentBase = 'initiative'
+            parentCode = p['initiativeCode']
+            parentURL = p['initiative_url']
+        else:
+            parentBase = 'workshop'
+            parentCode = p['urlCode']
+            parentURL = p['url']
+            
         if 'directLink' in kwargs:
             if kwargs['directLink'] == True and r['type'] == 'url':
                     resourceStr = 'href="%s' %(r['info'])
             else:
                 if 'noHref' in kwargs:
-                    resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
                 else:
-                    resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
         else:
             if 'noHref' in kwargs:
-                resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
             else:
-                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
-        
+                resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
+
         resourceStr += commentLinkAppender(**kwargs)
         if 'noHref' in kwargs:
             resourceStr += ''
@@ -588,6 +598,23 @@
                 return photoStr
    %>
    ${photoStr | n}
+</%def>
+
+<%def name="initiativeLink(initiative, dparent, **kwargs)">
+   <%
+        initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+
+        initiativeStr += commentLinkAppender(**kwargs)
+        if 'noHref' in kwargs:
+            initiativeStr += ''
+        else:
+            initiativeStr += '"'
+
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return initiativeStr
+   %>
+   ${initiativeStr | n}
 </%def>
 
 <%def name="ideaLink(i, w, **kwargs)">
@@ -678,6 +705,11 @@
                 if not photo:
                     return False
                 return photoLink(photo, dparent, **kwargs)
+            elif 'initiativeCode' in thing.keys():
+                initiative = initiativeLib.getInitiative(thing['initiativeCode'])
+                if not initiative:
+                    return False
+                return initiativeLink(initiative, dparent, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
@@ -1147,6 +1179,30 @@
         text = ''
         if 'text' in thing.keys():
             text = thing['text']
+            
+        ctype = ""
+        if thing.objType == 'comment':
+            if 'initiativeCode' in thing and 'resourceCode' not in thing:
+                ctype = "initiative"
+            elif 'ideaCode' in thing:
+                ctype = "idea"
+            else:
+                ctype = "reguar"
+
+            yesChecked = ""
+            noChecked = ""
+            neutralChecked = ""
+            
+            if ctype != "regular":
+                if 'commentRole' in thing:
+                    if thing['commentRole'] == 'yes':
+                        yesChecked = 'checked'
+                    elif thing['commentRole'] == 'no':
+                        noChecked = 'checked'
+                    else:
+                        neutralChecked = 'checked'
+                else:
+                    neutralChecked = 'checked'
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
@@ -1157,6 +1213,19 @@
                 <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
+                    % if ctype == 'initiative' or ctype == 'idea':
+                        <div class="row-fluid">
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="neutral" ${neutralChecked}> Neutral
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> I am against this ${ctype}
+                                </label>
+                        </div><!-- row-fluid -->
+                    % endif
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
