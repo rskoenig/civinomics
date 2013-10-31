@@ -14,6 +14,7 @@
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
    import pylowiki.lib.db.follow        as followLib
+   import pylowiki.lib.utils
    
    from hashlib import md5
    import logging, os

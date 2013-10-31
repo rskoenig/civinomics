@@ -281,6 +281,16 @@ class InitiativeController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.initiative)
             log.info("c.isFollowing is %s"%c.isFollowing)
+
+        scopeProps = utils.getPublicScope(c.initiative)
+        scopeName = scopeProps['name'].title()
+        scopeLevel = scopeProps['level'].title()
+        if scopeLevel == 'Earth':
+            c.scopeTitle = scopeName
+        else:
+            c.scopeTitle = scopeLevel + ' of ' + scopeName
+        c.scopeFlag = scopeProps['flag']
+        c.scopeHref = scopeProps['href']
             
         return render('/derived/6_initiative_home.bootstrap')
         

@@ -1913,7 +1913,7 @@ text-align: right;
 }
 
 .small-flag{
-  width:40px; 
+  width:40px !important; 
   height: 27px;
   padding: 0px;
   display: inline;

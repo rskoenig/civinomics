@@ -12,7 +12,12 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showAuthor(item)">
-    ${lib_6.userImage(item.owner, className="avatar med-avatar")} ${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span> from ${lib_6.userGeoLink(item.owner)}
+    <table>
+        <tr>
+            <td>${lib_6.userImage(item.owner, className="avatar med-avatar")}</td>
+            <td>${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span> from ${lib_6.userGeoLink(item.owner)}</td>
+        </tr>
+    </table>
 </%def>
 
 <%def name="showScope(item)">
@@ -329,6 +334,10 @@
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % endif
         % endif
+        % if c.revisions:
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
+        % endif
+
         % if userLib.isAdmin(c.authuser.id):
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
@@ -352,6 +361,15 @@
         % if userLib.isAdmin(c.authuser.id):
             ${lib_6.adminThing(thing)}
         % endif
+    % endif
+    % if c.revisions:
+        <div id="revisions" class="collapse">
+            <ul class="unstyled">
+            % for revision in c.revisions:
+                <li>Revision: <a href="/initiative/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>
+            % endfor
+            </ul>
+        </div>
     % endif
 </%def>
 
