@@ -56,6 +56,20 @@ def emailAlerts(thing):
             parent = generic.getThing(parentCode)
             thingURL = '%s/%s/%s/%s?comment=%s'%(workshopURL, parent.objType, parent['urlCode'], parent['url'], thing['urlCode'])
             log.info(thingURL)
+        elif thing.objType == 'flag':
+            if 'commentCode' in thing:
+                comment = generic.getThing(thing['commentCode'])
+                parentCodeList = [i for i in codes if i in comment.keys()]
+                parentCodeField = parentCodeList[0]
+                parentCode = comment[parentCodeField]
+                parent = generic.getThing(parentCode)
+                thingURL = '%s/%s/%s/%s?comment=%s'%(workshopURL, parent.objType, parent['urlCode'], parent['url'], comment['urlCode'])
+            else:
+                parentCodeList = [i for i in codes if i in thing.keys()]
+                parentCodeField = parentCodeList[0]
+                parentCode = thing[parentCodeField]
+                parent = generic.getThing(parentCode)
+                thingURL = '%s/%s/%s/%s'%(workshopURL, parent.objType, parent['urlCode'], parent['url'])
         else:
             thingURL = '%s/%s/%s/%s'%(workshopURL, thing.objType, thing['urlCode'], thing['url'])
                 

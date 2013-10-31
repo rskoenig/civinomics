@@ -23,7 +23,8 @@ function resourceController($scope, $http, $location, $timeout) {
         if(addResourceForm.$valid) {
             $scope.addResourceShow = true;
             $scope.addResourceResponse = "Submitting resource...";
-            var addURL = '/workshop/' + $scope.workshopCode + '/' + $scope.workshopURL + '/add/resource/handler';
+            var addURL = '/' + $scope.rType + '/' + $scope.parentCode + '/' + $scope.parentURL + '/add/resource/handler';
+
             var postData = {'title':$scope.title, 'link': $scope.link, 'text': $scope.text};
             $http.post(addURL, postData).success(function(data){
                 if(data.state == 'Error'){
@@ -33,7 +34,7 @@ function resourceController($scope, $http, $location, $timeout) {
                     var resourceCode = data.resourceCode;
                     var resourceURL = data.resourceURL;
 
-                    var newResourceURL = '/workshop/' + $scope.workshopCode + '/' + $scope.workshopURL + '/resource/' + resourceCode + '/' + resourceURL;
+                    var newResourceURL = '/' + $scope.rType + '/' + $scope.parentCode + '/' + $scope.parentURL + '/resource/' + resourceCode + '/' + resourceURL;
                     window.location = newResourceURL;
                 }
             });

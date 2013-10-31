@@ -22,12 +22,17 @@ def linkChildToParent(child, parent):
         log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
-    counters = ['idea', 'resource', 'discussion', 'photo', 'listener']
+    counters = ['idea', 'resource', 'discussion', 'photo', 'listener', 'initiative']
     key = '%s%s' %(parent.objType.replace("Unpublished", ""), 'Code')
     if key in child:
         # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
-
+    if parent.objType == 'initiative':
+        child['public'] = parent['public']
+        child['initiative_url'] = parent['url']
+    if 'initiativeCode' in parent and 'initiative_url' in parent:
+        child['initiativeCode'] = parent['initiativeCode']
+        child['initiative_url'] = parent['initiative_url']
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:
