@@ -29,6 +29,7 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.db.mainImage        as mainImageLib
+import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.images              as imageLib
 
 import time, datetime
@@ -208,6 +209,30 @@ class ProfileController(BaseController):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
+                    
+        # initiatives
+        c.initiatives = []
+        initiativeList = initiativeLib.getInitiativesForUser(c.user)
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiatives.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiatives.append(i)
+                        
+        c.initiativeBookmarks = []
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiativeBookmarks.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiativeBookmarks.append(i)
         if iPhoneApp:
             if displayWorkshops:
                 i = 0
