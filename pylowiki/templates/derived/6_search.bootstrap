@@ -427,13 +427,13 @@
                                         % if 'user' in session:
                                             <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
                                                 <div class="vote-icon yes-icon detail"></div>
-                                                <div class="ynScoreWrapper"><span class="noScore">{{yesPercent | number:0 }}%</span></div>
+                                                <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
                                             </a>
                                             <br>
                                             <br>
                                             <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
                                                 <div class="vote-icon no-icon detail"></div>
-                                                <div class="ynScoreWrapper"><span class="noScore">{{noPercent | number:0 }}%</span></div>
+                                                <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
                                             </a>
                                             <br>
                                             <div class="totalVotesWrapper">

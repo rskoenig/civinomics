@@ -389,14 +389,17 @@ function yesNoVoteCtrl($scope) {
     if ($scope.rated == 0) {
         $scope.yesVoted = '';
         $scope.noVoted = '';
+        $scope.display = 'hidden';
     }
     else if ($scope.rated == 1){
         $scope.yesVoted = 'voted';
         $scope.noVoted = '';
+        $scope.display = '';
     }
     else if ($scope.rated == -1){
         $scope.yesVoted = '';
         $scope.noVoted = 'voted';
+        $scope.display = '';
     }
 
     $scope.updateYesVote = function(){
@@ -408,6 +411,7 @@ function yesNoVoteCtrl($scope) {
                 $scope.totalVotes += 1;
                 $scope.netVotes += 1;
                 $scope.yesVotes += 1;
+                $scope.display = '';
             }
             // the user is switching a no vote to a yes vote; the score goes up by two
             else{
@@ -426,6 +430,7 @@ function yesNoVoteCtrl($scope) {
             $scope.netVotes -= 1;
             $scope.yesVotes -= 1;
             $scope.yesVoted = '';
+            $scope.display = 'hidden';
         }
 
         // recalculate the yes/no percentages
@@ -449,6 +454,7 @@ function yesNoVoteCtrl($scope) {
                 $scope.totalVotes += 1;
                 $scope.netVotes -= 1;
                 $scope.noVotes += 1;
+                $scope.display = '';
             }
             // if the user had previously placed a yes vote, the score goes down by two
             else{
@@ -466,6 +472,7 @@ function yesNoVoteCtrl($scope) {
             $scope.netVotes += 1
             $scope.noVotes -=1
             $scope.noVoted = '';
+            $scope.display = 'hidden';
         }
 
         // recalculate the yes/no percentages
