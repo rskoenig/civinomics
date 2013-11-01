@@ -515,12 +515,11 @@ class ProfileController(BaseController):
                         items['watching'].append(i)
 
 
-                
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
         items['listening'] = []
-        for workshop in c.listeningWorkshops:
-            if workshop['public_private'] == 'public' or (isUser or isAdmin):
-                items['listening'].append(workshop)
-                log.info("listening workshop")
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            items['listening'].append(lw)
                 
         items['facilitating'] = []
         for workshop in c.facilitatorWorkshops:
