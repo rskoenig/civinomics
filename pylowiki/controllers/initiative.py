@@ -75,12 +75,12 @@ class InitiativeController(BaseController):
         if 'initiativeTitle' in request.params:
             title = request.params['initiativeTitle']
         else:
-            log.init("no initiative title")
+            title = 'New Initiative'
             
         if 'initiativeDescription' in request.params:
             description = request.params['initiativeDescription']
         else:
-            log.init("no initiative description")
+            description = ''
         
         if 'initiativeScope' in request.params:
             level = request.params['initiativeScope']
@@ -100,11 +100,14 @@ class InitiativeController(BaseController):
                 
             scope = '|'.join(scopeList)
             log.info('userScope is %s'%userScope)
-                
+             
+        elif 'initiativeRegionScope' in request.params:
+            scope = request.params['initiativeRegionScope']
+            level = scope
         else:
             log.init("no initiative scope")
             
-        if title != '' and description != '' and scope != '':
+        if scope != '':
             c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
             c.level = level
         else:
