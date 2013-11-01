@@ -32,13 +32,13 @@
                 </li>
                 <li ng-class="showingInitiative.class">
                     <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
-                        <span class="pull-left"><i class="icon-bullhorn"></i> Initiatives </span>
+                        <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
                         <span class="pull-right">(${c.numInitiatives})</span>
                     </a>
                 </li>
                 <li ng-class="showingIdeas.class">
                     <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                        <span class="pull-left"><i class="icon-file-text"></i> Ideas </span>
+                        <span class="pull-left"><i class="icon-lightbulb"></i> Ideas </span>
                         <span class="pull-right">(${c.numIdeas})</span>
                     </a>
                 </li>
@@ -277,7 +277,7 @@
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
                         <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
-                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount;objType='idea';">
+                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span10">
                                         <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
@@ -319,6 +319,8 @@
                                             </a>
                                         % endif
                                         <br>
+                                        {{yesPercent | number:0 }}<br>
+                                        {{noPercent | number:0 }}
                                     </div>
                                 </div><!-- media-body -->
                             </div><!-- search-listing -->
@@ -337,7 +339,7 @@
                 </div>
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
                     <table class="table plain">
-                        <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
+                        <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span1 voteWrapper" >
@@ -396,47 +398,57 @@
                 </div>
                 <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show">
                     <table class="table plain">
-                        <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
-                            <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount;netVotes=initiative.netVotes;objType='initiative';">
+                        <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                            <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
-                                    <div class="span1 voteWrapper" >
+                                    <div class="span9">
+                                        <div class="span3">
+                                            <a href = '{{initiative.initiativeLink}}'>
+                                                <div style="height:80px; width:110px; background-image:url('{{initiative.thumbnail}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+                                            </a>
+                                        </div>
+                                        <div class="span9">
+                                            <h4 class="media-heading">
+                                                <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
+                                            </h4>
+                                            <p>{{initiative.description}}</p>
+                                            <small>
+                                                Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a><br />
+                                                For: {{initiative.location}}<br />
+                                                Tag: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                            </small>
+                                            <br />
+                                            <ul class="horizontal-list iconListing">
+                                                <li><i class="icon-comment"></i> Comments ({{initiative.numComments}})</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="span3 voteBlock ideaListing well" >
                                         % if 'user' in session:
-                                            <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
-                                                <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+                                            <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                                <div class="vote-icon yes-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="noScore">{{yesPercent | number:0 }}%</span></div>
                                             </a>
                                             <br>
-                                            <div class="centered chevron-score"> {{netVotes}}</div>
-                                            <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
-                                                <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+                                            <br>
+                                            <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                                <div class="vote-icon no-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="noScore">{{noPercent | number:0 }}%</span></div>
                                             </a>
+                                            <br>
+                                            <div class="totalVotesWrapper">
+                                                Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                            </div>
                                         % else:
-                                            <a href="/login" class="upVote">
-                                                <i class="icon-chevron-sign-up icon-2x"></i>
+                                            <a href="/login" class="yesVote">
+                                                <div class="vote-icon yes-icon"></div>
                                             </a>
                                             <br>
-                                            <div class="centered chevron-score"> {{netVotes}}</div>
-                                            <a href="/login" class="downVote">
-                                                <i class="icon-chevron-sign-down icon-2x"></i>
+                                            <br>
+                                            <a href="/login" class="noVote">
+                                                <div class="vote-icon no-icon"></div>
                                             </a>
                                         % endif
-                                        <br>
-                                    </div>
-                                    <div class="pull-left">
-                                        <a href="{{initiative.initiativeLink}}"><img src="{{initiative.thumbnail}}"></a>
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="media-heading">
-                                            <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
-                                        </h4>
-                                        <small>
-                                            Posted by: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a><br />
-                                            For: {{initiative.location}}<br />
-                                            Tag: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
-                                        </small>
-                                        <br />
-                                        <ul class="horizontal-list iconListing">
-                                            <li><i class="icon-comment"></i> Comments ({{initiative.numComments}})</li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
