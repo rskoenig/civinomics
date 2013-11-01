@@ -232,7 +232,7 @@
                                 event = event[0]
                                 
                                 # Mako was bugging out on me when I tried to do this with sets
-                                codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode']
+                                codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode', 'initiativeCode']
                                 thing = None
                                 for codeType in codeTypes:
                                     if codeType in message.keys():
@@ -240,7 +240,12 @@
                                         break
                                 if thing is None:
                                     continue
-                                workshop = generic.getThing(thing['workshopCode'])
+                                if 'workshopCode' in thing:
+                                    parent = generic.getThing(thing['workshopCode'])
+                                elif 'initiativeCode' in thing:
+                                    parent = generic.getThing(thing['initiativeCode'])
+                                elif 'resourceCode' in thing:
+                                    parent = generic.getThing(thing['resourceCode'])
                             %>
                             <div class="media">
                                 <div class="media-body">
@@ -248,9 +253,9 @@
                                     <p>It was ${event['action']} because: ${event['reason']}</p>
                                     <p>You posted:
                                     % if thing.objType == 'comment':
-                                        <a ${lib_6.thingLinkRouter(thing, workshop, embed=True, commentCode=thing['urlCode']) | n} class="green green-hover">${thing['data']}</a>
+                                        <a ${lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n} class="green green-hover">${thing['data']}</a>
                                     % else:
-                                        <a ${lib_6.thingLinkRouter(thing, workshop, embed=True) | n} class="green green-hover">${thing['title']}</a>
+                                        <a ${lib_6.thingLinkRouter(thing, parent, embed=True) | n} class="green green-hover">${thing['title']}</a>
                                     % endif
                                     </p>
                                     <p>${message['text']}</p>

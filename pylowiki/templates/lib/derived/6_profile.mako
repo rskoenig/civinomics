@@ -253,7 +253,7 @@
                                 thingLink = initiativeLink + "/resource/" + thing['urlCode'] + "/" + thing['url']
                             %>
                             ${showInitiative(initiative, imageOnly = True)}
-                            <a ${thingLink | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in initiative <a ${initiativeLink | n}> ${initiative['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
+                            <a href="${thingLink}"> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in initiative <a href="${initiativeLink}"> ${initiative['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
                         % endif
                         </td> </tr>
                         <% counter += 1 %>

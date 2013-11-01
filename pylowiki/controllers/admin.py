@@ -280,6 +280,9 @@ class AdminController(BaseController):
         elif thing.objType.replace("Unpublished", "") == 'resource':
             extraInfo = action + 'InitiativeResource'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, resourceCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'comment':
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user)
+
 
         eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
         message = generic.linkChildToParent(message, thing)
@@ -287,10 +290,11 @@ class AdminController(BaseController):
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
-                if thing.objType.replace("Unpublished", "") == 'photo' or thing.objType.replace("Unpublished", "") == 'initiative':
-                    flagLib.Flag(thing, user)
-                else:
+                if 'workshopCode' in thing:
                     flagLib.Flag(thing, user, workshop = c.w)
+                else:
+                    flagLib.Flag(thing, user)
+                    
                 
     def _adoptEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType)
