@@ -136,7 +136,7 @@ class InitiativeController(BaseController):
     def initiativeEditHandler(self):
         if 'title' in request.params:
             c.initiative['title'] = request.params['title']
-
+            c.initiative['url'] = utils.urlify(c.initiative['title'])
         if 'description' in request.params:
             c.initiative['description'] = request.params['description']
         if 'cost' in request.params:

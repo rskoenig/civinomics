@@ -836,7 +836,14 @@ class SearchController(BaseController):
             
         for initiative in initiatives:
             i = initiative
-            u = generic.getThing(i['userCode'])
+            # u = generic.getThing(i['userCode'])
+            # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
+            u = i.owner
+            if type(u) == type(1L):
+                u = userLib.getUserByID(u)
+            elif type(u) == type(u''):
+                u = userLib.getUserByCode(u)
+                
             if i['deleted'] != u'0' or i['disabled'] != u'0':
                 continue
             if i['public'] == '0':
