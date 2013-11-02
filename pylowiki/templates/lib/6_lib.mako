@@ -1564,3 +1564,6 @@
     % endfor
   </table>
 </%def>
+<%def name="formattingGuide()">
+  <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-picture"></i> <i class="icon-list"></i> View Formatting Guide</a></label>
+</%def>

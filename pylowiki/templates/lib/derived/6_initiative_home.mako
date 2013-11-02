@@ -273,11 +273,15 @@
             % endif
 
             <label for="title" class="control-label" required>Initiative Title:</label>
-            <input type="text" name="title" value="${c.initiative['title']}">
+            <input type="text" name="title" class="span6" value="${c.initiative['title']}">
             <label for="description" class="control-label" required>Short Description:</label>
-            <input type="text" name="description" value="${c.initiative['description']}">
+            <textarea rows="3" type="text" name="description" class="span6">${c.initiative['description']}</textarea>
             <label for="description" class="control-label" required>Estimated cost to complete this initiative:</label>
-            <input type="text" name="cost" value="${c.initiative['cost']}">
+            <div class="input-prepend input-append">
+              <span class="add-on">$</span>
+              <input type="text" name="cost" value="${c.initiative['cost']}">
+              <span class="add-on">.00</span>
+            </div>
             <label for="level" class="control-label" required>This initiative is for:</label>
             <select name="level" id="level">
             <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
@@ -299,11 +303,12 @@
                 <option value="${tag}" ${selected}/> ${tag}</option>
             % endfor
             </select>
-            <label for="data" class="control-label" required>Background Info: <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-            <textarea rows="10" id="data" name="data" class="span12">${c.initiative['background']}</textarea>
+            <label for="data" class="control-label" required>Background Info:</label>
+            ${lib_6.formattingGuide()}
+            <textarea rows="10" id="data" name="data" class="span8">${c.initiative['background']}</textarea>
             <div class="background-edit-wrapper">
             </div><!-- background-edit-wrapper -->
-            <div class="preview-information-wrapper" id="live_preview">
+            <div class="preview-information-wrapper initiative-info" id="live_preview">
 
             </div><!-- preview-information-wrapper -->
             <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>

@@ -15,6 +15,10 @@
    <script type="text/javascript">
       $(".followButton").tooltip();
    </script>
+   <script src="/js/bootstrap/bootstrap-affix.js"></script>
+    <script type="text/javascript"> 
+        $('#initiative-dashboard').affix({offset: 0})
+    </script> 
     <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
     <%
         if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
