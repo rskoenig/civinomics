@@ -193,58 +193,8 @@
     </div><!-- row-fluid -->
     <div class="spacer"></div>
     <div class="row-fluid">
-        <div class="span6">
-        <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
-            <fieldset>
-            % if c.complete and c.initiative['public'] == '0':
-                <label for="public" class="control-label">
-                All of the required information has been added to your initiative. When you are satisfied that it is ready, 
-                click on this checkbox to make your initiative public.</label>
-                Make Public: <input type="checkbox" name="public" value="yes"><div class="spacer"></div>
-            % elif c.initiative['public'] == '0':
-                You will be to make this initiative public when all of the required information has been filled out and a 
-                picture uploaded.
-            % endif
-
-            <label for="title" class="control-label" required>Initiative Title:</label>
-            <input type="text" name="title" value="${c.initiative['title']}">
-            <label for="description" class="control-label" required>Short Description:</label>
-            <input type="text" name="description" value="${c.initiative['description']}">
-            <label for="description" class="control-label" required>Estimated cost to complete this initiative:</label>
-            <input type="text" name="cost" value="${c.initiative['cost']}">
-            <label for="level" class="control-label" required>This initiative is for:</label>
-            <select name="level" id="level">
-            <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
-            <option value="city" ${citySelected}> My City</option>
-            <option value="county" ${countySelected}> My County</option>
-            </select>
-            </fieldset>
-            <label for="tag" class="control-label" required>Initiative category:</label>
-            <select name="tag" id="tag">
-            % if c.initiative['public'] == '0':
-                <option value="choose">Choose one</option>
-            % endif
-            % for tag in tagList:
-                <% 
-                    selected = ""
-                    if c.initiative['tags'] == tag:
-                        selected = "selected"
-                %>
-                <option value="${tag}" ${selected}/> ${tag}</option>
-            % endfor
-            </select>
-            <label for="data" class="control-label" required>Background Info: <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-            <textarea rows="10" id="data" name="data" class="span12">${c.initiative['background']}</textarea>
-            <div class="background-edit-wrapper">
-            </div><!-- background-edit-wrapper -->
-            <div class="preview-information-wrapper" id="live_preview">
-
-            </div><!-- preview-information-wrapper -->
-            <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>
-            </form>
-        </div><!-- span6 -->
-        <div class="span6">
-            <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
+        <div class="span12">
+             <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
                 <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
@@ -306,8 +256,59 @@
                                     </button>
                                 </td>
                             </tr>
-                            </tbody></table>
-                        </form>
+                        </tbody>
+                    </table>
+                </form>
+        <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
+            <fieldset>
+            % if c.complete and c.initiative['public'] == '0':
+                <label for="public" class="control-label">
+                All of the required information has been added to your initiative. When you are satisfied that it is ready, 
+                click on this checkbox to make your initiative public.</label>
+                Make Public: <input type="checkbox" name="public" value="yes"><div class="spacer"></div>
+            % elif c.initiative['public'] == '0':
+                You will be to make this initiative public when all of the required information has been filled out and a 
+                picture uploaded.
+            % endif
+
+            <label for="title" class="control-label" required>Initiative Title:</label>
+            <input type="text" name="title" value="${c.initiative['title']}">
+            <label for="description" class="control-label" required>Short Description:</label>
+            <input type="text" name="description" value="${c.initiative['description']}">
+            <label for="description" class="control-label" required>Estimated cost to complete this initiative:</label>
+            <input type="text" name="cost" value="${c.initiative['cost']}">
+            <label for="level" class="control-label" required>This initiative is for:</label>
+            <select name="level" id="level">
+            <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
+            <option value="city" ${citySelected}> My City</option>
+            <option value="county" ${countySelected}> My County</option>
+            </select>
+            </fieldset>
+            <label for="tag" class="control-label" required>Initiative category:</label>
+            <select name="tag" id="tag">
+            % if c.initiative['public'] == '0':
+                <option value="choose">Choose one</option>
+            % endif
+            % for tag in tagList:
+                <% 
+                    selected = ""
+                    if c.initiative['tags'] == tag:
+                        selected = "selected"
+                %>
+                <option value="${tag}" ${selected}/> ${tag}</option>
+            % endfor
+            </select>
+            <label for="data" class="control-label" required>Background Info: <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+            <textarea rows="10" id="data" name="data" class="span12">${c.initiative['background']}</textarea>
+            <div class="background-edit-wrapper">
+            </div><!-- background-edit-wrapper -->
+            <div class="preview-information-wrapper" id="live_preview">
+
+            </div><!-- preview-information-wrapper -->
+            <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>
+            </form>
+        </div><!-- span12 -->
+        <div class="span12">
             </div><!-- span6 -->
         </div><!-- row-fluid -->
 </%def>
