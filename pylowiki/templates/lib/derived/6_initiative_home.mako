@@ -304,7 +304,7 @@
             % endfor
             </select>
             <label for="data" class="control-label" required>Background Info:</label>
-            ${lib_6.formattingGuide()}
+            ${lib_6.formattingGuide()}<br>
             <textarea rows="10" id="data" name="data" class="span8">${c.initiative['background']}</textarea>
             <div class="background-edit-wrapper">
             </div><!-- background-edit-wrapper -->
