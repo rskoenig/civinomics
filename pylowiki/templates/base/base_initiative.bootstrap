@@ -5,7 +5,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-
+<div class="darkened-workshop"></div>
 <div class="row-fluid well workshop-panel" ng-app="civ">
     ${next.body()}
 </div><!-- row-fluid -->

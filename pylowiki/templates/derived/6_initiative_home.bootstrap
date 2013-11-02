@@ -25,6 +25,7 @@
                         <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag" src="${c.scopeFlag}"></a>
                         Initiative for the ${c.scopeTitle}
                     </h4>
+                    ${ihelpers.watchButton()}
                 </div>
             </div>
             <hr>
@@ -50,17 +51,25 @@
         </div>
         <div class="span4">
             % if c.initiative['public'] == '1':
-                <div class="section-wrapper overview">
-                    <div class="browse">
-                        <h4 class="section-header smaller">Vote on This Initiative</h4>
-                        <div class="row-fluid">
-                            <div class="span4 offset4">
-                                ${lib_6.yesNoVote(c.initiative, 'detail')}
-                            </div><!-- span4 -->
-                        </div><!-- row-fluid -->
-                        ${ihelpers.watchButton()}
-                    </div><!-- section-wrapper -->
-                </div><!-- browse -->
+                <div class="section-wrapper overview well initiative-well">
+                    <h4 class="section-header smaller">Vote</h4>
+                    <div class="row-fluid">
+                        <div class="span6 offset3">
+                            ${lib_6.yesNoVote(c.initiative, 'detail')}
+                        </div><!-- span4 -->
+                    </div><!-- row-fluid -->
+                    <hr>
+                    <h4 class="section-header smaller section-header-inner">Fund It</h4>
+                    <br>
+                    <div>$136,000 of ${c.initiative['cost']}</div>
+                    <div class="progress">
+                      <div class="bar bar-primary" style="width: 35%;"></div>
+                    </div>
+                    <small class="pull-right grey" style="margin-top: -20px;">43 funders</small><br>
+                    <div class="row-fluid centered">
+                        <button class="btn-large btn-success btn">Fund Initiative</button>
+                    </div>
+                 </div><!-- section-wrapper -->
             % endif
             <div class="section-wrapper overview">
                 <div class="browse">

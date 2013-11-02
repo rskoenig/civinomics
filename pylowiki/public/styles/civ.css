@@ -1095,6 +1095,11 @@ a.yesVote, a.noVote{
   background-color:whitesmoke;
 }
 
+.well.initiative-well{
+  background-color:whitesmoke;
+  padding-top: 10px;
+}
+
 .oddComment{
     background-color:whitesmoke;
 }
