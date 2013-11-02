@@ -1,0 +1,72 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="itemHelpers" file="/lib/derived/6_item_in_listing.mako" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+<% lib.return_to() %>
+
+<div class="spacer"></div>
+<div class="row-fluid">
+    <div class="span2">
+        <%
+            if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+            else:
+                thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail"
+        %>
+        <img src="${thumbnail_url}">
+    </div><!-- span2 -->
+    <div class="span8">
+        <h2>Initiative: <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">${c.initiative['title']}</a></h2><br />
+        ${c.initiative['description']}
+        <div class="spacer"></div>
+        Estimated Cost: ${c.initiative['cost']}
+    </div><!-- span8 -->
+    <div class="span2">
+    </div><!-- span2 -->
+</div><!-- row-fluid -->
+
+<div class="section-wrapper overview">
+    <div class="browse">
+
+
+        % if c.resource:
+            <h4 class="section-header smaller">Resource</h4>
+            <div class="row-fluid">
+                <div class="span1">
+                    ${lib_6.upDownVote(c.thing)}
+                </div><!- span1 -->
+                <div class="span11">
+                    ${ihelpers.showResource()}
+                    ${itemHelpers.showItemOwner(c.thing)}
+                    % if c.resource.objType != 'revision':
+                        <div class="spacer"></div>
+                        ${itemHelpers.moderationPanel(c.thing)}
+                        <div class="spacer"></div>
+                        ${comments(c.thing, c.discussion)}
+                    % endif
+                </div><!- span11 ->
+            </div><!-- row-fluid -->
+        % else:
+            <div class="row-fluid">
+                <div class="span12">
+                    <h4 class="section-header smaller">Add New Resource</h4>
+                    ${ihelpers.editResource()}
+                </div><!- span12 ->
+            </div><!-- row-fluid -->
+        % endif
+        
+    </div><!- browse ->
+</div><!- section-header ->
+
+
+<%def name="extraScripts2()">
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/ng/resource.js')}" type="text/javascript"></script>
+    % endif
+</%def>
