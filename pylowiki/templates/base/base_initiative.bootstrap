@@ -24,11 +24,11 @@
                     <img src="${thumbnail_url}">
                 </div><!-- span2 -->
                 <div class="span10">
+                    <h2 class="initiative-title">${c.initiative['title']}</h2>
                     <h4> 
                         <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag" src="${c.scopeFlag}"></a>
                         Initiative for the ${c.scopeTitle}
                     </h4>
-                    <h2>${c.initiative['title']}</h2><br>
                 </div>
             </div>
             <hr>
@@ -41,7 +41,7 @@
                         <h4 class="section-header smaller">Vote on This Initiative</h4>
                         <div class="row-fluid">
                             <div class="span4 offset4">
-                                ${lib_6.yesNoVote(c.initiative, detail)}
+                                ${lib_6.yesNoVote(c.initiative, 'detail')}
                             </div><!-- span4 -->
                         </div><!-- row-fluid -->
                         ${ihelpers.watchButton()}

@@ -2627,3 +2627,12 @@ margin-right: -13px;
 .btn-group.open .btn.dropdown-toggle{
   background-color: rgba(0,0,0,0);
 }
+
+.initiative-title{
+  text-transform:uppercase;
+}
+
+.initiative-info h2{
+  text-transform: uppercase;
+  font-size: 17.5px;
+}

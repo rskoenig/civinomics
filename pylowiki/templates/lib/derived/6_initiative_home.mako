@@ -44,8 +44,9 @@
 </%def>
 
 <%def name="showInfo()">
-    <h4>Introduction</h4>
-    ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
+    <div class="initiative-info">
+        ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
+    </div>
 </%def>
 
 <%def name="watchButton()">

@@ -233,3 +233,21 @@ _How have other groups or regions tackled this workshop topic already?_
 
 
 """
+
+initiativeFields = \
+"""
+Background
+-----
+
+_incl. reference to Current Legislation_
+
+
+Proposal
+-----
+
+
+Fiscal Effects
+-----
+
+
+"""
