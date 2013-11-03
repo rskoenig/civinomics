@@ -364,7 +364,6 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
-            c.flag = c.flag.lower()
             c.geoInfo = getPostalInfo(geoScope[9]) 
             if c.geoInfo:
                 c.population = c.geoInfo['Population']

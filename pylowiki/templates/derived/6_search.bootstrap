@@ -485,7 +485,7 @@
     % if c.searchType == 'region':
         <div class="span3 well search-side-bar">
             <div class="span12">
-                <img class="thumbnail flag" src="${c.flag}">
+                <img class="thumbnail tight flag" src="${c.flag}">
             </div>
             % if c.geoInfo:
                 <form class="form-horizontal stats">
