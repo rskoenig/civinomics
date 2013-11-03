@@ -166,6 +166,25 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         log.error(e)
         return False
 
+def searchInitiativeResources(keys, values, deleted = u'0', disabled = u'0', count = False):
+    try:
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'resource')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('initiative_public', '1')))\
+                .filter(Thing.data.any(reduce(sa.or_, m)))
+        if count:
+            return q.count()
+        return q.all()
+    except Exception as e:
+        log.error(e)
+        return False
+
 # setters
 def getEObj(link):
     eKey = config['app_conf']['embedly.key']

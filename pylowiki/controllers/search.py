@@ -523,13 +523,29 @@ class SearchController(BaseController):
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
+            ikeys = ['initiative_tags']
+            resources = resourceLib.searchResources(keys, values)
+            iresources = resourceLib.searchInitiativeResources(ikeys, values)
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            ikeys = ['initiative_scope']
+            resources = resourceLib.searchResources(keys, values)
+            iresources = resourceLib.searchInitiativeResources(ikeys, values)
         else:
             keys = ['title', 'text', 'link']
             values = [self.query, self.query, self.query]
-        resources = resourceLib.searchResources(keys, values)
+            resources = resourceLib.searchResources(keys, values)
+            iresources = resourceLib.searchInitiativeResources(keys, values)
+            log.info("searched initiative resources, length is %s"%len(iresources))
+            
+        if iresources:
+            if resources:
+                for r in resources:
+                    iresources.append(r)
+                    
+            resources = iresources
+            
         if not resources:
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
@@ -539,7 +555,9 @@ class SearchController(BaseController):
             # We don't need to look up this discussion's workshop anymore.
             # w = generic.getThing(r['workshopCode'])
             # Therefore this line,
-            if r['workshop_searchable'] != u'1':
+            if 'workshop_searchable' in r and r['workshop_searchable'] != u'1':
+                continue
+            if 'initiative_public' in r and r['initiative_public'] != u'1':
                 continue
             # replaces these two:
             #if w['public_private'] != u'public':
@@ -562,9 +580,20 @@ class SearchController(BaseController):
             #: Note in the cases here where there are multiple tags assigned to one value,
             #: I'm adding the standard tags to the json object here as a start for us to 
             #: migrate the whole system over to using the same definitions everywhere.
-            entry['workshopCode'] = r['workshopCode']
-            entry['workshopURL'] = entry['workshop_url'] = r['workshop_url']
-            entry['workshopTitle'] = entry['workshop_title'] = r['workshop_title']
+            if 'workshopCode' in r:
+                entry['parentCode'] = r['workshopCode']
+                entry['parentURL'] = entry['parent_url'] = r['workshop_url']
+                entry['parentTitle'] = entry['parent_title'] = r['workshop_title']
+                entry['parentType'] = 'workshop'
+                entry['parentIcon'] = 'icon-cog'
+            elif 'initiativeCode' in r:
+                log.info("got an initiative in search resources")
+                entry['parentCode'] = r['initiativeCode']
+                entry['parentURL'] = entry['initiative_url'] = r['initiative_url']
+                entry['parentTitle'] = entry['initiative_title'] = r['initiative_title']
+                entry['parentType'] = 'initiative'
+                entry['parentIcon'] = 'icon-file'
+                
             #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(r.owner)
             entry['authorHash'] = md5(u['email']).hexdigest()
@@ -577,7 +606,12 @@ class SearchController(BaseController):
             #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['date'] = r.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
-            for title in r['workshop_category_tags'].split('|'):
+            if 'workshopCode' in r:
+                catList = r['workshop_category_tags'].split('|')
+            elif 'initiativeCode' in r:
+                catList = []
+                catList.append(r['initiative_tags'])
+            for title in catList:
                 if title and title != '':
                     tagMapping = {}
                     tagMapping['title'] = title
