@@ -63,6 +63,10 @@ class InitiativeController(BaseController):
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
             c.resources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'])
+            disabledResources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'], '1')
+            if disabledResources:
+                for dr in disabledResources:
+                    c.resources.append(dr)
             
         userLib.setUserPrivs()
 

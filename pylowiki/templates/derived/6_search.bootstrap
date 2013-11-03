@@ -211,15 +211,15 @@
                                    <i class="icon-{{resource.type}} icon-3x"></i>
                                 </div>
                                 <div class="span11 media-body">
-                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                         {{resource.title}}
                                     </a></h4>
-                                    <a class="break" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
+                                    <a class="break" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
 
                                     <ul class="horizontal-list iconListing">
                                         <li>
-                                            <i class="icon-cog"></i> From workshop: <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
-                                                {{resource.workshopTitle}}
+                                            <i class="{{resource.parentIcon}}"></i> From {{resource.parentType}}: <a href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}">
+                                                {{resource.parentTitle}}
                                             </a>
                                         </li>
                                         <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
