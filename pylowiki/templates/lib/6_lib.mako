@@ -481,7 +481,7 @@
          user = userLib.getUserByCode(user)
   %>
   % if len(user['greetingMsg']) > 0:
-    , ${ellipsisIZE(user['greetingMsg'], 50)}
+    , ${ellipsisIZE(user['greetingMsg'], 35)}
   % endif
 </%def>
 
