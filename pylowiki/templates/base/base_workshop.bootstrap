@@ -1,0 +1,112 @@
+<%!
+    import pylowiki.lib.db.workshop         as workshopLib
+    import cgi
+%>
+
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="darkened-workshop"></div>
+<div class="spacer"></div>
+<div class="row-fluid" ng-app="civ">
+      <div class="row-fluid">
+        <div class="span10">
+          
+          <h1 class="workshop-title"> 
+            ${helpers.displayWorkshopFlag(c.w)}
+            <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
+              {{workshopTitle}}
+            </a>
+            ${helpers.showTags()}
+          </h1>
+        </div>
+        <div class="span2">
+          % if 'user' in session:
+            <div class="span12">
+              ${helpers.watchButton()}
+            </div>
+          % endif
+          <div class="span12" style="margin-top:10px; margin-left: 0px">
+            <span class = "share-icons contrast pull-right">
+              ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
+              ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+              % if c.w['public_private'] == 'public':
+                  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+             %endif
+            </span>
+          </div>
+        </div>  
+      </div> <!-- /.row-fluid -->
+      <div class="row-fluid">
+            <%
+              if c.listingType != '':
+                listingType = c.listingType
+              else:
+                listingType = None
+
+              linkHref = lib_6.workshopLink(c.w, embed = True, raw = True)
+              infoHref = linkHref + '/information'
+              forumHref = linkHref + '/discussion'
+              activityHref= linkHref + '/activity'
+              adminHref= linkHref + '/preferences'
+
+    
+              summaryActive = infoActive = activityActive = forumActive = adminActive = ''
+
+              if c.listingType == 'resources' or listingType == 'resource':
+                infoActive = 'active'
+              elif c.listingType == 'discussion':
+                forumActive = 'active'
+              elif c.listingType == 'ideas' or listingType == 'idea':
+                summaryActive = 'active'
+              elif c.listingType == 'activity':
+                activityActive = 'active'
+              elif c.adminPanel == True:
+                adminActive = 'active'
+            %>
+
+            <ul class="nav nav-tabs workshop-tabs">
+              <li class="${summaryActive}">
+                <a href="${linkHref | n}">Summary</a>
+              </li>
+              <li class="${infoActive}"><a href="${infoHref | n}">Info</a></li>
+              <li class="${forumActive}"><a href="${forumHref | n}">Forum</a></li>
+              <li class="${activityActive}"><a href="${activityHref | n}">Activity</a></li>
+              % if c.privs['admin'] or c.privs['facilitator']: 
+                <li class="pull-right ${adminActive}" style="margin-right: 10px;"><a href="${adminHref | n}">Admin</a></li>
+              % endif
+            </ul>
+            
+         </div>
+      <div class="span12 well workshop-panel" style="margin-left: 0px;">
+      ${next.body()}
+   </div><!-- /.span12.well -->
+</div><!--/.row-->
+
+<%def name="extraScripts()">
+   <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+   <%
+      if c.mainImage['pictureHash'] == 'supDawg':
+         backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+      elif 'format' in c.mainImage.keys():
+         backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+      else:
+         backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+   %>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+   <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+      $(".preferencesLink").tooltip();
+      $(".publishButton").tooltip();
+   </script>
+</%def>
+
+<%def name="headScripts2()">
+    ##<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/goals.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/share.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/resource.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+</%def>
