@@ -24,16 +24,16 @@
         </div>
         <div class="tabbable tabs-left civ-search">
             <ul class="nav nav-tabs">
-                <li ng-class="showingWorkshops.class">
-                    <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                        <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
-                        <span class="pull-right">(${c.numWorkshops})</span>
-                    </a>
-                </li>
                 <li ng-class="showingInitiatives.class">
                     <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
                         <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
                         <span class="pull-right">(${c.numInitiatives})</span>
+                    </a>
+                </li>
+                <li ng-class="showingWorkshops.class">
+                    <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
+                        <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
+                        <span class="pull-right">(${c.numWorkshops})</span>
                     </a>
                 </li>
                 <li ng-class="showingIdeas.class">
