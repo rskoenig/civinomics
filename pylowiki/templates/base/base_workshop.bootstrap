@@ -18,7 +18,7 @@
             <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
               {{workshopTitle}}
             </a>
-            ${helpers.showTags()}
+            ${lib_6.showTags(c.w)}
           </h1>
         </div>
         <div class="span2">

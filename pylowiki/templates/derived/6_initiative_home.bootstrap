@@ -23,6 +23,7 @@
                     <h4> 
                         <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
                         Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                        ${lib_6.showTags(c.initiative)}
                     </h4>
                     ${ihelpers.watchButton()}
                 </div>

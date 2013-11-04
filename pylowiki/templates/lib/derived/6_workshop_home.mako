@@ -452,19 +452,6 @@
     % endif
 </%def>
 
-<%def name="showTags()">
-    <% 
-        colors = workshopLib.getWorkshopTagColouring()
-        tagList = c.w['workshop_category_tags'].split('|')
-    %>
-    % for tag in tagList[0:3]:
-        % if tag and tag != '':
-            <% tagClass = colors[tag] %>
-            <span class="label workshop-tag ${tagClass}" >${tag}</span>
-        % endif
-    % endfor
-</%def>
-
 <%def name="showScope()">
     <%
         if c.w['public_private'] == 'public':
