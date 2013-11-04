@@ -668,8 +668,8 @@ class CorpController(BaseController):
         c.advisors.append(edolfoG)
         tomY={}
         tomY["name"]="Tom Yoritaka"
-        tomY['title']='Online Community Development, Social Media Marketing'
-        tomY['bio']="Currently Senior Director & GM, Services Platforms Group, Cisco Services. Global Head & Product Management GM of Cisco Services' Web software & community platforms, including the multi-award-winning online technical support community for IT professionals & related Web applications. Responsible for Cisco Services' Web software & platform strategy, related Web Services & open APIs, social media tools, mobile applications (iOS, Android), UE/UI & social analytics. Also responsible for Web community audience programs."
+        tomY['title']='Strategy, Products and Technology'
+        tomY['bio']= "Tom Yoritaka is a Senior Director & General Manager at Cisco Systems, Inc. He is also the Managing Director of Cisco Entrepreneurs in Residence - the company's innovation program for eary-stage start-ups. Prior to joining Cisco, he held various executive & leadershiop positions in Web techbology & product management at Yahoo! & Microsoft. He also worked as a strategy consultant at The Boston Consulting Group & McKenna Group. He holds a master's degree from Harvard University John F. Kennedy School of Government, an MBA from The University of Chicago Booth School of Business & an undergraduate degree from Northwestern University."
         tomY['photo']='tom_yoritaka.png'
         c.advisors.append(tomY)
         davidP={}
