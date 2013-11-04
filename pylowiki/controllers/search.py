@@ -892,17 +892,17 @@ class SearchController(BaseController):
             county = scopeList[6].replace("-", " ")
             city = scopeList[8].replace("-", " ")
             postalCode = scopeList[9]
-            scopeString = "%s, State of %s"%(country.title(), state.title())
-            if city == '0':
-                scopeString += ', County of %s'%county.title()
-            else:
-                scopeString += ', County of %s'%county.title()
-            if postalCode == '0':
-                scopeString += ', City of %s'%city.title()
-            else:
-                scopeString += ", City of %s"%city.title()
-            if postalCode != '0':
-                scopeString += ', Zip code of %s'%postalCode
+            scopeString = "Earth"
+            if country != '0':
+                scopeString = "%s" % country.title()
+                if state != '0':
+                    scopeString += ", State of %s" % state.title()
+                    if county != '0':
+                        scopeString += ", County of %s" % county.title()
+                        if city != '0':
+                            scopeString += ", City of %s" % city.title()
+                            if postalCode != '0':
+                                scopeString += ", Zip Code of %s"%postalCode
             entry['location'] = scopeString
             entry['voteCount'] = int(i['ups']) + int(i['downs'])
             entry['ups'] = int(i['ups'])
