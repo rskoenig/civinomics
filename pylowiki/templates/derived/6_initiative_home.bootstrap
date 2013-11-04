@@ -8,7 +8,7 @@
 
     <div class="row-fluid" style="position: relative;">
         <div class="span8 well workshop-panel">
-            <div class="row-fluid">
+            <div class="row-fluid" style="margin-top: 15px;">
                 <div class="span2" style="margin-top: 15px;">
                     <%
                         if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
@@ -36,6 +36,7 @@
                 <hr>
                 <h4 class="initiative-title">Authors</h4>
                     ${ihelpers.showAuthor(c.initiative)}
+                    <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
                 <hr>
                 ${ihelpers.showInfo()}
                 <hr>

@@ -1110,6 +1110,11 @@ a.yesVote, a.noVote{
   /*background-image: url('/images/wallpaperStar.jpg');*/
 }
 
+.initiative-well-wrapper{
+  position: fixed;
+  width: 362px;
+}
+
 .initiative-well-wrapper:before{
   content: ' ';
   position: absolute;
