@@ -659,32 +659,37 @@ class CorpController(BaseController):
         c.team.append(russellSterten)
 
         c.advisors=[]
-        kevinB={}
+        
         edolfoG={}
         edolfoG["name"]="Edolfo Garza-Licudine"
         edolfoG['title']='Technichal Advisor & Founder'
         edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
         edolfoG['photo']='edolfo_garzalicudine.jpg'
         c.advisors.append(edolfoG)
-        traciH={}
-        traciH["name"]="Traci Hukill"
-        traciH['title']='Public Relations'
-        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
-        traciH['photo']='traci_hukill.jpg'
-        c.advisors.append(traciH)
-        kevinB["name"]="Kevin Bell"
-        kevinB['title']='Energy and Sustainability'
-        kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
-        kevinB['photo']='kevin_bell.jpg'
-        c.advisors.append(kevinB)
+        tomY={}
+        tomY["name"]="Tom Yoritaka"
+        tomY['title']='Online Community Development, Social Media Marketing'
+        tomY['bio']="Currently Senior Director & GM, Services Platforms Group, Cisco Services. Global Head & Product Management GM of Cisco Services' Web software & community platforms, including the multi-award-winning online technical support community for IT professionals & related Web applications. Responsible for Cisco Services' Web software & platform strategy, related Web Services & open APIs, social media tools, mobile applications (iOS, Android), UE/UI & social analytics. Also responsible for Web community audience programs."
+        tomY['photo']='tom_yoritaka.png'
+        c.advisors.append(tomY)
         davidP={}
         davidP["name"]="David Pascal"
         davidP['title']='Fundraising'
         davidP['bio']="David was most recently President of the San Francisco Carbon Collaborative. Previously, David was the Lead Clean Technology and Green Business Advocate for the City and County of San Francisco, where his time was split between the Mayor's Office of Economic and Workforce Development and the City's Department of the Environment. In that capacity, David was responsible for attracting and retaining companies whose products and services address our greatest environmental challenges. Prior to entering the government sector, David worked as an environmental sustainability consultant, and served as the Director of Events and Entertainment for Al Gore's Alliance for Climate Protection."
         davidP['photo']='david_pascal.jpg'
         c.advisors.append(davidP)
-
-
+        traciH={}
+        traciH["name"]="Traci Hukill"
+        traciH['title']='Public Relations'
+        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
+        traciH['photo']='traci_hukill.jpg'
+        c.advisors.append(traciH)
+        kevinB={}
+        kevinB["name"]="Kevin Bell"
+        kevinB['title']='Energy and Sustainability'
+        kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
+        kevinB['photo']='kevin_bell.jpg'
+        c.advisors.append(kevinB)
 
         return render('/derived/corp_team.bootstrap')
 
@@ -694,7 +699,12 @@ class CorpController(BaseController):
 
         c.articles=[]
        
-
+        article={}
+        article['title']="Tech startup Civinomics to host civic engagement conference"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72'
+        article['date']='10.25.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
         article={}
         article['title']="KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
         article['link']='http://podcast.ethanbearman.com/ksco-presents-ethan-bearman-october-3-2013/'
