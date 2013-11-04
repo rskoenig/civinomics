@@ -30,7 +30,7 @@
                         <span class="pull-right">(${c.numWorkshops})</span>
                     </a>
                 </li>
-                <li ng-class="showingInitiative.class">
+                <li ng-class="showingInitiatives.class">
                     <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
                         <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
                         <span class="pull-right">(${c.numInitiatives})</span>
