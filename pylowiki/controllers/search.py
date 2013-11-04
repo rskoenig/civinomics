@@ -255,7 +255,8 @@ class SearchController(BaseController):
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
         c.geoString = self.query
         c.photos = photoLib.searchPhotos('scope', self.query)
-        c.numInitiatives = initiativeLib.searchInitiatives('scope', self.query, count = True)
+        iScope = '0' + self.query.replace('||', '|0|')
+        c.numInitiatives = initiativeLib.searchInitiatives(['scope'], [iScope], count = True)
         #log.info("search is %s"%c.searchQuery)
         entry = {}
         if c.photos:
