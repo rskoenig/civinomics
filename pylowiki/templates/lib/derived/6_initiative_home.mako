@@ -14,7 +14,7 @@
 <%def name="showAuthor(item)">
     <table>
         <tr>
-            <td>${lib_6.userImage(item.owner, className="avatar med-avatar")}</td>
+            <td>${lib_6.userImage(item.owner, className="avatar small-avatar")}</td>
             <td>${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span> from ${lib_6.userGeoLink(item.owner)}</td>
         </tr>
     </table>
