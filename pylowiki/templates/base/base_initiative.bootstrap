@@ -1,0 +1,116 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+<% lib.return_to() %>
+<div class="darkened-workshop"></div>
+<div class="row-fluid" ng-app="civ">
+    <div class="row-fluid" style="position: relative;">
+        <div class="span8 well workshop-panel">
+            <%
+                        if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                            photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                            thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                        else:
+                            photo_url = "/images/slide/thumbnail/supDawg.thumbnail"
+                    %>
+            <div class="row-fluid">
+                <div class="row-fluid">
+                    <div >
+                        <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h2>
+                        <h4> 
+                            <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
+                            Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                            ${lib_6.showTags(c.initiative)}
+                        </h4>
+                        <div style="position: absolute; bottom: 15px; right: 15px;">
+                            ${ihelpers.watchButton()}
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                <div class="thumbnail" style="margin-top: 10px; height: 300px; color: #fff; background-image:url('${photo_url}'); background-position: center center; background-size: cover;"></div>
+                </div>
+            </div>
+            <hr style="margin-top: 5px;">
+            ${next.body()}
+        </div>
+        <div class="span4" id="sidebar" style="position:relative;">
+            % if c.initiative['public'] == '1':
+                <div class="initiative-well-wrapper">
+                    <div class="section-wrapper overview well initiative-well">
+                        <h4 class="section-header smaller section-header">Vote</h4>
+                        <div class="row-fluid">
+                            <div class="span6 offset3">
+                                ${lib_6.yesNoVote(c.initiative, 'detail')}
+                            </div><!-- span4 -->
+                            <div class="span3"></div>
+                        </div>
+                        <h4 class="section-header smaller section-header-inner">Share It</h4>
+                        <span class = "share-icons center">
+                            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.initiative, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
+                            ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
+                            % if c.initiative['public'] == '1':
+                                <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                            %endif
+                        </span>
+                        <div class="row-fluid top-space">
+                                <div class="span10 offset2">
+                                    <label class="checkbox grey">
+                                      <input type="checkbox" name="shareVote" value="shareVote" checked> Show how I voted when sharing
+                                    </label>
+                                </div>
+                            </div>
+                        <h4 class="section-header smaller section-header-inner">Fund It</h4>
+                        <br>
+                        <div>$136,000 of ${c.initiative['cost']}</div>
+                        <div class="progress">
+                          <div class="bar bar-primary" style="width: 35%;"></div>
+                        </div>
+                        <small class="pull-right grey" style="margin-top: -20px;">43 funders</small><br>
+                        <div class="row-fluid centered">
+                            <button class="btn-large btn-success btn">Fund Initiative</button>
+                        </div>
+                     </div><!-- section-wrapper -->
+                </div>
+
+            % endif
+        </div><!-- span4 -->
+    </div><!-- row-fluid -->
+</div><!-- row-fluid -->
+
+<%def name="extraScripts()">
+   <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+   </script>
+   <script src="/js/bootstrap/bootstrap-affix.js"></script>
+    <script type="text/javascript"> 
+        $('#initiative-dashboard').affix({offset: 0})
+    </script> 
+    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+    <%
+        if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+            backgroundImage = '"/images/photos/%s/thumbnail/%s.png"' %(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+        else:
+            backgroundImage = '"/images/slide/orig/supDawg.orig"'
+    %>
+    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+    </script>
+</%def>
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+    % endif
+</%def>

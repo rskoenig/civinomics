@@ -1,0 +1,38 @@
+<%inherit file="/base/base_initiative.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<div class="spacer"></div>
+<div class="row-fluid" ng-controller="ProfileEditController">
+    <div class="span12 well workshopwell">
+        ${ihelpers.editInitiative()}
+    </div><!-- span12 -->
+</div>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/vendor/markdown.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/markdown_preview.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="extraScripts()">
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.ui.widget.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/load-image.min.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/canvas-to-blob.min.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-process.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-resize.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-validate.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-angular.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.Jcrop.js')}"></script>
+</%def>
+
+<%def name="extraStyles()">
+    <link rel="stylesheet" href="/styles/vendor/jquery.Jcrop.css">
+    <link rel="stylesheet" href="/styles/vendor/blueimp.css">
+</%def>

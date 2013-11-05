@@ -1,0 +1,33 @@
+<%inherit file="/base/base_initiative.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+<% lib.return_to() %>
+
+    <h4 class="initiative-title">Summary</h4>
+    ${c.initiative['description']}
+    <h4 class="initiative-title">Esitmate Net Fiscal Impact</h4>
+    ${c.initiative['cost']}
+    <hr>
+    <h4 class="initiative-title">Authors</h4>
+        ${ihelpers.showAuthor(c.initiative)}
+        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
+    <hr>
+    ${ihelpers.showInfo()}
+    <hr>
+    <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+    ${ihelpers.listResources()}
+
+    % if c.initiative.objType == 'revision':
+        This is a revision dated ${c.initiative.date}<br />
+    % else:
+        <br>
+        ${ihelpers.initiativeModerationPanel(c.initiative)}
+        % if c.initiative.objType != 'initiativeUnpublished':
+            <hr>
+            <h4 class="initiative-title">Arguements</h4>
+            ${comments(c.initiative, c.discussion)}
+        % endif
+    % endif
