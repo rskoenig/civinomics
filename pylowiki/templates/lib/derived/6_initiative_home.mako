@@ -7,6 +7,8 @@
     
     import logging
     log = logging.getLogger(__name__)
+
+    from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -178,16 +180,14 @@
 
     %>
     % if c.saveMessage and c.saveMessage != '':
-        <div class="spacer"></div>
         <div class="alert alert-success">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         ${c.saveMessage}
         </div>
     % endif
 
-    <div class="spacer"></div>
     <div class="row-fluid">
-        <span class="pull-left"><h4>Edit Initiative</h4></span>
+        <span class="initiative-title"><h4>Edit Initiative</h4></span>
         <span class="pull-right"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">View Initiative</a></span>
     </div><!-- row-fluid -->
     <div class="spacer"></div>
@@ -220,7 +220,7 @@
                         <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
                         <!-- The extended global progress information -->
                         <div class="progress-extended">&nbsp;</div>
-                    </div><!- span10 -->
+                    </div><!-- span10 -->
                 </div><!-- row-fluid -->
                 <!-- The table listing the files available for upload/download -->
                 <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
@@ -280,12 +280,136 @@
               <input type="text" name="cost" value="${c.initiative['cost']}">
               <span class="add-on">.00</span>
             </div>
-            <label for="level" class="control-label" required>This initiative is for:</label>
-            <select name="level" id="level">
-            <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
-            <option value="city" ${citySelected}> My City</option>
-            <option value="county" ${countySelected}> My County</option>
-            </select>
+
+            <hr>
+            <strong>Geographic Area</strong><br> 
+            <br>
+            <p>Specify the geographic area associated with your initiative:</p>
+
+            <!-- need to get the c.initiative['scope'] and update the selects accordingly -->
+            <% 
+                countrySelected = ""
+                countyMessage = ""
+                cityMessage = ""
+                postalMessage = ""
+                underPostalMessage = ""
+                if c.country!= "0":
+                    countrySelected = "selected"
+                    states = getStateList("united-states")
+                    countyMessage = "or leave blank if your initiative is specific to the entire country."
+                else:
+                    countrySelected = ""
+                endif
+            %>
+            <div class="row-fluid"><span id="planetSelect">
+                <div class="span1"></div><div class="span2">Planet:</div>
+                <div class="span9">
+                    <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
+                        <option value="0">Earth</option>
+                    </select>
+                </div><!-- span9 -->
+            </span><!-- countrySelect -->
+            </div><!-- row-fluid -->     
+            <div class="row-fluid"><span id="countrySelect">
+                <div class="span1"></div><div class="span2">Country:</div>
+                <div class="span9">
+                    <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+                        <option value="0">Select a country</option>
+                        <option value="United States" ${countrySelected}>United States</option>
+                    </select>
+                </div><!-- span9 -->
+            </span><!-- countrySelect -->
+            </div><!-- row-fluid -->
+            <div class="row-fluid"><span id="stateSelect">
+                % if c.country != "0":
+                    <div class="span1"></div><div class="span2">State:</div><div class="span9">
+                    <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+                    <option value="0">Select a state</option>
+                    % for state in states:
+                        % if state != 'District of Columbia':
+                            % if c.state == state['StateFullName']:
+                                <% stateSelected = "selected" %>
+                            % else:
+                                <% stateSelected = "" %>
+                            % endif
+                            <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
+                        % endif
+                    % endfor
+                    </select>
+                    </div><!-- span9 -->
+                % else:
+                    or leave blank if your initiative is specific to the entire planet.
+                % endif
+            </span></div><!-- row-fluid -->
+            <div class="row-fluid"><span id="countySelect">
+                % if c.state != "0":
+                    <% counties = getCountyList("united-states", c.state) %>
+                    <% cityMessage = "or leave blank if your initiative is specific to the entire state." %>
+                    <div class="span1"></div><div class="span2">County:</div><div class="span9">
+                    <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                        <option value="0">Select a county</option>
+                        % for county in counties:
+                            % if c.county == county['County'].title():
+                                <% countySelected = "selected" %>
+                            % else:
+                                <% countySelected = "" %>
+                            % endif
+                            <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
+                        % endfor
+                    </select>
+                    </div><!-- span9 -->
+                % else:
+                    <% cityMessage = "" %>
+                    ${countyMessage}
+                % endif
+            </span></div><!-- row -->
+            <div class="row-fluid"><span id="citySelect">
+                % if c.county != "0":
+                    <% cities = getCityList("united-states", c.state, c.county) %>
+                    <% postalMessage = "or leave blank if your initiative is specific to the entire county." %>
+                    <div class="span1"></div><div class="span2">City:</div><div class="span9">
+                    <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                    <option value="0">Select a city</option>
+                        % for city in cities:
+                            % if c.city == city['City'].title():
+                                <% citySelected = "selected" %>
+                            % else:
+                                <% citySelected = "" %>
+                            % endif
+                            <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                        % endfor
+                    </select>
+                    </div><!-- span9 -->
+                % else:
+                    <% postalMessage = "" %>
+                    ${cityMessage}
+                % endif
+                </span></div><!-- row-fluid -->
+            <div class="row-fluid"><span id="postalSelect">
+                % if c.city != "0":
+                    <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
+                    <% underPostalMessage = "or leave blank if your initiative is specific to the entire city." %>
+                    <div class="span1"></div><div class="span2">Postal Code:</div><div class="span9">
+                    <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
+                    <option value="0">Select a postal code</option>
+                        % for pCode in postalCodes:
+                            % if c.postal == str(pCode['ZipCode']):
+                                <% postalSelected = "selected" %>
+                            % else:
+                                <% postalSelected = "" %>
+                            % endif
+                            <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
+                        % endfor
+                    </select>
+                    </div><!-- span9 -->
+                % else:
+                    <% underPostalMessage = "" %>
+                    ${postalMessage}
+                % endif
+                </span></div><!-- row-fluid -->
+            <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
+            <br />
+
             </fieldset>
             <label for="tag" class="control-label" required>Initiative category:</label>
             <select name="tag" id="tag">
