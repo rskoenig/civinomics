@@ -6,80 +6,28 @@
 
 <% lib.return_to() %>
 
-    <div class="row-fluid" style="position: relative;">
-        <div class="span8 well workshop-panel">
-            <div class="row-fluid" style="margin-top: 15px;">
-                <div class="span2" style="margin-top: 15px;">
-                    <%
-                        if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                            thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                        else:
-                            thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail"
-                    %>
-                    <img src="${thumbnail_url}">
-                </div><!-- span2 -->
-                <div class="span10">
-                    <h2 class="initiative-title">${c.initiative['title']}</h2>
-                    <h4> 
-                        <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
-                        Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
-                        ${lib_6.showTags(c.initiative)}
-                    </h4>
-                    ${ihelpers.watchButton()}
-                </div>
-            </div>
-            <div class="">
-                <hr>
-                <h4 class="initiative-title">Summary</h4>
-                ${c.initiative['description']}
-                <h4 class="initiative-title">Esitmate Net Fiscal Impact</h4>
-                ${c.initiative['cost']}
-                <hr>
-                <h4 class="initiative-title">Authors</h4>
-                    ${ihelpers.showAuthor(c.initiative)}
-                    <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
-                <hr>
-                ${ihelpers.showInfo()}
-                <hr>
-                <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
-                ${ihelpers.listResources()}
+    <h4 class="initiative-title">Summary</h4>
+    ${c.initiative['description']}
+    <h4 class="initiative-title">Esitmate Net Fiscal Impact</h4>
+    ${c.initiative['cost']}
+    <hr>
+    <h4 class="initiative-title">Authors</h4>
+        ${ihelpers.showAuthor(c.initiative)}
+        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
+    <hr>
+    ${ihelpers.showInfo()}
+    <hr>
+    <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+    ${ihelpers.listResources()}
 
-                % if c.initiative.objType == 'revision':
-                    This is a revision dated ${c.initiative.date}<br />
-                % else:
-                    <br>
-                    ${ihelpers.initiativeModerationPanel(c.initiative)}
-                    % if c.initiative.objType != 'initiativeUnpublished':
-                        <hr>
-                        <h4 class="initiative-title">Arguements</h4>
-                        ${comments(c.initiative, c.discussion)}
-                    % endif
-                % endif
-            </div>
-        </div>
-        <div class="span4" id="sidebar" style="position:relative;">
-            % if c.initiative['public'] == '1':
-                <div class="initiative-well-wrapper">
-                    <div class="section-wrapper overview well initiative-well">
-                        <h4 class="section-header smaller">Vote</h4>
-                        <div class="row-fluid">
-                            <div class="span6 offset3">
-                                ${lib_6.yesNoVote(c.initiative, 'detail')}
-                            </div><!-- span4 -->
-                        </div><!-- row-fluid -->
-                        <h4 class="section-header smaller section-header-inner">Fund It</h4>
-                        <br>
-                        <div>$136,000 of ${c.initiative['cost']}</div>
-                        <div class="progress">
-                          <div class="bar bar-primary" style="width: 35%;"></div>
-                        </div>
-                        <small class="pull-right grey" style="margin-top: -20px;">43 funders</small><br>
-                        <div class="row-fluid centered">
-                            <button class="btn-large btn-success btn">Fund Initiative</button>
-                        </div>
-                     </div><!-- section-wrapper -->
-                </div>
-
-            % endif
-        </div><!-- span4 -->
-    </div><!-- row-fluid -->
+    % if c.initiative.objType == 'revision':
+        This is a revision dated ${c.initiative.date}<br />
+    % else:
+        <br>
+        ${ihelpers.initiativeModerationPanel(c.initiative)}
+        % if c.initiative.objType != 'initiativeUnpublished':
+            <hr>
+            <h4 class="initiative-title">Arguements</h4>
+            ${comments(c.initiative, c.discussion)}
+        % endif
+    % endif

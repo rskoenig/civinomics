@@ -91,19 +91,18 @@
             endif
             rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
         %>
-        <div class="row-fluid">
-        <div class="span2">
-            <div class="spacer"></div>
-                <i class="${iconClass} icon-3x"></i>
-            </div><!- span2 ->
-            <div class="span10">
-                <h4 class="media-heading general">
+        <div class="row-fluid bottom-space-med">
+            <div class="span1">
+                    <i class="${iconClass} icon-3x"></i>
+            </div><!-- span1 -->
+            <div class="span11">
+                <h5 class="no-bottom no-top">
                 <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
                 ${itemTitle | n}
-                </h4>
+                </h5>
                 <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
-            </div><!- span10 ->
-        </div><!- row-fluid ->
+            </div><!-- span10 -->
+        </div><!-- row-fluid -->
     % endfor
 </%def>
 
@@ -119,8 +118,7 @@
                     if c.thing['type'] == 'photo':
                         link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
         %>
-        ${title | n}<br>
-        <div class="spacer"></div>
+        <h4>${title | n}</h4>
         ${link | n}
         ${m.html(c.thing['text']) | n}
                 % if c.revisions:

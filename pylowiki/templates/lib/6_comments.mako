@@ -75,7 +75,7 @@
                 ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
             </div>
             <div class="span11">
-                <textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea>
+                <textarea rows="2" class="span12" name="comment-textarea" placeholder="Add a comment..."></textarea>
             </div>
         </div><!-- row-fluid -->
         % if thing.objType == 'idea' or thing.objType == 'initiative':
@@ -93,13 +93,15 @@
                     <label class="radio inline">
                         <input type=radio name="commentRole" value="no"> Argument Against
                     </label>
+                    <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button></span>
                 </div><!- span11 -->
             </div><!-- row-fluid -->
-        % endif
+        % else:
         <div class="row-fluid">
             <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
             <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
         </div><!-- row-fluid -->
+        % endif
     </form>
 </%def>
 

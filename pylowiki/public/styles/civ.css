@@ -1271,6 +1271,10 @@ ul.listeners > li {
     padding-bottom:0;
     margin-bottom:0;
 }
+.no-top{
+    padding-top:0;
+    margin-top:0;
+}
 .gallery .noShow{
     display:none;
 }
@@ -1781,6 +1785,9 @@ li.thumbnail-gallery{
 
 .bottom-space{
   margin-bottom: 4px;
+}
+.bottom-space-med{
+  margin-bottom: 20px;
 }
 
 .left-indent{
@@ -2693,3 +2700,9 @@ margin-right: -13px;
   background-color: #e0e0e0;
 }
 
+a.no-highlight{
+  color:#333333;
+}
+a.no-highlight:hover{
+    color: #D15D00;
+}

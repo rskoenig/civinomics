@@ -43,10 +43,22 @@ class InitiativeController(BaseController):
                             
                 if c.initiative:
                     c.user = userLib.getUserByCode(c.initiative['userCode'])
+
+                    scopeProps = utils.getPublicScope(c.initiative)
+                    scopeName = scopeProps['name'].title()
+                    scopeLevel = scopeProps['level'].title()
+                    if scopeLevel == 'Earth':
+                        c.scopeTitle = scopeName
+                    else:
+                        c.scopeTitle = scopeLevel + ' of ' + scopeName
+                    c.scopeFlag = scopeProps['flag']
+                    c.scopeHref = scopeProps['href']
+
                 else:
                   abort(404)  
         else:
             abort(404)
+
         
         # only the author or an admin can edit  
         if action in adminList:
@@ -288,16 +300,6 @@ class InitiativeController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.initiative)
             log.info("c.isFollowing is %s"%c.isFollowing)
-
-        scopeProps = utils.getPublicScope(c.initiative)
-        scopeName = scopeProps['name'].title()
-        scopeLevel = scopeProps['level'].title()
-        if scopeLevel == 'Earth':
-            c.scopeTitle = scopeName
-        else:
-            c.scopeTitle = scopeLevel + ' of ' + scopeName
-        c.scopeFlag = scopeProps['flag']
-        c.scopeHref = scopeProps['href']
         
         if c.initiative.objType == 'initiative' and 'views' not in c.initiative:
             c.initiative['views'] = u'0'

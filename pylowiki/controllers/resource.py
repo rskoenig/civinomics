@@ -97,6 +97,19 @@ class ResourceController(BaseController):
             else:
                 c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
 
+
+        if c.initiative:
+            scopeProps = utils.getPublicScope(c.initiative)
+            scopeName = scopeProps['name'].title()
+            scopeLevel = scopeProps['level'].title()
+            if scopeLevel == 'Earth':
+                c.scopeTitle = scopeName
+            else:
+                c.scopeTitle = scopeLevel + ' of ' + scopeName
+            c.scopeFlag = scopeProps['flag']
+            c.scopeHref = scopeProps['href']
+
+
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
