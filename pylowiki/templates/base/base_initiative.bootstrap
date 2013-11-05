@@ -36,12 +36,20 @@
             % if c.initiative['public'] == '1':
                 <div class="initiative-well-wrapper">
                     <div class="section-wrapper overview well initiative-well">
-                        <h4 class="section-header smaller">Vote</h4>
+                        <h4 class="section-header smaller section-header">Vote</h4>
                         <div class="row-fluid">
                             <div class="span6 offset3">
                                 ${lib_6.yesNoVote(c.initiative, 'detail')}
                             </div><!-- span4 -->
                         </div><!-- row-fluid -->
+                        <h4 class="section-header smaller section-header-inner">Share It</h4>
+                        <span class = "share-icons center">
+                            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.initiative, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
+                            ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
+                            % if c.initiative['public'] == '1':
+                                <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                            %endif
+                        </span>
                         <h4 class="section-header smaller section-header-inner">Fund It</h4>
                         <br>
                         <div>$136,000 of ${c.initiative['cost']}</div>

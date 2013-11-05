@@ -133,7 +133,7 @@
                       link: "${link}",
                       picture: "${picture}",
                       caption: "",
-                      description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                      description: 'Civinomics is an Open Intelligence platform. Collaborate to create solutions.'
                     },
                     function(response) 
                     {

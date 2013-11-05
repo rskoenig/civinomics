@@ -1100,17 +1100,6 @@ a.yesVote, a.noVote{
   background-color:whitesmoke;
 }
 
-.well.initiative-well{
-  padding-top: 10px;
-  background-color:whitesmoke;
-  position: relative;
-  -webkit-border-radius: 5px 5px 0 0;
-  -moz-border-radius: 5px 5px 0 0;
-  border-radius: 5px 5px 0 0;
-  border-bottom-width: 0;
-  /*background-image: url('/images/wallpaperStar.jpg');*/
-}
-
 .initiative-well-wrapper{
   position: fixed;
   width: 362px;
@@ -1122,11 +1111,23 @@ a.yesVote, a.noVote{
   width: 0;
   height: 0;
   left: 0px;
-  top: 95.2%;
+  top: 96%;
   border: 100px solid;
   border-left-width: 181px;
   border-right-width: 181px;
   border-color: whitesmoke transparent transparent transparent;
+}
+
+.well.initiative-well{
+  margin-top: 0;
+  padding-top: 10px;
+  background-color:whitesmoke;
+  position: relative;
+  -webkit-border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  border-bottom-width: 0;
+  /*background-image: url('/images/wallpaperStar.jpg');*/
 }
 
 .oddComment{
