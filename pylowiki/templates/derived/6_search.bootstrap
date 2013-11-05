@@ -7,68 +7,71 @@
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="span9">
+    <div class="span2">
+        % if c.searchType == 'region':
+            <img class="thumbnail tight flag pull-left" src="${c.flag}">
+        % endif
+        <ul class="nav nav-tabs tabs-left civ-search">
+            <li ng-class="showingInitiatives.class">
+                <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
+                    <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
+                    <span class="pull-right">(${c.numInitiatives})</span>
+                </a>
+            </li>
+            <li ng-class="showingWorkshops.class">
+                <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
+                    <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
+                    <span class="pull-right">(${c.numWorkshops})</span>
+                </a>
+            </li>
+            <li ng-class="showingIdeas.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
+                    <span class="pull-left"><i class="icon-lightbulb"></i> Ideas </span>
+                    <span class="pull-right">(${c.numIdeas})</span>
+                </a>
+            </li>
+            % if c.numUsers != 0 or c.searchType == "name":
+                <li ng-class="showingPeople.class">
+                    <a href="#users" class="green green-hover" ng-click="searchPeople()">
+                        <span class="pull-left"><i class="icon-user"></i> People </span>
+                        <span class="pull-right">(${c.numUsers})</span>
+                    </a>
+                </li>
+            % endif
+            <li ng-class="showingResources.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
+                    <span class="pull-left"><i class="icon-link"></i> Resources </span>
+                    <span class="pull-right">(${c.numResources})</span>
+                </a>
+            </li>
+            <li ng-class="showingDiscussions.class">
+                <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
+                    <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
+                    <span class="pull-right">(${c.numDiscussions})</span>
+                </a>
+            </li>
+            <li ng-class="showingPhotos.class">
+                <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
+                    <span class="pull-left"><i class="icon-picture"></i> Photos </span>
+                    <span class="pull-right">(${c.numPhotos})</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="span7">
         <div class="row-fluid">
-            <div class="span7">
-                % if c.searchType == 'region':
-                    <span class="lead geoName">${c.searchQuery}</span>
-                % elif c.searchType == 'tag':
-                    <span class="lead geoName">${c.searchQuery}</span>
-                % else:
-                    <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
-                % endif
-                
-            </div><!-- span6 -->
-            <div class="span5">
-            </div><!-- span5 -->
+            <h2 class="lead geoName">
+            % if c.searchType == 'region':
+                ${c.searchQuery}
+            % elif c.searchType == 'tag':
+                ${c.searchQuery}
+            % else:
+                <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
+            % endif
+            </h2>
         </div>
-        <div class="tabbable tabs-left civ-search">
-            <ul class="nav nav-tabs">
-                <li ng-class="showingInitiatives.class">
-                    <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
-                        <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
-                        <span class="pull-right">(${c.numInitiatives})</span>
-                    </a>
-                </li>
-                <li ng-class="showingWorkshops.class">
-                    <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                        <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
-                        <span class="pull-right">(${c.numWorkshops})</span>
-                    </a>
-                </li>
-                <li ng-class="showingIdeas.class">
-                    <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                        <span class="pull-left"><i class="icon-lightbulb"></i> Ideas </span>
-                        <span class="pull-right">(${c.numIdeas})</span>
-                    </a>
-                </li>
-                % if c.numUsers != 0 or c.searchType == "name":
-                    <li ng-class="showingPeople.class">
-                        <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                            <span class="pull-left"><i class="icon-user"></i> People </span>
-                            <span class="pull-right">(${c.numUsers})</span>
-                        </a>
-                    </li>
-                % endif
-                <li ng-class="showingResources.class">
-                    <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
-                        <span class="pull-left"><i class="icon-link"></i> Resources </span>
-                        <span class="pull-right">(${c.numResources})</span>
-                    </a>
-                </li>
-                <li ng-class="showingDiscussions.class">
-                    <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
-                        <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
-                        <span class="pull-right">(${c.numDiscussions})</span>
-                    </a>
-                </li>
-                <li ng-class="showingPhotos.class">
-                    <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
-                        <span class="pull-left"><i class="icon-picture"></i> Photos </span>
-                        <span class="pull-right">(${c.numPhotos})</span>
-                    </a>
-                </li>
-            </ul>
+        <div class="tabbable">
             <div class="tab-content">
                 <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
                     <form class="form-search inline">
@@ -479,9 +482,6 @@
     </div><!-- span9 -->
     % if c.searchType == 'region':
         <div class="span3 well search-side-bar">
-            <div class="span12">
-                <img class="thumbnail tight flag" src="${c.flag}">
-            </div>
             % if c.geoInfo:
                 <form class="form-horizontal stats">
                     <div class="control-group">
