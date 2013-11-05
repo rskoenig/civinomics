@@ -451,7 +451,7 @@ form.addGoal{
    border-top: 1px solid #ddd;
 }
 .section-header.smaller.section-header-inner{
-    margin-top:15px;
+    margin-top:10px;
 }
 
 .section-header.smaller .listed-item-title i{
@@ -1111,7 +1111,7 @@ a.yesVote, a.noVote{
   width: 0;
   height: 0;
   left: 0px;
-  top: 96%;
+  top: 96.2%;
   border: 100px solid;
   border-left-width: 181px;
   border-right-width: 181px;

@@ -41,7 +41,8 @@
                             <div class="span6 offset3">
                                 ${lib_6.yesNoVote(c.initiative, 'detail')}
                             </div><!-- span4 -->
-                        </div><!-- row-fluid -->
+                            <div class="span3"></div>
+                        </div>
                         <h4 class="section-header smaller section-header-inner">Share It</h4>
                         <span class = "share-icons center">
                             ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.initiative, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
@@ -50,6 +51,13 @@
                                 <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
                             %endif
                         </span>
+                        <div class="row-fluid top-space">
+                                <div class="span10 offset2">
+                                    <label class="checkbox grey">
+                                      <input type="checkbox" name="shareVote" value="shareVote" checked> Show how I voted when sharing
+                                    </label>
+                                </div>
+                            </div>
                         <h4 class="section-header smaller section-header-inner">Fund It</h4>
                         <br>
                         <div>$136,000 of ${c.initiative['cost']}</div>
