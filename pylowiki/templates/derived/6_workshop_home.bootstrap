@@ -15,21 +15,22 @@
 
       <div class="section-wrapper" id="vote">
           <div class="browse">
-             <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
-             </h4>
-             % if numIdeas == '0' and c.w['allowIdeas'] == '1':
-                <div class="alert alert-info">
-                There are no ideas here yet. Be the first to add one!
-                </div>
-             % else:  
-                <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.<strong class="orange"> Vote to display ratings.</strong></p>
-                <hr class="list-header">
-             % endif
-             <% 
-                lib.return_to() 
-                
-                listingHelpers.showIdeasJson()
-             %>
+              <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
+              </h4>
+              % if numIdeas == '0' and c.w['allowIdeas'] == '1':
+                  <div class="alert alert-info">
+                  There are no ideas here yet. Be the first to add one!
+                  </div>
+              % else:  
+                  <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.<strong class="orange"> Vote to display ratings.</strong></p>
+                  <hr class="list-header">
+              % endif
+              <% 
+                  lib.return_to() 
+                  #listingHelpers.showIdeaListing("ideas")
+                  #listingHelpers.showIdeasJson()
+                  listingHelpers.showSearch()
+              %>
           </div><!--/.browse-->
       </div><!--/.section-wrapper-->
 
@@ -41,7 +42,7 @@
             Goals
             </h4>
             ${helpers.showGoals(c.goals)}
-            ${helpers.whoListening()}
+            <!-- $ - { - helpers.whoListening - () - } -->
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
       <div class="section-wrapper overview">
@@ -100,5 +101,7 @@
 </%def>
 
 <%def name="headScripts()">
-    <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
+    <!--<script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/searchIdeas.js')}"></script>
 </%def>

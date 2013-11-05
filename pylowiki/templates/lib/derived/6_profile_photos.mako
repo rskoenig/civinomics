@@ -191,7 +191,7 @@
                     <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
                     <!-- The extended global progress information -->
                     <div class="progress-extended">&nbsp;</div>
-                </div><!- span10 -->
+                </div><!-- span10 -->
             </div><!-- row-fluid -->
             <!-- The table listing the files available for upload/download -->
             <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">

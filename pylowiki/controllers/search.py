@@ -660,8 +660,10 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchIdeas(self):
-        #: this function returns json data so we set the headers appropriately
-        response.headers['Content-type'] = 'application/json'
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        if iPhoneApp:
+            #: this function returns json data so we set the headers appropriately
+            response.headers['Content-type'] = 'application/json'
         log.info("controllers/search: searchIdeas")
         if self.noQuery:
             log.info("searchIdeas return no query")
@@ -688,6 +690,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for idea in ideas:
+            log.info("packing idea")
             # We don't need to look up this idea's workshop anymore.
             # w = generic.getThing(idea['workshopCode'])
             # Therefore this line,
