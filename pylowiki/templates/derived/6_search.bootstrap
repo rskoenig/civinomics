@@ -427,14 +427,9 @@
                                             </h4>
                                             <p>{{initiative.description}}</p>
                                             <small>
-                                                Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a><br />
-                                                For: {{initiative.location}}<br />
-                                                Tag: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                                For: {{initiative.location}}<br>
+                                                Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
                                             </small>
-                                            <br />
-                                            <ul class="horizontal-list iconListing">
-                                                <li><i class="icon-comment"></i> Comments ({{initiative.numComments}})</li>
-                                            </ul>
                                         </div>
                                     </div>
                                     <div class="span3 voteBlock ideaListing well" >

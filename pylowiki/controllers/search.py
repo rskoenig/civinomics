@@ -884,7 +884,9 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = i['title']
-            entry['description'] = i['description']
+            entry['description'] = i['description'][:200]
+            if len(entry['description']) >= 200:
+                entry['description'] += "..."
             entry['tags'] = i['tags']
             scopeList = i['scope'].split('|')
             country = scopeList[2].replace("-", " ")
