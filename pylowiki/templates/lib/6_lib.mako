@@ -85,6 +85,10 @@
         if c.w:
             if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
                 shareOk = True
+        if c.initiative:
+            #c.initiative['public'] == '1':
+            #    shareOk = True
+            shareOk = True
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -608,16 +612,17 @@
    ${photoStr | n}
 </%def>
 
-<%def name="initiativeLink(initiative, dparent, **kwargs)">
+<%def name="initiativeLink(initiative, **kwargs)">
    <%
-        initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
-
+        if 'noHref' in kwargs:
+            initiativeStr = '/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+        else:
+            initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
         initiativeStr += commentLinkAppender(**kwargs)
         if 'noHref' in kwargs:
             initiativeStr += ''
         else:
             initiativeStr += '"'
-
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return initiativeStr
