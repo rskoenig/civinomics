@@ -202,6 +202,7 @@ class InitiativeController(BaseController):
         return render('/derived/6_initiative_edit.bootstrap')
         
     def initiativeEditHandler(self):
+        iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
         if 'title' in request.params:
             c.initiative['title'] = request.params['title']
             c.initiative['url'] = utils.urlify(c.initiative['title'])
@@ -277,6 +278,9 @@ class InitiativeController(BaseController):
         if 'public' in request.params and request.params['public'] == 'yes':
             if c.complete and c.initiative['public'] == '0':
                 c.initiative['public'] = '1'
+                
+        for key in iKeys:
+            initiativeLib.updateInitiativeChildren(c.initiative, key)
                 
         dbHelpers.commit(c.initiative)
         revisionLib.Revision(c.authuser, c.initiative)
