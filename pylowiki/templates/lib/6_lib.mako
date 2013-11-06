@@ -130,14 +130,48 @@
             }(document));
 
             function shareOnWall() {
+                // grab checked value of checkbox IF it's on the page. add to description.
+                //var shareChecked = $("#shareVote").is(':checked');
+                var shareChecked = false;
+                var shareText = '';
+                var inputElements = document.getElementsByTagName('input');
+                for(var i=0; inputElements[i]; ++i){
+                    console.log("input class: "+inputElements[i].className)
+                    if(inputElements[i].className=="shareVote" && inputElements[i].checked) {
+                        shareChecked = true;
+                        break;
+                    }
+                }
+                console.log("made here")
+                if (shareChecked) {
+                    console.log("share checked")
+                    // get the value of the voted button
+                    var linkElements = document.getElementsByTagName('a');
+                    for(var j=0; linkElements[j]; ++j){
+                        console.log(linkElements[j].className)
+                        if(linkElements[j].className=="voted yesVote" || linkElements[j].className=="yesVote voted"){
+                            console.log("HURRAH!")
+                            shareText = 'I am in favor of this.';
+                            break;
+                        } else if(linkElements[j].className=="noVote voted" || linkElements[j].className=="voted noVote") {
+                            console.log("SHARAH!")
+                            shareText = 'I am not in favor of this.';
+                            break;
+                        } else {
+                            shareText = 'I have not voted on this yet.';
+                            break;
+                        }
+                    }
+                }
+
                 FB.ui(
                     {
                       method: 'feed',
                       name: "${name}",
                       link: "${link}",
                       picture: "${picture}",
-                      caption: "",
-                      description: 'Civinomics is an Open Intelligence platform. Collaborate to create solutions.'
+                      caption: shareText,
+                      description: "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
                     },
                     function(response) 
                     {
@@ -156,6 +190,7 @@
             function messageFriends() {
                 // there is no callback for messages sent
                 // we can simply record that the message dialog was brought up
+                // grab checked value of checkbox IF it's on the page. add to description.
                 var thingCode = "${thingCode}";
                 var link = "${link}"
                 var userCode = fbAuthId;
@@ -167,7 +202,6 @@
                       name: "${name}",
                       link: "${link}",
                       picture: "${picture}"
-                      //caption: "",
                       //description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
                     }
                 );

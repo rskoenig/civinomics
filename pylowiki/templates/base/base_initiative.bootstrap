@@ -13,6 +13,20 @@
                 <div class="row-fluid">
                     <div >
                         <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h2>
+                        <span class = "share-icons center">
+                            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True)}
+                            ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
+                            % if c.initiative['public'] == '1':
+                                <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                            %endif
+                        </span>
+                        <div class="row-fluid top-space">
+                            <div class="span10 offset2">
+                                <label class="checkbox grey">
+                                  <input type="checkbox" class="shareVote" name="shareVote" value="shareVote"> Show how I voted when sharing
+                                </label>
+                            </div>
+                        </div>
                         <h4> 
                             <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
                             Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
@@ -42,20 +56,7 @@
                             <div class="span3"></div>
                         </div>
                         <h4 class="section-header smaller section-header-inner">Share It</h4>
-                        <span class = "share-icons center">
-                            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True)}
-                            ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
-                            % if c.initiative['public'] == '1':
-                                <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-                            %endif
-                        </span>
-                        <div class="row-fluid top-space">
-                                <div class="span10 offset2">
-                                    <label class="checkbox grey">
-                                      <input type="checkbox" name="shareVote" value="shareVote" checked> Show how I voted when sharing
-                                    </label>
-                                </div>
-                            </div>
+                        
                         <h4 class="section-header smaller section-header-inner">Fund It</h4>
                         <br>
                         <div>$136,000 of ${c.initiative['cost']}</div>
