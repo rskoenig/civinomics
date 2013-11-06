@@ -122,7 +122,7 @@ class InitiativeController(BaseController):
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        if c.initiative['scope'] != '':
+        if c.initiative and c.initiative['scope'] != '':
             geoTags = c.initiative['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
@@ -165,7 +165,7 @@ class InitiativeController(BaseController):
         # assemble the scope string 
         # ||country||state||county||city|zip
         geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-        if c.initiative['scope'] != geoTagString:
+        if c.initiative and c.initiative['scope'] != geoTagString:
             c.initiative['scope'] = geoTagString
             # need to come back and add 'updateInitiativeChildren' when it is written
             #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
@@ -175,16 +175,12 @@ class InitiativeController(BaseController):
         # set the initiative scope coming from a geoSearch page
         if 'initiativeRegionScope' in request.params:
             scope = request.params['initiativeRegionScope']
-            level = scope
         else:
-            log.init("no initiative scope")
+            scope = '0|0|0|0|0|0|0|0|0|0'
             
-        if scope != '':
-            c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
-            c.level = level
-        else:
-            log.info("missing initiaitve info: title is %s description is %s and scope is %s"%(title, description, scope))
-            abort(404)
+        #create the initiative
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+        c.level = scope
             
         c.saveMessage = "Changes saved."
             

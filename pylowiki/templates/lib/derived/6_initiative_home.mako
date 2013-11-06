@@ -170,7 +170,11 @@
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
-        scopeList = c.initiative['scope'].split('|')
+        if c.initiative:
+            iScope = c.initiative['scope']
+        else:
+            iScope = "0|0|0|0|0|0|0|0|0|0"
+        scopeList = iScope.split('|')
         if scopeList[9] == '0' and scopeList[8] == '0':
             countySelected = "selected"
         elif scopeList[9] == '0' and scopeList[8] != '0':
