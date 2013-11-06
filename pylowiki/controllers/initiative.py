@@ -265,8 +265,12 @@ class InitiativeController(BaseController):
 
         if 'tag' in request.params:
             c.initiative['tags'] = request.params['tag']
-        if 'data' in request.params:
-            c.initiative['background'] = request.params['data']
+        if 'background' in request.params:
+            c.initiative['background'] = request.params['background']
+        if 'proposal' in request.params:
+            c.initiative['proposal'] = request.params['proposal']
+        if 'funding_summary' in request.params:
+            c.initiative['funding_summary'] = request.params['funding_summary']
         
         if 'public' in request.params:
             log.info("got %s"%request.params['public'])

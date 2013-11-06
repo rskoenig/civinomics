@@ -9,13 +9,17 @@
     <h4 class="initiative-title">Summary</h4>
     ${c.initiative['description']}
     <h4 class="initiative-title">Esitmate Net Fiscal Impact</h4>
+    ${c.initiative['funding_summary']}
     ${c.initiative['cost']}
     <hr>
     <h4 class="initiative-title">Authors</h4>
         ${ihelpers.showAuthor(c.initiative)}
         <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
     <hr>
-    ${ihelpers.showInfo()}
+    <h4 class="initiative-title">Background</h4>
+    ${ihelpers.showBackground()}
+    <h4 class="initiative-title">Proposal</h4>
+    ${ihelpers.showProposal()}
     <hr>
     <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
     ${ihelpers.listResources()}

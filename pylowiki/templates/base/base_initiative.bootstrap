@@ -43,7 +43,7 @@
                             </div><!-- span4 -->
                             <div class="span3"></div>
                         </div>
-                        <h4 class="section-header smaller section-header-inner">Share It</h4>
+                        <h4 class="section-header smaller section-header-inner">Help by Sharing</h4>
                         <span class = "share-icons center">
                             ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.initiative, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
                             ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
