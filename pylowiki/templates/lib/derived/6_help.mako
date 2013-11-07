@@ -261,8 +261,8 @@
                 <strong>Will everyone be able to see how I voted?</strong>
                 <p>No. Your votes are always confidential. However, if you try to vote twice on an item it won’t work. </p>
                 <strong>Is it free?</strong>
-                <p>Joining Civinomics is free. Voting, commenting and adding resources—all free. Creating a personal workshop (visible only to people you invite; limited to 20 people)—that’s free too.</p>
-                <p>Creating a public workshop or a private workshop for more than 20 people costs $100 per month. </p>
+                <p>Yes. Civinomics is free. Voting, commenting and adding resources—all free. Even creating a workshop is free, be it public or private.</p>
+                <p>When you create a public workshop you are able to set the geographic scope of that workshop, in order to specify the area it applies to. A private workshop will only be visible to you and anyone you invite to participate in it.</p>
                 <strong>Can anyone join?</strong>
                 <p>Yes! The more the merrier, and the better for the civic process.</p>
             </div>
