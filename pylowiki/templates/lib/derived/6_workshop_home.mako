@@ -5,6 +5,7 @@
    from pylowiki.lib.db.generic import getThing
    import pylowiki.lib.db.activity as activityLib
    import pylowiki.lib.db.facilitator   as facilitatorLib
+   import pylowiki.lib.utils   as utils
    import misaka as m
    
    import logging

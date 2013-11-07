@@ -14,28 +14,30 @@
           ###
           ### Carousel
           ###
-
-          <li class="span wrap-voting-group featured-listing">
-            <div id="myCarousel" class="carousel slide">
-              <ol class="carousel-indicators">
-                  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                  <li data-target="#myCarousel" data-slide-to="1"></li>
-                  <li data-target="#myCarousel" data-slide-to="2"></li>
-                </ol>
-                <!-- Carousel items -->
-                <div class="carousel-inner">
-                  <div class="active item">
-                    ${helpers.homeSlide(c.newWorkshops[0])}
+          
+            <li class="span wrap-voting-group featured-listing">
+              % if len(c.newWorkshops) <= 3:
+              <div id="myCarousel" class="carousel slide">
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                  </ol>
+                  <!-- Carousel items -->
+                  <div class="carousel-inner">
+                    <div class="active item">
+                      ${helpers.homeSlide(c.newWorkshops[0])}
+                    </div>
+                    <div class="item">
+                      ${helpers.homeSlide(c.newWorkshops[1])}
+                    </div>
+                    <div class="item">
+                      ${helpers.homeSlide(c.newWorkshops[2])}
+                    </div>
                   </div>
-                  <div class="item">
-                    ${helpers.homeSlide(c.newWorkshops[1])}
-                  </div>
-                  <div class="item">
-                    ${helpers.homeSlide(c.newWorkshops[2])}
-                  </div>
-                </div>
-              </div><!-- #myCarousel -->
-            </li>
+                </div><!-- #myCarousel -->
+                % endif
+              </li>
 
             ###
             ### My Places

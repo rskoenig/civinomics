@@ -103,69 +103,7 @@
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
     </div> <!-- /.navbar -->
-    <div id="search" class="collapse search_drawer">
-        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
-        <div class="spacer"></div>
-        <div class="row-fluid searches">
-            <div class="span3 offset1">
-                <form class="form-search" action="/search">
-                    <input type="text" class="search-query" placeholder="Search by Word" id="search-input" name="searchQuery">
-                </form>
-            </div>
-            <div class="span4">
-                <script type="text/javascript">
-                    function searchTags() {
-                        var sIndex = document.getElementById('categoryTag').selectedIndex;
-                        var sValue = document.getElementById('categoryTag').options[sIndex].value;
-                        if(sValue) {
-                            var queryURL = sValue;
-                            window.location = queryURL;
-                        }
-                    }
-                </script>
-                <form action="/searchTags" class="form-search search-type" method="POST">
-                    <i class="icon-tag icon-light"></i>
-                    <select name="categoryTag" id="categoryTag" onChange="searchTags();">
-                    <option value="0">Search by Category</option>
-                    % for tag in tagCategories:
-                        <% tagValue = tag.replace(" ", "_") %>
-                        <option value="/searchTags/${tagValue}/">${tag.title()}</option>
-                    % endfor
-                    </select>
-                </form>
-            </div><!-- span3 -->
-            <div class="span4">
-                <form  action="/searchGeo"  class="form-search search-type" method="POST">
-                    <div class="row-fluid"><span id="searchCountrySelect">
-                        <i class="icon-globe icon-light"></i>
-                        <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
-                        <option value="0" selected>Search by Region</option>
-                        <option value="United States">United States</option>
-                        </span><!-- searchCountrySelect -->
-                        </select>
-                        <span id="searchCountryButton"></span>
-                    </div><!-- row-fluid -->
-                    <div class="row-fluid">
-                        <span id="searchStateSelect"></span>
-                        <span id="searchStateButton"></span>
-                    </div>
-                    <div class="row-fluid">
-                        <span id="searchCountySelect"></span>
-                        <span id="searchCountyButton"></span>
-                    </div>
-                    <div class="row-fluid">
-                        <span id="searchCitySelect"></span>
-                        <span id="searchCityButton"></span>
-                    </div>
-                    <div class="row-fluid">
-                        <span id="searchPostalSelect"></span>
-                        <span id="searchPostalButton">
-                    </div>
-                </form>
-            </div><!-- span5 -->
-        </div><!-- row-fluid -->
-        <div class="spacer"></div>
-    </div><!-- collapse -->
+    ${search_drawer()}
 </%def>
 
 <%def name="splashNavbar()">
@@ -173,15 +111,30 @@
       <div class="navbar-inner civinomics-splash">
         <div class="container-fluid">
             <a class="brand" href="/"><div class="logo logo-lg" id="civinomicsLogo"></div></a>
+            <ul class="nav">
+                <li class="small-hidden">
+                    <form class="form-search" action="/search">
+                        <input type="text" class="span2 search-query splash" placeholder="Search" name="searchQuery">
+                    </form>
+                </li>
+            </ul>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
                 <li class="nav-item"><a href="http://civinomics.wordpress.com/" target="_blank" class="nav-item">Blog</a></li>
-                <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
+                <li class="nav-item">
+                    <form id="sign_in" action="/loginHandler" class="form-inline login" method="post">
+                        <input type="email" class="input-small" name="email" id="email" placeholder="Email" required>
+                        <input type="password" class="input-small" name="password" id="password" placeholder="Password">
+                        <a href="/forgotPassword" class="forgot"> Forgot?</a>
+                        <button type="submit" class="btn nav-login">Log in</button>                            
+                  </form>
+                </li>
             </ul>
         </div>
       </div>
     </div>
+    ${search_drawer()}
 </%def>
 
 <%def name="corpNavbar()">
@@ -290,4 +243,70 @@
             </div>
         </div>
     </div>
+</%def>
+
+<%def name="search_drawer()">
+    <div id="search" class="collapse search_drawer">
+        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <div class="spacer"></div>
+        <div class="row-fluid searches">
+            <div class="span3 offset1">
+                <form class="form-search" action="/search">
+                    <input type="text" class="search-query" placeholder="Search by Word" id="search-input" name="searchQuery">
+                </form>
+            </div>
+            <div class="span4">
+                <script type="text/javascript">
+                    function searchTags() {
+                        var sIndex = document.getElementById('categoryTag').selectedIndex;
+                        var sValue = document.getElementById('categoryTag').options[sIndex].value;
+                        if(sValue) {
+                            var queryURL = sValue;
+                            window.location = queryURL;
+                        }
+                    }
+                </script>
+                <form action="/searchTags" class="form-search search-type" method="POST">
+                    <i class="icon-tag icon-light"></i>
+                    <select name="categoryTag" id="categoryTag" onChange="searchTags();">
+                    <option value="0">Search by Category</option>
+                    % for tag in tagCategories:
+                        <% tagValue = tag.replace(" ", "_") %>
+                        <option value="/searchTags/${tagValue}/">${tag.title()}</option>
+                    % endfor
+                    </select>
+                </form>
+            </div><!-- span3 -->
+            <div class="span4">
+                <form  action="/searchGeo"  class="form-search search-type" method="POST">
+                    <div class="row-fluid"><span id="searchCountrySelect">
+                        <i class="icon-globe icon-light"></i>
+                        <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
+                        <option value="0" selected>Search by Region</option>
+                        <option value="United States">United States</option>
+                        </span><!-- searchCountrySelect -->
+                        </select>
+                        <span id="searchCountryButton"></span>
+                    </div><!-- row-fluid -->
+                    <div class="row-fluid">
+                        <span id="searchStateSelect"></span>
+                        <span id="searchStateButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCountySelect"></span>
+                        <span id="searchCountyButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCitySelect"></span>
+                        <span id="searchCityButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchPostalSelect"></span>
+                        <span id="searchPostalButton">
+                    </div>
+                </form>
+            </div><!-- span5 -->
+        </div><!-- row-fluid -->
+        <div class="spacer"></div>
+    </div><!-- collapse -->
 </%def>
