@@ -329,7 +329,7 @@ h1.workshop-title{
   }
 }
 
-@media (max-width: 600px){
+@media (max-width: 1020px){
   .logo.logo-lg{
     background-image: url('/images/logo_simple_medlg.png');
     height: 40px;
@@ -1321,7 +1321,7 @@ button.transparent{
    background-image: -ms-linear-gradient(top, #00aa49, #007733);
 }
 
-.btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled], .btn-success:hover, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
+.btn.nav-login:hover, .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled], .btn-success:hover, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
    color: white;
    background-color: #00c354;
    background-image:none;
@@ -2494,7 +2494,7 @@ margin-left: 4.2%;
   border-radius: 0px;
 }
 
-@media (max-width: 680px){
+@media (max-width: 1180px){
   .splash-nav .nav-item{
     font-size: 16px
   }  
@@ -2533,7 +2533,7 @@ button.close{
     position: absolute; 
     width:100%; 
     height:755px; 
-    background-image: url('/images/splash/occupy_splash.png');
+    background-image: url('/images/splash/sc_boardwalk.jpg');
     background-size:cover;
 }
 #login-bg{
@@ -2625,4 +2625,35 @@ margin-right: -13px;
 
 .btn-group.open .btn.dropdown-toggle{
   background-color: rgba(0,0,0,0);
+}
+
+.btn.nav-login{
+  color: white;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #009933;
+  background-image: none;
+  color: #fff;
+}
+
+.search-query.splash{
+  margin-top: 10px;
+}
+
+.form-inline.login input{
+  margin-top: 6px;
+}
+.form-inline.login button{
+  margin-top: 6px;
+}
+
+.forgot{
+  color: #e6e6e6;
+  font-size: 11px;
+}
+.forgot:hover{
+  color:#fff;
+}
+
+.forgot-div{
+  display:inline;
 }
