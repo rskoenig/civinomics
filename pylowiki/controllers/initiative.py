@@ -98,37 +98,89 @@ class InitiativeController(BaseController):
         else:
             description = ''
         
-        if 'initiativeScope' in request.params:
-            level = request.params['initiativeScope']
-            userScope = geoInfoLib.getGeoScope(c.user['postalCode'], c.user['country'])
-            scopeList = userScope.split('|')
-            index = 0
-            for scope in scopeList:
-                if scope == '':
-                    scopeList[index] = '0'
-                index += 1
-                
-            if level == 'city':
-                scopeList[9] = '0'
-            elif level == 'county':
-                scopeList[9] = '0'
-                scopeList[8] = '0'
-                
-            scope = '|'.join(scopeList)
-            log.info('userScope is %s'%userScope)
-             
-        elif 'initiativeRegionScope' in request.params:
-            scope = request.params['initiativeRegionScope']
-            level = scope
+
+        #if 'initiativeScope' in request.params:
+        #  level = request.params['initiativeScope']
+        #    userScope = geoInfoLib.getGeoScope(c.user['postalCode'], c.user['country'])
+        #    scopeList = userScope.split('|')
+        #    index = 0
+        #    for scope in scopeList:
+        #        if scope == '':
+        #            scopeList[index] = '0'
+        #        index += 1
+        #        
+        #    if level == 'city':
+        #        scopeList[9] = '0'
+        #    elif level == 'county':
+        #        scopeList[9] = '0'
+        #        scopeList[8] = '0'
+        #        
+        #    scope = '|'.join(scopeList)
+        #    log.info('userScope is %s'%userScope)
+
+
+        # initialize the scope dropdown selector in the edit template
+        c.states = geoInfoLib.getStateList('United-States')
+        # ||country||state||county||city|zip
+        if c.initiative and c.initiative['scope'] != '':
+            geoTags = c.initiative['scope'].split('|')
+            c.country = utils.geoDeurlify(geoTags[2])
+            c.state = utils.geoDeurlify(geoTags[4])
+            c.county = utils.geoDeurlify(geoTags[6])
+            c.city = utils.geoDeurlify(geoTags[8])
+            c.postal = utils.geoDeurlify(geoTags[9])
         else:
-            log.init("no initiative scope")
+            c.country = "0"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
+            c.postal = "0"
+
+        # update the scope based on info in the scope dropdown selector
+        if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+            geoTagCountry = request.params['geoTagCountry']
+        else:
+            geoTagCountry = "0"
             
-        if scope != '':
-            c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
-            c.level = level
+        if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+            geoTagState = request.params['geoTagState']
         else:
-            log.info("missing initiaitve info: title is %s description is %s and scope is %s"%(title, description, scope))
-            abort(404)
+            geoTagState = "0"
+            
+        if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+            geoTagCounty = request.params['geoTagCounty']
+        else:
+            geoTagCounty = "0"
+            
+        if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+            geoTagCity = request.params['geoTagCity']
+        else:
+            geoTagCity = "0"
+            
+        if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+            geoTagPostal = request.params['geoTagPostal']
+        else:
+            geoTagPostal = "0"
+ 
+        # assemble the scope string 
+        # ||country||state||county||city|zip
+        geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
+        if c.initiative and c.initiative['scope'] != geoTagString:
+            c.initiative['scope'] = geoTagString
+            # need to come back and add 'updateInitiativeChildren' when it is written
+            #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
+            wchanges = 1
+
+
+        # set the initiative scope coming from a geoSearch page
+        if 'initiativeRegionScope' in request.params:
+            scope = request.params['initiativeRegionScope']
+        else:
+            scope = '0|0|0|0|0|0|0|0|0|0'
+            
+        #create the initiative
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+        c.level = scope
             
         c.saveMessage = "Changes saved."
             
@@ -150,6 +202,7 @@ class InitiativeController(BaseController):
         return render('/derived/6_initiative_edit.bootstrap')
         
     def initiativeEditHandler(self):
+        iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
         if 'title' in request.params:
             c.initiative['title'] = request.params['title']
             c.initiative['url'] = utils.urlify(c.initiative['title'])
@@ -157,32 +210,77 @@ class InitiativeController(BaseController):
             c.initiative['description'] = request.params['description']
         if 'cost' in request.params:
             c.initiative['cost'] = request.params['cost']
-        if 'level' in request.params:
-            level = request.params['level']
-            userScope = geoInfoLib.getGeoScope(c.user['postalCode'], c.user['country'])
-            scopeList = userScope.split('|')
-            index = 0
-            for scope in scopeList:
-                if scope == '':
-                    scopeList[index] = '0'
-                index += 1
 
-            if level == 'city':
-                scopeList[9] = '0'
-            elif level == 'county':
-                scopeList[9] = '0'
-                scopeList[8] = '0'
-            c.initiative['scope'] = '|'.join(scopeList)
+        # initialize the scope dropdown selector in the edit template
+        c.states = geoInfoLib.getStateList('United-States')
+        # ||country||state||county||city|zip
+        if c.initiative['scope'] != '':
+            geoTags = c.initiative['scope'].split('|')
+            c.country = utils.geoDeurlify(geoTags[2])
+            c.state = utils.geoDeurlify(geoTags[4])
+            c.county = utils.geoDeurlify(geoTags[6])
+            c.city = utils.geoDeurlify(geoTags[8])
+            c.postal = utils.geoDeurlify(geoTags[9])
+        else:
+            c.country = "0"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
+            c.postal = "0"
+
+        # update the scope based on info in the scope dropdown selector
+        if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+            geoTagCountry = request.params['geoTagCountry']
+        else:
+            geoTagCountry = "0"
+            
+        if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+            geoTagState = request.params['geoTagState']
+        else:
+            geoTagState = "0"
+            
+        if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+            geoTagCounty = request.params['geoTagCounty']
+        else:
+            geoTagCounty = "0"
+            
+        if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+            geoTagCity = request.params['geoTagCity']
+        else:
+            geoTagCity = "0"
+            
+        if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+            geoTagPostal = request.params['geoTagPostal']
+        else:
+            geoTagPostal = "0"
+ 
+        # assemble the scope string 
+        # ||country||state||county||city|zip
+        geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
+        if c.initiative['scope'] != geoTagString:
+            c.initiative['scope'] = geoTagString
+            # need to come back and add 'updateInitiativeChildren' when it is written
+            #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
+            wchanges = 1
+
+
         if 'tag' in request.params:
             c.initiative['tags'] = request.params['tag']
-        if 'data' in request.params:
-            c.initiative['background'] = request.params['data']
+        if 'background' in request.params:
+            c.initiative['background'] = request.params['background']
+        if 'proposal' in request.params:
+            c.initiative['proposal'] = request.params['proposal']
+        if 'funding_summary' in request.params:
+            c.initiative['funding_summary'] = request.params['funding_summary']
         
         if 'public' in request.params:
             log.info("got %s"%request.params['public'])
         if 'public' in request.params and request.params['public'] == 'yes':
             if c.complete and c.initiative['public'] == '0':
                 c.initiative['public'] = '1'
+                
+        for key in iKeys:
+            initiativeLib.updateInitiativeChildren(c.initiative, key)
                 
         dbHelpers.commit(c.initiative)
         revisionLib.Revision(c.authuser, c.initiative)

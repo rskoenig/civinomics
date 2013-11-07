@@ -2,11 +2,9 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
-<div class="spacer"></div>
+
 <div class="row-fluid" ng-controller="ProfileEditController">
-    <div class="span12 well workshopwell">
-        ${ihelpers.editInitiative()}
-    </div><!-- span12 -->
+    ${ihelpers.editInitiative()}
 </div>
 
 <%def name="headScripts()">
@@ -30,6 +28,7 @@
     <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-angular.js')}"></script>
     <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
     <script src="${lib_6.fingerprintFile('/js/vendor/jquery.Jcrop.js')}"></script>
+    <script src = "${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="extraStyles()">

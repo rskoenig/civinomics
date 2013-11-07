@@ -44,7 +44,6 @@ class SearchController(BaseController):
 
     def __before__(self, action, searchType = None, **kwargs):
         #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
-        log.info("controllers/search __before__")
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
@@ -121,7 +120,6 @@ class SearchController(BaseController):
         #log.info("S E A R C H + Q U E R Y 5:  %s %s"%(self.query, self.noQuery))
         #log.info("****SEARCH QUERY**** %s"%self.query)
         c.searchQuery = self.query
-        log.info("controllers/search __before__ complete")
 
     def _noSearch(self, noRender = False):
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -146,6 +144,8 @@ class SearchController(BaseController):
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
+        iResources = resourceLib.searchInitiativeResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
+        c.numResources += iResources
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
@@ -199,6 +199,8 @@ class SearchController(BaseController):
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_category_tags'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_category_tags'], [self.query], count = True)
+        iResources = resourceLib.searchInitiativeResources(['initiative_tags'], [self.query], count = True)
+        c.numResources += iResources
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
@@ -250,6 +252,8 @@ class SearchController(BaseController):
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
+        iResources = resourceLib.searchInitiativeResources(['initiative_scope'], [self.query], count = True)
+        c.numResources += iResources
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
@@ -530,15 +534,16 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            scope = "0" + self.query.replace("||", "|0|")
             ikeys = ['initiative_scope']
+            ivalues = [scope]
             resources = resourceLib.searchResources(keys, values)
-            iresources = resourceLib.searchInitiativeResources(ikeys, values)
+            iresources = resourceLib.searchInitiativeResources(ikeys, ivalues)
         else:
             keys = ['title', 'text', 'link']
             values = [self.query, self.query, self.query]
             resources = resourceLib.searchResources(keys, values)
             iresources = resourceLib.searchInitiativeResources(keys, values)
-            log.info("searched initiative resources, length is %s"%len(iresources))
             
         if iresources:
             if resources:
@@ -588,7 +593,6 @@ class SearchController(BaseController):
                 entry['parentType'] = 'workshop'
                 entry['parentIcon'] = 'icon-cog'
             elif 'initiativeCode' in r:
-                log.info("got an initiative in search resources")
                 entry['parentCode'] = r['initiativeCode']
                 entry['parentURL'] = entry['initiative_url'] = r['initiative_url']
                 entry['parentTitle'] = entry['initiative_title'] = r['initiative_title']
@@ -855,9 +859,7 @@ class SearchController(BaseController):
         if self.searchType == 'tag':
             initiatives = initiativeLib.searchInitiatives('tags', self.query)
         elif self.searchType == 'geo':
-            log.info("searchInitiatives type is geo, search string is %s"%self.query)
             scope = '0' + self.query.replace('||', '|0|')
-            log.info("searchInitiatives type is geo, search string is now %s"%scope)
             initiatives = initiativeLib.searchInitiatives(['scope'], [scope])
         else:
             keys = ['title', 'description', 'tags']
@@ -925,7 +927,6 @@ class SearchController(BaseController):
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
             result.append(entry)
-            log.info("got one");
         if len(result) == 0:
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})

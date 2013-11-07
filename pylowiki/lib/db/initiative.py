@@ -53,6 +53,40 @@ def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False
     except Exception as e:
         log.error(e)
         return False
+        
+def updateInitiativeChildren(initiative, initiativeKey):
+    code = initiative['urlCode']        
+    key = '%s%s' %(initiative.objType, 'Code')
+
+    try:
+        itemList = meta.Session.query(Thing)\
+                .filter(Thing.objType.in_(['resource', 'discussion']))\
+                .filter(Thing.data.any(wc(key, code)))\
+                .all()
+                
+        for item in itemList:
+            if initiativeKey == "initiative_title":
+                item[initiativeKey] = initiative["title"]
+                item['initiative_url'] = initiative['url']
+            else:
+                item[initiativeKey] = initiative[initiativeKey]
+            commit(item)
+            if item.objType == 'discussion':
+                discussionCode = item['urlCode']
+                commentList = meta.Session.query(Thing)\
+                    .filter_by(objType = 'comment')\
+                    .filter(Thing.data.any(wc('discussionCode', discussionCode)))\
+                    .all()
+                for comment in commentList:
+                    if initiativeKey == "initiative_title":
+                        comment[initiativeKey] = initiative["title"]
+                        comment['initiative_url'] = initiative['url']
+                    else:
+                        comment[initiativeKey] = initiative[initiativeKey]
+                    commit(comment)                            
+    except Exception as e:
+        return False
+        
 
 # Object
 def Initiative(owner, title, description, scope, workshop = None):
@@ -66,10 +100,12 @@ def Initiative(owner, title, description, scope, workshop = None):
     i['title'] = title
     i['url'] = utils.urlify(title[:20])
     i['description'] = description
-    i['background'] = utils.initiativeFields
+    i['background'] = ""
+    i['proposal'] = ""
     i['tags'] = ""
     i['scope'] = scope
     i['cost'] = u'0'
+    i['funding_summary'] = ""
     i['deleted'] = u'0'
     i['disabled'] = u'0'
     i['public'] = u'0'
