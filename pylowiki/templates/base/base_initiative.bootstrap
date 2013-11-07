@@ -9,9 +9,16 @@
 <div class="row-fluid" ng-app="civ">
     <div class="row-fluid" style="position: relative;">
         <div class="span8 well initiative-panel">
-            <div class="row-fluid">
-                <div class="thumbnail" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
-            </div>
+            % if c.lgPhoto:
+                <div class="row-fluid">
+                    <div class="thumbnail" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
+                </div>
+            % else: 
+                <div class="span2">
+                    <img class="initiative-thumb" src="${c.thumbnail_url}">
+                </div>
+            % endif
+
             <div class="row-fluid" style="position:relative;">
                 <div>
                     <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h2>

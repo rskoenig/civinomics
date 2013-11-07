@@ -416,6 +416,8 @@ class InitiativeController(BaseController):
         views = int(c.initiative['views']) + 1
         c.initiative['views'] = str(views)
         dbHelpers.commit(c.initiative)
+
+        c.lgPhoto = True
             
         return render('/derived/6_initiative_home.bootstrap')
         

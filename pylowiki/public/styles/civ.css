@@ -2738,4 +2738,8 @@ a.no-highlight:hover{
   margin-top: 25px;
 }
 
-
+.initiative-thumb{
+  width: 85px;
+  margin-right: 20px;
+  margin-top: 15px;
+}
