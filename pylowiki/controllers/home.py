@@ -53,32 +53,37 @@ class HomeController(BaseController):
 			c.rssURL = "/activity/rss"
 
 			# most recent workshops
-			newWorkshops = range(3)
+			newWorkshops = []
 			workshops = getActiveWorkshops()
-			for i in range(3):
-				title = workshops[i]['title']
-				mainImage = mainImageLib.getMainImage(workshops[i])
-				if mainImage['pictureHash'] == 'supDawg':
-					imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
-				elif 'format' in mainImage.keys():
-					imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
-				else:
-					imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
-				photo = imgSrc
-				link = "/workshops/" + workshops[i]['urlCode'] + "/" + workshops[i]['url']
-				item = workshops[i]
-				scope = workshopLib.getPublicScope(workshops[i])
-				level = scope['level'].title()
-				if level == 'Postalcode':
-					level = 'Zip Code'
-				fix = scope['name'].replace('-',' ')
-				name = fix.title()
-				if level == 'Earth':
-					scopeTitle = 'Planet ' + name
-				else:
-					scopeTitle = level + ' of ' + name
-				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle}
-			c.newWorkshops = newWorkshops
+			if len(workshops) == 0 :
+				c.newWorkshops = 0
+			else:
+				workshops = workshops[:3]
+				if workshops >= 1:
+					for w in workshops:
+						title = w['title']
+						mainImage = mainImageLib.getMainImage(w)
+						if mainImage['pictureHash'] == 'supDawg':
+							imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
+						elif 'format' in mainImage.keys():
+							imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+						else:
+							imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+						photo = imgSrc
+						link = "/workshops/" + w['urlCode'] + "/" + w['url']
+						item = w
+						scope = workshopLib.getPublicScope(w)
+						level = scope['level'].title()
+						if level == 'Postalcode':
+							level = 'Zip Code'
+						fix = scope['name'].replace('-',' ')
+						name = fix.title()
+						if level == 'Earth':
+							scopeTitle = 'Planet ' + name
+						else:
+							scopeTitle = level + ' of ' + name
+						newWorkshops.append({ 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle})
+					c.newWorkshops = newWorkshops
 
 
 			# create mapping of the user's geoScopes
