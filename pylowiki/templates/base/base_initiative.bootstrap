@@ -84,22 +84,14 @@
         $('#initiative-dashboard').affix({offset: 0})
     </script> 
     <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
-    <%
-        if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-            backgroundImage = '"/images/photos/%s/thumbnail/%s.png"' %(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-        else:
-            backgroundImage = '"/images/slide/orig/supDawg.orig"'
-    %>
-    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+
+    <script>$.backstretch(${c.bgPhoto_url | n}, {centeredX: true})</script>
     <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
     <script>
       $(document).ready(function(){
         $('textarea').autosize();   
       });
     </script>
-</%def>
-
-<%def name="extraScripts2()">
     <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     % if 'user' in session:

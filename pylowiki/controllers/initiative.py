@@ -54,6 +54,14 @@ class InitiativeController(BaseController):
                     c.scopeFlag = scopeProps['flag']
                     c.scopeHref = scopeProps['href']
 
+                    if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                        c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                        c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                    else:
+                        c.photo_url = "/images/slide/thumbnail/supDawg.thumbnail"
+                        c.thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail"
+                    c.bgPhoto_url = "'" + c.photo_url + "'"
+
                 else:
                   abort(404)  
         else:
@@ -395,12 +403,6 @@ class InitiativeController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.baseUrl = utils.getBaseUrl()
-        if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-            c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-            c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-        else:
-            c.photo_url = "/images/slide/thumbnail/supDawg.thumbnail"
-            c.thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail"
 
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
         c.isFollowing = False

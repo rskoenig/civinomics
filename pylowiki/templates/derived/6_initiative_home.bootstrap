@@ -5,7 +5,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-
+    <div class="span2 offset10"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a></div>
     <h4 class="initiative-title">Summary</h4>
     ${c.initiative['description']}
     <h4 class="initiative-title">Esitmate Net Fiscal Impact</h4>
@@ -14,7 +14,6 @@
     <hr>
     <h4 class="initiative-title">Authors</h4>
         ${ihelpers.showAuthor(c.initiative)}
-        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
     <hr>
     <h4 class="initiative-title">Background</h4>
     ${ihelpers.showBackground()}
