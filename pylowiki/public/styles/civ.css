@@ -1866,6 +1866,10 @@ li.thumbnail-gallery{
   display: none;
 }
 
+.btn-group.facebook{
+  text-align: left;
+}
+
 .icon-facebook-sign{
   color: #4c66a4;
 }
@@ -2081,6 +2085,10 @@ p.description:first-letter {
   padding-top: 4px;
 }
 
+.well.initiative-panel{
+  box-shadow: none;
+}
+
 a.search.toggle :active{
   color: #000000;
 }
@@ -2107,6 +2115,10 @@ h1 .label.workshop-tag{
   margin-left: 5px;
   color: #4c66a4;
 }
+.share-icons .icon-rss{
+  color: #D15D00;
+}
+
 .share-icons.contrast a i{
   color: #fff;
 }
@@ -2117,7 +2129,7 @@ h1 .label.workshop-tag{
   color: #007edd;
 }
 .share-icons a i.icon-rss:hover{
-  color: #ffea00;
+  color: #ff7405;
 }
 .share-icons a i.icon-envelope:hover{
   color: #ff3333;

@@ -14,6 +14,13 @@ log = logging.getLogger(__name__)
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
+def getBaseUrl():
+    baseUrl = config['site_base_url']
+    # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+    if baseUrl[-1:] == "/":
+        baseUrl = baseUrl[:-1]
+    return baseUrl
+
 def iPhoneRequestTest(req):
     """ check for json=1 in the request parameters, if so this is a request from our iphone app """
     try:
