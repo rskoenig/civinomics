@@ -29,6 +29,7 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.db.mainImage        as mainImageLib
+import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.images              as imageLib
 
 import time, datetime
@@ -208,6 +209,30 @@ class ProfileController(BaseController):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
+                    
+        # initiatives
+        c.initiatives = []
+        initiativeList = initiativeLib.getInitiativesForUser(c.user)
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiatives.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiatives.append(i)
+                        
+        c.initiativeBookmarks = []
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiativeBookmarks.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiativeBookmarks.append(i)
         if iPhoneApp:
             if displayWorkshops:
                 i = 0
@@ -478,11 +503,23 @@ class ProfileController(BaseController):
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['watching'].append(workshop)
                 
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        items['watching'].append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        items['watching'].append(i)
+
+
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
         items['listening'] = []
-        for workshop in c.listeningWorkshops:
-            if workshop['public_private'] == 'public' or (isUser or isAdmin):
-                items['listening'].append(workshop)
-                log.info("listening workshop")
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            items['listening'].append(lw)
                 
         items['facilitating'] = []
         for workshop in c.facilitatorWorkshops:
@@ -496,20 +533,25 @@ class ProfileController(BaseController):
         items['resources'] = []
         items['discussions'] = []
         items['ideas'] = []
+        items['initiatives'] = []
         items['searchWorkshops'] = []
         items['searchUsers'] = []
         for thing in createdThings:
             if 'workshopCode' in thing:
-                w = workshopLib.getWorkshopByCode(thing['workshopCode'])
-                if workshopLib.isPublished(w) or isAdmin:
-                    if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
-                        if thing.objType == 'resource':
-                            items['resources'].append(thing)
-                        elif thing.objType == 'discussion':
-                            items['discussions'].append(thing)
-                        elif thing.objType == 'idea':
-                            items['ideas'].append(thing)
-
+                if thing['disabled'] == '0' and thing['deleted'] == '0':
+                    w = workshopLib.getWorkshopByCode(thing['workshopCode'])
+                    if workshopLib.isPublished(w) or isAdmin:
+                        if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
+                            if thing.objType == 'resource':
+                                items['resources'].append(thing)
+                            elif thing.objType == 'discussion':
+                                items['discussions'].append(thing)
+                            elif thing.objType == 'idea':
+                                items['ideas'].append(thing)
+            elif 'initiativeCode' in thing and thing.objType == 'resource' and thing['public'] == '1' and thing['deleted'] == '0':
+                items['resources'].append(thing)
+            elif thing.objType == 'initiative' and thing['public'] == '1' and thing['public'] == '1' and thing['deleted'] == '0':
+                items['initiatives'].append(thing)
         return items
 
     @h.login_required
@@ -893,7 +935,6 @@ class ProfileController(BaseController):
     def photoUpdateHandler(self, id1, id2, id3):
         photo = photoLib.getPhotoByHash(id3)
         if not photo:
-            log.info("photo hash is %s"%id3)
             abort(404)
         
         if 'title' in request.params:
@@ -1101,7 +1142,6 @@ class ProfileController(BaseController):
         session.save()
         
         if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
-           log.info('disabled is %s' % c.user['disabled'])
            enableUserReason = request.params['enableUserReason']
 
            if c.user['disabled'] == '1':

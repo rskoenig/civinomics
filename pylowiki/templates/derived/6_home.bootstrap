@@ -44,7 +44,7 @@
             ###
 
             % for scope in c.scopeMap:
-              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover;">
+              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover; background-position: center center;">
                 <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
                   <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
                   <table class="lead tile-title">

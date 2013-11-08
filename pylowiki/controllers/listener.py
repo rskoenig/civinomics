@@ -144,7 +144,7 @@ class ListenerController(BaseController):
                 else:
                     lValue = 0
             user[lKey] = str(lValue)
-            commit(user)
+            dbHelpers.commit(user)
             
         eventLib.Event(returnMsg, '%s by %s'%(returnMsg, c.authuser['name']), listener, user = c.authuser)
             

@@ -7,62 +7,71 @@
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="span9">
+    <div class="span2">
+        % if c.searchType == 'region':
+            <img class="thumbnail tight flag pull-left" src="${c.flag}">
+        % endif
+        <ul class="nav nav-tabs tabs-left civ-search">
+            <li ng-class="showingInitiatives.class">
+                <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
+                    <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
+                    <span class="pull-right">(${c.numInitiatives})</span>
+                </a>
+            </li>
+            <li ng-class="showingWorkshops.class">
+                <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
+                    <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
+                    <span class="pull-right">(${c.numWorkshops})</span>
+                </a>
+            </li>
+            <li ng-class="showingIdeas.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
+                    <span class="pull-left"><i class="icon-lightbulb"></i> Ideas </span>
+                    <span class="pull-right">(${c.numIdeas})</span>
+                </a>
+            </li>
+            % if c.numUsers != 0 or c.searchType == "name":
+                <li ng-class="showingPeople.class">
+                    <a href="#users" class="green green-hover" ng-click="searchPeople()">
+                        <span class="pull-left"><i class="icon-user"></i> People </span>
+                        <span class="pull-right">(${c.numUsers})</span>
+                    </a>
+                </li>
+            % endif
+            <li ng-class="showingResources.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
+                    <span class="pull-left"><i class="icon-link"></i> Resources </span>
+                    <span class="pull-right">(${c.numResources})</span>
+                </a>
+            </li>
+            <li ng-class="showingDiscussions.class">
+                <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
+                    <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
+                    <span class="pull-right">(${c.numDiscussions})</span>
+                </a>
+            </li>
+            <li ng-class="showingPhotos.class">
+                <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
+                    <span class="pull-left"><i class="icon-picture"></i> Photos </span>
+                    <span class="pull-right">(${c.numPhotos})</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="span7">
         <div class="row-fluid">
-            <div class="span7">
-                % if c.searchType == 'region':
-                    <span class="lead geoName">${c.searchQuery}</span>
-                % elif c.searchType == 'tag':
-                    <span class="lead geoName">${c.searchQuery}</span>
-                % else:
-                    <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
-                % endif
-                
-            </div><!-- span6 -->
-            <div class="span5">
-            </div><!-- span5 -->
+            <h2 class="lead geoName">
+            % if c.searchType == 'region':
+                ${c.searchQuery}
+            % elif c.searchType == 'tag':
+                ${c.searchQuery}
+            % else:
+                <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
+            % endif
+            </h2>
         </div>
-        <div class="tabbable tabs-left civ-search">
-            <ul class="nav nav-tabs">
-                <li ng-class="showingWorkshops.class">
-                    <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                        <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
-                        <span class="pull-right">(${c.numWorkshops})</span>
-                    </a>
-                </li>
-                <li ng-class="showingIdeas.class">
-                    <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                        <span class="pull-left"><i class="icon-file-text"></i> Ideas </span>
-                        <span class="pull-right">(${c.numIdeas})</span>
-                    </a>
-                </li>
-                % if c.numUsers != 0 or c.searchType == "name":
-                    <li ng-class="showingPeople.class">
-                        <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                            <span class="pull-left"><i class="icon-user"></i> People </span>
-                            <span class="pull-right">(${c.numUsers})</span>
-                        </a>
-                    </li>
-                % endif
-                <li ng-class="showingResources.class">
-                    <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
-                        <span class="pull-left"><i class="icon-link"></i> Resources </span>
-                        <span class="pull-right">(${c.numResources})</span>
-                    </a>
-                </li>
-                <li ng-class="showingDiscussions.class">
-                    <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
-                        <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
-                        <span class="pull-right">(${c.numDiscussions})</span>
-                    </a>
-                </li>
-                <li ng-class="showingPhotos.class">
-                    <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
-                        <span class="pull-left"><i class="icon-picture"></i> Photos </span>
-                        <span class="pull-right">(${c.numPhotos})</span>
-                    </a>
-                </li>
-            </ul>
+        <div class="tabbable">
             <div class="tab-content">
                 <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
                     <form class="form-search inline">
@@ -88,7 +97,18 @@
                             ${lib_6.public_tag_filter()}
                         </span>
                     </form>
-                    <span ng-model="orderProp" ng-show="objType = 'workshops'" ng-cloak>
+                    <span ng-show="showingInitiatives.create" ng-cloak>
+                        <!-- <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
+                            <input type="hidden" name="geoString" value="${c.geoString}">
+                             
+                        </form> -->
+                        <form id="newinitiative" class="inline" method="POST" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" onSubmit="return checkForm();">
+                            <input type="hidden" name="initiativeDescription" id="initiativeDescription" value="">
+                            <input type="hidden" name="initiativeRegionScope" id="initiativeScope" value="${c.geoString}">
+                            <button type="submit" name="createRegionalInitiative" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
+                        </form>
+                    </span>
+                    <span ng-show="showingWorkshops.create" ng-cloak>
                         % if c.searchType != 'region':
                             <a class="btn btn-success" style="margin-top: 7px;" href="/workshop/display/create/form" >
                                 <i class="icon-plus"></i> New Workshop
@@ -194,15 +214,15 @@
                                    <i class="icon-{{resource.type}} icon-3x"></i>
                                 </div>
                                 <div class="span11 media-body">
-                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                         {{resource.title}}
                                     </a></h4>
-                                    <a class="break" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
+                                    <a class="break" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
 
                                     <ul class="horizontal-list iconListing">
                                         <li>
-                                            <i class="icon-cog"></i> From workshop: <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
-                                                {{resource.workshopTitle}}
+                                            <i class="{{resource.parentIcon}}"></i> From {{resource.parentType}}: <a href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}">
+                                                {{resource.parentTitle}}
                                             </a>
                                         </li>
                                         <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
@@ -271,9 +291,9 @@
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
                         <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
-                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount;objType='idea';">
+                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
-                                    <div class="span10">
+                                    <div class="span9">
                                         <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
                                             {{idea.title}}
                                         </a></p>
@@ -292,16 +312,22 @@
                                             <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
                                         </p>
                                     </div>
-                                    <div class="span2 voteBlock ideaListing" >
+                                    <div class="span3 voteBlock ideaListing well" >
                                         % if 'user' in session:
                                             <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
-                                                <div class="vote-icon yes-icon"></div>
+                                                <div class="vote-icon yes-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
                                             </a>
                                             <br>
                                             <br>
                                             <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
-                                                <div class="vote-icon no-icon"></div>
+                                                <div class="vote-icon no-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
                                             </a>
+                                            <br>
+                                            <div class="totalVotesWrapper">
+                                                Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                            </div>
                                         % else:
                                             <a href="/login" class="yesVote">
                                                 <div class="vote-icon yes-icon"></div>
@@ -312,7 +338,6 @@
                                                 <div class="vote-icon no-icon"></div>
                                             </a>
                                         % endif
-                                        <br>
                                     </div>
                                 </div><!-- media-body -->
                             </div><!-- search-listing -->
@@ -331,7 +356,7 @@
                 </div>
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
                     <table class="table plain">
-                        <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
+                        <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span1 voteWrapper" >
@@ -388,14 +413,75 @@
                         <div class="spacer"></div>
                     </div>
                 </div>
+                <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                            <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span9">
+                                        <div class="span3">
+                                            <a href = '{{initiative.initiativeLink}}'>
+                                                <div style="height:80px; width:110px; background-image:url('{{initiative.thumbnail}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+                                            </a>
+                                        </div>
+                                        <div class="span9">
+                                            <h4 class="media-heading">
+                                                <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
+                                            </h4>
+                                            <p>{{initiative.description}}</p>
+                                            <small>
+                                                For: {{initiative.location}}<br>
+                                                Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="span3 voteBlock ideaListing well" >
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                                <div class="vote-icon yes-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
+                                            </a>
+                                            <br>
+                                            <br>
+                                            <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                                <div class="vote-icon no-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
+                                            </a>
+                                            <br>
+                                            <div class="totalVotesWrapper">
+                                                Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                            </div>
+                                        % else:
+                                            <a href="/login" class="yesVote">
+                                                <div class="vote-icon yes-icon"></div>
+                                            </a>
+                                            <br>
+                                            <br>
+                                            <a href="/login" class="noVote">
+                                                <div class="vote-icon no-icon"></div>
+                                            </a>
+                                        % endif
+                                    </div>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="initiative.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
             </div><!-- tab-content -->
         </div><!-- tabbable tabs-left civ-search -->
     </div><!-- span9 -->
     % if c.searchType == 'region':
         <div class="span3 well search-side-bar">
-            <div class="span12">
-                <img class="thumbnail flag" src="${c.flag}">
-            </div>
             % if c.geoInfo:
                 <form class="form-horizontal stats">
                     <div class="control-group">

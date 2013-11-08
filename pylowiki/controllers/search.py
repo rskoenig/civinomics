@@ -17,6 +17,7 @@ import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.resource     as resourceLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
@@ -43,7 +44,6 @@ class SearchController(BaseController):
 
     def __before__(self, action, searchType = None, **kwargs):
         #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
-        log.info("controllers/search __before__")
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
@@ -120,7 +120,6 @@ class SearchController(BaseController):
         #log.info("S E A R C H + Q U E R Y 5:  %s %s"%(self.query, self.noQuery))
         #log.info("****SEARCH QUERY**** %s"%self.query)
         c.searchQuery = self.query
-        log.info("controllers/search __before__ complete")
 
     def _noSearch(self, noRender = False):
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -145,9 +144,12 @@ class SearchController(BaseController):
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
+        iResources = resourceLib.searchInitiativeResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
+        c.numResources += iResources
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
+        c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
@@ -197,9 +199,12 @@ class SearchController(BaseController):
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_category_tags'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_category_tags'], [self.query], count = True)
+        iResources = resourceLib.searchInitiativeResources(['initiative_tags'], [self.query], count = True)
+        c.numResources += iResources
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
+        c.numInitiatives = initiativeLib.searchInitiatives('tags', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('tags', self.query)
         entry = {}
@@ -247,11 +252,15 @@ class SearchController(BaseController):
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
+        iResources = resourceLib.searchInitiativeResources(['initiative_scope'], [self.query], count = True)
+        c.numResources += iResources
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
         c.geoString = self.query
         c.photos = photoLib.searchPhotos('scope', self.query)
+        iScope = '0' + self.query.replace('||', '|0|')
+        c.numInitiatives = initiativeLib.searchInitiatives(['scope'], [iScope], count = True)
         #log.info("search is %s"%c.searchQuery)
         entry = {}
         if c.photos:
@@ -360,7 +369,6 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
-            c.flag = c.flag.lower()
             c.geoInfo = getPostalInfo(geoScope[9]) 
             if c.geoInfo:
                 c.population = c.geoInfo['Population']
@@ -520,13 +528,30 @@ class SearchController(BaseController):
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
+            ikeys = ['initiative_tags']
+            resources = resourceLib.searchResources(keys, values)
+            iresources = resourceLib.searchInitiativeResources(ikeys, values)
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            scope = "0" + self.query.replace("||", "|0|")
+            ikeys = ['initiative_scope']
+            ivalues = [scope]
+            resources = resourceLib.searchResources(keys, values)
+            iresources = resourceLib.searchInitiativeResources(ikeys, ivalues)
         else:
             keys = ['title', 'text', 'link']
             values = [self.query, self.query, self.query]
-        resources = resourceLib.searchResources(keys, values)
+            resources = resourceLib.searchResources(keys, values)
+            iresources = resourceLib.searchInitiativeResources(keys, values)
+            
+        if iresources:
+            if resources:
+                for r in resources:
+                    iresources.append(r)
+                    
+            resources = iresources
+            
         if not resources:
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
@@ -536,7 +561,9 @@ class SearchController(BaseController):
             # We don't need to look up this discussion's workshop anymore.
             # w = generic.getThing(r['workshopCode'])
             # Therefore this line,
-            if r['workshop_searchable'] != u'1':
+            if 'workshop_searchable' in r and r['workshop_searchable'] != u'1':
+                continue
+            if 'initiative_public' in r and r['initiative_public'] != u'1':
                 continue
             # replaces these two:
             #if w['public_private'] != u'public':
@@ -559,9 +586,19 @@ class SearchController(BaseController):
             #: Note in the cases here where there are multiple tags assigned to one value,
             #: I'm adding the standard tags to the json object here as a start for us to 
             #: migrate the whole system over to using the same definitions everywhere.
-            entry['workshopCode'] = r['workshopCode']
-            entry['workshopURL'] = entry['workshop_url'] = r['workshop_url']
-            entry['workshopTitle'] = entry['workshop_title'] = r['workshop_title']
+            if 'workshopCode' in r:
+                entry['parentCode'] = r['workshopCode']
+                entry['parentURL'] = entry['parent_url'] = r['workshop_url']
+                entry['parentTitle'] = entry['parent_title'] = r['workshop_title']
+                entry['parentType'] = 'workshop'
+                entry['parentIcon'] = 'icon-cog'
+            elif 'initiativeCode' in r:
+                entry['parentCode'] = r['initiativeCode']
+                entry['parentURL'] = entry['initiative_url'] = r['initiative_url']
+                entry['parentTitle'] = entry['initiative_title'] = r['initiative_title']
+                entry['parentType'] = 'initiative'
+                entry['parentIcon'] = 'icon-file'
+                
             #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(r.owner)
             entry['authorHash'] = md5(u['email']).hexdigest()
@@ -574,7 +611,12 @@ class SearchController(BaseController):
             #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['date'] = r.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
-            for title in r['workshop_category_tags'].split('|'):
+            if 'workshopCode' in r:
+                catList = r['workshop_category_tags'].split('|')
+            elif 'initiativeCode' in r:
+                catList = []
+                catList.append(r['initiative_tags'])
+            for title in catList:
                 if title and title != '':
                     tagMapping = {}
                     tagMapping['title'] = title
@@ -701,6 +743,8 @@ class SearchController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+            entry['ups'] = int(idea['ups'])
+            entry['downs'] = int(idea['downs'])
             rated = ratingLib.getRatingForThing(c.authuser, idea) 
             if rated:
                 entry['rated'] = rated['amount']
@@ -800,6 +844,88 @@ class SearchController(BaseController):
             entry['authorCode'] = entry['userCode'] = p['userCode']
             entry['authorURL'] = entry['user_url'] = p['user_url']
             entry['authorName'] = entry['user_name'] = p['user_name']
+            result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+
+    def searchInitiatives(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        #elif self.query.count('%') == len(self.query) and self.searchType != 'geo':
+            # Prevent wildcard searches
+            #return json.dumps({'statusCode':2})
+        result = []
+        if self.searchType == 'tag':
+            initiatives = initiativeLib.searchInitiatives('tags', self.query)
+        elif self.searchType == 'geo':
+            scope = '0' + self.query.replace('||', '|0|')
+            initiatives = initiativeLib.searchInitiatives(['scope'], [scope])
+        else:
+            keys = ['title', 'description', 'tags']
+            values = [self.query, self.query, self.query]
+            initiatives = initiativeLib.searchInitiatives(keys, values)
+        if not initiatives:
+            return json.dumps({'statusCode':2})
+        if len(initiatives) == 0:
+            return json.dumps({'statusCode':2})
+            
+        for initiative in initiatives:
+            i = initiative
+            # u = generic.getThing(i['userCode'])
+            # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
+            u = i.owner
+            if type(u) == type(1L):
+                u = userLib.getUserByID(u)
+            elif type(u) == type(u''):
+                u = userLib.getUserByCode(u)
+                
+            if i['deleted'] != u'0' or i['disabled'] != u'0':
+                continue
+            if i['public'] == '0':
+                continue
+            entry = {}
+            entry['title'] = i['title']
+            entry['description'] = i['description'][:200]
+            if len(entry['description']) >= 200:
+                entry['description'] += "..."
+            entry['tags'] = i['tags']
+            scopeList = i['scope'].split('|')
+            country = scopeList[2].replace("-", " ")
+            state = scopeList[4].replace("-", " ")
+            county = scopeList[6].replace("-", " ")
+            city = scopeList[8].replace("-", " ")
+            postalCode = scopeList[9]
+            scopeString = "Earth"
+            if country != '0':
+                scopeString = "%s" % country.title()
+                if state != '0':
+                    scopeString += ", State of %s" % state.title()
+                    if county != '0':
+                        scopeString += ", County of %s" % county.title()
+                        if city != '0':
+                            scopeString += ", City of %s" % city.title()
+                            if postalCode != '0':
+                                scopeString += ", Zip Code of %s"%postalCode
+            entry['location'] = scopeString
+            entry['voteCount'] = int(i['ups']) + int(i['downs'])
+            entry['ups'] = int(i['ups'])
+            entry['downs'] = int(i['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, i) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
+            entry['urlCode'] = i['urlCode']
+            entry['url'] = i['url']
+            entry['tag'] = i['tags']
+            entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
+            entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
+            entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})

@@ -25,6 +25,7 @@ import pylowiki.lib.db.follow       	as followLib
 import pylowiki.lib.db.workshop     	as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.initiative   	as initiativeLib
 
 
 
@@ -148,13 +149,20 @@ class HomeController(BaseController):
 			defaultPhoto = "/images/grey.png"
 
 			for scope in c.scopeMap:
-				photos = photoLib.searchPhotos('scope', scope['hash'])
-				if photos and len(photos) != 0:
-					photos = sort.sortBinaryByTopPop(photos)
-					p = photos[0]
-					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+				initScope = '0' + scope['hash'].replace('||', '|0|')
+				initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
+				if initiatives and len(initiatives) != 0:
+					initiatives = sort.sortBinaryByTopPop(initiatives)
+					i = initiatives[0]
+					scope['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
 				else:
-					scope['photo'] = defaultPhoto
+					photos = photoLib.searchPhotos('scope', scope['hash'])
+					if photos and len(photos) != 0:
+						photos = sort.sortBinaryByTopPop(photos)
+						p = photos[0]
+						scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+					else:
+						scope['photo'] = defaultPhoto
 
 
 			# get user's bookmarks, listening and facilitating

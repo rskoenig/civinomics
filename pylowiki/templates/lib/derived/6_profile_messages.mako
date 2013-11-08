@@ -115,7 +115,7 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
-                        % elif message['extraInfo'] in ['commentOnPhoto']:
+                        % elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
                             <%
                                 comment = commentLib.getCommentByCode(message['commentCode'])
                             %>
@@ -123,6 +123,19 @@
                                 <div class="media-body">
                                     <h5 class="media-heading">${lib_6.userLink(sender)} ${message['title']}</h5>
                                     <p><a ${lib_6.thingLinkRouter(comment, c.user, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
+                                    <p>${message['text']}</p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+                        % elif message['extraInfo'] in ['commentOnResource']:
+                            <%
+                                comment = commentLib.getCommentByCode(message['commentCode'])
+                                resource = generic.getThing(comment['resourceCode'])
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5 class="media-heading">${lib_6.userLink(sender)} ${message['title']}</h5>
+                                    <p><a ${lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
                                     <p>${message['text']}</p>
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
@@ -149,7 +162,62 @@
                                     <p>Your photo:
                                         <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photoCode}" class="green green-hover">${title}</a>
                                     </p>
-                                    <% log.info("message photo") %>
+                                    % if 'text' in message:
+                                        <p>${message['text']}</p>
+                                    % endif
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+                        % elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
+                            <%
+                                initiativeCode = message['initiativeCode']
+                                thing = generic.getThing(initiativeCode)
+                                title = thing['title']
+                                if message['extraInfo'] in ['disabledInitiative']:
+                                    event = eventLib.getEventsWithAction(message, 'disabled')
+                                elif message['extraInfo'] in ['enabledInitiative']:
+                                    event = eventLib.getEventsWithAction(message, 'enabled')
+                                elif message['extraInfo'] in ['deletedInitiative']:
+                                    event = eventLib.getEventsWithAction(message, 'deleted')
+                                
+                                action = event[0]['action']
+                                reason = event[0]['reason']
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p>It was ${action} because: ${reason}</p>
+                                    <p>Your initiative:
+                                        <a href="/initiative/${thing['urlCode']}/${thing['url']}/show" class="green green-hover">${title}</a>
+                                    </p>
+                                    % if 'text' in message:
+                                        <p>${message['text']}</p>
+                                    % endif
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+                        % elif message['extraInfo'] in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
+                            <%
+                                resourceCode = message['resourceCode']
+                                thing = generic.getThing(resourceCode)
+                                title = thing['title']
+                                if message['extraInfo'] in ['disabledInitiativeResource']:
+                                    event = eventLib.getEventsWithAction(message, 'disabled')
+                                elif message['extraInfo'] in ['enabledInitiativeResource']:
+                                    event = eventLib.getEventsWithAction(message, 'enabled')
+                                elif message['extraInfo'] in ['deletedInitiativeResource']:
+                                    event = eventLib.getEventsWithAction(message, 'deleted')
+                                
+                                action = event[0]['action']
+                                reason = event[0]['reason']
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p>It was ${action} because: ${reason}</p>
+                                    <p>Your initiative resource:
+                                        <a href="/initiative/${thing['initiativeCode']}/${thing['initiative_url']}/resource/${thing['urlCode']}/${thing['url']}" class="green green-hover">${title}</a>
+                                    </p>
                                     % if 'text' in message:
                                         <p>${message['text']}</p>
                                     % endif
@@ -164,7 +232,7 @@
                                 event = event[0]
                                 
                                 # Mako was bugging out on me when I tried to do this with sets
-                                codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode']
+                                codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode', 'initiativeCode']
                                 thing = None
                                 for codeType in codeTypes:
                                     if codeType in message.keys():
@@ -172,7 +240,12 @@
                                         break
                                 if thing is None:
                                     continue
-                                workshop = generic.getThing(thing['workshopCode'])
+                                if 'workshopCode' in thing:
+                                    parent = generic.getThing(thing['workshopCode'])
+                                elif 'initiativeCode' in thing:
+                                    parent = generic.getThing(thing['initiativeCode'])
+                                elif 'resourceCode' in thing:
+                                    parent = generic.getThing(thing['resourceCode'])
                             %>
                             <div class="media">
                                 <div class="media-body">
@@ -180,9 +253,9 @@
                                     <p>It was ${event['action']} because: ${event['reason']}</p>
                                     <p>You posted:
                                     % if thing.objType == 'comment':
-                                        <a ${lib_6.thingLinkRouter(thing, workshop, embed=True, commentCode=thing['urlCode']) | n} class="green green-hover">${thing['data']}</a>
+                                        <a ${lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n} class="green green-hover">${thing['data']}</a>
                                     % else:
-                                        <a ${lib_6.thingLinkRouter(thing, workshop, embed=True) | n} class="green green-hover">${thing['title']}</a>
+                                        <a ${lib_6.thingLinkRouter(thing, parent, embed=True) | n} class="green green-hover">${thing['title']}</a>
                                     % endif
                                     </p>
                                     <p>${message['text']}</p>

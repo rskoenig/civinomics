@@ -14,7 +14,7 @@
       <link rel="stylesheet" href="/styles/vendor/font-awesome/css/font-awesome.min.css">
       <link rel="stylesheet" href="${lib_6.fingerprintFile('/styles/civ.css')}">
       <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
-      <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
+      <link href='http://fonts.googleapis.com/css?family=Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
       <script src="/js/geoSearch.js"></script>
@@ -39,6 +39,12 @@
    <!-- scripts go at the bottom so they don't keep the user waiting -->
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
+   <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+   <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+   </script>
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
