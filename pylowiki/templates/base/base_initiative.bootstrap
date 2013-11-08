@@ -9,27 +9,35 @@
 <div class="row-fluid" ng-app="civ">
     <div class="row-fluid" style="position: relative;">
         <div class="span8 well initiative-panel">
-            % if c.lgPhoto:
+            % if c.initiativeHome:
                 <div class="row-fluid">
                     <div class="thumbnail" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
                 </div>
             % else: 
                 <div class="span2">
-                    <img class="initiative-thumb" src="${c.thumbnail_url}">
+                    <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
                 </div>
             % endif
-
-            <div class="row-fluid" style="position:relative;">
+            <% 
+                if c.initiativeHome:
+                    titleSpan = 'row-fluid'
+                else:
+                    titleSpan = 'span10'
+            %>
+            <div class="${titleSpan}" style="position:relative;">
                 <div>
-                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h2>
+                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-init="initiativeTitle = '${c.initiative['title']}'" ng-cloak>{{initiativeTitle}}</a></h2>
                     <h4> 
                         <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
                         Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
                         ${lib_6.showTags(c.initiative)}
                     </h4>
-                    <div style="position: absolute; bottom: 0; right: 0;">
-                        ${ihelpers.watchButton()}
-                    </div>
+                    % if c.initiativeHome:
+                        <div style="position: absolute; bottom: 0; right: 0;">
+                            ${ihelpers.watchButton()}
+                        </div>
+                    % endif
+
                 </div>
             </div>
             <hr>

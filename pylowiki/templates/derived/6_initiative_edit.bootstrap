@@ -3,7 +3,7 @@
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
 
-<div class="row-fluid" ng-controller="ProfileEditController">
+<div class="row-fluid">
     ${ihelpers.editInitiative()}
 </div>
 

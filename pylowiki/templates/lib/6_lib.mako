@@ -1622,12 +1622,12 @@
           tagList = item['tags'].split('|')
         except KeyError:
           tagList = item['workshop_category_tags'].split('|')
-
+        tagList = tagList[:3]
     %>
-    % for tag in tagList[0:3]:
-        % if tag and tag != '':
-            <% tagClass = colors[tag] %>
-            <span class="label workshop-tag ${tagClass}" >${tag}</span>
-        % endif
-    % endfor
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% tagClass = colors[tag] %>
+              <span class="label workshop-tag ${tagClass}" >${tag}</span>
+          % endif
+      % endfor
 </%def>

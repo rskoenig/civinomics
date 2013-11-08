@@ -195,7 +195,6 @@
         ${c.saveMessage}
         </div>
     % endif
-
     <span class="pull-right"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">View Initiative</a></span>
     <div class="spacer"></div>
     <div class="row-fluid edit-initiative">
@@ -217,7 +216,7 @@
             <div class="row-fluid">
                 <div class="span6">
                     <label for="title" class="control-label" required><strong>Initiative Title:</strong></label>
-                    <input type="text" name="title" class="span12" value="${c.initiative['title']}">
+                    <input type="text" name="title" class="span12" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-cloak>
                 </div>
                 <div class="span6">
                     <div class="alert alert-info">
@@ -241,7 +240,7 @@
                     <label for="tag" class="control-label" required><strong>Initiative category:</strong></label>
                     <select name="tag" id="tag">
                     % if c.initiative['public'] == '0':
-                        <option value="choose">Choose one</option>
+                        <option value="">Choose one</option>
                     % endif
                     % for tag in tagList:
                         <% 
@@ -519,8 +518,6 @@
             countrySelected = "selected"
             states = getStateList("united-states")
             countyMessage = "Leave 'State' blank if your initiative applies to the entire country."
-        else:
-            countrySelected = ""
         endif
     %>
     <div class="row-fluid"><span id="planetSelect">

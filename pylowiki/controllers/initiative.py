@@ -58,8 +58,8 @@ class InitiativeController(BaseController):
                         c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                         c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                     else:
-                        c.photo_url = "/images/slide/thumbnail/supDawg.thumbnail"
-                        c.thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail"
+                        c.photo_url = "/images/icons/generalInitiative.jpg"
+                        c.thumbnail_url = "/images/icons/generalInitiative.jpg"
                     c.bgPhoto_url = "'" + c.photo_url + "'"
 
                 else:
@@ -92,10 +92,6 @@ class InitiativeController(BaseController):
 
 
     def initiativeNewHandler(self):
-        title = ""
-        description = ""
-        scope = ""
-        
         if 'initiativeTitle' in request.params:
             title = request.params['initiativeTitle']
         else:
@@ -105,8 +101,17 @@ class InitiativeController(BaseController):
             description = request.params['initiativeDescription']
         else:
             description = ''
-        
 
+        # the scope if initiative is created from a geoSearch page
+        if 'initiativeRegionScope' in request.params:
+            scope = request.params['initiativeRegionScope']
+        else:
+            scope = '0|0|0|0|0|0|0|0|0|0'
+
+        c.thumbnail_url = "/images/icons/generalInitiative.jpg"
+        c.bgPhoto_url = "'" + c.thumbnail_url + "'"
+        
+        # shortcut scoping for 'My County, My City, My Zip Code'
         #if 'initiativeScope' in request.params:
         #  level = request.params['initiativeScope']
         #    userScope = geoInfoLib.getGeoScope(c.user['postalCode'], c.user['country'])
@@ -125,12 +130,27 @@ class InitiativeController(BaseController):
         #        
         #    scope = '|'.join(scopeList)
         #    log.info('userScope is %s'%userScope)
+        
+            
+        #create the initiative
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+        c.level = scope
 
+        # now that the initiative edits have been commited, update the scopeProps for the template to use:
+        scopeProps = utils.getPublicScope(c.initiative)
+        scopeName = scopeProps['name'].title()
+        scopeLevel = scopeProps['level'].title()
+        if scopeLevel == 'Earth':
+            c.scopeTitle = scopeName
+        else:
+            c.scopeTitle = scopeLevel + ' of ' + scopeName
+        c.scopeFlag = scopeProps['flag']
+        c.scopeHref = scopeProps['href']
 
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        if c.initiative and c.initiative['scope'] != '':
+        if c.initiative['scope'] != '':
             geoTags = c.initiative['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
@@ -143,55 +163,7 @@ class InitiativeController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
-
-        # update the scope based on info in the scope dropdown selector
-        if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
-            geoTagCountry = request.params['geoTagCountry']
-        else:
-            geoTagCountry = "0"
-            
-        if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
-            geoTagState = request.params['geoTagState']
-        else:
-            geoTagState = "0"
-            
-        if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
-            geoTagCounty = request.params['geoTagCounty']
-        else:
-            geoTagCounty = "0"
-            
-        if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
-            geoTagCity = request.params['geoTagCity']
-        else:
-            geoTagCity = "0"
-            
-        if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
-            geoTagPostal = request.params['geoTagPostal']
-        else:
-            geoTagPostal = "0"
- 
-        # assemble the scope string 
-        # ||country||state||county||city|zip
-        geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-        if c.initiative and c.initiative['scope'] != geoTagString:
-            c.initiative['scope'] = geoTagString
-            # need to come back and add 'updateInitiativeChildren' when it is written
-            #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
-            wchanges = 1
-
-
-        # set the initiative scope coming from a geoSearch page
-        if 'initiativeRegionScope' in request.params:
-            scope = request.params['initiativeRegionScope']
-        else:
-            scope = '0|0|0|0|0|0|0|0|0|0'
-            
-        #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
-        c.level = scope
-            
-        c.saveMessage = "Changes saved."
-            
+       
         return render('/derived/6_initiative_edit.bootstrap')
     
     def initiativeCheck(self):
@@ -292,6 +264,18 @@ class InitiativeController(BaseController):
                 
         dbHelpers.commit(c.initiative)
         revisionLib.Revision(c.authuser, c.initiative)
+
+        # now that the initiative edits have been commited, update the scopeProps for the template to use:
+        scopeProps = utils.getPublicScope(c.initiative)
+        scopeName = scopeProps['name'].title()
+        scopeLevel = scopeProps['level'].title()
+        if scopeLevel == 'Earth':
+            c.scopeTitle = scopeName
+        else:
+            c.scopeTitle = scopeLevel + ' of ' + scopeName
+        c.scopeFlag = scopeProps['flag']
+        c.scopeHref = scopeProps['href']
+
 
         c.saveMessage = "Changes saved."
         
@@ -417,7 +401,7 @@ class InitiativeController(BaseController):
         c.initiative['views'] = str(views)
         dbHelpers.commit(c.initiative)
 
-        c.lgPhoto = True
+        c.initiativeHome = True
             
         return render('/derived/6_initiative_home.bootstrap')
         
