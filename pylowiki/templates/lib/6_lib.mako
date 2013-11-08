@@ -733,6 +733,8 @@
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
+        elif objType == 'initiative':
+            return initiativeLink(thing, **kwargs)
         elif objType == 'comment':
             if thing.objType == 'revision':
                 return commentLink(thing, dparent, **kwargs)

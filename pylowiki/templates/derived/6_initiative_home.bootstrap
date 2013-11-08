@@ -24,18 +24,20 @@
     ${ihelpers.showBackground()}
     <h4 class="initiative-title">Proposal</h4>
     ${ihelpers.showProposal()}
-    <hr>
-    <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
-    ${ihelpers.listResources()}
+
 
     % if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
-        <br>
         ${ihelpers.initiativeModerationPanel(c.initiative)}
+        ${lib_6.revisionHistory(c.revisions, c.initiative)}
+        <hr>
+        <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+        ${ihelpers.listResources()}
+        <br>
         % if c.initiative.objType != 'initiativeUnpublished':
             <hr>
-            <h4 class="initiative-title">Arguements</h4>
+            <h4 class="initiative-title">Arguments</h4>
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif
