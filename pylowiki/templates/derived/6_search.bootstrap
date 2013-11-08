@@ -7,59 +7,61 @@
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="span2">
+    <div class="span2 search-left-column">
         % if c.searchType == 'region':
             <img class="thumbnail tight flag pull-left" src="${c.flag}">
         % endif
-        <ul class="nav nav-tabs tabs-left civ-search">
-            <li ng-class="showingInitiatives.class">
-                <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
-                    <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
-                    <span class="pull-right">(${c.numInitiatives})</span>
-                </a>
-            </li>
-            <li ng-class="showingWorkshops.class">
-                <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                    <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
-                    <span class="pull-right">(${c.numWorkshops})</span>
-                </a>
-            </li>
-            <li ng-class="showingIdeas.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                    <span class="pull-left"><i class="icon-lightbulb"></i> Ideas </span>
-                    <span class="pull-right">(${c.numIdeas})</span>
-                </a>
-            </li>
-            % if c.numUsers != 0 or c.searchType == "name":
-                <li ng-class="showingPeople.class">
-                    <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                        <span class="pull-left"><i class="icon-user"></i> People </span>
-                        <span class="pull-right">(${c.numUsers})</span>
+        <div class="tabbable tabs-left civ-search">
+            <ul class="nav nav-tabs">
+                <li ng-class="showingInitiatives.class">
+                    <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
+                        <span class="pull-left"><i class="icon-file-text"></i> Initiatives </span>
+                        <span class="pull-right">(${c.numInitiatives})</span>
                     </a>
                 </li>
-            % endif
-            <li ng-class="showingResources.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
-                    <span class="pull-left"><i class="icon-link"></i> Resources </span>
-                    <span class="pull-right">(${c.numResources})</span>
-                </a>
-            </li>
-            <li ng-class="showingDiscussions.class">
-                <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
-                    <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
-                    <span class="pull-right">(${c.numDiscussions})</span>
-                </a>
-            </li>
-            <li ng-class="showingPhotos.class">
-                <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
-                    <span class="pull-left"><i class="icon-picture"></i> Photos </span>
-                    <span class="pull-right">(${c.numPhotos})</span>
-                </a>
-            </li>
-        </ul>
+                <li ng-class="showingWorkshops.class">
+                    <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
+                        <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
+                        <span class="pull-right">(${c.numWorkshops})</span>
+                    </a>
+                </li>
+                <li ng-class="showingIdeas.class">
+                    <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
+                        <span class="pull-left"><i class="icon-lightbulb"></i> Ideas </span>
+                        <span class="pull-right">(${c.numIdeas})</span>
+                    </a>
+                </li>
+                % if c.numUsers != 0 or c.searchType == "name":
+                    <li ng-class="showingPeople.class">
+                        <a href="#users" class="green green-hover" ng-click="searchPeople()">
+                            <span class="pull-left"><i class="icon-user"></i> People </span>
+                            <span class="pull-right">(${c.numUsers})</span>
+                        </a>
+                    </li>
+                % endif
+                <li ng-class="showingResources.class">
+                    <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
+                        <span class="pull-left"><i class="icon-link"></i> Resources </span>
+                        <span class="pull-right">(${c.numResources})</span>
+                    </a>
+                </li>
+                <li ng-class="showingDiscussions.class">
+                    <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
+                        <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
+                        <span class="pull-right">(${c.numDiscussions})</span>
+                    </a>
+                </li>
+                <li ng-class="showingPhotos.class">
+                    <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
+                        <span class="pull-left"><i class="icon-picture"></i> Photos </span>
+                        <span class="pull-right">(${c.numPhotos})</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 
-    <div class="span7">
+    <div class="span7 search-middle-column">
         <div class="row-fluid">
             <h2 class="lead geoName">
             % if c.searchType == 'region':
@@ -479,78 +481,74 @@
                 </div>
             </div><!-- tab-content -->
         </div><!-- tabbable tabs-left civ-search -->
-    </div><!-- span9 -->
-    % if c.searchType == 'region':
-        <div class="span3 well search-side-bar">
-            % if c.geoInfo:
-                <form class="form-horizontal stats">
-                    <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Population:</label>
-                        <div class="controls">
-                            <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Median Age:</label>
-                        <div class="controls">
-                            <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Persons per Household:</label>
-                        <div class="controls">
-                            <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
-                        </div>
-                    </div>
-                    % if 'Postal Code' in c.searchQuery:
-                        <hr class="stats">
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Income per Household:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Avg House Value:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                    % endif
-                </form>
-            % else:
-                <div class="span12">
-                    <em class="grey">Stats are not yet available for this region.</em>
-                </div>
-            % endif
-        </div>
-    % endif
+    </div><!-- span7 -->
     % if c.searchType == 'region' or c.searchType == 'tag':
-        <div class="span3 well search-side-bar grey pull-right">
-            <span>Top Rated Photo:
-                % if c.authuser:
-                    <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
-                    </a>
-                % else:
-                    <a href="/login" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
-                    </a>
-                % endif
-            </span>
-            % if c.photos:
-                <img class="thumbnail tight" src="${c.backgroundPhoto}">
-                Posted by ${lib_6.userLink(c.backgroundAuthor)}
-            % else:
-                <div class="alert photo-alert">
-                  <strong>No photos!</strong> Be the first to add one.
+        <div class="span2 search-right-column">
+            % if c.searchType == 'region' and c.geoInfo:
+                <div class="well">
+                    <form class="form-horizontal stats">
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Population:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Median Age:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Persons per Household:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        % if 'Postal Code' in c.searchQuery:
+                            <hr class="stats">
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                        % endif
+                    </form>
                 </div>
             % endif
-        </div>
+            <div class="well">
+                <span>Top Rated Photo:
+                    % if c.authuser:
+                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                        </a>
+                    % else:
+                        <a href="/login" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                        </a>
+                    % endif
+                </span>
+                % if c.photos:
+                    <img class="thumbnail tight" src="${c.backgroundPhoto}">
+                    Posted by ${lib_6.userLink(c.backgroundAuthor)}
+                % else:
+                    <div class="alert photo-alert">
+                      <strong>No photos!</strong> Be the first to add one.
+                    </div>
+                % endif
+            </div>
+        </div> <!-- span3 search-right-column -->
     % endif
 </div><!-- row-fluid -->
 

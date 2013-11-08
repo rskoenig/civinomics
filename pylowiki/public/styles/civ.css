@@ -26,6 +26,9 @@ html,body{
   }
 }
 
+h1,h2,h3,h4,h5{
+  font-weight: 500;
+}
 
 /* Wrapper for page content to push down footer; */
 #wrap {
@@ -179,6 +182,8 @@ color: #999;
 
 .civ-search{
   margin-top: 30px;
+  border-top: none;
+  border-bottom: none;
 }
 
 .civ-search > .nav.nav-tabs > li > a{
@@ -206,6 +211,7 @@ color: #999;
 .civ-search.tabs-left > .nav-tabs{
     border-right:1px solid #ffffff;
 }
+
 .loading-civ{
     margin-top:10%;
     margin-left:45%;
@@ -329,7 +335,7 @@ h1.workshop-title{
   }
 }
 
-@media (max-width: 1020px){
+@media (max-width: 600px){
   .logo.logo-lg{
     background-image: url('/images/logo_simple_medlg.png');
     height: 40px;
@@ -885,15 +891,15 @@ textarea.comment-reply{
 }
 
 .admin{
-    background-color:#d9bdff;
+    background-color:#cebdff;
 }
 
 .facilitator{
-    background-color:#c4ffbf;
+    background-color:#cebdff;
 }
 
 .listener{
-    background-color:#d9edf7;
+    background-color:#cebdff;
 }
 
 .listener-name{
@@ -1043,6 +1049,7 @@ td.scope-icon{
 
 .voteBlock{
   padding:2px;
+  background-color: whitesmoke !important;
 }
 
 .voteBlock.ideaListing{
@@ -1092,6 +1099,35 @@ a.yesVote, a.noVote{
   padding-left: 40px;
   width: 165px;
   background-color:whitesmoke;
+}
+
+.initiative-well-wrapper{
+  position: fixed;
+  width: 362px;
+}
+
+.initiative-well-wrapper:before{
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 0px;
+  top: 96.2%;
+  border: 100px solid;
+  border-left-width: 181px;
+  border-right-width: 181px;
+  border-color: whitesmoke transparent transparent transparent;
+}
+
+.well.initiative-well{
+  margin-top: 0;
+  padding-top: 10px;
+  background-color:whitesmoke;
+  position: relative;
+  -webkit-border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  border-radius: 5px 5px 0 0;
+  border-bottom-width: 0;
 }
 
 .oddComment{
@@ -1237,6 +1273,12 @@ ul.listeners > li {
     padding-bottom:0;
     margin-bottom:0;
 }
+
+.no-top{
+    padding-top:0;
+    margin-top:0;
+}
+
 .gallery .noShow{
     display:none;
 }
@@ -1749,6 +1791,10 @@ li.thumbnail-gallery{
   margin-bottom: 4px;
 }
 
+.bottom-space-med{
+  margin-bottom: 20px;
+}
+
 .left-indent{
   margin-left: 20px;
 }
@@ -1823,6 +1869,10 @@ li.thumbnail-gallery{
   display: none;
 }
 
+.btn-group.facebook{
+  text-align: left;
+}
+
 .icon-facebook-sign{
   color: #4c66a4;
 }
@@ -1843,17 +1893,6 @@ li.thumbnail-gallery{
 
 .well.searchListing{
   opacity: 0.9;
-}
-
-.well.search-side-bar{
-  opacity: 0.9;
-  padding: 10px;
-  min-width: 220px;
-  margin-bottom: 8px;
-}
-
-.span.well.search-side-bar{
-  margin-left: 0
 }
 
 .table.plain{
@@ -1897,7 +1936,7 @@ text-align: right;
 }
 
 .thumbnail.flag, .thumbnail.large-flag{
-  width: 150px;
+  width: 175px;
   margin: 0 auto 10px;
 }
 
@@ -1913,11 +1952,15 @@ text-align: right;
 }
 
 .small-flag{
-  width:40px; 
+  width:40px !important; 
   height: 27px;
   padding: 0px;
   display: inline;
   border: none;
+}
+
+.small-flag.border{
+  border: border: 1px solid #ddd;
 }
 
 .thumbnail.tight{
@@ -2037,6 +2080,10 @@ p.description:first-letter {
   padding-top: 4px;
 }
 
+.well.initiative-panel{
+  box-shadow: none;
+}
+
 a.search.toggle :active{
   color: #000000;
 }
@@ -2063,6 +2110,11 @@ h1 .label.workshop-tag{
   margin-left: 5px;
   color: #4c66a4;
 }
+
+.share-icons .icon-rss{
+  color: #D15D00;
+}
+
 .share-icons.contrast a i{
   color: #fff;
 }
@@ -2073,7 +2125,7 @@ h1 .label.workshop-tag{
   color: #007edd;
 }
 .share-icons a i.icon-rss:hover{
-  color: #ffea00;
+  color: #ff7405;
 }
 .share-icons a i.icon-envelope:hover{
   color: #ff3333;
@@ -2494,7 +2546,7 @@ margin-left: 4.2%;
   border-radius: 0px;
 }
 
-@media (max-width: 1180px){
+@media (max-width: 680px){
   .splash-nav .nav-item{
     font-size: 16px
   }  
@@ -2717,3 +2769,35 @@ a.no-highlight:hover{
 .forgot-div{
   display:inline;
 }
+
+.search-left-column{
+  min-width: 185px;
+}
+.search-middle-column{
+  min-width: 550px;
+}
+
+.search-right-column{
+  opacity: 0.9;
+  padding: 10px;
+  min-width: 250px;
+  margin-bottom: 8px;
+}
+
+.well.search-right-column{
+  margin-left: 0
+}
+
+@media (max-width: 1200px){
+  .row-fluid .span7.search-middle-column{
+    width: 77%;
+  }
+}
+
+@media (max-width: 990px){
+  .search-right-column{
+    display: none !important;
+  }
+}
+
+
