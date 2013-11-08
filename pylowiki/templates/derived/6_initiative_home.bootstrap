@@ -10,9 +10,6 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-    % if c.initiative.objType != 'revision':
-        <div class="span2 offset10"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a></div>
-    % endif
     <h4 class="initiative-title">Summary</h4>
     ${c.initiative['description']}
     <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>

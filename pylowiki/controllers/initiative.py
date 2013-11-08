@@ -68,11 +68,16 @@ class InitiativeController(BaseController):
             abort(404)
 
         
-        # only the author or an admin can edit  
+        # only the author or an admin can edit 
+        if c.user['email'] != c.authuser['email'] and not userLib.isAdmin(c.authuser.id):
+            c.iPrivs = False
+        else:
+            c.iPrivs = True
+
         if action in adminList:
             if 'user' not in session:
                 abort(404)
-            if c.user['email'] != c.authuser['email'] and not userLib.isAdmin(c.authuser.id):
+            if c.iPrivs == False:
                 abort(404)
                 
             c.complete = self.initiativeCheck()
@@ -163,6 +168,8 @@ class InitiativeController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
+
+        c.editInitiative = True
        
         return render('/derived/6_initiative_edit.bootstrap')
     
@@ -194,6 +201,20 @@ class InitiativeController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
+
+        if 'public' in request.params:
+            log.info("got %s"%request.params['public'])
+        if 'public' in request.params and request.params['public'] == 'publish':
+            if c.complete and c.initiative['public'] == '0':
+                c.initiative['public'] = '1'
+                c.saveMessage = "Your initiative is now live! It is publicly viewable."
+        elif 'public' in request.params and request.params['public'] == 'unpublish':
+            if c.initiative['public'] == '1':
+                c.initiative['public'] = '0'
+                c.saveMessage = "Your initiative has been unpublished. It is no longer publicy viewable."
+
+        c.editInitiative = True
+
         return render('/derived/6_initiative_edit.bootstrap')
         
     def initiativeEditHandler(self):
@@ -217,13 +238,7 @@ class InitiativeController(BaseController):
             c.initiative['background'] = request.params['background']
         if 'proposal' in request.params:
             c.initiative['proposal'] = request.params['proposal']
-        
-        
-        if 'public' in request.params:
-            log.info("got %s"%request.params['public'])
-        if 'public' in request.params and request.params['public'] == 'yes':
-            if c.complete and c.initiative['public'] == '0':
-                c.initiative['public'] = '1'
+
 
         # update the scope based on info in the scope dropdown selector
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
@@ -250,7 +265,7 @@ class InitiativeController(BaseController):
             geoTagPostal = request.params['geoTagPostal']
         else:
             geoTagPostal = "0"
- 
+
         # assemble the scope string 
         # ||country||state||county||city|zip
         geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
@@ -295,6 +310,8 @@ class InitiativeController(BaseController):
             c.postal = "0"
 
         c.saveMessage = "Changes saved."
+
+        c.editInitiative = True
         
         return render('/derived/6_initiative_edit.bootstrap')
         
@@ -383,7 +400,7 @@ class InitiativeController(BaseController):
                 if not clientHeight or clientHeight == 'null':
                     clientHeight = -1
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
-            image = imageLib.resizeImage(image, imageHash, 480, 480)
+            image = imageLib.resizeImage(image, imageHash, 720, 720)
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
             image = imageLib.resizeImage(image, imageHash, 160, 160)
             image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')

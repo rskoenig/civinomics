@@ -195,8 +195,6 @@
         ${c.saveMessage}
         </div>
     % endif
-    <span class="pull-right"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">View Initiative</a></span>
-    <div class="spacer"></div>
     <div class="row-fluid edit-initiative">
         <div class="span12">
         <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
@@ -229,19 +227,21 @@
             <div class="row-fluid">
                 <div class="span6">
                     <label for="tag" class="control-label" required><strong>Initiative category:</strong></label>
-                    <select name="tag" id="tag">
-                    % if c.initiative['public'] == '0':
-                        <option value="">Choose one</option>
-                    % endif
-                    % for tag in tagList:
-                        <% 
-                            selected = ""
-                            if c.initiative['tags'] == tag:
-                                selected = "selected"
-                        %>
-                        <option value="${tag}" ${selected}/> ${tag}</option>
-                    % endfor
-                    </select>
+                    <div class="span8 offset4">
+                        <select name="tag" id="tag">
+                        % if c.initiative['public'] == '0':
+                            <option value="">Choose one</option>
+                        % endif
+                        % for tag in tagList:
+                            <% 
+                                selected = ""
+                                if c.initiative['tags'] == tag:
+                                    selected = "selected"
+                            %>
+                            <option value="${tag}" ${selected}/> ${tag}</option>
+                        % endfor
+                        </select>
+                    </div>
                 </div>
                 <div class="span6">
                     <div class="alert alert-info">
@@ -321,7 +321,7 @@
                 </div>
             </div>
             <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
-            <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>
+            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit">Save Changes</button>
         </form>
         <br>
         <div class="row-fluid">
