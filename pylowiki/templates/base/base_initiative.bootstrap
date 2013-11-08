@@ -41,18 +41,40 @@
         <div class="span4" id="sidebar" style="position:relative;">
                 <div class="initiative-well-wrapper">
                     <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
-                        % if c.initiative['public'] == '0':
-                            % if c.complete:
-                                <label for="public" class="control-label">
-                                All of the required information has been added to your initiative. When you are satisfied that it is ready, 
-                                click on this checkbox to make your initiative public.</label>
-                                Make Public: <input type="checkbox" name="public" value="yes"><div class="spacer"></div>
-                            % else:
-                                You will be to make this initiative public when all of the required information has been filled out and a 
-                                picture uploaded.
+                        % if c.iPrivs:
+                            <div class="row-fluid">
+                                <span class="pull-right">
+                                    % if c.editInitiative:
+                                        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">View Initiative</a>
+                                    % else:
+                                        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
+                                    % endif
+                                </span>
+                            </div>
+                            <br>
+                            % if c.editInitiative:
+                                <div class="row-fluid">
+                                    % if c.initiative['public'] == '0' and c.complete:
+                                        <label for="public" class="control-label">
+                                        All of the required information has been added to your initiative. When you are satisfied that it is ready, click 'Publish' to make your initiative public.</label>
+                                        <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
+                                            <button type="submit" class="btn btn-large btn-success pull-right" name="public" value="publish">Publish</button>
+                                        </form>
+                                    % elif c.initiative['public'] == '0':
+                                        <p>You will be to make this initiative public when all of the required information has been filled out and a 
+                                        picture uploaded.</p>
+                                        <button class="btn btn-large btn-warning pull-right" disabled>Publish</button>
+                                    % else:
+                                        <p>Unpublish your workshop if you would like to remove your initiative from public listings. It will no longer be accessible by anyone but you.</p>
+                                        <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
+                                            <button type="submit" class="btn btn-large btn-warning pull-right" name="public" value="unpublish">Unpublish</button>
+                                        </form>
+                                    % endif
+                                </div>
                             % endif
-                        % elif  c.initiative['public'] == '1':
-                            <h4 class="section-header smaller section-header">Vote</h4>
+                        % endif
+                        % if c.initiative['public'] == '1' and not c.editInitiative:
+                            <h4 class="section-header smaller section-header-inner">Vote</h4>
                             <div class="row-fluid">
                                 <div class="span6 offset3">
                                     ${lib_6.yesNoVote(c.initiative, 'detail')}
