@@ -2627,6 +2627,66 @@ margin-right: -13px;
   background-color: rgba(0,0,0,0);
 }
 
+.initiative-title{
+  text-transform:uppercase;
+}
+
+.initiative-title.edit{
+  /*background-color:#dff0d8;*/
+  background-color: whitesmoke;
+  /*margin-left: -19px;
+  margin-right: -19px;*/
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+}
+.initiative-info h2{
+  text-transform: uppercase;
+  font-size: 17.5px;
+}
+
+#initiative-dashboard.affix{
+  right: 0%;
+  width: 360px;
+}
+
+.commentRole{
+  text-transform: uppercase;
+  line-height: 20px;
+  padding-top: 8px;
+  padding-right: 10px;
+}
+
+.accordion-heading.against{
+  background-color: #f2dede
+}
+.accordion-heading.favor{
+  background-color: #dff0d8;
+}
+.accordion-heading.neutral{
+  background-color: #e0e0e0;
+}
+
+a.no-highlight{
+  color:#333333;
+}
+a.no-highlight:hover{
+    color: #D15D00;
+}
+
+.edit-initiative .span6 .alert.alert-info{
+  margin-top: 25px;
+}
+
+.initiative-thumb{
+  width: 85px;
+  margin-top: 15px;
+}
+
+
 .btn.nav-login{
   color: white;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);

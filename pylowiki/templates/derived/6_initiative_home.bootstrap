@@ -17,7 +17,7 @@
     ${c.initiative['description']}
     <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
     ${c.initiative['funding_summary']}
-    $${locale.format("%d", int(c.initiative['cost']) , grouping=True)}
+    ${c.initiative['cost']}
     <hr>
     <h4 class="initiative-title">Authors</h4>
         ${ihelpers.showAuthor(c.initiative)}
