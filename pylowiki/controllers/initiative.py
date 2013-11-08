@@ -178,19 +178,6 @@ class InitiativeController(BaseController):
         return complete
         
     def initiativeEdit(self):
-        
-        return render('/derived/6_initiative_edit.bootstrap')
-        
-    def initiativeEditHandler(self):
-        iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
-        if 'title' in request.params:
-            c.initiative['title'] = request.params['title']
-            c.initiative['url'] = utils.urlify(c.initiative['title'])
-        if 'description' in request.params:
-            c.initiative['description'] = request.params['description']
-        if 'cost' in request.params:
-            c.initiative['cost'] = request.params['cost']
-
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
@@ -207,6 +194,36 @@ class InitiativeController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
+        return render('/derived/6_initiative_edit.bootstrap')
+        
+    def initiativeEditHandler(self):
+        iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
+        if 'title' in request.params:
+            c.initiative['title'] = request.params['title']
+            c.initiative['url'] = utils.urlify(c.initiative['title'])
+        if 'description' in request.params:
+            c.initiative['description'] = request.params['description']
+        if 'funding_summary' in request.params:
+            c.initiative['funding_summary'] = request.params['funding_summary']
+        if 'cost' in request.params:
+            cost = request.params['cost']
+            cost = cost.replace(',','')
+            cost = cost.replace(' ','')
+            c.initiative['cost'] = int(cost)
+
+        if 'tag' in request.params:
+            c.initiative['tags'] = request.params['tag']
+        if 'background' in request.params:
+            c.initiative['background'] = request.params['background']
+        if 'proposal' in request.params:
+            c.initiative['proposal'] = request.params['proposal']
+        
+        
+        if 'public' in request.params:
+            log.info("got %s"%request.params['public'])
+        if 'public' in request.params and request.params['public'] == 'yes':
+            if c.complete and c.initiative['public'] == '0':
+                c.initiative['public'] = '1'
 
         # update the scope based on info in the scope dropdown selector
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
@@ -242,22 +259,6 @@ class InitiativeController(BaseController):
             # need to come back and add 'updateInitiativeChildren' when it is written
             #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             wchanges = 1
-
-
-        if 'tag' in request.params:
-            c.initiative['tags'] = request.params['tag']
-        if 'background' in request.params:
-            c.initiative['background'] = request.params['background']
-        if 'proposal' in request.params:
-            c.initiative['proposal'] = request.params['proposal']
-        if 'funding_summary' in request.params:
-            c.initiative['funding_summary'] = request.params['funding_summary']
-        
-        if 'public' in request.params:
-            log.info("got %s"%request.params['public'])
-        if 'public' in request.params and request.params['public'] == 'yes':
-            if c.complete and c.initiative['public'] == '0':
-                c.initiative['public'] = '1'
                 
         for key in iKeys:
             initiativeLib.updateInitiativeChildren(c.initiative, key)
@@ -276,6 +277,22 @@ class InitiativeController(BaseController):
         c.scopeFlag = scopeProps['flag']
         c.scopeHref = scopeProps['href']
 
+        # initialize the scope dropdown selector in the edit template
+        c.states = geoInfoLib.getStateList('United-States')
+        # ||country||state||county||city|zip
+        if c.initiative['scope'] != '':
+            geoTags = c.initiative['scope'].split('|')
+            c.country = utils.geoDeurlify(geoTags[2])
+            c.state = utils.geoDeurlify(geoTags[4])
+            c.county = utils.geoDeurlify(geoTags[6])
+            c.city = utils.geoDeurlify(geoTags[8])
+            c.postal = utils.geoDeurlify(geoTags[9])
+        else:
+            c.country = "0"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
+            c.postal = "0"
 
         c.saveMessage = "Changes saved."
         

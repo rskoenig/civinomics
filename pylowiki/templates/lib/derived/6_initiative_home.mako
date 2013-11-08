@@ -200,15 +200,6 @@
     <div class="row-fluid edit-initiative">
         <div class="span12">
         <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
-            % if c.complete and c.initiative['public'] == '0':
-                <label for="public" class="control-label">
-                All of the required information has been added to your initiative. When you are satisfied that it is ready, 
-                click on this checkbox to make your initiative public.</label>
-                Make Public: <input type="checkbox" name="public" value="yes"><div class="spacer"></div>
-            % elif c.initiative['public'] == '0':
-                You will be to make this initiative public when all of the required information has been filled out and a 
-                picture uploaded.
-            % endif
             <div class="row-fluid">
                 <h3 class="initiative-title edit">1. Basics</h3>
             </div><!-- row-fluid -->
@@ -516,7 +507,7 @@
         underPostalMessage = ""
         if c.country!= "0":
             countrySelected = "selected"
-            states = getStateList("united-states")
+            states = c.states
             countyMessage = "Leave 'State' blank if your initiative applies to the entire country."
         endif
     %>

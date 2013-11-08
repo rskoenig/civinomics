@@ -1,3 +1,8 @@
+
+<%!
+   import locale
+   locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+%>
 <%inherit file="/base/base_initiative.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
@@ -8,9 +13,9 @@
     <div class="span2 offset10"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a></div>
     <h4 class="initiative-title">Summary</h4>
     ${c.initiative['description']}
-    <h4 class="initiative-title">Esitmate Net Fiscal Impact</h4>
+    <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
     ${c.initiative['funding_summary']}
-    ${c.initiative['cost']}
+    $${locale.format("%d", int(c.initiative['cost']) , grouping=True)}
     <hr>
     <h4 class="initiative-title">Authors</h4>
         ${ihelpers.showAuthor(c.initiative)}
