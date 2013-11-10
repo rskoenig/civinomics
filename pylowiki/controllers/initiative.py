@@ -230,7 +230,7 @@ class InitiativeController(BaseController):
             cost = request.params['cost']
             cost = cost.replace(',','')
             cost = cost.replace(' ','')
-            c.initiative['cost'] = int(cost)
+            c.initiative['cost'] = cost
 
         if 'tag' in request.params:
             c.initiative['tags'] = request.params['tag']
