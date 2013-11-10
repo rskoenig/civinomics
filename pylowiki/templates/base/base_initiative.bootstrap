@@ -41,6 +41,9 @@
         <div class="span4" id="sidebar" style="position:relative;">
                 <div class="initiative-well-wrapper">
                     <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
+                        % if c.initiative.objType == 'revision':
+                            <a href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show">View Current Version of Initiative</a>
+                        % endif
                         % if c.iPrivs:
                             <div class="row-fluid">
                                 <span class="pull-right">
@@ -51,9 +54,7 @@
                                     % else:
                                         <em> You can't edit previous revisions of the initiative.</em><br />
                                     % endif
-                                    % if c.initiative.objType == 'revision':
-                                        <a href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show">View Current Version of Initiative</a>
-                                    % endif
+
                                 </span>
                             </div>
                             <br>

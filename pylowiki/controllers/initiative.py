@@ -430,10 +430,11 @@ class InitiativeController(BaseController):
         
         if c.initiative.objType == 'initiative' and 'views' not in c.initiative:
             c.initiative['views'] = u'0'
-            
-        views = int(c.initiative['views']) + 1
-        c.initiative['views'] = str(views)
-        dbHelpers.commit(c.initiative)
+        
+        if c.initiative.objType != 'revision':    
+            views = int(c.initiative['views']) + 1
+            c.initiative['views'] = str(views)
+            dbHelpers.commit(c.initiative)
 
         c.initiativeHome = True
             
