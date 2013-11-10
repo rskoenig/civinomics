@@ -221,6 +221,7 @@ class SearchController(BaseController):
                 entry['backgroundAuthor'] = dict(c.backgroundAuthor)
 
         c.searchQuery = self.query
+        c.searchTitle = self.query.replace("_", " ")
         c.searchType = "tag"
         c.scope = {'level':'earth', 'name':'all'}
         if iPhoneApp:

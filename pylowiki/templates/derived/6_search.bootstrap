@@ -67,7 +67,7 @@
             % if c.searchType == 'region':
                 ${c.searchQuery}
             % elif c.searchType == 'tag':
-                ${c.searchQuery}
+                ${c.searchTitle}
             % else:
                 <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
             % endif

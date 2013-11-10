@@ -1628,8 +1628,11 @@
     %>
       % for tag in tagList:
           % if tag and tag != '':
-              <% tagClass = colors[tag] %>
-              <span class="label workshop-tag ${tagClass}" >${tag}</span>
+              <% 
+                tagClass = colors[tag] 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <a class="label workshop-tag ${tagClass}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>
