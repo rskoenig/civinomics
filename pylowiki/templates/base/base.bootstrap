@@ -45,6 +45,12 @@
         $('textarea').autosize();   
       });
    </script>
+   <!-- makes non-local links open in a new tab/window -->
+   <script type="text/javascript">
+      $(document.links).filter(function() {
+          return this.hostname != window.location.hostname;
+      }).attr('target', '_blank');
+   </script>
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
