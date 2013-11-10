@@ -49,7 +49,10 @@
                                     % elif c.initiative.objType != 'revision':
                                         <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
                                     % else:
-                                        <em> You can't edit previous revisions of the initiative.</em>
+                                        <em> You can't edit previous revisions of the initiative.</em><br />
+                                    % endif
+                                    % if c.initiative.objType == 'revision':
+                                        <a href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show">View Current Version of Initiative</a>
                                     % endif
                                 </span>
                             </div>
