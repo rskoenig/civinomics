@@ -27,7 +27,17 @@
                         Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
                         ${lib_6.showTags(c.initiative)}
                     </h4>
-                    % if c.initiativeHome and c.initiative.objType != 'revision':
+                    % if c.iPrivs:
+                        <div style="position: absolute; bottom: 0; right: 0;">
+                            % if c.editInitiative:
+                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                            % elif c.initiative.objType != 'revision':
+                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                            % else:
+                                <p><em> You can't edit previous revisions of the initiative.</em><br /></p>
+                            % endif
+                        </div>
+                    % elif c.initiativeHome and c.initiative.objType != 'revision':
                         <div style="position: absolute; bottom: 0; right: 0;">
                             ${ihelpers.watchButton()}
                         </div>
@@ -45,21 +55,9 @@
                             <a href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show">View Current Version of Initiative</a>
                         % endif
                         % if c.iPrivs:
-                            <div class="row-fluid">
-                                <span class="pull-right">
-                                    % if c.editInitiative:
-                                        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">View Initiative</a>
-                                    % elif c.initiative.objType != 'revision':
-                                        <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
-                                    % else:
-                                        <em> You can't edit previous revisions of the initiative.</em><br />
-                                    % endif
-
-                                </span>
-                            </div>
-                            <br>
                             % if c.editInitiative:
                                 <div class="row-fluid">
+                                    <br>
                                     % if c.initiative['public'] == '0' and c.complete:
                                         <label for="public" class="control-label">
                                         All of the required information has been added to your initiative. When you are satisfied that it is ready, click 'Publish' to make your initiative public.</label>
@@ -92,10 +90,11 @@
                                 <div class="row-fluid centered">
                                     <span class = "share-icons">
                                         ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True)}
+
                                         ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
-                                        % if c.initiative['public'] == '1':
+                                        <!-- % if c.initiative['public'] == '1':
                                             <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-                                        %endif
+                                        #%endif -->
                                     </span>
                                 
                                 </div>
@@ -107,6 +106,7 @@
                                     </div>
                                 </div>
                             % endif
+                            <!-- 
                             <h4 class="section-header smaller section-header-inner">Fund It</h4>
                             <br>
                             <div>$136,000 of ${c.initiative['cost']}</div>
@@ -117,8 +117,12 @@
                             <div class="row-fluid centered">
                                 <button class="btn-large btn-success btn">Fund Initiative</button>
                             </div>
+                            -->
                         % endif 
                     </div><!-- section-wrapper -->
+                </div>
+                <div class="well">
+                    Resources
                 </div>
         </div><!-- span4 -->
     </div><!-- row-fluid -->
