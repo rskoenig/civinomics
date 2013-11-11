@@ -16,8 +16,7 @@
     ${c.initiative['funding_summary']}
     ${c.initiative['cost']}
     <hr>
-    <h4 class="initiative-title">Authors</h4>
-        ${ihelpers.showAuthor(c.initiative)}
+    ${ihelpers.showAuthor(c.initiative)}
     <hr>
     <h4 class="initiative-title">Background</h4>
     ${ihelpers.showBackground()}
