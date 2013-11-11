@@ -1869,6 +1869,10 @@ li.thumbnail-gallery{
   display: none;
 }
 
+.initiative-well-wrapper .fb_dialog_advanced[style]{
+  left: -150% !important;
+}
+
 .btn-group.facebook{
   text-align: left;
 }
