@@ -2803,3 +2803,7 @@ a.no-highlight:hover{
     display: none !important;
   }
 }
+
+.help-text.error{
+  color: #b94a48
+}
