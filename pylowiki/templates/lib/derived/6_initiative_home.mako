@@ -200,9 +200,9 @@
     % endif
     <div class="row-fluid edit-initiative">
         <div class="span12">
-        <form method="POST" name="edit_initiative" id="edit_initiative" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
+        <form method="POST" name="edit_initiative_basic" id="edit_initiative_basic" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
             <div class="row-fluid">
-                <h3 class="initiative-title edit">1. Basics</h3>
+                <h3 class="initiative-title edit no-top">1. Basics</h3>
             </div><!-- row-fluid -->
             <br>
             <div class="row-fluid">
@@ -252,6 +252,9 @@
                     </div>
                 </div>
             </div>
+            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit">Save Changes</button>
+        </form>
+        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
             <div class="row-fluid">
                 <h3 class="initiative-title edit">2. Summary</h3>
             </div><!-- row-fluid -->
@@ -287,7 +290,7 @@
                       <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
                       <span class="add-on">.00</span>
                     </div>
-                    <span class="error help-text" ng-show="edit_initiative.cost.$error.pattern" ng-cloak>Invalid cost value</span>
+                    <span class="error help-text" ng-show="edit_initiative_summary.cost.$error.pattern" ng-cloak>Invalid cost value</span>
                 </div>
                 <div class="span6">
                     <label class="control-label"></label>
@@ -325,7 +328,7 @@
                 </div>
             </div>
             <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
-            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit">Save Changes</button>
+            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
         <br>
         <div class="row-fluid">

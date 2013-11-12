@@ -248,40 +248,41 @@ class InitiativeController(BaseController):
             c.initiative['proposal'] = request.params['proposal']
 
 
-        # update the scope based on info in the scope dropdown selector
-        if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
-            geoTagCountry = request.params['geoTagCountry']
-        else:
-            geoTagCountry = "0"
-            
-        if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
-            geoTagState = request.params['geoTagState']
-        else:
-            geoTagState = "0"
-            
-        if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
-            geoTagCounty = request.params['geoTagCounty']
-        else:
-            geoTagCounty = "0"
-            
-        if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
-            geoTagCity = request.params['geoTagCity']
-        else:
-            geoTagCity = "0"
-            
-        if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
-            geoTagPostal = request.params['geoTagPostal']
-        else:
-            geoTagPostal = "0"
+        # update the scope based on info in the scope dropdown selector, if they're in the submitted form
+        if 'geoTagCountry' in request.params:
+            if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+                geoTagCountry = request.params['geoTagCountry']
+            else:
+                geoTagCountry = "0"
+                
+            if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+                geoTagState = request.params['geoTagState']
+            else:
+                geoTagState = "0"
+                
+            if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+                geoTagCounty = request.params['geoTagCounty']
+            else:
+                geoTagCounty = "0"
+                
+            if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+                geoTagCity = request.params['geoTagCity']
+            else:
+                geoTagCity = "0"
+                
+            if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+                geoTagPostal = request.params['geoTagPostal']
+            else:
+                geoTagPostal = "0"
 
-        # assemble the scope string 
-        # ||country||state||county||city|zip
-        geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-        if c.initiative['scope'] != geoTagString:
-            c.initiative['scope'] = geoTagString
-            # need to come back and add 'updateInitiativeChildren' when it is written
-            #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
-            wchanges = 1
+            # assemble the scope string 
+            # ||country||state||county||city|zip
+            geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
+            if c.initiative['scope'] != geoTagString:
+                c.initiative['scope'] = geoTagString
+                # need to come back and add 'updateInitiativeChildren' when it is written
+                #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
+                wchanges = 1
                 
         for key in iKeys:
             initiativeLib.updateInitiativeChildren(c.initiative, key)
