@@ -336,6 +336,9 @@ class ProfileController(BaseController):
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        if not c.unpublishedActivity:
+            c.unpublishedActivity = []
 
         return render("/derived/6_profile_archives.bootstrap")
         

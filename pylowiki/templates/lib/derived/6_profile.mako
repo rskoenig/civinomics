@@ -405,7 +405,7 @@
                     itemLink = workshopLink + "/" + objType + "/" + item['urlCode'] + "/" + item['url']
             %>
 
-            % if objType.replace("Unpublished", "") == 'photo':
+            % if objType == 'photo':
                 <% 
                     link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/photo/show/" + item['urlCode']
                     activityStr = "added the picture <a href=\"" + link + "\">" + title + "</a>"
@@ -456,7 +456,7 @@
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
-            % else:
+            % elif 'workshopCode' in item:
                 % if item['workshop_searchable'] == '1' or (c.browser == False or c.isAdmin == True or c.isUser == True):
                     % if item['deleted'] == '0':
                         <% 
