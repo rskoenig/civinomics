@@ -300,7 +300,7 @@
                             <div class="row-fluid">
                                 <img src="{{file.thumbnail_url}}">
                                 New Picture Uploaded and Saved
-                                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</button>
+                                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</a>
                             </div><!-- row-fluid -->
                             </form>
                         </div><!-- preview -->
@@ -400,6 +400,7 @@
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
     </div><!-- span12 -->
+</div>
 </%def>
 
 <%def name="initiativeModerationPanel(thing)">
