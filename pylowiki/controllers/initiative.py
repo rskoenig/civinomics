@@ -30,6 +30,8 @@ class InitiativeController(BaseController):
         c.initiative = None
         existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler']
+        c.saveMessageClass = 'alert-success'
+        c.error = False
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
@@ -230,8 +232,14 @@ class InitiativeController(BaseController):
             cost = request.params['cost']
             cost = cost.replace(',','')
             cost = cost.replace(' ','')
-            c.initiative['cost'] = cost
-
+            try:
+                cost = int(cost)
+                c.initiative['cost'] = cost
+            except ValueError:
+                c.error = True
+                errorMessage = "Invalid cost number"
+                c.initiative['cost'] = 0
+            
         if 'tag' in request.params:
             c.initiative['tags'] = request.params['tag']
         if 'background' in request.params:
@@ -309,7 +317,11 @@ class InitiativeController(BaseController):
             c.city = "0"
             c.postal = "0"
 
-        c.saveMessage = "Changes saved."
+        if c.error:
+            c.saveMessageClass = 'alert-error'
+            c.saveMessage = errorMessage
+        else:
+            c.saveMessage = "Changes saved."
 
         c.editInitiative = True
         

@@ -4,6 +4,9 @@
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
     import misaka as m
+
+    import locale
+    locale.setlocale(locale.LC_ALL, 'en_US.utf8')
     
     import logging
     log = logging.getLogger(__name__)
@@ -190,7 +193,7 @@
 
     %>
     % if c.saveMessage and c.saveMessage != '':
-        <div class="alert alert-success">
+        <div class="alert ${c.saveMessageClass}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         ${c.saveMessage}
         </div>
@@ -278,7 +281,6 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
-                    {{test}}
                     <label for="description" class="control-label" required><strong>Estimated cost to complete initiative:</strong></label>
                     <div class="input-prepend input-append">
                       <span class="add-on">$</span>
@@ -290,7 +292,7 @@
                 <div class="span6">
                     <label class="control-label"></label>
                     <div class="alert alert-info">
-                        Acceptable formats include: 500,000  ,  500000   and   -500,000
+                        Acceptable formats include: 500,000  or  500000.
                     </div>
                 </div>
             </div>
@@ -621,5 +623,25 @@
         </span></div><!-- row-fluid -->
     <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
     <br/>
+</%def>
+
+<%def name="showCost(item)">
+    <% 
+        neg = False
+        cost = int(item['cost']) 
+        if cost <= -1:
+            cost = cost * -1
+            neg = True
+    %>
+    <br>
+    <br>
+    <h4>
+        % if neg:
+            <span> - $</span>
+        % else:
+            <span> $</span>
+        % endif
+            <span>${locale.format("%d", cost, grouping=True)}</span>
+    </h4>
 </%def>
 
