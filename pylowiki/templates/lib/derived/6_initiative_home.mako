@@ -197,7 +197,7 @@
     % endif
     <div class="row-fluid edit-initiative">
         <div class="span12">
-        <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
+        <form method="POST" name="edit_initiative" id="edit_initiative" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
             <div class="row-fluid">
                 <h3 class="initiative-title edit">1. Basics</h3>
             </div><!-- row-fluid -->
@@ -205,7 +205,7 @@
             <div class="row-fluid">
                 <div class="span6">
                     <label for="title" class="control-label" required><strong>Initiative Title:</strong></label>
-                    <input type="text" name="title" class="span12" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-cloak>
+                    <input type="text" name="title" class="span12" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-click="clearTitle()" ng-cloak>
                 </div>
                 <div class="span6">
                     <div class="alert alert-info">
@@ -278,17 +278,19 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
+                    {{test}}
                     <label for="description" class="control-label" required><strong>Estimated cost to complete initiative:</strong></label>
                     <div class="input-prepend input-append">
                       <span class="add-on">$</span>
-                      <input type="text" name="cost" value="${c.initiative['cost']}">
+                      <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
                       <span class="add-on">.00</span>
                     </div>
+                    <span class="error help-text" ng-show="edit_initiative.cost.$error.pattern" ng-cloak>Invalid cost value</span>
                 </div>
                 <div class="span6">
                     <label class="control-label"></label>
                     <div class="alert alert-info">
-                        Just a number.
+                        Acceptable formats include: 500,000  ,  500000   and   -500,000
                     </div>
                 </div>
             </div>
