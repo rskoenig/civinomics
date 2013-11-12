@@ -254,9 +254,78 @@
             </div>
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit">Save Changes</button>
         </form>
+        <div class="row-fluid">
+            <h3 class="initiative-title edit">2. Photo</h3>
+        </div><!-- row-fluid -->
+        <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
+            <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                    <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos']) %>
+                    <span class="pull-left">Current Initiative Picture
+                    <div class="spacer"></div>
+                    <img src="${thumbnail_url}">
+                    </span>
+                % else:
+                    <span class="pull-left">Upload a Picture (Required)</span>
+                % endif
+                <span class="btn btn-success btn-large fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
+                <i class="icon-plus icon-white"></i>
+                <span>Picture</span>
+                <input type="file" name="files[]">
+                </span>
+                <!-- The loading indicator is shown during file processing -->
+                <div class="fileupload-loading"></div>
+                <!-- The global progress information -->
+            </div><!-- row-fluid -->
+            <div class="row-fluid">
+                <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+                    <!-- The global progress bar -->
+                    <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                    <!-- The extended global progress information -->
+                    <div class="progress-extended">&nbsp;</div>
+                </div><!-- span10 -->
+            </div><!-- row-fluid -->
+            <!-- The table listing the files available for upload/download -->
+            <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                <tbody><tr data-ng-repeat="file in queue">
+                    <td data-ng-switch="" on="!!file.thumbnail_url">
+                        <div class="preview" data-ng-switch-when="true">
+                            <script type="text/javascript">
+                                function setAction(imageHash) {
+                                    actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
+                                    document.getElementById('fileupload').action = actionURL;
+                                }
+                            </script>
+                            <div class="row-fluid">
+                                <img src="{{file.thumbnail_url}}">
+                                New Picture Uploaded and Saved
+                                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</button>
+                            </div><!-- row-fluid -->
+                            </form>
+                        </div><!-- preview -->
+                        <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
+                            </td>
+                            <td>
+                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Save</span>
+                                </button>
+                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
         <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
             <div class="row-fluid">
-                <h3 class="initiative-title edit">2. Summary</h3>
+                <h3 class="initiative-title edit">3. Summary</h3>
             </div><!-- row-fluid -->
             <br>
             <div class="row-fluid">
@@ -300,7 +369,7 @@
                 </div>
             </div>
             <div class="row-fluid">
-                <h3 class="initiative-title edit">3. Detail</h3>
+                <h3 class="initiative-title edit">4. Detail</h3>
             </div><!-- row-fluid -->
 
             <div class="row-fluid">
@@ -330,79 +399,7 @@
             <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
-        <br>
-        <div class="row-fluid">
-            <h3 class="initiative-title edit">4. Media</h3>
-        </div><!-- row-fluid -->
-        <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
-            <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                    <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos']) %>
-                    <span class="pull-left">Current Initiative Picture
-                    <div class="spacer"></div>
-                    <img src="${thumbnail_url}">
-                    </span>
-                % else:
-                    <span class="pull-left">Upload a Picture (Required)</span>
-                % endif
-                <span class="btn btn-success fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
-                <i class="icon-plus icon-white"></i>
-                <span>Picture</span>
-                <input type="file" name="files[]">
-                </span>
-                <!-- The loading indicator is shown during file processing -->
-                <div class="fileupload-loading"></div>
-                <!-- The global progress information -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
-                    <!-- The global progress bar -->
-                    <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
-                    <!-- The extended global progress information -->
-                    <div class="progress-extended">&nbsp;</div>
-                </div><!-- span10 -->
-            </div><!-- row-fluid -->
-            <!-- The table listing the files available for upload/download -->
-            <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
-                <tbody><tr data-ng-repeat="file in queue">
-                    <td data-ng-switch="" on="!!file.thumbnail_url">
-                        <div class="preview" data-ng-switch-when="true">
-                            <script type="text/javascript">
-                                function setAction(imageHash) {
-                                    actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
-                                    document.getElementById('fileupload').action = actionURL;
-                                }
-                            </script>
-                            <div class="row-fluid">
-                                <img src="{{file.thumbnail_url}}">
-                                New Picture Uploaded and Saved
-                            </div><!-- row-fluid -->
-                            </form>
-                        </div><!-- preview -->
-                        <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
-                            </td>
-                            <td>
-                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
-                                <i class="icon-upload icon-white"></i>
-                                <span>Save</span>
-                                </button>
-                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
-                                <i class="icon-ban-circle icon-white"></i>
-                                <span>Cancel</span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-        </div><!-- span12 -->
-        <div class="span12">
-            </div><!-- span6 -->
-        </div><!-- row-fluid -->
+    </div><!-- span12 -->
 </%def>
 
 <%def name="initiativeModerationPanel(thing)">
