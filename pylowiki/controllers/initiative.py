@@ -176,15 +176,23 @@ class InitiativeController(BaseController):
         return render('/derived/6_initiative_edit.bootstrap')
     
     def initiativeCheck(self):
-        atrList = ['title', 'description', 'cost', 'scope', 'tag', 'background', 'directoryNum_photos', 'pictureHash_photos']
+        atrList = ['title', 'scope', 'tags', 'description', 'funding_summary', 'cost', 'background', 'proposal', 'directoryNum_photos', 'pictureHash_photos']
+        completeList = []
         for atr in atrList:
-            complete = 1
-            if atr not in c.initiative:
+            complete = 0
+            if atr in c.initiative:
+                if c.initiative[atr] != '':
+                    complete = 1
+            else:
                 complete = 0
-            elif c.initiative[atr] == '':
-                complete = 0
+            completeList.append(complete)
+
+        if not 0 in completeList:
+            allComplete = 1
+        else:
+            allComplete = 0
                 
-        return complete
+        return allComplete
         
     def initiativeEdit(self):
         # initialize the scope dropdown selector in the edit template
@@ -325,6 +333,7 @@ class InitiativeController(BaseController):
             c.saveMessage = "Changes saved."
 
         c.editInitiative = True
+        c.complete = self.initiativeCheck()
         
         return render('/derived/6_initiative_edit.bootstrap')
         
@@ -413,7 +422,7 @@ class InitiativeController(BaseController):
                 if not clientHeight or clientHeight == 'null':
                     clientHeight = -1
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
-            image = imageLib.resizeImage(image, imageHash, 720, 720)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
             image = imageLib.resizeImage(image, imageHash, 160, 160)
             image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
