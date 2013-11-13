@@ -151,6 +151,9 @@ class SearchController(BaseController):
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
+        if self.query == 'civinomicon':            
+            c.backgroundPhoto = '/images/civinomicon/civinomicon_bg.png'
+
         if iPhoneApp:
             entry = {}
             entry['numUsers'] = c.numUsers
