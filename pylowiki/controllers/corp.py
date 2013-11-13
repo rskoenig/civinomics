@@ -700,6 +700,18 @@ class CorpController(BaseController):
         c.articles=[]
        
         article={}
+        article['title']="Community gathers to discuss downtown"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15440'
+        article['date']='11.08.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomicon Seeks to Fix Public Discourse"
+        article['link']='http://www.santacruz.com/news/2013/11/05/civinomicon_seeks_to_fix_local_public_discourse'
+        article['date']='11.05.2013'
+        article['source']='Santa Cruz Weekly'
+        c.articles.append(article)
+        article={}
         article['title']="Tech startup Civinomics to host civic engagement conference"
         article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72'
         article['date']='10.25.2013'
