@@ -85,8 +85,9 @@
         if c.w:
             if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
                 shareOk = True
-        if c.initiative['public'] == '1':
-            shareOk = True
+        if c.initiative:
+            if c.initiative['public'] == '1':
+                shareOk = True
     %>
     % if shareOk:
         <div id="fb-root"></div>
