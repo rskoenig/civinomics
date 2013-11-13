@@ -33,17 +33,27 @@
         county = scopeList[6].replace("-", " ")
         city = scopeList[8].replace("-", " ")
         postalCode = scopeList[9]
-        scopeString = "%s, State of %s"%(country.title(), state.title())
-        if city == '0':
-            scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
+        if country == '0':
+            scopeString = '<span class="badge badge-info">Planet Earth</span>'
         else:
-            scopeString += ', County of %s'%county.title()
-        if postalCode == '0' and city != '0':
-            scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
-        elif postalCode != '0':
-            scopeString += ", City of %s"%city.title()
-        if postalCode != '0':
-            scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
+            scopeString = "Planet Earth"
+            if state == '0':
+                scopeString += ', <span class="badge badge-info">Country of %s</span>'%country.title()
+            else:
+                scopeString += ', Country of %s'%country.title()
+                if county == '0':
+                    scopeString += ', <span class="badge badge-info">State of %s</span>'%state.title()
+                else:
+                    scopeString += ', State of %s'%state.title()
+                    if city == '0':
+                        scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
+                    else:
+                        scopeString += ', County of %s'%county.title()
+                        if postalCode == '0':
+                            scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
+                        else:
+                            scopeString += ", City of %s"%city.title()
+                            scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
     %>
     ${scopeString | n}
 </%def>
