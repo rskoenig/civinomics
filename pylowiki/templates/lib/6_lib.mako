@@ -221,7 +221,7 @@
               % if sendMessage:
                   <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
               % endif
-            <li>
+            </li>
           </ul>
         </div>
         
