@@ -56,7 +56,7 @@ class HomeController(BaseController):
 			# Civinomicon
 			c.conTitle = "Civinomicon"			
 			c.conPhoto = '/images/civinomicon/final_sticker.png'
-			c.conLink = '/search?searchQuery=civinomicon'
+			c.conLink = '/searchTags/Civinomicon/'
 
 			# most recent workshops
 			newWorkshops = []

@@ -41,6 +41,7 @@ def getWorkshopTagCategories():
     workshopTags.append('Business')
     workshopTags.append('Civil Rights')
     workshopTags.append('Community')
+    workshopTags.append('Civinomicon')
     workshopTags.append('Economy')
     workshopTags.append('Education')
     workshopTags.append('Employment')
@@ -82,6 +83,7 @@ def getWorkshopTagColouring():
                 'Housing':              'black-tag',
                 'Transportation':       'blue-tag',
                 'Infrastructure':       'blue-tag',
+                'Civinomicon':          'blue-tag',
                 'Municipal Services':   'blue-tag',
                 'Government':           'grey-tag',
                 'NonProfit':            'grey-tag',

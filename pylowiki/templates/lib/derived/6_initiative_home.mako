@@ -215,15 +215,30 @@
                 <div class="span6">
                     <label for="tag" class="control-label" required><strong>Initiative category:</strong></label>
                     <div class="span8 offset4">
-                        <select name="tag" id="tag">
+                        <select name="categoryTags">
                         % if c.initiative['public'] == '0':
                             <option value="">Choose one</option>
                         % endif
                         % for tag in tagList:
                             <% 
                                 selected = ""
-                                if c.initiative['tags'] == tag:
-                                    selected = "selected"
+                                if len(c.categoryTags) >= 1:
+                                    if c.categoryTags[0] == tag:
+                                        selected = "selected"
+                            %>
+                            <option value="${tag}" ${selected}/> ${tag}</option>
+                        % endfor
+                        </select>
+                        <select name="categoryTags">
+                        % if c.initiative['public'] == '0':
+                            <option value="">Choose another (optional)</option>
+                        % endif
+                        % for tag in tagList:
+                            <% 
+                                selected = ""
+                                if len(c.categoryTags) >= 2:
+                                    if c.categoryTags[1] == tag:
+                                        selected = "selected"
                             %>
                             <option value="${tag}" ${selected}/> ${tag}</option>
                         % endfor
@@ -232,7 +247,7 @@
                 </div>
                 <div class="span6">
                     <div class="alert alert-info">
-                        The topic area associated with your initiative.
+                        1-2 topic areas associated with your initiative.
                     </div>
                 </div>
             </div>

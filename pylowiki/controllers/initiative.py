@@ -109,6 +109,12 @@ class InitiativeController(BaseController):
         else:
             description = ''
 
+        if 'categoryTag' in request.params:
+            newTagStr = '|' + request.params['categoryTag'] + '|'
+            tags = newTagStr
+        else:
+            tags = ''
+
         # the scope if initiative is created from a geoSearch page
         if 'initiativeRegionScope' in request.params:
             scope = request.params['initiativeRegionScope']
@@ -140,7 +146,7 @@ class InitiativeController(BaseController):
         
             
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, tags)
         c.level = scope
 
         # now that the initiative edits have been commited, update the scopeProps for the template to use:
@@ -170,6 +176,14 @@ class InitiativeController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
+
+        # initialize the tag dropdown selectors in the edit template
+        c.categoryTags = []
+        if c.initiative['tags'] != '':
+            for tag in c.initiative['tags'].split('|'):
+                if tag and tag != '':
+                    c.categoryTags.append(tag)
+
 
         c.editInitiative = True
        
@@ -212,6 +226,13 @@ class InitiativeController(BaseController):
             c.city = "0"
             c.postal = "0"
 
+        # initialize the tag dropdown selectors in the edit template
+        c.categoryTags = []
+        if c.initiative['tags'] != '':
+            for tag in c.initiative['tags'].split('|'):
+                if tag and tag != '':
+                    c.categoryTags.append(tag)
+
         if 'public' in request.params:
             log.info("got %s"%request.params['public'])
         if 'public' in request.params and request.params['public'] == 'publish':
@@ -247,9 +268,16 @@ class InitiativeController(BaseController):
                 c.error = True
                 errorMessage = "Invalid cost number"
                 c.initiative['cost'] = 0
+         
+        if 'categoryTags' in request.params:
+            categoryTags = request.params.getall('categoryTags')
             
-        if 'tag' in request.params:
-            c.initiative['tags'] = request.params['tag']
+            newTagStr = '|'
+            for tag in categoryTags:
+                newTagStr = newTagStr + tag + '|'
+                 
+            c.initiative['tags'] = newTagStr
+
         if 'background' in request.params:
             c.initiative['background'] = request.params['background']
         if 'proposal' in request.params:
@@ -325,6 +353,13 @@ class InitiativeController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
+
+        # initialize the tag dropdown selectors in the edit template
+        c.categoryTags = []
+        if c.initiative['tags'] != '':
+            for tag in c.initiative['tags'].split('|'):
+                if tag and tag != '':
+                    c.categoryTags.append(tag)
 
         if c.error:
             c.saveMessageClass = 'alert-error'
@@ -499,4 +534,7 @@ class InitiativeController(BaseController):
             title = request.params('resourceText')
         else:
             title = "Sample text"
+
+
+
             
