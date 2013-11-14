@@ -53,6 +53,11 @@ class HomeController(BaseController):
 			c.activity = getRecentActivity(12)
 			c.rssURL = "/activity/rss"
 
+			# Civinomicon
+			c.conTitle = "Civinomicon"			
+			c.conPhoto = '/images/civinomicon/final_sticker.png'
+			c.conLink = '/search?searchQuery=civinomicon'
+
 			# most recent workshops
 			newWorkshops = []
 			workshops = getActiveWorkshops()
