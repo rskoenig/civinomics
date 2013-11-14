@@ -390,7 +390,7 @@ class InitiativeController(BaseController):
             x = 0
             y = 0
             if 'width' in request.params:
-                tWidth = request.params['width']
+                width = request.params['width']
                 if not width or width == 'undefined':
                     width = 100
                 else:
