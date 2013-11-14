@@ -1578,7 +1578,7 @@
               <a class="pull-left" ${workshopLink(item)}>
                 <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
               </a>
-              <div class="media-body">
+              <div class="media-body" style="overflow:visible;">
                 <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
                   % if ltitle == 'Facilitating' or ltitle == 'Author' or userLib.isAdmin(c.authuser.id):
                     <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Admin Workshop</strong></a> &nbsp;
