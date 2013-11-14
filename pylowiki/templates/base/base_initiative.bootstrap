@@ -10,17 +10,17 @@
 <div class="row-fluid" ng-app="civ">
     <div class="row-fluid" style="position: relative;">
         <div class="span8 well initiative-panel">
-            % if c.initiativeHome:
-                <div class="row-fluid">
-                    <div class="thumbnail" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
-                </div>
-            % else: 
-                <div class="span2">
-                    <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
-                </div>
-            % endif
-            <div class="row-fluid" style="position:relative;">
-                <div>
+            <div class="row-fluid">
+                % if c.initiativeHome:
+                    <div class="row-fluid">
+                        <div class="thumbnail" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
+                    </div>
+                % else: 
+                    <div class="span2">
+                        <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
+                    </div>
+                % endif
+                <div class="span10" style="position:relative;">
                     <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-init="initiativeTitle = '${c.initiative['title']}'" ng-cloak>{{initiativeTitle}}</a></h2>
                     <h4> 
                         <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
@@ -42,7 +42,6 @@
                             ${ihelpers.watchButton(c.initiative)}
                         </div>
                     % endif
-
                 </div>
             </div>
             <hr>
