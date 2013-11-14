@@ -1,0 +1,164 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="templateHelpers" file="/lib/template_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
+
+% if not c.success:
+    <div id="splash-bg"></div>
+% else:
+    <div id="login-bg"></div>
+% endif
+
+<div class="row welcome">
+    % if c.success:
+            <div class="well main-well success-well green">
+                <div class="login-top">
+                    <h2>Success!</h2>
+                <div>
+                Check your email to finish setting up your account.
+                If you don't see an email from us in your inbox, try checking your junk mail folder.
+            </div>
+        </div>
+    % else: 
+        <div class="slogan">
+            <h1>Democracy starts at home</h1>
+        </div>
+        <div class="well main-well signup">
+            % if c.splashMsg:
+                <% message = c.splashMsg %>
+                <div class="alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div>
+            % endif
+            <div class="login-top">
+                <h2> Sign Up </h2>
+            </div>
+            % if c.conf['read_only.value'] == 'true':
+                <h1> Sorry, Civinomics is in read only mode right now </h1>
+            % else:
+                <div class="row-fluid social-login">
+                        <div id="fbLoginButton2">
+                            <a onclick="FB.login()"><img src="/images/f-login.png"></a>
+                        </div>
+                        <div id="twtLoginButton1">
+                            <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
+                        </div>
+                </div>
+                <div class="social-sign-in-separator sc-font-light sc-text-light">
+                    <span>Or sign up with your email</span>
+                </div>
+                <div class="login-body" style="border-bottom:none;">
+                    <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+                        <input type="hidden" name="country" value="United States">
+                        <input type="hidden" name="memberType" value="professional">
+
+                        <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
+                            <label class="control-label" for="name"> Full name: </label>
+                            <div class="controls">
+                                <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                                <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="email"> Email: </label>
+                            <div class="controls">
+                                <input type="email" name="email" id="email" ng-model="email" required>
+                                <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="passphrase"> Password: </label>
+                            <div class="controls">
+                                <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
+                            </div>
+                        </div>
+                        <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                            <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
+                            <div class="controls">
+                                <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                                <button type="submit" class="btn btn-success signup">Sign up</button>
+                                <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
+                                <div id="postalCodeResult"></div>
+                            </div>
+                        </div>
+                        <div class="row-fluid centered tcs">
+                                <input type="hidden" name="chkTOS" id="chkTOS" value="true">
+                                <p class="sc-font-light sc-text-light tcs">By signing up, you agree to our <a href="/corp/terms" target="_blank" class="green">terms of use</a><br>and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+                        </div>
+                    </form>
+                </div>
+            % endif
+        </div>
+        <div class="row-fluid how-it-works">
+            <div class="row-fluid">
+                <div class="span3 centered">
+                    <h3><i class="icon-group"></i> Build a Community</h3>
+                    <p>Grow a movement of civic participation online. This global community shares ideas on policy for our cities, states and countries.</p>
+                </div> 
+                <div class="span1 centered" style="margin-top: 30px;">
+                    <i class="icon-arrow-right icon-3x"></i>
+                </div>
+                <div class="span3 centered">
+                    <h3><i class="icon-building"></i> Vote in Our Hometowns</h3>
+                    <p>Transition to online voting for local policy decisions. Work out any kinks and improve the model at this smaller scale.</p>
+                </div>  
+                <div class="span1 centered" style="margin-top: 30px;">
+                    <i class="icon-arrow-right icon-3x"></i>
+                </div> 
+                <div class="span3 centered">
+                    <h3><i class="icon-flag"></i> Renew Our Nation</h2>
+                    <p>Directly vote on vital reforms for our country. In every country. Government of, by, and for the people is reborn.</p>
+                </div>                 
+            </div>
+        </div>
+    </div><!-- row welcome -->
+    <div class="row-fluid">
+        <div class="span12 centered">
+            <h1 style="margin-top: 40px; margin-bottom: 40px;">Hack the Future of Santa Cruz. Nov 15-17, 2013</h1>
+        </div>
+        <div class="span5 offset1">
+            <img src="/images/civinomicon/final_sticker.png" alt="civinomicon sticker">
+        </div>
+        <div class="span5 splash-text">
+            <p class="lead"> Do you have an idea for how to improve Santa Cruz County? Good, 'cause so do we.</p><p>Civinomicon will convene local experts on Transportation, Energy, Public Safety, Economy, Art, Water, Homelessness, and Housing. Come investigate the feasibility of your proposal with these experts and your fellow citizens.</p><p>Our challenges aren't going anywhere. That's why it's time we started writing down the solutions. Everyone in the community will be able to vote on the proposals that emerge from the conference. See you there.</p>
+            <br>
+            <a href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement" target="_blank" class="btn btn-large btn-success"><i class="icon-play-sign"></i> Watch the Video</a>
+            <a href="http://civinomicon2013.eventbrite.com/" target="_blank" class="btn btn-warning btn-large"><i class="icon-signin"></i> Register</a>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span12 centered">
+            <h1>Bring a paradigm shift in collaboration to your community. Free.</h1>
+            <p class="lead splash-text">Collect ideas, vote for the best, implement them - make things better.</p>
+            <a class="btn btn-primary btn-large" style="margin-bottom:40px;" href="/newWorkshop/login"><i class="icon-cog"></i> Start a Workshop</a>
+        </div>
+    </div>
+    <div class="row-fluid centered">
+        <img class="splash-product" src="/images/splash/sampleWorkshop.png">
+    </div>
+    ${templateHelpers.condensedFooter()}
+% endif
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+    </script>
+</%def>
+
+<%def name="bodyTag_extras()">
+    ng-app
+</%def>
+
