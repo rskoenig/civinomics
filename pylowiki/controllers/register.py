@@ -745,22 +745,6 @@ class RegisterController(BaseController):
         except KeyError:
             returnJson = False
 
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            if returnJson:
-                response.headers['Content-type'] = 'application/json'
-                return json.dumps({'statusCode':2, 'message':'Site at capacity!  We will be increasing the capacity in the coming weeks.'})
-            else:
-                return redirect('/signup')
-
         returnPage = "/signup"
         name = False
         password = False
