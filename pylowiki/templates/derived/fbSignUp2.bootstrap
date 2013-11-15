@@ -1,0 +1,54 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<div id="bg">
+    <img src='/images/splash/Large_CityHall.jpg' alt="">
+</div>
+<div class="login">
+  <div class="container">
+      <div class="row">
+          <div class="span6 offset3" style="padding-top:100px;">
+              <div class="well main-well">
+                  % if c.splashMsg:
+                      <% message = c.splashMsg %>
+                      <div class="alert alert-${message['type']}">
+                          <button data-dismiss="alert" class="close">x</button>
+                          <strong>${message['title']}</strong> ${message['content']}
+                      </div>
+                  % endif
+                  <div class="login-top">
+                      <h2> Login </h2>
+                  </div>
+                  <div class="login-body">
+                      <form id="sign_in" action="/fbSigningUp" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+                          <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
+                              <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Postal Code: </label>
+                              <div class="controls">
+                                  <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                                  <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
+                                  <div id="postalCodeResult"></div>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="span4 offset1">
+                                  <input type="hidden" name="chkTOS" id="chkTOS" value="true">
+                                  <small>By signing up, you agree to our <a href="/corp/terms" target="_blank" style="color: #075D00;">terms of use</a> and <a href="/corp/privacy" target="_blank" style="color: #075D00;">privacy policy</small>
+                              </div>
+                          </div>
+                          <div class="control-group">
+                              <div class="controls">
+                                  <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Sign up</button>
+                                  <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Sign up</button>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                  
+              </div><!-- main-well -->
+          </div><!-- sapn6 -->
+      </div><!-- row -->
+  </div><!-- container -->
+</div><!-- login -->
