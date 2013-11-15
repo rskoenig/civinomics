@@ -183,10 +183,6 @@ div.hidden{
     margin-top:20px;
 }
 
-.login-body{
-    border-bottom: 1px solid #DDDDDD;
-}
-
 .howitworks-number{
 	background-image: url('/images/splash/bg_dot.png');
     border-radius: 15px 15px 15px 15px;

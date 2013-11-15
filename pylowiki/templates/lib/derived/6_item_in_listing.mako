@@ -5,6 +5,9 @@
    import pylowiki.lib.db.facilitator   as facilitatorLib
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.event         as eventLib
+   
+   import logging
+   log = logging.getLogger(__name__)
 %>
 
 <%def name="showDisabledMessage(thing)">
@@ -88,15 +91,16 @@
         flagID = 'flag-%s' % thing['urlCode']
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
+        log.info("thing keys is %s"%thing.keys())
     %>
     <div class="btn-group" style="margin-top: -10px;">
         % if thing['disabled'] == '0':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
-        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
         % endif
-        % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+        % if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
 
@@ -104,14 +108,14 @@
     <%
         if thing['disabled'] == '0':
             lib_6.flagThing(thing)
-            if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+            if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
                 lib_6.editThing(thing)
-            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+            if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
                 lib_6.adminThing(thing)
         else:
-            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+            if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
                 lib_6.editThing(thing)
-            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+            if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
                 lib_6.adminThing(thing)
     %>
 </%def>

@@ -3,6 +3,7 @@
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
+<%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 
 <div class="row">
   <div class="span10">
@@ -60,7 +61,7 @@
             ###
 
             % for scope in c.scopeMap:
-              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover;">
+              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover; background-position: center center;">
                 <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
                   <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
                   <table class="lead tile-title">
@@ -103,24 +104,38 @@
           ###
           ### Bookmarks
           ###
-          % if len(c.facilitatorWorkshops) != 0:
-            <span class="lead"><i class="icon-dashboard"></i> Facilitating (${c.numFW})</span>
-            ${lib_6.listPrivateWorkshops(c.facilitatorWorkshops)}
+          % if len(c.facilitatorWorkshops) != 0 or len(c.initiatives) != 0:
+            <span class="lead"><i class="icon-dashboard"></i> Authored and Facilitating (${c.numA})</span>
+            <table class="table table-hover table-condensed no-bottom">
+              <tbody>
+              % for item in c.initiatives:
+                  <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+              % endfor
+              </tbody>
+            </table>
+            ${lib_6.listBookmarks(c.facilitatorWorkshops, 'Facilitating')}
             <br>
           % endif
           % if len(c.listeningWorkshops) != 0:
             <span class="lead"><i class="icon-headphones"></i> Listening (${c.numLW})</span>
-            ${lib_6.listPrivateWorkshops(c.listeningWorkshops)}
+            ${lib_6.listBookmarks(c.listeningWorkshops, 'Listening')}
             <br>
           % endif
           % if len(c.privateWorkshops) != 0:
             <span class="lead"><i class="icon-group"></i> Private (${c.numPW})</span>
-            ${lib_6.listPrivateWorkshops(c.privateWorkshops)}
+            ${lib_6.listBookmarks(c.privateWorkshops, 'Private')}
             <br>
           % endif
-          % if len(c.bookmarks) != 0:
-            <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numBW})</span>
-            ${lib_6.listBookmarks(c.bookmarks)}
+          % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
+            <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
+            <table class="table table-hover table-condensed no-bottom">
+              <tbody>
+              % for item in c.initiativeBookmarks:
+                  <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
+              % endfor
+              </tbody>
+            </table>
+            ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
           % endif
         </div><!-- /row-fluid -->
 

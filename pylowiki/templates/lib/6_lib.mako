@@ -14,6 +14,8 @@
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
    import pylowiki.lib.db.follow        as followLib
+   import pylowiki.lib.db.initiative    as initiativeLib
+   import pylowiki.lib.utils            as utilsLib
    
    from hashlib import md5
    import logging, os
@@ -83,6 +85,9 @@
         if c.w:
             if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
                 shareOk = True
+        if c.initiative:
+            if c.initiative['public'] == '1':
+                shareOk = True
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -124,14 +129,48 @@
             }(document));
 
             function shareOnWall() {
+                // grab checked value of checkbox IF it's on the page. add to description.
+                //var shareChecked = $("#shareVote").is(':checked');
+                var shareChecked = false;
+                var shareText = '';
+                var inputElements = document.getElementsByTagName('input');
+                for(var i=0; inputElements[i]; ++i){
+                    //console.log("input class: "+inputElements[i].className)
+                    if(inputElements[i].className=="shareVote" && inputElements[i].checked) {
+                        //console.log("it's checked ")
+                        shareChecked = true;
+                        break;
+                    }
+                }
+                
+                if (shareChecked) {
+                    //console.log("share checked")
+                    // get the value of the voted button
+                    var linkElements = document.getElementsByTagName('a');
+                    for(var j=0; linkElements[j]; ++j){
+                        //console.log(linkElements[j].className)
+                        if(linkElements[j].className=="voted yesVote" || linkElements[j].className=="yesVote voted"){
+                            //console.log("HURRAH!")
+                            shareText = 'I am in favor of this.';
+                            break;
+                        } else if(linkElements[j].className=="noVote voted" || linkElements[j].className=="voted noVote") {
+                            //console.log("NAH AH!")
+                            shareText = 'I am not in favor of this.';
+                            break;
+                        } else {
+                            shareText = 'I have not voted on this yet.';
+                        }
+                    }
+                }
+
                 FB.ui(
                     {
                       method: 'feed',
                       name: "${name}",
                       link: "${link}",
                       picture: "${picture}",
-                      caption: "",
-                      description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                      caption: shareText,
+                      description: "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
                     },
                     function(response) 
                     {
@@ -150,6 +189,7 @@
             function messageFriends() {
                 // there is no callback for messages sent
                 // we can simply record that the message dialog was brought up
+                // grab checked value of checkbox IF it's on the page. add to description.
                 var thingCode = "${thingCode}";
                 var link = "${link}"
                 var userCode = fbAuthId;
@@ -161,14 +201,13 @@
                       name: "${name}",
                       link: "${link}",
                       picture: "${picture}"
-                      //caption: "",
                       //description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
                     }
                 );
             };
         
         </script>
-        <div class="btn-group">
+        <div class="btn-group facebook">
           <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
             <i class="icon-facebook-sign icon-2x"></i>
           </a>
@@ -182,7 +221,7 @@
               % if sendMessage:
                   <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
               % endif
-            <li>
+            </li>
           </ul>
         </div>
         
@@ -363,12 +402,20 @@
           Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
         </div>
       % else:
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % if 'workshopCode' in thing:
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % else:
+            <a href="/login" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % endif
           <div class="vote-icon yes-icon"></div>
          </a>
          <br>
          <br>
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % if 'workshopCode' in thing:
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % else:
+            <a href="/login" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+        % endif
           <div class="vote-icon no-icon"></div>
          </a>
          <br>
@@ -479,7 +526,7 @@
          user = userLib.getUserByCode(user)
   %>
   % if len(user['greetingMsg']) > 0:
-    , ${ellipsisIZE(user['greetingMsg'], 50)}
+    ${ellipsisIZE(user['greetingMsg'], 35)}
   % endif
 </%def>
 
@@ -543,22 +590,31 @@
     %>
 </%def>
 
-<%def name="resourceLink(r, w, **kwargs)">
+<%def name="resourceLink(r, p, **kwargs)">
    <%
+        if 'initiativeCode' in p:
+            parentBase = 'initiative'
+            parentCode = p['initiativeCode']
+            parentURL = p['initiative_url']
+        else:
+            parentBase = 'workshop'
+            parentCode = p['urlCode']
+            parentURL = p['url']
+            
         if 'directLink' in kwargs:
             if kwargs['directLink'] == True and r['type'] == 'url':
                     resourceStr = 'href="%s' %(r['info'])
             else:
                 if 'noHref' in kwargs:
-                    resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
                 else:
-                    resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
         else:
             if 'noHref' in kwargs:
-                resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
             else:
-                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
-        
+                resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
+
         resourceStr += commentLinkAppender(**kwargs)
         if 'noHref' in kwargs:
             resourceStr += ''
@@ -587,6 +643,24 @@
                 return photoStr
    %>
    ${photoStr | n}
+</%def>
+
+<%def name="initiativeLink(initiative, **kwargs)">
+   <%
+        if 'noHref' in kwargs:
+            initiativeStr = '/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+        else:
+            initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+        initiativeStr += commentLinkAppender(**kwargs)
+        if 'noHref' in kwargs:
+            initiativeStr += ''
+        else:
+            initiativeStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return initiativeStr
+   %>
+   ${initiativeStr | n}
 </%def>
 
 <%def name="ideaLink(i, w, **kwargs)">
@@ -632,6 +706,8 @@
             commentSuffix = "/comment/%s"%comment['urlCode']
         elif dparent.objType.replace("Unpublished", "") == 'user':
             parentBase = 'profile'
+        elif dparent.objType.replace("Unpublished", "") == 'initiative':
+            parentBase = 'initiative'
             
         if 'noHref' in kwargs:
             linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
@@ -656,6 +732,8 @@
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
+        elif objType == 'initiative':
+            return initiativeLink(thing, **kwargs)
         elif objType == 'comment':
             if thing.objType == 'revision':
                 return commentLink(thing, dparent, **kwargs)
@@ -675,6 +753,11 @@
                 if not photo:
                     return False
                 return photoLink(photo, dparent, **kwargs)
+            elif 'initiativeCode' in thing.keys():
+                initiative = initiativeLib.getInitiative(thing['initiativeCode'])
+                if not initiative:
+                    return False
+                return initiativeLink(initiative, dparent, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
@@ -1144,6 +1227,30 @@
         text = ''
         if 'text' in thing.keys():
             text = thing['text']
+            
+        ctype = ""
+        if thing.objType == 'comment':
+            if 'initiativeCode' in thing and 'resourceCode' not in thing:
+                ctype = "initiative"
+            elif 'ideaCode' in thing:
+                ctype = "idea"
+            else:
+                ctype = "reguar"
+
+            yesChecked = ""
+            noChecked = ""
+            neutralChecked = ""
+            
+            if ctype != "regular":
+                if 'commentRole' in thing:
+                    if thing['commentRole'] == 'yes':
+                        yesChecked = 'checked'
+                    elif thing['commentRole'] == 'no':
+                        noChecked = 'checked'
+                    else:
+                        neutralChecked = 'checked'
+                else:
+                    neutralChecked = 'checked'
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
@@ -1154,6 +1261,19 @@
                 <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
+                    % if ctype == 'initiative' or ctype == 'idea':
+                        <div class="row-fluid">
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="neutral" ${neutralChecked}> Neutral
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> I am against this ${ctype}
+                                </label>
+                        </div><!-- row-fluid -->
+                    % endif
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
@@ -1294,37 +1414,40 @@
 
 <%def name="revisionHistory(revisions, parent)">
     % if revisions:
-      <div class="accordion" id="revision-wrapper">
-          <div class="accordion-group no-border">
-              <div class="accordion-heading">
-                  <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
-                      <small>Click to show revisions</small>
-                  </a>
-              </div>
-              <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
-                  <div class="accordion-inner no-border">
-                      <table class="table table-hover table-condensed">
-                          <tr>
-                              <th>Revision</th>
-                              <th>Author</th>
-                          </tr>
-                          % for rev in revisions:
-                            <% 
+        <div class="accordion" id="revision-wrapper">
+            <div class="accordion-group no-border">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
+                        <small>Click to show revisions</small>
+                    </a>
+                </div>
+                <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
+                    <div class="accordion-inner no-border">
+                        <table class="table table-hover table-condensed">
+                            <tr>
+                                <th>Revision</th>
+                                <th>Author</th>
+                            </tr>
+                            % for rev in revisions:
+                                <% 
                                     if c.w:
                                         dparent = c.w
+                                    elif c.initiative:
+                                        dparent = c.initiative
                                     elif c.user:
                                         dparent = c.user
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
-                            %>
-                              <tr>
-                                  <td>${linkStr | n}</td>
-                                  <td>${userLink(rev.owner)}</td>
-                              </tr>
-                          % endfor
-                      </table>
-                  </div>
-              </div>
-          </div>
+                                %>
+                                <tr>
+                                    <td>${linkStr | n}</td>
+                                    <td>${userLink(rev.owner)}</td>
+                                </tr>
+                            % endfor
+                        </table>
+                    </div><!-- accordian-inner -->
+                </div><!-- accordian-body -->
+            </div><!-- accordian-group -->
+        </div><!-- accordian -->
     % endif
 </%def>
 
@@ -1446,46 +1569,133 @@
     % endif
 </%def>
 
-<%def name="listBookmarks(bookmarked)">
-  <table class="table plain">
+<%def name="listBookmarks(bookmarked, ltitle)">
+  <table class="table table-hover table-condensed no-bottom">
     % for item in bookmarked:
       <tr>
         <td>
-          <div class="media well searchListing bookmarks" style="overflow:visible;">
+          <div class="media profile-workshop" style="overflow:visible;">
               <a class="pull-left" ${workshopLink(item)}>
                 <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
               </a>
-            <div class="span6">
-              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
-            </div>
-            <div>
-              ${homeHelpers.watchButtonListing(item)}
-              ${bookmarkOptions(c.authuser, item)}
-            </div>
+              <div class="media-body" style="overflow:visible;">
+                <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+                  % if ltitle == 'Facilitating' or ltitle == 'Author' or userLib.isAdmin(c.authuser.id):
+                    <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Admin Workshop</strong></a> &nbsp;
+                  % else:
+                    % if ltitle == 'Bookmarked':
+                      ${homeHelpers.watchButton(item, following = True)}
+                    % endif
+                    ${bookmarkOptions(c.authuser, item)}
+                  % endif
+                  <br>
+                  % if item['public_private'] == 'public':
+                    <span class="grey">Workshop for</span> ${showScope(item) | n}
+                  % else:
+                    <span class="grey">Private Workshop</span>
+                  % endif
+              </div>
           </div>
         </td>
       </tr>
     % endfor
   </table>
 </%def>
-<%def name="listPrivateWorkshops(workshops)">
-  <table class="table plain">
-    % for item in workshops:
-      <tr>
-        <td>
-          <div class="media well searchListing bookmarks" style="overflow:visible;">
-              <a class="pull-left" ${workshopLink(item)}>
-                <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
-              </a>
-            <div class="span6">
-              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
-            </div>
-            <div>
-              ${bookmarkOptions(c.authuser, item)}
-            </div>
-          </div>
-        </td>
-      </tr>
-    % endfor
-  </table>
+
+<%def name="formattingGuide()">
+  <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-picture"></i> <i class="icon-list"></i> View Formatting Guide</a></label>
+</%def>
+
+<%def name="showTags(item)">
+    <% 
+        colors = workshopLib.getWorkshopTagColouring()
+        try:
+          tagList = item['tags'].split('|')
+        except KeyError:
+          tagList = item['workshop_category_tags'].split('|')
+        tagList = tagList[:3]
+    %>
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% 
+                tagClass = colors[tag] 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <a class="label workshop-tag ${tagClass}" href="/searchTags/${tagValue}/" >${tag}</a>
+          % endif
+      % endfor
+</%def>
+
+<%def name="showScope(item)">
+    <%  
+        try:
+          try:
+            scopeList = item['scope']
+          except KeyError:
+            scopeList = item['workshop_public_scope']
+        except:
+          scopeList = "0|0|0|0|0|0|0|0|0|0"
+
+        scopeList = scopeList.split('|')
+        country = scopeList[2].replace("-", " ")
+        state = scopeList[4].replace("-", " ")
+        county = scopeList[6].replace("-", " ")
+        city = scopeList[8].replace("-", " ")
+        postalCode = scopeList[9]
+        scopeString = ""
+        if country == '0':
+            scopeString = 'Planet Earth'
+        elif state == '0':
+            scopeString = 'Country of %s' %country.title()
+        elif county == '0':
+            scopeString = 'State of %s' %state.title()
+        elif city == '0':
+            scopeString = 'County of %s'%county.title()
+        elif postalCode == '0':
+            scopeString += 'City of %s'%city.title()
+        else:
+            scopeString += 'Zip Code %s</span>'%postalCode
+    %>
+    <span class="badge badge-info">${scopeString | n}</span>
+</%def>
+
+<%def name="showFullScope(item)">
+    <%  
+        try:
+          try:
+            scopeList = item['scope']
+          except KeyError:
+            scopeList = item['workshop_public_scope']
+        except:
+          scopeList = "0|0|0|0|0|0|0|0|0|0"
+
+        scopeList = scopeList.split('|')
+        country = scopeList[2].replace("-", " ")
+        state = scopeList[4].replace("-", " ")
+        county = scopeList[6].replace("-", " ")
+        city = scopeList[8].replace("-", " ")
+        postalCode = scopeList[9]
+        if country == '0':
+            scopeString = '<span class="badge badge-info">Planet Earth</span>'
+        else:
+            scopeString = "Planet Earth"
+            if state == '0':
+                scopeString += ', <span class="badge badge-info">Country of %s</span>'%country.title()
+            else:
+                scopeString += ', Country of %s'%country.title()
+                if county == '0':
+                    scopeString += ', <span class="badge badge-info">State of %s</span>'%state.title()
+                else:
+                    scopeString += ', State of %s'%state.title()
+                    if city == '0':
+                        scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
+                    else:
+                        scopeString += ', County of %s'%county.title()
+                        if postalCode == '0':
+                            scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
+                        else:
+                            scopeString += ", City of %s"%city.title()
+                            scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
+    %>
+    ${scopeString | n}
 </%def>

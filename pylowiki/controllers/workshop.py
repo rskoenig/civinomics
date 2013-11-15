@@ -924,10 +924,8 @@ class WorkshopController(BaseController):
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
+        c.baseUrl = utils.getBaseUrl()
+        
         c.requestUrl = request.url
         c.thingCode = workshopCode
         # standard thumbnail image for facebook shares
