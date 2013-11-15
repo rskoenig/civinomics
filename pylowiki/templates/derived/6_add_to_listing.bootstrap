@@ -46,7 +46,15 @@
 </%def>
 
 <%def name="addResource()">
-    <form ng-controller="resourceController" ng-init="workshopCode = '${c.w['urlCode']}'; workshopURL = '${c.w['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
+    <% 
+        if c.w:
+            type = "workshop"
+            parent = c.w
+        elif c.initiative:
+            type = 'initiative'
+            parent = c.initiative
+    %>
+    <form ng-controller="resourceController" ng-init="rType = '${type}'; parentCode = '${parent['urlCode']}'; parentURL = '${parent['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
         <fieldset>
             <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
             <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>

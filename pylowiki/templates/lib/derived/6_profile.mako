@@ -1,5 +1,6 @@
 <%!
     import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.initiative   as initiativeLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
@@ -27,6 +28,39 @@
         <a class="black" href="${thingListingURL}">${len(things)}</a>
     </h3>
     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">${title}</a></p></div>
+</%def>
+
+<%def name="showInitiative(item, **kwargs)">
+    <div class="media profile-workshop">
+        <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
+        % if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+            <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos']) %>
+        % else:
+            <% thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail" %>
+        % endif
+        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
+        </a>
+        <%
+            if 'imageOnly' in kwargs:
+                if kwargs['imageOnly'] == True:
+                    return
+        %>
+        <div class="media-body">
+            <span class="label label-inverse">Initiative</span> <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
+                    % if item['public'] == '0':
+                        Not yet public
+                    % else:
+                        Public
+                    % endif
+                % endif
+            % endif
+            <br />
+            Description: ${lib_6.ellipsisIZE(item['description'], 135)}
+        </div><!-- media-body -->
+    </div><!-- media -->
 </%def>
 
 <%def name="showWorkshop(workshop, **kwargs)">
@@ -190,6 +224,7 @@
                         % else:
                             <tr> <td>
                         % endif
+                        % if 'workshopCode' in thing:
                             <%
                                 workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
                                 thingLink = lib_6.thingLinkRouter(thing, workshop, raw=True, embed=True)
@@ -211,6 +246,15 @@
                             % endif
                             <br />
                             Description: ${lib_6.ellipsisIZE(descriptionText, 135)}
+                        % elif 'initiativeCode' in thing and thing.objType == 'resource':
+                            <%
+                                initiative = initiativeLib.getInitiative(thing['initiativeCode'])
+                                initiativeLink = "/initiative/" + initiative['urlCode'] + "/" + initiative['url']
+                                thingLink = initiativeLink + "/resource/" + thing['urlCode'] + "/" + thing['url']
+                            %>
+                            ${showInitiative(initiative, imageOnly = True)}
+                            <a href="${thingLink}"> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in initiative <a href="${initiativeLink}"> ${initiative['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
+                        % endif
                         </td> </tr>
                         <% counter += 1 %>
                     % endfor
@@ -237,11 +281,15 @@
                                 % else:
                                     <tr> <td>
                                 % endif
-                                
-                                ${showWorkshop(thing, imageOnly = True)}
-                                <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
-                                <br />
-                                Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                                %if thing.objType == 'workshop':
+                                    ${showWorkshop(thing, imageOnly = True)}
+                                    <span class="label label-inverse">Workshop</span> <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
+                                    <br />
+                                    Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                                % elif thing.objType == 'initiative':
+                                    ${showInitiative(thing)}
+                                % endif
+
                             % endfor
                         </tbody>
                     </table>
@@ -284,11 +332,14 @@
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
                             'photo': 'added the picture',
+                            'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
+
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
                             'photo':'photo',
+                            'initiative':'initiative',
                             'comment':'comment'}
     %>
     <table class="table table-hover table-condensed">
@@ -296,7 +347,7 @@
         
         % for item in activity:
             <% 
-                objType = item.objType
+                objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
                 
                 if 'workshopCode' in item:
@@ -305,35 +356,53 @@
                     workshopCode = "photo"
                     workshopLink = "/foo/photo"
                 parent = False
+
                 if objType == 'comment':
-                    if 'ideaCode' in item:
-                        parentCode = item['ideaCode']
-                        parentURL = item['parent_url']
-                        parentObjType = 'idea'
-                    elif 'resourceCode' in item:
-                        parentCode = item['resourceCode']
-                        parentURL = item['parent_url']
-                        parentObjType = 'resource'
+                    if 'workshopCode' in item:
+                        if 'ideaCode' in item:
+                            parentCode = item['ideaCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'idea'
+                        elif 'resourceCode' in item:
+                            parentCode = item['resourceCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'resource'
+                        elif 'discussionCode' in item:
+                            parentCode = item['discussionCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'discussion'
+                        parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                     elif 'photoCode' in item:
                         parentCode = item['photoCode']
                         parentURL = item['parent_url']
                         parentObjType = 'photo'
-                    elif 'discussionCode' in item:
-                        parentCode = item['discussionCode']
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+                    elif 'initiativeCode' in item and 'resourceCode' in item:
+                        parentCode = item['resourceCode']
                         parentURL = item['parent_url']
-                        parentObjType = 'discussion'
-                    if 'profileCode' in item:
+                        parentObjType = 'resource'
+                        parentLink = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
+                    elif 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'initiative'
+                        parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
+                        log.info("no parentObjType item is %s"%item.keys())
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                     title = lib_6.ellipsisIZE(item['data'], 40)
                     itemLink = parentLink + '?comment=' + item['urlCode']
+                elif objType == 'resource' and 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['initiative_url']
+                        parentObjType = 'initiative'
+                        title = lib_6.ellipsisIZE(item['title'], 40)
                 else:
                     parentCode = False
                     title = lib_6.ellipsisIZE(item['title'], 40)
                     itemLink = workshopLink + "/" + objType + "/" + item['urlCode'] + "/" + item['url']
-
-                
             %>
 
             % if objType == 'photo':
@@ -345,6 +414,40 @@
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n}</td></tr>
                 % endif
+            % elif objType == 'initiative':
+                <% 
+                    link = "/initiative/" + item['urlCode'] + "/" + item['url'] + "/show"
+                    activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0' and item['public'] == '1':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'resource' and 'initiativeCode' in item:
+                <% 
+                    link = "/initiative/" + parentCode + "/" + parentURL + "/resource/" + item['urlCode'] + "/" + item['url']
+                    activityStr = "added the resource <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and 'initiativeCode' in item and 'resourceCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">resource</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'comment' and 'initiativeCode' in item:
+                <% 
+                        activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
@@ -353,7 +456,7 @@
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
-            % else:
+            % elif 'workshopCode' in item:
                 % if item['workshop_searchable'] == '1' or (c.browser == False or c.isAdmin == True or c.isUser == True):
                     % if item['deleted'] == '0':
                         <% 

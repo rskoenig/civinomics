@@ -64,25 +64,45 @@
     ## Add a comment to the root of the discussion tree
     ##
     ########################################################################
-    <div class="row-fluid">
-        <div class="span12">
-            <form action="/comment/add/handler" id="commentAddHandler_root">
-                <input type="hidden" id="type" name="type" value="${thing.objType}" />
-                <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
-                <input type="hidden" name="parentCode" value="0" />
-                <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-                <fieldset>
-                    <legend></legend>
-                    <div class="span1">
-                        ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
-                    </div>
-                    <textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea>
-                    <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-                    <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
-                </fieldset>
-            </form>
-        </div>
-    </div>
+    <div class="spacer"></div>
+    <form action="/comment/add/handler" id="commentAddHandler_root">
+        <input type="hidden" id="type" name="type" value="${thing.objType}" />
+        <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
+        <input type="hidden" name="parentCode" value="0" />
+        <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
+        <div class="row-fluid">
+            <div class="span1">
+                ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+            </div>
+            <div class="span11">
+                <textarea rows="2" class="span12" name="comment-textarea" placeholder="Add a comment..."></textarea>
+            </div>
+        </div><!-- row-fluid -->
+        % if thing.objType == 'idea' or thing.objType == 'initiative':
+            <% log.info("thing type is %s"%thing.objType) %>
+            <div class="row-fluid">
+                <div class="span1">
+                </div>
+                <div class="span11">
+                    <label class="radio inline">
+                        <input type=radio name="commentRole" value="yes"> Arguement in Favor
+                    </label>
+                    <label class="radio inline">
+                        <input type=radio name="commentRole" value="neutral" checked> Neutral Statement
+                    </label>
+                    <label class="radio inline">
+                        <input type=radio name="commentRole" value="no"> Argument Against
+                    </label>
+                    <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button></span>
+                </div><!- span11 -->
+            </div><!-- row-fluid -->
+        % else:
+        <div class="row-fluid">
+            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
+        </div><!-- row-fluid -->
+        % endif
+    </form>
 </%def>
 
 <%def name="commentClubRule()">
@@ -206,6 +226,28 @@
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
 
+        try:
+            if comment['commentRole']:
+                roleClass = 'commentRole '
+                roleLabel = 'Arguement '
+                if comment['commentRole'] == 'no':
+                    roleClass += "red"
+                    roleLabel += 'Against'
+                    headerClass += " against"
+
+                elif comment['commentRole'] == 'yes':
+                    roleClass += "green"
+                    roleLabel += "in Favor"
+                    headerClass += " favor"
+
+                else:
+                    roleClass +="grey"
+                    roleLabel = "Neutral Statement"
+                    headerClass += " neutral"
+        except KeyError:
+            roleClass = ""
+            roleLabel = ""
+
     %>
     <div class="${headerClass}">
         <!--<button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
@@ -221,6 +263,9 @@
         %>
         ${role}<span class="grey">${lib_6.userGreetingMsg(author)}</span> from ${lib_6.userGeoLink(author, comment=True)}
         
+        % if roleClass != '':
+            <span class="pull-right ${roleClass}">${roleLabel}</span>
+        % endif
         <span class="pull-right disabledComment-notice">
             <small>
             % if parent:
@@ -231,6 +276,8 @@
                                 dparent = c.w
                             elif c.user:
                                 dparent = c.user
+                            elif c.initiative:
+                                dparent = c.initiative
                         %>
                         <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif

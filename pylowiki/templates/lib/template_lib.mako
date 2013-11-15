@@ -60,6 +60,8 @@
                                     <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
                                     <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -68,7 +70,10 @@
                                 Create <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                <li><a href="/workshop/display/create/form"> New Workshop</a></li>
+                                <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                <li>
+                                    <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                                </li>
                             </ul>
                         </li>
 

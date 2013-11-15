@@ -43,7 +43,11 @@ def getDiscussionForThing(parent):
         return parent
     thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['discussion', 'discussionUnpublished'])).filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['discussion', 'discussionUnpublished']))\
+        .filter(Thing.data.any(wc(thisKey, parent['urlCode'])))\
+        .filter(Thing.data.any(wc('discType', parent.objType)))\
+        .one()
     except:
         return False
 
