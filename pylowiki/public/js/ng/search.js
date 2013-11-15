@@ -61,20 +61,24 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.photosURL = '/search/photos/' + $scope.searchType + '/' + $scope.searchString;
     $scope.initiativesURL = '/search/initiatives/' + $scope.searchType + '/' + $scope.searchString;
     $scope.searchQueryPretty = $("#search-input").val();
-    $scope.showingWorkshops = {'class': '', 'show': false, 'create': false};
+    //$scope.showingWorkshops = {'class': '', 'show': false, 'create': false};
+    $scope.showingWorkshops = {'class': 'active', 'show': false, 'create': false};
     $scope.showingPeople = {'class': '', 'show': false, 'create': false};
     $scope.showingResources = {'class': '', 'show': false, 'create': false};
     $scope.showingDiscussions = {'class': '', 'show': false, 'create': false};
     $scope.showingIdeas = {'class': '', 'show': false, 'create': false};
     $scope.showingPhotos = {'class': '', 'show': false, 'create': false};
-    $scope.showingInitiatives = {'class': 'active', 'show': false, 'create': false};
-    $scope.objType = 'initiatives';
+    //$scope.showingInitiatives = {'class': 'active', 'show': false, 'create': false};
+    $scope.showingInitiatives = {'class': '', 'show': false, 'create': false};
+    //$scope.objType = 'initiatives';
+    $scope.objType = 'workshops';
     $scope.orderProp = '-voteCount';
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos, initiatives'};
     $scope.currentPage = 0;
     $scope.pageSize = 20;
 
-    $http.get($scope.initiativesURL).success(function(data){
+    //$http.get($scope.initiativesURL).success(function(data){
+    $http.get($scope.workshopsURL).success(function(data){
         if (data.statusCode == 1)
         {
             $scope.noQuery = true;
@@ -85,18 +89,22 @@ app.controller('SearchCtrl', function($scope, $http){
         else if (data.statusCode == 2)
         {
             $scope.noResult = true;
-            $scope.showingInitiatives = {'class': 'active', 'show': false, 'create': true};
+            //$scope.showingInitiatives = {'class': 'active', 'show': false, 'create': true};
+            $scope.showingWorkshops = {'class': 'active', 'show': false, 'create': true};
             $scope.photos = null;
         }
         else if (data.statusCode === 0)
         {
-            $scope.initiatives = data.result;
-            $scope.showingInitiatives = {'class': 'active', 'show': true, 'create': true};
+            //$scope.initiatives = data.result;
+            $scope.workshops = data.result;
+            //$scope.showingInitiatives = {'class': 'active', 'show': true, 'create': true};
+            $scope.showingWorkshops = {'class': 'active', 'show': true, 'create': true};
         }
         $scope.loading = false;
     });
     $scope.numberOfPages=function(){
-        return Math.ceil($scope.initiatives.length/$scope.pageSize);                
+        //return Math.ceil($scope.initiatives.length/$scope.pageSize); 
+        return Math.ceil($scope.workshops.length/$scope.pageSize);
     }
     
     $scope.searchWorkshops = function() {
