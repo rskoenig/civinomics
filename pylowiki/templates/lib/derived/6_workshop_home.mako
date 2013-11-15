@@ -151,25 +151,17 @@
     
 </%def>
 
-<%def name="watchButton()">
+<%def name="watchButton(w, **kwargs)">
     % if 'user' in session:
-        % if c.isFollowing:
-            <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+        % if c.isFollowing or 'following' in kwargs:
+            <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
             </button>
         % else:
-            <button class="btn pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <button class="btn pull-right followButton" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
              <span><i class="icon-bookmark med-green"></i><strong> Bookmark </strong></span>
             </button>
         % endif
-    % endif
-</%def>
-
-<%def name="watchButtonListing(w)">
-    % if 'user' in session:
-        <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-        <span><i class="icon-bookmark btn-height icon-light"></i> Bookmarked </span>
-        </button>
     % endif
 </%def>
 
@@ -451,19 +443,6 @@
         </ul>
         </div><!-- workshopGoals -->
     % endif
-</%def>
-
-<%def name="showTags()">
-    <% 
-        colors = workshopLib.getWorkshopTagColouring()
-        tagList = c.w['workshop_category_tags'].split('|')
-    %>
-    % for tag in tagList[0:3]:
-        % if tag and tag != '':
-            <% tagClass = colors[tag] %>
-            <span class="label workshop-tag ${tagClass}" >${tag}</span>
-        % endif
-    % endfor
 </%def>
 
 <%def name="showScope()">

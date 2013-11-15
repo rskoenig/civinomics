@@ -25,6 +25,7 @@ import pylowiki.lib.db.follow       	as followLib
 import pylowiki.lib.db.workshop     	as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.initiative   	as initiativeLib
 
 
 
@@ -42,6 +43,7 @@ class HomeController(BaseController):
 	            c.messages = messageLib.getMessages(c.authuser)
 	            c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
 		c.user = c.authuser
+		log.info("in home.py")
 
 
 	def index(self):
@@ -153,13 +155,20 @@ class HomeController(BaseController):
 			defaultPhoto = "/images/grey.png"
 
 			for scope in c.scopeMap:
-				photos = photoLib.searchPhotos('scope', scope['hash'])
-				if photos and len(photos) != 0:
-					photos = sort.sortBinaryByTopPop(photos)
-					p = photos[0]
-					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+				initScope = '0' + scope['hash'].replace('||', '|0|')
+				initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
+				if initiatives and len(initiatives) != 0:
+					initiatives = sort.sortBinaryByTopPop(initiatives)
+					i = initiatives[0]
+					scope['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
 				else:
-					scope['photo'] = defaultPhoto
+					photos = photoLib.searchPhotos('scope', scope['hash'])
+					if photos and len(photos) != 0:
+						photos = sort.sortBinaryByTopPop(photos)
+						p = photos[0]
+						scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+					else:
+						scope['photo'] = defaultPhoto
 
 
 			# get user's bookmarks, listening and facilitating
@@ -168,7 +177,7 @@ class HomeController(BaseController):
 			c.bookmarks = []
 			for workshop in watchList:
 				c.bookmarks.append(workshop)
-			c.numBW = len(c.bookmarks)
+			c.numB = len(c.bookmarks)
 
 
 			privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
@@ -201,9 +210,33 @@ class HomeController(BaseController):
 	                         c.facilitatorWorkshops.append(myW)
 	              else:
 	                    c.facilitatorWorkshops.append(myW)
-	        c.numFW = len(c.facilitatorWorkshops)
+	        c.numA = len(c.facilitatorWorkshops)
 
-
+	        # initiatives
+	        c.initiatives = []
+	        initiativeList = initiativeLib.getInitiativesForUser(c.user)
+	        for i in initiativeList:
+	            if i.objType == 'initiative':
+	                if i['public'] == '1':
+	                    if i['deleted'] != '1':
+	                        c.initiatives.append(i)
+	                else:
+	                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+	                        c.initiatives.append(i)
+	        c.numA += len(c.initiatives)
+	                        
+	        c.initiativeBookmarks = []
+	        iwatching = followLib.getInitiativeFollows(c.user)
+	        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+	        for i in initiativeList:
+	            if i.objType == 'initiative':
+	                if i['public'] == '1':
+	                    if i['deleted'] != '1':
+	                        c.initiativeBookmarks.append(i)
+	                else:
+	                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+	                        c.initiativeBookmarks.append(i)
+	        c.numB += len(c.initiativeBookmarks)
 		
 
 		return render('/derived/6_home.bootstrap')

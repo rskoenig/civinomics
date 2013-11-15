@@ -1238,7 +1238,7 @@
       {
         if (options.keySupport) {
           $keymgr.show();
-          $keymgr.focus();
+          // $keymgr.focus();
         }
       }
       //}}}

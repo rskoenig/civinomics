@@ -25,16 +25,25 @@ import pylowiki.lib.helpers as h
 
 class CommentController(BaseController):
     
-    def __before__(self, action, workshopCode = None, workshopURL = None):
+    def __before__(self, action, workshopCode = None, workshopURL = None, urlCode = None):
         if action in ['permalink', 'showThread']:
-            c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
-            c.mainImage = mainImageLib.getMainImage(c.w)
-            if not c.w:
-                abort(404)
-            workshopLib.setWorkshopPrivs(c.w)
-            if c.w['public_private'] != 'public':
-                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+            if workshopCode is not None:
+                c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
+                c.mainImage = mainImageLib.getMainImage(c.w)
+                if not c.w:
                     abort(404)
+                workshopLib.setWorkshopPrivs(c.w)
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+            elif urlCode is not None:
+                thing = genericLib.getThing(urlCode)
+                if not thing:
+                    abort(404)
+                if thing.objType == 'initiative':
+                    c.initiative = thing
+                elif thing.objType == 'profile':
+                    c.user
     
     @h.login_required
     def commentAddHandler(self):
@@ -43,7 +52,6 @@ class CommentController(BaseController):
             parentCommentCode = request.params['parentCode']
             thingCode = request.params['thingCode']
             thing = genericLib.getThing(thingCode)
-            log.info('thingCode is %s'%thingCode)
             if not thing:
                 return False
             if thing['disabled'] == '1':
@@ -54,8 +62,10 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
-            elif thing.objType == 'photo':
+            elif thing.objType == 'photo' or thing.objType == 'initiative' or 'initiativeCode' in thing:
                 userLib.setUserPrivs()
+                if 'initiativeCode' in thing:
+                    initiative = genericLib.getThing(thing['initiativeCode'])
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':
@@ -76,19 +86,28 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
-            log.info('before comment')
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
+            if thing.objType == 'idea' or thing.objType == 'initiative':
+                if 'commentRole' in request.params:
+                    commentRole = request.params['commentRole']
+                    comment['commentRole'] = commentRole
+                    dbHelpers.commit(comment)
             title = ' replied to a post you made'
             text = '(This is an automated message)'
             extraInfo = 'commentResponse'
-            log.info('after comment')
             if 'workshopCode' in thing:
                 title = ' replied to a post you made'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
             elif thing.objType.replace("Unpublished", "") == 'photo':
                 title = ' commented on one of your pictures'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
-            message = genericLib.linkChildToParent(message, comment.c)
+            elif thing.objType.replace("Unpublished", "") == 'initiative':
+                title = ' commented on one of your initiatives'
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
+            elif thing.objType.replace("Unpublished", "") == 'resource':
+                title = ' commented on a post you made'
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
+            message = genericLib.linkChildToParent(message, comment)
             dbHelpers.commit(message)
             alertsLib.emailAlerts(comment)
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
@@ -96,11 +115,15 @@ class CommentController(BaseController):
                     mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
                 elif thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in thing:
                     mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
+                elif thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in thing:
+                    mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
             
             if 'workshopCode' in thing:   
                 return redirect(utils.thingURL(workshop, thing))
             elif thing.objType == 'photo' or 'photoCode' in thing:
                 return redirect(utils.profilePhotoURL(thing))
+            elif thing.objType == 'initiative' or 'initiativeCode' in thing:
+                return redirect(utils.initiativeURL(thing))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             return redirect(utils.thingURL(workshop, thing))
@@ -112,10 +135,15 @@ class CommentController(BaseController):
             c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_permaComment.bootstrap')
         
-    def permalinkPhoto(self, userCode, userURL, revisionCode):
+    def permalinkPhoto(self, urlCode, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
-        c.user = userLib.getUserByCode(userCode)
+        c.user = userLib.getUserByCode(urlCode)
         return render('/derived/6_permaPhotoComment.bootstrap')
+        
+    def permalinkInitiative(self, urlCode, revisionCode):
+        c.revision = revisionLib.getRevisionByCode(revisionCode)
+        c.initiative = genericLib.getThing(urlCode)
+        return render('/derived/6_permaInitiativeComment.bootstrap')
         
     ####################################################
     # 

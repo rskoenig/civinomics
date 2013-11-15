@@ -3,6 +3,7 @@
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
@@ -15,6 +16,7 @@
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
+                    <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
                     % if 'user' in session:
@@ -47,6 +49,18 @@
                         % endfor
                         % for item in c.privateWorkshops:
                             <tr><td>${helpers.showWorkshop(item, role = "Private")}</td></tr>
+                        % endfor
+                        </tbody>
+                        </table>
+                    </div><!-- tab-pane -->
+                    <div class="tab-pane" id="tab-initiatives">
+                        <table class="table table-hover table-condensed">
+                        <tbody>
+                        % for item in c.initiatives:
+                            <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+                        % endfor
+                        % for item in c.initiativeBookmarks:
+                            <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
                         % endfor
                         </tbody>
                         </table>
