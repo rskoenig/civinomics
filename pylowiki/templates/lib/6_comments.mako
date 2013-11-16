@@ -85,7 +85,7 @@
                 </div>
                 <div class="span11">
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="yes"> Arguement in Favor
+                        <input type=radio name="commentRole" value="yes"> Argument in Favor
                     </label>
                     <label class="radio inline">
                         <input type=radio name="commentRole" value="neutral" checked> Neutral Statement
@@ -229,7 +229,7 @@
         try:
             if comment['commentRole']:
                 roleClass = 'commentRole '
-                roleLabel = 'Arguement '
+                roleLabel = 'Argument '
                 if comment['commentRole'] == 'no':
                     roleClass += "red"
                     roleLabel += 'Against'
