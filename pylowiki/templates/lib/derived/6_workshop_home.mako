@@ -151,6 +151,554 @@
     
 </%def>
 
+<%def name="showSortChart1()">
+    <div id="chart"></div>
+</%def>
+
+<%def name="sortChart1(stats)">
+    <style>
+        #chart {
+          background-color: #fff;
+        }
+        svg {
+          display: block;
+          margin-bottom: 10px;
+        }
+        .highs line {
+          stroke-width: 2px;
+          stroke: #f88;
+        }
+        .rains line {
+          stroke-width: 2px;
+          stroke: #88f;
+        }
+        text {
+          font-size: 13px;
+          font-family: sans-serif;
+        }
+        text.small {
+          font-size: 10px;
+          fill: #666;
+        }
+    </style>
+    <script>
+        var w = 300;
+        var h = 220;
+
+        var data = [
+          {'i':  0,'month': 'January',   'high': 47, 'rain': 5.6},
+          {'i':  1,'month': 'February',  'high': 50, 'rain': 3.5},
+          {'i':  2,'month': 'March',     'high': 53, 'rain': 3.7},
+          {'i':  3,'month': 'April',     'high': 58, 'rain': 2.7},
+          {'i':  4,'month': 'May',       'high': 64, 'rain': 1.9},
+          {'i':  5,'month': 'June',      'high': 70, 'rain': 1.6},
+          {'i':  6,'month': 'July',      'high': 76, 'rain': 0.7},
+          {'i':  7,'month': 'August',    'high': 76, 'rain': 0.9},
+          {'i':  8,'month': 'September', 'high': 70, 'rain': 1.5},
+          {'i':  9,'month': 'October',   'high': 59, 'rain': 3.5},
+          {'i': 10,'month': 'November',  'high': 51, 'rain': 6.6},
+          {'i': 11,'month': 'December',  'high': 45, 'rain': 5.4},
+        ];
+
+
+        var dataMonth = function(d) { return d['month']; };
+        var dataHigh = function(d) { return d['high']; };
+        var dataRain = function(d) { return d['rain']; };
+        var keyFn = dataMonth;
+
+
+        var highScale = d3.scale.linear()
+            .domain(d3.extent(data, dataHigh))
+            .range([100, 0]);
+        var rainScale = d3.scale.linear()
+            .domain([0, d3.max(data, dataRain)])
+            .range([50, 0]);
+        var xScale = d3.scale.linear()
+            .domain([0, data.length])
+            .range([0, w]);
+        var datumWidth = xScale(1) - xScale(0);
+
+        var chart = d3.select('#chart').append('svg')
+            .attr('width', w)
+            .attr('height', h);
+        var highG = chart.append('g').attr('class', 'highs')
+            .attr('transform', 'translate(0, 20)');
+        var rainG = chart.append('g').attr('class', 'rains')
+            .attr('transform', 'translate(' + [0, 30 + d3.max(highScale.range())] + ')');
+
+        var title = chart.append('text')
+            .attr('x', w / 2)
+            .attr('y', h - 10)
+            .attr('text-anchor', 'middle')
+            .text('Seattle Climate');
+        var dataLink = chart.append('a')
+            .attr('xlink:href', 'http://en.wikipedia.org/wiki/Seattle');
+        dataLink.append('text')
+            .attr('class', 'small')
+            .attr('x', w / 2)
+            .attr('y', h)
+            .attr('text-anchor', 'middle')
+            .text('[source]');
+
+
+        var drawChart = function() {
+            var highGs = highG.selectAll('g.tick').data(data, keyFn);
+            var newHighGs = highGs.enter().append('g')
+                  .attr('class', 'tick');
+              highGs.transition().duration(1000)
+                  .attr('transform', function(d, i) {
+                    return 'translate(' + [xScale(i) + datumWidth / 2, highScale(dataHigh(d))] + ')';
+                  })
+              newHighGs.append('line')
+                  .attr('x1', -datumWidth / 2)
+                  .attr('x2', datumWidth / 2);
+              newHighGs.append('text')
+                  .attr('class', 'small')
+                  .attr('text-anchor', 'middle')
+                  .attr('dy', '-0.3em');
+              highGs.select('text')
+                  .text(function(d) { return dataHigh(d) + '°F'; });
+            
+            
+            var rainGs = rainG.selectAll('g.tick').data(data, keyFn);
+
+
+            var newRainGs = rainGs.enter().append('g')
+                  .attr('class', 'tick');
+              rainGs.transition().duration(1000)
+                  .attr('transform', function(d, i) {
+                    return 'translate(' + [xScale(i) + datumWidth / 2, rainScale(dataRain(d))] + ')';
+                  })
+              newRainGs.append('line')
+                  .attr('x1', -datumWidth / 2)
+                  .attr('x2', datumWidth / 2);
+              newRainGs.append('text')
+                  .attr('class', 'small')
+                  .attr('text-anchor', 'middle')
+                  .attr('dy', '-0.3em');
+              rainGs.select('text')
+                  .text(function(d) { return dataRain(d) + '"'; });
+            
+            
+            var labels = chart.selectAll('text.month').data(data, keyFn);
+            
+            
+            labels.enter().append('text')
+                  .attr('class', 'month small')
+                  .attr('y', h - 25)
+                  .attr('text-anchor', 'middle');
+              labels.transition().duration(1000)
+                  .attr('x', function(d, i) { return xScale(i) + datumWidth / 2; })
+                  .text(function(d) { return dataMonth(d).substr(0, 3); });
+            
+            
+        };
+
+
+        drawChart();
+        var makeSortButton = function(field, rev) {
+          return d3.select('#chart').append('button')
+              .on('click', function() {
+                data.sort(function(a, b) { return rev * (a[field] - b[field]); });
+                drawChart();
+              });
+        };
+        makeSortButton('i', 1).text('Sort by month');
+        makeSortButton('high', -1).text('Sort by high temperature');
+        makeSortButton('rain', -1).text('Sort by precipitation');
+    </script>
+</%def>
+
+<%def name="showSortChart1Example()">
+    <div id="chart"></div>
+</%def>
+
+<%def name="sortChart1Example(stats)">
+    <style>
+        #chart {
+          background-color: #fff;
+        }
+        svg {
+          display: block;
+          margin-bottom: 10px;
+        }
+        .highs line {
+          stroke-width: 2px;
+          stroke: #f88;
+        }
+        .rains line {
+          stroke-width: 2px;
+          stroke: #88f;
+        }
+        text {
+          font-size: 13px;
+          font-family: sans-serif;
+        }
+        text.small {
+          font-size: 10px;
+          fill: #666;
+        }
+    </style>
+    <script>
+        var w = 300;
+        var h = 220;
+
+        var data = [
+          {'i':  0,'month': 'January',   'high': 47, 'rain': 5.6},
+          {'i':  1,'month': 'February',  'high': 50, 'rain': 3.5},
+          {'i':  2,'month': 'March',     'high': 53, 'rain': 3.7},
+          {'i':  3,'month': 'April',     'high': 58, 'rain': 2.7},
+          {'i':  4,'month': 'May',       'high': 64, 'rain': 1.9},
+          {'i':  5,'month': 'June',      'high': 70, 'rain': 1.6},
+          {'i':  6,'month': 'July',      'high': 76, 'rain': 0.7},
+          {'i':  7,'month': 'August',    'high': 76, 'rain': 0.9},
+          {'i':  8,'month': 'September', 'high': 70, 'rain': 1.5},
+          {'i':  9,'month': 'October',   'high': 59, 'rain': 3.5},
+          {'i': 10,'month': 'November',  'high': 51, 'rain': 6.6},
+          {'i': 11,'month': 'December',  'high': 45, 'rain': 5.4},
+        ];
+
+
+        var dataMonth = function(d) { return d['month']; };
+        var dataHigh = function(d) { return d['high']; };
+        var dataRain = function(d) { return d['rain']; };
+        var keyFn = dataMonth;
+
+
+        var highScale = d3.scale.linear()
+            .domain(d3.extent(data, dataHigh))
+            .range([100, 0]);
+        var rainScale = d3.scale.linear()
+            .domain([0, d3.max(data, dataRain)])
+            .range([50, 0]);
+        var xScale = d3.scale.linear()
+            .domain([0, data.length])
+            .range([0, w]);
+        var datumWidth = xScale(1) - xScale(0);
+
+        var chart = d3.select('#chart').append('svg')
+            .attr('width', w)
+            .attr('height', h);
+        var highG = chart.append('g').attr('class', 'highs')
+            .attr('transform', 'translate(0, 20)');
+        var rainG = chart.append('g').attr('class', 'rains')
+            .attr('transform', 'translate(' + [0, 30 + d3.max(highScale.range())] + ')');
+
+        var title = chart.append('text')
+            .attr('x', w / 2)
+            .attr('y', h - 10)
+            .attr('text-anchor', 'middle')
+            .text('Seattle Climate');
+        var dataLink = chart.append('a')
+            .attr('xlink:href', 'http://en.wikipedia.org/wiki/Seattle');
+        dataLink.append('text')
+            .attr('class', 'small')
+            .attr('x', w / 2)
+            .attr('y', h)
+            .attr('text-anchor', 'middle')
+            .text('[source]');
+
+
+        var drawChart = function() {
+            var highGs = highG.selectAll('g.tick').data(data, keyFn);
+            var newHighGs = highGs.enter().append('g')
+                  .attr('class', 'tick');
+              highGs.transition().duration(1000)
+                  .attr('transform', function(d, i) {
+                    return 'translate(' + [xScale(i) + datumWidth / 2, highScale(dataHigh(d))] + ')';
+                  })
+              newHighGs.append('line')
+                  .attr('x1', -datumWidth / 2)
+                  .attr('x2', datumWidth / 2);
+              newHighGs.append('text')
+                  .attr('class', 'small')
+                  .attr('text-anchor', 'middle')
+                  .attr('dy', '-0.3em');
+              highGs.select('text')
+                  .text(function(d) { return dataHigh(d) + '°F'; });
+            
+            
+            var rainGs = rainG.selectAll('g.tick').data(data, keyFn);
+
+
+            var newRainGs = rainGs.enter().append('g')
+                  .attr('class', 'tick');
+              rainGs.transition().duration(1000)
+                  .attr('transform', function(d, i) {
+                    return 'translate(' + [xScale(i) + datumWidth / 2, rainScale(dataRain(d))] + ')';
+                  })
+              newRainGs.append('line')
+                  .attr('x1', -datumWidth / 2)
+                  .attr('x2', datumWidth / 2);
+              newRainGs.append('text')
+                  .attr('class', 'small')
+                  .attr('text-anchor', 'middle')
+                  .attr('dy', '-0.3em');
+              rainGs.select('text')
+                  .text(function(d) { return dataRain(d) + '"'; });
+            
+            
+            var labels = chart.selectAll('text.month').data(data, keyFn);
+            
+            
+            labels.enter().append('text')
+                  .attr('class', 'month small')
+                  .attr('y', h - 25)
+                  .attr('text-anchor', 'middle');
+              labels.transition().duration(1000)
+                  .attr('x', function(d, i) { return xScale(i) + datumWidth / 2; })
+                  .text(function(d) { return dataMonth(d).substr(0, 3); });
+            
+            
+        };
+
+
+        drawChart();
+        var makeSortButton = function(field, rev) {
+          return d3.select('#chart').append('button')
+              .on('click', function() {
+                data.sort(function(a, b) { return rev * (a[field] - b[field]); });
+                drawChart();
+              });
+        };
+        makeSortButton('i', 1).text('Sort by month');
+        makeSortButton('high', -1).text('Sort by high temperature');
+        makeSortButton('rain', -1).text('Sort by precipitation');
+    </script>
+</%def>
+
+<%def name="showd3Bar3()">
+    <div class="d3Bar3"></div>
+</%def>
+
+<%def name="d3Bar3(stats)">
+    <%
+        nIdea = stats['idea']
+        nDiscussion = stats['discussion']
+        nResource = stats['resource']
+        nComment = stats['comment']
+        ideaText = "Idea"
+        if nIdea > 1: ideaText += "s"
+        discussionText = "Discussion"
+        if nDiscussion > 1: discussionText += "s"
+        resourceText = "Resource"
+        if nResource > 1: resourceText += "s"
+        commentText = "Comment"
+        if nComment > 1: commentText += "s"
+
+    %>
+    <style>
+
+        .bar {
+          fill: steelblue;
+        }
+
+        .bar:hover {
+          fill: green;
+        }
+
+        .axis {
+          font: 10px sans-serif;
+        }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+
+        .x.axis path {
+          display: none;
+        }
+
+    </style>
+    <script>
+
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, width], .1);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+        
+        var svg = d3.select(".d3Bar3").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var data = [
+            {name: "${ideaText}",    value:  ${nIdea}},
+            {name: "${discussionText}",    value:  ${nDiscussion}},
+            {name: "${resourceText}",     value: ${nResource}},
+            {name: "${commentText}",   value: ${nComment}}
+        ];
+
+        x.domain(data.map(function(d) { return d.name; }));
+        y.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(d3.max(data, function(d) { return d.value; }), "");
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Posts");
+
+        svg.selectAll(".bar")
+            .data(data)
+          .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.name); })
+            .attr("width", x.rangeBand())
+            .attr("y", function(d) { return y(d.value); })
+            .attr("height", function(d) { return height - y(d.value); });
+
+    </script>
+</%def>
+
+<%def name="showd3Bar2(stats)">
+
+    <svg class="chart2"></svg>
+
+</%def>
+
+<%def name="d3Bar2(stats)">
+    <%
+        nIdea = stats['idea']
+        nDiscussion = stats['discussion']
+        nResource = stats['resource']
+        nComment = stats['comment']
+        ideaText = "Idea"
+        if nIdea > 1: ideaText += "s"
+        discussionText = "Discussion"
+        if nDiscussion > 1: discussionText += "s"
+        resourceText = "Resource"
+        if nResource > 1: resourceText += "s"
+        commentText = "Comment"
+        if nComment > 1: commentText += "s"
+
+    %>
+    <style>
+
+        .chart2 rect {
+          fill: steelblue;
+        }
+
+        .chart2 text {
+          fill: white;
+          font: 10px sans-serif;
+          text-anchor: end;
+        }
+
+    </style>
+    <script>
+
+        var width = 420,
+            barHeight = 20;
+
+        var x = d3.scale.linear()
+            .range([0, width]);
+
+        var chart = d3.select(".chart2")
+            .attr("width", width);
+
+        // var data = ["", "${nDiscussion}", "${nResource}", "${nComment}"];
+        var data = [
+            {name: "${ideaText}",    value:  ${nIdea}},
+            {name: "${discussionText}",    value:  ${nDiscussion}},
+            {name: "${resourceText}",     value: ${nResource}},
+            {name: "${commentText}",   value: ${nComment}}
+        ];        
+
+        x.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+        chart.attr("height", barHeight * data.length);
+
+        var bar = chart.selectAll("g")
+            .data(data)
+          .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+        bar.append("rect")
+            .attr("width", function(d) { return x(d.value); })
+            .attr("height", barHeight - 1);
+
+        bar.append("text")
+            .attr("x", function(d) { return x(d.value) - 3; })
+            .attr("y", barHeight / 2)
+            .attr("dy", ".35em")
+            .text(function(d) { return d.value; });
+
+    </script>
+</%def>
+
+<%def name="showd3Bar(stats)">
+    
+    <div class="chart">
+    </div>
+
+</%def>
+
+<%def name="d3Bar(stats)">
+    <%
+
+        nDiscussion = stats['discussion']
+        nResource = stats['resource']
+        nIdea = stats['idea']
+        nComment = stats['comment']
+
+    %>
+    <style>
+
+        .chart div {
+            font: 10px sans-serif;
+            text-align: right;
+            padding: 3px;
+            margin: 1px;
+            color: white;
+        }
+
+    </style>
+    <script>
+
+        var data = ["${nIdea}", "${nDiscussion}", "${nResource}", "${nComment}"];
+
+        var x = d3.scale.linear()
+            .domain([0, d3.max(data)])
+            .range([0, d3.max(data)*10]);
+
+        d3.select(".chart")
+            .selectAll("div")
+                .data(data)
+            .enter().append("div")
+                .style("width", function(d) { return x(d) + "px"; })
+                .style("background-color", function(d, i) { return i % 2 ? "steelblue" : "blue";})
+                .text(function(d) { return d; });
+
+    </script>
+</%def>
+
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
