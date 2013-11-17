@@ -282,3 +282,23 @@ def getRecentActivity(number, publicPrivate = 'public'):
                     return returnList
 
         return returnList
+
+def getStatsForWorkshop(workshopCode, disabled = '0', deleted = '0'):
+    """
+        Standard statistics for a workshop
+        
+    """
+    #: get the ideas
+    stats = {}
+    try:
+        stats = meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+        return False
+
+    return stats
+
+

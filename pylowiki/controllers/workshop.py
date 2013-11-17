@@ -1132,8 +1132,26 @@ class WorkshopController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
 
-        #c.stats = statsLib.getStatsForWorkshop(c.w['urlCode'])
-        c.stats = statsLib.getActivityCountByObjectForWorkshop(c.w['urlCode'])
+        c.stats = statsLib.getStatsForWorkshop(c.w['urlCode'])
+        ideaList = []
+        i = 0
+        for idea in c.stats:
+            thisIdea = {}
+            thisIdea['totalVotes'] = int(idea['downs']) + int(idea['ups'])
+            thisIdea['rating'] = int(idea['ups']) - int(idea['downs']) 
+            thisIdea['totalYes'] = int(idea['ups'])
+            thisIdea['totalNo'] = int(idea['downs'])
+            thisIdea['totalVotes'] = int(idea['ups']) + int(idea['downs'])
+            thisIdea['percentYes'] = thisIdea['percentNo'] = 0
+            if thisIdea['totalVotes'] > 0:
+                thisIdea['percentYes'] = int(float(thisIdea['totalYes'])/float(thisIdea['totalVotes']) * 100)
+                thisIdea['percentNo'] = int(float(thisIdea['totalNo'])/float(thisIdea['totalVotes']) * 100)
+            thisIdea['views'] = idea['views']
+            log.info("i: %s"%i)
+            ideaList.append(thisIdea)
+
+        c.ideaStats = ideaList
+        #getActivityCountByObjectForWorkshop(c.w['urlCode'])
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
         c.adminPanel = False
 

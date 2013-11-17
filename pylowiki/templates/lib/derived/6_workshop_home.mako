@@ -156,6 +156,13 @@
 </%def>
 
 <%def name="sortChart1(stats)">
+    <%
+        # hi!
+        spit =  ""
+        for idea in stats:
+            spit += " <p>%s</p>"%idea['views']
+    
+    %>
     <style>
         #chart {
           background-color: #fff;
@@ -307,6 +314,7 @@
         makeSortButton('high', -1).text('Sort by high temperature');
         makeSortButton('rain', -1).text('Sort by precipitation');
     </script>
+    
 </%def>
 
 <%def name="showSortChart1Example()">
@@ -465,6 +473,7 @@
         makeSortButton('high', -1).text('Sort by high temperature');
         makeSortButton('rain', -1).text('Sort by precipitation');
     </script>
+    <p>${spit}</p>
 </%def>
 
 <%def name="showd3Bar3()">
