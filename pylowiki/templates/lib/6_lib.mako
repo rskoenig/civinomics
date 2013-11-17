@@ -317,7 +317,7 @@
          <i class="${voteClass}"></i>
          </a>
       % else:
-        % if thing.objType == 'photo':
+        % if 'workshopCode' not in thing:
             <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
         % else:
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
@@ -326,7 +326,7 @@
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-        % if thing.objType == 'photo':
+        % if 'workshopCode' not in thing:
             <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
         % else:
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
@@ -757,7 +757,7 @@
                 initiative = initiativeLib.getInitiative(thing['initiativeCode'])
                 if not initiative:
                     return False
-                return initiativeLink(initiative, dparent, **kwargs)
+                return initiativeLink(initiative, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
