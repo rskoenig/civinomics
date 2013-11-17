@@ -112,15 +112,17 @@
                         % endif
                     </span>
                     <span ng-show="showingInitiatives.create" ng-cloak>
-                        % if c.searchType != 'region':
-                            <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
-                                <i class="icon-plus"></i> New Initiative
-                            </a>
-                        % else:
-                            <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
-                                <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
-                                 <button type="submit" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
-                            </form>
+                        % if 'user' in session:
+                            % if c.searchType != 'region':
+                                <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                    <i class="icon-plus"></i> New Initiative
+                                </a>
+                            % else:
+                                <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
+                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                    <button type="submit" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
+                                </form>
+                            % endif
                         % endif
                     </span>
                 </div>
