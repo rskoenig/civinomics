@@ -71,9 +71,8 @@ class InitiativeController(BaseController):
 
         
         # only the author or an admin can edit 
-        if 'user' in session and c.user['email'] != c.authuser['email'] and not userLib.isAdmin(c.authuser.id):
-            c.iPrivs = False
-        else:
+        c.iPrivs = False
+        if 'user' in session and (c.user['email'] == c.authuser['email'] or userLib.isAdmin(c.authuser.id)):
             c.iPrivs = True
 
         if action in adminList:
