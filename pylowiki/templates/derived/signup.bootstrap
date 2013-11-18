@@ -32,6 +32,16 @@
         <div class="slogan">
             <h1>Democracy starts at home</h1>
         </div>
+        <div class="slogan2">
+            <div class="row-fluid">
+                <div class="span5">
+                    <a href="/search?searchQuery=civinomicon"><img class="small-hidden" src="/images/civinomicon/final_sticker.png"></a>
+                </div>
+                <div class="span7 centered">
+                    <span><a href="/search?searchQuery=civinomicon">Vote</a> on the Civinomicon initiatives or <a href="/search?searchQuery=civinomicon">add your own</a></span>
+                </div>
+            </div>
+        </div>
         <div class="well main-well signup">
             % if c.splashMsg:
                 <% message = c.splashMsg %>
@@ -122,6 +132,7 @@
             </div>
         </div>
     </div><!-- row welcome -->
+    <!--
     <div class="row-fluid">
         <div class="span12 centered">
             <h1 style="margin-top: 40px; margin-bottom: 40px;">Hack the Future of Santa Cruz. Nov 15-17, 2013</h1>
@@ -137,9 +148,10 @@
         </div>
     </div>
     <hr>
+    -->
     <div class="row-fluid">
         <div class="span12 centered">
-            <h1>Bring a paradigm shift in collaboration to your community. Free.</h1>
+            <h1 class="splash-section">Bring a paradigm shift in collaboration to your community. Free.</h1>
             <p class="lead splash-text">Collect ideas, vote for the best, implement them - make things better.</p>
             <a class="btn btn-primary btn-large" style="margin-bottom:40px;" href="/newWorkshop/login"><i class="icon-cog"></i> Start a Workshop</a>
         </div>
