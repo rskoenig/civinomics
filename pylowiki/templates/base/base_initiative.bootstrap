@@ -65,7 +65,7 @@
                             picture uploaded.</p>
                             <button class="btn btn-large btn-warning pull-right" disabled>Publish</button>
                         % else:
-                            <p>Unpublish your workshop if you would like to remove your initiative from public listings. It will no longer be accessible by anyone but you.</p>
+                            <p>Unpublish your initiative if you would like to remove your initiative from public listings. It will no longer be accessible by anyone but you.</p>
                             <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
                                 <button type="submit" class="btn btn-large btn-warning pull-right" name="public" value="unpublish">Unpublish</button>
                             </form>
