@@ -1,9 +1,11 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%! 
     import locale
     locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 %>
+<% lib.return_to() %>
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid" ng-controller="SearchCtrl">
