@@ -335,7 +335,7 @@ h1.workshop-title{
   }
 }
 
-@media (max-width: 600px){
+@media (max-width: 1100px){
   .logo.logo-lg{
     background-image: url('/images/logo_simple_medlg.png');
     height: 40px;
@@ -352,7 +352,7 @@ h1.workshop-title{
     display: inline;
 }
 
-@media (max-width: 605px){
+@media (max-width: 800px){
   .small-show{
     display: inline;
   }
@@ -2404,8 +2404,8 @@ button.signup, button.login{
 }
 
 .slogan{
-  margin-top: 300px;
-  width: 465px;
+  margin-top: 250px;
+  width: 450px;
   color: #fff;
   margin-left: 15%;
   background: rgba(0,0,0,.8);
@@ -2413,6 +2413,22 @@ button.signup, button.login{
   padding-right: 10px;
 }
 
+.slogan2{
+  margin-top: 20px;
+  width: 450px;
+  color: #fff;
+  margin-left: 15%;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.slogan2 .span7{
+  background: rgba(0,0,0,.8);
+  padding: 10px;
+  font-size: 20px;
+}
+.slogan2 img{
+  min-height: 175px;
+}
 
 @media (max-width: 1250px){
   .how-it-works h3{
@@ -2422,13 +2438,13 @@ button.signup, button.login{
 }
 
 @media (max-width: 1200px){
-  .slogan{
+  .slogan, .slogan2{
     margin-left: 10%;
   }
 }
 
 @media (max-width: 1015px){
-  .slogan{
+  .slogan, .slogan2{
     margin-left: 5%;
   }
 }
@@ -2454,11 +2470,26 @@ button.signup, button.login{
 @media (max-width: 928px){
   .slogan{
     margin-top:135px;
+  }
+  .slogan, .slogan2{
     margin-left: auto;
     margin-right: auto;
     top: auto;
     left: auto;
     right: auto;
+  }
+  .slogan2 img{
+    display: none;
+  }
+  .slogan2{
+    margin-top: -20px;
+  }
+  .slogan2 .span7{
+    width: 100%;
+    margin-left: 0px;
+  }
+  h1.splash-section{
+    margin-top: 140px !important;
   }
   .main-well.signup{
     position: relative !important;
@@ -2517,7 +2548,7 @@ button.signup, button.login{
 .how-it-works{
   width: 100%;
   /* height + margin-top = image height */
-  margin-top: 265px;
+  margin-top: 115px;
   height: 130px;
   color: #fff;
   background: rgba(0,0,0,0.8);
@@ -2527,6 +2558,12 @@ button.signup, button.login{
 .how-it-works .row-fluid [class*="span"]:first-child {
 margin-left: 4.2%;
 }
+
+h1.splash-section{
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
 
 .photo-cred{
   position: absolute;
@@ -2550,7 +2587,7 @@ margin-left: 4.2%;
   border-radius: 0px;
 }
 
-@media (max-width: 680px){
+@media (max-width: 1100px){
   .splash-nav .nav-item{
     font-size: 16px
   }  
