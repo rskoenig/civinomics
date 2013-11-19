@@ -64,7 +64,7 @@
                         ${workshopHelpers.showActivity(c.activity)}
                     % elif listingType == 'stats':
                         <h4 class="section-header smaller">Statistics</h4>
-                        ${workshopHelpers.showSortChart1()}
+                        ${workshopHelpers.showSortChart1(c.ideaStats)}
                     % else:
                         <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                         % if listingType != 'activity':

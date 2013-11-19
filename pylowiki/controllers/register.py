@@ -607,6 +607,7 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
+                # NOTE - make sure email and fbEmail are not 'undefined'
                 u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True

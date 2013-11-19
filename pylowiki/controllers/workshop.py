@@ -1137,6 +1137,8 @@ class WorkshopController(BaseController):
         i = 0
         for idea in c.stats:
             thisIdea = {}
+            thisIdea['index'] = i
+            thisIdea['title'] = idea['title']
             thisIdea['totalVotes'] = int(idea['downs']) + int(idea['ups'])
             thisIdea['rating'] = int(idea['ups']) - int(idea['downs']) 
             thisIdea['totalYes'] = int(idea['ups'])
@@ -1147,8 +1149,8 @@ class WorkshopController(BaseController):
                 thisIdea['percentYes'] = int(float(thisIdea['totalYes'])/float(thisIdea['totalVotes']) * 100)
                 thisIdea['percentNo'] = int(float(thisIdea['totalNo'])/float(thisIdea['totalVotes']) * 100)
             thisIdea['views'] = idea['views']
-            log.info("i: %s"%i)
             ideaList.append(thisIdea)
+            i = i + 1
 
         c.ideaStats = ideaList
         #getActivityCountByObjectForWorkshop(c.w['urlCode'])

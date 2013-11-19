@@ -151,17 +151,27 @@
     
 </%def>
 
-<%def name="showSortChart1()">
+<%def name="showSortChart1(stats)">
+    <%
+        spit = ""
+        for idea in stats:
+            spit += "%s "%idea['title']
+    %>
     <div id="chart"></div>
+    <p>${spit}</p>
 </%def>
 
 <%def name="sortChart1(stats)">
     <%
-        # hi!
-        spit =  ""
+        # var data = [
+        #      {'i':  0,'month': 'January',   'high': 47, 'rain': 5.6},
+        dataString = "var data = [\n"
         for idea in stats:
-            spit += " <p>%s</p>"%idea['views']
-    
+            entry = "{'i': %s, 'total': '%s', 'yes': %s, 'no': %s},\n"%(idea['index'], idea['totalVotes'], idea['percentYes'], idea['percentNo'])
+            dataString += entry
+        # clip the last ',' off this string
+        dataString = dataString[:-1]
+        dataString += "\n];"
     %>
     <style>
         #chart {
@@ -192,6 +202,9 @@
         var w = 300;
         var h = 220;
 
+        ${dataString}
+
+        /*
         var data = [
           {'i':  0,'month': 'January',   'high': 47, 'rain': 5.6},
           {'i':  1,'month': 'February',  'high': 50, 'rain': 3.5},
@@ -206,11 +219,11 @@
           {'i': 10,'month': 'November',  'high': 51, 'rain': 6.6},
           {'i': 11,'month': 'December',  'high': 45, 'rain': 5.4},
         ];
+        */
 
-
-        var dataMonth = function(d) { return d['month']; };
-        var dataHigh = function(d) { return d['high']; };
-        var dataRain = function(d) { return d['rain']; };
+        var dataMonth = function(d) { return d['total']; };
+        var dataHigh = function(d) { return d['yes']; };
+        var dataRain = function(d) { return d['no']; };
         var keyFn = dataMonth;
 
 
@@ -311,10 +324,9 @@
               });
         };
         makeSortButton('i', 1).text('Sort by month');
-        makeSortButton('high', -1).text('Sort by high temperature');
-        makeSortButton('rain', -1).text('Sort by precipitation');
+        makeSortButton('yes', -1).text('Sort by high temperature');
+        makeSortButton('no', -1).text('Sort by precipitation');
     </script>
-    
 </%def>
 
 <%def name="showSortChart1Example()">
@@ -469,11 +481,14 @@
                 drawChart();
               });
         };
+        var spitTest = function(testText) {
+          return d3.select('#chart').append('p')
+              .text(textText);
+        };
         makeSortButton('i', 1).text('Sort by month');
         makeSortButton('high', -1).text('Sort by high temperature');
         makeSortButton('rain', -1).text('Sort by precipitation');
     </script>
-    <p>${spit}</p>
 </%def>
 
 <%def name="showd3Bar3()">
