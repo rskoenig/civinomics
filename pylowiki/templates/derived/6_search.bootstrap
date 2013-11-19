@@ -125,6 +125,8 @@
                                     <button type="submit" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
                                 </form>
                             % endif
+                        % else:
+                            <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-plus"></i> New Initiative</a>
                         % endif
                     </span>
                 </div>
@@ -467,6 +469,10 @@
                                             <a href="/login" class="noVote">
                                                 <div class="vote-icon no-icon"></div>
                                             </a>
+                                            <br>
+                                            <div class="totalVotesWrapper">
+                                                Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                            </div>
                                         % endif
                                     </div>
                                 </div>
