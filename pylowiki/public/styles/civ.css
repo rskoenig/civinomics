@@ -1054,6 +1054,7 @@ td.scope-icon{
 
 .voteBlock.ideaListing{
   padding:10px;
+  min-height: 95px;
 }
 
 .chevron-score{
