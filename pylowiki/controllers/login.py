@@ -209,7 +209,7 @@ class LoginController(BaseController):
         bigPic = bigPic.replace(",","%")
         bigPic = urllib2.unquote(bigPic)
 
-        log.info("login:fbAuthCheckEmail before verifyFbSignature")
+        log.info("login:fbAuthCheckEmail before verifyFbSignature; id1: %s"%id1)
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
             log.error('Invalid signature')
@@ -362,10 +362,11 @@ class LoginController(BaseController):
                 user['externalAuthType'] = 'facebook'
                 # a user's account email can be different from the email on their facebook account.
                 # we should keep track of this, it'll be handy
-                if utils.badEmail(email):
-                    user['fbEmail'] = "%s@%s.com"%(facebookAuthId, facebookAuthId)
-                    log.info("found bad email, setting as %s"%user['fbEmail'])
-                else:
+                #if utils.badEmail(email):
+                    #user['fbEmail'] = "%s@%s.com"%(facebookAuthId, facebookAuthId)
+                    #log.info("found bad email, setting as %s"%user['fbEmail'])
+                #else:
+                if not utils.badEmail(email):
                     user['fbEmail'] = email
                 commit(user)
                 return redirect("/fbLoggingIn")
@@ -505,7 +506,12 @@ class LoginController(BaseController):
         email = session['fbEmail']
         log.info("login:fbLoggingIn")
         # get user
-        user = userLib.getUserByEmail( email )
+        if utils.badEmail(email):
+            user = False
+        else:
+            # get user by email, if no match look for match by facebook user id
+            user = userLib.getUserByEmail( email )
+
         if not user:
             user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
