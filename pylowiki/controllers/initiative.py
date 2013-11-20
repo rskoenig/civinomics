@@ -57,12 +57,13 @@ class InitiativeController(BaseController):
                     c.scopeHref = scopeProps['href']
 
                     if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                        c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                        c.photo_url = "/images/photos/%s/orig/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                        c.bgPhoto_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                         c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                     else:
                         c.photo_url = "/images/icons/generalInitiative_lg.jpg"
                         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
-                    c.bgPhoto_url = "'" + c.photo_url + "'"
+                    c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
 
                 else:
                   abort(404)  
