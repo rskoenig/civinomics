@@ -1049,12 +1049,12 @@ td.scope-icon{
 
 .voteBlock{
   padding:2px;
-  background-color: whitesmoke !important;
 }
 
 .voteBlock.ideaListing{
   padding:10px;
   min-height: 95px;
+  background-color: whitesmoke !important;
 }
 
 .chevron-score{
