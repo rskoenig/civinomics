@@ -8,7 +8,7 @@
 <% lib.return_to() %>
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
-<div class="row-fluid" ng-controller="SearchCtrl">
+<div class="row-fluid one-up" ng-controller="SearchCtrl">
     <div class="span2 search-left-column">
         % if c.searchType == 'region':
             <img class="thumbnail tight flag pull-left" src="${c.flag}">
