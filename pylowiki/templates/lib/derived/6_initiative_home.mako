@@ -227,7 +227,8 @@
             <div class="row-fluid">
                 <div class="span6">
                     <label for="tag" class="control-label" required><strong>Initiative category:</strong></label>
-                    <div class="span8 offset4">
+                    <div class="span3"></div>
+                    <div class="span8 no-left">
                         <select name="tag" id="tag">
                         % if c.initiative['public'] == '0':
                             <option value="">Choose one</option>
@@ -514,7 +515,7 @@
         endif
     %>
     <div class="row-fluid"><span id="planetSelect">
-        <div class="span1"></div><div class="span3">Planet:</div>
+        <div class="span3">Planet:</div>
         <div class="span8">
             <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
                 <option value="0">Earth</option>
@@ -523,7 +524,7 @@
     </span><!-- countrySelect -->
     </div><!-- row-fluid -->     
     <div class="row-fluid"><span id="countrySelect">
-        <div class="span1"></div><div class="span3">Country:</div>
+        <div class="span3">Country:</div>
         <div class="span8">
             <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
                 <option value="0">Select a country</option>
@@ -534,7 +535,7 @@
     </div><!-- row-fluid -->
     <div class="row-fluid"><span id="stateSelect">
         % if c.country != "0":
-            <div class="span1"></div><div class="span3">State:</div><div class="span8">
+            <div class="span3">State:</div><div class="span8">
             <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
             <option value="0">Select a state</option>
             % for state in states:
@@ -557,7 +558,7 @@
         % if c.state != "0":
             <% counties = getCountyList("united-states", c.state) %>
             <% cityMessage = "Leave blank 'County' blank if your initiative applies to the entire state." %>
-            <div class="span1"></div><div class="span3">County:</div><div class="span8">
+            <div class="span3">County:</div><div class="span8">
             <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
                 <option value="0">Select a county</option>
                 % for county in counties:
@@ -579,7 +580,7 @@
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
             <% postalMessage = "Leave 'City' blank if your initiative applies to the entire county." %>
-            <div class="span1"></div><div class="span3">City:</div><div class="span8">
+            <div class="span3">City:</div><div class="span8">
             <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
             <option value="0">Select a city</option>
                 % for city in cities:
@@ -601,7 +602,7 @@
         % if c.city != "0":
             <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
             <% underPostalMessage = "or leave blank if your initiative is specific to the entire city." %>
-            <div class="span1"></div><div class="span3">Zip Code:</div><div class="span8">
+            <div class="span3">Zip Code:</div><div class="span8">
             <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
             <option value="0">Select a zip code</option>
                 % for pCode in postalCodes:

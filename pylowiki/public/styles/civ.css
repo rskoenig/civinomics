@@ -1282,6 +1282,11 @@ ul.listeners > li {
     margin-top:0 !important;
 }
 
+.no-left{
+    padding-left:0 !important;
+    margin-left:0 !important;
+}
+
 .gallery .noShow{
     display:none;
 }
@@ -2861,3 +2866,10 @@ a.no-highlight:hover{
   position: relative;
   z-index: 1;
 }
+
+@media (min-width: 768px){
+  .min-container{
+    min-width: 930px;
+  }  
+}
+
