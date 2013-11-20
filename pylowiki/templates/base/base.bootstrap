@@ -40,6 +40,10 @@
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+   <script type="text/javascript">
+    // fix for bootstrap dropdown menus not working on iPad
+    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+   </script>
    <script>
       $(document).ready(function(){
         $('textarea').autosize();   
