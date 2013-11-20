@@ -11,6 +11,8 @@ html,body{
   }
   .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
     padding: 0px;
+    position: relative;
+    z-index: 2;
   }
 }
 
