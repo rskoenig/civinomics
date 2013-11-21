@@ -12,7 +12,7 @@ html,body{
   .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
     padding: 0px;
     position: relative;
-    z-index: 2;
+    z-index: 3;
   }
 }
 
@@ -171,6 +171,8 @@ color: #999;
 .search_drawer{
   box-shadow: 0px -1px 1px 1px rgba(0,0,0,.6) inset;
   background-color: rgba(0, 0, 0, .8);
+  position: relative;
+  z-index: 2;
 }
 
 .corp-sidebar{
