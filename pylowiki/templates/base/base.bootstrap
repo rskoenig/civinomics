@@ -40,6 +40,10 @@
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+   <script type="text/javascript">
+    // fix for bootstrap dropdown menus not working on iPad
+    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+   </script>
    <script>
       $(document).ready(function(){
         $('textarea').autosize();   
@@ -61,6 +65,7 @@
        %>
        <div id="fb-root"></div>
        <script>
+         //console.log('in fb init')
          // activate facebook javascript sdk
          window.fbAsyncInit = function() {
             FB.init({
@@ -104,6 +109,16 @@
            $('#fbLoginButton2').append(authSignal);
          }
 
+         /*
+         function printObject(o) {
+           var out = '';
+           for (var p in o) {
+             out += p + ': ' + o[p] + '\n';
+           }
+           console.log(out);
+         }
+         */
+
          function fbConnected(authResponse) {
            FB.api('/me', function(response) {
              // grab the url to a 200x200 photo of this user
@@ -125,6 +140,8 @@
              var result = ''
              setTimeout(function(){
                // check account status on our site for this user
+               console.log('ya');
+               printObject(authResponse);
                result = fbCheckAccount(response, authResponse, smallPic, bigPic);
                if (result == "not found") {
                  // no account on site yet.

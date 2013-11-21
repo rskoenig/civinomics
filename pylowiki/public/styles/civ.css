@@ -11,6 +11,8 @@ html,body{
   }
   .navbar-fixed-top .navbar-inner, .navbar-fixed-bottom .navbar-inner {
     padding: 0px;
+    position: relative;
+    z-index: 3;
   }
 }
 
@@ -169,6 +171,8 @@ color: #999;
 .search_drawer{
   box-shadow: 0px -1px 1px 1px rgba(0,0,0,.6) inset;
   background-color: rgba(0, 0, 0, .8);
+  position: relative;
+  z-index: 2;
 }
 
 .corp-sidebar{
@@ -261,7 +265,7 @@ padding: 0;
    box-shadow: none;
    margin-left: 0px;
    margin-bottom: 10px;
-   padding: 10px 10px 2px 10px;
+   padding: 10px 10px 10px 10px;
 }
 
 .message-workshop-image{
@@ -1049,12 +1053,12 @@ td.scope-icon{
 
 .voteBlock{
   padding:2px;
-  background-color: whitesmoke !important;
 }
 
 .voteBlock.ideaListing{
   padding:10px;
   min-height: 95px;
+  background-color: whitesmoke !important;
 }
 
 .chevron-score{
@@ -1278,6 +1282,11 @@ ul.listeners > li {
 .no-top{
     padding-top:0 !important;
     margin-top:0 !important;
+}
+
+.no-left{
+    padding-left:0 !important;
+    margin-left:0 !important;
 }
 
 .gallery .noShow{
@@ -1978,7 +1987,7 @@ text-align: right;
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: -1;
+  z-index: 0;
   background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
   background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.5, rgba(0,0,0,0.2)));
@@ -2002,13 +2011,22 @@ text-align: right;
   left: 0;
   height: 100%;
   width: 100%;
-  z-index: -1;
+  z-index: 0;
   background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
   background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
   background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.9, rgba(0,0,0,0.8)));
   background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
   background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
   background-image: linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
+    /* IE 5.5 - 7 */
+  filter: progid:DXImageTransform.Microsoft.gradient(
+    gradientType=1, startColor=#000000, endColorStr=0
+  );
+
+  /* IE8 uses -ms-filter for whatever reason... */
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(
+    gradientType=1, startColor=#000000, endColoStr=0
+  );
 }
 
 .dark-gradient{
@@ -2845,3 +2863,15 @@ a.no-highlight:hover{
 .help-text.error{
   color: #b94a48
 }
+
+.one-up{
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px){
+  .min-container{
+    min-width: 930px;
+  }  
+}
+

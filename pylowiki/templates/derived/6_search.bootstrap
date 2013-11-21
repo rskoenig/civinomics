@@ -8,7 +8,7 @@
 <% lib.return_to() %>
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
-<div class="row-fluid" ng-controller="SearchCtrl">
+<div class="row-fluid one-up" ng-controller="SearchCtrl">
     <div class="span2 search-left-column">
         % if c.searchType == 'region':
             <img class="thumbnail tight flag pull-left" src="${c.flag}">
@@ -192,7 +192,7 @@
                             <div class="media well searchListing">
                                 <div class="span2">
                                     <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
-                                        <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
+                                        <img class="media-object avatar" ng-src="{{p.photo}}" alt="{{p.name}}" title="{{p.name}}">
                                     </a>
                                 </div>
                                 <div class="span10">

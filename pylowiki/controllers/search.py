@@ -429,6 +429,7 @@ class SearchController(BaseController):
             entry = {}
             entry['name'] = p['name']
             entry['greetingMsg'] = p['greetingMsg']
+            entry['photo'] = utils._userImageSource(p)
             entry['hash'] = md5(p['email']).hexdigest()
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']

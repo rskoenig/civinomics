@@ -165,7 +165,7 @@
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
             <div class="row footer well">
-                <div class="span8">
+                <div class="span8 no-left">
                     <ul class="horizontal-list">
                         <li><a class="green green-hover" href="/corp/about">About</a></li> 
                         <li><a class="green green-hover" href="/corp/polling">Polling</a></li>
