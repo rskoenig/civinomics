@@ -8,6 +8,7 @@ from pylons import config
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
+import pylowiki.lib.utils       as utils
 from pylowiki.lib.db.user import User, getUserByEmail, getUserByFacebookAuthId, getActiveUsers, getUserByTwitterId
 from pylowiki.lib.db.pmember import getPrivateMemberByCode
 from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
@@ -473,17 +474,6 @@ class RegisterController(BaseController):
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            return redirect('/')
 
         """ Handler for registration, validates """
         returnPage = "/signup"
@@ -517,11 +507,19 @@ class RegisterController(BaseController):
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
-                if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                if utils.badEmail(email):
+                    # simple is best, this next line is what was here
+                    # if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                     # invalid email, could be the 'undefined' case
                     # we'll make a unique email for this user
-                    email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
-                    log.info("created email %s"%email)
+                    if 'facebookAuthId' in session:
+                        email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                        log.info("created email %s"%email)
+                    else:
+                        splashMsg['content'] = "Some required info is missing from the facebook data."
+                        session['splashMsg'] = splashMsg
+                        session.save() 
+                        return redirect('/signup')
 
         if  'postalCode' not in request.params:
             log.info('postalCode missing')
@@ -607,6 +605,7 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
+                # NOTE - make sure email and fbEmail are not 'undefined'
                 u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
@@ -744,6 +743,22 @@ class RegisterController(BaseController):
                 returnJson = False
         except KeyError:
             returnJson = False
+
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+
+        if c.numUsers >= c.numAccounts:
+            splashMsg = {}
+            splashMsg['type'] = 'error'
+            splashMsg['title'] = 'Error:'
+            splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
+            session['splashMsg'] = splashMsg
+            session.save()
+            if returnJson:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':2, 'message':'Site at capacity!  We will be increasing the capacity in the coming weeks.'})
+            else:
+                return redirect('/signup')
 
         returnPage = "/signup"
         name = False

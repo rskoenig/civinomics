@@ -16,6 +16,14 @@ log = logging.getLogger(__name__)
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
+def badEmail(email):
+    log.info("fx badEmail: %s"%email)
+    if email.find('@') < 0:
+        # if there's not an @ in the string this is a bad email
+        return True
+    else:
+        return False
+
 def getBaseUrl():
     baseUrl = config['site_base_url']
     # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
