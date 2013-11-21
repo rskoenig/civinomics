@@ -3,16 +3,26 @@ import logging, string
 from urllib import quote
 from zlib import adler32
 from pylons import session, tmpl_context as c
+from hashlib import md5
+from pylons import tmpl_context as c, config, session
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as generic
-from pylons import tmpl_context as c, config, session
 import urllib2
+
 
 log = logging.getLogger(__name__)
 
 # For base62 conversion
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
+
+def badEmail(email):
+    log.info("fx badEmail: %s"%email)
+    if email.find('@') < 0:
+        # if there's not an @ in the string this is a bad email
+        return True
+    else:
+        return False
 
 def getBaseUrl():
     baseUrl = config['site_base_url']
@@ -202,6 +212,66 @@ def getPublicScope(item):
         scopeName  = 'earth'
         flag += 'earth.gif'
     return {'level':scopeLevel, 'name':scopeName, 'flag':flag, 'href':href}
+
+
+def _userImageSource(user, **kwargs):
+        # Assumes 'user' is a Thing.
+        # Defaults to a gravatar source
+        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+        #                          we return a source based on the value given here (civ/gravatar)
+        source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+        large = False
+        gravatar = True
+
+        if 'className' in kwargs:
+            if 'avatar-large' in kwargs['className']:
+                large = True
+        if 'forceSource' in kwargs:
+            if kwargs['forceSource'] == 'civ':
+                gravatar = False
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                else:
+                    source = '/images/hamilton.png'
+            elif kwargs['forceSource'] == 'facebook':
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+            elif kwargs['forceSource'] == 'twitter':
+                source = user['twitterProfilePic']
+
+        else:
+            if 'avatarSource' in user.keys():
+                if user['avatarSource'] == 'civ':
+                    if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                        source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                        gravatar = False
+                elif user['avatarSource'] == 'facebook':
+                    gravatar = False
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+                elif user['avatarSource'] == 'twitter':
+                    gravatar = False
+                    source = user['twitterProfilePic']
+
+            elif 'extSource' in user.keys():
+                # this is needed untl we're sure all facebook connected users have properly 
+                # functioning profile pics - the logic here is now handled 
+                # with the above user['avatarSource'] == 'facebook': ..
+                if 'facebookSource' in user.keys():
+                    if user['facebookSource'] == u'1':
+                        gravatar = False
+                        # NOTE - when to provide large or small link?
+                        if large:
+                            source = user['facebookProfileBig']
+                        else:
+                            source = user['facebookProfileSmall']
+        if large and gravatar:
+            source += '&s=200'
+        return source
 
 
 workshopInfo = \
