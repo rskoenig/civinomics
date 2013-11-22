@@ -262,9 +262,12 @@ class LoginController(BaseController):
         facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
-        # get user by email, if no match look for match by facebook user id
-        user = userLib.getUserByEmail( email )
-        log.info('asked for email')
+        if utils.badEmail(email):
+            user = False
+        else:
+            # get user by email, if no match look for match by facebook user id
+            user = userLib.getUserByEmail( email )
+            log.info('asked for email')
         if user:
             log.info('found email')
             alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
@@ -345,7 +348,8 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
-            return redirect("/fbLoggingIn")
+            loginURL = LoginController.logUserIn(self, user)
+            return redirect(loginURL)
         else:
             log.info('did not find by email')
             user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
@@ -359,9 +363,17 @@ class LoginController(BaseController):
                 user['externalAuthType'] = 'facebook'
                 # a user's account email can be different from the email on their facebook account.
                 # we should keep track of this, it'll be handy
-                user['fbEmail'] = email
+                if not utils.badEmail(email):
+                    user['fbEmail'] = email
+                    # a bug may have set some user emails to be made from their fb auth id
+                    # so this is in place to fix that
+                    if user['email'] == "%s@%s.com"%(facebookAuthId, facebookAuthId):
+                        log.info('fixing facebook id generated email')
+                        user['email'] = email
                 commit(user)
-                return redirect("/fbLoggingIn")
+                #return redirect("/fbLoggingIn")
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
             else:
                 return redirect("signup/fbSigningUp")
         
@@ -498,7 +510,12 @@ class LoginController(BaseController):
         email = session['fbEmail']
         log.info("login:fbLoggingIn")
         # get user
-        user = userLib.getUserByEmail( email )
+        if utils.badEmail(email):
+            user = False
+        else:
+            # get user by email, if no match look for match by facebook user id
+            user = userLib.getUserByEmail( email )
+
         if not user:
             user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:

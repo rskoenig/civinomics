@@ -517,11 +517,19 @@ class RegisterController(BaseController):
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
-                if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                if utils.badEmail(email):
+                    # simple is best, this next line is what was here
+                    # if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                     # invalid email, could be the 'undefined' case
                     # we'll make a unique email for this user
-                    email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
-                    log.info("created email %s"%email)
+                    if 'facebookAuthId' in session:
+                        email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                        log.info("created email %s"%email)
+                    else:
+                        splashMsg['content'] = "Some required info is missing from the facebook data."
+                        session['splashMsg'] = splashMsg
+                        session.save() 
+                        return redirect('/signup')
 
         if  'postalCode' not in request.params:
             log.info('postalCode missing')
