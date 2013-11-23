@@ -5,17 +5,18 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 from pylons import config
 
-from pylowiki.lib.base import BaseController, render
-import pylowiki.lib.helpers as h
+from pylowiki.lib.base      import BaseController, render
+import pylowiki.lib.helpers     as h
+import pylowiki.lib.utils       as utils
 
-from pylowiki.lib.db.user import User, getUserByEmail, getUserByFacebookAuthId, getActiveUsers, getUserByTwitterId
-from pylowiki.lib.db.pmember import getPrivateMemberByCode
-from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
-from pylowiki.lib.db.geoInfo import getPostalInfo
-from pylowiki.lib.db.dbHelpers import commit
-import pylowiki.lib.db.mainImage    as mainImageLib
-from pylowiki.lib.db.revision import Revision
-import pylowiki.lib.mail            as mailLib
+from pylowiki.lib.db.user         import User, getUserByEmail, getUserByFacebookAuthId, getActiveUsers, getUserByTwitterId
+from pylowiki.lib.db.pmember      import getPrivateMemberByCode
+from pylowiki.lib.db.workshop     import getWorkshopByCode, setWorkshopPrivs
+from pylowiki.lib.db.geoInfo      import getPostalInfo
+from pylowiki.lib.db.dbHelpers    import commit
+import pylowiki.lib.db.mainImage  as mainImageLib
+from pylowiki.lib.db.revision     import Revision
+import pylowiki.lib.mail          as mailLib
 import re
 import simplejson as json
 
@@ -517,11 +518,19 @@ class RegisterController(BaseController):
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
-                if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                if utils.badEmail(email):
+                    # simple is best, this next line is what was here
+                    # if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
                     # invalid email, could be the 'undefined' case
                     # we'll make a unique email for this user
-                    email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
-                    log.info("created email %s"%email)
+                    if 'facebookAuthId' in session:
+                        email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                        log.info("created email %s"%email)
+                    else:
+                        splashMsg['content'] = "Some required info is missing from the facebook data."
+                        session['splashMsg'] = splashMsg
+                        session.save() 
+                        return redirect('/signup')
 
         if  'postalCode' not in request.params:
             log.info('postalCode missing')
