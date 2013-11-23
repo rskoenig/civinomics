@@ -55,7 +55,7 @@ function facebookLogin() {
             //console.log("response status: " + response.status)
             //fPrintObject(response);
             //console.log("response email: " + response.email)
-            fPrintObject(response.authResponse);
+            //fPrintObject(response.authResponse);
             //fbConnected(response.authResponse);
             facebookConnected(response.authResponse);
         } else {

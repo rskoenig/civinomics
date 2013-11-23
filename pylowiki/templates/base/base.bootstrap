@@ -126,16 +126,6 @@
            $('#fbLoginButton1').append(authSignal);
            $('#fbLoginButton2').append(authSignal);
          }
-         
-         /*
-         function printObject(o) {
-           var out = '';
-           for (var p in o) {
-             out += p + ': ' + o[p] + '\n';
-           }
-           console.log(out);
-         }
-         */
 
          /*
          function printObject(o) {
@@ -168,8 +158,8 @@
              var result = ''
              setTimeout(function(){
                // check account status on our site for this user
-               console.log('ya');
-               printObject(authResponse);
+               //console.log('ya');
+               //printObject(authResponse);
                result = fbCheckAccount(response, authResponse, smallPic, bigPic);
                if (result == "not found") {
                  // no account on site yet.
