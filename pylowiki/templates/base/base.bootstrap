@@ -86,10 +86,28 @@
                 fbConnected(response.authResponse);
               } else if (response.status === 'not_authorized') {
                 // this person is logged into facebook but our app does not have auth
-                FB.login();
+                FB.login(function(response) {
+                  if (response.authResponse) {
+                    //console.log('Welcome!  Fetching your information.... ');
+                    //console.log("response status: " + response.status)
+                    //console.log("response email: " + response.email)
+                    fbConnected(response.authResponse);
+                  } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                  }
+                }, {scope: 'email'});
               } else {
                 // user not logged into facebook
-                FB.login();
+                FB.login(function(response) {
+                  if (response.authResponse) {
+                    //console.log('Welcome!  Fetching your information.... ');
+                    //console.log("response status: " + response.status)
+                    //console.log("response email: " + response.email)
+                    fbConnected(response.authResponse);
+                  } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                  }
+                }, {scope: 'email'});
               }
             });
          };
@@ -108,6 +126,16 @@
            $('#fbLoginButton1').append(authSignal);
            $('#fbLoginButton2').append(authSignal);
          }
+         
+         /*
+         function printObject(o) {
+           var out = '';
+           for (var p in o) {
+             out += p + ': ' + o[p] + '\n';
+           }
+           console.log(out);
+         }
+         */
 
          /*
          function printObject(o) {
