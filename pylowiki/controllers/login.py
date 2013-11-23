@@ -209,7 +209,7 @@ class LoginController(BaseController):
         bigPic = bigPic.replace(",","%")
         bigPic = urllib2.unquote(bigPic)
 
-        log.info("login:fbAuthCheckEmail before verifyFbSignature; id1: %s"%id1)
+        log.info("login:fbAuthCheckEmail before verifyFbSignature")
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
             log.error('Invalid signature')
@@ -267,7 +267,7 @@ class LoginController(BaseController):
         else:
             # get user by email, if no match look for match by facebook user id
             user = userLib.getUserByEmail( email )
-        log.info('asked for email')
+            log.info('asked for email')
         if user:
             log.info('found email')
             alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
@@ -348,12 +348,13 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
-            return redirect("/fbLoggingIn")
+            loginURL = LoginController.logUserIn(self, user)
+            return redirect(loginURL)
         else:
             log.info('did not find by email')
             user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
             if user:
-                log.info('found by user id. email was %s'%user['email'])
+                log.info('found by user id %s'%user['email'])
                 # we have an active account. because of an earlier design flaw we need to 
                 # set avatarSource if it hasn't been added to this user object yet
                 if 'avatarSource' not in user.keys():
@@ -362,14 +363,17 @@ class LoginController(BaseController):
                 user['externalAuthType'] = 'facebook'
                 # a user's account email can be different from the email on their facebook account.
                 # we should keep track of this, it'll be handy
-                #if utils.badEmail(email):
-                    #user['fbEmail'] = "%s@%s.com"%(facebookAuthId, facebookAuthId)
-                    #log.info("found bad email, setting as %s"%user['fbEmail'])
-                #else:
                 if not utils.badEmail(email):
                     user['fbEmail'] = email
+                    # a bug may have set some user emails to be made from their fb auth id
+                    # so this is in place to fix that
+                    if user['email'] == "%s@%s.com"%(facebookAuthId, facebookAuthId):
+                        log.info('fixing facebook id generated email')
+                        user['email'] = email
                 commit(user)
-                return redirect("/fbLoggingIn")
+                #return redirect("/fbLoggingIn")
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
             else:
                 return redirect("signup/fbSigningUp")
         

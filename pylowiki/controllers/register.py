@@ -5,18 +5,18 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 from pylons import config
 
-from pylowiki.lib.base import BaseController, render
-import pylowiki.lib.helpers as h
-
+from pylowiki.lib.base      import BaseController, render
+import pylowiki.lib.helpers     as h
 import pylowiki.lib.utils       as utils
-from pylowiki.lib.db.user import User, getUserByEmail, getUserByFacebookAuthId, getActiveUsers, getUserByTwitterId
-from pylowiki.lib.db.pmember import getPrivateMemberByCode
-from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
-from pylowiki.lib.db.geoInfo import getPostalInfo
-from pylowiki.lib.db.dbHelpers import commit
-import pylowiki.lib.db.mainImage    as mainImageLib
-from pylowiki.lib.db.revision import Revision
-import pylowiki.lib.mail            as mailLib
+
+from pylowiki.lib.db.user         import User, getUserByEmail, getUserByFacebookAuthId, getActiveUsers, getUserByTwitterId
+from pylowiki.lib.db.pmember      import getPrivateMemberByCode
+from pylowiki.lib.db.workshop     import getWorkshopByCode, setWorkshopPrivs
+from pylowiki.lib.db.geoInfo      import getPostalInfo
+from pylowiki.lib.db.dbHelpers    import commit
+import pylowiki.lib.db.mainImage  as mainImageLib
+from pylowiki.lib.db.revision     import Revision
+import pylowiki.lib.mail          as mailLib
 import re
 import simplejson as json
 
@@ -474,6 +474,17 @@ class RegisterController(BaseController):
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+
+        if c.numUsers >= c.numAccounts:
+            splashMsg = {}
+            splashMsg['type'] = 'error'
+            splashMsg['title'] = 'Error:'
+            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
+            session['splashMsg'] = splashMsg
+            session.save()
+            return redirect('/')
 
         """ Handler for registration, validates """
         returnPage = "/signup"
@@ -605,7 +616,6 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
-                # NOTE - make sure email and fbEmail are not 'undefined'
                 u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
@@ -743,22 +753,6 @@ class RegisterController(BaseController):
                 returnJson = False
         except KeyError:
             returnJson = False
-
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            if returnJson:
-                response.headers['Content-type'] = 'application/json'
-                return json.dumps({'statusCode':2, 'message':'Site at capacity!  We will be increasing the capacity in the coming weeks.'})
-            else:
-                return redirect('/signup')
 
         returnPage = "/signup"
         name = False
