@@ -80,34 +80,39 @@
 </%def>
 
 <%def name="listResources()">
-
-    % for item in c.resources:
-        <% 
-            iconClass = ""
-            if item['type'] == 'link' or item['type'] == 'general':
-                iconClass="icon-link"
-            elif item['type'] == 'photo':
-                iconClass="icon-picture"
-            elif item['type'] == 'video':
-                iconClass="icon-youtube-play"
-            elif item['type'] == 'rich':
-                iconClass="icon-file"
-            endif
-            rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
-        %>
-        <div class="row-fluid bottom-space-med">
-            <div class="span1">
-                    <i class="${iconClass} icon-3x"></i>
-            </div><!-- span1 -->
-            <div class="span11">
-                <h5 class="no-bottom no-top">
-                <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
-                ${itemTitle | n}
-                </h5>
-                <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
-            </div><!-- span10 -->
-        </div><!-- row-fluid -->
-    % endfor
+    % if len(c.resources) <= 0:
+        <div class="alert alert-info">
+            There are no resources yet! Be the first to add one.
+        </div>
+    % else:
+        % for item in c.resources:
+            <% 
+                iconClass = ""
+                if item['type'] == 'link' or item['type'] == 'general':
+                    iconClass="icon-link"
+                elif item['type'] == 'photo':
+                    iconClass="icon-picture"
+                elif item['type'] == 'video':
+                    iconClass="icon-youtube-play"
+                elif item['type'] == 'rich':
+                    iconClass="icon-file"
+                endif
+                rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
+            %>
+            <div class="row-fluid bottom-space-med">
+                <div class="span1">
+                        <i class="${iconClass} icon-3x"></i>
+                </div><!-- span1 -->
+                <div class="span11">
+                    <h5 class="no-bottom no-top">
+                    <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
+                    ${itemTitle | n}
+                    </h5>
+                    <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
+                </div><!-- span10 -->
+            </div><!-- row-fluid -->
+        % endfor
+    % endif
 </%def>
 
 <%def name="showResource()">
