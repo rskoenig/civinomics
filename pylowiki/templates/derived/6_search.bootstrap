@@ -438,6 +438,11 @@
                                                 <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
                                             </h4>
                                             <p>{{initiative.description}}</p>
+                                            <hr class="no-bottom no-top">
+                                            <h5 class="h45">
+                                                <small class="grey centered">Estimated Cost:</small>
+                                                <span class="pull-right">{{initiative.cost | currency}}</span>
+                                            </h5>
                                             <small>
                                                 For: {{initiative.location}}<br>
                                                 Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
@@ -448,17 +453,21 @@
                                         % if 'user' in session:
                                             <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
                                                 <div class="vote-icon yes-icon detail"></div>
-                                                <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
+                                                <!-- <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div> -->
                                             </a>
                                             <br>
                                             <br>
                                             <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
                                                 <div class="vote-icon no-icon detail"></div>
-                                                <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
+                                                <!-- <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div> -->
                                             </a>
                                             <br>
+                                            <hr>
                                             <div class="totalVotesWrapper">
-                                                Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                                <small class="grey pull-left">Votes:</small>
+                                                <strong class="pull-right">
+                                                    <span class="totalVotes">{{totalVotes}}</span>
+                                                </strong>
                                             </div>
                                         % else:
                                             <a href="/login" class="yesVote">
@@ -471,9 +480,20 @@
                                             </a>
                                             <br>
                                             <div class="totalVotesWrapper">
-                                                Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                                <small class="grey centered">Total Votes: </small>
+                                                <h4 class="totalVotes h45 pull-right">
+                                                    {{totalVotes | number}}
+                                                </h4>
                                             </div>
+                                            <br>
                                         % endif
+                                        <div class="progress votes {{display}}">
+                                          <div class="bar" style="width: {{yesPercent | number:0 }}%;"></div>
+                                        </div>
+                                        <small class="grey">
+                                            <div class="pull-left"><span class="yesScore {{display}}">Yes {{yesPercent | number:0 }}%</span></div>
+                                            <div class="pull-right"><span class="noScore {{display}}">No {{noPercent | number:0 }}%</span></div>
+                                        </small>
                                     </div>
                                 </div>
                             </div>

@@ -924,6 +924,7 @@ class SearchController(BaseController):
                 entry['rated'] = 0
             entry['urlCode'] = i['urlCode']
             entry['url'] = i['url']
+            entry['cost'] = i['cost']
             entry['tag'] = i['tags']
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
             entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
