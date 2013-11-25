@@ -106,12 +106,13 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt', 'publish', 'unpublish']:
-            if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
-                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
-                    abort(404)
-            else:
+            if 'workshopCode' in c.thing:
                 if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                     abort(404)
+            else:
+                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
+                    abort(404)
+                    
         if action in ['enable', 'disable', 'immunify', 'delete', 'adopt']:
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
@@ -368,6 +369,8 @@ class AdminController(BaseController):
         if 'workshopCode' in c.thing:
             dparent = generic.getThing(c.thing['workshopCode'])
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'initiative':
+            returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
