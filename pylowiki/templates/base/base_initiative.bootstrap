@@ -1,0 +1,158 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+<% lib.return_to() %>
+<div class="darkened-workshop"></div>
+<div class="row-fluid min-container" ng-app="civ">
+    <div class="row-fluid" style="position: relative;">
+        <div class="span8 well initiative-panel">
+            <div class="row-fluid">
+                % if c.initiativeHome:
+                    <div class="row-fluid">
+                        <div class="thumbnail" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
+                    </div>
+                    <% titleSpan = "row-fluid" %>
+                % else: 
+                    <div class="span2">
+                        <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
+                    </div>
+                    <% titleSpan = "span10" %>
+                % endif
+                <div class="${titleSpan}" style="position:relative;">
+                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-init="initiativeTitle = '${c.initiative['title']}'" ng-cloak>{{initiativeTitle}}</a></h2>
+                    <h4> 
+                        <a href="${c.scopeHref}" class="right-space"><img class="thumbnail span small-flag border" src="${c.scopeFlag}"></a>
+                        Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                        ${lib_6.showTags(c.initiative)}
+                    % if c.iPrivs:
+                        <span>
+                            % if c.editInitiative:
+                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                            % elif c.initiative.objType != 'revision':
+                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                            % else:
+                                <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
+                            % endif
+                        </span>
+                    % elif c.initiativeHome and c.initiative.objType != 'revision':
+                        <span>
+                            ${ihelpers.watchButton(c.initiative)}
+                        </span>
+                    % endif
+                    </h4>
+                </div>
+            </div>
+            <hr>
+            ${next.body()}
+        </div>
+        <div class="span4" id="sidebar" style="position:relative;">
+            % if c.iPrivs and c.editInitiative:
+                <div class="well">
+                    <div class="row-fluid">
+                        <br>
+                        % if c.initiative['public'] == '0' and c.complete:
+                            <label for="public" class="control-label">
+                            All of the required information has been added to your initiative. When you are satisfied that it is ready, click 'Publish' to make your initiative public.</label>
+                            <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
+                                <button type="submit" class="btn btn-large btn-success pull-right" name="public" value="publish">Publish</button>
+                            </form>
+                        % elif c.initiative['public'] == '0':
+                            <p>You will be to make this initiative public when all of the required information has been filled out and a 
+                            picture uploaded.</p>
+                            <button class="btn btn-large btn-warning pull-right" disabled>Publish</button>
+                        % else:
+                            <p>Unpublish your initiative if you would like to remove your initiative from public listings. It will no longer be accessible by anyone but you.</p>
+                            <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
+                                <button type="submit" class="btn btn-large btn-warning pull-right" name="public" value="unpublish">Unpublish</button>
+                            </form>
+                        % endif
+                    </div>
+                </div>
+            % elif not c.editInitiative:
+                <div class="initiative-well-wrapper">
+                    <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
+                        % if c.initiative.objType != 'revision':
+                            <h4 class="section-header smaller section-header-inner" style="margin-top: 5px;">Vote</h4>
+                            <div class="row-fluid">
+                                <div class="span6 offset3">
+                                    ${lib_6.yesNoVote(c.initiative, 'detail')}
+                                </div><!-- span4 -->
+                                <div class="span3"></div>
+                            </div>
+                            <h4 class="section-header smaller section-header-inner">Share It</h4>
+                            <div class="row-fluid centered">
+                                <span class = "share-icons">
+                                    % if c.initiative['public'] == '1':
+                                        ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True)}
+
+                                        ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
+                                        <!-- % if c.initiative['public'] == '1':
+                                            <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                                        #%endif -->
+                                    % else:
+                                        <div class="btn-group facebook unpublished" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it.">
+                                            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+                                                <i class="icon-facebook-sign icon-2x"></i>
+                                            </a>
+                                        </div>
+                                    % endif
+                                </span>
+                            
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span10 offset2">
+                                    <label class="checkbox grey">
+                                    <input type="checkbox" class="shareVote" name="shareVote" value="shareVote"> Show how I voted when sharing
+                                    </label>
+                                </div>
+                            </div>
+                            <!-- 
+                            <h4 class="section-header smaller section-header-inner">Fund It</h4>
+                            <br>
+                            <div>$136,000 of ${c.initiative['cost']}</div>
+                            <div class="progress">
+                              <div class="bar bar-primary" style="width: 35%;"></div>
+                            </div>
+                            <small class="pull-right grey" style="margin-top: -20px;">43 funders</small><br>
+                            <div class="row-fluid centered">
+                                <button class="btn-large btn-success btn">Fund Initiative</button>
+                            </div>
+                            -->
+                        % endif 
+                    </div><!-- section-wrapper -->
+                </div><!-- initiative-well-wrapper -->
+            % endif
+        </div><!-- span4 -->
+    </div><!-- row-fluid -->
+</div><!-- row-fluid -->
+
+<%def name="extraScripts()">
+   <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+      $(".facebook.unpublished").tooltip();
+   </script>
+   <script src="/js/bootstrap/bootstrap-affix.js"></script>
+    <script type="text/javascript"> 
+        $('#initiative-dashboard').affix({offset: 0})
+    </script> 
+    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+
+    <script>$.backstretch(${c.bgPhoto_url | n}, {centeredX: true})</script>
+    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+    </script>
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+    % endif
+</%def>
