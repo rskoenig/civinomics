@@ -17,6 +17,32 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showAuthor(item)">
+    ${item['authors']}
+    ${c.authors}
+        <table>
+            <tr>
+                <% x = 3 %>
+                % for author in c.authors[:x]:
+                    <td>${lib_6.userImage(author, className="avatar small-avatar")}</td>
+                % endfor
+                <td><span class="grey">Authored by</span>
+                % for author in c.authors[:x]:
+                    % if len(c.authors) >= 2 and author == c.authors[-1]:
+                        and
+                    % endif
+                    ${lib_6.userLink(author)}<span class="grey">${lib_6.userGreetingMsg(author)}</span>
+                    % if len(c.authors) >= 3 and author != c.authors[-1]:
+                        ,
+                    % endif
+                % endfor
+                % if len(c.authors) >= (x+1):
+                    <% moreAuthors = len(c.authors) - x %>
+                    and ${moreAuthors} more
+                % endif
+                </td>
+            </tr>
+        </table>
+
     <table>
         <tr>
             <td>${lib_6.userImage(item.owner, className="avatar small-avatar")}</td>
@@ -403,7 +429,25 @@
                 </div>
             </div>
             <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
+
+            <div class="row-fluid">
+                <h3 class="initiative-title edit">5. Invite Co-Authors</h3>
+            </div><!-- row-fluid -->
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="description" class="control-label" required><strong>Email:</strong></label>
+                    <input type="text" name="authors">
+                </div>
+                <div class="span6">
+                    <label class="control-label"></label>
+                    <div class="alert alert-info">
+                        Enter the email of a co-author for the initiative.
+                    </div>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
+            <br>
         </form>
     </div><!-- span12 -->
 </div>

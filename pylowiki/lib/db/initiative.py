@@ -96,7 +96,6 @@ def Initiative(owner, title, description, scope, workshop = None):
         generic.linkChildToParent(i, workshop)
     commit(i)
     i['urlCode'] = utils.toBase62(i)
-       
     i['title'] = title
     i['url'] = utils.urlify(title[:20])
     i['description'] = description
@@ -111,6 +110,7 @@ def Initiative(owner, title, description, scope, workshop = None):
     i['public'] = u'0'
     i['ups'] = '0'
     i['downs'] = '0'
+    i['authors'] = owner['urlCode']
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
     return i

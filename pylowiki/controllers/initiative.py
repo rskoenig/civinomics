@@ -229,6 +229,8 @@ class InitiativeController(BaseController):
         
     def initiativeEditHandler(self):
         iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
+        errorMessage = ''
+
         if 'title' in request.params:
             c.initiative['title'] = request.params['title']
             c.initiative['url'] = utils.urlify(c.initiative['title'])
@@ -245,7 +247,7 @@ class InitiativeController(BaseController):
                 c.initiative['cost'] = cost
             except ValueError:
                 c.error = True
-                errorMessage = "Invalid cost number"
+                errorMessage = "Invalid cost number."
                 c.initiative['cost'] = 0
             
         if 'tag' in request.params:
@@ -254,6 +256,15 @@ class InitiativeController(BaseController):
             c.initiative['background'] = request.params['background']
         if 'proposal' in request.params:
             c.initiative['proposal'] = request.params['proposal']
+
+        if 'authors' in request.params:
+            # lookup user by email
+            coauthor = userLib.getUserByEmail(request.params['authors'])
+            if coauthor:
+                c.initiative['authors'] += '|' + coauthor['urlCode']
+            else:
+                c.error = True
+                errorMessage += "Invalid user email"
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form
@@ -457,6 +468,12 @@ class InitiativeController(BaseController):
             views = int(c.initiative['views']) + 1
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
+
+        c.authors = []
+        authorCodes = c.initiative['authors'].split('|')
+        for code in authorCodes:
+            author = userLib.getUserByCode(code)
+            c.authors.append(author)
 
         c.initiativeHome = True
             
