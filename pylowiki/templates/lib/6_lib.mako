@@ -1581,7 +1581,7 @@
               <div class="media-body" style="overflow:visible;">
                 <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
                   % if ltitle == 'Facilitating' or ltitle == 'Author' or userLib.isAdmin(c.authuser.id):
-                    <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Admin Workshop</strong></a> &nbsp;
+                    <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Edit Workshop</strong></a> &nbsp;
                   % else:
                     % if ltitle == 'Bookmarked':
                       ${homeHelpers.watchButton(item, following = True)}
