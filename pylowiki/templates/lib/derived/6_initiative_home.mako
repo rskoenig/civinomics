@@ -159,16 +159,20 @@
                 % if 'user' in session:
                     % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                         <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                        % if item['public'] == '0':
-                            Not yet public
-                        % else:
-                            Public
-                        % endif
                     % endif
                 % endif
             % endif
             <br>
             <span class="grey">Initiative for</span> ${lib_6.showScope(item) | n}
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    % if item['public'] == '0':
+                        <span class="badge badge-warning">Not yet public</span>
+                    % else:
+                        <span class="badge badge-success">Public</span>
+                    % endif
+                % endif
+            % endif
         </div><!-- media-body -->
     </div><!-- media -->
 </%def>
