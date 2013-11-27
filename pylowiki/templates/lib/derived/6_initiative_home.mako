@@ -348,7 +348,7 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="funding_summary" class="control-label" required><strong>Funding Summary:</strong></label>
+                    <label for="funding_summary" class="control-label" required><strong>Estimate Net Fiscal Impact:</strong></label>
                     <textarea rows="8" type="text" name="funding_summary" class="span12">${c.initiative['funding_summary']}</textarea>
                 </div>
                 <div class="span6">
@@ -360,7 +360,7 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="description" class="control-label" required><strong>Estimated cost to complete initiative:</strong></label>
+                    <label for="description" class="control-label" required><strong>Estimate Cost:</strong></label>
                     <div class="input-prepend input-append">
                       <span class="add-on">$</span>
                       <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
