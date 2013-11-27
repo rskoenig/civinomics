@@ -10,6 +10,7 @@
     <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
     ${ihelpers.showFunding_Summary()}
     ${ihelpers.showCost(c.initiative)}
+    <br>
     <hr>
     ${ihelpers.showAuthor(c.initiative)}
     <hr>
