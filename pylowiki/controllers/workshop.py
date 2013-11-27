@@ -343,7 +343,7 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
-            c.w['workshop_public_scope'] =  "||0||0||0||0|0"
+            c.w['workshop_public_scope'] =  "||united-states||0||0||0|0"
             workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             if c.w['disabled'] == '0' and c.w['deleted'] == '0' and c.w['published'] == '1':
                 c.w['workshop_searchable'] = '1'
@@ -362,7 +362,7 @@ class WorkshopController(BaseController):
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
             geoTagCountry = request.params['geoTagCountry']
         else:
-            geoTagCountry = "0"
+            geoTagCountry = "united-states"
             
         if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
             geoTagState = request.params['geoTagState']
@@ -792,6 +792,8 @@ class WorkshopController(BaseController):
         w = workshopLib.Workshop('New Workshop', c.authuser, scope, wType)
         if 'createPublic' in request.params and 'geoString' in request.params:
             w['workshop_public_scope'] =  request.params['geoString']
+        else:
+            w['workshop_public_scope'] = '0||united-states||0||0||0|0'
         c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)

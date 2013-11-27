@@ -113,7 +113,7 @@ class InitiativeController(BaseController):
         if 'initiativeRegionScope' in request.params:
             scope = request.params['initiativeRegionScope']
         else:
-            scope = '0|0|0|0|0|0|0|0|0|0'
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"

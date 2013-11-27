@@ -80,34 +80,39 @@
 </%def>
 
 <%def name="listResources()">
-
-    % for item in c.resources:
-        <% 
-            iconClass = ""
-            if item['type'] == 'link' or item['type'] == 'general':
-                iconClass="icon-link"
-            elif item['type'] == 'photo':
-                iconClass="icon-picture"
-            elif item['type'] == 'video':
-                iconClass="icon-youtube-play"
-            elif item['type'] == 'rich':
-                iconClass="icon-file"
-            endif
-            rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
-        %>
-        <div class="row-fluid bottom-space-med">
-            <div class="span1">
-                    <i class="${iconClass} icon-3x"></i>
-            </div><!-- span1 -->
-            <div class="span11">
-                <h5 class="no-bottom no-top">
-                <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
-                ${itemTitle | n}
-                </h5>
-                <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
-            </div><!-- span10 -->
-        </div><!-- row-fluid -->
-    % endfor
+    % if len(c.resources) <= 0:
+        <div class="alert alert-info">
+            There are no resources yet! Be the first to add one.
+        </div>
+    % else:
+        % for item in c.resources:
+            <% 
+                iconClass = ""
+                if item['type'] == 'link' or item['type'] == 'general':
+                    iconClass="icon-link"
+                elif item['type'] == 'photo':
+                    iconClass="icon-picture"
+                elif item['type'] == 'video':
+                    iconClass="icon-youtube-play"
+                elif item['type'] == 'rich':
+                    iconClass="icon-file"
+                endif
+                rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
+            %>
+            <div class="row-fluid bottom-space-med">
+                <div class="span1">
+                        <i class="${iconClass} icon-3x"></i>
+                </div><!-- span1 -->
+                <div class="span11">
+                    <h5 class="no-bottom no-top">
+                    <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
+                    ${itemTitle | n}
+                    </h5>
+                    <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
+                </div><!-- span10 -->
+            </div><!-- row-fluid -->
+        % endfor
+    % endif
 </%def>
 
 <%def name="showResource()">
@@ -149,8 +154,21 @@
         <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
         </a>
         <div class="media-body">
-            <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
-            % if ltitle == 'Bookmarked':
+            <div class="span10">
+                <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+                <br>
+                <span class="grey">Initiative for</span> ${lib_6.showScope(item) | n}
+                % if 'user' in session:
+                    % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                        % if item['public'] == '0':
+                            <span class="badge badge-warning">Not yet public</span>
+                        % else:
+                            <span class="badge badge-success">Public</span>
+                        % endif
+                    % endif
+                % endif
+            </div>
+             % if ltitle == 'Bookmarked':
                 <span>
                   ${watchButton(item, following = True)}
                 </span>
@@ -159,16 +177,9 @@
                 % if 'user' in session:
                     % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                         <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                        % if item['public'] == '0':
-                            Not yet public
-                        % else:
-                            Public
-                        % endif
                     % endif
                 % endif
             % endif
-            <br>
-            <span class="grey">Initiative for</span> ${lib_6.showScope(item) | n}
         </div><!-- media-body -->
     </div><!-- media -->
 </%def>
@@ -342,7 +353,7 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="funding_summary" class="control-label" required><strong>Funding Summary:</strong></label>
+                    <label for="funding_summary" class="control-label" required><strong>Estimate Net Fiscal Impact:</strong></label>
                     <textarea rows="8" type="text" name="funding_summary" class="span12">${c.initiative['funding_summary']}</textarea>
                 </div>
                 <div class="span6">
@@ -354,7 +365,7 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="description" class="control-label" required><strong>Estimated cost to complete initiative:</strong></label>
+                    <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>
                     <div class="input-prepend input-append">
                       <span class="add-on">$</span>
                       <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
@@ -629,21 +640,21 @@
 
 <%def name="showCost(item)">
     <% 
-        neg = False
+        currency = '$'
         cost = int(item['cost']) 
         if cost <= -1:
             cost = cost * -1
-            neg = True
+            currency = '- $'
     %>
-    <br>
-    <br>
-    <h4>
-        % if neg:
-            <span> - $</span>
-        % else:
-            <span> $</span>
-        % endif
-            <span>${locale.format("%d", cost, grouping=True)}</span>
+    <h4 class="initiative-title">
+        <div class="span6 pull-left">
+            Cost Estimate
+        </div>
+        <div class="span6">
+            <span class="pull-right" style="display: inline;">
+                ${currency} ${locale.format("%d", cost, grouping=True)}
+            </span>
+        </div>
     </h4>
 </%def>
 
