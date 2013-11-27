@@ -5,38 +5,32 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-
-    <div class="tabbable">
-        <div class="tab-content">
-            <div class="tab-pane active" id="iText">
-                <h4 class="initiative-title">Summary</h4>
-                ${ihelpers.showDescription()}
-                <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
-                ${ihelpers.showFunding_Summary()}
-                ${ihelpers.showCost(c.initiative)}
-                <hr>
-                ${ihelpers.showAuthor(c.initiative)}
-                <hr>
-                <h4 class="initiative-title">Background</h4>
-                ${ihelpers.showBackground()}
-                <h4 class="initiative-title">Proposal</h4>
-                ${ihelpers.showProposal()}
+    <h4 class="initiative-title">Summary</h4>
+    ${ihelpers.showDescription()}
+    <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
+    ${ihelpers.showFunding_Summary()}
+    ${ihelpers.showCost(c.initiative)}
+    <br>
+    <hr>
+    ${ihelpers.showAuthor(c.initiative)}
+    <hr>
+    <h4 class="initiative-title">Background</h4>
+    ${ihelpers.showBackground()}
+    <h4 class="initiative-title">Proposal</h4>
+    ${ihelpers.showProposal()}
 
 
-                % if c.initiative.objType == 'revision':
-                    This is a revision dated ${c.initiative.date}<br />
-                % else:
-                    ${ihelpers.initiativeModerationPanel(c.initiative)}
-                    % if c.initiative.objType != 'initiativeUnpublished':
-                        <hr>
-                        <h4 class="initiative-title">Arguments</h4>
-                        ${comments(c.initiative, c.discussion)}
-                    % endif
-                % endif
-            </div>
-            <div class="tab-pane" id="iResources">
-                <h4 class="initiative-title">Resources${ihelpers.addResourceButton()}</h4>
-                ${ihelpers.listResources()}
-            </div>
-        </div>
-    </div>
+    % if c.initiative.objType == 'revision':
+        This is a revision dated ${c.initiative.date}<br />
+    % else:
+        ${ihelpers.initiativeModerationPanel(c.initiative)}
+        <hr>
+        <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+        ${ihelpers.listResources()}
+        <br>
+        % if c.initiative.objType != 'initiativeUnpublished':
+            <hr>
+            <h4 class="initiative-title">Arguments</h4>
+            ${comments(c.initiative, c.discussion)}
+        % endif
+    % endif

@@ -170,6 +170,8 @@ class HomeController(BaseController):
 					else:
 						scope['photo'] = defaultPhoto
 
+			# don't include Earth while limited to USA
+			c.scopeMap = c.scopeMap[1:]
 
 			# get user's bookmarks, listening and facilitating
 			bookmarked = followLib.getWorkshopFollows(c.authuser)
