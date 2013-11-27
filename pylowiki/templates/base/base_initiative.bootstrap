@@ -48,7 +48,7 @@
             </div>
             <hr>
                 % if c.initiative['public'] == '0':
-                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
+                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable by the author and coauthors.</div>
                 % endif
             ${next.body()}
         </div>
