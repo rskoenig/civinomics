@@ -360,7 +360,7 @@
             </div>
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="description" class="control-label" required><strong>Estimate Cost:</strong></label>
+                    <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>
                     <div class="input-prepend input-append">
                       <span class="add-on">$</span>
                       <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
@@ -635,21 +635,21 @@
 
 <%def name="showCost(item)">
     <% 
-        neg = False
+        currency = '$'
         cost = int(item['cost']) 
         if cost <= -1:
             cost = cost * -1
-            neg = True
+            currency = '- $'
     %>
-    <br>
-    <br>
-    <h4>
-        % if neg:
-            <span> - $</span>
-        % else:
-            <span> $</span>
-        % endif
-            <span>${locale.format("%d", cost, grouping=True)}</span>
+    <h4 class="initiative-title">
+        <div class="span6 pull-left">
+            Cost Estimate
+        </div>
+        <div class="span6">
+            <span class="pull-right" style="display: inline;">
+                ${currency} ${locale.format("%d", cost, grouping=True)}
+            </span>
+        </div>
     </h4>
 </%def>
 
