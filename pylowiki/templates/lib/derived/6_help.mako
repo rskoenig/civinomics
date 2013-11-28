@@ -4,7 +4,7 @@
             <a href="${c.tutorialURL}">
                 <span class="link-span"></span><!-- used to make entire div a link -->
                 <h3><i class="icon-book"></i> Tutorial 101</h3>
-                <p>Takes you through a guided tour of the workhsop layout. A good place to begin if you are entirely new to Civinomics.</p>
+                <p>Takes you through a guided tour of the workshop layout. A good place to begin if you are entirely new to Civinomics.</p>
             </a>
         </li>
          <li class="span4 well help">
@@ -47,15 +47,13 @@
                 <p>Yup, we're in beta. So help us get the Civinomics engine purring.</p>
             </a>
         </li>
-        <!--
         <li class="span4 well help">
-            <a href="help/markdownGuide">
+            <a href="#" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">
                 <span class="link-span"></span>
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_114_list.png">  Markdown Syntax Guide</h3>
-                <p>For text throughout the site.</p>
+                <h3><i class="icon-picture"></i> <i class="icon-list"></i>  Formatting Guide</h3>
+                <p>Civinomics uses markdown for most text throughout the site. This quick guide will show you the syntax for bold, italic, links and adding pictures to text fields.</p>
             </a>
         </li>
-        -->
     </ul><!-- thumbnails -->
 </%def>
 
