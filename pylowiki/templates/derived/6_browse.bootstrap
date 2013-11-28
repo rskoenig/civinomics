@@ -96,7 +96,7 @@
                                             </h4>
                                             <p>{{initiative.description}}</p>
                                             <small>
-                                                For: {{initiative.location}}<br>
+                                                <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag" src="{{initiative.flag}}"> {{initiative.location}}</a><br>
                                                 Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
                                             </small>
                                         </div>

@@ -906,25 +906,12 @@ class SearchController(BaseController):
             if len(entry['description']) >= 200:
                 entry['description'] += "..."
             entry['tags'] = i['tags']
-            scopeList = i['scope'].split('|')
-            country = scopeList[2].replace("-", " ")
-            state = scopeList[4].replace("-", " ")
-            county = scopeList[6].replace("-", " ")
-            city = scopeList[8].replace("-", " ")
-            postalCode = scopeList[9]
-            scopeString = "Earth"
-            log.info("scopeString is %s"%scopeString)
-            if country != '0':
-                scopeString = "%s" % country.title()
-                if state != '0':
-                    scopeString += ", State of %s" % state.title()
-                    if county != '0':
-                        scopeString += ", County of %s" % county.title()
-                        if city != '0':
-                            scopeString += ", City of %s" % city.title()
-                            if postalCode != '0':
-                                scopeString += ", Zip Code of %s"%postalCode
-            entry['location'] = scopeString
+
+            scopeInfo = utils.getPublicScope(i)
+            entry['flag'] = scopeInfo['flag']
+            entry['location'] = scopeInfo['scopeString']
+            entry['geoHref'] = scopeInfo['href']
+
             entry['voteCount'] = int(i['ups']) + int(i['downs'])
             entry['ups'] = int(i['ups'])
             entry['downs'] = int(i['downs'])
