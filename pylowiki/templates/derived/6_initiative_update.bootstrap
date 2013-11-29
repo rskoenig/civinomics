@@ -1,0 +1,31 @@
+<%inherit file="/base/base_initiative.bootstrap"/>
+<%namespace name="itemHelpers" file="/lib/derived/6_item_in_listing.mako" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+
+<% lib.return_to() %>
+
+    % if c.update:
+        <h4 class="initiative-title">Progress Report</h4>
+        <div class="row-fluid">
+            <div class="span12">
+                ${ihelpers.showUpdate()}
+                ${itemHelpers.showItemOwner(c.update)}
+                % if c.resource.objType != 'revision':
+                    <div class="spacer"></div>
+                    ${itemHelpers.moderationPanel(c.update)}
+                    <div class="spacer"></div>
+                    ${comments(c.update, c.update)}
+                % endif
+            </div><!-- span11 -->
+        </div><!-- row-fluid -->
+    % else:
+        <h4 class="initiative-title">Add New Progress Report</h4>
+        ${ihelpers.editUpdate()}
+    % endif
+
+<%def name="extraScripts2()">
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+    % endif
+</%def>

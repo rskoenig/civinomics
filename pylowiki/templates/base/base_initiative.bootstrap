@@ -34,7 +34,10 @@
                             % if c.editInitiative:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
                             % elif c.initiative.objType != 'revision':
-                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                <span class="pull-right">
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/addUpdate"><strong>Add Update</strong></a>
+                                </span>
                             % else:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
                             % endif

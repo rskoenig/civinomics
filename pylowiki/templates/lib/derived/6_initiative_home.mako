@@ -514,6 +514,36 @@
     % endif
 </%def>
 
+<%def name="editUpdate()">
+    <%
+        if not c.update:
+            updateTitle = ""
+            updateText = ""
+        else:
+            updateTitle = c.update['title']
+            updateText = c.update['text']
+            
+    %>
+    % if not c.update:
+        <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
+            <fieldset>
+                <label>Update title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
+                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+                <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
+            </fieldset>
+            <fieldset>
+                <label><strong>Additional information</strong><br>
+                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+                <textarea name="text" rows="3" class="input-block-level" ng-model="text"></textarea>
+                <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
+            </fieldset>
+            <fieldset>
+                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+            </fieldset>
+        </form>
+    % endif
+</%def>
+
 <%def name="geoSelect()">
     <!-- need to get the c.initiative['scope'] and update the selects accordingly -->
     <% 
