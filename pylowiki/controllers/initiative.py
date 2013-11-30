@@ -28,8 +28,8 @@ class InitiativeController(BaseController):
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit']
-        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler']
+        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:

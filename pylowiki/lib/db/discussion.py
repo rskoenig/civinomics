@@ -61,6 +61,17 @@ def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', delete
         .all()
     except:
         return False
+        
+def getUpdatesForInitiative(code, discType = 'updatel', disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc('initiativeCode', code)))\
+        .filter(Thing.data.any(wc('discType', discType)))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
+    except:
+        return False
 
 def editDiscussion(discussion, title, text, owner):
     try:
