@@ -166,6 +166,9 @@ def getPublicScope(item):
     href = '/workshops/geo/earth'
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
+    elif '||' in item:
+        scope = item.split('|')
+    if scope:
         if scope[2] != '0':
             scopeLevel = 'country'
             scopeName  = scope[2].replace('-', ' ').title()

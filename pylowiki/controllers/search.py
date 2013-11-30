@@ -55,6 +55,8 @@ class SearchController(BaseController):
             searchString = kwargs['searchString'].replace("+", " ")
         else:
             searchString = None
+        if 'zip' in kwargs:
+            self.zip = kwargs['zip']
             
         log.info("****SEARCH STRING**** %s"%searchString)
             
@@ -1014,5 +1016,35 @@ class SearchController(BaseController):
             c.things = workshopLib.getWorkshopsByScope(geoTagString, scopeLevel)
             
         return render('/derived/6_search.bootstrap')
+
+    def zipLookup(self):
+        result = []
+        j = geoInfoLib.getPostalInfo(self.zip)
+        country = 'united-states'
+        state = j['StateFullName']
+        county = j['County']
+        city = j['CityMixedCase']
+
+        countryScope = '0||' + country + '||0||0||0|0'
+        stateScope = '0||' + country + '||' + utils.urlify(state) + '||0||0|0'
+        countyScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||0|0'
+        cityScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|0'
+        zipScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|' + self.zip
+        scopeMap = []
+        scopeMap.extend((countryScope, stateScope, countyScope, cityScope, zipScope))
+
+        for scope in scopeMap:
+            scopeInfo = utils.getPublicScope(scope)
+            entry = {}
+            entry['name'] = scopeInfo['name']
+            entry['flag'] = scopeInfo['flag']
+            entry['href'] = scopeInfo['href']
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+
+
     
     
