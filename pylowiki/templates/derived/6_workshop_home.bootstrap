@@ -1,0 +1,116 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+<%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="ngHelpers" file="/lib/ng_listing.mako" />
+
+<% numIdeas = str(len(c.ideas)) %>
+<div class="row-fluid">
+   <div class="span8">
+      <div class="section-wrapper slideshow">
+        <div id="workshopSlideshow">
+          ${helpers.slideshow(c.w, 'hero')}
+        </div>
+      </div> <!-- /.section-wrapper -->
+
+      <div class="section-wrapper" id="vote" ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
+          <div class="browse" ng-controller="workshopIdeasCtrl">
+             <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
+             </h4>
+             % if numIdeas == '0' and c.w['allowIdeas'] == '1':
+                <div class="alert alert-info">
+                There are no ideas here yet. Be the first to add one!
+                </div>
+             % else:  
+                <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.<strong class="orange"> Vote to display ratings.</strong></p>
+                <hr class="list-header">
+             % endif
+
+             <form class="form-search inline">
+                Sort by: 
+                <select class="med-width" ng-model="orderProp" ng-cloak>
+                    <option value="-date">Recent</option>
+                    <option value="title">Alphabetical</option>
+                    <option value="-numComments">Most Comments</option>
+                    <option value="-voteCount">Most Votes</option>
+                </select>
+              </form>
+
+              <div class="row-fluid list-item border-bottom" ng-repeat="idea in ideas | orderBy:orderProp" ng-cloak>
+                  ${ngHelpers.listIdeas()}
+              </div>
+          </div><!--/.browse-->
+      </div><!--/.section-wrapper-->
+
+   </div> <!-- /.span8 -->
+   <div class="span4">
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Goals
+            </h4>
+            ${helpers.showGoals(c.goals)}
+            ${helpers.whoListening()}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Forum Topics
+            </h4>
+            ${listingHelpers.showListing('discussion', 'condensed')}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Recent Activity
+            </h4>
+            ${helpers.showActivity(c.activity[0:5])}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span4 -->
+</div> <!-- /.row -->
+
+
+
+<%def name="extraScripts2()">
+    % if c.demo:
+        <script type="text/javascript" src="/js/vendor/guiders-1.3.0.js"></script>
+        <script type="text/javascript" src="/js/guiders/workshop_home.js"></script>
+    % endif
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.nullvote').tooltip();
+    </script>
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
+      var $doc = $(document);
+      $(document).ready(function() {
+         $.fn.foundationClearing         ? $doc.foundationClearing() : null;
+      });
+    </script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: '... (more)',
+                expandPrefix: '',
+                userCollapseText: ' (less)',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
+</%def>
