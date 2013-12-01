@@ -1,0 +1,29 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/derived/career/helpers.mako"/>
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <h1>${helpers.showTitle(c.career)}</h1>
+        <p class="lead">${helpers.showComLocation(c.career)}</p>
+        </br>
+        <p>${helpers.showDescription(c.career)}</p>
+        <p><strong>Required:</strong></p>
+        ${helpers.showRequirements(c.career)}
+        </br>
+        % if len(c.career['recommendeds']) > 0:
+            <p><strong>Recommended:</strong></p>
+            ${helpers.showRecommendeds(c.career)}
+            </br>
+        % endif
+
+            <p>To apply for this position send a resume and cover letter to <a href="#">careers @ civinomics.com</a> with the subject line <em>Application for ${helpers.showTitle(c.career)}</em>.
+            </br>
+            </br>
+            </br>
+            </br>
+            </br>
+
+    </div>
+</%def>

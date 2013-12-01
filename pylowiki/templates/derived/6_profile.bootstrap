@@ -1,0 +1,107 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%!
+    from pylowiki.lib.db.user import isAdmin
+%>
+##<div ng-app="ngUploadApp">
+    <!-- inline style kludge to handle fixed nav bar -->
+    <div class="spacer">
+    <div class="row-fluid" ng-controller="ProfileEditController">
+        <div class="span8">
+            <div class="tabbable"> <!-- Only required for left/right tabs -->
+                <ul class="nav nav-tabs" id="profileTabs">
+                    <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
+                    <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
+                    <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
+                    % if 'user' in session:
+                        % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
+                            % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id:
+                            ${helpers.followButton(c.user)}
+                            % endif
+                            <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
+                        % else:
+                            ${helpers.followButton(c.user)}
+                        % endif
+                    % endif
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-activity">
+                        ${helpers.showMemberPosts(c.memberPosts)}
+                    </div><!-- tab-pane -->
+                    <div class="tab-pane" id="tab-workshops">
+                        ${helpers.inviteCoFacilitate()}
+                        <table class="table table-hover table-condensed">
+                        <tbody>
+                        % for item in c.facilitatorItems:
+                            <tr><td>${helpers.showWorkshop(item, role = "Facilitating")}</td></tr>
+                        % endfor
+                        % for item in c.listeningWorkshops:
+                            <tr><td>${helpers.showWorkshop(item, role = "Listening")}</td></tr>
+                        % endfor
+                        % for item in c.bookmarkedWorkshops:
+                            <tr><td>${helpers.showWorkshop(item, role = "Bookmarked")}</td></tr>
+                        % endfor
+                        % for item in c.privateWorkshops:
+                            <tr><td>${helpers.showWorkshop(item, role = "Private")}</td></tr>
+                        % endfor
+                        </tbody>
+                        </table>
+                    </div><!-- tab-pane -->
+                    <div class="tab-pane" id="tab-initiatives">
+                        <table class="table table-hover table-condensed">
+                        <tbody>
+                        % for item in c.initiatives:
+                            <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+                        % endfor
+                        % for item in c.initiativeBookmarks:
+                            <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
+                        % endfor
+                        </tbody>
+                        </table>
+                    </div><!-- tab-pane -->
+                </div><!-- tab-content -->
+            </div><!-- tabbable -->
+        </div><!-- span8 -->
+        <div class="span4">
+            ${dashboard.profileDashboard()}
+        </div><!--/.span4-->
+    </div>
+##</div>
+
+<%def name = 'extraScripts()'>
+    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 55,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
+
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
+        % endif
+    % endif
+    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-tab.js')}" type="text/javascript"></script>
+</%def>
+
+
