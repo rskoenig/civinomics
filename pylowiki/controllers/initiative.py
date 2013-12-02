@@ -26,10 +26,11 @@ log = logging.getLogger(__name__)
 class InitiativeController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
+        log.info("inititive before")
         c.user = None
         c.initiative = None
         existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler']
-        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEditHandler']
+        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
@@ -37,37 +38,40 @@ class InitiativeController(BaseController):
             if not c.user:
                 abort(404)
         elif action in existingList and id1 is not None and id2 is not None:
-                c.initiative = initiativeLib.getInitiative(id1)
+            c.initiative = initiativeLib.getInitiative(id1)
+            if not c.initiative:
+                c.initiative = revisionLib.getRevisionByCode(id1)
                 if not c.initiative:
-                    c.initiative = revisionLib.getRevisionByCode(id1)
-                    if not c.initiative:
-                        abort(404)
+                    abort(404)
                             
-                if c.initiative:
-                    c.user = userLib.getUserByCode(c.initiative['userCode'])
+            if c.initiative:
+                log.info("got initiative")
+                c.user = userLib.getUserByCode(c.initiative['userCode'])
 
-                    scopeProps = utils.getPublicScope(c.initiative)
-                    scopeName = scopeProps['name'].title()
-                    scopeLevel = scopeProps['level'].title()
-                    if scopeLevel == 'Earth':
-                        c.scopeTitle = scopeName
-                    else:
-                        c.scopeTitle = scopeLevel + ' of ' + scopeName
-                    c.scopeFlag = scopeProps['flag']
-                    c.scopeHref = scopeProps['href']
-
-                    if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                        c.photo_url = "/images/photos/%s/orig/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                        c.bgPhoto_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                        c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                    else:
-                        c.photo_url = "/images/icons/generalInitiative_lg.jpg"
-                        c.thumbnail_url = "/images/icons/generalInitiative.jpg"
-                    c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
-
+                scopeProps = utils.getPublicScope(c.initiative)
+                scopeName = scopeProps['name'].title()
+                scopeLevel = scopeProps['level'].title()
+                if scopeLevel == 'Earth':
+                    c.scopeTitle = scopeName
                 else:
-                  abort(404)  
+                    c.scopeTitle = scopeLevel + ' of ' + scopeName
+                c.scopeFlag = scopeProps['flag']
+                c.scopeHref = scopeProps['href']
+
+                if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                    c.photo_url = "/images/photos/%s/orig/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                    c.bgPhoto_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                    c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                else:
+                    c.photo_url = "/images/icons/generalInitiative_lg.jpg"
+                    c.thumbnail_url = "/images/icons/generalInitiative.jpg"
+                c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
+
+            else:
+                log.info("abort 1")
+                abort(404)  
         else:
+            log.info("abort 2")
             abort(404)
 
         
@@ -85,10 +89,13 @@ class InitiativeController(BaseController):
             c.complete = self.initiativeCheck()
             
         c.resources = []
+        c.updates = []
         if c.initiative:
+            log.info("got initiative 2")
             # for compatibility with comments
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
+            c.updates = discussionLib.getUpdatesForInitiative(c.initiative['urlCode'])
             c.resources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'])
             disabledResources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'], '1')
             if disabledResources:
@@ -226,6 +233,9 @@ class InitiativeController(BaseController):
         c.editInitiative = True
 
         return render('/derived/6_initiative_edit.bootstrap')
+        
+    def updateEdit(self):
+        return render('/derived/6_initiative_update.bootstrap')
         
     def initiativeEditHandler(self):
         iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
