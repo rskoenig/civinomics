@@ -3,7 +3,7 @@
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
-<html lang="en-US" ng-app='civ'>
+<html lang="en-US" ng-app='civ' xmlns:xlink="http://www.w3.org/1999/xlink">
    <head>
       <meta charset="UTF-8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">

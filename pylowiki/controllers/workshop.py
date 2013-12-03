@@ -36,6 +36,7 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.stats        as statsLib
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
@@ -119,13 +120,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'stats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'stats', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -1120,7 +1121,144 @@ class WorkshopController(BaseController):
         c.listingType = 'activity'
 
         return render('/derived/6_detailed_listing.bootstrap')
-   
+
+    def stats(self, workshopCode, workshopURL):
+        c.title = c.w['title']
+
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+
+        #getActivityCountByObjectForWorkshop(c.w['urlCode'])
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
+        c.adminPanel = False
+        c.listingType = 'stats'
+
+
+        #c.stats = statsLib.getIdeasForWorkshop(c.w['urlCode'])
+        c.stats = statsLib.getPostsForWorkshop(c.w['urlCode'])
+        
+        
+        """ standard data packing for a list of ideas
+        ideaList = []
+        i = 0
+        for idea in c.stats:
+            thisIdea = {}
+            thisIdea['index'] = i
+            thisIdea['title'] = idea['title']
+            thisIdea['totalVotes'] = int(idea['downs']) + int(idea['ups'])
+            thisIdea['rating'] = int(idea['ups']) - int(idea['downs']) 
+            thisIdea['totalYes'] = int(idea['ups'])
+            thisIdea['totalNo'] = int(idea['downs'])
+            thisIdea['totalVotes'] = int(idea['ups']) + int(idea['downs'])
+            thisIdea['percentYes'] = thisIdea['percentNo'] = 0
+            if thisIdea['totalVotes'] > 0:
+                thisIdea['percentYes'] = int(float(thisIdea['totalYes'])/float(thisIdea['totalVotes']) * 100)
+                thisIdea['percentNo'] = int(float(thisIdea['totalNo'])/float(thisIdea['totalVotes']) * 100)
+            thisIdea['views'] = idea['views']
+            ideaList.append(thisIdea)
+            i = i + 1
+        c.ideaStats = ideaList
+        """
+
+        """ this block is good for creating a post list for sortChart1
+        # let's try and pack the info into a json format
+        result = []
+        i = 0
+        for idea in c.stats:
+            ideaEntry = "idea" + str(i)
+            # so that we don't modify the original, we place this idea in a temporary variable
+            formatIdea = {}
+            formatIdea['i'] = int(i)
+            # how to make this json serializable?
+            # formatIdea['date'] = idea.date
+            formatIdea['link'] = 'http://www.thehomie.com'
+
+            formatIdea['title'] = idea['title']
+            #formatIdea['rating'] = int(idea['ups']) - int(idea['downs']) 
+            formatIdea['totalYes'] = int(idea['ups'])
+            formatIdea['totalNo'] = int(idea['downs'])
+            formatIdea['totalVotes'] = int(idea['ups']) + int(idea['downs'])
+            formatIdea['percentYes'] = formatIdea['percentNo'] = 0
+            
+            
+            log.info("ftotal votes: %s"%formatIdea['totalVotes'])
+            if formatIdea['totalVotes'] > 0:
+                #log.info("in total")
+                formatIdea['percentYes'] = int(float(formatIdea['totalYes'])/float(formatIdea['totalVotes']) * 100)
+                formatIdea['percentNo'] = int(float(formatIdea['totalNo'])/float(formatIdea['totalVotes']) * 100)
+                #log.info("ftYes: %s  ftNo: %s"%(formatIdea['totalVotes'], formatIdea['totalNo']))
+            #formatIdea['views'] = idea['views']
+            # if this person has voted on the idea, we need to pack their vote data in
+            if 'user' in session:
+                rated = ratingLib.getRatingForThing(c.authuser, idea)
+                if rated:
+                    if rated['amount'] == '1':
+                        formatIdea['rated'] = "1"
+                    elif rated['amount'] == '-1':
+                        formatIdea['rated'] = "-1"
+                    elif rated['amount'] == '0' :
+                        formatIdea['rated'] = "0"
+                    else:
+                        formatIdea['rated'] = "0"
+                else:
+                    formatIdea['rated'] = "0"
+            #entry[ideaEntry] = dict(formatIdea)
+            result.append(dict(formatIdea))
+            i = i + 1
+        """
+                
+        # this block should make gruops of data - good for scatterplot
+        discussionGroup = []
+        resourceGroup = []
+        ideaGroup = []
+        for post in c.stats:
+            itemData = {}
+            itemData['x'] = int(post['ups']) + int(post['downs'])
+            #log.info("itemData['x']: %s"%itemData['x'])
+            percent = 0
+            if itemData['x'] > 0:
+                itemData['y'] = int(float(post['ups'])/float(itemData['x']) * 100)
+            else:
+                itemData['y'] = 0
+            itemData['size'] = 0.5
+            itemData['shape'] = 'circle'
+            if post.objType == 'discussion':
+                # add the data about this post to the discussion group
+                discussionGroup.append(dict(itemData))
+                #log.info(json.dumps(discussionGroup))
+            elif post.objType == 'resource':
+                # add the data about this post to the discussion group
+                resourceGroup.append(dict(itemData))
+                #log.info(json.dumps(resourceGroup))
+            elif post.objType == 'idea':
+                # add the data about this post to the idea group
+                ideaGroup.append(dict(itemData))
+                #log.info(json.dumps(ideaGroup))
+
+        # this block is good for sending data to a scatter chart
+        data = []
+        types = ['discussion', 'resource', 'idea']
+        for key in types:
+            groupData = {}
+            groupData['key'] = key
+            if key == 'discussion':
+                groupData['values'] = discussionGroup
+            elif key == 'resource':
+                groupData['values'] = resourceGroup
+            elif key == 'idea':
+                groupData['values'] = ideaGroup
+            data.append(dict(groupData))
+
+        log.info(json.dumps(data))
+
+        c.statsJson = json.dumps(data)
+
+        return render('/derived/6_detailed_listing.bootstrap')
+
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
         if testGoals and c.w['description'] and c.w['description'] != '':
