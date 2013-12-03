@@ -26,7 +26,7 @@ log = logging.getLogger(__name__)
 class InitiativeController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
-        log.info("inititive before")
+        log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
         existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler']
@@ -91,7 +91,7 @@ class InitiativeController(BaseController):
         c.resources = []
         c.updates = []
         if c.initiative:
-            log.info("got initiative 2")
+            log.info("got initiative 2 action is %s"%action)
             # for compatibility with comments
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)

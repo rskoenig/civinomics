@@ -378,6 +378,7 @@ def make_map():
     map.connect('/initiative/{urlCode}/{id2}/comment/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkInitiative', urlCode = '{urlCode}', revisionCode = '{revisionCode}')
     map.connect('/initiative/{id1}/{id2}/updateEdit/{id3}{end:/?}', controller = 'initiative', action = 'updateEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateEditHandler/{id3}{end:/?}', controller = 'initiative', action = 'updateEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
 
     
     ################

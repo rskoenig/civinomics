@@ -36,7 +36,7 @@
                             % elif c.initiative.objType != 'revision':
                                 <span class="pull-right">
                                     <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit"><strong>Add Update</strong></a>
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
                                 </span>
                             % else:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
@@ -52,7 +52,7 @@
             </div>
             <hr>
                 % if c.initiative['public'] == '0':
-                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable by the author and coauthors.</div>
+                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
                 % endif
             ${next.body()}
         </div>
