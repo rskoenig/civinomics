@@ -263,7 +263,7 @@
         ${c.saveMessage}
         </div>
     % endif
-    <div class="row-fluid edit-initiative">
+    <div class="row-fluid edit-initiative" id="basics">
         <div class="span12">
         <form method="POST" name="edit_initiative_basic" id="edit_initiative_basic" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
             <div class="row-fluid">
@@ -320,7 +320,7 @@
             </div><!-- row-fluid -->
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit">Save Changes</button>
         </form>
-        <div class="row-fluid">
+        <div class="row-fluid" id="photo">
             <h3 class="initiative-title edit">2. Photo</h3>
         </div><!-- row-fluid -->
         <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
@@ -390,7 +390,7 @@
                 </table>
             </form>
         <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
-            <div class="row-fluid">
+            <div class="row-fluid" id="summary">
                 <h3 class="initiative-title edit">3. Summary</h3>
             </div><!-- row-fluid -->
             <br>
@@ -434,7 +434,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row-fluid">
+            <div class="row-fluid" id="detail">
                 <h3 class="initiative-title edit">4. Detail</h3>
             </div><!-- row-fluid -->
 
@@ -716,8 +716,8 @@
 </%def>
 
 <%def name="coAuthorInvite()">
-    <div class="row-fluid">
-        <h3 class="initiative-title edit">5. Authors</h3>
+    <div class="row-fluid id="coauthors"">
+        <h3 class="initiative-title edit">5. Coauthors</h3>
     </div><!-- row-fluid -->
     <strong>Invite CoAuthors:</strong>
     % if 'user' in session and c.authuser:
