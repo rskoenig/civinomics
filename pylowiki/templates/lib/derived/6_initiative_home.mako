@@ -17,37 +17,64 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showAuthor(item)">
-    <table>
-        <tr>
-            <%
-                showNum = 3
-                remaining = len(c.authors) - showNum
-            %>
+    <div class="tabbable">
+        <div class="tab-content">
+        <div class="tab-pane active" id="abrv">
+            <table>
+                <tr>
+                    <%
+                        showNum = 3
+                        remaining = len(c.authors) - showNum
+                    %>
 
-            % for author in c.authors[:showNum]:
-                <td>
-                    ${lib_6.userImage(author, className="avatar small-avatar")}
-                </td>
-            % endfor
-            <td>
-                <span class="grey">Authored by
-                % for author in c.authors[:showNum]:
-                    % if author != c.authors[0] and len(c.authors) >= 2:
-                        ,
-                    % endif
-                    % if author == c.authors[-1]:
-                        and
-                    % endif
-                    ${lib_6.userLink(author)}
-                    ${lib_6.userGreetingMsg(item.owner)}
+                    % for author in c.authors[:showNum]:
+                        <td>
+                            ${lib_6.userImage(author, className="avatar small-avatar")}
+                        </td>
+                    % endfor
+                    <td>
+                        <span class="grey">Authored by
+                        % for author in c.authors[:showNum]:
+                            % if author != c.authors[0] and len(c.authors) >= 2:
+                                ,
+                            % endif
+                            % if author == c.authors[-1]:
+                                and
+                            % endif
+                            ${lib_6.userLink(author)}
+                            ${lib_6.userGreetingMsg(item.owner)}
+                        % endfor
+                        % if remaining >= 1:
+                            , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
+                        % endif
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="tab-pane" id="allAuthors">
+            <span class="pull-right">
+                <a href="#abrv" data-toggle="tab">close</a>
+            </span>
+            <h4 class="initiative-title">
+                Authors
+            </h4>
+            <table>
+                % for author in c.authors:
+                    <tr>
+                        <td>
+                            ${lib_6.userImage(author, className="avatar small-avatar")}
+                        </td>
+                        <td>
+                            <span class="grey">
+                                ${lib_6.userLink(author)}
+                                ${lib_6.userGreetingMsg(item.owner)}
+                            </span>
+                        </td>
+                    </tr>
                 % endfor
-                % if remaining >= 1:
-                    , and ${remaining} more.
-                % endif
-                </span>
-            </td>
-        </tr>
-    </table>
+            </table>            
+        </div>
 </%def>
 
 <%def name="showDescription()">
