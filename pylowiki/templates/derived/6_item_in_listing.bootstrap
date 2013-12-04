@@ -3,6 +3,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_item_in_listing.mako"/>
 <%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="nvd3Lib" file="/lib/nvd3_lib.mako"/>
 
 <%
     lib.return_to()
@@ -45,7 +46,8 @@
                     </div>
                     <div class="span11">
                         <div class="well yesNoWell">
-                            ${lib_6.yesNoVote(c.thing, 'detail')}
+                            ${nvd3Lib.votePieIncludes()}
+                            ${lib_6.yesNoVote(c.thing, 'detail', 'pieChart')}
                         </div>
                         ${helpers.showItemTitle(c.thing)}
                         <div class="spacer"></div>

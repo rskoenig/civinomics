@@ -6,6 +6,7 @@
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="nvd3Lib" file="/lib/nvd3_lib.mako"/>
 
 <%def name="showListing(thing, *args)">
    <%

@@ -21,8 +21,9 @@
    import logging, os
    log = logging.getLogger(__name__)
 %>
-<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
+<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
+<%namespace name="nvd3Lib" file="/lib/nvd3_lib.mako"/>
 
 <%def name="facebookDialogShare(link, picture, **kwargs)">
     <%
@@ -377,7 +378,12 @@
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
               <div class="vote-icon yes-icon detail"></div>
-              <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>
+              <div class="ynScoreWrapper ${displayTally}">
+                <span class="yesScore">${percentYes}%</span>
+                % if 'pieChart' in args:
+                  ${nvd3Lib.votePie(percentYes, thing['urlCode'])}
+                % endif
+              </div>
          </a>
          <br>
          <br>
@@ -392,7 +398,7 @@
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
               <div class="vote-icon no-icon detail"></div>
-              <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}</span>%</div> 
+              <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}%</span></div> 
          </a>
          <br>
          <div class="totalVotesWrapper">
