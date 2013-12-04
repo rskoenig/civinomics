@@ -195,7 +195,8 @@ class ProfileController(BaseController):
                     i = i + 1
             
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
-        c.facilitatorItems = []
+        c.facilitatorWorkshops = []
+        c.facilitatorInitiatives = []
         c.pendingFacilitators = []
         for f in facilitatorList:
            if 'pending' in f and f['pending'] == '1':
@@ -207,18 +208,18 @@ class ProfileController(BaseController):
                      # show to the workshop owner, show to the facilitator owner, show to admin
                         if 'user' in session: 
                             if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                                c.facilitatorItems.append(myW)
+                                c.facilitatorWorkshops.append(myW)
                     else:
-                        c.facilitatorItems.append(myW)
+                        c.facilitatorWorkshops.append(myW)
                 except:
                     myI = initiativeLib.getInitiative(f['initiativeCode'])
                     if myI['public'] == '0':
                      # show to the workshop owner, show to the facilitator owner, show to admin
                         if 'user' in session: 
                             if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                                c.facilitatorItems.append(myW)
+                                c.facilitatorInitiatives.append(myW)
                     else:
-                        c.facilitatorItems.append(myW)
+                        c.facilitatorInitiatives.append(myI)
 
                     
         # initiatives

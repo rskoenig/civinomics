@@ -38,7 +38,7 @@
                         ${helpers.inviteCoFacilitate()}
                         <table class="table table-hover table-condensed">
                         <tbody>
-                        % for item in c.facilitatorItems:
+                        % for item in c.facilitatorWorkshops:
                             <tr><td>${helpers.showWorkshop(item, role = "Facilitating")}</td></tr>
                         % endfor
                         % for item in c.listeningWorkshops:
@@ -57,6 +57,9 @@
                         <table class="table table-hover table-condensed">
                         <tbody>
                         % for item in c.initiatives:
+                            <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+                        % endfor
+                        % for item in c.facilitatorInitiatives:
                             <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
                         % endfor
                         % for item in c.initiativeBookmarks:

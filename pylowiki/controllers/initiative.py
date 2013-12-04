@@ -464,6 +464,11 @@ class InitiativeController(BaseController):
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
 
+        c.authors = [c.user]
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            c.authors.append(author)
+
         c.initiativeHome = True
             
         return render('/derived/6_initiative_home.bootstrap')

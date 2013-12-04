@@ -2900,3 +2900,7 @@ a.no-highlight:hover{
   font-weight: bold;
 }
 
+hr.narrow{
+  margin: 10px 0 10px 0;
+}
+

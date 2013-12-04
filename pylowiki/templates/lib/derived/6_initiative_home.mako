@@ -19,8 +19,33 @@
 <%def name="showAuthor(item)">
     <table>
         <tr>
-            <td>${lib_6.userImage(item.owner, className="avatar small-avatar")}</td>
-            <td><span class="grey">Authored by</span>${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span></td>
+            <%
+                showNum = 3
+                remaining = len(c.authors) - showNum
+            %>
+
+            % for author in c.authors[:showNum]:
+                <td>
+                    ${lib_6.userImage(author, className="avatar small-avatar")}
+                </td>
+            % endfor
+            <td>
+                <span class="grey">Authored by
+                % for author in c.authors[:showNum]:
+                    % if author != c.authors[0] and len(c.authors) >= 2:
+                        ,
+                    % endif
+                    % if author == c.authors[-1]:
+                        and
+                    % endif
+                    ${lib_6.userLink(author)}
+                    ${lib_6.userGreetingMsg(item.owner)}
+                % endfor
+                % if remaining >= 1:
+                    , and ${remaining} more.
+                % endif
+                </span>
+            </td>
         </tr>
     </table>
 </%def>
@@ -662,21 +687,27 @@
 </%def>
 
 <%def name="coAuthorInvite()">
-    %if 'user' in session and c.authuser:
-        <div class="row-fluid">
-            User Lookup coming soon
-            For now...
-            Yo Testo
-            <% 
-                url = 'yo-testo'
-                code = '4ILv'
-            %>
-
-            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${code}/${url}/facilitate/invite/handler/" class="form-inline">
-                <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop">Invite to CoAuthor</button> to co-facilitate <select name="inviteToFacilitate">
-                    <option value="${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</option>                
-                </select>
-            </form>
+    <div class="row-fluid">
+        <h3 class="initiative-title edit">5. Authors</h3>
+    </div><!-- row-fluid -->
+    <strong>Invite CoAuthors:</strong>
+    % if 'user' in session and c.authuser:
+        <div class="row-fluid" ng-controller="userLookupCtrl">
+            <input name="userValue" ng-model="userValue">
+            <a ng-click="lookup()" class="btn btn-small btn-primary">Search Users</a>
+            <div class="spacer"></div>
+                <table>
+                    <tr ng-repeat="user in users">
+                        <td>{{user.name}}</td>
+                        <td>{{user.email}}</td>
+                        <td>
+                            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/{{user.urlCode}}/{{user.url}}/facilitate/invite/handler/" class="form-inline">
+                                <input type="hidden" name="inviteToFacilitate" value="${c.initiative['urlCode']}/${c.initiative['url']}">
+                                <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the initiative">Invite to CoAuthor</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
         </div><!-- row-fluid -->
     %endif
 </%def>
