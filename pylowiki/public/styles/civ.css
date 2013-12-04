@@ -2882,11 +2882,7 @@ a.no-highlight:hover{
   z-index: 1;
 }
 
-@media (min-width: 768px){
-  .min-container{
-    min-width: 930px;
-  }  
-}
+
 
 .i-main-photo{
   margin: -19px -19px 0 -19px;
