@@ -46,8 +46,7 @@
                     </div>
                     <div class="span11">
                         <div class="well yesNoWell">
-                            ${nvd3Lib.votePieIncludes()}
-                            ${lib_6.yesNoVote(c.thing, 'detail', 'pieChart')}
+                            ${lib_6.yesNoVote(c.thing, 'detail')}
                         </div>
                         ${helpers.showItemTitle(c.thing)}
                         <div class="spacer"></div>

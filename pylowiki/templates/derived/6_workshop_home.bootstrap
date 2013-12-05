@@ -3,6 +3,7 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="nvd3Lib" file="/lib/nvd3_lib.mako"/>
 
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid">
@@ -26,7 +27,7 @@
                 <hr class="list-header">
              % endif
              <% 
-                lib.return_to() 
+                lib.return_to()
                 listingHelpers.showIdeaListing("ideas")
              %>
           </div><!--/.browse-->

@@ -83,7 +83,6 @@
                             <h4 class="section-header smaller section-header-inner" style="margin-top: 5px;">Vote</h4>
                             <div class="row-fluid">
                                 <div class="span6 offset3">
-                                    ${nvd3Lib.votePieIncludes()}
                                     ${lib_6.yesNoVote(c.initiative, 'detail')}
                                 </div><!-- span4 -->
                                 <div class="span3"></div>
