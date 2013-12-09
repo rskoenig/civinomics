@@ -7,7 +7,7 @@
 ## NVD3 library
 ################################################
 
-<%def name="searchPageInitiativePopularity(initiatives)">
+<%def name="searchPageInitiativePopularity(jsonInitiatives)">
     <%
         # for each initiative build an object
         # if percent < 50, calc negative version for series 1 place initiative in it
@@ -59,6 +59,7 @@
           }
         ];
         """
+        
     %>
     <style>
 
@@ -76,7 +77,12 @@
     <link href="/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
     <script id="nvd3On" src="/nvd3/lib/d3.v3.js"></script>
     <script src="/nvd3/nv.d3.min.js"></script>
-    <script>
+    
+    <script> 
+        var inits = ${jsonInitiatives | n}
+        console.log("yo rap");
+        console.log(inits);
+        console.log("end rap");
         var data = [
           {
             "key": "Series1",

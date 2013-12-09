@@ -5,16 +5,20 @@ from zlib import adler32
 from pylons import session, tmpl_context as c
 from hashlib import md5
 from pylons import tmpl_context as c, config, session
+#import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as generic
+#import pylowiki.lib.db.rating       as ratingLib
+#import pylowiki.lib.db.user         as userLib
 import urllib2
-
+#import simplejson as json
 
 log = logging.getLogger(__name__)
 
 # For base62 conversion
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
+
 
 def badEmail(email):
     log.info("fx badEmail: %s"%email)

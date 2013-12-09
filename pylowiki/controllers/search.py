@@ -265,6 +265,72 @@ class SearchController(BaseController):
         c.photos = photoLib.searchPhotos('scope', self.query)
         iScope = '0' + self.query.replace('||', '|0|')
         c.numInitiatives = initiativeLib.searchInitiatives(['scope'], [iScope], count = True)
+        # note: mod the search function to return both, using **argv to set it to return count, all or both
+        # - must search for all occurences of this search in the platform
+        initiatives = initiativeLib.searchInitiatives(['scope'], [iScope])
+        result = []
+        for initiative in initiatives:
+            i = initiative
+            # u = generic.getThing(i['userCode'])
+            # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
+            u = i.owner
+            if type(u) == type(1L):
+                u = userLib.getUserByID(u)
+            elif type(u) == type(u''):
+                u = userLib.getUserByCode(u)
+                
+            if i['deleted'] != u'0' or i['disabled'] != u'0':
+                continue
+            if i['public'] == '0':
+                continue
+            entry = {}
+            entry['title'] = i['title']
+            entry['description'] = i['description'][:200]
+            if len(entry['description']) >= 200:
+                entry['description'] += "..."
+            entry['tags'] = i['tags']
+            scopeList = i['scope'].split('|')
+            country = scopeList[2].replace("-", " ")
+            state = scopeList[4].replace("-", " ")
+            county = scopeList[6].replace("-", " ")
+            city = scopeList[8].replace("-", " ")
+            postalCode = scopeList[9]
+            scopeString = "Earth"
+            log.info("scopeString is %s"%scopeString)
+            if country != '0':
+                scopeString = "%s" % country.title()
+                if state != '0':
+                    scopeString += ", State of %s" % state.title()
+                    if county != '0':
+                        scopeString += ", County of %s" % county.title()
+                        if city != '0':
+                            scopeString += ", City of %s" % city.title()
+                            if postalCode != '0':
+                                scopeString += ", Zip Code of %s"%postalCode
+            entry['location'] = scopeString
+            entry['voteCount'] = int(i['ups']) + int(i['downs'])
+            entry['ups'] = int(i['ups'])
+            entry['downs'] = int(i['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, i) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
+            entry['urlCode'] = i['urlCode']
+            entry['url'] = i['url']
+            entry['tag'] = i['tags']
+            entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
+            entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
+            entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        if len(result) == 0:
+            c.jsonInitiatives = json.dumps({'statusCode':2})
+        c.jsonInitiatives = json.dumps({'statusCode':0, 'result':result})
+
         #log.info("search is %s"%c.searchQuery)
         entry = {}
         if c.photos:
@@ -860,7 +926,7 @@ class SearchController(BaseController):
         #elif self.query.count('%') == len(self.query) and self.searchType != 'geo':
             # Prevent wildcard searches
             #return json.dumps({'statusCode':2})
-        result = []
+        
         if self.searchType == 'tag':
             initiatives = initiativeLib.searchInitiatives('tags', self.query)
         elif self.searchType == 'geo':
@@ -875,6 +941,7 @@ class SearchController(BaseController):
         if len(initiatives) == 0:
             return json.dumps({'statusCode':2})
             
+        result = []
         for initiative in initiatives:
             i = initiative
             # u = generic.getThing(i['userCode'])

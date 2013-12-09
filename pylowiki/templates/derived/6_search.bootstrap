@@ -544,7 +544,7 @@
             % if c.numInitiatives > 0:
                 <div class="well">
                     <span>Popularity of Initiatives in this region:
-                        ${nvd3Lib.searchPageInitiativePopularity({{inititatives}})}
+                        ${nvd3Lib.searchPageInitiativePopularity(c.jsonInitiatives)}
                     </span>
                 </div>
             % endif
