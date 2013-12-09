@@ -24,7 +24,7 @@ function updateController($scope, $http, $location, $timeout) {
         if(addUpdateForm.$valid) {
             $scope.addUpdateShow = true;
             $scope.addUpdateResponse = "Submitting progress report...";
-            var addURL = '/initiaitve/' + $scope.parentCode + '/' + $scope.parentURL + '/updateEditHandler/' + $scope.updateCode;
+            var addURL = '/initiative/' + $scope.parentCode + '/' + $scope.parentURL + '/updateEditHandler/' + $scope.updateCode;
 
             var postData = {'title':$scope.title, 'text': $scope.text};
             $http.post(addURL, postData).success(function(data){

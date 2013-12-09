@@ -25,6 +25,17 @@
     </table>
 </%def>
 
+<%def name="showUpdateList()">
+    % if c.updates:
+        Progress Reports:<br />
+        <ul>
+        % for update in c.updates:
+            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update.date} ${update['title']}</a></li>
+        % endfor
+        </ul>
+    % endif
+</%def>
+
 <%def name="showDescription()">
     <div class="initiative-info">
         ${m.html(c.initiative['description'], render_flags=m.HTML_SKIP_HTML) | n}
@@ -519,13 +530,15 @@
         if not c.update:
             updateTitle = ""
             updateText = ""
+            updateCode = "new"
         else:
             updateTitle = c.update['title']
             updateText = c.update['text']
+            updateCode = c.update['urlCode']
             
     %>
     % if not c.update:
-        <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
+        <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
             <fieldset>
                 <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
                 <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>

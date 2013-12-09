@@ -69,6 +69,7 @@ def getUpdatesForInitiative(code, disabled = '0', deleted = '0'):
         .filter(Thing.data.any(wc('discType', 'update')))\
         .filter(Thing.data.any(wc('disabled', disabled)))\
         .filter(Thing.data.any(wc('deleted', deleted)))\
+        .order_by('-date')\
         .all()
     except:
         return False

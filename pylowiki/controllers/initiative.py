@@ -29,7 +29,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -45,7 +45,7 @@ class InitiativeController(BaseController):
                     abort(404)
                             
             if c.initiative:
-                log.info("got initiative")
+                #log.info("got initiative")
                 c.user = userLib.getUserByCode(c.initiative['userCode'])
 
                 scopeProps = utils.getPublicScope(c.initiative)
@@ -68,10 +68,10 @@ class InitiativeController(BaseController):
                 c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
 
             else:
-                log.info("abort 1")
+                #log.info("abort 1")
                 abort(404)  
         else:
-            log.info("abort 2")
+            #log.info("abort 2")
             abort(404)
 
         
@@ -91,7 +91,7 @@ class InitiativeController(BaseController):
         c.resources = []
         c.updates = []
         if c.initiative:
-            log.info("got initiative 2 action is %s"%action)
+            #log.info("got initiative 2 action is %s"%action)
             # for compatibility with comments
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
@@ -101,6 +101,9 @@ class InitiativeController(BaseController):
             if disabledResources:
                 for dr in disabledResources:
                     c.resources.append(dr)
+                    
+        if action == 'updateShow' and id3 != None:
+            c.update = discussionLib.getDiscussion(id3)
             
         userLib.setUserPrivs()
 
@@ -233,9 +236,6 @@ class InitiativeController(BaseController):
         c.editInitiative = True
 
         return render('/derived/6_initiative_edit.bootstrap')
-        
-    def updateEdit(self):
-        return render('/derived/6_initiative_update.bootstrap')
         
     def initiativeEditHandler(self):
         iKeys = ['inititive_tags', 'initiative_scope', 'initiative_url', 'initiative_title', 'initiative_public']
@@ -490,23 +490,38 @@ class InitiativeController(BaseController):
             
         return render('/derived/6_initiative_resource.bootstrap')
         
-    @h.login_required
-    def resourceEditHandler(self, id1, id2, id3):
+    @h.login_required       
+    def updateShow(self):
         
-        if 'user' not in session:
-            abort(404)
-        if 'resourceTitle' in request.params():
-            title = request.params('resourceTitle')
+        return render('/derived/6_initiative_update.bootstrap')
+        
+    @h.login_required       
+    def updateEdit(self):
+        
+        return render('/derived/6_initiative_update.bootstrap')
+        
+    @h.login_required
+    def updateEditHandler(self):
+        
+        if 'title' in request.params:
+            title = request.params['title']
         else:
-            title = "Sample title"
+            title = "Sample Title"
+        
+        if not c.update:
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'update', attachedThing = c.initiative, title = title)
+            c.update = d.d
             
-        if 'resourceLink' in request.params():
-            link = request.params('resourceLink')
-        else:
-            title = "http://example.com"
+        c.update['title'] = title
             
-        if 'resourceText' in request.params():
-            title = request.params('resourceText')
+        if 'text' in request.params:
+            c.update['text'] = request.params['text']
         else:
-            title = "Sample text"
+            c.update['text'] = "Sample text"
+            
+        dbHelpers.commit(c.update)
+        revisionLib.Revision(c.authuser, c.update)
+        
+        jsonReturn = '{"state":"Success", "updateCode":"' + c.update['urlCode'] + '","updateURL":"' + c.update['url'] + '"}'
+        return json.dumps(jsonReturn)
             
