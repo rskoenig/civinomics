@@ -708,9 +708,12 @@
             Cost Estimate
         </div>
         <div class="span6">
-            <span class="pull-right" style="display: inline;">
-                ${currency} ${locale.format("%d", cost, grouping=True)}
-            </span>
+            <table class="pull-right">
+                <tr>
+                    <td>${currency}</td>
+                    <td>${locale.format("%d", cost, grouping=True)}</td>
+                <tr>
+            </table>
         </div>
     </h4>
 </%def>
