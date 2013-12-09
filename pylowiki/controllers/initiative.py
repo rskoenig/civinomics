@@ -467,7 +467,8 @@ class InitiativeController(BaseController):
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
         for author in coAuthors:
-            c.authors.append(author)
+            if author['pending'] == '0':
+                c.authors.append(author)
 
         c.initiativeHome = True
             

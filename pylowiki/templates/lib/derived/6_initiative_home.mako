@@ -262,6 +262,11 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         ${c.saveMessage}
         </div>
+    % elif 'alert' in session:
+        <div class="alert alert-${session['alert']['type']}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        ${session['alert']['title']}
+        </div>
     % endif
     <div class="row-fluid edit-initiative" id="basics">
         <div class="span12">
@@ -719,23 +724,27 @@
 </%def>
 
 <%def name="coAuthorInvite()">
-    <div class="row-fluid id="coauthors"">
+    <div class="row-fluid" id="coauthors">
         <h3 class="initiative-title edit">5. Coauthors</h3>
     </div><!-- row-fluid -->
     <strong>Invite CoAuthors:</strong>
     % if 'user' in session and c.authuser:
         <div class="row-fluid" ng-controller="userLookupCtrl">
-            <input name="userValue" ng-model="userValue">
-            <a ng-click="lookup()" class="btn btn-small btn-primary">Search Users</a>
+            <input type="text" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
+            <a ng-click="lookup()" class="btn btn-primary">Search Users</a>
             <div class="spacer"></div>
                 <table>
                     <tr ng-repeat="user in users">
-                        <td>{{user.name}}</td>
-                        <td>{{user.email}}</td>
                         <td>
-                            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/{{user.urlCode}}/{{user.url}}/facilitate/invite/handler/" class="form-inline">
+                            <a href="/profile/{{user.urlCode}}/{{user.url}}">
+                                <img class="media-object avatar med-avatar" ng-src="{{user.photo}}" alt="{{user.name}}" title="{{user.name}}">
+                            </a>
+                        </td>
+                        <td class="span8">{{user.name}} <span class="grey">from</span> <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
+                        <td>
+                            <form "method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/{{user.urlCode}}/{{user.url}}/facilitate/invite/handler/" class="form-inline no-bottom">
                                 <input type="hidden" name="inviteToFacilitate" value="${c.initiative['urlCode']}/${c.initiative['url']}">
-                                <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the initiative">Invite to CoAuthor</button>
+                                <button type="submit" class="btn btn-warning" title="Click to invite this member to cofacilitate the initiative">Invite to Coauthor</button>
                             </form>
                         </td>
                     </tr>

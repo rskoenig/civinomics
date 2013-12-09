@@ -77,10 +77,9 @@
                     <div class="row-fluid">
                         % if c.initiative['public'] == '0' and c.complete:
                             <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
-                                <button type="submit" class="btn btn-large btn-success pull-right" name="public" value="publish">Publish</button>
+                                <button type="submit" class="btn btn-large btn-success input-block-level" name="public" value="publish">Publish</button>
                             </form>
-                            <br>
-                            <p>All of the required information has been added to your initiative. When you are satisfied that it is ready, click 'Publish' to make your initiative public.</p>
+                            <p>You have added all of the required information. Click 'Publish' to make your initiative publicly viewable.</p>
                         % elif c.initiative['public'] == '0':
                             <button class="btn btn-large btn-warning input-block-level" disabled>Publish</button>
                             <br>

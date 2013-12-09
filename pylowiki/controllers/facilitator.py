@@ -50,7 +50,7 @@ class FacilitatorController(BaseController):
               item = initiativeLib.getInitiative(itemCode)
               objType = 'i'
               extraInfo = 'authorInvite'
-              title = 'Co-Author Invitation'
+              title = 'Coauthor invitation'
             facilitator = facilitatorLib.Facilitator(c.user, item, 1)
             if objType == 'w':
               fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, item)
@@ -62,16 +62,16 @@ class FacilitatorController(BaseController):
             dbhelpersLib.commit(m)
             eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], item['title']), m, user = c.authuser, action = extraInfo)
             alert = {'type':'success'}
-            alert['title'] = 'Success. CoFacilitation invitation issued.'
+            alert['title'] = 'Success. ' + title + 'issued.'
             session['alert'] = alert
             session.save()
-            return redirect("/profile/%s/%s"%(code, url))
+            return redirect(session['return_to'])
         else:
             alert = {'type':'error'}
             alert['title'] = 'Authorization Error. You are not authorized.'
             session['alert'] = alert
             session.save()
-            return redirect("/" )
+            return redirect(session['return_to'])
 
     @h.login_required
     def facilitateResponseHandler(self, code, url):

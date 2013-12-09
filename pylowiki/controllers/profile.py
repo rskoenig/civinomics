@@ -217,7 +217,7 @@ class ProfileController(BaseController):
                      # show to the workshop owner, show to the facilitator owner, show to admin
                         if 'user' in session: 
                             if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                                c.facilitatorInitiatives.append(myW)
+                                c.facilitatorInitiatives.append(myI)
                     else:
                         c.facilitatorInitiatives.append(myI)
 
