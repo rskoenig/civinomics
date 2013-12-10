@@ -503,25 +503,27 @@ class InitiativeController(BaseController):
     @h.login_required
     def updateEditHandler(self):
         
-        if 'title' in request.params:
-            title = request.params['title']
+        payload = json.loads(request.body)
+        if 'title' in payload:
+            title = payload['title']
         else:
             title = "Sample Title"
         
         if not c.update:
             d = discussionLib.Discussion(owner = c.authuser, discType = 'update', attachedThing = c.initiative, title = title)
-            c.update = d.d
+            log.info("got d.d, objtype of d is %s"%d.d.objType)
             
-        c.update['title'] = title
+        d.d['title'] = title
             
-        if 'text' in request.params:
-            c.update['text'] = request.params['text']
+        if 'text' in payload:
+            d.d['text'] = payload['text']
         else:
-            c.update['text'] = "Sample text"
+            d.d['text'] = "Sample text"
             
-        dbHelpers.commit(c.update)
-        revisionLib.Revision(c.authuser, c.update)
+        dbHelpers.commit(d.d)
+        revisionLib.Revision(c.authuser, d.d)
         
-        jsonReturn = '{"state":"Success", "updateCode":"' + c.update['urlCode'] + '","updateURL":"' + c.update['url'] + '"}'
-        return json.dumps(jsonReturn)
+        jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
+        log.info("update jsonReturn is %s"%jsonReturn)
+        return jsonReturn
             

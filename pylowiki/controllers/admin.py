@@ -60,7 +60,6 @@ class AdminController(BaseController):
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
             elif 'initiativeCode' in c.thing:
-                # a comment of a photo
                 parent = generic.getThing(c.thing['initiativeCode'])
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()

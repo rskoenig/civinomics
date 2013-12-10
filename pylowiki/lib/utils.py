@@ -115,6 +115,8 @@ def thingURL(thingParent, thing):
         return baseURL + "/photo/show" + thing['urlCode']
     if thing.objType.replace("Unpublished", "") == 'initiative':
         return baseURL + "/show"
+    if thing.objType == 'discussion' and thing['discType'] == 'update':
+        return baseURL + "/updateShow/" + thing['urlCode']
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])

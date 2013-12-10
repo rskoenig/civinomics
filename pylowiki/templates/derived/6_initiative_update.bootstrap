@@ -15,7 +15,7 @@
                 <h2>${c.update['title']}</h2>
                 Date: ${c.update.date}<br>
                 ${itemHelpers.showItemOwner(c.update)}
-                % if 'test' in c.update:
+                % if 'text' in c.update:
                     ${m.html(c.update['text'], render_flags=m.HTML_SKIP_HTML) | n}
                 % endif
                 % if c.update.objType != 'revision':
