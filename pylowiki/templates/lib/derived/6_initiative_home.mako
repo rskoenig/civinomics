@@ -35,7 +35,7 @@
                         <td>
                             <span class="grey">Authored by
                             % for author in c.authors[:showNum]:
-                                % if author != c.authors[0] and len(c.authors) >= 2:
+                                % if author != c.authors[0] and len(c.authors) >= 3:
                                     ,
                                 % endif
                                 % if author == c.authors[-1]:
@@ -734,7 +734,7 @@
                 <div class="row-fluid">
                     <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
                     <div class="spacer"></div>
-                        <table>
+                        <table class="table-striped full-width">
                             <tr ng-repeat="user in users">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">
@@ -743,14 +743,14 @@
                                 </td>
                                 <td class="span8 grey"><a class="green green-hover" href="/profile/{{user.urlCode}}/{{user.url}}">{{user.name}}</a> from <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
                                 <td>
-                                    <button ng-click="submitInvite(user.urlCode)" class="btn btn-primary">Invite to Coauthor</button>
+                                    <button ng-click="submitInvite(user.urlCode)" class="btn btn-primary pull-right">Invite to Coauthor</button>
                                 </td>
                             </tr>
                         </table>
                 </div><!-- row-fluid -->
                 <br>
                 <strong>Author and Coauthors:</strong>
-                <table>
+                <table class="table-striped full-width">
                     <tr>
                         <td>
                             ${lib_6.userImage(c.user, className="avatar med-avatar")}
@@ -762,6 +762,7 @@
                         <td>
                             <span class="badge badge-inverse">Original Author</span>
                         </td>
+                        <td></td>
                     </tr>
                     <tr ng-repeat="a in authors">
                         <td>
@@ -778,17 +779,16 @@
                         </td>
                         % if c.authuser == c.user:
                             <td>
-                                <button ng-click="removeCoA(a.urlCode)" class="btn btn-danger">Remove Coauthor</button>
+                                <button ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
                             </td>
                             {{rURL}}
                         % endif
                         <td ng-show="a.urlCode == authuserCode">
                             <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
                                 <input type="hidden" name="resign" value="resign">
-                                <button type="submit" class="btn btn-danger">Resign as Coauthor</button>
+                                <button type="submit" class="btn btn-danger pull-right">Resign as Coauthor</button>
                             </form>
                         </td>
-                        <td>
                     </tr>
                 </table>
             </div><!-- ng-controller -->

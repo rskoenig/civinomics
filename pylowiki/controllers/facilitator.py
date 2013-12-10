@@ -78,16 +78,26 @@ class FacilitatorController(BaseController):
         log.info('invite func called here!')
         inviteAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
-        facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
-        fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
-        text = '(This is an automated message)'
-        title = 'Coauthor invitation'
-        extraInfo = 'authorInvite'
-        m = messageLib.Message(owner = inviteAuthor, title = title, text = text, privs = c.privs, item = i, extraInfo = extraInfo, sender = c.authuser)
-        m = generic.linkChildToParent(m, fList[0])
-        dbhelpersLib.commit(m)
-        eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
 
+        # check to see if user is allowed to add other coauthors:
+        privs = False
+        f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, i)
+        if f != False and f != 'NoneType' and len(f) != 0:
+            if f[0]['pending'] == '0' and f[0]['disabled'] == '0':
+                privs = True
+
+        if c.authuser.id == i.owner or privs:
+          facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
+          fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
+          text = '(This is an automated message)'
+          title = 'Coauthor invitation'
+          extraInfo = 'authorInvite'
+          m = messageLib.Message(owner = inviteAuthor, title = title, text = text, privs = c.privs, item = i, extraInfo = extraInfo, sender = c.authuser)
+          m = generic.linkChildToParent(m, fList[0])
+          dbhelpersLib.commit(m)
+          eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
+        else: 
+          abort(404)
 
     @h.login_required
     def facilitateResponseHandler(self, code, url):
@@ -201,12 +211,10 @@ class FacilitatorController(BaseController):
 
     @h.login_required
     def iFacilitateResignHandler(self, code, url, userCode):
-        log.info('remove function called')
         removeAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
         fList = facilitatorLib.getFacilitatorsByUserAndInitiative(removeAuthor, i)
         if c.authuser.id == i.owner or c.authuser == removeAuthor:
-          log.info('remove function permitted')
           for f in fList:
             f['disabled'] = '1'
             dbhelpersLib.commit(f)
@@ -215,7 +223,6 @@ class FacilitatorController(BaseController):
             # the coauthor is resigning, he should be redirected away from the edit page
             return redirect('/initiative/%s/%s'%(code, url))
         else:
-          log.info('remove function NOT permitted')
           abort(404)
 
         

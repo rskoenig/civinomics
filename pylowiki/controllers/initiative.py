@@ -188,8 +188,6 @@ class InitiativeController(BaseController):
             c.postal = "0"
 
         c.editInitiative = True
-
-        c.authors = [c.user]
        
         return render('/derived/6_initiative_edit.bootstrap')
     
@@ -349,11 +347,6 @@ class InitiativeController(BaseController):
             c.saveMessage = errorMessage
         else:
             c.saveMessage = "Changes saved."
-
-        c.authors = [c.user]
-        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
-        for author in coAuthors:
-            c.authors.append(author)
 
         c.editInitiative = True
         c.complete = self.initiativeCheck()
