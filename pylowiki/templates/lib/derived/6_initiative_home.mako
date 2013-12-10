@@ -732,8 +732,7 @@
         <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}';">
             <div ng-controller="userLookupCtrl">
                 <div class="row-fluid">
-                    <input type="text" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
-                    <a ng-click="lookup()" class="btn btn-primary">Search Users</a>
+                    <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
                     <div class="spacer"></div>
                         <table>
                             <tr ng-repeat="user in users">
@@ -742,12 +741,15 @@
                                         <img class="media-object avatar med-avatar" ng-src="{{user.photo}}" alt="{{user.name}}" title="{{user.name}}">
                                     </a>
                                 </td>
-                                <td class="span8">{{user.name}} <span class="grey">from</span> <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
+                                <td class="span8 grey"><a class="green green-hover" href="/profile/{{user.urlCode}}/{{user.url}}">{{user.name}}</a> from <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
                                 <td>
                                     <form "method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/{{user.urlCode}}/{{user.url}}/facilitate/invite/handler/" class="form-inline no-bottom">
                                         <input type="hidden" name="inviteToFacilitate" value="${c.initiative['urlCode']}/${c.initiative['url']}">
-                                        <button type="submit" class="btn btn-warning" title="Click to invite this member to cofacilitate the initiative">Invite to Coauthor</button>
+                                        <button type="submit" class="btn btn-danger" title="Click to invite this member to cofacilitate the initiative">Invite to Coauthor</button>
                                     </form>
+                                </td>
+                                <td>
+                                    <button ng-click="submitInvite(user.urlCode)" class="btn btn-primary">Invite to Coauthor</button>
                                 </td>
                             </tr>
                         </table>
@@ -778,10 +780,38 @@
                                 % if c.authuser == c.user and author != c.user:
                                     <button ng-click="removeCoA(${author.owner})" class="btn btn-danger">Remove Coauthor</button>
                                 % endif
+                                % if c.authuser.id == author.owner and author != c.user:
+                                    <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/${author.owner}/facilitate/resign/handler">
+                                        <input type="hidden" name="resign" value="resign">
+                                        <button type="submit" class="btn btn-danger">Resign as Coauthor</button>
+                                    </form>
+                                % endif
                             </td>
                         </tr>
                     % endfor
                 </table> 
+                <table ng-if="! noResult">
+                    {{authorsURL}}
+                    <tr ng-repeat="a in authors">
+                        <td>
+                            <a class="pull-left" href="/profile/{{a.urlCode}}/{{a.url}}">
+                                <img class="media-object avatar med-avatar" ng-src="{{a.photo}}" alt="{{a.name}}" title="{{a.name}}">
+                            </a>
+                        </td>
+                        <td>
+                            <a class="green green-hover" href="/profile/{{a.urlCode}}/{{a.url}}">{{a.name}}</a>
+                            <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
+                        </td>
+                        <td>
+                            <span ng-if="a.pending === '1'"  class="badge badge-info">Invitation Pending</span>
+                        </td>
+                        % if c.authuser == c.user and author != c.user:
+                            <td>
+                                <button ng-click="removeCoA(a.urlCode)" class="btn btn-danger">Remove Coauthor</button>
+                            </td>
+                        % endif
+                    </tr>
+                </table>
             </div><!-- ng-controller -->
         </div><!-- ng-init -->
     %endif   

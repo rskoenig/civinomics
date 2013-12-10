@@ -190,7 +190,8 @@ def make_map():
     map.connect('/profile/{code}/{url}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', code = '{code}', url='{url}')
     map.connect('/profile/{code}/{url}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', code = '{code}', url='{url}')
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', code = '{code}', url='{url}')
-    map.connect('/{initiative:initiatives?}/{code}/{url}/{userID}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'iFacilitateResignHandler', code = '{code}', url='{url}', userID='{userID}')
+    map.connect('/{initiative:initiatives?}/{code}/{url}/{userCode}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'iFacilitateResignHandler', code = '{code}', url='{url}', userCode='{userCode}')
+    map.connect('/{initiative:initiatives?}/{code}/{url}/{userCode}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'iFacilitateInviteHandler', code = '{code}', url='{url}', userCode='{userCode}')
 
     # Facilitator notifications
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
@@ -368,6 +369,7 @@ def make_map():
     # Initiatives #
     ###############
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/show{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
@@ -377,7 +379,6 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/resourceEdit/{id3}{end:/?}', controller = 'initiative', action = 'resourceEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/resourceEditHandler{end:/?}', controller = 'initiative', action = 'resourceEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{urlCode}/{id2}/comment/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkInitiative', urlCode = '{urlCode}', revisionCode = '{revisionCode}')
-
     
     ################
     # Messaging    #

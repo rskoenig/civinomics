@@ -74,6 +74,22 @@ class FacilitatorController(BaseController):
             return redirect(session['return_to'] + "#coauthors")
 
     @h.login_required
+    def iFacilitateInviteHandler(self, code, url, userCode):
+        log.info('invite func called here!')
+        inviteAuthor = userLib.getUserByCode(userCode)
+        i = initiativeLib.getInitiative(code)
+        facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
+        fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
+        text = '(This is an automated message)'
+        title = 'Coauthor invitation'
+        extraInfo = 'authorInvite'
+        m = messageLib.Message(owner = inviteAuthor, title = title, text = text, privs = c.privs, item = i, extraInfo = extraInfo, sender = c.authuser)
+        m = generic.linkChildToParent(m, fList[0])
+        dbhelpersLib.commit(m)
+        eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
+
+
+    @h.login_required
     def facilitateResponseHandler(self, code, url):
         if 'workshopCode' in request.params and 'workshopURL' in request.params:
             itemCode = request.params['workshopCode']
@@ -129,7 +145,10 @@ class FacilitatorController(BaseController):
                   message['read'] = u'1'
                   dbhelpersLib.commit(message)
                   
-                  return redirect("/profile/%s/%s"%(code, url))
+                  if itemType == 'w':
+                    return redirect("/workshop/%s/%s"%(itemCode, itemURL))
+                  elif itemType == 'i':
+                    return redirect("/initiative/%s/%s"%(itemCode, itemURL))
 
         alert = {'type':'error'}
         alert['title'] = 'Authorization Error. You are not authorized.'
@@ -181,13 +200,19 @@ class FacilitatorController(BaseController):
         return redirect("/workshop/%s/%s"%(code, url))
 
     @h.login_required
-    def iFacilitateResignHandler(self, code, url, userID):
-        removeAuthor = userLib.getUserByID(userID)
+    def iFacilitateResignHandler(self, code, url, userCode):
+        log.info('remove function called')
+        removeAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
         fList = facilitatorLib.getFacilitatorsByUserAndInitiative(removeAuthor, i)
         for f in fList:
           f['disabled'] = '1'
           dbhelpersLib.commit(f)
+
+        if 'resign' in request.params:
+          # the coauthor is resigning, he should be redirected away from the edit page
+          return redirect('/initiative/%s/%s'%(code, url))
+
         
     @h.login_required
     def facilitatorNotificationHandler(self, code, url, userCode):

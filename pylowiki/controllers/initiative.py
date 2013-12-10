@@ -29,7 +29,7 @@ class InitiativeController(BaseController):
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'getInitiativeAuthors']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -77,7 +77,8 @@ class InitiativeController(BaseController):
         facilitator = False
         f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)
         if f != False and f != 'NoneType' and len(f) != 0:
-            facilitator = True
+            if f[0]['pending'] == '0' and f[0]['disabled'] == '0':
+                facilitator = True
 
         if 'user' in session and (c.user['email'] == c.authuser['email'] or userLib.isAdmin(c.authuser.id)) or facilitator:
             c.iPrivs = True
@@ -230,11 +231,6 @@ class InitiativeController(BaseController):
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
                 c.saveMessage = "Your initiative has been unpublished. It is no longer publicy viewable."
-
-        c.authors = [c.user]
-        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
-        for author in coAuthors:
-            c.authors.append(author)
 
         c.editInitiative = True
 
@@ -485,7 +481,35 @@ class InitiativeController(BaseController):
         c.initiativeHome = True
             
         return render('/derived/6_initiative_home.bootstrap')
-        
+
+
+    def getInitiativeAuthors(self):
+        log.info('yup, get authors function is getting called!')
+        authors = []
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            authors.append(author)
+
+        result = []
+        for a in authors:
+            entry = {}
+            u = userLib.getUserByID(a.owner)
+            entry['name'] = u['name']
+            entry['photo'] = utils._userImageSource(u)
+            entry['urlCode'] = u['urlCode']
+            entry['url'] = u['url']
+            entry['pending'] = a['pending']
+            userGeo = geoInfoLib.getGeoInfo(u.id)[0]
+            entry['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            entry['cityTitle'] = userGeo['cityTitle']
+            entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            entry['stateTitle'] = userGeo['stateTitle']
+
+            result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode': 0, 'result': result})
+
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):
