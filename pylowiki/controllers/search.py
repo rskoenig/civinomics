@@ -268,16 +268,23 @@ class SearchController(BaseController):
         # note: mod the search function to return both, using **argv to set it to return count, all or both
         # - must search for all occurences of this search in the platform
         initiatives = initiativeLib.searchInitiatives(['scope'], [iScope])
-        result = []
+        
+        allData = []
+        series1 = {
+            "key":"Series1", 
+            "color":"#ddd", 
+            "values":[]
+        }
+        series2 = {
+            "key":"Series2", 
+            "color":"#ccc", 
+            "values":[]
+        }
         for initiative in initiatives:
             i = initiative
             # u = generic.getThing(i['userCode'])
             # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
-            u = i.owner
-            if type(u) == type(1L):
-                u = userLib.getUserByID(u)
-            elif type(u) == type(u''):
-                u = userLib.getUserByCode(u)
+            
                 
             if i['deleted'] != u'0' or i['disabled'] != u'0':
                 continue
@@ -285,51 +292,41 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = i['title']
-            entry['description'] = i['description'][:200]
-            if len(entry['description']) >= 200:
-                entry['description'] += "..."
-            entry['tags'] = i['tags']
-            scopeList = i['scope'].split('|')
-            country = scopeList[2].replace("-", " ")
-            state = scopeList[4].replace("-", " ")
-            county = scopeList[6].replace("-", " ")
-            city = scopeList[8].replace("-", " ")
-            postalCode = scopeList[9]
-            scopeString = "Earth"
-            log.info("scopeString is %s"%scopeString)
-            if country != '0':
-                scopeString = "%s" % country.title()
-                if state != '0':
-                    scopeString += ", State of %s" % state.title()
-                    if county != '0':
-                        scopeString += ", County of %s" % county.title()
-                        if city != '0':
-                            scopeString += ", City of %s" % city.title()
-                            if postalCode != '0':
-                                scopeString += ", Zip Code of %s"%postalCode
-            entry['location'] = scopeString
+            #entry['description'] = i['description'][:200]
+            #if len(entry['description']) >= 200:
+            #    entry['description'] += "..."
+            #entry['tags'] = i['tags']
+            
             entry['voteCount'] = int(i['ups']) + int(i['downs'])
             entry['ups'] = int(i['ups'])
             entry['downs'] = int(i['downs'])
-            rated = ratingLib.getRatingForThing(c.authuser, i) 
-            if rated:
-                entry['rated'] = rated['amount']
+            if entry['voteCount'] > 0:
+                #log.info("in total")
+                entry['percentYes'] = int(float(entry['ups'])/float(entry['voteCount']) * 100)
+                entry['percentNo'] = int(float(entry['downs'])/float(entry['voteCount']) * 100)
+
+            #entry['urlCode'] = i['urlCode']
+            #entry['url'] = i['url']
+            #entry['tag'] = i['tags']
+            #entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
+
+            if entry['percentYes'] > 50:
+                series2['values'].append(
+                    {
+                        'label':"%s, %s votes"%(entry['title'], entry['voteCount']),
+                        'value':int(entry['percentYes'])
+                    })
             else:
-                entry['rated'] = 0
-            entry['urlCode'] = i['urlCode']
-            entry['url'] = i['url']
-            entry['tag'] = i['tags']
-            entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
-            entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
-            entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
-            entry['authorCode'] = u['urlCode']
-            entry['authorURL'] = u['url']
-            entry['authorName'] = u['name']
-            entry['authorHash'] = md5(u['email']).hexdigest()
-            result.append(entry)
-        if len(result) == 0:
-            c.jsonInitiatives = json.dumps({'statusCode':2})
-        c.jsonInitiatives = json.dumps({'statusCode':0, 'result':result})
+                series1['values'].append(
+                    {
+                        'label':"%s, %s votes"%(entry['title'], entry['voteCount']),
+                        'value':int(entry['percentNo'])
+                    })
+            
+        allData.append(series1)
+        allData.append(series2)
+
+        c.jsonInitiatives = json.dumps(allData)
 
         #log.info("search is %s"%c.searchQuery)
         entry = {}

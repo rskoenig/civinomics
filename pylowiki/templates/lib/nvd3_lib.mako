@@ -9,20 +9,6 @@
 
 <%def name="searchPageInitiativePopularity(jsonInitiatives)">
     <%
-        # for each initiative build an object
-        # if percent < 50, calc negative version for series 1 place initiative in it
-        # data = []
-        # series1 = {"key":"Series1", "color":"#ddd", "values":[]}
-        # series2 = {"key":"Series2", "color":"#ccc", "values":[]}
-        # for iniative in initiatives:
-        #   if percent > 50:
-        #     # pecent 50 and above ranges 0 to 100% of right bar
-        #     thisInit = {}
-        #     thisInit["label"] = "%s, %s votes"%(initiative['title'], initiative['voteCount'])
-        #     thisInit["value"] = initiative['percentYes'] * math for bar number
-        #     series2["values"].append(thisInit)
-        #   else:
-        #   ..
         """
           var data = [
           {
@@ -77,12 +63,38 @@
     <link href="/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
     <script id="nvd3On" src="/nvd3/lib/d3.v3.js"></script>
     <script src="/nvd3/nv.d3.min.js"></script>
+
     
     <script> 
-        var inits = ${jsonInitiatives | n}
-        console.log("yo rap");
-        console.log(inits);
-        console.log("end rap");
+        
+      var allData = ${jsonInitiatives | n}
+      console.log('yo');
+      console.log(allData);
+      console.log('mtv raps');
+        
+      nv.addGraph(function() {
+        var chart = nv.models.multiBarHorizontalChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .margin({top: 3, right: 2, bottom: 25, left: 1})
+            .showValues(true)
+            .tooltips(false)
+            .showControls(false);
+
+        chart.yAxis
+            .tickFormat(d3.format(',.2f'));
+
+        d3.select('#chart svg')
+            .datum(allData)
+          .transition().duration(500)
+            .call(chart);
+
+        nv.utils.windowResize(chart.update);
+
+        return chart;
+      });
+          
+        /*
         var data = [
           {
             "key": "Series1",
@@ -169,27 +181,8 @@
             ]
           }
         ];
-        nv.addGraph(function() {
-          var chart = nv.models.multiBarHorizontalChart()
-              .x(function(d) { return d.label })
-              .y(function(d) { return d.value })
-              .margin({top: 3, right: 2, bottom: 25, left: 1})
-              .showValues(true)
-              .tooltips(false)
-              .showControls(false);
-
-          chart.yAxis
-              .tickFormat(d3.format(',.2f'));
-
-          d3.select('#chart svg')
-              .datum(data)
-            .transition().duration(500)
-              .call(chart);
-
-          nv.utils.windowResize(chart.update);
-
-          return chart;
-        });
+        */
+        
     </script>
 </%def>
 

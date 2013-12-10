@@ -21,7 +21,7 @@ BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
 
 def badEmail(email):
-    log.info("fx badEmail: %s"%email)
+    log.info("fx checking for bad Email: %s"%email)
     if email.find('@') < 0:
         # if there's not an @ in the string this is a bad email
         return True
