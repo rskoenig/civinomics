@@ -102,6 +102,15 @@ class InitiativeController(BaseController):
                 for dr in disabledResources:
                     c.resources.append(dr)
             
+        if c.user:
+            userGeo = geoInfoLib.getGeoInfo(c.user.id)[0]
+            c.authorGeo = {}
+            c.authorGeo['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            c.authorGeo['cityTitle'] = userGeo['cityTitle']
+            c.authorGeo['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            c.authorGeo['stateTitle'] = userGeo['stateTitle']
+
+
         userLib.setUserPrivs()
 
 

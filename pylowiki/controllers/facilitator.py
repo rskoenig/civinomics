@@ -205,13 +205,18 @@ class FacilitatorController(BaseController):
         removeAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
         fList = facilitatorLib.getFacilitatorsByUserAndInitiative(removeAuthor, i)
-        for f in fList:
-          f['disabled'] = '1'
-          dbhelpersLib.commit(f)
+        if c.authuser.id == i.owner or c.authuser == removeAuthor:
+          log.info('remove function permitted')
+          for f in fList:
+            f['disabled'] = '1'
+            dbhelpersLib.commit(f)
 
-        if 'resign' in request.params:
-          # the coauthor is resigning, he should be redirected away from the edit page
-          return redirect('/initiative/%s/%s'%(code, url))
+          if 'resign' in request.params:
+            # the coauthor is resigning, he should be redirected away from the edit page
+            return redirect('/initiative/%s/%s'%(code, url))
+        else:
+          log.info('remove function NOT permitted')
+          abort(404)
 
         
     @h.login_required

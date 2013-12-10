@@ -37,6 +37,7 @@ function userLookupCtrl($scope, $http) {
 
 	$scope.removeCoA = function(removeAuthorCode) {
 		$scope.removeAuthorCode = removeAuthorCode;
+		$scope.rURL = '/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.removeAuthorCode + '/facilitate/resign/handler';
 		$.post('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.removeAuthorCode + '/facilitate/resign/handler');
 		$http.get($scope.authorsURL).success(function(data){
 			if (data.statusCode == 1){
