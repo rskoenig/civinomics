@@ -178,6 +178,8 @@ class InitiativeController(BaseController):
             c.postal = "0"
 
         c.editInitiative = True
+
+        c.authors = [c.user]
        
         return render('/derived/6_initiative_edit.bootstrap')
     
@@ -228,6 +230,11 @@ class InitiativeController(BaseController):
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
                 c.saveMessage = "Your initiative has been unpublished. It is no longer publicy viewable."
+
+        c.authors = [c.user]
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            c.authors.append(author)
 
         c.editInitiative = True
 
@@ -337,6 +344,11 @@ class InitiativeController(BaseController):
             c.saveMessage = errorMessage
         else:
             c.saveMessage = "Changes saved."
+
+        c.authors = [c.user]
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            c.authors.append(author)
 
         c.editInitiative = True
         c.complete = self.initiativeCheck()
@@ -467,7 +479,7 @@ class InitiativeController(BaseController):
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
         for author in coAuthors:
-            if author['pending'] == '0':
+            if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
 
         c.initiativeHome = True

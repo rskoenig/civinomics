@@ -65,13 +65,13 @@ class FacilitatorController(BaseController):
             alert['title'] = 'Success. ' + title + 'issued.'
             session['alert'] = alert
             session.save()
-            return redirect(session['return_to'])
+            return redirect(session['return_to'] + "#coauthors")
         else:
             alert = {'type':'error'}
             alert['title'] = 'Authorization Error. You are not authorized.'
             session['alert'] = alert
             session.save()
-            return redirect(session['return_to'])
+            return redirect(session['return_to'] + "#coauthors")
 
     @h.login_required
     def facilitateResponseHandler(self, code, url):
@@ -179,6 +179,15 @@ class FacilitatorController(BaseController):
         session['alert'] = alert
         session.save()
         return redirect("/workshop/%s/%s"%(code, url))
+
+    @h.login_required
+    def iFacilitateResignHandler(self, code, url, userID):
+        removeAuthor = userLib.getUserByID(userID)
+        i = initiativeLib.getInitiative(code)
+        fList = facilitatorLib.getFacilitatorsByUserAndInitiative(removeAuthor, i)
+        for f in fList:
+          f['disabled'] = '1'
+          dbhelpersLib.commit(f)
         
     @h.login_required
     def facilitatorNotificationHandler(self, code, url, userCode):

@@ -190,6 +190,7 @@ def make_map():
     map.connect('/profile/{code}/{url}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', code = '{code}', url='{url}')
     map.connect('/profile/{code}/{url}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', code = '{code}', url='{url}')
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', code = '{code}', url='{url}')
+    map.connect('/{initiative:initiatives?}/{code}/{url}/{userID}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'iFacilitateResignHandler', code = '{code}', url='{url}', userID='{userID}')
 
     # Facilitator notifications
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
