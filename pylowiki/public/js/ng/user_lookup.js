@@ -61,6 +61,8 @@ function userLookupCtrl($scope, $http) {
 				$scope.authors = data.result;
 			}
 		});
+		$scope.userValue = ''
+		$scope.users = ''
 	}
 
 

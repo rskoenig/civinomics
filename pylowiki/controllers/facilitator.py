@@ -75,27 +75,38 @@ class FacilitatorController(BaseController):
 
     @h.login_required
     def iFacilitateInviteHandler(self, code, url, userCode):
-        log.info('invite func called here!')
         inviteAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
 
-        # check to see if user is allowed to add other coauthors:
+        iFacilitators = facilitatorLib.getAllFacilitatorsByInitiative(i)
+        existing = False
         privs = False
-        f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, i)
-        if f != False and f != 'NoneType' and len(f) != 0:
-            if f[0]['pending'] == '0' and f[0]['disabled'] == '0':
-                privs = True
+        for fObj in iFacilitators:
+          # check to see if the inviteAuthor already has a facilitator object for this initiative:
+          if fObj.owner == inviteAuthor.id:
+            existing = True
+            f = fObj
+          # check to see if active user is among the coauthors:
+          if fObj.owner == c.authuser.id and fObj['disabled'] != '1':
+            privs = True
 
         if c.authuser.id == i.owner or privs:
-          facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
-          fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
+          if existing:
+            f['disabled'] = '0'
+            dbhelpersLib.commit(f)
+          else:
+            facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
+            fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
+            f = fList[0]
+
           text = '(This is an automated message)'
           title = 'Coauthor invitation'
           extraInfo = 'authorInvite'
           m = messageLib.Message(owner = inviteAuthor, title = title, text = text, privs = c.privs, item = i, extraInfo = extraInfo, sender = c.authuser)
-          m = generic.linkChildToParent(m, fList[0])
+          m = generic.linkChildToParent(m, f)
           dbhelpersLib.commit(m)
           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
+
         else: 
           abort(404)
 

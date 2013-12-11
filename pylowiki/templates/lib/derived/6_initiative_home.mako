@@ -262,11 +262,6 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         ${c.saveMessage}
         </div>
-    % elif 'alert' in session:
-        <div class="alert alert-${session['alert']['type']}">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        ${session['alert']['title']}
-        </div>
     % endif
     <div class="row-fluid edit-initiative" id="basics">
         <div class="span12">
@@ -734,7 +729,7 @@
                 <div class="row-fluid">
                     <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
                     <div class="spacer"></div>
-                        <table class="table-striped full-width">
+                        <table class="table-striped full-width" ng-if="!(users = '')">
                             <tr ng-repeat="user in users">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">

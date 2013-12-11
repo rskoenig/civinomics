@@ -486,7 +486,6 @@ class InitiativeController(BaseController):
 
 
     def getInitiativeAuthors(self):
-        log.info('yup, get authors function is getting called!')
         authors = []
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
         for author in coAuthors:
