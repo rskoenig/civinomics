@@ -104,6 +104,8 @@ class InitiativeController(BaseController):
                     
         if action == 'updateShow' and id3 != None:
             c.update = discussionLib.getDiscussion(id3)
+            # for compatability with comments
+            c.thing = c.update
             
         userLib.setUserPrivs()
 
@@ -524,6 +526,5 @@ class InitiativeController(BaseController):
         revisionLib.Revision(c.authuser, d.d)
         
         jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
-        log.info("update jsonReturn is %s"%jsonReturn)
         return jsonReturn
             

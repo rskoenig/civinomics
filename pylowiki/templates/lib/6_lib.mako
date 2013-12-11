@@ -683,18 +683,21 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        if 'noHref' in kwargs:
-            discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        else:
-            discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        discussionStr += commentLinkAppender(**kwargs)
-        if 'noHref' in kwargs:
-            discussionStr += ''
-        else:
-            discussionStr += '"'
-        if 'embed' in kwargs:
-            if kwargs['embed'] == True:
-                return discussionStr
+        if 'workshopCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            else:
+                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            discussionStr += commentLinkAppender(**kwargs)
+            if 'noHref' in kwargs:
+                discussionStr += ''
+            else:
+                discussionStr += '"'
+            if 'embed' in kwargs:
+                if kwargs['embed'] == True:
+                    return discussionStr
+        elif 'initiativeCode' in d:
+            discussionStr = "/initiative/%s/%s/updateShow/%s"%(d['initiativeCode'], d['initiativeURL'], d['urlCode']) 
     %>
     ${discussionStr | n}
 </%def>
