@@ -104,6 +104,10 @@ class InitiativeController(BaseController):
                     
         if action == 'updateShow' and id3 != None:
             c.update = discussionLib.getDiscussion(id3)
+            if not c.update:
+                c.update = revisionLib.getRevisionByCode(id3)
+                if not c.update:
+                    abort(404)
             # for compatability with comments
             c.thing = c.update
             
@@ -494,6 +498,7 @@ class InitiativeController(BaseController):
         
     @h.login_required       
     def updateShow(self):
+        c.revisions = revisionLib.getRevisionsForThing(c.update)
         
         return render('/derived/6_initiative_update.bootstrap')
         
