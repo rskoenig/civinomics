@@ -237,6 +237,37 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
+                        % elif message['extraInfo'] in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
+                            <%
+                                if 'updateCode' in message:
+                                    updateCode = message['updateCode']
+                                else:
+                                    updateCode = message['discussionCode']
+                                thing = generic.getThing(updateCode)
+                                title = thing['title']
+                                if message['extraInfo'] in ['disabledInitiativeUpdate']:
+                                    event = eventLib.getEventsWithAction(message, 'disabled')
+                                elif message['extraInfo'] in ['enabledInitiativeUpdate']:
+                                    event = eventLib.getEventsWithAction(message, 'enabled')
+                                elif message['extraInfo'] in ['deletedInitiativeUpdate']:
+                                    event = eventLib.getEventsWithAction(message, 'deleted')
+                                
+                                action = event[0]['action']
+                                reason = event[0]['reason']
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p>It was ${action} because: ${reason}</p>
+                                    <p>Your initiative update:
+                                        <a href="/initiative/${thing['initiativeCode']}/${thing['initiative_url']}/updateShow/${thing['urlCode']}" class="green green-hover">${title}</a>
+                                    </p>
+                                    % if 'text' in message:
+                                        <p>${message['text']}</p>
+                                    % endif
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
                         % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                             <%
                                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
