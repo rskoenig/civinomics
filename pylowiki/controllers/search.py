@@ -271,14 +271,14 @@ class SearchController(BaseController):
         
         allData = []
         series1 = {
-            "key":"Series1", 
-            "color":"#ddd", 
-            "values":[]
+            'key':'Below 50%',
+            'color':'#b94a48',
+            'values':[]
         }
         series2 = {
-            "key":"Series2", 
-            "color":"#ccc", 
-            "values":[]
+            'key':'Above 50%',
+            'color':'#075D00',
+            'values':[]
         }
         for initiative in initiatives:
             i = initiative
@@ -304,6 +304,8 @@ class SearchController(BaseController):
                 #log.info("in total")
                 entry['percentYes'] = int(float(entry['ups'])/float(entry['voteCount']) * 100)
                 entry['percentNo'] = int(float(entry['downs'])/float(entry['voteCount']) * 100)
+                #entry['percentYes'] = float(entry['ups'])/float(entry['voteCount'])
+                #entry['percentNo'] = float(entry['downs'])/float(entry['voteCount'])
 
             #entry['urlCode'] = i['urlCode']
             #entry['url'] = i['url']
@@ -313,14 +315,14 @@ class SearchController(BaseController):
             if entry['percentYes'] > 50:
                 series2['values'].append(
                     {
-                        'label':"%s, %s votes"%(entry['title'], entry['voteCount']),
+                        'label':"%s, %s votes"%(entry['title'], int(entry['voteCount'])),
                         'value':int(entry['percentYes'])
                     })
             else:
                 series1['values'].append(
                     {
-                        'label':"%s, %s votes"%(entry['title'], entry['voteCount']),
-                        'value':int(entry['percentNo'])
+                        'label':"%s, %s votes"%(entry['title'], int(entry['voteCount'])),
+                        'value':int(0 - entry['percentNo'])
                     })
             
         allData.append(series1)
