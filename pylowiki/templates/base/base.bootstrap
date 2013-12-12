@@ -101,9 +101,10 @@
        %>
        <div id="fb-root"></div>
        <script>
-         //console.log('in fb init')
+         console.log('above fb init');
          // activate facebook javascript sdk
          window.fbAsyncInit = function() {
+            console.log('in fb init');
             FB.init({
               appId      : "${facebookAppId}",
               channelUrl : "${channelUrl}", // Channel File
