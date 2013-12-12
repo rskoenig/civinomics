@@ -129,15 +129,15 @@
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
+                <!--
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
                     <li class="active"><a href="#iText" data-toggle="tab">Text</a></li>
                     <li><a href="#iResources" data-toggle="tab">Resources</a></li>
-                    <!--
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
                     <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
                     <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
-                    -->
                 </ul>
+                -->
             % endif
         </div><!-- span4 -->
     </div><!-- row-fluid -->
