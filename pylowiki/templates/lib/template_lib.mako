@@ -314,3 +314,106 @@
         <div class="spacer"></div>
     </div><!-- collapse -->
 </%def>
+
+
+<%def name="socialLogins()">
+    <div class="row-fluid social-login centered">
+        <div id="fbLoginButton2">
+            <a onclick="facebookLogin()"><img src="/images/f-login.png"></a>
+        </div>
+        <div id="twtLoginButton1">
+            <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
+        </div>
+    </div>
+    <div class="social-sign-in-separator sc-font-light sc-text-light">
+        <span>or</span>
+    </div>
+</%def>
+
+<%def name="signupForm()">
+    <div class="login-body" style="border-bottom:none;">
+        <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+            <input type="hidden" name="country" value="United States">
+            <input type="hidden" name="memberType" value="professional">
+
+            <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
+                <label class="control-label" for="name"> Full name: </label>
+                <div class="controls">
+                    <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                    <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="email"> Email: </label>
+                <div class="controls">
+                    <input type="email" name="email" id="email" ng-model="email" required>
+                    <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="passphrase"> Password: </label>
+                <div class="controls">
+                    <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
+                </div>
+            </div>
+            <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
+                <div class="controls">
+                    <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <button type="submit" class="btn btn-success signup">Sign up</button>
+                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
+                    <div id="postalCodeResult"></div>
+                </div>
+            </div>
+            <input type="hidden" name="chkTOS" id="chkTOS" value="true">
+        </form>
+    </div>
+</%def>
+
+<%def name="loginForm()">
+    <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
+        <div class="control-group">
+            <label class="control-label" for="email"> Email: </label>
+            <div class="controls">
+                <input type="email" name="email" id="email" required>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="passphrase"> Password: </label>
+            <div class="controls">
+                <input type="password" name="password" id="password"><br>
+                <a href="#forgot" data-toggle="tab" class="green green-hover"> Forgot password?</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-civ login"> Log in </button>
+            </div>
+        </div>
+        <div class="row-fluid centered">
+            <span>Don't have an account? <a href="#signup" class="green green-hover" data-toggle="tab">Sign up</a></span>
+        </div>
+    </form>
+</%def>
+
+<%def name="forgotPassword()">
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <p class="centered">Enter your email to reset your password. Then check your email for a new password you can use to login.</p>
+        </div>
+    <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
+        <div class="control-group">
+            <label class="control-label" for="email"> Email: </label>
+            <div class="controls">
+                <input type="email" name="email" id="email"><br>
+                <a href="#login" data-toggle="tab" class="green green-hover"> Back to log in</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-success"> Reset Password </button>
+            </div>
+        </div>
+    </form>
+</%def>
+
