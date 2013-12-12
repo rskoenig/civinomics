@@ -43,25 +43,7 @@
         <h3 class="centered" id="myModalLabel">Log in or Sign up to Vote</h3>
       </div>
       <div class="modal-body">
-        % if c.conf['read_only.value'] == 'true':
-          <h1> Sorry, Civinomics is in read only mode right now </h1>
-        % else:
-          ${template_lib.socialLogins()}
-          <div class="tabbable">
-            <div class="tab-content">
-              <div class="tab-pane active" id="signup">
-                ${template_lib.signupForm()}
-                <p class="centered"> Already have an account? <a href="#login" class="green green-hover" data-toggle="tab">Log in</a></p>
-              </div>
-              <div class="tab-pane" id="login">
-                ${template_lib.loginForm()}
-              </div>
-              <div class="tab-pane" id="forgot">
-                ${template_lib.forgotPassword()}
-              </div>
-            </div>
-          </div><!-- tabbable -->
-        % endif
+        ${template_lib.tabbableSignupLogin()}
       </div>
       <div class="modal-footer">
         <div class="row-fluid centered tcs">
@@ -91,6 +73,16 @@
           return this.hostname != window.location.hostname;
       }).attr('target', '_blank');
    </script>
+
+   <!-- Javascript to enable link to tab -->
+   <script type="text/javascript">
+      $(function () {
+         var activeTab = $('[href=' + location.hash + ']');
+         activeTab && activeTab.tab('show');
+      });
+    </script>
+
+
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}

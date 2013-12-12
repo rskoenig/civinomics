@@ -98,8 +98,8 @@
                         </li>
                     % else:
                         <li class="${hSelected}"><a href="/help">Help</a></li>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/signup">Signup</a></li>
+                        <li><a href="/loginSignup#login">Login</a></li>
+                        <li><a href="/loginSignup#signup">Signup</a></li>
                     % endif
                     <li class="small-show">
                         <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>
@@ -316,6 +316,52 @@
 </%def>
 
 
+<%def name="tabbableSignupLogin(*args)">
+    % if c.splashMsg:
+        <% message = c.splashMsg %>
+        <div class="alert alert-${message['type']}">
+            <button data-dismiss="alert" class="close">x</button>
+            <strong>${message['title']}</strong> ${message['content']}
+        </div>
+    % endif
+    % if c.conf['read_only.value'] == 'true':
+      <h1> Sorry, Civinomics is in read only mode right now </h1>
+    % else:
+      <div class="tabbable">
+        <div class="tab-content">
+          <div class="tab-pane active" id="signup">
+            % if 'title' in args:
+                <h2 class="login top centered">Sign up</h2>
+            % endif
+            ${socialLogins()}
+            ${signupForm()}
+          </div>
+          <div class="tab-pane" id="login">
+            % if 'title' in args:
+                <h2 class="login top centered">Log in</h2>
+            % endif
+            ${socialLogins()}
+            ${loginForm()}
+          </div>
+          <div class="tab-pane" id="forgot">
+            % if 'title' in args:
+                <h2 class="login top centered">Forgot Password</h2>
+            % endif
+            ${socialLogins()}
+            ${forgotPassword()}
+          </div>
+        </div>
+      </div><!-- tabbable -->
+      % if 'footer' in args:    
+        <div class="social-sign-in-separator" style="margin: 10px 0 10px 0;">
+        </div>
+        <div class="row-fluid centered tcs">
+            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+        </div>
+      % endif
+    % endif
+</%def>
+
 <%def name="socialLogins()">
     <div class="row-fluid social-login centered">
         <div id="fbLoginButton2">
@@ -331,7 +377,6 @@
 </%def>
 
 <%def name="signupForm()">
-    <div class="login-body" style="border-bottom:none;">
         <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
             <input type="hidden" name="country" value="United States">
             <input type="hidden" name="memberType" value="professional">
@@ -367,7 +412,7 @@
             </div>
             <input type="hidden" name="chkTOS" id="chkTOS" value="true">
         </form>
-    </div>
+        <p class="centered"> Already have an account? <a href="#login" class="green green-hover" data-toggle="tab">Log in</a></p>
 </%def>
 
 <%def name="loginForm()">
@@ -390,16 +435,14 @@
                 <button type="submit" class="btn btn-civ login"> Log in </button>
             </div>
         </div>
-        <div class="row-fluid centered">
-            <span>Don't have an account? <a href="#signup" class="green green-hover" data-toggle="tab">Sign up</a></span>
-        </div>
     </form>
+    <p class="centered">Don't have an account? <a href="#signup" class="green green-hover" data-toggle="tab">Sign up</a></p>
 </%def>
 
 <%def name="forgotPassword()">
     <div class="row-fluid">
         <div class="span8 offset2">
-            <p class="centered">Enter your email to reset your password. Then check your email for a new password you can use to login.</p>
+            <p class="centered">Enter your email and click 'Reset Password.' Then check your email for a new password that you can use to log in.</p>
         </div>
     <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
         <div class="control-group">
