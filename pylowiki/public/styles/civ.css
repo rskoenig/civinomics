@@ -138,6 +138,17 @@ background-image: url('/images/splash/dust.png');
 font-size: 14px;
 }
 
+#signupLoginModal .social-sign-in-separator span {
+  background-image: none;
+  background-color: #ffffff;
+}
+
+#signupLoginModal .modal-footer{
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-bottom: -15px;
+}
+
 .sc-font-light {
 font-weight: 100;
 }
