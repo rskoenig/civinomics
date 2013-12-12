@@ -23,8 +23,8 @@ nv.models.multiBarHorizontalChart = function() {
     , stacked = false
     , tooltips = true
     , tooltip = function(key, x, y, e, graph) {
-        return '<h3>' + key + ': ' + x + '</h3>' +
-               '<p>' +  y + '</p>'
+        return '<h4>' + key + ': ' + x + '</h4>' +
+               '<h5>' +  y + '%</h5>'
       }
     , x //can be accessed via chart.xScale()
     , y //can be accessed via chart.yScale()

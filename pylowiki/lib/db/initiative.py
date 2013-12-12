@@ -31,8 +31,8 @@ def getAllInitiatives():
     except:
         return False
         
-def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False):
-    log.info("searchInititives got %s and %s and count is %s"%(keys, values, count))
+def searchInitiatives( keys, values, deleted = u'0', public = '1', **kwargs):
+    log.info("searchInititives got %s and %s"%(keys, values))
     try:
         if type(keys) != type([]):
             p_keys = [keys]
@@ -47,8 +47,12 @@ def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('public', public)))\
                 .filter(Thing.data.any(reduce(or_, map_initiatives)))
-        if count:
-            return q.count()
+        if 'count' in kwargs:
+            if kwargs['count'] == True:
+                return q.count()
+        elif 'both' in kwargs:
+            if kwargs['both'] == True:
+                return q.count(), q.all()
         return q.all()
     except Exception as e:
         log.error(e)

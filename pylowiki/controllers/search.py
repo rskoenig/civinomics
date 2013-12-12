@@ -264,10 +264,10 @@ class SearchController(BaseController):
         c.geoString = self.query
         c.photos = photoLib.searchPhotos('scope', self.query)
         iScope = '0' + self.query.replace('||', '|0|')
-        c.numInitiatives = initiativeLib.searchInitiatives(['scope'], [iScope], count = True)
+        c.numInitiatives, initiatives = initiativeLib.searchInitiatives(['scope'], [iScope], both = True)
         # note: mod the search function to return both, using **argv to set it to return count, all or both
         # - must search for all occurences of this search in the platform
-        initiatives = initiativeLib.searchInitiatives(['scope'], [iScope])
+        #initiatives = initiativeLib.searchInitiatives(['scope'], [iScope])
         
         allData = []
         series1 = {
