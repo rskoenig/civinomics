@@ -496,7 +496,6 @@ class InitiativeController(BaseController):
             
         return render('/derived/6_initiative_resource.bootstrap')
         
-    @h.login_required       
     def updateShow(self):
         c.revisions = revisionLib.getRevisionsForThing(c.update)
         
