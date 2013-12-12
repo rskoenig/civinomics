@@ -729,9 +729,12 @@
             objType = thing['objType'].replace("Unpublished", "")
         else:
             objType = thing.objType.replace("Unpublished", "")
+            
+        log.info("working on objType %s with id of %s"%(thing.objType, thing.id))
         if objType == 'discussion':
             return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
+            log.info("before resouce link, parent is type %s"%dparent.objType)
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
@@ -1460,10 +1463,12 @@
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
+                            'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
+                            'initiative':'initiative',
                             'comment':'comment'}
         eclass = ""
         if 'expandable' in kwargs:
@@ -1493,6 +1498,8 @@
                 objType = 'idea'
             elif 'resourceCode' in item.keys():
                 objType = 'resource'
+            elif 'initiativeCode' in item.keys():
+                objType = 'initiative'
             elif item.keys():
                 objType = 'discussion'
             
