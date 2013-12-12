@@ -693,11 +693,14 @@
                 discussionStr += ''
             else:
                 discussionStr += '"'
-            if 'embed' in kwargs:
-                if kwargs['embed'] == True:
-                    return discussionStr
         elif 'initiativeCode' in d:
-            discussionStr = "/initiative/%s/%s/updateShow/%s"%(d['initiativeCode'], d['initiativeURL'], d['urlCode']) 
+            if 'noHref' in kwargs:
+                discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+            else:
+                discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return discussionStr
     %>
     ${discussionStr | n}
 </%def>
@@ -730,11 +733,11 @@
         else:
             objType = thing.objType.replace("Unpublished", "")
             
-        log.info("working on objType %s with id of %s"%(thing.objType, thing.id))
+        #log.info("working on objType %s with id of %s"%(thing.objType, thing.id))
         if objType == 'discussion':
             return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
-            log.info("before resouce link, parent is type %s"%dparent.objType)
+            #log.info("before resouce link, parent is type %s"%dparent.objType)
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
@@ -1462,6 +1465,7 @@
         thisUser = userLib.getUserByID(item.owner)
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
+                            'update': 'added an initiative progress report',
                             'idea': 'posed the idea',
                             'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
@@ -1489,7 +1493,10 @@
             else:
                 title = ellipsisIZE(item['title'], 40)
         
-        activityStr = actionMapping[item.objType]
+        if item.objType == 'discussion' and item['discType'] == 'update':
+            activityStr = actionMapping['update']
+        else:
+            activityStr = actionMapping[item.objType]
         # used for string mapping below
         objType = item.objType
         if item.objType == 'comment':

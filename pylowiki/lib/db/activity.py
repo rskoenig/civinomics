@@ -246,6 +246,7 @@ def getRecentActivity(number, publicPrivate = 'public'):
 
             if 'initiative_public' in item and item['initiative_public'] == '1':
                 log.info("objType is %s item id is %s"%(item.objType, item.id))
+                returnList.append(item)
                 
             if len(returnList) == number:
                 return returnList
