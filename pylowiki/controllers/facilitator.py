@@ -19,6 +19,7 @@ import pylowiki.lib.db.dbHelpers    as dbhelpersLib
 import pylowiki.lib.utils           as utilsLib
 import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.mail            as mailLib
 
 from hashlib import md5
 import simplejson as json
@@ -106,6 +107,7 @@ class FacilitatorController(BaseController):
           m = generic.linkChildToParent(m, f)
           dbhelpersLib.commit(m)
           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
+          mailLib.sendCoauthorAddMail(inviteAuthor, c.authuser, i)
 
         else: 
           abort(404)

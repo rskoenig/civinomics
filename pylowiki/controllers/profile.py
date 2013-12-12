@@ -323,8 +323,6 @@ class ProfileController(BaseController):
         else:    
             return render("/derived/6_profile.bootstrap")
 
-    def showUserMessages(self, id1, id2, id3 = ''):
-        return render("/derived/6_messages.bootstrap")
         
     def showUserPhotos(self, id1, id2):
         # defaults for photo editor

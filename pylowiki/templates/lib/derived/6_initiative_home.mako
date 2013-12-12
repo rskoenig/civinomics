@@ -778,8 +778,8 @@
                             </td>
                             {{rURL}}
                         % endif
-                        <td ng-show="a.urlCode == authuserCode">
-                            <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
+                        <td>
+                            <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
                                 <input type="hidden" name="resign" value="resign">
                                 <button type="submit" class="btn btn-danger pull-right">Resign as Coauthor</button>
                             </form>

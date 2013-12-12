@@ -1702,7 +1702,7 @@
 </%def>
 
 <%def name="initiativeImage(i)">
-  <a href ='${initiativeLink(i)}'>
+  <a ${initiativeLink(i)}>
       <div style="height:80px; width:110px; background-image:url('${"/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
 </%def>

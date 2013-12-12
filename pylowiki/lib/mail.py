@@ -1,5 +1,8 @@
 import os
+import logging
 from pylons import config, request
+
+log = logging.getLogger(__name__)
 
 def send( send_too, send_from, subject, message ):
 
@@ -206,3 +209,26 @@ def sendShareMail(recipientName, recipientEmail, memberMessage, user, workshop, 
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
 
     send(recipientEmail, fromEmail, subject, textMessage)
+
+
+def sendCoauthorAddMail(recipient, user, initiative):
+    log.info('mail controller called')
+           
+    subject = '%s invited you to coauthor %s' % (user['name'], initiative['title'])
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/addCoauthor.txt"
+    messagesURL = config['app_conf']['site_base_url'] + "messages/" + recipient['urlCode'] + "/" + recipient['url']
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.initiative}', initiative['title'])
+    textMessage = textMessage.replace('${c.messagesLink}', messagesURL)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipient['email'], fromEmail, subject, textMessage)
