@@ -99,7 +99,7 @@
                     % else:
                         <li class="${hSelected}"><a href="/help">Help</a></li>
                         <li><a href="/login">Login</a></li>
-                        <li><a href="/signup">Signup</a></li>
+                        <li><a href="/signup2">Signup</a></li>
                     % endif
                     <li class="small-show">
                         <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>
@@ -314,3 +314,168 @@
         <div class="spacer"></div>
     </div><!-- collapse -->
 </%def>
+
+
+<%def name="tabbableSignupLogin(*args)">
+    % if c.splashMsg:
+        <% message = c.splashMsg %>
+        <div class="alert alert-${message['type']}">
+            <button data-dismiss="alert" class="close">x</button>
+            <strong>${message['title']}</strong> ${message['content']}
+        </div>
+    % endif
+    % if c.conf['read_only.value'] == 'true':
+      <h1> Sorry, Civinomics is in read only mode right now </h1>
+    % else:
+        % if 'title' in args:
+            <h2 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h2>
+            <h2 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h2>
+            <h2 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h2>
+        % endif
+      ${socialLogins()}
+      <div ng-show="showTitle == 'sTitle'" ng-cloak>
+        ${signupForm()}
+      </div>
+      <div ng-show="showTitle == 'lTitle'" ng-cloak>
+        ${loginForm()}
+      </div>
+      <div ng-show="showTitle == 'pTitle'" ng-cloak>
+        ${forgotPassword()}
+      </div>
+      % if 'footer' in args:    
+        <div class="social-sign-in-separator" style="margin: 10px 0 10px 0;">
+        </div>
+        <div class="row-fluid centered tcs">
+            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+        </div>
+      % endif
+    % endif
+</%def>
+
+<%def name="socialLogins()">
+    <div class="row-fluid social-login centered">
+        <div id="fbLoginButton2">
+            <a onclick="facebookLogin()"><img src="/images/f-login.png"></a>
+        </div>
+        <div id="twtLoginButton1">
+            <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
+        </div>
+    </div>
+    <div class="social-sign-in-separator sc-font-light sc-text-light">
+        <span>or</span>
+    </div>
+</%def>
+
+<%def name="signupForm()">
+        <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+            <input type="hidden" name="country" value="United States">
+            <input type="hidden" name="memberType" value="professional">
+
+            <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
+                <label class="control-label" for="name"> Full name: </label>
+                <div class="controls">
+                    <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                    <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="email"> Email: </label>
+                <div class="controls">
+                    <input type="email" name="email" id="email" ng-model="email" required>
+                    <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="passphrase"> Password: </label>
+                <div class="controls">
+                    <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
+                </div>
+            </div>
+            <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
+                <div class="controls">
+                    <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <button type="submit" class="btn btn-success signup">Sign up</button>
+                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
+                    <div id="postalCodeResult"></div>
+                </div>
+            </div>
+            <input type="hidden" name="chkTOS" id="chkTOS" value="true">
+        </form>
+        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" class="green green-hover" data-toggle="tab">Log in</a></p>
+</%def>
+
+<%def name="loginForm()">
+    <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
+        <div class="control-group">
+            <label class="control-label" for="email"> Email: </label>
+            <div class="controls">
+                <input type="email" name="email" id="email" required>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="passphrase"> Password: </label>
+            <div class="controls">
+                <input type="password" name="password" id="password"><br>
+                <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-civ login"> Log in </button>
+            </div>
+        </div>
+    </form>
+    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
+</%def>
+
+<%def name="forgotPassword()">
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <p class="centered">Enter your email and click 'Reset Password.' Then check your inbox for your new password.</p>
+        </div>
+    <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
+        <div class="control-group">
+            <label class="control-label" for="email"> Email: </label>
+            <div class="controls">
+                <input type="email" name="email" id="email"><br>
+                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-success"> Reset Password </button>
+            </div>
+        </div>
+    </form>
+</%def>
+
+<%def name="signupLoginModal()">
+    <!-- Signup Login Modal -->
+    <% 
+      alURL= session._environ['PATH_INFO']
+      if 'QUERY_STRING' in session._environ :
+        alURL = alURL + '?' + session._environ['QUERY_STRING'] 
+      # handles exception with geo pages where angular appends itself to URL
+      if '{{' in alURL:
+        alURL = re.sub(r'\{.*?\}', '', alURL)
+      session['afterLoginURL'] = alURL
+    %>
+    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-init="showTitle = 'sTitle'">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 class="centered" id="myModalLabel">Log in or Sign up to Vote</h3>
+      </div>
+      <div class="modal-body" ng-controller="signupController">
+        ${tabbableSignupLogin()}
+      </div>
+      <div class="modal-footer">
+        <div class="row-fluid centered tcs">
+          <div class="span10 offset1">
+            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+</%def>
+
