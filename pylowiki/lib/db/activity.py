@@ -245,7 +245,8 @@ def getRecentActivity(number, publicPrivate = 'public'):
                 returnList.append(item)
 
             if 'initiative_public' in item and item['initiative_public'] == '1':
-                log.info("objType is %s item id is %s"%(item.objType, item.id))
+                if item.objType == 'discussion' and item['discType'] != 'update':
+                    continue
                 returnList.append(item)
                 
             if len(returnList) == number:
