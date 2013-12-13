@@ -2093,6 +2093,10 @@ i .btn-height{
 textarea::-webkit-scrollbar {
     width: auto;
 }
+.modal-body::-webkit-scrollbar {
+    width: auto;
+}
+
 
 p.description:first-letter { 
   font-size:200%;
