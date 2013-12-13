@@ -242,7 +242,7 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
             link = u'http://' + link
     eObj = getEObj(link)
     if not eObj:
-        return false
+        return False
         
     a = Thing('resource', owner.id)
     a['link'] = link

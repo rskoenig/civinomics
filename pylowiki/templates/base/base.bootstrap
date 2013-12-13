@@ -1,5 +1,5 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace name="helpers" file="/lib/template_lib.mako" />
+<%namespace name="template_lib" file="/lib/template_lib.mako" />
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
@@ -18,6 +18,7 @@
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
       <script src="/js/geoSearch.js"></script>
+      <script src="/js/ng/signup_login.js" type="text/javascript"></script>
       <script>
         var dummyApp = angular.module('civ', []);
       </script>
@@ -34,7 +35,6 @@
    <body ${self.bodyTag_extras()}>
 
     ${next.body()}
-    
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
@@ -55,6 +55,16 @@
           return this.hostname != window.location.hostname;
       }).attr('target', '_blank');
    </script>
+
+   <!-- Javascript to enable link to tab -->
+   <script type="text/javascript">
+      $(function () {
+         var activeTab = $('[href=' + location.hash + ']');
+         activeTab && activeTab.tab('show');
+      });
+    </script>
+
+
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
