@@ -98,8 +98,8 @@
                         </li>
                     % else:
                         <li class="${hSelected}"><a href="/help">Help</a></li>
-                        <li><a href="/loginSignup#login">Login</a></li>
-                        <li><a href="/loginSignup#signup">Signup</a></li>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/signup2">Signup</a></li>
                     % endif
                     <li class="small-show">
                         <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>
@@ -327,31 +327,21 @@
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
-      <div class="tabbable">
-        <div class="tab-content">
-          <div class="tab-pane active" id="signup">
-            % if 'title' in args:
-                <h2 class="login top centered">Sign up</h2>
-            % endif
-            ${socialLogins()}
-            ${signupForm()}
-          </div>
-          <div class="tab-pane" id="login">
-            % if 'title' in args:
-                <h2 class="login top centered">Log in</h2>
-            % endif
-            ${socialLogins()}
-            ${loginForm()}
-          </div>
-          <div class="tab-pane" id="forgot">
-            % if 'title' in args:
-                <h2 class="login top centered">Forgot Password</h2>
-            % endif
-            ${socialLogins()}
-            ${forgotPassword()}
-          </div>
-        </div>
-      </div><!-- tabbable -->
+        % if 'title' in args:
+            <h2 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h2>
+            <h2 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h2>
+            <h2 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h2>
+        % endif
+      ${socialLogins()}
+      <div ng-show="showTitle == 'sTitle'" ng-cloak>
+        ${signupForm()}
+      </div>
+      <div ng-show="showTitle == 'lTitle'" ng-cloak>
+        ${loginForm()}
+      </div>
+      <div ng-show="showTitle == 'pTitle'" ng-cloak>
+        ${forgotPassword()}
+      </div>
       % if 'footer' in args:    
         <div class="social-sign-in-separator" style="margin: 10px 0 10px 0;">
         </div>
@@ -412,7 +402,7 @@
             </div>
             <input type="hidden" name="chkTOS" id="chkTOS" value="true">
         </form>
-        <p class="centered"> Already have an account? <a href="#login" class="green green-hover" data-toggle="tab">Log in</a></p>
+        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" class="green green-hover" data-toggle="tab">Log in</a></p>
 </%def>
 
 <%def name="loginForm()">
@@ -427,7 +417,7 @@
             <label class="control-label" for="passphrase"> Password: </label>
             <div class="controls">
                 <input type="password" name="password" id="password"><br>
-                <a href="#forgot" data-toggle="tab" class="green green-hover"> Forgot password?</a>
+                <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
             </div>
         </div>
         <div class="control-group">
@@ -436,20 +426,20 @@
             </div>
         </div>
     </form>
-    <p class="centered">Don't have an account? <a href="#signup" class="green green-hover" data-toggle="tab">Sign up</a></p>
+    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
 </%def>
 
 <%def name="forgotPassword()">
     <div class="row-fluid">
         <div class="span8 offset2">
-            <p class="centered">Enter your email and click 'Reset Password.' Then check your email for a new password that you can use to log in.</p>
+            <p class="centered">Enter your email and click 'Reset Password.' Then check your inbox for your new password.</p>
         </div>
     <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
         <div class="control-group">
             <label class="control-label" for="email"> Email: </label>
             <div class="controls">
                 <input type="email" name="email" id="email"><br>
-                <a href="#login" data-toggle="tab" class="green green-hover"> Back to log in</a>
+                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
             </div>
         </div>
         <div class="control-group">
@@ -458,5 +448,34 @@
             </div>
         </div>
     </form>
+</%def>
+
+<%def name="signupLoginModal()">
+    <!-- Signup Login Modal -->
+    <% 
+      alURL= session._environ['PATH_INFO']
+      if 'QUERY_STRING' in session._environ :
+        alURL = alURL + '?' + session._environ['QUERY_STRING'] 
+      # handles exception with geo pages where angular appends itself to URL
+      if '{{' in alURL:
+        alURL = re.sub(r'\{.*?\}', '', alURL)
+      session['afterLoginURL'] = alURL
+    %>
+    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-init="showTitle = 'sTitle'">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 class="centered" id="myModalLabel">Log in or Sign up to Vote</h3>
+      </div>
+      <div class="modal-body" ng-controller="signupController">
+        ${tabbableSignupLogin()}
+      </div>
+      <div class="modal-footer">
+        <div class="row-fluid centered tcs">
+          <div class="span10 offset1">
+            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
 </%def>
 

@@ -15,8 +15,12 @@
 <div class="login">
   <div class="container">
       <div class="row">
-          <div>
-              <div class="well main-well login">
+          % if 'login' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'lTitle'">
+          % elif 'signup' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'sTitle'">
+          % endif
+              <div class="well main-well login" ng-controller="signupController">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
