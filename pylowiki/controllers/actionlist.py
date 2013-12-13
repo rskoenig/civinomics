@@ -14,6 +14,7 @@ from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
+import pylowiki.lib.db.initiative as initiativeLib
 
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
@@ -88,25 +89,47 @@ class ActionlistController(BaseController):
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity Feed",
             link=u"http://www.civinomics.com",
-            description=u"The most recent activity in Civinomics public workshops.",
+            description=u"The most recent activity in Civinomics public workshops and initiatives.",
             language=u"en"
         )
         for item in c.activity:
-            w = getWorkshopByCode(item['workshopCode'])
-            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url'] + "/"
+            if 'workshopCode' in item:
+                parent = getWorkshopByCode(item['workshopCode'])
+                baseURL = config['site_base_url'] + "/workshop/" + parent['urlCode'] + "/" + parent['url']
+                baseTitle = 'the workshop named <a href="' + baseURL + '">' + parent['title'] + '</a>'
+            elif 'initiativeCode' in item:
+                parent = initiativeLib.getInitiative(item['initiativeCode'])
+                baseURL = config['site_base_url'] + "/initiative/" + parent['urlCode'] + "/" + parent['url']
+                baseTitle = 'the initiative named "<a href="' + baseURL + '">' + parent['title'] + '</a>"'
             
             thisUser = getUserByID(item.owner)
-            activityStr = thisUser['name'] + " "
+            activityStr = ""
+            userName = thisUser['name']
             if item.objType == 'resource':
-               activityStr += 'added the resource '
+               activityStr += 'A new resource added to ' + baseTitle + ' by ' + userName
             elif item.objType == 'discussion':
-               activityStr += 'started the discussion '
+                if 'initiativeCode' in item:
+                    activityStr += 'A new progress report added to ' + baseTitle + ' by ' + userName
+                else:
+                    activityStr += 'A new discussion started in ' + baseTitle + ' by ' + userName
             elif item.objType == 'idea':
-                activityStr += 'posed the idea '
+                activityStr += 'A new idea posed in ' + baseTitle + ' by ' + userName
+            elif item.objType == 'initiative':
+                activityStr += 'A new initiative launched by ' + userName
+                itemURL = baseURL
 
-            activityStr += '"' + item['title'] + '"'
-            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
-            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
+            #activityStr += '"' + item['title'] + '"'
+            if 'workshopCode' in item:
+                itemURL = baseURL + "/" + item.objType + "/" + item['urlCode'] + "/" + item['url']
+            elif 'initiativeCode' in item:
+                if item.objType == 'discussion':
+                    itemURL = baseURL + '/updateShow/' + item['urlCode']
+                else:
+                    itemURL = baseURL + "/" + item.objType + "/" + item['urlCode'] + "/" + item['url']
+            
+            itemTitle = '<a href="' + itemURL + '">' + item['title'] + '</a>'
+                
+            feed.add_item(title=item['title'], link=itemURL, guid=itemURL, description=activityStr)
             
         response.content_type = 'application/xml'
 

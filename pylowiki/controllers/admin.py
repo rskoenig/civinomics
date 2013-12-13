@@ -60,7 +60,6 @@ class AdminController(BaseController):
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
             elif 'initiativeCode' in c.thing:
-                # a comment of a photo
                 parent = generic.getThing(c.thing['initiativeCode'])
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
@@ -278,6 +277,10 @@ class AdminController(BaseController):
         elif thing.objType.replace("Unpublished", "") == 'initiative':
             extraInfo = action + 'Initiative'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, initiativeCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'discussion':
+            eventTitle = '%s Initiative Update' % (action.title())
+            extraInfo = action + 'InitiativeUpdate'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, updateCode = thing['urlCode'])
         elif thing.objType.replace("Unpublished", "") == 'resource':
             extraInfo = action + 'InitiativeResource'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, resourceCode = thing['urlCode'])

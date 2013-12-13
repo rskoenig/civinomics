@@ -1902,7 +1902,7 @@ li.thumbnail-gallery{
   display: none;
 }
 
-.initiative-well-wrapper .fb_dialog_advanced[style]{
+.initiative-well .fb_dialog_advanced[style]{
   left: -150% !important;
 }
 

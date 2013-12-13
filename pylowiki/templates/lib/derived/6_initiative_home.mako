@@ -25,6 +25,17 @@
     </table>
 </%def>
 
+<%def name="showUpdateList()">
+    % if c.updates:
+        Progress Reports:<br />
+        <ul>
+        % for update in c.updates:
+            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update.date} ${update['title']}</a></li>
+        % endfor
+        </ul>
+    % endif
+</%def>
+
 <%def name="showDescription()">
     <div class="initiative-info">
         ${m.html(c.initiative['description'], render_flags=m.HTML_SKIP_HTML) | n}
@@ -507,6 +518,39 @@
                 <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
             </fieldset>
             <span ng-show="addResourceShow">{{addResourceResponse}}</span>
+            <fieldset>
+                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+            </fieldset>
+        </form>
+    % endif
+</%def>
+
+<%def name="editUpdate()">
+    <%
+        if not c.update:
+            updateTitle = ""
+            updateText = ""
+            updateCode = "new"
+        else:
+            updateTitle = c.update['title']
+            updateText = c.update['text']
+            updateCode = c.update['urlCode']
+            
+    %>
+    % if not c.update:
+        <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
+            <fieldset>
+                <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
+                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+                <span ng-show="addUpdateTitleShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTitleResponse}}</div></span>
+            </fieldset>
+            <fieldset>
+                <label><strong>Progress Report Text</strong>
+                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+                <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
+                <span ng-show="addUpdateTextShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTextResponse}}</div></span>
+                <span class="help-block"> (A description of the progress made on implementing the initiative since the last progress report.) </span>
+            </fieldset>
             <fieldset>
                 <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
             </fieldset>

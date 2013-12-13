@@ -34,7 +34,10 @@
                             % if c.editInitiative:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
                             % elif c.initiative.objType != 'revision':
-                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                <span class="pull-right">
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                                </span>
                             % else:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
                             % endif
@@ -49,7 +52,7 @@
             </div>
             <hr>
                 % if c.initiative['public'] == '0':
-                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable by the author and coauthors.</div>
+                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
                 % endif
             ${next.body()}
         </div>
@@ -126,15 +129,15 @@
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
+                <!--
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
                     <li class="active"><a href="#iText" data-toggle="tab">Text</a></li>
                     <li><a href="#iResources" data-toggle="tab">Resources</a></li>
-                    <!--
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
                     <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
                     <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
-                    -->
                 </ul>
+                -->
             % endif
         </div><!-- span4 -->
     </div><!-- row-fluid -->

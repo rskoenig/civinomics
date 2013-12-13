@@ -115,6 +115,8 @@ def thingURL(thingParent, thing):
         return baseURL + "/photo/show" + thing['urlCode']
     if thing.objType.replace("Unpublished", "") == 'initiative':
         return baseURL + "/show"
+    if thing.objType == 'discussion' and thing['discType'] == 'update':
+        return baseURL + "/updateShow/" + thing['urlCode']
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
@@ -138,11 +140,18 @@ def profilePhotoURL(thing):
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
     
 def initiativeURL(thing):
+    
+    log.info("objType is %s"%thing.objType)
     if thing.objType == 'resource':
         # an initiative resource
         return "/initiative/%s/%s/resource/%s/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'], thing['url'])
+    elif thing.objType == 'discussion' and thing['discType'] == 'update':
+        returnURL =  "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
+        log.info("return URL is %s"%returnURL)
+        return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
+        
     
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:
