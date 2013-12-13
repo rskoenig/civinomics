@@ -31,14 +31,17 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
         thingCode = c.thingCode
+        if not thingCode:
+          thingCode = 'noCode'
+
         userCode = ''
         if c.w:
             if 'urlCode' in c.w.keys():
                 workshopCode = c.w['urlCode']
             else:
-                workshopCode = ''
+                workshopCode = 'noCode'
         else:
-            workshopCode = ''
+            workshopCode = 'noCode'
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
         if 'shareOnWall' in kwargs:
@@ -180,6 +183,10 @@
                           var link = "${link}"
                           var userCode = fbAuthId;
                           var workshopCode = "${workshopCode}"
+                          
+                          //console.log('tc: '+thingCode);
+                          //console.log('wc: '+workshopCode);
+
                           result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
                         }
                     }
@@ -194,6 +201,10 @@
                 var link = "${link}"
                 var userCode = fbAuthId;
                 var workshopCode = "${workshopCode}"
+                
+                //console.log('tc mf: '+thingCode);
+                //console.log('wc mf: '+workshopCode);
+                          
                 result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
                 FB.ui(
                     {
