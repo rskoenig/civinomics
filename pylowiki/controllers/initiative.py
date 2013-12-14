@@ -459,6 +459,7 @@ class InitiativeController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.baseUrl = utils.getBaseUrl()
+        c.thingCode = c.initiative['urlCode']
 
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
         c.isFollowing = False
