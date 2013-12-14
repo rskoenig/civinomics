@@ -1,0 +1,36 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="template_lib" file="/lib/template_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
+<div id="login-bg"></div>
+<div class="login">
+  <div class="container">
+      <div class="row">
+          % if 'login' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'lTitle'">
+          % elif 'signup' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'sTitle'">
+          % endif
+              <div class="well main-well login" ng-controller="signupController">
+                  % if c.splashMsg:
+                      <% message = c.splashMsg %>
+                      <div class="alert alert-${message['type']}">
+                          <button data-dismiss="alert" class="close">x</button>
+                          <strong>${message['title']}</strong> ${message['content']}
+                      </div>
+                  % endif
+                  ${template_lib.tabbableSignupLogin('title', 'footer')}
+              </div><!-- main-well -->
+          </div><!-- sapn6 -->
+      </div><!-- row -->
+  </div><!-- container -->
+</div><!-- login -->
