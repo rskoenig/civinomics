@@ -210,7 +210,6 @@ class SearchController(BaseController):
         c.numInitiatives = initiativeLib.searchInitiatives('tags', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('tags', self.query)
-        entry = {}
         if c.photos and len(c.photos) != 0:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]

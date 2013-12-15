@@ -17,6 +17,9 @@ from pylowiki.lib.db.dbHelpers    import commit
 import pylowiki.lib.db.mainImage  as mainImageLib
 from pylowiki.lib.db.revision     import Revision
 import pylowiki.lib.mail          as mailLib
+import pylowiki.lib.db.photo      as photoLib
+import pylowiki.lib.sort          as sort
+import pylowiki.lib.db.user       as userLib
 import re
 import simplejson as json
 
@@ -36,6 +39,16 @@ class RegisterController(BaseController):
     def signupDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+
+        c.photos = photoLib.getAllPhotos()
+        if c.photos and len(c.photos) != 0:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+        else: 
+            c.backgroundPhoto = '/images/splash/sc_boardwalk.jpg'
+            c.backgroundAuthor = 'Ester Kim'
 
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']

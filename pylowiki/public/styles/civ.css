@@ -2664,8 +2664,8 @@ button.close{
     position: absolute; 
     width:100%; 
     height:485px; 
-    background-image: url('/images/splash/sc_boardwalk.jpg');
     background-size:cover;
+    background-position: center center;
 }
 #login-bg{
   position:absolute; 
