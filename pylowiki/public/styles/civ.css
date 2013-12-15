@@ -105,20 +105,11 @@ h1,h2,h3,h4,h5{
 min-height: 40px;
 padding-right: 20px;
 padding-left: 20px;
-background-color: #fafafa;
-background-image: -moz-linear-gradient(top, #00903e, #007733);
-background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#00903e), to(#007733));
-background-image: -webkit-linear-gradient(top, #00903e, #007733);
-background-image: -o-linear-gradient(top, #00903e, #007733);
-background-image: linear-gradient(to bottom, #00903e, #007733);
-background-repeat: repeat-x;
+background: rgba(0,93,40,0.95);
 border: 1px solid #d4d4d4;
 -webkit-border-radius: 4px;
 -moz-border-radius: 4px;
 border-radius: 4px;
-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00903e', endColorstr='#007733', GradientType=0);
--webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
--moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 }
 
@@ -2347,7 +2338,7 @@ hr.list-header{
 }
 
 .navbar-inner.civinomics-splash{
-  background: rgba(0,93,40,0.9);
+  background: rgba(0,93,40,0.95);
   margin-left: 0;
   margin-right: 0;
 }
