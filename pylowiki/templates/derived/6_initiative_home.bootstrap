@@ -7,6 +7,7 @@
 <% lib.return_to() %>
     <h4 class="initiative-title">Summary</h4>
     ${ihelpers.showDescription()}
+    ${ihelpers.showUpdateList()}
     <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
     ${ihelpers.showFunding_Summary()}
     ${ihelpers.showCost(c.initiative)}

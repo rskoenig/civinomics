@@ -763,6 +763,13 @@ ul.activity > li {
    display: block;
    color: #005D28;
    padding-right: 10px;
+   background-color: whitesmoke;
+}
+.nav.nav-tabs.nav-stacked.nav-init > li > a{
+  font-size: 16px
+}
+.nav.nav-tabs.nav-stacked > li > a:hover{
+   background-color: #fff;
 }
 
 .nav.nav-pills.nav-stacked > li > a{
@@ -770,8 +777,9 @@ ul.activity > li {
 }
 
 .nav.nav-tabs.nav-stacked > li.active > a{
-   background-color: #005D28;
-   color: #ffffff;
+   background-color: #fff;
+   font-weight: bold;
+   color: #333333;
 }
 
 .nav.nav-tabs.nav-stacked{
@@ -1121,7 +1129,8 @@ a.yesVote, a.noVote{
   position: fixed;
   width: 362px;
 }
-
+/*
+voting ribbon triangle
 .initiative-well-wrapper:before{
   content: ' ';
   position: absolute;
@@ -1134,16 +1143,19 @@ a.yesVote, a.noVote{
   border-right-width: 181px;
   border-color: whitesmoke transparent transparent transparent;
 }
+*/
 
 .well.initiative-well{
   margin-top: 0;
   padding-top: 10px;
   background-color:whitesmoke;
   position: relative;
+  /*
   -webkit-border-radius: 5px 5px 0 0;
   -moz-border-radius: 5px 5px 0 0;
   border-radius: 5px 5px 0 0;
   border-bottom-width: 0;
+  */
 }
 
 .oddComment{
@@ -1890,7 +1902,7 @@ li.thumbnail-gallery{
   display: none;
 }
 
-.initiative-well-wrapper .fb_dialog_advanced[style]{
+.initiative-well .fb_dialog_advanced[style]{
   left: -150% !important;
 }
 
@@ -2889,5 +2901,17 @@ a.no-highlight:hover{
   .min-container{
     min-width: 930px;
   }  
+}
+
+.i-main-photo{
+  margin: -19px -19px 0 -19px;
+  border: none;
+  -webkit-border-radius: 4px 4px 0 0;
+  -moz-border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0;
+}
+.section-header.smaller.initiative{
+  font-size: 16px;
+  font-weight: bold;
 }
 

@@ -31,14 +31,17 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
         thingCode = c.thingCode
+        if not thingCode:
+          thingCode = 'noCode'
+
         userCode = ''
         if c.w:
             if 'urlCode' in c.w.keys():
                 workshopCode = c.w['urlCode']
             else:
-                workshopCode = ''
+                workshopCode = 'noCode'
         else:
-            workshopCode = ''
+            workshopCode = 'noCode'
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
         if 'shareOnWall' in kwargs:
@@ -180,6 +183,10 @@
                           var link = "${link}"
                           var userCode = fbAuthId;
                           var workshopCode = "${workshopCode}"
+                          
+                          //console.log('tc: '+thingCode);
+                          //console.log('wc: '+workshopCode);
+
                           result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
                         }
                     }
@@ -194,6 +201,10 @@
                 var link = "${link}"
                 var userCode = fbAuthId;
                 var workshopCode = "${workshopCode}"
+                
+                //console.log('tc mf: '+thingCode);
+                //console.log('wc mf: '+workshopCode);
+                          
                 result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
                 FB.ui(
                     {
@@ -683,15 +694,21 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        if 'noHref' in kwargs:
-            discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        else:
-            discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        discussionStr += commentLinkAppender(**kwargs)
-        if 'noHref' in kwargs:
-            discussionStr += ''
-        else:
-            discussionStr += '"'
+        if 'workshopCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            else:
+                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            discussionStr += commentLinkAppender(**kwargs)
+            if 'noHref' in kwargs:
+                discussionStr += ''
+            else:
+                discussionStr += '"'
+        elif 'initiativeCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+            else:
+                discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -726,9 +743,12 @@
             objType = thing['objType'].replace("Unpublished", "")
         else:
             objType = thing.objType.replace("Unpublished", "")
+            
+        #log.info("working on objType %s with id of %s"%(thing.objType, thing.id))
         if objType == 'discussion':
             return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
+            #log.info("before resouce link, parent is type %s"%dparent.objType)
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
@@ -1456,11 +1476,14 @@
         thisUser = userLib.getUserByID(item.owner)
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
+                            'update': 'added an initiative progress report',
                             'idea': 'posed the idea',
+                            'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
+                            'initiative':'initiative',
                             'comment':'comment'}
         eclass = ""
         if 'expandable' in kwargs:
@@ -1481,7 +1504,10 @@
             else:
                 title = ellipsisIZE(item['title'], 40)
         
-        activityStr = actionMapping[item.objType]
+        if item.objType == 'discussion' and item['discType'] == 'update':
+            activityStr = actionMapping['update']
+        else:
+            activityStr = actionMapping[item.objType]
         # used for string mapping below
         objType = item.objType
         if item.objType == 'comment':
@@ -1490,6 +1516,8 @@
                 objType = 'idea'
             elif 'resourceCode' in item.keys():
                 objType = 'resource'
+            elif 'initiativeCode' in item.keys():
+                objType = 'initiative'
             elif item.keys():
                 objType = 'discussion'
             
