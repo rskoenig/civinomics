@@ -1,0 +1,76 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="templateHelpers" file="/lib/template_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
+
+% if not c.success:
+    <div id="splash-bg">
+        <div class="darkened-bg"></div>
+    </div>
+% else:
+    <div id="login-bg"></div>
+% endif
+
+<div class="row welcome">
+    % if c.success:
+            <div class="well main-well success-well green">
+                <div class="login-top">
+                    <h2>Success!</h2>
+                <div>
+                Check your email to finish setting up your account.
+                If you don't see an email from us in your inbox, try checking your junk mail folder.
+            </div>
+        </div>
+    % else: 
+        <div class="slogan centered">
+            <h1>Democracy starts at home</h1>
+            <button class="btn btn-large btn-primary">Sign up</button>
+            <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p>
+        </div>
+        <!--
+        <div class="slogan2">
+            <div class="row-fluid">
+                <div class="span5">
+                    <a href="/search?searchQuery=civinomicon"><img class="small-hidden" src="/images/civinomicon/final_sticker.png"></a>
+                </div>
+                <div class="span7 centered">
+                    <span><a href="/search?searchQuery=civinomicon">Vote</a> on the Civinomicon initiatives or <a href="/search?searchQuery=civinomicon">add your own</a></span>
+                </div>
+            </div>
+        </div>
+        -->
+    </div><!-- row welcome -->
+    <div class="row-fluid">
+        <div class="span12 centered">
+            <h1 class="splash-section">Bring a paradigm shift in collaboration to your community. Free.</h1>
+            <p class="lead splash-text">Collect ideas, vote for the best, implement them - make things better.</p>
+            <a class="btn btn-primary btn-large" style="margin-bottom:40px;" href="/newWorkshop/login"><i class="icon-cog"></i> Start a Workshop</a>
+        </div>
+    </div>
+    <div class="row-fluid centered">
+        <img class="splash-product" src="/images/splash/sampleWorkshop.png">
+    </div>
+    ${templateHelpers.condensedFooter()}
+% endif
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+    </script>
+</%def>
+
+<%def name="bodyTag_extras()">
+    ng-app
+</%def>
+
