@@ -1,0 +1,18 @@
+/*** Footer ***/
+
+#footer {
+	color: #454545;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid #fff;
+    text-align: center;
+    background: #e6e6e6;
+    font-size: .75em;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+}
+
+#footer span {font-size: .8em;}
+
+#footer a {color: #888;}
+#footer a:hover {color: #454545;}
