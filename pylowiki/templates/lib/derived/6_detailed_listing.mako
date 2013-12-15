@@ -90,14 +90,14 @@
                                             % if c.demo:
                                                 See ${comments | n}
                                             % else:
-                                                See ${comments | n} (${numComments})
+                                                See ${comments | n} (${numComments}) 
                                             % endif
                                     </div><!--/.span9-->
                                     <%doc>
                                     <div class="span9 list-item-text">
                                         <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
-                                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
+                                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)} ${item.date}
                                             <br />
                                             <% 
                                                 comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
@@ -173,26 +173,29 @@
                         % endif
 
                             <% 
-                                comments = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), ' Comments') 
+                                comments = '<a %s class="listed-item-title"><i class="icon-comments"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), ' Comments') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                if 'views' in item:
+                                    numViews = str(item['views'])
+                                else:
+                                    numViews = "0"
                             %>
-
+                            <br />
                             <ul class="horizontal-list iconListing">
                                 <li>
-                                    % if 'condensed' in args and item.objType == 'discussion':
-                                        <i class="icon-comments"></i>
-                                    % endif
-
                                     % if c.demo:
                                         ${comments | n}
                                     % else:
                                         ${comments | n} (${numComments})
                                     % endif
                                 </li>
+                                <li>
+                                    <i class="icon-eye-open"></i> Views ${numViews}
+                                </li>
 
                             % if item.objType != 'resource':
                                 % if not 'condensed' in args:
-                                    <li><span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)}</small></li>
+                                    <li><span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)} ${item.date}</small></li>
                                 % endif
                             % endif
                             </ul>
@@ -271,7 +274,7 @@
                                                 totalVotes = int(item['ups']) + int(item['downs'])
                                             %>
                                             <ul class="horizontal-list iconListing">
-                                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs}</li>
+                                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs} ${item.date}</li>
                                                 <li>${fullText | n}</li>
                                                 % if c.demo:
                                                     <li>${comments | n}</li>
@@ -301,17 +304,25 @@
                                 comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
                                 fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                if 'views' in item:
+                                    numViews = str(item['views'])
+                                else:
+                                    numViews = "0"
+                                views = '<i class="icon-eye-open"></i> Views %s</a>'%numViews
 
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
                             <ul class="horizontal-list iconListing">
-                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs}</li>
+                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs} on ${item.date}</li>
+                            </ul><br />
+                            <ul class="horizontal-list iconListing">
                                 <li>${fullText | n}</li>
                                 % if c.demo:
                                     <li>${comments | n}</li>
                                 % else:
                                     <li>${comments | n} (${numComments})</li>
                                 % endif
+                                <li>${views | n}</li>
                             </ul>
                     </div><!--/.span9-->
                     <div class="span3 voteBlock ideaListing well" style="background-color: whiteSmoke;" id="vote_${itemCounter}">
