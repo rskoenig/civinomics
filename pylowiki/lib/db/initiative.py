@@ -30,6 +30,12 @@ def getAllInitiatives():
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).all()
     except:
         return False
+
+def getPublishedInitiatives():
+    try:
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('public', '1'))).all()
+    except:
+        return False
         
 def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False):
     log.info("searchInititives got %s and %s and count is %s"%(keys, values, count))

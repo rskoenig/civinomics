@@ -124,13 +124,15 @@
                 </li>
             </ul>
             <ul class="nav pull-right">
-                <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
+                <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li>
                 <li class="nav-item">
                     <form id="sign_in" action="/loginHandler" class="form-inline login" method="post">
+                        <!--
                         <input type="email" class="input-small" name="email" id="email" placeholder="Email" required>
                         <input type="password" class="input-small" name="password" id="password" placeholder="Password">
-                        <a href="/forgotPassword" class="forgot"> Forgot?</a>
+                        <a href="/forgotPassword" class="forgot"> Forgot?</a> -->
                         <button type="submit" class="btn nav-login">Log in</button>                            
                   </form>
                 </li>
