@@ -1042,6 +1042,7 @@ class SearchController(BaseController):
             entry['name'] = scopeInfo['name']
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
+            entry['level'] = scopeInfo['level'].title()
             result.append(entry)
 
         if len(result) == 0:

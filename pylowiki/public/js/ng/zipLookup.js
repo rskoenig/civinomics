@@ -1,6 +1,7 @@
-function testCtrl($scope, $http) {
-	$scope.test2 = "testing testing 3 2 1 4";
-	$scope.zipValue = '95076';
+function zipLookupCtrl($scope, $http) {
+	$scope.loading = true;
+	$scope.zipValueRegex = /^\d{5}$/;
+	$scope.zipValue = '95060';
 	$scope.zipLookupURL = '/zip/lookup/' + $scope.zipValue;
 	$http.get($scope.zipLookupURL).success(function(data){
 		if (data.statusCode == 1){
@@ -10,9 +11,11 @@ function testCtrl($scope, $http) {
 			$scope.noResult = false;
 			$scope.geos = data.result;
 		}
+		$scope.loading = false;
 	});
 
 	$scope.lookup = function() {
+		$scope.loading = true;
 		$scope.zipLookupURL = '/zip/lookup/' + $scope.zipValue;
 		$http.get($scope.zipLookupURL).success(function(data){
 			if (data.statusCode == 1){
@@ -22,6 +25,7 @@ function testCtrl($scope, $http) {
 				$scope.noResult = false;
 				$scope.geos = data.result;
 			}
+			$scope.loading = false;
 		});
 	}
 

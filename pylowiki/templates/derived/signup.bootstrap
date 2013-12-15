@@ -40,39 +40,12 @@
     </div>
 
     </div><!-- row welcome -->
+    <div class="container">
     <div class="row-fluid">
-        <div class="span8 search-middle-column" ng-controller="SearchCtrl">
-            <div class="row-fluid">
-                <h2 class="lead geoName">
-                    Browse Initiatives
-                </h2>
-            </div>
-            {{initiativesURL}}
-            <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
-                <form class="form-search inline">
-                    Filter: <input type="text" class="input-small search-query" ng-model="query">
-                    Sort by: 
-                    <select class="med-width" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
-                        <option value="-date">Recent</option>
-                        <option value="title">Alphabetical</option>
-                        <option value="-numComments">Most Comments</option>
-                        <option value="-voteCount">Most Votes</option>
-                    </select>
-                    <select class="med-width" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
-                        <option value="-date">Date Created</option>
-                        <option value="-startTime">Start Time</option>
-                        <option value="-bookmarks">Bookmarks</option>
-                        <option value="-activity">Posts</option>
-                    </select>
-                    <select class="med-width" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
-                        <option value="-date">Join Date</option>
-                        <option value="title">Alphabetical</option>
-                    </select>
-                    <span ng-hide="showingPeople.show" ng-cloak>
-                        ${lib_6.public_tag_filter()}
-                    </span>
-                </form>
-                <span ng-show="showingInitiatives.create" ng-cloak>
+        <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
+            <h3>
+                Top Initiatives
+                <span class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
                     % if 'user' in session:
                         % if c.searchType != 'region':
                             <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
@@ -85,10 +58,10 @@
                             </form>
                         % endif
                     % else:
-                        <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-plus"></i> New Initiative</a>
+                        <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-edit"></i> Start an Initiative</a>
                     % endif
                 </span>
-            </div>
+            </h3>
             <div class="loading-civ" ng-show="loading" ng-cloak>
                 <i class="icon-spinner icon-spin icon-4x"></i>
             </div>
@@ -112,9 +85,9 @@
                 </div>
             </div>
             <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
-                <table class="table plain">
-                    <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
-                        <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
+                <table class="table">
+                    <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
+                        <div class="media searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
                             <div class="media-body" ng-controller="yesNoVoteCtrl">
                                 <div class="span9">
                                     <div class="span3">
@@ -180,18 +153,29 @@
                 </div>
             </div>
         </div><!-- span8 -->
-        <div class="span4" ng-controller="testCtrl" ng-cloak>
-            <div class="well">
-                <input name="zipValue" ng-model="zipValue" ng-change="lookup()">
-            <table>
-                <tr ng-repeat="geo in geos">
-                    <td><img class="thumbnail small-flag" src="{{geo.flag}}"></td>
-                    <td><a class="no-highlight" href="{{geo.href}}">{{geo.name}}</a></td>
-                </tr>
-            </table>
+        <div class="span4" ng-controller="zipLookupCtrl" ng-cloak>
+            <div class="well well-splash-content">
+                <h3>Zip Code Lookup</h3>
+                <form class="form-inline" name="zipForm">
+                    <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                        <input type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                        <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                        <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                    </div>
+                </form>
+                <div class="loading-civ" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+                </div>
+                <table ng-show="!loading">
+                    <tr ng-repeat="geo in geos">
+                        <td><img class="thumbnail med-flag" src="{{geo.flag}}"></td>
+                        <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div><!-- row-fluid -->
+    </div>
     ${templateHelpers.condensedFooter()}
     ${templateHelpers.signupLoginModal()}
 
