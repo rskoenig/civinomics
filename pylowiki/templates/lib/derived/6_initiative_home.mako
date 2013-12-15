@@ -17,12 +17,19 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showAuthor(item)">
+    <%
+        if 'views' in item:
+            numViews = str(item['views'])
+        else:
+            numViews = "0"
+    %>
     <table>
         <tr>
             <td>${lib_6.userImage(item.owner, className="avatar small-avatar")}</td>
             <td><span class="grey">Authored by</span>${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span></td>
         </tr>
     </table>
+    Published on ${item.date} <i class="icon-eye-open"></i> Views ${numViews}
 </%def>
 
 <%def name="showDescription()">
