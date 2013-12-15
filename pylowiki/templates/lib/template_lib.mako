@@ -112,7 +112,7 @@
 </%def>
 
 <%def name="splashNavbar()">
-    <div class="navbar splash-nav">
+    <div class="navbar splash-nav" ng-init="showTitle = 'sTitle'">
       <div class="navbar-inner civinomics-splash">
         <div class="container-fluid">
             <a class="brand" href="/"><div class="logo logo-lg" id="civinomicsLogo"></div></a>
@@ -128,13 +128,7 @@
                 <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li>
                 <li class="nav-item">
-                    <form id="sign_in" action="/loginHandler" class="form-inline login" method="post">
-                        <!--
-                        <input type="email" class="input-small" name="email" id="email" placeholder="Email" required>
-                        <input type="password" class="input-small" name="password" id="password" placeholder="Password">
-                        <a href="/forgotPassword" class="forgot"> Forgot?</a> -->
-                        <button type="submit" class="btn nav-login">Log in</button>                            
-                  </form>
+                    <a href="#signupLoginModal" data-toggle="modal" class="btn nav-login">Log in</a>                            
                 </li>
             </ul>
         </div>
@@ -245,7 +239,7 @@
                 </div>
             </div>
             <div class="row-fluid">
-                <em class="photo-cred">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
+                <em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
             </div>
         </div>
     </div>
@@ -463,12 +457,14 @@
         alURL = re.sub(r'\{.*?\}', '', alURL)
       session['afterLoginURL'] = alURL
     %>
-    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-init="showTitle = 'sTitle'">
+    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 class="centered" id="myModalLabel">Log in or Sign up to Vote</h3>
+        <h3 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up to Vote</h3>
+        <h3 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h3>
+        <h3 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h3>
       </div>
-      <div class="modal-body" ng-controller="signupController">
+      <div class="modal-body">
         ${tabbableSignupLogin()}
       </div>
       <div class="modal-footer">

@@ -14,7 +14,7 @@
 
 
 % if not c.success:
-    <div id="splash-bg" style="background-image: url('${c.backgroundPhoto}');">
+    <div id="splash-bg" style="background-image: url('${c.backgroundPhotoURL}');">
         <div class="darkened-bg"></div>
     </div>
 % else:
@@ -32,23 +32,13 @@
             </div>
         </div>
     % else: 
-        <div class="slogan centered">
-            <h1>Democracy starts at home</h1>
-            <button class="btn btn-large btn-primary">Sign up</button>
-            <p>or <span style="text-decoration: underline;">subscribe for our newsletter</span></p>
-        </div>
-        <!--
-        <div class="slogan2">
-            <div class="row-fluid">
-                <div class="span5">
-                    <a href="/search?searchQuery=civinomicon"><img class="small-hidden" src="/images/civinomicon/final_sticker.png"></a>
-                </div>
-                <div class="span7 centered">
-                    <span><a href="/search?searchQuery=civinomicon">Vote</a> on the Civinomicon initiatives or <a href="/search?searchQuery=civinomicon">add your own</a></span>
-                </div>
-            </div>
-        </div>
-        -->
+    <div class="slogan centered">
+        <h1>Democracy starts at home</h1>
+        {{blue}}
+        <button href="#signupLoginModal" data-toggle="modal" class="btn btn-large btn-primary">Sign up to Vote</button>
+        <p>or <span style="text-decoration: underline;">subscribe for our newsletter</span></p>
+    </div>
+
     </div><!-- row welcome -->
     <div class="row-fluid">
         <div class="span8 search-middle-column" ng-controller="SearchCtrl">
@@ -203,6 +193,8 @@
         </div>
     </div><!-- row-fluid -->
     ${templateHelpers.condensedFooter()}
+    ${templateHelpers.signupLoginModal()}
+
 % endif
 <%def name="headScripts()">
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>

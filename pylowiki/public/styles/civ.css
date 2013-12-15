@@ -2493,7 +2493,7 @@ button.signup, button.login{
   }
 }
 
-@media (max-width: 1000px){
+
   .footer-civ.condensed{
     padding-top: 20px;
   }
@@ -2509,7 +2509,7 @@ button.signup, button.login{
     margin-right: auto;
     left: auto;
   }
-}
+
 
 @media (max-width: 928px){
   .slogan{
