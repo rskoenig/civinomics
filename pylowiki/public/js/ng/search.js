@@ -48,7 +48,10 @@ app.controller('SearchCtrl', function($scope, $http){
         if (pathlen === 9) {
             $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||" + pathList[7] + "|" + pathList[8];
         }
+    } else if (action === 'browse' || action === 'signup'){
+        $scope.searchType = 'browse';
     }
+
     if($scope.searchString === '') {
         $scope.noQuery = true;
         $scope.loading = false;

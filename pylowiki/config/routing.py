@@ -425,6 +425,11 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    ################
+    # Browse       #
+    ################
+    map.connect('/browse/initiatives', controller = 'search', action = 'browseInitiatives', searchType = 'browse')
+    map.connect('/zip/lookup/{zip}{end:/?}', controller = 'search', action = 'zipLookup', zip = '{zip}')
 
     ################
     # Application  #

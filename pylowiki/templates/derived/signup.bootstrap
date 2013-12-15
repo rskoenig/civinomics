@@ -1,5 +1,6 @@
 <%inherit file="/base/base_splash.bootstrap"/>
 <%namespace name="templateHelpers" file="/lib/template_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
@@ -34,7 +35,7 @@
         <div class="slogan centered">
             <h1>Democracy starts at home</h1>
             <button class="btn btn-large btn-primary">Sign up</button>
-            <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p>
+            <p>or <span style="text-decoration: underline;">subscribe for our newsletter</span></p>
         </div>
         <!--
         <div class="slogan2">
@@ -50,23 +51,173 @@
         -->
     </div><!-- row welcome -->
     <div class="row-fluid">
-        <div class="span12 centered">
-            <h1 class="splash-section">Bring a paradigm shift in collaboration to your community. Free.</h1>
-            <p class="lead splash-text">Collect ideas, vote for the best, implement them - make things better.</p>
-            <a class="btn btn-primary btn-large" style="margin-bottom:40px;" href="/newWorkshop/login"><i class="icon-cog"></i> Start a Workshop</a>
+        <div class="span8 search-middle-column" ng-controller="SearchCtrl">
+            <div class="row-fluid">
+                <h2 class="lead geoName">
+                    Browse Initiatives
+                </h2>
+            </div>
+            {{initiativesURL}}
+            <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
+                <form class="form-search inline">
+                    Filter: <input type="text" class="input-small search-query" ng-model="query">
+                    Sort by: 
+                    <select class="med-width" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
+                        <option value="-date">Recent</option>
+                        <option value="title">Alphabetical</option>
+                        <option value="-numComments">Most Comments</option>
+                        <option value="-voteCount">Most Votes</option>
+                    </select>
+                    <select class="med-width" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                        <option value="-date">Date Created</option>
+                        <option value="-startTime">Start Time</option>
+                        <option value="-bookmarks">Bookmarks</option>
+                        <option value="-activity">Posts</option>
+                    </select>
+                    <select class="med-width" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
+                        <option value="-date">Join Date</option>
+                        <option value="title">Alphabetical</option>
+                    </select>
+                    <span ng-hide="showingPeople.show" ng-cloak>
+                        ${lib_6.public_tag_filter()}
+                    </span>
+                </form>
+                <span ng-show="showingInitiatives.create" ng-cloak>
+                    % if 'user' in session:
+                        % if c.searchType != 'region':
+                            <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                <i class="icon-plus"></i> New Initiative
+                            </a>
+                        % else:
+                            <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
+                                <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                <button type="submit" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
+                            </form>
+                        % endif
+                    % else:
+                        <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-plus"></i> New Initiative</a>
+                    % endif
+                </span>
+            </div>
+            <div class="loading-civ" ng-show="loading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x"></i>
+            </div>
+            <div ng-show="noQuery" ng-cloak>
+                <div class="row-fluid">
+                    <div class="alert alert-info centered span6 offset3">
+                        Searching for nothing yields nothing.  How zen.
+                    </div>
+                </div>
+            </div>
+            <div ng-show="noResult" ng-cloak>
+                <div class="row-fluid">
+                    <div class="alert centered span6 offset3">
+                        % if c.searchType == 'region':
+                            Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                        % else:
+                            Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                        % endif
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
+                <table class="table plain">
+                    <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                        <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
+                            <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                <div class="span9">
+                                    <div class="span3">
+                                        <a href = '{{initiative.initiativeLink}}'>
+                                            <div style="height:80px; width:110px; background-image:url('{{initiative.thumbnail}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+                                        </a>
+                                    </div>
+                                    <div class="span9">
+                                        <h4 class="media-heading">
+                                            <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
+                                        </h4>
+                                        <p>{{initiative.description}}</p>
+                                        <small>
+                                            <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag" src="{{initiative.flag}}"> {{initiative.location}}</a><br>
+                                            Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="span3 voteBlock ideaListing well" >
+                                    % if 'user' in session:
+                                        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                            <div class="vote-icon yes-icon detail"></div>
+                                            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
+                                        </a>
+                                        <br>
+                                        <br>
+                                        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                            <div class="vote-icon no-icon detail"></div>
+                                            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
+                                        </a>
+                                        <br>
+                                        <div class="totalVotesWrapper">
+                                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                        </div>
+                                    % else:
+                                        <a href="/login" class="yesVote">
+                                            <div class="vote-icon yes-icon"></div>
+                                        </a>
+                                        <br>
+                                        <br>
+                                        <a href="/login" class="noVote">
+                                            <div class="vote-icon no-icon"></div>
+                                        </a>
+                                        <br>
+                                        <div class="totalVotesWrapper">
+                                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                        </div>
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                    </td></tr>
+                </table>
+                <div class="centered" ng-show="initiative.length>pageSize">
+                    <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                        Prev
+                    </button>
+                    <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                    <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                        Next
+                    </button>
+                    <div class="spacer"></div>
+                </div>
+            </div>
+        </div><!-- span8 -->
+        <div class="span4" ng-controller="testCtrl" ng-cloak>
+            <div class="well">
+                <input name="zipValue" ng-model="zipValue" ng-change="lookup()">
+            <table>
+                <tr ng-repeat="geo in geos">
+                    <td><img class="thumbnail small-flag" src="{{geo.flag}}"></td>
+                    <td><a class="no-highlight" href="{{geo.href}}">{{geo.name}}</a></td>
+                </tr>
+            </table>
+            </div>
         </div>
-    </div>
-    <div class="row-fluid centered">
-        <img class="splash-product" src="/images/splash/sampleWorkshop.png">
-    </div>
+    </div><!-- row-fluid -->
     ${templateHelpers.condensedFooter()}
 % endif
+<%def name="headScripts()">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+</%def>
 
 <%def name="extraScripts()">
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
         $('.signup-tooltip').tooltip();
         $('.icon-question-sign').tooltip();
+        <script type="text/javascript">
+        $('.upVote.nullvote').tooltip();
+    </script>
     </script>
 </%def>
 

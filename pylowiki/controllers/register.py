@@ -50,6 +50,12 @@ class RegisterController(BaseController):
             c.backgroundPhoto = '/images/splash/sc_boardwalk.jpg'
             c.backgroundAuthor = 'Ester Kim'
 
+        self.noQuery = False
+        c.searchType = "browse"
+        self.searchType = "browse"
+        c.searchQuery = "All Initiatives" 
+        c.scope = {'level':'earth', 'name':'all'}
+
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
             session.pop('splashMsg')

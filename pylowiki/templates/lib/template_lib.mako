@@ -125,7 +125,7 @@
             </ul>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
-                <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
+                <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li>
                 <li class="nav-item">
                     <form id="sign_in" action="/loginHandler" class="form-inline login" method="post">
