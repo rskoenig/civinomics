@@ -77,6 +77,12 @@ h1,h2,h3,h4,h5{
   margin-bottom: 60px;
 }
 
+@media(min-width: 767px){
+  .container.splash-container{
+    min-width: 940px;
+  }
+}
+
 .container-wide{
   width: 98%;
   margin-left: 2%;
@@ -1387,9 +1393,9 @@ button.transparent{
    background-image: -ms-linear-gradient(top, #00aa49, #007733);
 }
 
-.btn.nav-login:hover, .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled], .btn-success:hover, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
+a.btn.nav-login:hover, .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled], .btn-success:hover, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
    color: white;
-   background-color: #00c354;
+   background-color: #00c354 !important;
    background-image:none;
 }
 
@@ -1987,8 +1993,8 @@ text-align: right;
   border: none;
 }
 
-.small-flag.border{
-  border: border: 1px solid #ddd;
+.small-flag.border, .med-flag.border{
+  border: 1px solid #ddd;
 }
 
 .thumbnail.tight{
@@ -2481,16 +2487,17 @@ button.signup, button.login{
   } 
 }
 
+
 @media (max-width: 1200px){
-  .slogan, .slogan2{
-    /*margin-left: 10%;*/
-  }
+  /*.slogan, .slogan2{
+    margin-left: 10%;
+  }*/
 }
 
 @media (max-width: 1015px){
-  .slogan, .slogan2{
+  /*.slogan, .slogan2{
     margin-left: 5%;
-  }
+  }*/
 }
 
 
@@ -2512,7 +2519,7 @@ button.signup, button.login{
 
 
 @media (max-width: 928px){
-  .slogan{
+  /*.slogan{
     margin-top:135px;
   }
   .slogan, .slogan2{
@@ -2532,6 +2539,7 @@ button.signup, button.login{
     width: 100%;
     margin-left: 0px;
   }
+  */
   h1.splash-section{
     margin-top: 140px !important;
   }
@@ -2560,16 +2568,20 @@ button.signup, button.login{
     position: relative !important;
     margin-top: 100px;
   }
+  /*
   .row.welcome{
     margin-bottom: 140px;
   }
+  */
 }
 
+/*
 @media(max-width: 780px){
   .row.welcome{
     margin-bottom: 160px;
   }
 }
+*/
 
 @media (max-width: 700px){
   .footer-civ.condensed{
@@ -2830,6 +2842,8 @@ a.no-highlight:hover{
   background-color: #009933;
   background-image: none;
   color: #fff;
+  margin-top: 0;
+  font-size: 17.5px;
 }
 
 .search-query.splash{
@@ -2923,3 +2937,28 @@ input::-webkit-inner-spin-button {
   padding-top: 0;
 }
 
+.splash-initiative{
+  padding: 8px 0 8px 0 !important;
+}
+
+.i-thumb{
+  height:80px;
+  width:100%;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+}
+
+@media (min-width: 768px){
+  .span4.zipLookup{
+    float: right;
+  }
+}
+@media (max-width: 767px){
+  .span4.zipLookup{
+    width: 100%;
+  }
+  .i-thumb{
+    height: 200px;
+  }
+}

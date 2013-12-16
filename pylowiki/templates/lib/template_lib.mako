@@ -126,9 +126,10 @@
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
                 <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
-                <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li>
+                <li class="nav-item"><a href="http://civinomics.wordpress.com" target="_blank" class="nav-item">Blog</a></li>
+                <!-- <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li> -->
                 <li class="nav-item">
-                    <a href="#signupLoginModal" data-toggle="modal" class="btn nav-login">Log in</a>                            
+                    <a href="/login" class="btn nav-login">Log in</a>                            
                 </li>
             </ul>
         </div>
@@ -211,7 +212,6 @@
                 </div>
                 <div class="span5">
                     <ul class="horizontal-list">
-                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
@@ -226,7 +226,6 @@
                         <li><a href="/corp/privacy">Privacy</a></li>
                         <li><a href="/corp/news">News</a></li>
                         <li><a href="/corp/contact">Contact</a></li>
-                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
@@ -455,6 +454,8 @@
       # handles exception with geo pages where angular appends itself to URL
       if '{{' in alURL:
         alURL = re.sub(r'\{.*?\}', '', alURL)
+      if 'zip/lookup' in alURL:
+        alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
     <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
