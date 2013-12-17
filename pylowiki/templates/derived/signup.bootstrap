@@ -34,6 +34,15 @@
     % else: 
     <div class="slogan centered">
         <h1>Democracy starts at home</h1>
+        % if c.splashMsg:
+            <% message = c.splashMsg %>
+            <div class="row-fluid centered">
+                <div class="span6 offset3 alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div>
+            </div>
+        % endif
         <button href="#signupLoginModal" data-toggle="modal" class="btn btn-large btn-primary">Sign up to Vote</button>
         <!-- <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p> -->
     </div>

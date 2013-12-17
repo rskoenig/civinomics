@@ -318,13 +318,6 @@
 
 
 <%def name="tabbableSignupLogin(*args)">
-    % if c.splashMsg:
-        <% message = c.splashMsg %>
-        <div class="alert alert-${message['type']}">
-            <button data-dismiss="alert" class="close">x</button>
-            <strong>${message['title']}</strong> ${message['content']}
-        </div>
-    % endif
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
