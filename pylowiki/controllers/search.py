@@ -923,8 +923,10 @@ class SearchController(BaseController):
             rated = ratingLib.getRatingForThing(c.authuser, i) 
             if rated:
                 entry['rated'] = rated['amount']
+                entry['vote'] = 'voted'
             else:
                 entry['rated'] = 0
+                entry['vote'] = 'nvote'
             entry['urlCode'] = i['urlCode']
             entry['url'] = i['url']
             entry['tag'] = i['tags']

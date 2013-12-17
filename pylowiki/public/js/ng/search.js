@@ -75,7 +75,8 @@ app.controller('SearchCtrl', function($scope, $http){
     //$scope.showingInitiatives = {'class': '', 'show': false, 'create': false};
     $scope.objType = 'initiatives';
     //$scope.objType = 'workshops';
-    $scope.orderProp = '-voteCount';
+    $scope.orderProp = '-date';
+    $scope.votedornot = 'nvote'
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos, initiatives'};
     $scope.currentPage = 0;
     $scope.pageSize = 10;
