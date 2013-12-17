@@ -639,7 +639,7 @@ ul.activity > li {
 
 
 @media (min-width: 1125px){
-  .row-fluid [class*="span"]:nth-child(3n + 3).wrap-voting-group{
+  .row-fluid [class*="span"]:nth-child(3n + 1).wrap-voting-group{
      margin-left:0px;
   }
   .row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
@@ -654,7 +654,7 @@ ul.activity > li {
   .row-fluid .featured-listing.wrap-voting-group{
     width: 98%;
   }
-  .row-fluid [class*="span"]:nth-child(2n).wrap-voting-group{
+  .row-fluid [class*="span"]:nth-child(2n+1).wrap-voting-group{
    margin-left:0px;
   }
   .row-fluid [class*="span"]:nth-child(2n + 1).wrap-workshop{
@@ -2283,7 +2283,7 @@ h1 .label.workshop-tag{
 
 .wrap-voting-group.featured-listing{
   width: 64.5%;
-  height: 200px;
+  height: 150px;
 }
 
 .wrap-voting-group.slide{
@@ -2291,7 +2291,7 @@ h1 .label.workshop-tag{
 }
   
 .wrap-voting-group.slide, .wrap-voting-group.scope {
-  height: 200px;
+  height: 150px;
   position: relative;
 }
 
@@ -2725,7 +2725,7 @@ h4.forum-topic{
   position: absolute;
   z-index: 2;
   color: #fff;
-  top: 135px;
+  bottom: 5px;
   left: 10px;
 }
 

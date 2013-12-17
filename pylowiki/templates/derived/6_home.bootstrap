@@ -16,7 +16,7 @@
           ### Carousel
           ###
           
-            <li class="span wrap-voting-group featured-listing">
+            <li class="span4 wrap-voting-group scope">
               % if len(c.newWorkshops) <= 3:
               <div id="myCarousel" class="carousel slide">
                 <ol class="carousel-indicators">
@@ -39,22 +39,6 @@
                 </div><!-- #myCarousel -->
                 % endif
               </li>
-
-            ###
-            ### Civnomicon
-            ###
-            <li class="span4 wrap-voting-group scope" style="background-image:url(${c.conPhoto}); background-size: cover;">
-              <a href="${c.conLink}">
-                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                <table class="lead tile-title">
-                  <tr>
-                    <td>
-                      ${c.conTitle}
-                    </td>
-                  </tr>
-                </table>
-              </a>
-            </li>
 
             ###
             ### My Places
