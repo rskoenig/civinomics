@@ -78,7 +78,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.orderProp = '-voteCount';
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos, initiatives'};
     $scope.currentPage = 0;
-    $scope.pageSize = 20;
+    $scope.pageSize = 10;
 
     $http.get($scope.initiativesURL).success(function(data){
     //$http.get($scope.workshopsURL).success(function(data){
@@ -107,7 +107,7 @@ app.controller('SearchCtrl', function($scope, $http){
     });
     $scope.numberOfPages=function(){
         //return Math.ceil($scope.initiatives.length/$scope.pageSize); 
-        return Math.ceil($scope.workshops.length/$scope.pageSize);
+        return Math.ceil($scope.initiatives.length/$scope.pageSize);
     }
     
     $scope.searchWorkshops = function() {

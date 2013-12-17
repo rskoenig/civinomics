@@ -2962,3 +2962,7 @@ input::-webkit-inner-spin-button {
     height: 200px;
   }
 }
+
+.zipLookup .well{
+  margin-bottom: 8px;
+}

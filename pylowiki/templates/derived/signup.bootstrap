@@ -55,7 +55,7 @@
                 </div>
                 <table ng-show="!loading">
                     <tr ng-repeat="geo in geos">
-                        <td><img class="thumbnail med-flag border" src="{{geo.flag}}"></td>
+                        <td><a href="{{geo.href}}"><img class="thumbnail med-flag border" src="{{geo.flag}}"></a></td>
                         <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
                     </tr>
                 </table>

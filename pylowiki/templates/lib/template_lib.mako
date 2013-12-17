@@ -26,7 +26,7 @@
                 </ul>
                 <ul class="nav pull-right" id="profileAvatar">
                     <%
-                        wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
+                        wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = aSelected = bSelected = ''
                         if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
                             wSelected = "active"
                         elif "/messages" in session._environ['PATH_INFO']:
@@ -39,6 +39,10 @@
                             hSelected = "active"
                         elif "/home" in session._environ['PATH_INFO']:
                             homeSelected = "active"
+                        elif "/browse/initiatives" in session._environ['PATH_INFO']:
+                            bSelected = "active"
+                        elif "/corp/about" in session._environ['PATH_INFO']:
+                            aSelected = "active"
                         endif
                     %>
                     % if 'user' in session:
@@ -48,6 +52,7 @@
                         <li class="${homeSelected} small-show">
                             <a href="/"><i class="icon-home"></i></a>
                         </li>
+                        <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
@@ -97,6 +102,7 @@
                             </ul>
                         </li>
                     % else:
+                        <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         <li class="${hSelected}"><a href="/help">Help</a></li>
                         <li><a href="/login">Login</a></li>
                         <li><a href="/signup2">Signup</a></li>

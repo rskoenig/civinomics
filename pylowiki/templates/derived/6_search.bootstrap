@@ -430,7 +430,7 @@
                                     <div class="span9">
                                         <div class="span3">
                                             <a href = '{{initiative.initiativeLink}}'>
-                                                <div style="height:80px; width:110px; background-image:url('{{initiative.thumbnail}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+                                                <div class="i-thumb" style="background-image:url('{{initiative.thumbnail}}');"/></div>
                                             </a>
                                         </div>
                                         <div class="span9">
@@ -479,12 +479,12 @@
                             </div>
                         </td></tr>
                     </table>
-                    <div class="centered" ng-show="initiative.length>pageSize">
+                    <div class="centered" ng-show="initiatives.length>pageSize">
                         <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
                             Prev
                         </button>
                         <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
-                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= initiatives.length/pageSize - 1" ng-click="currentPage=currentPage+1">
                             Next
                         </button>
                         <div class="spacer"></div>
