@@ -136,6 +136,7 @@
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
                     <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
                     <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
+
                 </ul>
                 -->
             % endif

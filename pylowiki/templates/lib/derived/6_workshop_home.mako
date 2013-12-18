@@ -478,6 +478,8 @@
             scope = workshopLib.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
+            level = scope['level']
+            name = scope['name']
         else:
             workshopFlag = '/images/flags/generalGroup.gif'
         flagSize = 'med-flag'
@@ -485,5 +487,13 @@
           flagSize = 'small-flag'
 
     %>
-    <a href="${href}"><img class="thumbnail span ${flagSize}" src="${workshopFlag}"></a>
+    <a href="${href}"><img class="thumbnail ${flagSize}" src="${workshopFlag}"></a>
+    % if 'workshopFor' in args:
+        Workshop for
+        % if name == 'Earth':
+          <a href="${href}">${name}</a>
+        % else:
+          the <a href="${href}">${level} of ${name}</a>
+        % endif
+    % endif
 </%def>

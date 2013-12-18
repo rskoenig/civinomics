@@ -9,12 +9,9 @@
 	    <div class="row-fluid featured">
 	    	<table>
 	            <tr>
-	              <td style="vertical-align: top; padding-top: 3px;">
-	                ${workshopHelpers.displayWorkshopFlag(item['item'], 'small')}
-	              </td>
 	              <td style="padding-left: 5px;">
-	                <span class="featured-title lead">${item['title']}</span><br>
-	     			<span class="featured-scope-title">${item['scopeTitle']}</span>
+	                <span class="featured-title">${item['title']}</span><br>
+	     			${workshopHelpers.displayWorkshopFlag(item['item'], 'small')}<span class="featured-scope-title lead">${item['scopeTitle']}</span>
 	              </td>
 	            </tr>
 	         </table>

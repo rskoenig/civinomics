@@ -1563,6 +1563,12 @@
     % endfor
   </select>
 </%def>
+<%def name="public_tag_links()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+    % for category in sorted(categories):
+      <a href="/searchTags/${category}">${category}</a><br>
+    % endfor
+</%def>
 
 <%def name="bookmarkOptions(user, workshop)">
   <% f = followLib.getFollow(user, workshop) %>
