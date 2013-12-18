@@ -21,6 +21,7 @@
                         Sort by: 
                         <select class="med-width" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
                             <option value="-date">Recent</option>
+                            <option value="date">Oldest</option>
                             <option value="title">Alphabetical</option>
                             <option value="-numComments">Most Comments</option>
                             <option value="-voteCount">Most Votes</option>
@@ -98,7 +99,7 @@
                                             <p>{{initiative.description}}</p>
                                             <small>
                                                 <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" src="{{initiative.flag}}"> {{initiative.location}}</a><br>
-                                                Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                                Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span><br>
                                             </small>
                                         </div>
                                     </div>
