@@ -447,7 +447,7 @@
       if '{{' in alURL:
         alURL = re.sub(r'\{.*?\}', '', alURL)
       if 'zip/lookup' in alURL or '/signup' in alURL:
-        alURL = '/home'
+        alURL = '/browse'
       session['afterLoginURL'] = alURL
     %>
     <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">

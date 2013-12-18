@@ -36,11 +36,13 @@
                             <option value="-date">Join Date</option>
                             <option value="title">Alphabetical</option>
                         </select>
-                        <select class="med-width" ng-model="votedornot" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
-                            <option value="voted">Voted on</option>
-                            <option value="nvote">Not yet voted on</option>
-                            <option value="vote">All</option>
-                        </select>
+                        % if 'user' in session:
+                            <select class="med-width" ng-model="votedornot" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
+                                <option value="voted">Voted on</option>
+                                <option value="nvote">Not yet voted on</option>
+                                <option value="vote">All</option>
+                            </select>
+                        % endif
                     </form>
                     <span ng-show="showingInitiatives.create" ng-cloak>
                         % if 'user' in session:
@@ -120,12 +122,12 @@
                                                 Total Votes: <span class="totalVotes">{{totalVotes}}</span>
                                             </div>
                                         % else:
-                                            <a href="/login" class="yesVote">
+                                            <a href="#signupLoginModal" data-toggle="modal" class="yesVote">
                                                 <div class="vote-icon yes-icon"></div>
                                             </a>
                                             <br>
                                             <br>
-                                            <a href="/login" class="noVote">
+                                            <a href="#signupLoginModal" data-toggle="modal" class="noVote">
                                                 <div class="vote-icon no-icon"></div>
                                             </a>
                                             <br>
