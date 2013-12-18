@@ -184,7 +184,6 @@ class SearchController(BaseController):
     def browseInitiatives(self):
         iPhoneApp = utils.iPhoneRequestTest(request)
         self.noQuery = False
-        c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
         c.searchType = "browse"
         c.searchQuery = "All Initiatives" 
         c.scope = {'level':'earth', 'name':'all'}

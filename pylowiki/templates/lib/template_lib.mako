@@ -445,7 +445,7 @@
         alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL
       if '{{' in alURL:
-        alURL = re.sub(r'\{.*?\}', '', alURL)
+        alURL= session._environ['HTTP_REFERER']
       if 'zip/lookup' in alURL or '/signup' in alURL:
         alURL = '/browse/initiatives'
       session['afterLoginURL'] = alURL
