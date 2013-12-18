@@ -453,7 +453,7 @@
       # handles exception with geo pages where angular appends itself to URL
       if '{{' in alURL:
         alURL = re.sub(r'\{.*?\}', '', alURL)
-      if 'zip/lookup' in alURL:
+      if 'zip/lookup' in alURL or '/signup' in alURL:
         alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
