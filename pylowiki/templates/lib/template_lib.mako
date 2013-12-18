@@ -26,7 +26,7 @@
                 </ul>
                 <ul class="nav pull-right" id="profileAvatar">
                     <%
-                        wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
+                        wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = aSelected = bSelected = ''
                         if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
                             wSelected = "active"
                         elif "/messages" in session._environ['PATH_INFO']:
@@ -39,6 +39,10 @@
                             hSelected = "active"
                         elif "/home" in session._environ['PATH_INFO']:
                             homeSelected = "active"
+                        elif "/browse/initiatives" in session._environ['PATH_INFO']:
+                            bSelected = "active"
+                        elif "/corp/about" in session._environ['PATH_INFO']:
+                            aSelected = "active"
                         endif
                     %>
                     % if 'user' in session:
@@ -48,6 +52,7 @@
                         <li class="${homeSelected} small-show">
                             <a href="/"><i class="icon-home"></i></a>
                         </li>
+                        <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
@@ -97,6 +102,7 @@
                             </ul>
                         </li>
                     % else:
+                        <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         <li class="${hSelected}"><a href="/help">Help</a></li>
                         <li><a href="/login">Login</a></li>
                         <li><a href="/signup2">Signup</a></li>
@@ -112,7 +118,7 @@
 </%def>
 
 <%def name="splashNavbar()">
-    <div class="navbar splash-nav">
+    <div class="navbar splash-nav" ng-init="showTitle = 'sTitle'">
       <div class="navbar-inner civinomics-splash">
         <div class="container-fluid">
             <a class="brand" href="/"><div class="logo logo-lg" id="civinomicsLogo"></div></a>
@@ -124,15 +130,12 @@
                 </li>
             </ul>
             <ul class="nav pull-right">
-                <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
+                <li class="nav-item"><a href="http://civinomics.wordpress.com" target="_blank" class="nav-item">Blog</a></li>
+                <!-- <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li> -->
                 <li class="nav-item">
-                    <form id="sign_in" action="/loginHandler" class="form-inline login" method="post">
-                        <input type="email" class="input-small" name="email" id="email" placeholder="Email" required>
-                        <input type="password" class="input-small" name="password" id="password" placeholder="Password">
-                        <a href="/forgotPassword" class="forgot"> Forgot?</a>
-                        <button type="submit" class="btn nav-login">Log in</button>                            
-                  </form>
+                    <a href="/login" class="btn nav-login">Log in</a>                            
                 </li>
             </ul>
         </div>
@@ -215,7 +218,6 @@
                 </div>
                 <div class="span5">
                     <ul class="horizontal-list">
-                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
@@ -230,7 +232,6 @@
                         <li><a href="/corp/privacy">Privacy</a></li>
                         <li><a href="/corp/news">News</a></li>
                         <li><a href="/corp/contact">Contact</a></li>
-                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
@@ -243,7 +244,7 @@
                 </div>
             </div>
             <div class="row-fluid">
-                <em class="photo-cred">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
+                <em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
             </div>
         </div>
     </div>
@@ -317,13 +318,6 @@
 
 
 <%def name="tabbableSignupLogin(*args)">
-    % if c.splashMsg:
-        <% message = c.splashMsg %>
-        <div class="alert alert-${message['type']}">
-            <button data-dismiss="alert" class="close">x</button>
-            <strong>${message['title']}</strong> ${message['content']}
-        </div>
-    % endif
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -342,13 +336,6 @@
       <div ng-show="showTitle == 'pTitle'" ng-cloak>
         ${forgotPassword()}
       </div>
-      % if 'footer' in args:    
-        <div class="social-sign-in-separator" style="margin: 10px 0 10px 0;">
-        </div>
-        <div class="row-fluid centered tcs">
-            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
-        </div>
-      % endif
     % endif
 </%def>
 
@@ -458,15 +445,19 @@
         alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL
       if '{{' in alURL:
-        alURL = re.sub(r'\{.*?\}', '', alURL)
+        alURL= session._environ['HTTP_REFERER']
+      if 'zip/lookup' in alURL or '/signup' in alURL:
+        alURL = '/browse/initiatives'
       session['afterLoginURL'] = alURL
     %>
-    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-init="showTitle = 'sTitle'">
+    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 class="centered" id="myModalLabel">Log in or Sign up to Vote</h3>
+        <h3 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up to Vote</h3>
+        <h3 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h3>
+        <h3 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h3>
       </div>
-      <div class="modal-body" ng-controller="signupController">
+      <div class="modal-body">
         ${tabbableSignupLogin()}
       </div>
       <div class="modal-footer">

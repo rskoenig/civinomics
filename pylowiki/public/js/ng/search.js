@@ -48,7 +48,10 @@ app.controller('SearchCtrl', function($scope, $http){
         if (pathlen === 9) {
             $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||" + pathList[7] + "|" + pathList[8];
         }
+    } else if (action === 'browse' || action === 'signup'){
+        $scope.searchType = 'browse';
     }
+
     if($scope.searchString === '') {
         $scope.noQuery = true;
         $scope.loading = false;
@@ -72,10 +75,15 @@ app.controller('SearchCtrl', function($scope, $http){
     //$scope.showingInitiatives = {'class': '', 'show': false, 'create': false};
     $scope.objType = 'initiatives';
     //$scope.objType = 'workshops';
-    $scope.orderProp = '-voteCount';
+    if(action === 'signup'){
+        $scope.orderProp = '-voteCount';
+    } else {
+        $scope.orderProp = '-date';
+    }
+    $scope.votedornot = 'nvote'
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos, initiatives'};
     $scope.currentPage = 0;
-    $scope.pageSize = 20;
+    $scope.pageSize = 10;
 
     $http.get($scope.initiativesURL).success(function(data){
     //$http.get($scope.workshopsURL).success(function(data){
@@ -104,7 +112,7 @@ app.controller('SearchCtrl', function($scope, $http){
     });
     $scope.numberOfPages=function(){
         //return Math.ceil($scope.initiatives.length/$scope.pageSize); 
-        return Math.ceil($scope.workshops.length/$scope.pageSize);
+        return Math.ceil($scope.initiatives.length/$scope.pageSize);
     }
     
     $scope.searchWorkshops = function() {
