@@ -375,6 +375,10 @@ def getPublicScope(workshop):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
+        href += '/0'
+    scopeName = scopeName.replace('-', ' ')
+    scopeName = scopeName.title()
+    scopeLevel = scopeLevel.title()
     return {'level':scopeLevel, 'name':scopeName, 'flag':flag, 'href':href}
 
 def setDemo(workshop): 
