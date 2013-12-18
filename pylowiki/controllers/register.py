@@ -895,7 +895,7 @@ class RegisterController(BaseController):
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
                 else:
-                    splashMsg['content'] = "The email '" + email + "' is already in use"
+                    splashMsg['content'] = "The email '" + email + "' is already in use. If you own this account, try Log in or Forgot password."
                     session['splashMsg'] = splashMsg
                     session.save()
                     if returnJson:

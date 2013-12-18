@@ -336,13 +336,6 @@
       <div ng-show="showTitle == 'pTitle'" ng-cloak>
         ${forgotPassword()}
       </div>
-      % if 'footer' in args:    
-        <div class="social-sign-in-separator" style="margin: 10px 0 10px 0;">
-        </div>
-        <div class="row-fluid centered tcs">
-            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
-        </div>
-      % endif
     % endif
 </%def>
 
