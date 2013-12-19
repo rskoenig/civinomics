@@ -219,10 +219,16 @@
         
         </script>
         <div class="btn-group facebook">
-          <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
-            <i class="icon-facebook-sign icon-2x"></i>
-          </a>
-          <ul class="dropdown-menu" style="margin-left: -50px;">
+          % if 'btn' in kwargs:
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+              <i class="icon-facebook icon-light right-space"></i> | Share
+            </a>
+          % else:
+            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+              <i class="icon-facebook-sign icon-2x"></i>
+            </a>
+          % endif
+          <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
             <li>
               % if shareOnWall:
                 <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
@@ -663,6 +669,10 @@
    <%
         if 'noHref' in kwargs:
             initiativeStr = '/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+            if 'fullURL' in kwargs:
+              baseURL = utilsLib.getBaseUrl()
+              initiativeStr = '%s/initiative/%s/%s/show' %(baseURL, initiative["urlCode"], initiative["url"])
+
         else:
             initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
         initiativeStr += commentLinkAppender(**kwargs)
@@ -1565,6 +1575,12 @@
       <option value="${category}">${category}</option>
     % endfor
   </select>
+</%def>
+<%def name="public_tag_links()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+    % for category in sorted(categories):
+      <a href="/searchTags/${category}">${category}</a><br>
+    % endfor
 </%def>
 
 <%def name="bookmarkOptions(user, workshop)">

@@ -14,12 +14,11 @@
         <div class="span10">
           
           <h1 class="workshop-title"> 
-            ${helpers.displayWorkshopFlag(c.w)}
             <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
               {{workshopTitle}}
             </a>
-            ${lib_6.showTags(c.w)}
           </h1>
+          <h4 style="color: #fff">${helpers.displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
         </div>
         <div class="span2">
           % if 'user' in session:

@@ -17,6 +17,9 @@ from pylowiki.lib.db.dbHelpers    import commit
 import pylowiki.lib.db.mainImage  as mainImageLib
 from pylowiki.lib.db.revision     import Revision
 import pylowiki.lib.mail          as mailLib
+import pylowiki.lib.db.photo      as photoLib
+import pylowiki.lib.sort          as sort
+import pylowiki.lib.db.user       as userLib
 import re
 import simplejson as json
 
@@ -36,6 +39,23 @@ class RegisterController(BaseController):
     def signupDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+
+        c.photos = photoLib.getAllPhotos()
+        if c.photos and len(c.photos) != 0:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = p
+            c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+        else: 
+            c.backgroundPhoto = '/images/splash/sc_boardwalk.jpg'
+            c.backgroundAuthor = 'Ester Kim'
+
+        self.noQuery = False
+        c.searchType = "browse"
+        self.searchType = "browse"
+        c.searchQuery = "All Initiatives" 
+        c.scope = {'level':'earth', 'name':'all'}
 
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
@@ -875,7 +895,7 @@ class RegisterController(BaseController):
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
                 else:
-                    splashMsg['content'] = "The email '" + email + "' is already in use"
+                    splashMsg['content'] = "The email '" + email + "' is already in use. If you own this account, try Log in or Forgot password."
                     session['splashMsg'] = splashMsg
                     session.save()
                     if returnJson:
