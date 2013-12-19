@@ -48,7 +48,7 @@ nv.models.multiBarHorizontalChart = function() {
     ;
   yAxis
     .orient('bottom')
-    .tickFormat(d3.format(',.1f'))
+    .tickFormat(d3.format(',d'))
     ;
 
   controls.updateState(false);

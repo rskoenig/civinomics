@@ -315,14 +315,15 @@ class SearchController(BaseController):
             if entry['percentYes'] > 50:
                 series2['values'].append(
                     {
-                        'label':"%s, %s votes"%(entry['title'], int(entry['voteCount'])),
+                        'label':"%s, %s votes  "%(entry['title'], int(entry['voteCount'])),
                         'value':int(entry['percentYes'])
                     })
             else:
                 series1['values'].append(
                     {
-                        'label':"%s, %s votes"%(entry['title'], int(entry['voteCount'])),
-                        'value':int(0 - entry['percentNo'])
+                        'label':"%s, %s votes  "%(entry['title'], int(entry['voteCount'])),
+                        'value':int(entry['percentYes'])
+                        #'value':int(0 - entry['percentNo'])
                     })
             
         allData.append(series1)

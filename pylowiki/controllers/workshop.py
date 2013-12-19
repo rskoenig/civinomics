@@ -119,13 +119,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'listenerStats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'displayAllResources', 'listenerStats']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -917,6 +917,90 @@ class WorkshopController(BaseController):
         response.content_type = 'application/xml'
 
         return feed.writeString('utf-8')
+
+    def listenerStats(self, workshopCode, workshopURL):
+            
+        #stacked bar graph data struct
+        sbgData = []
+        ideas = {
+            'key':'Ideas',
+            'values':[]
+        }
+        resources = {
+            'key':'Resources',
+            'values':[]
+        }
+        discussions = {
+            'key':'Discussions',
+            'values':[]
+        }
+        comments = {
+            'key':'Comments',
+            'values':[]
+        }
+        # look at the data this returns, could be close to what I need for a comprehensive graph or two
+        activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
+        for item in activity:
+            #log.info(item.objType)
+            #log.info(item.date
+            # "%s"%thisTime,
+            # round timestamp to nearest day so the bars stack (86,400 seconds in a day)
+            itemTime = int(item.date.strftime("%s"))
+            nearestDay = itemTime - (itemTime % 86400)
+            # create a timestring that nvd3 likes (millisecond precision)
+            thisTime = "%s000"%str(nearestDay)
+            if 'views' in item.keys():
+                y = int(item['views'])
+            else:
+                y = 1
+            if item.objType == 'idea':
+                ideas['values'].append(
+                    {
+                        'x':int(thisTime),
+                        'y':y
+                    })
+            elif item.objType == 'resource':
+                log.info(item.date)
+                log.info(thisTime)
+                resources['values'].append(
+                    {
+                        'x':int(thisTime),
+                        'y':y
+                    })
+            elif item.objType == 'discussion':
+                discussions['values'].append(
+                    {
+                        'x':int(thisTime),
+                        'y':y
+                    })
+            elif item.objType == 'comment':
+                comments['values'].append(
+                    {
+                        'x':int(thisTime),
+                        'y':y
+                    })
+        sbgData.append(ideas)
+        sbgData.append(resources)
+        sbgData.append(discussions)
+        sbgData.append(comments)
+
+        c.jsonSbgData = json.dumps(sbgData)
+        #log.info(c.jsonSbgData)
+        # build json data struct of all objects in this activity
+        # objTypes = ['resource', 'discussion', 'idea', 'comment']
+
+        # a radar plot will show relative totals of views, votes and popularity
+        # one plot per type?
+        # paginated plotting?
+        # sort for highest/lowest first?
+
+        # a stacked bar graph will show how things have gone over time
+        
+        c.listenerStats = 'all the data we need for graphs of the listener'
+
+        c.listingType = 'listenerStats'
+        #log.info('hi made it')
+        return render('/derived/6_detailed_listing.bootstrap')
         
     def display(self, workshopCode, workshopURL):
         # check to see if this is a request from the iphone app

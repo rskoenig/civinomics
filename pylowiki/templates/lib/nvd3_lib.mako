@@ -7,7 +7,7 @@
 ## NVD3 library
 ################################################
 
-<%def name="initiativeStackedGroupedData()">
+<%def name="initiativeStackedGroupedData(sbgData)">
 
     <style>
         #chart1 {
@@ -29,19 +29,65 @@
     <script src="/nvd3/nv.d3.min.js"></script>
    
     <script> 
-        nv.addGraph(function() {
-            var chart = nv.models.multiBarChart()
-                .margin({top: 5, right: 10, bottom: 25, left: -5})
-                .height(200);
 
+        nv.addGraph(function() {
+            var graphData = ${sbgData | n}
+/*
+chart = nv.models.linePlusBarChart()
+           .margin({top: 30, right: 60, bottom: 50, left: 70})
+           .x(function(d,i) { return i })
+           .color(d3.scale.category10().range());
+ 
+     chart.xAxis.tickFormat(function(d) {
+       var dx = testdata[0].values[d] && testdata[0].values[d].x || 0;
+       return d3.time.format('%x')(new Date(dx))
+     });*/
+            
+            var margin = {
+              top: 5, 
+              right: 10, 
+              bottom: 65, 
+              left: 55
+            };
+            var width = 900 - margin.left - margin.right;
+            //var height = 300 - margin.top – margin.bottom;
+
+            var chart = nv.models.multiBarChart()
+                .margin({top: 5, right: 10, bottom: 65, left: 55})
+                .width(width)
+                .x(function(d) { return d['x'] });
+
+            /*
+            chart.xAxis.tickFormat(function(d) {
+              var dx = graphData[0].values[d] && graphData[0].values[d].x || 0;
+              return d3.time.format('%x')(new Date(dx))
+            });*/
+            /*
             chart.xAxis
-              .tickFormat(d3.format(',f'));
+              .orient("bottom")
+              .ticks(10)
+              .tickFormat(function (d) {
+                return d3.time.format("%Y-%m-%d")(); //<== insert the tickFormat function
+              });*/
+            //chart.xAxis
+            //  .tickFormat(function(d) {
+            //    return d3.time.format('%x')(new Date(d))
+            //  });
+            chart.xAxis
+              .rotateLabels(-45)
+              .tickFormat(function(d) {
+                return d3.time.format('%b %d %Y')(new Date(d))
+              });
+            //chart.xAxis
+            //  .tickFormat(d3.format(',f'));
 
             chart.yAxis
               .tickFormat(d3.format(',.1f'));
 
+            //console.log(exampleData());
+            //console.log(graphData);
             d3.select('#chart1 svg')
-              .datum(exampleData())
+              .datum(graphData)
             .transition().duration(500).call(chart);
 
           nv.utils.windowResize(chart.update);
@@ -95,45 +141,7 @@
 </%def>
 
 <%def name="searchPageInitiativePopularity(jsonInitiatives)">
-    <%
-        """
-          var data = [
-          {
-            "key": "Series1",
-            "color": "#d62728",
-            "values": [
-              { 
-                "label" : "Group A" ,
-                "value" : -1.8746444827653
-              } , 
-              { 
-                "label" : "Group B" ,
-                "value" : -8.0961543492239
-              } , 
-              { 
-                "label" : "Group C" ,
-                "value" : -0.57072943117674
-              }
-            ]
-          },
-          {
-            "key": "Series2",
-            "color": "#1f77b4",
-            "values": [
-              { 
-                "label" : "Group A" ,
-                "value" : 25.307646510375
-              } , 
-              { 
-                "label" : "Group B" ,
-                "value" : 16.756779544553
-              }
-            ]
-          }
-        ];
-        """
-        
-    %>
+    
     <style>
         #chart {
           height: 330px;
@@ -165,16 +173,16 @@
         var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d['label'] })
             .y(function(d) { return d.value })
-            .margin({top: 5, right: 10, bottom: 25, left: -45})
+            .margin({top: 5, right: 5, bottom: 15, left: 5})
             .showValues(true)
             .tooltips(true)
             .showControls(false)
             .height(300)
-            .width(215)
-            .yDomain([-100,100]);
+            .width(200)
+            .yDomain([0,100]);
 
         chart.yAxis
-            .tickFormat(d3.format(',f'));
+            .tickFormat(d3.format(',d'));
 
         d3.select('#chart svg')
             .datum(allData)
