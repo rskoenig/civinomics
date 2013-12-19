@@ -26,14 +26,12 @@ def getRatingForThing(user, thing):
 def getRatingForWorkshopObjects(user, workshopCode, objType):
     objCode = objType + 'Code'
     log.info("objCode is %s workshopCode is %s"%(objCode, workshopCode))
-    try:
-        return meta.Session.query(Thing)\
+    return meta.Session.query(Thing)\
             .filter_by(objType = 'rating')\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wk(objCode)))\
             .filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
-    except:
-        return False
+
 
 def makeOrChangeRating(thing, user, amount, ratingType):
     if 'ups' not in thing.keys():

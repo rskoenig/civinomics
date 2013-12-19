@@ -1008,9 +1008,11 @@ class WorkshopController(BaseController):
                 c.discussions = discussions[0:3]
 
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
-        c.ideaRatings = ratingLib.getRatingForWorkshopObjects(c.user, workshopCode, 'idea')
-        if not c.ideaRatings:
-            c.ideaRatings = []
+        c.ideaRatings = []
+        if 'user' in session:
+            c.ideaRatings = ratingLib.getRatingForWorkshopObjects(c.authuser, workshopCode, 'idea')
+            if not c.ideaRatings:
+                c.ideaRatings = []
             
         log.info("c.ideaRatings is %s"%c.ideaRatings)
         if not ideas:
@@ -1047,13 +1049,12 @@ class WorkshopController(BaseController):
                     i = i + 1
             else:
                 c.ideas = []
-                for idea in sortedIdeas:
-                    idea['vote'] = False
-                    for r in c.ideaRatings:
-                        if r['ideaCode'] == idea['urlCode']:
-                            idea['vote'] = r
-                                
-                    c.ideas.append(idea)
+                if c.ideaRatings:
+                    for i in sortedIdeas:
+                        for r in c.ideaRatings:
+                            if r['ideaCode'] == i['urlCode']:
+                                i['vote'] = r
+                        c.ideas.append(i)
 
         if not iPhoneApp:
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')

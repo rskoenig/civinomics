@@ -367,8 +367,10 @@
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
-            if 'vote' in thing:
+            if 'vote' in thing and 'amount' in thing['vote']:
                 rated = thing['vote']
+                log.info("rated is %s"%rated)
+                log.info("thing is %s"%thing)
             else:
                 rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
