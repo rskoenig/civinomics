@@ -1055,6 +1055,8 @@ class WorkshopController(BaseController):
                             if r['ideaCode'] == i['urlCode']:
                                 i['vote'] = r
                         c.ideas.append(i)
+                else:
+                    c.ideas = sortedIdeas
 
         if not iPhoneApp:
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
