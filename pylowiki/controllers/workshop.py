@@ -1014,12 +1014,12 @@ class WorkshopController(BaseController):
             if not c.ideaRatings:
                 c.ideaRatings = []
             
-        log.info("c.ideaRatings is %s"%c.ideaRatings)
+        #log.info("c.ideaRatings is %s"%c.ideaRatings)
         if not ideas:
             c.ideas = []
         else:
             sortedIdeas = sort.sortBinaryByTopPop(ideas)
-            log.info("after sorted ideas")
+            #log.info("after sorted ideas")
             if iPhoneApp:
                 i = 0
                 for idea in sortedIdeas:
@@ -1205,7 +1205,7 @@ class WorkshopController(BaseController):
             
         if 'confTab' in session:
             c.tab = session['confTab']
-            log.info(c.tab)
+            #log.info(c.tab)
             session.pop('confTab')
             session.save()
         # hack for continue button in slideshow tab of configure

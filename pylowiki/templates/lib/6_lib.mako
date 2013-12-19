@@ -369,8 +369,6 @@
          <% 
             if 'vote' in thing and 'amount' in thing['vote']:
                 rated = thing['vote']
-                log.info("rated is %s"%rated)
-                log.info("thing is %s"%thing)
             else:
                 rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:

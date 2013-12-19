@@ -25,7 +25,7 @@ def getRatingForThing(user, thing):
         
 def getRatingForWorkshopObjects(user, workshopCode, objType):
     objCode = objType + 'Code'
-    log.info("objCode is %s workshopCode is %s"%(objCode, workshopCode))
+    #log.info("objCode is %s workshopCode is %s"%(objCode, workshopCode))
     return meta.Session.query(Thing)\
             .filter_by(objType = 'rating')\
             .filter_by(owner = user.id)\

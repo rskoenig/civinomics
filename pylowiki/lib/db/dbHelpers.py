@@ -36,7 +36,6 @@ def with_characteristic_like(key, value, raw = 0, case_insensitive = True):
 
 def with_key(key, case_insensitive = True):
     value = '%'
-    log.info("with_key")
     if case_insensitive:
         return and_(Data.key == key, Data.value.ilike(value))
     else:
