@@ -36,6 +36,7 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.d3Helpers       as d3Helpers
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
@@ -921,6 +922,7 @@ class WorkshopController(BaseController):
     def listenerStats(self, workshopCode, workshopURL):
             
         #stacked bar graph data struct
+        activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
         sbgData = []
         ideas = {
             'key':'Ideas',
@@ -938,12 +940,9 @@ class WorkshopController(BaseController):
             'key':'Comments',
             'values':[]
         }
-        # look at the data this returns, could be close to what I need for a comprehensive graph or two
-        activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
         for item in activity:
             #log.info(item.objType)
             #log.info(item.date
-            # "%s"%thisTime,
             # round timestamp to nearest day so the bars stack (86,400 seconds in a day)
             itemTime = int(item.date.strftime("%s"))
             nearestDay = itemTime - (itemTime % 86400)
@@ -954,41 +953,20 @@ class WorkshopController(BaseController):
             else:
                 y = 1
             if item.objType == 'idea':
-                ideas['values'].append(
-                    {
-                        'x':int(thisTime),
-                        'y':y
-                    })
+                ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, y)
             elif item.objType == 'resource':
-                log.info(item.date)
-                log.info(thisTime)
-                resources['values'].append(
-                    {
-                        'x':int(thisTime),
-                        'y':y
-                    })
+                resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, y)
             elif item.objType == 'discussion':
-                discussions['values'].append(
-                    {
-                        'x':int(thisTime),
-                        'y':y
-                    })
+                discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, y)
             elif item.objType == 'comment':
-                comments['values'].append(
-                    {
-                        'x':int(thisTime),
-                        'y':y
-                    })
+                comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, y)
         sbgData.append(ideas)
         sbgData.append(resources)
         sbgData.append(discussions)
         sbgData.append(comments)
 
         c.jsonSbgData = json.dumps(sbgData)
-        #log.info(c.jsonSbgData)
-        # build json data struct of all objects in this activity
-        # objTypes = ['resource', 'discussion', 'idea', 'comment']
-
+        
         # a radar plot will show relative totals of views, votes and popularity
         # one plot per type?
         # paginated plotting?
