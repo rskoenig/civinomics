@@ -940,6 +940,7 @@ class WorkshopController(BaseController):
             'key':'Comments',
             'values':[]
         }
+        timeList = []
         for item in activity:
             #log.info(item.objType)
             #log.info(item.date
@@ -952,14 +953,35 @@ class WorkshopController(BaseController):
                 y = int(item['views'])
             else:
                 y = 1
+            if thisTime not in timeList:
+                newTime = True
+            else:
+                newTime = False
             if item.objType == 'idea':
-                ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, y)
+                ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, y, newTime=newTime)
+                if newTime:
+                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0)
+                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0)
+                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0)
             elif item.objType == 'resource':
-                resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, y)
+                resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, y, newTime=newTime)
+                if newTime:
+                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0)
+                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0)
+                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0)
             elif item.objType == 'discussion':
-                discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, y)
+                discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, y, newTime=newTime)
+                if newTime:
+                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0)
+                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0)
+                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0)
             elif item.objType == 'comment':
-                comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, y)
+                comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, y, newTime=newTime)
+                if newTime:
+                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0)
+                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0)
+                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0)
+            timeList.append(thisTime)
         sbgData.append(ideas)
         sbgData.append(resources)
         sbgData.append(discussions)
