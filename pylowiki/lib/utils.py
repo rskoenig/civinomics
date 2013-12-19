@@ -200,7 +200,8 @@ def getPublicScope(item):
                         scopeLevel = 'city'
                         scopeName  = scope[8].replace('-', ' ').title()
                         scopeString += ', City of %s' % scopeName
-                        flag += '/cities/' + scope[8] + '.gif'
+                        flag += '/cities/' + scope[8]
+                        log.info('The city flag url is %s' % flag)
                         href += '/' + scope[8]
                         if scope[9] != '0':
                             scopeLevel = 'postalCode'
