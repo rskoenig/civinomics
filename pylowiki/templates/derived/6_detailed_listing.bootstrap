@@ -64,7 +64,6 @@
                     ${workshopHelpers.showActivity(c.activity)}
                % elif listingType == 'listenerStats':
                    <h4 class="section-header smaller">Statistics</h4>
-                   <h5>Views by date</h5>
                    ${nvd3Lib.initiativeStackedGroupedData(c.jsonSbgData)}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>

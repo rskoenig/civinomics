@@ -953,34 +953,37 @@ class WorkshopController(BaseController):
                 y = int(item['views'])
             else:
                 y = 1
+            ups = int(item['ups'])
+            downs = int(item['downs'])
+            numVotes = ups + downs
             if thisTime not in timeList:
                 newTime = True
             else:
                 newTime = False
             if item.objType == 'idea':
-                ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, y, newTime=newTime)
+                ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
                 if newTime:
-                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0)
-                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0)
-                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0)
+                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0, numVotes=0, ups=0)
+                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0, numVotes=0, ups=0)
+                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0, numVotes=0, ups=0)
             elif item.objType == 'resource':
-                resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, y, newTime=newTime)
+                resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
                 if newTime:
-                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0)
-                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0)
-                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0)
+                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0, numVotes=0, ups=0)
+                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0, numVotes=0, ups=0)
+                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0, numVotes=0, ups=0)
             elif item.objType == 'discussion':
-                discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, y, newTime=newTime)
+                discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
                 if newTime:
-                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0)
-                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0)
-                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0)
+                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0, numVotes=0, ups=0)
+                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0, numVotes=0, ups=0)
+                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0, numVotes=0, ups=0)
             elif item.objType == 'comment':
-                comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, y, newTime=newTime)
+                comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
                 if newTime:
-                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0)
-                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0)
-                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0)
+                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0, numVotes=0, ups=0)
+                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0, numVotes=0, ups=0)
+                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0, numVotes=0, ups=0)
             timeList.append(thisTime)
         sbgData.append(ideas)
         sbgData.append(resources)
@@ -988,6 +991,8 @@ class WorkshopController(BaseController):
         sbgData.append(comments)
 
         c.jsonSbgData = json.dumps(sbgData)
+
+
         
         # a radar plot will show relative totals of views, votes and popularity
         # one plot per type?

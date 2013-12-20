@@ -10,17 +10,29 @@
 <%def name="initiativeStackedGroupedData(sbgData)">
 
     <style>
-        #chart1 {
+        #chartViews {
           height: 330px;
         }
-        #chart1 svg {
+        #chartViews svg {
+          height: 300px;
+        }
+
+        #chartVotes {
+          height: 330px;
+        }
+        #chartVotes svg {
           height: 300px;
         }
 
     </style>
 
+    <h5>Views by date</h5>
+    <div id="chartViews">
+        <svg></svg>
+    </div>
 
-    <div id="chart1">
+    <h5>Votes by date</h5>
+    <div id="chartVotes">
         <svg></svg>
     </div>
 
@@ -32,16 +44,6 @@
 
         nv.addGraph(function() {
             var graphData = ${sbgData | n}
-/*
-chart = nv.models.linePlusBarChart()
-           .margin({top: 30, right: 60, bottom: 50, left: 70})
-           .x(function(d,i) { return i })
-           .color(d3.scale.category10().range());
- 
-     chart.xAxis.tickFormat(function(d) {
-       var dx = testdata[0].values[d] && testdata[0].values[d].x || 0;
-       return d3.time.format('%x')(new Date(dx))
-     });*/
             
             var margin = {
               top: 5, 
@@ -55,38 +57,59 @@ chart = nv.models.linePlusBarChart()
             var chart = nv.models.multiBarChart()
                 .margin({top: 5, right: 10, bottom: 65, left: 55})
                 .width(width)
-                .x(function(d) { return d['x'] });
+                .x(function(d) { return d['x'] })
+                .y(function(d) { return d['y'] });
 
-            /*
-            chart.xAxis.tickFormat(function(d) {
-              var dx = graphData[0].values[d] && graphData[0].values[d].x || 0;
-              return d3.time.format('%x')(new Date(dx))
-            });*/
-            /*
-            chart.xAxis
-              .orient("bottom")
-              .ticks(10)
-              .tickFormat(function (d) {
-                return d3.time.format("%Y-%m-%d")(); //<== insert the tickFormat function
-              });*/
-            //chart.xAxis
-            //  .tickFormat(function(d) {
-            //    return d3.time.format('%x')(new Date(d))
-            //  });
             chart.xAxis
               .rotateLabels(-45)
               .tickFormat(function(d) {
                 return d3.time.format('%b %d %Y')(new Date(d))
               });
-            //chart.xAxis
-            //  .tickFormat(d3.format(',f'));
 
             chart.yAxis
               .tickFormat(d3.format(',.1f'));
 
             //console.log(exampleData());
-            //console.log(graphData);
-            d3.select('#chart1 svg')
+            console.log(graphData);
+            d3.select('#chartViews svg')
+              .datum(graphData)
+            .transition().duration(500).call(chart);
+
+          nv.utils.windowResize(chart.update);
+
+          return chart;
+        });
+
+        nv.addGraph(function() {
+            var graphData = ${sbgData | n}
+            
+            var margin = {
+              top: 5, 
+              right: 10, 
+              bottom: 65, 
+              left: 55
+            };
+            var width = 900 - margin.left - margin.right;
+            //var height = 300 - margin.top – margin.bottom;
+
+            var chart = nv.models.multiBarChart()
+                .margin({top: 5, right: 10, bottom: 65, left: 55})
+                .width(width)
+                .x(function(d) { return d['x'] })
+                .y(function(d) { return d['numVotes'] });
+
+            chart.xAxis
+              .rotateLabels(-45)
+              .tickFormat(function(d) {
+                return d3.time.format('%b %d %Y')(new Date(d))
+              });
+
+            chart.yAxis
+              .tickFormat(d3.format(',.1f'));
+
+            //console.log(exampleData());
+            console.log(graphData);
+            d3.select('#chartVotes svg')
               .datum(graphData)
             .transition().duration(500).call(chart);
 

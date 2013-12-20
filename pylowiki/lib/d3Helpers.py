@@ -6,12 +6,20 @@ from pylons import tmpl_context as c, config, session
 log = logging.getLogger(__name__)
 
 def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
+    upds = 0
+    numVotes = 0
+    if 'ups' in kwargs:
+        ups = kwargs['ups']
+    if 'numVotes' in kwargs:
+        numVotes = kwargs['numVotes']
     if len(series['values']) == 0:
         # add a new entry to the series list, add this time to the timelist
         series['values'].append(
             {
                 'x':int(thisTime),
-                'y':thisValue
+                'y':thisValue,
+                'ups':ups,
+                'numVotes':numVotes
             })
     else:
         #if 'newTime' in kwargs:
@@ -27,6 +35,8 @@ def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
                 # add the value of this item to this day's entry
                 # extra: update the label for this day's entry to reflect the number of objects responsible
                 day['y'] = day['y'] + thisValue
+                day['ups'] = day['ups'] + ups
+                day['numVotes'] = day['numVotes'] + numVotes
                 foundIt = True
                 # stop cycling through the list
                 break
@@ -35,6 +45,8 @@ def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
             series['values'].append(
                 {
                     'x':int(thisTime),
-                    'y':thisValue
+                    'y':thisValue,
+                    'ups':ups,
+                    'numVotes':numVotes
                 })
     return series
