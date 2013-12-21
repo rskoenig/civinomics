@@ -7,7 +7,7 @@
 ## NVD3 library
 ################################################
 
-<%def name="initiativeStackedGroupedData(sbgData)">
+<%def name="initiativeStackedGroupedData(sbgData, sbgData2)">
 
     <style>
         #chartViews {
@@ -24,10 +24,22 @@
           height: 300px;
         }
 
+        #chartYesNo {
+          height: 330px;
+        }
+        #chartYesNo svg {
+          height: 300px;
+        }
+
     </style>
 
     <h5>Views by date</h5>
     <div id="chartViews">
+        <svg></svg>
+    </div>
+
+    <h5>Yes/No Votes by date</h5>
+    <div id="chartYesNo">
         <svg></svg>
     </div>
 
@@ -44,7 +56,7 @@
 
         nv.addGraph(function() {
             var graphData = ${sbgData | n}
-            
+
             var margin = {
               top: 5, 
               right: 10, 
@@ -70,9 +82,47 @@
               .tickFormat(d3.format(',.1f'));
 
             //console.log(exampleData());
-            console.log(graphData);
+            //console.log(graphData);
             d3.select('#chartViews svg')
               .datum(graphData)
+            .transition().duration(500).call(chart);
+
+          nv.utils.windowResize(chart.update);
+
+          return chart;
+        });
+
+        nv.addGraph(function() {
+            var graphData2 = ${sbgData2 | n}
+            
+            var margin = {
+              top: 5, 
+              right: 10, 
+              bottom: 65, 
+              left: 55
+            };
+            var width = 900 - margin.left - margin.right;
+            //var height = 300 - margin.top – margin.bottom;
+
+            var chart = nv.models.multiBarChart()
+                .margin({top: 5, right: 10, bottom: 65, left: 55})
+                .width(width)
+                .x(function(d) { return d['x'] })
+                .y(function(d) { return d['upsOrDowns'] });
+
+            chart.xAxis
+              .rotateLabels(-45)
+              .tickFormat(function(d) {
+                return d3.time.format('%b %d %Y')(new Date(d))
+              });
+
+            chart.yAxis
+              .tickFormat(d3.format(',.1f'));
+
+            //console.log(exampleData());
+            console.log(graphData2);
+            d3.select('#chartYesNo svg')
+              .datum(graphData2)
             .transition().duration(500).call(chart);
 
           nv.utils.windowResize(chart.update);
@@ -108,7 +158,7 @@
               .tickFormat(d3.format(',.1f'));
 
             //console.log(exampleData());
-            console.log(graphData);
+            //console.log(graphData);
             d3.select('#chartVotes svg')
               .datum(graphData)
             .transition().duration(500).call(chart);
@@ -117,7 +167,6 @@
 
           return chart;
         });
-
 
         function exampleData() {
           return stream_layers(3,10+Math.random()*100,.1).map(function(data, i) {

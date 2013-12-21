@@ -921,7 +921,7 @@ class WorkshopController(BaseController):
 
     def listenerStats(self, workshopCode, workshopURL):
             
-        #stacked bar graph data struct
+        #stacked bar graph data struct 1
         activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
         sbgData = []
         ideas = {
@@ -992,7 +992,39 @@ class WorkshopController(BaseController):
 
         c.jsonSbgData = json.dumps(sbgData)
 
+        #stacked bar graph data struct 2
+        
+        sbgData2 = []
+        upList = {
+            'key':'Yes Votes',
+            'color':'#075D00',
+            'values':[]
+        }
+        downList = {
+            'key':'No Votes',
+            'color':'#b94a48',
+            'values':[]
+        }
+        timeList = []
+        for item in activity:
+            itemTime = int(item.date.strftime("%s"))
+            nearestDay = itemTime - (itemTime % 86400)
+            # create a timestring that nvd3 likes (millisecond precision)
+            thisTime = "%s000"%str(nearestDay)
+            ups = int(item['ups'])
+            downs = int(item['downs'])
+            if thisTime not in timeList:
+                newTime = True
+            else:
+                newTime = False
+            upList = d3Helpers.addOrUpdateListInSeries(upList, thisTime, 0, newTime=newTime, upsOrDowns=ups)
+            downList = d3Helpers.addOrUpdateListInSeries(downList, thisTime, 0, newTime=newTime, upsOrDowns=downs)
 
+            timeList.append(thisTime)
+        sbgData2.append(upList)
+        sbgData2.append(downList)
+
+        c.jsonSbgData2 = json.dumps(sbgData2)
         
         # a radar plot will show relative totals of views, votes and popularity
         # one plot per type?

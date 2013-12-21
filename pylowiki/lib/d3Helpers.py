@@ -6,10 +6,16 @@ from pylons import tmpl_context as c, config, session
 log = logging.getLogger(__name__)
 
 def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
-    upds = 0
+    ups = 0
+    downs = 0
+    upsOrDowns = 0
     numVotes = 0
     if 'ups' in kwargs:
         ups = kwargs['ups']
+    if 'downs' in kwargs:
+        downs = kwargs['downs']
+    if 'upsOrDowns' in kwargs:
+        upsOrDowns = kwargs['upsOrDowns']
     if 'numVotes' in kwargs:
         numVotes = kwargs['numVotes']
     if len(series['values']) == 0:
@@ -19,6 +25,8 @@ def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
                 'x':int(thisTime),
                 'y':thisValue,
                 'ups':ups,
+                'downs':downs,
+                'upsOrDowns':upsOrDowns,
                 'numVotes':numVotes
             })
     else:
@@ -36,6 +44,8 @@ def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
                 # extra: update the label for this day's entry to reflect the number of objects responsible
                 day['y'] = day['y'] + thisValue
                 day['ups'] = day['ups'] + ups
+                day['downs'] = day['downs'] + downs
+                day['upsOrDowns'] = day['upsOrDowns'] + upsOrDowns
                 day['numVotes'] = day['numVotes'] + numVotes
                 foundIt = True
                 # stop cycling through the list
@@ -47,6 +57,8 @@ def addOrUpdateListInSeries(series, thisTime, thisValue, **kwargs):
                     'x':int(thisTime),
                     'y':thisValue,
                     'ups':ups,
+                    'downs':downs,
+                    'upsOrDowns':upsOrDowns,
                     'numVotes':numVotes
                 })
     return series
