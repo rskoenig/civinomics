@@ -1302,7 +1302,7 @@ class WorkshopController(BaseController):
         if alert == 'items':
             if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
                 if pmember['itemAlerts'] == u'1':
-                    listener['itemAlerts'] = u'0'
+                    pmember['itemAlerts'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['itemAlerts'] = u'1'
@@ -1313,7 +1313,7 @@ class WorkshopController(BaseController):
         elif alert == 'digest':
             if 'digest' in pmember.keys(): # Not needed after DB reset
                 if pmember['digest'] == u'1':
-                    listener['digest'] = u'0'
+                    pmember['digest'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['digest'] = u'1'
