@@ -120,7 +120,7 @@
               .tickFormat(d3.format(',.1f'));
 
             //console.log(exampleData());
-            console.log(graphData2);
+            //console.log(graphData2);
             d3.select('#chartYesNo svg')
               .datum(graphData2)
             .transition().duration(500).call(chart);
