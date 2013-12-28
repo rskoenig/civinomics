@@ -341,8 +341,6 @@ h1.workshop-title{
 
 @media (max-width: 730px){
   .logo{
-    background-image: url('/images/logo_white_simple.png');
-    height: 35px;
     width: 40px;
   }
 }
