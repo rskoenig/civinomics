@@ -33,17 +33,17 @@
 
     </style>
 
-    <h5>Views by date</h5>
+    <h5>Views by Activity Type</h5>
     <div id="chartViews">
         <svg></svg>
     </div>
 
-    <h5>Yes/No Votes by date</h5>
+    <h5>Yes/No Votes by Date</h5>
     <div id="chartYesNo">
         <svg></svg>
     </div>
 
-    <h5>Votes by date</h5>
+    <h5>Votes by Activity Type</h5>
     <div id="chartVotes">
         <svg></svg>
     </div>
@@ -245,8 +245,8 @@
         var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d['label'] })
             .y(function(d) { return d.value })
-            .margin({top: 5, right: 5, bottom: 15, left: 5})
-            .showValues(true)
+            .margin({top: 5, right: 25, bottom: 15, left: 5})
+            .showValues(false)
             .tooltips(true)
             .showControls(false)
             .height(300)

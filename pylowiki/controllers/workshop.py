@@ -120,13 +120,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'listenerStats', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'publicStats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources', 'listenerStats']
+        scoped = ['display', 'info', 'activity', 'displayAllResources', 'publicStats']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -919,7 +919,7 @@ class WorkshopController(BaseController):
 
         return feed.writeString('utf-8')
 
-    def listenerStats(self, workshopCode, workshopURL):
+    def publicStats(self, workshopCode, workshopURL):
             
         #stacked bar graph data struct 1
         activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
@@ -1033,9 +1033,9 @@ class WorkshopController(BaseController):
 
         # a stacked bar graph will show how things have gone over time
         
-        c.listenerStats = 'all the data we need for graphs of the listener'
+        c.publicStats = 'all the data we need for graphs of the public'
 
-        c.listingType = 'listenerStats'
+        c.listingType = 'publicStats'
         #log.info('hi made it')
         return render('/derived/6_detailed_listing.bootstrap')
         

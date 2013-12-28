@@ -50,10 +50,10 @@
               forumHref = linkHref + '/discussion'
               activityHref= linkHref + '/activity'
               adminHref= linkHref + '/preferences'
-              listenerStatsHref= linkHref + '/listenerStats'
+              publicStatsHref= linkHref + '/publicStats'
 
     
-              summaryActive = infoActive = activityActive = forumActive = adminActive = listenerStatsActive = ''
+              summaryActive = infoActive = activityActive = forumActive = adminActive = publicStatsActive = ''
 
               if c.listingType == 'resources' or listingType == 'resource':
                 infoActive = 'active'
@@ -65,8 +65,8 @@
                 activityActive = 'active'
               elif c.adminPanel == True:
                 adminActive = 'active'
-              elif c.listingType == 'listenerStats':
-                listenerStatsActive = 'active'
+              elif c.listingType == 'publicStats':
+                publicStatsActive = 'active'
             %>
 
             <ul class="nav nav-tabs workshop-tabs">
@@ -77,7 +77,7 @@
               <li class="${forumActive}"><a href="${forumHref | n}">Forum</a></li>
               <li class="${activityActive}"><a href="${activityHref | n}">Activity</a></li>
               % if c.privs['participant']:
-                <li class="${listenerStatsActive}"><a href="${listenerStatsHref | n}">Stats</a></li>
+                <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
               % endif
               % if c.privs['admin'] or c.privs['facilitator']: 
                 <li class="pull-right ${adminActive}" style="margin-right: 10px;"><a href="${adminHref | n}">Admin</a></li>

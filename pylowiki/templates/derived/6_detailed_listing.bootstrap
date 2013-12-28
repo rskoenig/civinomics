@@ -22,8 +22,8 @@
    elif c.listingType == 'activity':
       itemList = c.activity
       helperText = ''
-   elif c.listingType == 'listenerStats':
-      itemList = c.listenerStats
+   elif c.listingType == 'publicStats':
+      itemList = c.publicStats
       helperText = ''
 
    self.showListing(c.listingType, itemList, helperText)
@@ -46,7 +46,7 @@
          itemAlert = '<div class="alert alert-info">There are no ideas here yet. Be the first to add one!</div>'
       elif listingType == 'activity':
          pluralType = 'activity'
-      elif listingType == 'listenerStats':
+      elif listingType == 'publicStats':
          pluralType = 'Workshop statistics'
          numItems = '1'
          itemAlert = ''
@@ -62,7 +62,7 @@
                    %endif
                    </h4>
                     ${workshopHelpers.showActivity(c.activity)}
-               % elif listingType == 'listenerStats':
+               % elif listingType == 'publicStats':
                    <h4 class="section-header smaller">Statistics</h4>
                    ${nvd3Lib.initiativeStackedGroupedData(c.jsonSbgData, c.jsonSbgData2)}
                % else:

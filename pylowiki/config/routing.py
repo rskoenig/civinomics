@@ -163,6 +163,7 @@ def make_map():
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{stats:stats?/?}', controller = 'workshop', action = 'stats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{listenerStats:listenerStats?/?}', controller = 'workshop', action = 'listenerStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # resources
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
