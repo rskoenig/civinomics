@@ -1,0 +1,51 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <h1>About</h1>
+        </br>
+        <p class="lead centered">Our vision</p>
+        <div class="row-fluid">
+            <div class="row-fluid">
+                <div class="span3 centered">
+                    <h3><i class="icon-group"></i> Build a Community</h3>
+                    <p>Grow a network of civicially engaged people worldwide. This community develops and shares policy ideas to improve our cities, states and countries.</p>
+                </div> 
+                <div class="span1 centered" style="margin-top: 30px;">
+                    <i class="icon-arrow-right icon-3x"></i>
+                </div>
+                <div class="span3 centered">
+                    <h3><i class="icon-building"></i> Vote in Our Hometowns</h3>
+                    <p>Transition to online voting for local policy decisions. Implement and track the effects of public initiatives developed online.</p>
+                </div>  
+                <div class="span1 centered" style="margin-top: 30px;">
+                    <i class="icon-arrow-right icon-3x"></i>
+                </div> 
+                <div class="span3 centered">
+                    <h3><i class="icon-flag"></i> Renew Our Nations</h2>
+                    <p>Directly vote on vital reforms for our country. In every country. Government of, by, and for the people is reborn.</p>
+                </div>                 
+            </div>
+        </div>
+        <hr>
+        <p class="lead centered">How it works</p>
+        <div class="centered">
+            <img class="plain" src="/images/corp/howitworks.png" alt="">
+        </div>
+        <hr>
+        <p class="lead centered">Video</p>
+            <blockquote>
+                <p>We always hear about the rights of democracy, but the major responsibility of it is participation.</p>
+                <small>Wynton Marsalis</small>
+            </blockquote>
+        <div class="centered">
+            <iframe width="600" height="375" src="//www.youtube.com/embed/HbtbrB-_wL0" frameborder="0" allowfullscreen></iframe>
+        </div>
+        </br>
+        </br>
+        <p>Interested in polling or engaging your community? Reach us <a href="mailto:info@civinomics.com">here</a>.</p>
+        <p>For more information on past outreach visit our <a href="/corp/caseStudies/">case studies</a> section.</p>
+        </br>
+    </div>
+</%def>
+
