@@ -30,6 +30,7 @@ import pylowiki.lib.sort            as sort
 
 import simplejson as json
 from hashlib import md5
+from operator import itemgetter
 log = logging.getLogger(__name__)
 
 class SearchController(BaseController):
@@ -280,6 +281,8 @@ class SearchController(BaseController):
             'color':'#075D00',
             'values':[]
         }
+        unsorted2 = []
+        unsorted1 = []
         for initiative in initiatives:
             i = initiative
             # u = generic.getThing(i['userCode'])
@@ -313,21 +316,27 @@ class SearchController(BaseController):
             #entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
 
             if entry['percentYes'] > 50:
-                series2['values'].append(
+                unsorted2.append(
                     {
                         'label':"%s, %s votes  "%(entry['title'], int(entry['voteCount'])),
                         'value':int(entry['percentYes'])
                     })
             else:
-                series1['values'].append(
+                unsorted1.append(
                     {
                         'label':"%s, %s votes  "%(entry['title'], int(entry['voteCount'])),
                         'value':int(entry['percentYes'])
                         #'value':int(0 - entry['percentNo'])
                     })
-            
-        allData.append(series1)
+        
+        series2['values'] = sorted(unsorted2, key=itemgetter('value'))
+        series1['values'] = sorted(unsorted1, key=itemgetter('value'))
+
+        series2['values'].reverse()
+        series1['values'].reverse()
+
         allData.append(series2)
+        allData.append(series1)
 
         c.jsonInitiatives = json.dumps(allData)
 
