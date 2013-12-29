@@ -18,7 +18,7 @@
             </br>
         % endif
 
-            <p>To apply for this position send a resume and cover letter to <a href="mailto:careers@civinomics.com?subject=Application for ${helpers.showTitle(c.career)}">careers @ civinomics.com</a> with the subject line <em>Application for ${helpers.showTitle(c.career)}</em>.
+            <p>To apply for this position send a resume and cover letter to <a href="mailto:careers@civinomics.com?subject=Application for ${c.career['title']}">careers @ civinomics.com</a> with the subject line <em>Application for ${helpers.showTitle(c.career)}</em>.
             </br>
             </br>
             </br>
