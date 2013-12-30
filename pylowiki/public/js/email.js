@@ -1,15 +1,12 @@
 $(document).ready(function(){
-	$(".generatedemail").each(function(i){
+	$(".generatedemail").click(function(){
 		var start = $(this).data("start");
 		var end = $(this).data("end");
-		if (!start || !end) { //shame on you
-			$(this).text("EMAIL LINK IMPROPERLY FORMATTED");
+		if (!start || !end) //shame on you
 			return;
-		}
-		var mailto = start + end;
-		$(this).text(mailto);
+		var mailto = "mailto:" + start + end;
 		var subject = $(this).data("subject");
 		if (subject) mailto += "?subject=" + subject;
-		$(this).attr("href", "mailto:" + mailto);
+		window.location.href = mailto;
 	});
 });

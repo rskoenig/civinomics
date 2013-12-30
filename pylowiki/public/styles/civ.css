@@ -2965,6 +2965,9 @@ input::-webkit-inner-spin-button {
   margin-bottom: 8px;
 }
 
+.generatedemail {
+  cursor: pointer;
+}
 .emailhide{
   display: none;
 }

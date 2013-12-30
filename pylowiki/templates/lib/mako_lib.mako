@@ -53,9 +53,9 @@
 	<%
 		half = (len(email) // 2) * 6 #*6 because each character will now be six chars long: &, #, ;, and three digits.
 		email = ''.join(["&#" + str(ord(c)).zfill(3) + ";" for c in email]) #this might be overdoing it?
-		noscript = email[:half] + '<span class="emailhide">nope</span>' + email[half:]
+		withspan = email[:half] + '<span class="emailhide">nope</span>' + email[half:]
 	%>
-	<a class="generatedemail" data-end="${email[half:] | n}" data-subject="${subject}" data-start="${email[:half] | n}"></a><noscript>${noscript | n}</noscript>
+	<a class="generatedemail" data-end="${email[half:] | n}" data-subject="${subject}" data-start="${email[:half] | n}">${withspan | n}</a>
 </%def>
 
 ################################################
