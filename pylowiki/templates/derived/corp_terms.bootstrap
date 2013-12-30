@@ -1,4 +1,6 @@
 <%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
 <%def name="page_specific_css()">
     <!-- None -->
 </%def>
@@ -92,7 +94,7 @@
             <br/>
             Santa Cruz, CA 95060
             <br/>
-            info @ civinomics.com
+            ${mako.formatEmail("info@civinomics.com", "Copyright Infringement")}
         </address>
         <h2>The Services are Available "AS-IS"</h2>
         <p>
@@ -125,10 +127,14 @@
             <br/>
             Santa Cruz, CA 95060
             <br/>
-            info @ civinomics.com
+            ${mako.formatEmail("info@civinomics.com", "Terms of Service")}
         </address>
         <h3>Effective: May 5, 2012</h3>
 
     </div><!-- row-fluid -->
 
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
 </%def>

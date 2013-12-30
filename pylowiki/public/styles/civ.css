@@ -2964,3 +2964,7 @@ input::-webkit-inner-spin-button {
 .zipLookup .well{
   margin-bottom: 8px;
 }
+
+.emailhide{
+  display: none;
+}

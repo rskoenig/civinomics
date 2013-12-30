@@ -1,4 +1,6 @@
 <%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
 <%def name="page_specific_css()">
     <!-- None -->
 </%def>
@@ -7,7 +9,7 @@
     <div class="row-fluid">
        <div>
             <h1>Privacy Policy</h1>
-                <p class="lead">This Privacy Policy explains how Civinomics collects, uses, and may in some cases disclose information collected through your use of the Services. This Privacy Policy is expressly incorporated into our Terms of Service. If you have any questions concerning this Privacy Policy, please email us at <a href="mailto:privacy@civinomics.com?subject=Privacy Concerns">privacy @ civinomics.com</a>.</p>
+                <p class="lead">This Privacy Policy explains how Civinomics collects, uses, and may in some cases disclose information collected through your use of the Services. This Privacy Policy is expressly incorporated into our Terms of Service. If you have any questions concerning this Privacy Policy, please email us at ${mako.formatEmail("privacy@civinomics.com", "Privacy Concerns")}.</p>
             </div>
          </div>
 
@@ -87,7 +89,7 @@
             <br/>
             Santa Cruz, CA 95060
             <br/>
-            info @ civinomics.com
+            ${mako.formatEmail("info@civinomics.com", "Question")}
         </address>
         <h3>Effective: May 5, 2012</h3>
 
@@ -96,3 +98,6 @@
 
 </%def>
 <%def name="display_body_bottom_content()"></%def>
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>
