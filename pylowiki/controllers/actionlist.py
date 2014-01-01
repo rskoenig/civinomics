@@ -97,7 +97,7 @@ class ActionlistController(BaseController):
                 parent = getWorkshopByCode(item['workshopCode'])
                 baseURL = config['site_base_url'] + "/workshop/" + parent['urlCode'] + "/" + parent['url']
                 baseTitle = 'the workshop named <a href="' + baseURL + '">' + parent['title'] + '</a>'
-            elif 'initiativeCode' in item:
+            elif 'initiativeCode' in item or item.objType == 'initiative':
                 parent = initiativeLib.getInitiative(item['initiativeCode'])
                 baseURL = config['site_base_url'] + "/initiative/" + parent['urlCode'] + "/" + parent['url']
                 baseTitle = 'the initiative named "<a href="' + baseURL + '">' + parent['title'] + '</a>"'
