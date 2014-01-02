@@ -1237,7 +1237,7 @@ voting ribbon triangle
 }
 
 .alert.workshop-admin{
-  margin: 10px 0 0 0;
+  margin: 10px 0 10px 0;
 } 
 
 .link-span{
@@ -2898,5 +2898,16 @@ a.no-highlight:hover{
 .section-header.smaller.initiative{
   font-size: 16px;
   font-weight: bold;
+}
+
+.idea-helper-text{
+  margin-top: 6px;
+}
+.helper-text-img{
+  height: 16px;
+}
+.helper-sort{
+  margin-top: -7px;
+  margin-bottom: 3px;
 }
 

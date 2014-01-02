@@ -1340,6 +1340,7 @@ class WorkshopController(BaseController):
             entry['title'] = idea['title']
             entry['text'] = idea['text']
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+            entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
             entry['ups'] = int(idea['ups'])
             entry['downs'] = int(idea['downs'])
             rated = ratingLib.getRatingForThing(c.authuser, idea) 
@@ -1357,9 +1358,8 @@ class WorkshopController(BaseController):
             entry['authorURL'] = entry['user_url'] = idea['user_url']
             entry['authorName'] = entry['user_name'] = idea['user_name']
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
-
-
-
+            entry['workshopCode'] = workshopCode
+            entry['workshopURL'] = workshopURL
 
             result.append(entry)
         if len(result) == 0:

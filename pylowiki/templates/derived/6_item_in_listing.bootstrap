@@ -20,7 +20,7 @@
                     <button data-dismiss="alert" class="close">x</button>
                     <strong>${alert['title']}</strong>
                     % if 'content' in alert:
-                        <br /><strong>${alert['content']}</strong>
+                        ${alert['content']}
                     % endif
                 </div>
                 <% 

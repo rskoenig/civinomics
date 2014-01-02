@@ -22,21 +22,22 @@
                 <div class="alert alert-info">
                 There are no ideas here yet. Be the first to add one!
                 </div>
-             % else:  
-                <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.<strong class="orange"> Vote to display ratings.</strong></p>
+             % else:
+                <div class="row-fluid helper-sort">
+                  <form class="form-search inline">
+                    Sort by: 
+                    <select class="med-width" ng-model="orderProp" ng-cloak>
+                        <option value="-date">Recent</option>
+                        <option value="-voteRatio">Highest Rated</option>
+                        <option value="-voteCount">Most Votes</option>
+                        <option value="-numComments">Most Comments</option>
+                        <option value="title">Alphabetical</option>
+                    </select>
+                  </form>  
+                  <span class="pull-right idea-helper-text">Vote ideas <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png">.<strong class="orange"> Vote to display idea ratings.</strong></span>
+                </div>
                 <hr class="list-header">
              % endif
-
-             <form class="form-search inline">
-                Sort by: 
-                <select class="med-width" ng-model="orderProp" ng-cloak>
-                    <option value="-date">Recent</option>
-                    <option value="title">Alphabetical</option>
-                    <option value="-numComments">Most Comments</option>
-                    <option value="-voteCount">Most Votes</option>
-                </select>
-              </form>
-
               <div class="row-fluid list-item border-bottom" ng-repeat="idea in ideas | orderBy:orderProp" ng-cloak>
                   ${ngHelpers.listIdeas()}
               </div>
