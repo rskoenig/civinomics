@@ -24,21 +24,29 @@
                 </div>
              % else:
                 <div class="row-fluid helper-sort">
-                  <form class="form-search inline">
-                    Sort by: 
-                    <select class="med-width" ng-model="orderProp" ng-cloak>
-                        <option value="-date">Recent</option>
-                        <option value="-voteRatio">Highest Rated</option>
-                        <option value="-voteCount">Most Votes</option>
-                        <option value="-numComments">Most Comments</option>
-                        <option value="title">Alphabetical</option>
-                    </select>
-                  </form>  
-                  <span class="pull-right idea-helper-text">Vote ideas <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png">.<strong class="orange"> Vote to display idea ratings.</strong></span>
-                </div>
-                <hr class="list-header">
+                  <div class="span9">
+                    <form class="form-search inline">
+                      Sort by: 
+                      <select class="med-width" ng-model="orderProp" ng-cloak>
+                          <option value="-date">Recent</option>
+                          <option value="-voteRatio">Highest Rated</option>
+                          <option value="-voteCount">Most Votes</option>
+                          <option value="-numComments">Most Comments</option>
+                          <option value="title">Alphabetical</option>
+                      </select>
+                      Filter:
+                      <select class="med-width" ng-model="filterProp" ng-cloak>
+                          <option value="">Show All</option>
+                          <option value="adopted">Adopted</option>
+                          <option value="proposed">Proposed</option>
+                      </select>
+                    </form> 
+                  </div>
+                  <div class="span3"><strong class="orange"> Vote <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png"> to view ratings.</strong></div>
+                  </div>
+                <hr class="object-list-header">
              % endif
-              <div class="row-fluid list-item border-bottom" ng-repeat="idea in ideas | orderBy:orderProp" ng-cloak>
+              <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp" ng-cloak>
                   ${ngHelpers.listIdeas()}
               </div>
           </div><!--/.browse-->

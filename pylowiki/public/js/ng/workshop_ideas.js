@@ -1,6 +1,7 @@
 function workshopIdeasCtrl($scope, $http) {
 	$scope.ideasURL = '/workshop/' + $scope.code + '/' + $scope.url + '/ideas/get'
 	$scope.orderProp = '-date';
+	$scope.filterProp = 'proposed';
 
 	$http.get($scope.ideasURL).success(function(data){
 		if (data.statusCode == 1){

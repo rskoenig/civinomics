@@ -2900,14 +2900,22 @@ a.no-highlight:hover{
   font-weight: bold;
 }
 
-.idea-helper-text{
-  margin-top: 6px;
-}
 .helper-text-img{
   height: 16px;
 }
 .helper-sort{
-  margin-top: -7px;
-  margin-bottom: 3px;
+  margin: 0 0 3px 0;
 }
 
+.object-in-listing.adopted{
+  background-color: rgba(0,93,40,0.2);
+}
+
+.object-in-listing{
+  padding: 10px 10px 0 10px;
+  margin: 0 -10px;
+}
+
+hr.object-list-header{
+  margin-bottom: 0;
+}

@@ -1339,6 +1339,10 @@ class WorkshopController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
+            if idea['adopted'] == '1':
+                entry['adopted'] = 'adopted'
+            else:
+                entry['adopted'] = 'proposed'
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
             entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
             entry['ups'] = int(idea['ups'])
