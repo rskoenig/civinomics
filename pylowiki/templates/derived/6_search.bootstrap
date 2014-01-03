@@ -568,7 +568,18 @@
                 % endif
             </div>
         </div> <!-- span3 search-right-column -->
+    % else:
+        % if c.searchDataInitiatives:
+            <div class="span2 search-right-column">
+                <div class="well">
+                    <span>${c.searchDataInitiativesTitle}
+                        ${nvd3Lib.searchPageInitiativePopularity(c.searchDataInitiatives)}
+                    </span>
+                </div>
+            </div> <!-- span3 search-right-column -->
+        % endif
     % endif
+    
 </div><!-- row-fluid -->
 
 <%def name="headScripts()">

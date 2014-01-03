@@ -150,12 +150,15 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
-        c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
+        c.numInitiatives, initiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], both = True)
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
         if self.query == 'civinomicon':            
             c.backgroundPhoto = '/images/civinomicon/civinomicon_bg.png'
+
+        c.searchDataInitiatives = graphData.buildStackedBarInitiativeData(initiatives)
+        c.searchDataInitiativesTitle = "Popularity of Initiatives in this search:"
 
         if iPhoneApp:
             entry = {}
@@ -211,8 +214,9 @@ class SearchController(BaseController):
         c.numInitiatives, initiatives = initiativeLib.searchInitiatives('tags', self.query, both = True)
         c.photos = photoLib.searchPhotos('tags', self.query)
 
-        
-
+        # the initiatives search pulled the count as well as the initiatives themselves. 
+        # sending this object to buildStackedBarInitiativeData will give us a json data struct
+        # that is good for use in the nvd3 multiBarHorizontalChart
         c.searchDataInitiatives = graphData.buildStackedBarInitiativeData(initiatives)
         c.searchDataInitiativesTitle = "Popularity of Initiatives in this category:"
 
@@ -280,75 +284,11 @@ class SearchController(BaseController):
         # once I get this working, easily extends to initiatives
         # then, how to place photos, anything else?
 
-        initiativeData = []
-        series1 = {
-            'key':'Low Approval',
-            'color':'#b94a48',
-            'values':[]
-        }
-        series2 = {
-            'key':'High Approval',
-            'color':'#075D00',
-            'values':[]
-        }
-        unsorted2 = []
-        unsorted1 = []
-        for initiative in initiatives:
-            i = initiative
-            # u = generic.getThing(i['userCode'])
-            # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
-            
-                
-            if i['deleted'] != u'0' or i['disabled'] != u'0':
-                continue
-            if i['public'] == '0':
-                continue
-            entry = {}
-            entry['title'] = i['title']
-            #entry['description'] = i['description'][:200]
-            #if len(entry['description']) >= 200:
-            #    entry['description'] += "..."
-            #entry['tags'] = i['tags']
-            
-            entry['voteCount'] = int(i['ups']) + int(i['downs'])
-            entry['ups'] = int(i['ups'])
-            entry['downs'] = int(i['downs'])
-            if entry['voteCount'] > 0:
-                #log.info("in total")
-                entry['percentYes'] = int(float(entry['ups'])/float(entry['voteCount']) * 100)
-                entry['percentNo'] = int(float(entry['downs'])/float(entry['voteCount']) * 100)
-                #entry['percentYes'] = float(entry['ups'])/float(entry['voteCount'])
-                #entry['percentNo'] = float(entry['downs'])/float(entry['voteCount'])
+        # the initiatives search pulled the count as well as the initiatives themselves. 
+        # sending this object to buildStackedBarInitiativeData will give us a json data struct
+        # that is good for use in the nvd3 multiBarHorizontalChart
 
-            #entry['urlCode'] = i['urlCode']
-            #entry['url'] = i['url']
-            #entry['tag'] = i['tags']
-            #entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
-
-            if entry['percentYes'] > 50:
-                unsorted2.append(
-                    {
-                        'label':"%s, %s percent approval"%(utils.cap(entry['title'], 80), int(entry['percentYes'])),
-                        'value':int(entry['voteCount'])
-                    })
-            else:
-                unsorted1.append(
-                    {
-                        'label':"%s, %s percent approval"%(utils.cap(entry['title'], 80), int(entry['percentYes'])),
-                        'value':int(entry['voteCount'])
-                        #'value':int(0 - entry['percentNo'])
-                    })
-        
-        series2['values'] = sorted(unsorted2, key=itemgetter('value'))
-        series1['values'] = sorted(unsorted1, key=itemgetter('value'))
-
-        series2['values'].reverse()
-        series1['values'].reverse()
-
-        initiativeData.append(series2)
-        initiativeData.append(series1)
-
-        c.searchDataInitiatives = json.dumps(initiativeData)
+        c.searchDataInitiatives = graphData.buildStackedBarInitiativeData(initiatives)
         c.searchDataInitiativesTitle = "Popularity of Initiatives in this region:"
 
         #log.info("search is %s"%c.searchQuery)

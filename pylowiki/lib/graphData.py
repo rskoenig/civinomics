@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 # expects a group of initiatives
 ##################################################
 def buildStackedBarInitiativeData(initiatives):
+    log.info('buildStackedBarInitiativeData')
     initiativeData = []
     series1 = {
         'key':'Low Approval',
