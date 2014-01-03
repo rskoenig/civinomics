@@ -23,14 +23,14 @@ import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 
-#import pylowiki.lib.graphData       as graphData
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
 import pylowiki.lib.utils           as utils
 
 import simplejson as json
 from hashlib import md5
-from operator import itemgetter
+
 log = logging.getLogger(__name__)
 
 class SearchController(BaseController):
@@ -213,8 +213,8 @@ class SearchController(BaseController):
 
         
 
-        #c.searchDataInitiatives = graphData.buildStackedBarInitiativeData
-        #c.searchDataInitiativesTitle = "Popularity of Initiatives in this category:"
+        c.searchDataInitiatives = graphData.buildStackedBarInitiativeData(initiatives)
+        c.searchDataInitiativesTitle = "Popularity of Initiatives in this category:"
 
         entry = {}
         if c.photos and len(c.photos) != 0:
