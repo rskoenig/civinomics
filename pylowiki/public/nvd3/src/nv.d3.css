@@ -70,8 +70,9 @@
 .nvtooltip h3 {
   margin: 0;
   padding: 4px 14px;
-  line-height: 18px;
-  font-weight: normal;
+  line-height: 1.5em;
+  font-size: 1.4em;
+  font-weight: bold;
   background-color: rgba(247,247,247,0.75);
   text-align: center;
 
@@ -106,6 +107,7 @@
 
 .nvtooltip table td.key {
   font-weight:normal;
+  font-size: 12px !important;
 }
 .nvtooltip table td.value {
   text-align: right;

@@ -245,16 +245,20 @@
         var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d['label'] })
             .y(function(d) { return d.value })
-            .margin({top: 5, right: 25, bottom: 15, left: 5})
+            .margin({top: 5, right: 25, bottom: 55, left: 5})
             .showValues(false)
             .tooltips(true)
             .showControls(false)
             .height(300)
-            .width(200)
-            .yDomain([0,100]);
+            .width(200);
+            //.yDomain([0,100]);
 
         chart.yAxis
-            .tickFormat(d3.format(',d'));
+            .tickFormat(d3.format(',d'))
+            .axisLabel('# of Votes');
+
+        //chart.xAxis
+            //.axisLabel('# of Votes');
 
         d3.select('#chart svg')
             .datum(allData)

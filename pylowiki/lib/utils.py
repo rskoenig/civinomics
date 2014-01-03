@@ -19,6 +19,11 @@ log = logging.getLogger(__name__)
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
+##################################################
+# simple string capping function
+##################################################
+def cap(s, l):
+    return s if len(s)<=l else s[0:l-3]+'...'
 
 def badEmail(email):
     log.info("fx checking for bad Email: %s"%email)

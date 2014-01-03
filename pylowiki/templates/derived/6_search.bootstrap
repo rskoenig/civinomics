@@ -541,10 +541,10 @@
                     </form>
                 </div>
             % endif
-            % if c.numInitiatives > 0:
+            % if c.searchDataInitiatives:
                 <div class="well">
-                    <span>Popularity of Initiatives in this region:
-                        ${nvd3Lib.searchPageInitiativePopularity(c.jsonInitiatives)}
+                    <span>${c.searchDataInitiativesTitle}
+                        ${nvd3Lib.searchPageInitiativePopularity(c.searchDataInitiatives)}
                     </span>
                 </div>
             % endif
