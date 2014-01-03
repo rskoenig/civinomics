@@ -8,25 +8,25 @@ from pylons import config
 from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 
 from pylowiki.lib.base import BaseController, render
+
 import pylowiki.lib.db.activity     as activityLib
-import pylowiki.lib.db.follow       as followLib
-import pylowiki.lib.db.user         as userLib
-import pylowiki.lib.db.photo        as photoLib
-import pylowiki.lib.db.workshop     as workshopLib
-import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
-import pylowiki.lib.db.rating       as ratingLib
-import pylowiki.lib.db.resource     as resourceLib
-import pylowiki.lib.db.initiative   as initiativeLib
-import pylowiki.lib.db.mainImage    as mainImageLib
-import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.db.rating       as ratingLib
+import pylowiki.lib.db.resource     as resourceLib
+import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
-import pylowiki.lib.utils           as utils
+
+#import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
+import pylowiki.lib.utils           as utils
 
 import simplejson as json
 from hashlib import md5
@@ -211,76 +211,10 @@ class SearchController(BaseController):
         c.numInitiatives, initiatives = initiativeLib.searchInitiatives('tags', self.query, both = True)
         c.photos = photoLib.searchPhotos('tags', self.query)
 
-        initiativeData = []
-        series1 = {
-            'key':'Low Approval',
-            'color':'#b94a48',
-            'values':[]
-        }
-        series2 = {
-            'key':'High Approval',
-            'color':'#075D00',
-            'values':[]
-        }
-        unsorted2 = []
-        unsorted1 = []
-        for initiative in initiatives:
-            i = initiative
-            # u = generic.getThing(i['userCode'])
-            # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
-            
-                
-            if i['deleted'] != u'0' or i['disabled'] != u'0':
-                continue
-            if i['public'] == '0':
-                continue
-            entry = {}
-            entry['title'] = i['title']
-            #entry['description'] = i['description'][:200]
-            #if len(entry['description']) >= 200:
-            #    entry['description'] += "..."
-            #entry['tags'] = i['tags']
-            
-            entry['voteCount'] = int(i['ups']) + int(i['downs'])
-            entry['ups'] = int(i['ups'])
-            entry['downs'] = int(i['downs'])
-            if entry['voteCount'] > 0:
-                #log.info("in total")
-                entry['percentYes'] = int(float(entry['ups'])/float(entry['voteCount']) * 100)
-                entry['percentNo'] = int(float(entry['downs'])/float(entry['voteCount']) * 100)
-                #entry['percentYes'] = float(entry['ups'])/float(entry['voteCount'])
-                #entry['percentNo'] = float(entry['downs'])/float(entry['voteCount'])
-
-            #entry['urlCode'] = i['urlCode']
-            #entry['url'] = i['url']
-            #entry['tag'] = i['tags']
-            #entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
-
-            if entry['percentYes'] > 50:
-                unsorted2.append(
-                    {
-                        'label':"%s, %s percent approval"%(utils.cap(entry['title'], 80), int(entry['percentYes'])),
-                        'value':int(entry['voteCount'])
-                    })
-            else:
-                unsorted1.append(
-                    {
-                        'label':"%s, %s percent approval"%(utils.cap(entry['title'], 80), int(entry['percentYes'])),
-                        'value':int(entry['voteCount'])
-                        #'value':int(0 - entry['percentNo'])
-                    })
         
-        series2['values'] = sorted(unsorted2, key=itemgetter('value'))
-        series1['values'] = sorted(unsorted1, key=itemgetter('value'))
 
-        series2['values'].reverse()
-        series1['values'].reverse()
-
-        initiativeData.append(series2)
-        initiativeData.append(series1)
-
-        c.searchDataInitiatives = json.dumps(initiativeData)
-        c.searchDataInitiativesTitle = "Popularity of Initiatives in this category:"
+        #c.searchDataInitiatives = graphData.buildStackedBarInitiativeData
+        #c.searchDataInitiativesTitle = "Popularity of Initiatives in this category:"
 
         entry = {}
         if c.photos and len(c.photos) != 0:

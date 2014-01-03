@@ -20,11 +20,14 @@ BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
 ##################################################
-# simple string capping function
+# simple string capper
 ##################################################
 def cap(s, l):
     return s if len(s)<=l else s[0:l-3]+'...'
 
+##################################################
+# simple email checker
+##################################################
 def badEmail(email):
     log.info("fx checking for bad Email: %s"%email)
     if email.find('@') < 0:
@@ -33,6 +36,9 @@ def badEmail(email):
     else:
         return False
 
+##################################################
+# returns the base url without an ending '/'
+##################################################
 def getBaseUrl():
     baseUrl = config['site_base_url']
     # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
