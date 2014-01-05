@@ -47,11 +47,8 @@
                         endif
                     %>
                     % if 'user' in session:
-                        <li class="${homeSelected} small-hidden">
+                        <li class="${homeSelected}">
                             <a href="/">Home</a>
-                        </li>
-                        <li class="${homeSelected} small-show">
-                            <a href="/"><i class="icon-home"></i></a>
                         </li>
                         <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         % if userLib.isAdmin(c.authuser.id):

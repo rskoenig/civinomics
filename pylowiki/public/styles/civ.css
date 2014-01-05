@@ -339,7 +339,7 @@ h1.workshop-title{
   background-repeat: none;
 }
 
-@media (max-width: 730px){
+@media (max-width: 1201px){
   .logo{
     background-image: url('/images/logo_white_simple.png');
     height: 35px;
@@ -364,9 +364,9 @@ h1.workshop-title{
     display: inline;
 }
 
-@media (max-width: 800px){
+@media (max-width: 960px){
   .small-show{
-    display: inline;
+    display: inline !important;
   }
   .small-hidden{
     display: none;
