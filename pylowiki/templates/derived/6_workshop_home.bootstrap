@@ -36,9 +36,10 @@
                       </select>
                       Filter:
                       <select class="med-width" ng-model="filterProp" ng-cloak>
-                          <option value="">Show All</option>
-                          <option value="adopted">Adopted</option>
                           <option value="proposed">Proposed</option>
+                          <option value="adopted">Adopted</option>
+                          <option value="!disabled">Show All</option>
+                          <option value="disabled">Disabled</option>
                       </select>
                     </form> 
                   </div>
@@ -46,7 +47,7 @@
                   </div>
                 <hr class="object-list-header">
              % endif
-              <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp" ng-cloak>
+              <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
                   ${ngHelpers.listIdeas()}
               </div>
           </div><!--/.browse-->
@@ -54,6 +55,35 @@
 
    </div> <!-- /.span8 -->
    <div class="span4">
+    <!--
+      <div class="section-wrapper metrics" ng-controller="workshopIdeasCtrl" ng-cloak>
+        <div class="row-fluid">
+          <div class="span3 offset3 centered">
+            <i class="icon-lightbulb icon-3x"></i><br>
+            {{numIdeas}}<br>
+            Ideas
+          </div>
+          <div class="span3 centered">
+            <a class="no-highlight" ng-click="switchAdopted()">
+              <i class="icon-star icon-3x"></i><br>
+              {{numAdopted}}<br>
+              Adopted
+              {{filterProp}}
+            </a>
+          </div>
+          <div class="span3 centered">
+            <i class="icon-eye-open icon-3x"></i><br>
+            ${c.numViews}<br>
+            Views
+          </div>
+          <div class="span3 centered">
+            <i class="icon-share icon-3x"></i><br>
+            {{numAdopted}}<br>
+            Shares
+          </div>
+        </div>
+      </div>
+          -->
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 

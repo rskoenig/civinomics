@@ -1,11 +1,12 @@
 <%def name="listIdeas()">
         <div ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
-            <div class="media-body object-in-listing {{idea.adopted}} border-bottom" ng-controller="yesNoVoteCtrl">
+            <div class="media-body object-in-listing {{idea.status}} border-bottom" ng-controller="yesNoVoteCtrl">
                 <div class="span9">
                     <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
                         {{idea.title}}
                     </a></p>
-                    <strong ng-show="idea.adopted == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
+                    <strong ng-show="idea.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
+                    <strong ng-show="idea.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p>{{idea.text}}</p>
                     <ul class="horizontal-list iconListing">
                     	<li>

@@ -928,7 +928,7 @@ class WorkshopController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.baseUrl = utils.getBaseUrl()
-        
+                
         c.requestUrl = request.url
         c.thingCode = workshopCode
         # standard thumbnail image for facebook shares
@@ -1326,7 +1326,7 @@ class WorkshopController(BaseController):
             return eAction
 
     def workshopIdeas(self, workshopCode, workshopURL):
-        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+        ideas = ideaLib.getAllIdeasInWorkshop(workshopCode)
         if not ideas:
             log.info("searchIdeas return NOT ideas")
             return json.dumps({'statusCode':2})
@@ -1335,14 +1335,20 @@ class WorkshopController(BaseController):
             return json.dumps({'statusCode':2})
 
         result = []
+        adopted = 0
+        disabled = 0
         for idea in ideas:
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
             if idea['adopted'] == '1':
-                entry['adopted'] = 'adopted'
+                entry['status'] = 'adopted'
+                adopted += 1
+            elif idea['disabled'] == '1':
+                entry['status'] = 'disabled'
+                disabled += 1
             else:
-                entry['adopted'] = 'proposed'
+                entry['status'] = 'proposed'
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
             entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
             entry['ups'] = int(idea['ups'])
@@ -1366,6 +1372,9 @@ class WorkshopController(BaseController):
             entry['workshopURL'] = workshopURL
 
             result.append(entry)
+        numIdeas = len(ideas) - disabled
         if len(result) == 0:
             return json.dumps({'statusCode':2})
-        return json.dumps({'statusCode': 0, 'result': result})
+        return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
+
+

@@ -2910,12 +2910,22 @@ a.no-highlight:hover{
 .object-in-listing.adopted{
   background-color: rgba(0,93,40,0.2);
 }
+.object-in-listing.disabled{
+  background-color: rgba(144, 0, 10,0.2);
+  border-radius: 0;
+}
+
 
 .object-in-listing{
-  padding: 10px 10px 0 10px;
+  padding: 10px 10px 0 15px;
   margin: 0 -10px;
 }
 
 hr.object-list-header{
   margin-bottom: 0;
+}
+
+.section-wrapper.metrics{
+  background-color: whitesmoke;
+  padding-top: 10px;
 }
