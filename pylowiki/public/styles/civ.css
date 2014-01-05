@@ -357,7 +357,7 @@ h1.workshop-title{
 }
 
 .small-show{
-  display: none;
+  display: none !important;
 }
 
 .small-hidden{
@@ -2965,4 +2965,10 @@ input::-webkit-inner-spin-button {
 
 .zipLookup .well{
   margin-bottom: 8px;
+}
+
+.btn-search-first{
+  webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
 }
