@@ -2,7 +2,10 @@
    from pylowiki.lib.db.geoInfo import getGeoInfo
 
    import locale
-   locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+   try:
+      locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+   except: #windows
+      locale.setlocale(locale.LC_ALL, 'eng_US')
 
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib

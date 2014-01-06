@@ -339,10 +339,8 @@ h1.workshop-title{
   background-repeat: none;
 }
 
-@media (max-width: 730px){
+@media (max-width: 1201px){
   .logo{
-    background-image: url('/images/logo_white_simple.png');
-    height: 35px;
     width: 40px;
   }
 }
@@ -2965,4 +2963,17 @@ input::-webkit-inner-spin-button {
 
 .zipLookup .well{
   margin-bottom: 8px;
+}
+
+.generatedemail {
+  cursor: pointer;
+}
+.emailhide{
+  display: none;
+}
+
+.btn-search-first{
+  webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
 }

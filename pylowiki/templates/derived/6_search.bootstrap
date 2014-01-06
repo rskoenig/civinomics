@@ -3,7 +3,10 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%! 
     import locale
-    locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+    except: #windows
+        locale.setlocale(locale.LC_ALL, 'eng_US')
 %>
 <% lib.return_to() %>
 <div class="darkened-bg"></div> 
