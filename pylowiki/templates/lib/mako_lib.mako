@@ -49,6 +49,26 @@
 	%>
 </%def>
 
+<%def name="formatEmail(email, subject='', style=0)">
+	<%
+		half = (len(email) // 2) * 6 #*6 because each character will now be six chars long: &, #, ;, and three digits.
+		email = ''.join(["&#" + str(ord(c)).zfill(3) + ";" for c in email]) #this might be overdoing it?
+		cssclass = 'generatedemail'
+		if style == 0:
+			withspan = email[:half] + '<span class="emailhide">nope</span>' + email[half:]
+		else:
+			cssclass = 'generatedemail btn btn-large'
+			if (style & 1) == 1:
+				cssclass += ' btn-default'
+			if (style & 2) == 2:
+				cssclass += ' btn-primary'
+			if (style & 4) == 4:
+				cssclass += ' btn-success'
+			withspan = subject
+	%>
+	<a class="${cssclass}" data-end="${email[half:] | n}" data-subject="${subject}" data-start="${email[:half] | n}">${withspan | n}</a>
+</%def>
+
 ################################################
 ## Survey-specific
 ################################################

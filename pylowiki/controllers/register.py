@@ -39,6 +39,7 @@ class RegisterController(BaseController):
     def signupDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+	c.title = config['custom.titlebar']
 
         c.photos = photoLib.getAllPhotos()
         if c.photos and len(c.photos) != 0:
@@ -48,7 +49,8 @@ class RegisterController(BaseController):
             c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
             c.backgroundAuthor = userLib.getUserByID(p.owner)
         else: 
-            c.backgroundPhoto = '/images/splash/sc_boardwalk.jpg'
+            c.backgroundPhoto = {'title': 'Santa Cruz Beach Boardwalk'}
+            c.backgroundPhotoURL = '/images/splash/sc_boardwalk.jpg'
             c.backgroundAuthor = 'Ester Kim'
 
         self.noQuery = False

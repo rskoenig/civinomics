@@ -37,7 +37,7 @@
                 ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
                     ${lib_6.userLink(person, className="listener-name")}<br />
-                    <small>${personTitle}</small>
+                    <small>${lib_6.userGreetingMsg(person)}</small>
                 </div>
             </li>
             
@@ -488,7 +488,7 @@
 
     %>
     <a href="${href}"><img class="thumbnail ${flagSize}" src="${workshopFlag}"></a>
-    % if 'workshopFor' in args:
+    % if 'workshopFor' in args and w['public_private'] == 'public':
         Workshop for
         % if name == 'Earth':
           <a href="${href}">${name}</a>

@@ -18,8 +18,9 @@
                     <li class="small-hidden">
                         <form class="form-search" action="/search">
                             <div class="input-append">
-                                <input type="text" class="span2 search-query" placeholder="Search" id="search-input" name="searchQuery">
-                                <button type="button" class="btn" data-toggle="collapse" data-target="#search">Options</button>
+                                <input type="text" class="span2 search-query" name="searchQuery">
+                                <button type="submit" class="btn btn-search-first">Search</button>
+                                <button type="button" class="btn" data-toggle="collapse" data-target="#search">Advanced</button>
                             </div>
                         </form>
                     </li>
@@ -46,11 +47,8 @@
                         endif
                     %>
                     % if 'user' in session:
-                        <li class="${homeSelected} small-hidden">
+                        <li class="${homeSelected}">
                             <a href="/">Home</a>
-                        </li>
-                        <li class="${homeSelected} small-show">
-                            <a href="/"><i class="icon-home"></i></a>
                         </li>
                         <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         % if userLib.isAdmin(c.authuser.id):
@@ -244,7 +242,11 @@
                 </div>
             </div>
             <div class="row-fluid">
-                <em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
+		% if 'owner' in c.backgroundPhoto:
+			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
+		% else:
+			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${c.backgroundAuthor}
+		% endif
             </div>
         </div>
     </div>
@@ -255,7 +257,7 @@
         <% tagCategories = workshopLib.getWorkshopTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid searches">
-            <div class="span3 offset1">
+            <div class="span3 offset1 small-show">
                 <form class="form-search" action="/search">
                     <input type="text" class="search-query" placeholder="Search by Word" id="search-input" name="searchQuery">
                 </form>
@@ -281,7 +283,7 @@
                     % endfor
                     </select>
                 </form>
-            </div><!-- span3 -->
+            </div><!-- span4 -->
             <div class="span4">
                 <form  action="/searchGeo"  class="form-search search-type" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
@@ -310,7 +312,7 @@
                         <span id="searchPostalButton">
                     </div>
                 </form>
-            </div><!-- span5 -->
+            </div><!-- span4 -->
         </div><!-- row-fluid -->
         <div class="spacer"></div>
     </div><!-- collapse -->
