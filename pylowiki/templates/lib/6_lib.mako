@@ -521,10 +521,13 @@
 
 <%def name="userGreetingMsg(user)">
   <%
-    if type(user) == type(1L):
-      user = userLib.getUserByID(user)
-    elif type(user) == type(u''):
-         user = userLib.getUserByCode(user)
+    if user.objType == 'facilitator':
+         user = userLib.getUserByID(user.owner)
+    elif user.objType == 'user':
+      if type(user) == type(1L):
+        user = userLib.getUserByID(user)
+      elif type(user) == type(u''):
+           user = userLib.getUserByCode(user)
   %>
   % if len(user['greetingMsg']) > 0:
     ${ellipsisIZE(user['greetingMsg'], 35)}
@@ -1702,7 +1705,14 @@
 </%def>
 
 <%def name="initiativeImage(i)">
+  <%
+    if 'directoryNum_photos' in i and 'pictureHash_photos' in i:
+      imgURL = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png" 
+    else:
+      imgURL = "/images/icons/generalInitiative.jpg"
+  %>
+
   <a ${initiativeLink(i)}>
-      <div style="height:80px; width:110px; background-image:url('${"/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+      <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
 </%def>

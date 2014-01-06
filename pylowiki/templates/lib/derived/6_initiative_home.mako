@@ -42,7 +42,7 @@
                                     and
                                 % endif
                                 ${lib_6.userLink(author)}
-                                ${lib_6.userGreetingMsg(item.owner)}
+                                ${lib_6.userGreetingMsg(author)}
                             % endfor
                             % if remaining >= 1:
                                 , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
@@ -68,7 +68,7 @@
                             <td>
                                 <span class="grey">
                                     ${lib_6.userLink(author)}
-                                    ${lib_6.userGreetingMsg(item.owner)}
+                                    ${lib_6.userGreetingMsg(author)}
                                 </span>
                             </td>
                         </tr>
@@ -743,13 +743,17 @@
                             </tr>
                         </table>
                 </div><!-- row-fluid -->
+                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{hidden}}">
+                    <button type="button" class="close" ng-click="hideShow()">&times;</button>
+                    {{alertMsg}}
+                </div>
                 <br>
                 <strong>Author and Coauthors:</strong>
-
+                <!-- 
                 <div class="centered" ng-show="loading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
                 </div>
-                <div class="row-fluid" ng-show="!loading">
+                <div class="row-fluid" ng-show="!loading"> -->
                     <table class="table-striped full-width">
                         <tr>
                             <td>
@@ -777,11 +781,9 @@
                             <td>
                                 <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
                             </td>
-                            % if c.authuser == c.user:
-                                <td>
-                                    <button ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
-                                </td>
-                            % endif
+                            <td ng-show="a.urlCode != authuserCode" >
+                                <button type="submit" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
+                            </td>
                             <td>
                                 <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
                                     <input type="hidden" name="resign" value="resign">
@@ -790,7 +792,7 @@
                             </td>
                         </tr>
                     </table>
-                </div>
+                <!-- ng-loading </div> -->
             </div><!-- ng-controller -->
         </div><!-- ng-init -->
     %endif   

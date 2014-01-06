@@ -63,6 +63,7 @@ class InitiativeController(BaseController):
                         c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                     else:
                         c.photo_url = "/images/icons/generalInitiative_lg.jpg"
+                        c.bgPhoto_url = "/images/icons/generalInitiative_lg.jpg"
                         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
                     c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
 

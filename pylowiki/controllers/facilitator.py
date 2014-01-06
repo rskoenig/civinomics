@@ -92,7 +92,10 @@ class FacilitatorController(BaseController):
             privs = True
 
         if c.authuser.id == i.owner or privs:
-          if existing:
+          if i.owner == inviteAuthor.id:
+            alertMsg = '%s is already an author!' % inviteAuthor['name']
+            return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'danger'})
+          elif existing:
             f['disabled'] = '0'
             dbhelpersLib.commit(f)
           else:
@@ -108,6 +111,12 @@ class FacilitatorController(BaseController):
           dbhelpersLib.commit(m)
           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
           mailLib.sendCoauthorAddMail(inviteAuthor, c.authuser, i)
+
+          if existing:
+            alertMsg = '%s has been activated as a coauthor.' % inviteAuthor['name']
+          else:
+            alertMsg = '%s has been added as a coauthor.' % inviteAuthor['name']
+          return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType': 'success'})
 
         else: 
           abort(404)
@@ -226,11 +235,25 @@ class FacilitatorController(BaseController):
     def iFacilitateResignHandler(self, code, url, userCode):
         removeAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
-        fList = facilitatorLib.getFacilitatorsByUserAndInitiative(removeAuthor, i)
+        iFacilitators = facilitatorLib.getAllFacilitatorsByInitiative(i)
+        rList = facilitatorLib.getFacilitatorsByUserAndInitiative(removeAuthor, i)
+
+        privs = False
+        # check to see if active user is among the coauthors:
+        for fObj in iFacilitators:
+          if fObj.owner == c.authuser.id and fObj['disabled'] != '1':
+            privs = True
+        # check to see if the user is the original author or is resigning:
         if c.authuser.id == i.owner or c.authuser == removeAuthor:
-          for f in fList:
+          privs = True
+
+        if privs:
+          for f in rList:
             f['disabled'] = '1'
             dbhelpersLib.commit(f)
+
+            alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
+            return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'success'})
 
           if 'resign' in request.params:
             # the coauthor is resigning, he should be redirected away from the edit page
