@@ -341,8 +341,6 @@ h1.workshop-title{
 
 @media (max-width: 1201px){
   .logo{
-    background-image: url('/images/logo_white_simple.png');
-    height: 35px;
     width: 40px;
   }
 }
@@ -357,16 +355,16 @@ h1.workshop-title{
 }
 
 .small-show{
-  display: none !important;
+  display: none;
 }
 
 .small-hidden{
     display: inline;
 }
 
-@media (max-width: 960px){
+@media (max-width: 800px){
   .small-show{
-    display: inline !important;
+    display: inline;
   }
   .small-hidden{
     display: none;
@@ -2965,6 +2963,13 @@ input::-webkit-inner-spin-button {
 
 .zipLookup .well{
   margin-bottom: 8px;
+}
+
+.generatedemail {
+  cursor: pointer;
+}
+.emailhide{
+  display: none;
 }
 
 .btn-search-first{
