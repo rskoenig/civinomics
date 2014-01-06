@@ -339,7 +339,7 @@ h1.workshop-title{
   background-repeat: none;
 }
 
-@media (max-width: 730px){
+@media (max-width: 1201px){
   .logo{
     width: 40px;
   }
@@ -2970,4 +2970,10 @@ input::-webkit-inner-spin-button {
 }
 .emailhide{
   display: none;
+}
+
+.btn-search-first{
+  webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  border-radius: 0 !important;
 }
