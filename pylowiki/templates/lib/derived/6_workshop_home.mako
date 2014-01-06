@@ -488,7 +488,7 @@
 
     %>
     <a href="${href}"><img class="thumbnail ${flagSize}" src="${workshopFlag}"></a>
-    % if 'workshopFor' in args:
+    % if 'workshopFor' in args and w['public_private'] == 'public':
         Workshop for
         % if name == 'Earth':
           <a href="${href}">${name}</a>
