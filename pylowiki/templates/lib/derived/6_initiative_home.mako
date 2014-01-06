@@ -730,7 +730,7 @@
                     <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
                     <div class="spacer"></div>
                         <table class="table-striped full-width" ng-if="!(users = '')">
-                            <tr ng-repeat="user in users">
+                            <tr ng-repeat="user in users | limitTo:10">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">
                                         <img class="media-object avatar med-avatar" ng-src="{{user.photo}}" alt="{{user.name}}" title="{{user.name}}">
@@ -745,47 +745,52 @@
                 </div><!-- row-fluid -->
                 <br>
                 <strong>Author and Coauthors:</strong>
-                <table class="table-striped full-width">
-                    <tr>
-                        <td>
-                            ${lib_6.userImage(c.user, className="avatar med-avatar")}
-                        </td>
-                        <td>
-                            <a class="green green-hover" href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.user['name']}</a>
-                            <span class="grey">from <a href="${c.authorGeo['cityURL']}" class="orange oreange-hover">${c.authorGeo['cityTitle']}</a>, <a href="${c.authorGeo['stateURL']}" class="orange orange-hover">${c.authorGeo['stateTitle']}</a></span>
-                        </td>
-                        <td>
-                            <span class="badge badge-inverse">Original Author</span>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr ng-repeat="a in authors">
-                        <td>
-                            <a class="pull-left" href="/profile/{{a.urlCode}}/{{a.url}}">
-                                <img class="media-object avatar med-avatar" ng-src="{{a.photo}}" alt="{{a.name}}" title="{{a.name}}">
-                            </a>
-                        </td>
-                        <td>
-                            <a class="green green-hover" href="/profile/{{a.urlCode}}/{{a.url}}">{{a.name}}</a>
-                            <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
-                        </td>
-                        <td>
-                            <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
-                        </td>
-                        % if c.authuser == c.user:
+
+                <div class="centered" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
+                </div>
+                <div class="row-fluid" ng-show="!loading">
+                    <table class="table-striped full-width">
+                        <tr>
                             <td>
-                                <button ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
+                                ${lib_6.userImage(c.user, className="avatar med-avatar")}
                             </td>
-                            {{rURL}}
-                        % endif
-                        <td>
-                            <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
-                                <input type="hidden" name="resign" value="resign">
-                                <button type="submit" class="btn btn-danger pull-right">Resign as Coauthor</button>
-                            </form>
-                        </td>
-                    </tr>
-                </table>
+                            <td>
+                                <a class="green green-hover" href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.user['name']}</a>
+                                <span class="grey">from <a href="${c.authorGeo['cityURL']}" class="orange oreange-hover">${c.authorGeo['cityTitle']}</a>, <a href="${c.authorGeo['stateURL']}" class="orange orange-hover">${c.authorGeo['stateTitle']}</a></span>
+                            </td>
+                            <td>
+                                <span class="badge badge-inverse">Original Author</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr ng-repeat="a in authors">
+                            <td>
+                                <a class="pull-left" href="/profile/{{a.urlCode}}/{{a.url}}">
+                                    <img class="media-object avatar med-avatar" ng-src="{{a.photo}}" alt="{{a.name}}" title="{{a.name}}">
+                                </a>
+                            </td>
+                            <td>
+                                <a class="green green-hover" href="/profile/{{a.urlCode}}/{{a.url}}">{{a.name}}</a>
+                                <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
+                            </td>
+                            <td>
+                                <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
+                            </td>
+                            % if c.authuser == c.user:
+                                <td>
+                                    <button ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
+                                </td>
+                            % endif
+                            <td>
+                                <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
+                                    <input type="hidden" name="resign" value="resign">
+                                    <button type="submit" class="btn btn-danger pull-right">Resign as Coauthor</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
             </div><!-- ng-controller -->
         </div><!-- ng-init -->
     %endif   

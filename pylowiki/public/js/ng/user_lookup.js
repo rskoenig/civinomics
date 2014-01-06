@@ -1,5 +1,6 @@
 function userLookupCtrl($scope, $http) {
 	$scope.test = "testing testing 3 2 1 4";
+	$scope.loading = true;
 	$scope.authorsURL = '/initiative/' + $scope.urlCode + '/' + $scope.url + '/getAuthors';
 	$scope.userValue = '';
 	$scope.userLookupURL = '/search/people/name/' + $scope.userValue;
@@ -15,10 +16,12 @@ function userLookupCtrl($scope, $http) {
 	$http.get($scope.authorsURL).success(function(data){
 		if (data.statusCode == 1){
 			$scope.noResult = true;
+			$scope.loading = false;
 		}
 		else if (data.statusCode === 0){
 			$scope.noResult = false;
 			$scope.authors = data.result;
+			$scope.loading = false;
 		}
 	});
 
@@ -36,29 +39,35 @@ function userLookupCtrl($scope, $http) {
 	}
 
 	$scope.removeCoA = function(removeAuthorCode) {
+		$scope.loading = true;
 		$scope.removeAuthorCode = removeAuthorCode;
-		$.post('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.removeAuthorCode + '/facilitate/resign/handler');
+		$http.post('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.removeAuthorCode + '/facilitate/resign/handler');
 		$http.get($scope.authorsURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noResult = true;
+				$scope.loading = false;
 			}
 			else if (data.statusCode === 0){
 				$scope.noResult = false;
 				$scope.authors = data.result;
+				$scope.loading = false;
 			}
 		});
 	}
 
 	$scope.submitInvite = function(inviteAuthorCode){
+		$scope.loading = true;
 		$scope.inviteAuthorCode = inviteAuthorCode;
-		$.post('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.inviteAuthorCode + '/facilitate/invite/handler');
+		$http.post('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.inviteAuthorCode + '/facilitate/invite/handler');
 		$http.get($scope.authorsURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noResult = true;
+				$scope.loading = false;
 			}
 			else if (data.statusCode === 0){
 				$scope.noResult = false;
 				$scope.authors = data.result;
+				$scope.loading = false;
 			}
 		});
 		$scope.userValue = ''
