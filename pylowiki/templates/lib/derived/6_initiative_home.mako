@@ -239,7 +239,7 @@
     % endif
     <div class="row-fluid edit-initiative">
         <div class="span12">
-        <form method="POST" name="edit_initiative_basic" id="edit_initiative_basic" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
+        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
             <div class="row-fluid">
                 <h3 class="initiative-title edit no-top">1. Basics</h3>
             </div><!-- row-fluid -->
@@ -292,10 +292,83 @@
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
-            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit">Save Changes</button>
+            <div class="row-fluid">
+                <h3 class="initiative-title edit">2. Summary</h3>
+            </div><!-- row-fluid -->
+            <br>
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="description" class="control-label" required><strong>Summary:</strong></label>
+                    <textarea rows="8" type="text" name="description" class="span12">${c.initiative['description']}</textarea>
+                </div>
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Used in search listings and displayed at the top of your initiative.
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="funding_summary" class="control-label" required><strong>Estimate Net Fiscal Impact:</strong></label>
+                    <textarea rows="8" type="text" name="funding_summary" class="span12">${c.initiative['funding_summary']}</textarea>
+                </div>
+                <div class="span6">
+                    <label class="control-label"></label>
+                    <div class="alert alert-info">
+                        What are the costs and benefits of your intiative? What will you have to spend money on? What will the fiscal impacts be for the associated region? For example, if your intiative will lead to increased tax revenues for your City, mention that here.
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>
+                    <div class="input-prepend input-append">
+                      <span class="add-on">$</span>
+                      <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
+                      <span class="add-on">.00</span>
+                    </div>
+                    <span class="error help-text" ng-show="edit_initiative_summary.cost.$error.pattern" ng-cloak>Invalid cost value</span>
+                </div>
+                <div class="span6">
+                    <label class="control-label"></label>
+                    <div class="alert alert-info">
+                        Acceptable formats include: 500,000  or  500000.
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <h3 class="initiative-title edit">3. Detail</h3>
+            </div><!-- row-fluid -->
+
+            <div class="row-fluid">
+                <div class="span3">
+                    <label for="background" class="control-label" required><strong>Background:</strong></label>
+                    ${lib_6.formattingGuide()}
+                </div>
+                <div class="span9">
+                    <div class="alert alert-info">
+                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
+                    </div>
+                </div>
+            </div>
+            <textarea rows="10" id="background" name="background" class="span12">${c.initiative['background']}</textarea>
+
+            <div class="row-fluid">
+                <div class="span3">
+                    <label for="proposal" class="control-label" required><strong>Proposal:</strong></label>
+                    ${lib_6.formattingGuide()}
+                </div>
+                <div class="span9">
+                    <div class="alert alert-info">
+                        What are the details of your initiative? How will it work? What will it do? What won't it do? Address the financial impacts as well.
+                    </div>
+                </div>
+            </div>
+            <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
+            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
         <div class="row-fluid">
-            <h3 class="initiative-title edit">2. Photo</h3>
+            <h3 class="initiative-title edit">4. Photo</h3>
         </div><!-- row-fluid -->
         <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
             <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
@@ -363,82 +436,6 @@
                     </tbody>
                 </table>
             </form>
-        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
-            <div class="row-fluid">
-                <h3 class="initiative-title edit">3. Summary</h3>
-            </div><!-- row-fluid -->
-            <br>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="description" class="control-label" required><strong>Summary:</strong></label>
-                    <textarea rows="8" type="text" name="description" class="span12">${c.initiative['description']}</textarea>
-                </div>
-                <div class="span6">
-                    <div class="alert alert-info">
-                        Used in search listings and displayed at the top of your initiative.
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="funding_summary" class="control-label" required><strong>Estimate Net Fiscal Impact:</strong></label>
-                    <textarea rows="8" type="text" name="funding_summary" class="span12">${c.initiative['funding_summary']}</textarea>
-                </div>
-                <div class="span6">
-                    <label class="control-label"></label>
-                    <div class="alert alert-info">
-                        What are the costs and benefits of your intiative? What will you have to spend money on? What will the fiscal impacts be for the associated region? For example, if your intiative will lead to increased tax revenues for your City, mention that here.
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>
-                    <div class="input-prepend input-append">
-                      <span class="add-on">$</span>
-                      <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
-                      <span class="add-on">.00</span>
-                    </div>
-                    <span class="error help-text" ng-show="edit_initiative_summary.cost.$error.pattern" ng-cloak>Invalid cost value</span>
-                </div>
-                <div class="span6">
-                    <label class="control-label"></label>
-                    <div class="alert alert-info">
-                        Acceptable formats include: 500,000  or  500000.
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <h3 class="initiative-title edit">4. Detail</h3>
-            </div><!-- row-fluid -->
-
-            <div class="row-fluid">
-                <div class="span3">
-                    <label for="background" class="control-label" required><strong>Background:</strong></label>
-                    ${lib_6.formattingGuide()}
-                </div>
-                <div class="span9">
-                    <div class="alert alert-info">
-                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
-                    </div>
-                </div>
-            </div>
-            <textarea rows="10" id="background" name="background" class="span12">${c.initiative['background']}</textarea>
-
-            <div class="row-fluid">
-                <div class="span3">
-                    <label for="proposal" class="control-label" required><strong>Proposal:</strong></label>
-                    ${lib_6.formattingGuide()}
-                </div>
-                <div class="span9">
-                    <div class="alert alert-info">
-                        What are the details of your initiative? How will it work? What will it do? What won't it do? Address the financial impacts as well.
-                    </div>
-                </div>
-            </div>
-            <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
-            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
-        </form>
     </div><!-- span12 -->
 </div>
 </%def>
@@ -712,10 +709,12 @@
             Cost Estimate
         </div>
         <div class="span6">
-            <span class="pull-right" style="display: inline;">
-                ${currency} ${locale.format("%d", cost, grouping=True)}
-            </span>
+            <table class="pull-right">
+                <tr>
+                    <td>${currency}</td>
+                    <td>${locale.format("%d", cost, grouping=True)}</td>
+                <tr>
+            </table>
         </div>
     </h4>
 </%def>
-
