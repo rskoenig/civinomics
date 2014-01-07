@@ -155,17 +155,7 @@ class LoginController(BaseController):
                 return redirect(loginURL)
         else:
             log.info('did not find twitter id')
-            c.numAccounts = 1000
-            c.numUsers = len(userLib.getActiveUsers())
-
-            if c.numUsers >= c.numAccounts:
-                splashMsg = {}
-                splashMsg['type'] = 'error'
-                splashMsg['title'] = 'Error:'
-                splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-                session['splashMsg'] = splashMsg
-                session.save()
-                return redirect('/')
+            
             # save necessary info in session for registering this user
             session['twitterId'] = myCreds['id']
             session['twitter_oauth_token'] = final_step['oauth_token']

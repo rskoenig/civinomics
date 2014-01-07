@@ -112,7 +112,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -140,7 +140,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -169,7 +169,7 @@
                                     </div><!-- span3 -->
                                     <div class="span3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                            Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                             <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                         </form>
                                     </div><!-- span3 -->
@@ -198,7 +198,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->

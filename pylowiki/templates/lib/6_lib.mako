@@ -2,7 +2,10 @@
    from pylowiki.lib.db.geoInfo import getGeoInfo
 
    import locale
-   locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+   try:
+      locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+   except: #windows
+      locale.setlocale(locale.LC_ALL, 'eng_US')
 
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
@@ -32,14 +35,17 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
         thingCode = c.thingCode
+        if not thingCode:
+          thingCode = 'noCode'
+
         userCode = ''
         if c.w:
             if 'urlCode' in c.w.keys():
                 workshopCode = c.w['urlCode']
             else:
-                workshopCode = ''
+                workshopCode = 'noCode'
         else:
-            workshopCode = ''
+            workshopCode = 'noCode'
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
         if 'shareOnWall' in kwargs:
@@ -181,6 +187,10 @@
                           var link = "${link}"
                           var userCode = fbAuthId;
                           var workshopCode = "${workshopCode}"
+                          
+                          //console.log('tc: '+thingCode);
+                          //console.log('wc: '+workshopCode);
+
                           result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
                         }
                     }
@@ -195,6 +205,10 @@
                 var link = "${link}"
                 var userCode = fbAuthId;
                 var workshopCode = "${workshopCode}"
+                
+                //console.log('tc mf: '+thingCode);
+                //console.log('wc mf: '+workshopCode);
+                          
                 result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
                 FB.ui(
                     {
@@ -209,10 +223,16 @@
         
         </script>
         <div class="btn-group facebook">
-          <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
-            <i class="icon-facebook-sign icon-2x"></i>
-          </a>
-          <ul class="dropdown-menu" style="margin-left: -50px;">
+          % if 'btn' in kwargs:
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+              <i class="icon-facebook icon-light right-space"></i> | Share
+            </a>
+          % else:
+            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+              <i class="icon-facebook-sign icon-2x"></i>
+            </a>
+          % endif
+          <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
             <li>
               % if shareOnWall:
                 <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
@@ -357,7 +377,10 @@
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
-            rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            if 'vote' in thing and 'amount' in thing['vote']:
+                rated = thing['vote']
+            else:
+                rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
                if rated['amount'] == '1':
                   commentClass = 'voted yesVote'
@@ -406,7 +429,7 @@
         % if 'workshopCode' in thing:
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
         % else:
-            <a href="/login" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
         % endif
           <div class="vote-icon yes-icon"></div>
          </a>
@@ -415,7 +438,7 @@
         % if 'workshopCode' in thing:
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
         % else:
-            <a href="/login" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
         % endif
           <div class="vote-icon no-icon"></div>
          </a>
@@ -521,13 +544,14 @@
 
 <%def name="userGreetingMsg(user)">
   <%
+    if type(user) == type(1L):
+       user = userLib.getUserByID(user)
+    elif type(user) == type(u''):
+       user = userLib.getUserByCode(user)
     if user.objType == 'facilitator':
-         user = userLib.getUserByID(user.owner)
-    elif user.objType == 'user':
-      if type(user) == type(1L):
-        user = userLib.getUserByID(user)
-      elif type(user) == type(u''):
-           user = userLib.getUserByCode(user)
+       user = userLib.getUserByID(user.owner)
+    if user.objType == 'listener':
+       user = userLib.getUserByEmail(user['email'])
   %>
   % if len(user['greetingMsg']) > 0:
     ${ellipsisIZE(user['greetingMsg'], 35)}
@@ -653,6 +677,10 @@
    <%
         if 'noHref' in kwargs:
             initiativeStr = '/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+            if 'fullURL' in kwargs:
+              baseURL = utilsLib.getBaseUrl()
+              initiativeStr = '%s/initiative/%s/%s/show' %(baseURL, initiative["urlCode"], initiative["url"])
+
         else:
             initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
         initiativeStr += commentLinkAppender(**kwargs)
@@ -687,15 +715,21 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        if 'noHref' in kwargs:
-            discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        else:
-            discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        discussionStr += commentLinkAppender(**kwargs)
-        if 'noHref' in kwargs:
-            discussionStr += ''
-        else:
-            discussionStr += '"'
+        if 'workshopCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            else:
+                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            discussionStr += commentLinkAppender(**kwargs)
+            if 'noHref' in kwargs:
+                discussionStr += ''
+            else:
+                discussionStr += '"'
+        elif 'initiativeCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+            else:
+                discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -730,9 +764,12 @@
             objType = thing['objType'].replace("Unpublished", "")
         else:
             objType = thing.objType.replace("Unpublished", "")
+            
+        #log.info("working on objType %s with id of %s"%(thing.objType, thing.id))
         if objType == 'discussion':
             return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
+            #log.info("before resouce link, parent is type %s"%dparent.objType)
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
@@ -1460,11 +1497,14 @@
         thisUser = userLib.getUserByID(item.owner)
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
+                            'update': 'added an initiative progress report',
                             'idea': 'posed the idea',
+                            'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
+                            'initiative':'initiative',
                             'comment':'comment'}
         eclass = ""
         if 'expandable' in kwargs:
@@ -1485,7 +1525,10 @@
             else:
                 title = ellipsisIZE(item['title'], 40)
         
-        activityStr = actionMapping[item.objType]
+        if item.objType == 'discussion' and item['discType'] == 'update':
+            activityStr = actionMapping['update']
+        else:
+            activityStr = actionMapping[item.objType]
         # used for string mapping below
         objType = item.objType
         if item.objType == 'comment':
@@ -1494,6 +1537,8 @@
                 objType = 'idea'
             elif 'resourceCode' in item.keys():
                 objType = 'resource'
+            elif 'initiativeCode' in item.keys():
+                objType = 'initiative'
             elif item.keys():
                 objType = 'discussion'
             
@@ -1538,6 +1583,12 @@
       <option value="${category}">${category}</option>
     % endfor
   </select>
+</%def>
+<%def name="public_tag_links()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+    % for category in sorted(categories):
+      <a href="/searchTags/${category}">${category}</a><br>
+    % endfor
 </%def>
 
 <%def name="bookmarkOptions(user, workshop)">

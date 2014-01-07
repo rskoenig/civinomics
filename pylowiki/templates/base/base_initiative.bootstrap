@@ -33,7 +33,10 @@
                             % if c.editInitiative:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
                             % elif c.initiative.objType != 'revision':
-                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                <span class="pull-right">
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                                </span>
                             % else:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
                             % endif
@@ -63,9 +66,9 @@
             % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
                 <ul class="nav nav-tabs nav-stacked nav-init no-top" style="width: 100%;">
                     <li class="active"><a href="#basics">1. Basics</a></li>
-                    <li><a href="#photo">2. Photo</a></li>
-                    <li><a href="#summary">3. Summary</a></li>
-                    <li><a href="#detail">4. Detail</a></li>
+                    <li><a href="#summary">2. Summary</a></li>
+                    <li><a href="#detail">3. Detail</a></li>
+                    <li><a href="#photo">4. Photo</a></li>
                     <li><a href="#coauthors">5. Coauthors</a></li>
                     <!--
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
@@ -106,9 +109,16 @@
                         </div>
                         <h4 class="section-header initiative smaller section-header-inner">Share It</h4>
                         <div class="row-fluid centered">
-                            <span class = "share-icons">
+                            <span>
                                 % if c.initiative['public'] == '1':
-                                    ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True)}
+                                    ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True, btn=True)}
+                                    <%
+                                        subj = 'Vote on "' + c.initiative['title'] + '"'
+                                        subj = subj.replace(' ','%20')
+                                        body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+                                    %>
+
+                                    <a class="btn btn-danger" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
 
                                     ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
                                     <!-- % if c.initiative['public'] == '1':
@@ -145,15 +155,16 @@
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
+                <!--
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
                     <li class="active"><a href="#iText" data-toggle="tab">Text</a></li>
                     <li><a href="#iResources" data-toggle="tab">Resources</a></li>
-                    <!--
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
                     <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
                     <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
-                    -->
+
                 </ul>
+                -->
             % endif
             </div> <!-- position:fixed -->
         </div><!-- span4 -->

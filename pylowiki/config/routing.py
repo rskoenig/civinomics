@@ -294,6 +294,7 @@ def make_map():
     
     # Login and signup
     map.connect('/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/signup2{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/loginNoExtAuth{end:/?}', controller = 'login', action = 'loginNoExtAuthDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
@@ -379,6 +380,9 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/resourceEdit/{id3}{end:/?}', controller = 'initiative', action = 'resourceEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/resourceEditHandler{end:/?}', controller = 'initiative', action = 'resourceEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{urlCode}/{id2}/comment/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkInitiative', urlCode = '{urlCode}', revisionCode = '{revisionCode}')
+    map.connect('/initiative/{id1}/{id2}/updateEdit/{id3}{end:/?}', controller = 'initiative', action = 'updateEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/initiative/{id1}/{id2}/updateEditHandler/{id3}{end:/?}', controller = 'initiative', action = 'updateEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
     ################
     # Messaging    #
@@ -427,6 +431,11 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    ################
+    # Browse       #
+    ################
+    map.connect('/browse/initiatives', controller = 'search', action = 'browseInitiatives', searchType = 'browse')
+    map.connect('/zip/lookup/{zip}{end:/?}', controller = 'search', action = 'zipLookup', zip = '{zip}')
 
     ################
     # Application  #

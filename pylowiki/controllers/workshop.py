@@ -1008,13 +1008,21 @@ class WorkshopController(BaseController):
                 c.discussions = discussions[0:3]
 
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+        c.ideaRatings = []
+        if 'user' in session:
+            c.ideaRatings = ratingLib.getRatingForWorkshopObjects(c.authuser, workshopCode, 'idea')
+            if not c.ideaRatings:
+                c.ideaRatings = []
+            
+        #log.info("c.ideaRatings is %s"%c.ideaRatings)
         if not ideas:
             c.ideas = []
         else:
-            c.ideas = sort.sortBinaryByTopPop(ideas)
+            sortedIdeas = sort.sortBinaryByTopPop(ideas)
+            #log.info("after sorted ideas")
             if iPhoneApp:
                 i = 0
-                for idea in c.ideas:
+                for idea in sortedIdeas:
                     ideaEntry = "idea" + str(i)
                     # so that we don't modify the original, we place this idea in a temporary variable
                     formatIdea = []
@@ -1039,6 +1047,16 @@ class WorkshopController(BaseController):
                             formatIdea['rated'] = "0"
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
+            else:
+                c.ideas = []
+                if c.ideaRatings:
+                    for i in sortedIdeas:
+                        for r in c.ideaRatings:
+                            if r['ideaCode'] == i['urlCode']:
+                                i['vote'] = r
+                        c.ideas.append(i)
+                else:
+                    c.ideas = sortedIdeas
 
         if not iPhoneApp:
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
@@ -1187,7 +1205,7 @@ class WorkshopController(BaseController):
             
         if 'confTab' in session:
             c.tab = session['confTab']
-            log.info(c.tab)
+            #log.info(c.tab)
             session.pop('confTab')
             session.save()
         # hack for continue button in slideshow tab of configure
@@ -1284,7 +1302,7 @@ class WorkshopController(BaseController):
         if alert == 'items':
             if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
                 if pmember['itemAlerts'] == u'1':
-                    listener['itemAlerts'] = u'0'
+                    pmember['itemAlerts'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['itemAlerts'] = u'1'
@@ -1295,7 +1313,7 @@ class WorkshopController(BaseController):
         elif alert == 'digest':
             if 'digest' in pmember.keys(): # Not needed after DB reset
                 if pmember['digest'] == u'1':
-                    listener['digest'] = u'0'
+                    pmember['digest'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['digest'] = u'1'

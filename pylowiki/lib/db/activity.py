@@ -227,20 +227,29 @@ def getRecentActivity(number, publicPrivate = 'public'):
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
-            .filter(Thing.data.any(and_(Data.key == u'workshopCode')))\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative']))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .order_by('-date')\
             .limit(limit)
         for item in postList:
-            w = generic.getThing(item['workshopCode'], keys = keys, values = values)
-            if item.objType == 'discussion' and item['discType'] != 'general':
-                continue
+            if 'workshopCode' in item:
+                w = generic.getThing(item['workshopCode'], keys = keys, values = values)
+                if item.objType == 'discussion' and item['discType'] != 'general':
+                    continue
             
-            if w:
+                if w:
+                    returnList.append(item)
+                    
+            if item.objType == 'initiative' and item['public'] == '1':
                 returnList.append(item)
-                if len(returnList) == number:
-                    return returnList
+
+            if 'initiative_public' in item and item['initiative_public'] == '1':
+                if item.objType == 'discussion' and item['discType'] != 'update':
+                    continue
+                returnList.append(item)
+                
+            if len(returnList) == number:
+                return returnList
 
         return returnList

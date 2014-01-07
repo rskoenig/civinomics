@@ -16,7 +16,7 @@
           ### Carousel
           ###
           
-            <li class="span wrap-voting-group featured-listing">
+            <li class="span4 wrap-voting-group scope">
               % if len(c.newWorkshops) <= 3:
               <div id="myCarousel" class="carousel slide">
                 <ol class="carousel-indicators">
@@ -39,22 +39,6 @@
                 </div><!-- #myCarousel -->
                 % endif
               </li>
-
-            ###
-            ### Civnomicon
-            ###
-            <li class="span4 wrap-voting-group scope" style="background-image:url(${c.conPhoto}); background-size: cover;">
-              <a href="${c.conLink}">
-                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                <table class="lead tile-title">
-                  <tr>
-                    <td>
-                      ${c.conTitle}
-                    </td>
-                  </tr>
-                </table>
-              </a>
-            </li>
 
             ###
             ### My Places
@@ -126,8 +110,8 @@
             ${lib_6.listBookmarks(c.privateWorkshops, 'Private')}
             <br>
           % endif
+          <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
           % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
-            <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
             <table class="table table-hover table-condensed no-bottom">
               <tbody>
               % for item in c.initiativeBookmarks:
@@ -136,6 +120,11 @@
               </tbody>
             </table>
             ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
+          % else:
+            <hr class="top-space">
+            <div class="alert alert-info">
+              <strong>No Bookmarks!</strong> You have no bookmarked workshops or initiatives. Find some by clicking the regions above or going to 'Browse' in the top menubar.
+            </div>
           % endif
         </div><!-- /row-fluid -->
 

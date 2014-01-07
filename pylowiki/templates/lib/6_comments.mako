@@ -350,6 +350,7 @@
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
             </div>
+            Added ${comment.date}
             <%
                 revisions = revisionLib.getRevisionsForThing(comment)
                 lib_6.revisionHistory(revisions, comment)

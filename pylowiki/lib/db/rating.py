@@ -2,7 +2,7 @@ from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, with_key as wk
 
 import logging
 log = logging.getLogger(__name__)
@@ -22,6 +22,16 @@ def getRatingForThing(user, thing):
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
     except:
         return False
+        
+def getRatingForWorkshopObjects(user, workshopCode, objType):
+    objCode = objType + 'Code'
+    #log.info("objCode is %s workshopCode is %s"%(objCode, workshopCode))
+    return meta.Session.query(Thing)\
+            .filter_by(objType = 'rating')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wk(objCode)))\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
+
 
 def makeOrChangeRating(thing, user, amount, ratingType):
     if 'ups' not in thing.keys():

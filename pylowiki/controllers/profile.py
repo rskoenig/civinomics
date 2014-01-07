@@ -561,7 +561,7 @@ class ProfileController(BaseController):
                                 items['discussions'].append(thing)
                             elif thing.objType == 'idea':
                                 items['ideas'].append(thing)
-            elif 'initiativeCode' in thing and thing.objType == 'resource' and thing['public'] == '1' and thing['deleted'] == '0':
+            elif 'initiativeCode' in thing and thing.objType == 'resource' and ('initiative_public' in thing and thing['initiative_public'] == '1') and thing['deleted'] == '0':
                 items['resources'].append(thing)
             elif thing.objType == 'initiative' and thing['public'] == '1' and thing['public'] == '1' and thing['deleted'] == '0':
                 items['initiatives'].append(thing)

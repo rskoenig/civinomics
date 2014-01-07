@@ -115,6 +115,8 @@ def thingURL(thingParent, thing):
         return baseURL + "/photo/show" + thing['urlCode']
     if thing.objType.replace("Unpublished", "") == 'initiative':
         return baseURL + "/show"
+    if thing.objType == 'discussion' and thing['discType'] == 'update':
+        return baseURL + "/updateShow/" + thing['urlCode']
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
@@ -138,11 +140,18 @@ def profilePhotoURL(thing):
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
     
 def initiativeURL(thing):
+    
+    log.info("objType is %s"%thing.objType)
     if thing.objType == 'resource':
         # an initiative resource
         return "/initiative/%s/%s/resource/%s/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'], thing['url'])
+    elif thing.objType == 'discussion' and thing['discType'] == 'update':
+        returnURL =  "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
+        log.info("return URL is %s"%returnURL)
+        return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
+        
     
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:
@@ -161,39 +170,50 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
             return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
             
 def getPublicScope(item):
-    # takes scope string and returns scope level, name, flag and href
+    # takes an item with scope attribute and returns scope level, name, flag and href
     flag = '/images/flags/'
     href = '/workshops/geo/earth'
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
-        if scope[9] != '0':
-            scopeLevel = 'postalCode'
-            scopeName  = scope[9].replace('-', ' ')
-            flag += 'generalFlag.gif'
-            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6] + '/' + scope[8] + '/' + scope[9]
-        elif scope[8] != '0':
-            scopeLevel = 'city'
-            scopeName  = scope[8].replace('-', ' ')
-            flag += 'country/' + scope[2] + '/states/' + scope[4] + '/counties/' + scope[6] + '/cities/' + scope[8] + '.gif'
-            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6] + '/' + scope[8]
-        elif scope[6] != '0':
-            scopeLevel = 'county'
-            scopeName  = scope[6].replace('-', ' ')
-            flag += 'country/' + scope[2] + '/states/' + scope[4] + '/counties/' + scope[6] + '.gif'
-            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6]
-        elif scope[4] != '0':
-            scopeLevel = 'state'
-            scopeName  = scope[4].replace('-', ' ')
-            flag += 'country/' + scope[2] + '/states/' + scope[4] + '.gif'
-            href += '/' + scope[2] + '/' + scope[4]
-        elif scope[2] != '0':
+    elif '||' in item:
+        scope = item.split('|')
+    if scope:
+        if scope[2] != '0':
             scopeLevel = 'country'
-            scopeName  = scope[2].replace('-', ' ')
-            flag += 'country/' + scope[2] + '.gif'
+            scopeName  = scope[2].replace('-', ' ').title()
+            scopeString = scopeName
+            flag += 'country/' + scope[2]
             href += '/' + scope[2]
+            if scope[4] != '0':
+                scopeLevel = 'state'
+                scopeName  = scope[4].replace('-', ' ').title()
+                scopeString += ', State of %s' % scopeName
+                flag += '/states/' + scope[4]
+                href += '/' + scope[4]
+                if scope[6] != '0':
+                    scopeLevel = 'county'
+                    scopeName  = scope[6].replace('-', ' ').title()
+                    scopeString += ', County of %s' % scopeName
+                    flag += '/counties/' + scope[6]
+                    href += '/' + scope[6]
+                    if scope[8] != '0':
+                        scopeLevel = 'city'
+                        scopeName  = scope[8].replace('-', ' ').title()
+                        scopeString += ', City of %s' % scopeName
+                        flag += '/cities/' + scope[8]
+                        log.info('The city flag url is %s' % flag)
+                        href += '/' + scope[8]
+                        if scope[9] != '0':
+                            scopeLevel = 'postalCode'
+                            scopeName  = scope[9].replace('-', ' ').title()
+                            scopeString += ', Zip Code %s' % scopeName
+                            flag += 'generalFlag.gif'
+                            href += '/' + scope[9]
+            flag += '.gif'
         else:
             scopeLevel = 'earth'
-            scopeName  = 'earth'
+            scopeName  = 'Earth'
+            scopeString  = 'Earth'
             flag += 'earth.gif'
             href += '/0'
 
@@ -211,7 +231,7 @@ def getPublicScope(item):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
-    return {'level':scopeLevel, 'name':scopeName, 'flag':flag, 'href':href}
+    return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
 
 
 def _userImageSource(user, **kwargs):
