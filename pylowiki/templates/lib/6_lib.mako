@@ -337,20 +337,12 @@
          <i class="${voteClass}"></i>
          </a>
       % else:
-        % if 'workshopCode' not in thing:
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % endif
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-        % if 'workshopCode' not in thing:
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % endif
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
@@ -425,21 +417,13 @@
           Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
         </div>
       % else:
-        % if 'workshopCode' in thing:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % else:
-            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % endif
-          <div class="vote-icon yes-icon"></div>
+         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+         <div class="vote-icon yes-icon"></div>
          </a>
          <br>
          <br>
-        % if 'workshopCode' in thing:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % else:
-            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % endif
-          <div class="vote-icon no-icon"></div>
+         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+         <div class="vote-icon no-icon"></div>
          </a>
          <br>
          <div class="totalVotesWrapper">
@@ -478,7 +462,7 @@
         if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
             printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
         else:
-            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/'
+            printStr = '<a href="#signupLoginModal" data-toggle="modal"'
             
         if thing == 'discussion':
             printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'

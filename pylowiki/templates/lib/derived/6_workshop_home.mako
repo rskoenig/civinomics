@@ -64,7 +64,7 @@
                 % if 'user' in session and c.authuser:
                     <div class="pull-left rightbuttonspacing"><a href="#invite${listenerCode}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % else:
-                    <div class="pull-left rightbuttonspacing"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="#signupLoginModal" data-toggle="modal" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % endif
                 <div class="media-body">
                     <span class="listener-name">${lName}</span><br />
