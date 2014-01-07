@@ -82,6 +82,10 @@
       ${next.body()}
    </div><!-- /.span12.well -->
 </div><!--/.row-->
+% if c.thing:
+  ${lib_6.emailShareModal(c.objectUrl, c.thing['urlCode'])}
+% endif
+${lib_6.emailShareModal(c.requestUrl, c.w['urlCode'])}
 
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>

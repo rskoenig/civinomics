@@ -176,30 +176,31 @@ def sendListenerAddMail(recipient, user, workshop):
 
     send(recipient, fromEmail, subject, textMessage)
     
-def sendShareMail(recipientName, recipientEmail, memberMessage, user, workshop, item, itemURL):
+def sendShareMail(recipientEmail, memberMessage, user, item, itemURL):
            
-    subject = 'Sharing a link to a Civinomics workshop with you'
+    subject = '%s shared "%s" with you' % (user['name'], item['title'])
     
     emailDir = config['app_conf']['emailDirectory']
     txtFile = emailDir + "/shareemail.txt"
     
     introduction = ""
-    itemDet = 'a'
-    if item.objType == 'idea':
-        itemDet = 'an'
+    #itemDet = 'a'
+    #if item.objType == 'idea':
+    #    itemDet = 'an'
         
-    introduction = "Dear %s,\n\n%s is sharing a link to %s %s item hosted at Civinomics:\n%s\n\n"%(recipientName, user['name'], itemDet, item.objType, itemURL)
-    if item.objType == 'workshop':
-        introduction += 'The workshop is titled "%s".'%item['title']
-    else:
-        introduction += 'The %s is titled "%s" and is in a workshop titled "%s".'%(item.objType, item['title'], workshop['title'])
+    introduction = "This %s is hosted on Civinomics:\n%s\n\n"%(item.objType, itemURL)
+
+    #if item.objType == 'workshop':
+    #   introduction += 'The workshop is titled "%s".'%item['title']
+    #else:
+    #    introduction += 'The %s is titled "%s" and is in a workshop titled "%s".'%(item.objType, item['title'], workshop['title'])
 
     # open and read the text file
     fp = open(txtFile, 'r')
     textMessage = fp.read()
     fp.close()
     
-    textMessage = textMessage.replace('${c.sender}', user['name'])
+    #textMessage = textMessage.replace('${c.sender}', user['name'])
     textMessage = textMessage.replace('${c.intro}', introduction)
     textMessage = textMessage.replace('${c.memberMessage}', memberMessage)
 
