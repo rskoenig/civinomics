@@ -49,19 +49,24 @@
         </ul>
         <hr>
      % endif
-     % if 'user' in session and c.authuser:
-        <ul class="media-list">
-            <li class="media pendingListener notables-item">
-                <em class="grey">Which public officials should participate?</em><br />
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener" name="suggestListenerForm">
-                <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
-                <button type="submit" class="btn btn-success btn-small">Submit</button>
-                <br />
-                <span ng-show="suggestListenerShow">{{suggestListenerResponse}}</span>
-                </form>
-            </li>
-        </ul><!-- media-list -->
-    % endif
+      <em class="grey">Which public officials should participate?</em><br />
+      % if 'user' in session and c.authuser:
+        <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener no-bottom" name="suggestListenerForm">
+          <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
+          <button type="submit" class="btn btn-success btn-small">Submit</button>
+          <div class="alert top-space" style="margin-bottom: 0;" ng-show="suggestListenerShow">
+            <button data-dismiss="alert" class="close">x</button>
+            {{suggestListenerResponse}}
+          </div>
+        </form>
+      % else:
+        <a href="#signupLoginModal" data-toggle='modal'>
+          <form class="form-inline no-bottom">
+            <input class="listenerInput" type="text" placeholder="Suggest a Listener">
+            <button type="submit" class="btn btn-success btn-small">Submit</button>
+          </form>
+        </a>
+      %endif
 </%def>
 
 <%def name="whoListeningModals()">
