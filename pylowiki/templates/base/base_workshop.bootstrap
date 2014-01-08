@@ -86,6 +86,7 @@
   ${lib_6.emailShareModal(c.objectUrl, c.thing['urlCode'])}
 % endif
 ${lib_6.emailShareModal(c.requestUrl, c.w['urlCode'])}
+${helpers.whoListeningModals()}
 
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
