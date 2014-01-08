@@ -40,7 +40,7 @@
             Goals
             </h4>
             ${helpers.showGoals(c.goals)}
-            ${helpers.whoListening()}
+            ${helpers.whoListening1()}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
       <div class="section-wrapper overview">

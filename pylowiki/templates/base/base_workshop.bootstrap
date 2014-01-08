@@ -82,7 +82,7 @@
       ${next.body()}
    </div><!-- /.span12.well -->
 </div><!--/.row-->
-
+${helpers.whoListening2()}
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
    <%

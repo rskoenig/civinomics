@@ -14,7 +14,7 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="whoListening()">
+<%def name="whoListening1()">
     <%
         users = []
         pending = []
@@ -70,34 +70,12 @@
                     <span class="listener-name">${lName}</span><br />
                     <small>${lTitle}</small> 
                 </div>
-                % if 'user' in session and c.authuser:
-                    <%
-                        memberMessage = "Please join me and participate in this online Civinomics workshop.\nThere are good ideas and informed discussions, please login and listen in!"
-                    %>
-                    <div id="invite${listenerCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${listenerCode}Label" aria-hidden="true">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
-                        </div><!-- modal-header -->
-                        <div class="modal-body"> 
-                            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
-                            Add your message to the listener invitation:<br />
-                            <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
-                            <br />
-                            <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
-                            <button type="submit" class="btn btn-warning">Send Invitation</button>
-                            <br />
-                            <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
-                            </form>
-                        </div><!-- modal-footer -->
-                    </div><!-- modal -->
-                % endif
             </li>
         % endfor
         </ul>
         <hr>
-     % endif
-     % if 'user' in session and c.authuser:
+    % endif
+    % if 'user' in session and c.authuser:
         <ul class="media-list">
             <li class="media pendingListener notables-item">
                 <em class="grey">Which public officials should participate?</em><br />
@@ -110,6 +88,59 @@
             </li>
         </ul><!-- media-list -->
     % endif
+</%def>
+
+<%def name="whoListening2()">
+    <%
+        users = []
+        pending = []
+        if c.listeners:
+          for listener in c.listeners:
+              if 'userCode' in listener:
+                  user = getThing(listener['userCode'])
+                  users.append(user)
+              else:
+                  pending.append(listener)
+    %>
+    % if c.listeners:
+      % if pending:
+          % for person in pending:
+              <%
+                  lName = person['name']
+                  lTitle = person['title']
+                  listenerCode = person['urlCode']
+                  personClass = 'pendingListener'
+                  if person['invites'] != '':
+                      inviteList = person['invites'].split(',')
+                      numInvites = str(len(inviteList))
+                  else:
+                      numInvites = '0'
+              %>
+              % if 'user' in session and c.authuser:
+                  <%
+                      memberMessage = "Please join me and participate in this online Civinomics workshop.\nThere are good ideas and informed discussions, please login and listen in!"
+                  %>
+                  <div id="invite${listenerCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${listenerCode}Label" aria-hidden="true">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                          <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
+                      </div><!-- modal-header -->
+                      <div class="modal-body"> 
+                          <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
+                          Add your message to the listener invitation:<br />
+                          <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
+                          <br />
+                          <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+                          <button type="submit" class="btn btn-warning">Send Invitation</button>
+                          <br />
+                          <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
+                          </form>
+                      </div><!-- modal-footer -->
+                  </div><!-- modal -->
+              % endif
+          % endfor
+      % endif <!-- pending -->
+    % endif <!-- c.listners -->
 </%def>
 
 <%def name="showFacilitators()">
