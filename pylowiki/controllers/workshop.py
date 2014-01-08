@@ -36,7 +36,8 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
-import pylowiki.lib.d3Helpers       as d3Helpers
+
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
@@ -922,109 +923,13 @@ class WorkshopController(BaseController):
     def publicStats(self, workshopCode, workshopURL):
             
         #stacked bar graph data struct 1
-        activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
-        sbgData = []
-        ideas = {
-            'key':'Ideas',
-            'values':[]
-        }
-        resources = {
-            'key':'Resources',
-            'values':[]
-        }
-        discussions = {
-            'key':'Discussions',
-            'values':[]
-        }
-        comments = {
-            'key':'Comments',
-            'values':[]
-        }
-        timeList = []
-        for item in activity:
-            #log.info(item.objType)
-            #log.info(item.date
-            # round timestamp to nearest day so the bars stack (86,400 seconds in a day)
-            itemTime = int(item.date.strftime("%s"))
-            nearestDay = itemTime - (itemTime % 86400)
-            # create a timestring that nvd3 likes (millisecond precision)
-            thisTime = "%s000"%str(nearestDay)
-            if 'views' in item.keys():
-                y = int(item['views'])
-            else:
-                y = 1
-            ups = int(item['ups'])
-            downs = int(item['downs'])
-            numVotes = ups + downs
-            if thisTime not in timeList:
-                newTime = True
-            else:
-                newTime = False
-            if item.objType == 'idea':
-                ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
-                if newTime:
-                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0, numVotes=0, ups=0)
-                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0, numVotes=0, ups=0)
-                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0, numVotes=0, ups=0)
-            elif item.objType == 'resource':
-                resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
-                if newTime:
-                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0, numVotes=0, ups=0)
-                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0, numVotes=0, ups=0)
-                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0, numVotes=0, ups=0)
-            elif item.objType == 'discussion':
-                discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
-                if newTime:
-                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0, numVotes=0, ups=0)
-                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0, numVotes=0, ups=0)
-                    comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, 0, numVotes=0, ups=0)
-            elif item.objType == 'comment':
-                comments = d3Helpers.addOrUpdateListInSeries(comments, thisTime, y, newTime=newTime, numVotes=numVotes, ups=ups)
-                if newTime:
-                    ideas = d3Helpers.addOrUpdateListInSeries(ideas, thisTime, 0, numVotes=0, ups=0)
-                    resources = d3Helpers.addOrUpdateListInSeries(resources, thisTime, 0, numVotes=0, ups=0)
-                    discussions = d3Helpers.addOrUpdateListInSeries(discussions, thisTime, 0, numVotes=0, ups=0)
-            timeList.append(thisTime)
-        sbgData.append(ideas)
-        sbgData.append(resources)
-        sbgData.append(discussions)
-        sbgData.append(comments)
-
-        c.jsonSbgData = json.dumps(sbgData)
-
-        #stacked bar graph data struct 2
+        activities = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
         
-        sbgData2 = []
-        upList = {
-            'key':'Yes Votes',
-            'color':'#075D00',
-            'values':[]
-        }
-        downList = {
-            'key':'No Votes',
-            'color':'#b94a48',
-            'values':[]
-        }
-        timeList = []
-        for item in activity:
-            itemTime = int(item.date.strftime("%s"))
-            nearestDay = itemTime - (itemTime % 86400)
-            # create a timestring that nvd3 likes (millisecond precision)
-            thisTime = "%s000"%str(nearestDay)
-            ups = int(item['ups'])
-            downs = int(item['downs'])
-            if thisTime not in timeList:
-                newTime = True
-            else:
-                newTime = False
-            upList = d3Helpers.addOrUpdateListInSeries(upList, thisTime, 0, newTime=newTime, upsOrDowns=ups)
-            downList = d3Helpers.addOrUpdateListInSeries(downList, thisTime, 0, newTime=newTime, upsOrDowns=downs)
-
-            timeList.append(thisTime)
-        sbgData2.append(upList)
-        sbgData2.append(downList)
-
-        c.jsonSbgData2 = json.dumps(sbgData2)
+        c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
+        c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
+        
+        c.jsonNewData = graphData.buildNewData(activities)
+        c.jsonNewData2 = graphData.buildNewData(activities, type='downs')
         
         # a radar plot will show relative totals of views, votes and popularity
         # one plot per type?

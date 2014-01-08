@@ -7,7 +7,264 @@
 ## NVD3 library
 ################################################
 
-<%def name="initiativeStackedGroupedData(sbgData, sbgData2)">
+<%def name="newGraph(newData, newData2)">
+
+  <style>
+
+    path { 
+      stroke: steelblue; 
+      stroke-width: 2; 
+      fill: none;
+    }
+
+    .axis path, .axis line {
+      fill: none; 
+      stroke: grey; 
+      stroke-width: 1; 
+      shape-rendering: crispEdges;
+    }
+
+    path {
+      stroke: steelblue;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .grid .tick { 
+      stroke: lightgrey; 
+      opacity: 0.7;
+    } 
+
+    .grid path {
+      stroke-width: 0;
+    }
+
+    .area { 
+      fill: lightsteelblue; 
+      stroke-width: 0;
+    }
+
+    text.shadow { 
+      stroke: white;
+      stroke-width: 2.5px; 
+      opacity: 0.9;
+    }
+
+    div.tooltip { 
+      position: absolute; 
+      text-align: center; 
+      width: 60px; 
+      height: 28px; 
+      padding: 2px; 
+      font: 12px sans-serif; 
+      background: lightsteelblue; 
+      border: 0px; 
+      border-radius: 8px; 
+      pointer-events: none;
+    }
+
+  </style>
+
+  <h5>Upvotes by Activity Type</h5>
+  <div id="newChart">
+    <!--<div id="option"> 
+      <input name="updateButton" type="button" value="Update" onclick="updateData()"/>
+    </div>-->
+  </div>
+
+  <script id="nvd3On" src="/nvd3/lib/d3.v3.js"></script>
+  <script>
+    var margin = {
+      top: 80, 
+      right: 20, 
+      bottom: 80, 
+      left: 50
+    }; 
+    var width = 600 - margin.left - margin.right;
+    var height = 400 - margin.top - margin.bottom;
+
+    // expecting date to arrive in standard msql format
+    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+    
+    var x = d3.time.scale().range([0, width]);
+    
+    var y = d3.scale.linear().range([height, 0]); 
+    
+    var xAxis = d3.svg.axis().scale(x)
+      .orient("bottom").ticks(10)
+      .tickFormat(d3.time.format("%m/%d/%y")); 
+
+    var yAxis = d3.svg.axis().scale(y)
+      .orient("left").ticks(5);
+
+    function make_x_axis() { 
+      return d3.svg.axis()
+        .scale(x) 
+        .orient("bottom") 
+        .ticks(5)
+    }
+    
+    function make_y_axis() { 
+      return d3.svg.axis()
+        .scale(y) 
+        .orient("left") 
+        .ticks(5)
+    }
+
+
+    var valueline = d3.svg.line()
+      .interpolate("basis-open")
+      .x(function(d) { return x(parseDate(d.date)); }) 
+      .y(function(d) { return y(d.close); });
+
+    var svg = d3.select("#newChart") 
+      .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom) 
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+    // Get the data - in this case it's json in a variable
+    var graphData = ${newData | n}
+    var graphData2 = ${newData2 | n}
+    //console.log(graphData);
+
+    // Scale the range of the data
+    x.domain(d3.extent(graphData, function(d) { return parseDate(d.date); })); 
+    y.domain([0, d3.max(graphData, function(d) { return d.close; })]);
+    
+    svg.append("g") 
+      .attr("class", "grid") 
+      .attr("transform", "translate(0," + height + ")") 
+      .call(make_x_axis()
+        .tickSize(-height, 0, 0) 
+        .tickFormat("")
+      )
+    
+    svg.append("g") 
+      .attr("class", "grid") 
+      .call(make_y_axis()
+        .tickSize(-width, 0, 0) 
+        .tickFormat("")
+      )
+
+    svg.append("path")  // Add the valueline path.
+      .attr("class", "line")
+      .style("stroke-dasharray", ("3, 3"))
+      .attr("d", valueline(graphData));
+
+    var tooltipTime = d3.time.format("%e %B");
+
+    var ttDiv = d3.select("#newChart")
+      .append("div") 
+      .attr("class", "tooltip") 
+      .style("opacity", 0);
+
+    svg.selectAll("dot") 
+        .data(graphData)
+      .enter().append("circle")
+        .attr("r", 5)
+        .attr("cx", function(d) { return x(parseDate(d.date)); })
+        .attr("cy", function(d) { return y(d.close); })
+        .style("fill", function(d) {
+          if (d.close > 10) { return "red"}
+          else { return "blue"};
+        })
+        .on("mouseover", function(d) {
+          ttDiv.transition() 
+            .duration(200)
+            .style("opacity", .9); 
+          ttDiv.html(tooltipTime(parseDate(d.date)) + "<br/>" + d.close)
+            .style("left", (d3.event.pageX) + "px") 
+            .style("top", (d3.event.pageY - 58) + "px")
+            .style("pointer-events", "none");
+        }) 
+        .on("mouseout", function(d) {
+          ttDiv.transition() 
+            .duration(500)
+            .style("opacity", 0);
+        });
+
+
+    svg.append("g") // Add the X Axis 
+      .attr("class", "x axis") 
+      .attr("transform", "translate(0," + height + ")") 
+      .call(xAxis)
+      .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", function(d) {
+            return "rotate(-65)"
+        });
+
+    svg.append("g") 
+      .attr("class", "y axis") 
+      .call(yAxis);
+
+    // text label for the x axis
+    svg.append("text")  
+      .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+      .style("text-anchor", "middle") 
+      .text("Date");
+
+    svg.append("text") 
+      .attr("transform", "rotate(-90)") 
+      .attr("y", 0 - margin.left)
+      .attr("x", 0 - (height / 2)) 
+      .attr("dy", "1em") 
+      .style("text-anchor", "middle") 
+      .text("Value");
+    
+    svg.append("text") 
+      .attr("x", (width / 2)) 
+      .attr("y", 0 - (margin.top / 2)) 
+      .attr("text-anchor", "middle") 
+      .style("font-size", "16px") 
+      .style("text-decoration", "underline")
+      .attr("class", "shadow")
+      .text("Value vs Date Graph");
+
+    svg.append("text") 
+      .attr("x", (width / 2)) 
+      .attr("y", 0 - (margin.top / 2)) 
+      .attr("text-anchor", "middle") 
+      .style("font-size", "16px") 
+      .style("text-decoration", "underline") 
+      .text("Value vs Date Graph");
+
+    /*var inter = setInterval( function () {
+        updateData();
+      }, 5000);
+    */
+    function updateData() {
+
+      // Scale the range of the data again
+      x.domain(d3.extent(graphData2, function(d) { return parseDate(d.date); })); 
+      y.domain([0, d3.max(graphData2, function(d) { return d.close; })]);
+
+      // Select the section we want to apply our changes to
+      var svg = d3.select("#newChart").transition();
+
+      // Make the changes 
+      svg.select(".line") // change the line
+        .duration(750)
+        .attr("d", valueline(graphData2)); 
+      svg.select(".x.axis") // change the x axis
+        .duration(750)
+        .call(xAxis); 
+      svg.select(".y.axis") // change the y axis
+        .duration(750) 
+        .call(yAxis);
+    }
+
+  </script>
+
+</%def>
+
+<!-- call this with ${nvd3Lib.activityStackedGroupedData(c.jsonSbgData, c.jsonSbgData2)} -->
+<%def name="activityStackedGroupedData(sbgData, sbgData2)">
 
     <style>
         #chartViews {
@@ -245,16 +502,20 @@
         var chart = nv.models.multiBarHorizontalChart()
             .x(function(d) { return d['label'] })
             .y(function(d) { return d.value })
-            .margin({top: 5, right: 25, bottom: 15, left: 5})
+            .margin({top: 5, right: 25, bottom: 55, left: 5})
             .showValues(false)
             .tooltips(true)
             .showControls(false)
             .height(300)
-            .width(200)
-            .yDomain([0,100]);
+            .width(200);
+            //.yDomain([0,100]);
 
         chart.yAxis
-            .tickFormat(d3.format(',d'));
+            .tickFormat(d3.format(',d'))
+            .axisLabel('# of Votes');
+
+        //chart.xAxis
+            //.axisLabel('# of Votes');
 
         d3.select('#chart svg')
             .datum(allData)
