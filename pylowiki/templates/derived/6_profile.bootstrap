@@ -59,6 +59,9 @@
                         % for item in c.initiatives:
                             <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
                         % endfor
+                        % for item in c.facilitatorInitiatives:
+                            <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+                        % endfor
                         % for item in c.initiativeBookmarks:
                             <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
                         % endfor

@@ -3,6 +3,7 @@
     import pylowiki.lib.db.listener         as listenerLib
     import pylowiki.lib.db.facilitator      as facilitatorLib
     import pylowiki.lib.db.workshop         as workshopLib
+    import pylowiki.lib.db.initiative       as initiativeLib
     import pylowiki.lib.db.comment          as commentLib
     import pylowiki.lib.db.event            as eventLib
     import pylowiki.lib.db.generic          as generic
@@ -102,6 +103,52 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
+                        % elif message['extraInfo'] in ['authorInvite']:
+                            <% 
+                                initiative = initiativeLib.getInitiative(message['initiativeCode'])
+                                formStr = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                                action = 'coauthor'
+                                role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
+                            %>
+                            % if message['read'] == u'1':
+                                <%
+                                    # Since this is tied to the individual message, we will only have one action
+                                    # The query here should be rewritten to make use of map/reduce for a single query
+                                    event = eventLib.getEventsWithAction(message, 'accepted')
+                                    if not event:
+                                        responseAction = 'declining'
+                                    else:
+                                        responseAction = 'accepting'
+                                %>
+                                <div class="media">
+                                    ${lib_6.initiativeImage(initiative)}
+                                    <div class="media-body">
+                                        <h5 class="media-heading">${message['title']}</h5>
+                                        <p>${lib_6.userLink(sender)} invites you to facilitate <a ${lib_6.initiativeLink(initiative)}>${initiative['title']}</a></p>
+                                        <p>${message['text']}</p>
+                                        <p>(You have already responded by ${responseAction})</p>
+                                        <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                    </div>
+                                </div>
+                            % else:
+                                ${formStr | n}
+                                    <input type="hidden" name="initiativeCode" value="${initiative['urlCode']}">
+                                    <input type="hidden" name="initiativeURL" value="${initiative['url']}">
+                                    <input type="hidden" name="messageCode" value="${message['urlCode']}">
+                                    <div class="media">
+                                        ${lib_6.initiativeImage(initiative)}
+                                        <div class="media-body">
+                                            <h5 class="media-heading">${message['title']}</h5>
+                                            <p>${lib_6.userLink(sender)} invites you to ${action} <a ${lib_6.initiativeLink(initiative)}>${initiative['title']}</a></p>
+                                            <p>${message['text']}</p>
+                                            <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to ${action} the initiative">Accept</button>
+                                            <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to ${action} the initiative">Decline</button>
+                                            <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                        </div>
+                                    </div>
+                                </form>
+                            % endif
+
                         % elif message['extraInfo'] in ['commentResponse']:
                             <%
                                 comment = commentLib.getCommentByCode(message['commentCode'])

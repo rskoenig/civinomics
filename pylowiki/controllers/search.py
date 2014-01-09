@@ -441,6 +441,7 @@ class SearchController(BaseController):
         for p in people:
             entry = {}
             entry['name'] = p['name']
+            entry['email'] = p['email']
             entry['greetingMsg'] = p['greetingMsg']
             entry['photo'] = utils._userImageSource(p)
             entry['hash'] = md5(p['email']).hexdigest()

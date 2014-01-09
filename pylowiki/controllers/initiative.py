@@ -18,6 +18,7 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.images          as imageLib
 import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
 
 import simplejson as json
 
@@ -29,7 +30,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -64,6 +65,7 @@ class InitiativeController(BaseController):
                     c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                 else:
                     c.photo_url = "/images/icons/generalInitiative_lg.jpg"
+                    c.bgPhoto_url = "/images/icons/generalInitiative_lg.jpg"
                     c.thumbnail_url = "/images/icons/generalInitiative.jpg"
                 c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
 
@@ -74,10 +76,16 @@ class InitiativeController(BaseController):
             #log.info("abort 2")
             abort(404)
 
-        
         # only the author or an admin can edit 
         c.iPrivs = False
-        if 'user' in session and (c.user['email'] == c.authuser['email'] or userLib.isAdmin(c.authuser.id)):
+
+        facilitator = False
+        f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)
+        if f != False and f != 'NoneType' and len(f) != 0:
+            if f[0]['pending'] == '0' and f[0]['disabled'] == '0':
+                facilitator = True
+
+        if 'user' in session and (c.user['email'] == c.authuser['email'] or userLib.isAdmin(c.authuser.id)) or facilitator:
             c.iPrivs = True
 
         if action in adminList:
@@ -111,6 +119,15 @@ class InitiativeController(BaseController):
             # for compatability with comments
             c.thing = c.update
             
+        if c.user:
+            userGeo = geoInfoLib.getGeoInfo(c.user.id)[0]
+            c.authorGeo = {}
+            c.authorGeo['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            c.authorGeo['cityTitle'] = userGeo['cityTitle']
+            c.authorGeo['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            c.authorGeo['stateTitle'] = userGeo['stateTitle']
+
+
         userLib.setUserPrivs()
 
 
@@ -475,10 +492,43 @@ class InitiativeController(BaseController):
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
 
+        c.authors = [c.user]
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            if author['pending'] == '0' and author['disabled'] == '0':
+                c.authors.append(author)
+
         c.initiativeHome = True
             
         return render('/derived/6_initiative_home.bootstrap')
-        
+
+
+    def getInitiativeAuthors(self):
+        authors = []
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            authors.append(author)
+
+        result = []
+        for a in authors:
+            entry = {}
+            u = userLib.getUserByID(a.owner)
+            entry['name'] = u['name']
+            entry['photo'] = utils._userImageSource(u)
+            entry['urlCode'] = u['urlCode']
+            entry['url'] = u['url']
+            entry['pending'] = a['pending']
+            userGeo = geoInfoLib.getGeoInfo(u.id)[0]
+            entry['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            entry['cityTitle'] = userGeo['cityTitle']
+            entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            entry['stateTitle'] = userGeo['stateTitle']
+
+            result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode': 0, 'result': result})
+
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):

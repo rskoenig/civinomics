@@ -2906,11 +2906,7 @@ a.no-highlight:hover{
   z-index: 1;
 }
 
-@media (min-width: 768px){
-  .min-container{
-    min-width: 930px;
-  }  
-}
+
 
 .i-main-photo{
   margin: -19px -19px 0 -19px;
@@ -2931,8 +2927,16 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
+hr.narrow{
+  margin: 10px 0 10px 0;
+}
+
 .well-splash-content{
   padding-top: 0;
+}
+
+.full-width{
+  width: 100%;
 }
 
 .splash-initiative{

@@ -95,6 +95,7 @@
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                 <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
                                 <li><a href="/help">Help</a></li>
                                 <li><a tabindex="-1" href="/login/logout">Logout</a></li>
                             </ul>
@@ -458,7 +459,7 @@
     <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up to Vote</h3>
+        <h3 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h3>
         <h3 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h3>
         <h3 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h3>
       </div>

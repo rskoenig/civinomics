@@ -198,24 +198,29 @@ class HomeController(BaseController):
 	        c.numLW = len(c.listeningWorkshops)
 
 	        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+	        log.info('The facilitator objects: %s' % facilitatorList)
 	        c.facilitatorWorkshops = []
+	        #declare initiatives here for facilitated initiatives
+	        c.initiatives = []
 	        c.pendingFacilitators = []
 	        for f in facilitatorList:
-	           if 'pending' in f and f['pending'] == '1':
-	              c.pendingFacilitators.append(f)
-	           elif f['disabled'] == '0':
-	              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-	              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-	                 # show to the workshop owner, show to the facilitator owner, show to admin
-	                 if 'user' in session: 
-	                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-	                         c.facilitatorWorkshops.append(myW)
-	              else:
-	                    c.facilitatorWorkshops.append(myW)
-	        c.numA = len(c.facilitatorWorkshops)
+	        	if 'pending' in f and f['pending'] == '1':
+	        		c.pendingFacilitators.append(f)
+	        		log.info('pending invitation!')
+	        	elif f['disabled'] == '0':
+					if 'workshopCode' in f:
+						myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+						c.facilitatorWorkshops.append(myW)
+						log.info('workshop added!')
+					elif 'initiativeCode' in f:
+						myI = initiativeLib.getInitiative(f['initiativeCode'])
+						c.initiatives.append(myI)
+						log.info('initiative added!')
+
+			log.info("Here be ze f items: %s" %c.facilitatorItems)
+	        c.numA = len(c.facilitatorItems)
 
 	        # initiatives
-	        c.initiatives = []
 	        initiativeList = initiativeLib.getInitiativesForUser(c.user)
 	        for i in initiativeList:
 	            if i.objType == 'initiative':

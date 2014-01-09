@@ -196,19 +196,31 @@ class ProfileController(BaseController):
             
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
+        c.facilitatorInitiatives = []
         c.pendingFacilitators = []
         for f in facilitatorList:
            if 'pending' in f and f['pending'] == '1':
               c.pendingFacilitators.append(f)
            elif f['disabled'] == '0':
-              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-                 # show to the workshop owner, show to the facilitator owner, show to admin
-                 if 'user' in session: 
-                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                         c.facilitatorWorkshops.append(myW)
-              else:
-                    c.facilitatorWorkshops.append(myW)
+                try:
+                    myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+                    if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+                     # show to the workshop owner, show to the facilitator owner, show to admin
+                        if 'user' in session: 
+                            if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                                c.facilitatorWorkshops.append(myW)
+                    else:
+                        c.facilitatorWorkshops.append(myW)
+                except:
+                    myI = initiativeLib.getInitiative(f['initiativeCode'])
+                    if myI['public'] == '0':
+                     # show to the workshop owner, show to the facilitator owner, show to admin
+                        if 'user' in session: 
+                            if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                                c.facilitatorInitiatives.append(myI)
+                    else:
+                        c.facilitatorInitiatives.append(myI)
+
                     
         # initiatives
         c.initiatives = []
@@ -311,8 +323,6 @@ class ProfileController(BaseController):
         else:    
             return render("/derived/6_profile.bootstrap")
 
-    def showUserMessages(self, id1, id2, id3 = ''):
-        return render("/derived/6_messages.bootstrap")
         
     def showUserPhotos(self, id1, id2):
         # defaults for photo editor

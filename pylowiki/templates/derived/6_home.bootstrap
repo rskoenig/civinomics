@@ -88,7 +88,7 @@
           ###
           ### Bookmarks
           ###
-          % if len(c.facilitatorWorkshops) != 0 or len(c.initiatives) != 0:
+          % if len(c.facilitatorItems) != 0 or len(c.initiatives) != 0:
             <span class="lead"><i class="icon-dashboard"></i> Authored and Facilitating (${c.numA})</span>
             <table class="table table-hover table-condensed no-bottom">
               <tbody>

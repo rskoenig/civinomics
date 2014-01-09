@@ -17,18 +17,71 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showAuthor(item)">
+    <div class="tabbable">
+        <div class="tab-content">
+            <div class="tab-pane active" id="abrv">
+                <table>
+                    <tr>
+                        <%
+                            showNum = 3
+                            remaining = len(c.authors) - showNum
+                        %>
+                        % for author in c.authors[:showNum]:
+                            <td>
+                                ${lib_6.userImage(author, className="avatar small-avatar")}
+                            </td>
+                        % endfor
+                        <td>
+                            <span class="grey">Authored by
+                            % for author in c.authors[:showNum]:
+                                % if author != c.authors[0] and len(c.authors) >= 3:
+                                    ,
+                                % endif
+                                % if author == c.authors[-1]:
+                                    and
+                                % endif
+                                ${lib_6.userLink(author)}
+                                ${lib_6.userGreetingMsg(author)}
+                            % endfor
+                            % if remaining >= 1:
+                                , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
+                            % endif
+                            </span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="tab-pane" id="allAuthors">
+                <span class="pull-right">
+                    <a href="#abrv" data-toggle="tab">close</a>
+                </span>
+                <h4 class="initiative-title">
+                    Authors
+                </h4>
+                <table>
+                    % for author in c.authors:
+                        <tr>
+                            <td>
+                                ${lib_6.userImage(author, className="avatar small-avatar")}
+                            </td>
+                            <td>
+                                <span class="grey">
+                                    ${lib_6.userLink(author)}
+                                    ${lib_6.userGreetingMsg(author)}
+                                </span>
+                            </td>
+                        </tr>
+                    % endfor
+                </table>            
+            </div><!-- tab-pane -->
+        </div><!-- tabcontent -->
+    </div><!-- tabbable -->
     <%
         if 'views' in item:
             numViews = str(item['views'])
         else:
             numViews = "0"
     %>
-    <table>
-        <tr>
-            <td>${lib_6.userImage(item.owner, className="avatar small-avatar")}</td>
-            <td><span class="grey">Authored by</span>${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span></td>
-        </tr>
-    </table>
     Published on ${item.date} <i class="icon-eye-open"></i> Views ${numViews}
 </%def>
 
@@ -42,6 +95,7 @@
         </ul>
     % endif
 </%def>
+                        
 
 <%def name="showDescription()">
     <div class="initiative-info">
@@ -89,7 +143,7 @@
             if 'user' in session:
                 printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
             else:
-                printStr = '<a href="/initiative/' + c.initiative['urlCode'] + '/' + c.initiative['url'] + '/login/' + '"'
+                printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
             printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
         
@@ -237,7 +291,7 @@
         ${c.saveMessage}
         </div>
     % endif
-    <div class="row-fluid edit-initiative">
+    <div class="row-fluid edit-initiative" id="basics">
         <div class="span12">
         <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
             <div class="row-fluid">
@@ -292,7 +346,7 @@
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
-            <div class="row-fluid">
+            <div class="row-fluid" id="summary">
                 <h3 class="initiative-title edit">2. Summary</h3>
             </div><!-- row-fluid -->
             <br>
@@ -336,7 +390,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row-fluid">
+            <div class="row-fluid" id="detail">
                 <h3 class="initiative-title edit">3. Detail</h3>
             </div><!-- row-fluid -->
 
@@ -367,7 +421,7 @@
             <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
-        <div class="row-fluid">
+        <div class="row-fluid" id="photo">
             <h3 class="initiative-title edit">4. Photo</h3>
         </div><!-- row-fluid -->
         <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
@@ -416,6 +470,7 @@
                                 <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</a>
                             </div><!-- row-fluid -->
                             </form>
+
                         </div><!-- preview -->
                         <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
                             </td>
@@ -436,6 +491,8 @@
                     </tbody>
                 </table>
             </form>
+
+        ${coAuthorInvite()}
     </div><!-- span12 -->
 </div>
 </%def>
@@ -718,3 +775,84 @@
         </div>
     </h4>
 </%def>
+
+<%def name="coAuthorInvite()">
+    <div class="row-fluid" id="coauthors">
+        <h3 class="initiative-title edit">5. Coauthors</h3>
+    </div><!-- row-fluid -->
+    <strong>Invite CoAuthors:</strong>
+    % if 'user' in session and c.authuser:
+        <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}'; authuserCode = '${c.authuser['urlCode']}'">
+            <div ng-controller="userLookupCtrl">
+                <div class="row-fluid">
+                    <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
+                    <div class="spacer"></div>
+                        <table class="table-striped full-width" ng-if="!(users = '')">
+                            <tr ng-repeat="user in users | limitTo:10">
+                                <td>
+                                    <a href="/profile/{{user.urlCode}}/{{user.url}}">
+                                        <img class="media-object avatar med-avatar" ng-src="{{user.photo}}" alt="{{user.name}}" title="{{user.name}}">
+                                    </a>
+                                </td>
+                                <td class="span8 grey"><a class="green green-hover" href="/profile/{{user.urlCode}}/{{user.url}}">{{user.name}}</a> from <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
+                                <td>
+                                    <button ng-click="submitInvite(user.urlCode)" class="btn btn-primary pull-right">Invite to Coauthor</button>
+                                </td>
+                            </tr>
+                        </table>
+                </div><!-- row-fluid -->
+                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{hidden}}">
+                    <button type="button" class="close" ng-click="hideShow()">&times;</button>
+                    {{alertMsg}}
+                </div>
+                <br>
+                <strong>Author and Coauthors:</strong>
+                <!-- 
+                <div class="centered" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
+                </div>
+                <div class="row-fluid" ng-show="!loading"> -->
+                    <table class="table-striped full-width">
+                        <tr>
+                            <td>
+                                ${lib_6.userImage(c.user, className="avatar med-avatar")}
+                            </td>
+                            <td>
+                                <a class="green green-hover" href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.user['name']}</a>
+                                <span class="grey">from <a href="${c.authorGeo['cityURL']}" class="orange oreange-hover">${c.authorGeo['cityTitle']}</a>, <a href="${c.authorGeo['stateURL']}" class="orange orange-hover">${c.authorGeo['stateTitle']}</a></span>
+                            </td>
+                            <td>
+                                <span class="badge badge-inverse">Original Author</span>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr ng-repeat="a in authors">
+                            <td>
+                                <a class="pull-left" href="/profile/{{a.urlCode}}/{{a.url}}">
+                                    <img class="media-object avatar med-avatar" ng-src="{{a.photo}}" alt="{{a.name}}" title="{{a.name}}">
+                                </a>
+                            </td>
+                            <td>
+                                <a class="green green-hover" href="/profile/{{a.urlCode}}/{{a.url}}">{{a.name}}</a>
+                                <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
+                            </td>
+                            <td>
+                                <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
+                            </td>
+                            <td ng-show="a.urlCode != authuserCode" >
+                                <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
+                            </td>
+                            <td>
+                                <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
+                                    <input type="hidden" name="resign" value="resign">
+                                    <button type="button" class="btn btn-danger pull-right">Resign as Coauthor</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                <!-- ng-loading </div> -->
+            </div><!-- ng-controller -->
+        </div><!-- ng-init -->
+    %endif   
+</%def>
+

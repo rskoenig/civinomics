@@ -35,7 +35,7 @@ class CoffeeScriptMiddleware(object):
             if config['app_conf']['production'] == 'true':
                 coffee = subprocess.Popen(['/usr/local/bin/coffee', '--version'], stdout=subprocess.PIPE)
             else:
-                coffee = subprocess.Popen(['coffee', '--version'], stdout=subprocess.PIPE, shell=True)
+                coffee = subprocess.Popen(['coffee', '--version'], stdout=subprocess.PIPE)
         except OSError:
             pass
             #return

@@ -33,7 +33,7 @@
       <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
-
+    <a href="" id="top"></a>
     ${next.body()}
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
@@ -58,9 +58,12 @@
 
    <!-- Javascript to enable link to tab -->
    <script type="text/javascript">
-      $(function () {
-         var activeTab = $('[href=' + location.hash + ']');
-         activeTab && activeTab.tab('show');
+      $(function () { 
+        var a = $('[href=' + location.hash + ']'); 
+        a && a.tab('show'); 
+      });
+      $('.nav a').on('shown', function (e) { 
+        window.location = "#top"; 
       });
     </script>
 

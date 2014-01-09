@@ -583,20 +583,20 @@
 </%def>
 
 <%def name="inviteCoFacilitate()">
-    %if 'user' in session and c.authuser:
-        <% 
+    % if 'user' in session and c.authuser:
+        <%
             fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             wListF = []
             wListL = []
             for f in fList:
-                w = workshopLib.getWorkshopByCode(f['workshopCode'])
-                if w['deleted'] == '0':
-                    wlisten = listenerLib.getListener(c.user['email'], w)
-                    if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
-                        wListF.append(w)
-                    if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
-                        wListL.append(w)
-                        
+                if not 'initiativeCode' in f:
+                    w = workshopLib.getWorkshopByCode(f['workshopCode'])
+                    if w['deleted'] == '0':
+                        wlisten = listenerLib.getListener(c.user['email'], w)
+                        if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
+                            wListF.append(w)
+                        if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
+                            wListL.append(w)
         %>
         % if c.authuser.id != c.user.id and wListF:
             <div class="row">
