@@ -171,6 +171,7 @@
                 <div class="span8 no-left">
                     <ul class="horizontal-list">
                         <li><a class="green green-hover" href="/corp/about">About</a></li> 
+                        <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
                         <li><a class="green green-hover" href="/corp/polling">Polling</a></li>
                         <li><a class="green green-hover" href="/corp/contact">Contact</a></li>
                         <li><a class="green green-hover" href="/corp/terms">Terms</a></li>
