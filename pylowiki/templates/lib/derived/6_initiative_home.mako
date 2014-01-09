@@ -143,7 +143,7 @@
             if 'user' in session:
                 printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
             else:
-                printStr = '<a href="/initiative/' + c.initiative['urlCode'] + '/' + c.initiative['url'] + '/login/' + '"'
+                printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
             printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
         

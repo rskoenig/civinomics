@@ -14,6 +14,7 @@ from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
@@ -949,11 +950,16 @@ class WorkshopController(BaseController):
             if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
                 c.facilitators.append(f)
               
-        c.listeners = []
+        c.activeListeners = []
+        c.pendingListeners = []
         if not iPhoneApp:
             for l in (listenerLib.getListenersForWorkshop(c.w)):
-                if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-                    c.listeners.append(l)
+                if l['disabled'] == '0':
+                    if 'userCode' in l:
+                        user = generic.getThing(l['userCode'])
+                        c.activeListeners.append(user)
+                    else:
+                        c.pendingListeners.append(l)
               
         c.slides = []
         if not iPhoneApp:

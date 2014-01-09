@@ -81,7 +81,9 @@ class DiscussionController(BaseController):
         # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
         if c.baseUrl[-1:] == "/":
             c.baseUrl = c.baseUrl[:-1]
-        c.requestUrl = request.url
+        c.objectUrl = request.url
+        if c.w:
+            c.requestUrl = c.baseUrl + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
         c.thingCode = discussionCode
         # standard thumbnail image for facebook shares
         if c.mainImage['pictureHash'] == 'supDawg':

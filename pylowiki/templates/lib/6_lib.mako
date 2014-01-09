@@ -255,26 +255,35 @@
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
-        <a href="#emailShare" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
-        <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <a href="#emailShare${itemCode}" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
+    % endif
+</%def>
+
+<%def name="emailShareModal(itemURL, itemCode)">
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+        <% 
+            memberMessage = "I thought this might interest you!"
+        %>
+        <div id="emailShare${itemCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Share This With a Friend</h3>
             </div><!-- modal-header -->
             <div class="modal-body">
+              <div class="row-fluid">
                 <form ng-controller="shareController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; itemURL='${itemURL}'; itemCode='${itemCode}'; memberMessage='${memberMessage}'; recipientEmail=''; recipientName=''; shareEmailResponse='';" id="shareEmailForm" ng-submit="shareEmail()" class="form-inline" name="shareEmailForm">
-                    Your friend's name:<br>
-                    <input type="text" name="recipientName" ng-model="recipientName" required><br />
+                    <div class="alert" ng-show="shareEmailShow">{{shareEmailResponse}}</div>
                     Your friend's email:<br>
-                    <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br />
+                    <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br>
+                    <br>
                     Add a message for your friend:<br />
                     <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
                     <div class="spacer"></div>
-                    <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button type="submit" class="btn btn-warning">Send Email</button>
+                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="submit" class="btn btn-success">Send Email</button>
                     <br />
-                    <span ng-show="shareEmailShow">{{shareEmailResponse}}</span>
                 </form>
+              </div><!-- row -->
             </div><!-- modal-body -->
         </div><!-- modal -->
     % endif
@@ -338,20 +347,12 @@
          <i class="${voteClass}"></i>
          </a>
       % else:
-        % if 'workshopCode' not in thing:
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % endif
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-        % if 'workshopCode' not in thing:
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % endif
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
@@ -426,21 +427,13 @@
           Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
         </div>
       % else:
-        % if 'workshopCode' in thing:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % else:
-            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % endif
-          <div class="vote-icon yes-icon"></div>
+         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+         <div class="vote-icon yes-icon"></div>
          </a>
          <br>
          <br>
-        % if 'workshopCode' in thing:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % else:
-            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-        % endif
-          <div class="vote-icon no-icon"></div>
+         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+         <div class="vote-icon no-icon"></div>
          </a>
          <br>
          <div class="totalVotesWrapper">
@@ -479,7 +472,7 @@
         if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
             printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
         else:
-            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/'
+            printStr = '<a href="#signupLoginModal" data-toggle="modal"'
             
         if thing == 'discussion':
             printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
