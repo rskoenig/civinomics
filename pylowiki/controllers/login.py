@@ -706,7 +706,7 @@ You can change your password to something you prefer on your profile page.\n\n''
                 splashMsg['content'] = '''A new password was emailed to you.'''
                 session['alert'] = splashMsg
                 session.save()
-                return redirect('/forgotPassword')
+                return redirect('/login')
             else:
                 log.info( "Failed forgot password for " + email )
                 splashMsg['content'] = "Email not found or account has been disabled or deleted."
@@ -788,4 +788,4 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/loginNoExtAuth.bootstrap")
 
     def forgotPassword(self):
-        return render("/derived/forgotPassword.bootstrap")
+        return render("/derived/login.bootstrap")

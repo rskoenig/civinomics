@@ -1,4 +1,5 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/mako_lib.mako" import="fields_alert"/>
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
@@ -328,6 +329,14 @@
             <h2 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h2>
             <h2 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h2>
             <h2 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h2>
+        % endif
+        ${fields_alert()}
+        % if c.splashMsg:
+            <% message = c.splashMsg %>
+            <div class="alert alert-${message['type']}">
+                <button data-dismiss="alert" class="close">x</button>
+                <strong>${message['title']}</strong> ${message['content']}
+            </div> 
         % endif
       ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
