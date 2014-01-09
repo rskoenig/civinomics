@@ -12,14 +12,22 @@
 </%def>
 
 <div id="login-bg"></div>
+
+<%
+  if 'loginResetPassword' in session._environ['PATH_INFO']:
+    session['afterLoginURL'] = 'loginResetPassword'
+%>
+
 <div class="login">
   <div class="container">
       <div class="row">
-          % if 'login' in session._environ['PATH_INFO']:
+          % if 'forgot' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'pTitle'">
+          % elif 'login' or 'Login' in session._environ['PATH_INFO']:
             <div ng-init="showTitle = 'lTitle'">
           % elif 'signup' in session._environ['PATH_INFO']:
             <div ng-init="showTitle = 'sTitle'">
-          % elif 'forgotPassword' in session._environ['PATH_INFO']:
+          % elif 'forgot' in session._environ['PATH_INFO']:
             <div ng-init="showTitle = 'pTitle'">
           % endif
               <div class="well main-well login" ng-controller="signupController">

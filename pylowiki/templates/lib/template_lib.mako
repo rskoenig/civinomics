@@ -452,6 +452,9 @@
 <%def name="signupLoginModal()">
     <!-- Signup Login Modal -->
     <% 
+      ####
+      #### After Login URL
+      ####
       alURL= session._environ['PATH_INFO']
       if 'QUERY_STRING' in session._environ :
         alURL = alURL + '?' + session._environ['QUERY_STRING'] 
@@ -462,9 +465,10 @@
         except:
             alURL = '/browse/initiatives'
       if 'zip/lookup' in alURL or '/signup' in alURL:
-        alURL = '/browse/initiatives'
+        alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
+
     <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
