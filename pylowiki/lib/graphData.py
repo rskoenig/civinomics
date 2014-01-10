@@ -18,7 +18,8 @@ def buildNewData(parent, activities, **kwargs):
     newList = []
     for item in activities:
         # make a link for this item
-        url = utils.thingURL(parent, item)
+        # note: for some reason, 'title' isn't accessible in here so I've modded thingURL to get it for me
+        title, url = utils.thingURL(parent, item, returnTitle=True)
         # get the date and vote stats
         thisTime = str(item.date)
         if 'type' in kwargs:
@@ -28,14 +29,11 @@ def buildNewData(parent, activities, **kwargs):
                 val = int(item['ups'])
         else:
             val = int(item['ups'])
-        #log.info(item['title'])
-        #label = utils.cap(item['workshop_title'],30)
-        label = item.objType
-        #title = 'yo ma'
         newList.append({
-            'date':thisTime,
-            'title':label,
             'close':val,
+            'date':thisTime,
+            'title':title,
+            'type':item.objType,
             'url':url
         })
 

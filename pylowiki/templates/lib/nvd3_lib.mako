@@ -153,8 +153,6 @@
       .attr("class", "line")
       .attr("d", valueline(graphData));
 
-    var tooltipTime = d3.time.format("%e %B");
-
     var ttDiv = d3.select("#newChart")
       .append("div") 
       .attr("class", "tooltip") 
@@ -179,7 +177,7 @@
           ttDiv.transition() 
             .duration(200)
             .style("opacity", .9); 
-          ttDiv.html(tooltipTime(parseDate(d.date)) + "<br/>" + d.close)
+          ttDiv.html(d.type + "<br/>" + d.close + " votes")
             .style("left", (d3.event.pageX) + "px") 
             .style("top", (d3.event.pageY - 58) + "px")
             .style("pointer-events", "none");

@@ -118,7 +118,12 @@ def isWatching(user, workshop):
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
   
-def thingURL(thingParent, thing):
+##################################################
+# generates a url for a thing
+# kwarg returnTitle gets the title out of the thing as well.
+##################################################
+def thingURL(thingParent, thing, **kwargs):
+    thingUrl = True
     if thingParent.objType.replace("Unpublished", "") == 'workshop':
         parentBase = "workshop"
     elif thingParent.objType.replace("Unpublished", "") == 'user':
@@ -127,9 +132,11 @@ def thingURL(thingParent, thing):
         parentBase = "initiative"
     baseURL = '/%s/%s/%s' % (parentBase, thingParent['urlCode'], thingParent['url'])
     if thing.objType.replace("Unpublished", "") == 'photo':
-        return baseURL + "/photo/show" + thing['urlCode']
+        returnString = baseURL + "/photo/show" + thing['urlCode']
+        thingUrl = False
     if thing.objType.replace("Unpublished", "") == 'initiative':
-        return baseURL + "/show"
+        returnString = baseURL + "/show"
+        thingUrl = False
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
@@ -137,15 +144,27 @@ def thingURL(thingParent, thing):
             thing = generic.getThing(thing['resourceCode'])
         elif 'photoCode' in thing.keys():
             thing = generic.getThing(thing['photoCode'])
-            return baseURL + "/photo/show/" + thing['urlCode'] 
+            returnString = baseURL + "/photo/show/" + thing['urlCode'] 
+            thingUrl = False
         elif 'initiativeCode' in thing.keys():
             thing = generic.getThing(thing['initiativeCode'])
-            return baseURL + "/show/" 
+            returnString = baseURL + "/show/" 
+            thingUrl = False
         elif 'discussionCode' in thing.keys():
             thing = generic.getThing(thing['discussionCode'])
         else:
-            return baseURL
-    return baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+            returnString = baseURL
+            thingUrl = False
+    if thingUrl:
+        returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+
+    if 'returnTitle' in kwargs:
+        if kwargs['returnTitle'] == True:
+            return thing['title'], returnString
+        else:
+            return returnString
+    else:
+        return returnString
     
 def profilePhotoURL(thing):
     owner = generic.getThing(thing['userCode'])
