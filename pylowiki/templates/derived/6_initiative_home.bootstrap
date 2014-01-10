@@ -23,10 +23,6 @@
         This is a revision dated ${c.initiative.date}<br />
     % else:
         ${ihelpers.initiativeModerationPanel(c.initiative)}
-        <hr>
-        <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
-        ${ihelpers.listResources()}
-        <br>
         % if c.initiative.objType != 'initiativeUnpublished':
             <hr>
             <h4 class="initiative-title">Arguments</h4>

@@ -9,25 +9,23 @@
 <div class="darkened-workshop"></div>
 <div class="spacer"></div>
 <div class="row-fluid min-container" ng-app="civ">
-    <div class="row-fluid" style="position: relative;">
+    <div class="row-fluid" style="position: relative;" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'; initiativeTitle = '${c.initiative['title']}'">
         <div class="span9 well initiative-panel">
-            <div class="row-fluid">
-                % if c.initiativeHome:
-                    <div class="row-fluid">
-                        <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
-                    </div>
-                    <% titleSpan = "row-fluid" %>
-                % else: 
-                    <div class="span2">
-                        <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
-                    </div>
-                    <% titleSpan = "span10" %>
-                % endif
-                <div class="${titleSpan}" style="position:relative;">
-                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-init="initiativeTitle = '${c.initiative['title']}'" ng-cloak>{{initiativeTitle}}</a></h2>
-                    <h4> 
-                        <a href="${c.scopeHref}"><img class="thumbnail span small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
-                        ${lib_6.showTags(c.initiative)}
+
+            ####
+            ### Text
+            ####
+
+            <div ng-show="showingText">
+                <div class="row-fluid">
+                    <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
+                </div>
+                <div class="row-fluid" style="position:relative;">
+                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
+                </div>
+                <h4> 
+                    <a href="${c.scopeHref}"><img class="thumbnail span small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                    ${lib_6.showTags(c.initiative)}
                     % if c.iPrivs:
                         <span>
                             % if c.editInitiative:
@@ -46,21 +44,51 @@
                             ${ihelpers.watchButton(c.initiative)}
                         </span>
                     % endif
-                    </h4>
+                </h4>
+                <hr class="narrow">
+                <div class="row-fluid">
+                    ${ihelpers.showAuthor(c.initiative)}
                 </div>
-                % if c.initiativeHome:
-                    <hr class="narrow">
-                    <div class="row-fluid">
-                        ${ihelpers.showAuthor(c.initiative)}
-                    </div>
-                % endif
-            </div>
-            <hr class="narrow">
+                <hr class="narrow">
                 % if c.initiative['public'] == '0':
                     <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
                 % endif
-            ${next.body()}
-        </div>
+                ${next.body()}
+            </div> <!-- ng showingText -->
+            
+            ####
+            ### SubPage Header
+            ####
+
+            <div ng-show="!showingText">
+                ${ihelpers.condensedInitTitle()}
+            </div>
+
+            ####
+            ### Resources
+            ####
+
+            <div ng-show="showingResources">
+
+                        <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+                        ${ihelpers.listResources()}
+
+            </div><!-- ng showingResources -->
+
+
+            ####
+            ### Updates
+            ####
+
+            <div ng-show="showingUpdates">
+
+                Updates here
+
+            </div><!-- ng showingUpdates -->
+
+        </div><!-- span9 initiative-panel -->
+
+
         <div class="span3" id="sidebar">
             <div style="position:fixed; width: inherit; max-width: 280px;">
             % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
@@ -133,6 +161,7 @@
                             </span>
                         
                         </div>
+                    <!--
                         <div class="row-fluid">
                             <div class="span10 offset2">
                                 <label class="checkbox grey">
@@ -140,7 +169,6 @@
                                 </label>
                             </div>
                         </div>
-                        <!-- 
                         <h4 class="section-header smaller section-header-inner">Fund It</h4>
                         <br>
                         <div>$136,000 of ${c.initiative['cost']}</div>
@@ -151,24 +179,29 @@
                         <div class="row-fluid centered">
                             <button class="btn-large btn-success btn">Fund Initiative</button>
                         </div>
-                        -->
+                    -->
                     % endif 
                 </div><!-- section-wrapper -->
-                <!--
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
-                    <li class="active"><a href="#iText" data-toggle="tab">Text</a></li>
-                    <li><a href="#iResources" data-toggle="tab">Resources</a></li>
+                    <li class="active"><a ng-click="showText()" href="#">Text</a></li>
+                    <li><a>Arguments <span class="badge green">0</span></a></li>
+                    <li><a ng-click="showUpdates()" href="#">Updates <span class="badge green">0</span></a></li>
+                    <li><a ng-click="showResources()" href="#">Resources <span class="badge green">0</span></a></li>
+                    <!-- 
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
-                    <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
                     <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
+                    -->
 
                 </ul>
-                -->
             % endif
             </div> <!-- position:fixed -->
         </div><!-- span4 -->
     </div><!-- row-fluid -->
 </div><!-- row-fluid -->
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/initiative.js')}" type="text/javascript"></script>
+</%def>
 
 <%def name="extraScripts()">
    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>

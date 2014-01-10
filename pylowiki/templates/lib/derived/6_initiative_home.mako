@@ -293,7 +293,7 @@
     % endif
     <div class="row-fluid edit-initiative" id="basics">
         <div class="span12">
-        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
+        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
             <div class="row-fluid">
                 <h3 class="initiative-title edit no-top">1. Basics</h3>
             </div><!-- row-fluid -->
@@ -506,7 +506,7 @@
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
-    <div class="btn-group">
+    <div class="btn-group pull-right">
         % if thing['disabled'] == '0' and thing.objType != 'initiativeUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
@@ -854,5 +854,38 @@
             </div><!-- ng-controller -->
         </div><!-- ng-init -->
     %endif   
+</%def>
+
+<%def name="condensedInitTitle()">
+    <div class="row-fluid">
+        <div class="span2">
+                <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
+            </div>
+        <div class="span10" style="position:relative;">
+            <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
+            <h4> 
+                <a href="${c.scopeHref}"><img class="thumbnail span small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                ${lib_6.showTags(c.initiative)}
+            % if c.iPrivs:
+                <span>
+                    % if c.editInitiative:
+                        <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                    % elif c.initiative.objType != 'revision':
+                        <span class="pull-right">
+                            <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                            <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                        </span>
+                    % else:
+                        <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
+                    % endif
+                </span>
+            % elif c.initiativeHome and c.initiative.objType != 'revision':
+                <span>
+                    ${ihelpers.watchButton(c.initiative)}
+                </span>
+            % endif
+            </h4>
+        </div>
+    </div><!-- row-fluid -->
 </%def>
 
