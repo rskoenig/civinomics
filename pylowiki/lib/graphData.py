@@ -3,9 +3,8 @@ import logging
 from pylons import session, tmpl_context as c
 from pylons import tmpl_context as c, config, session
 
-import pylowiki.lib.utils           as utils
-
 import pylowiki.lib.d3Helpers       as d3Helpers
+import pylowiki.lib.utils           as utils
 
 from operator import itemgetter
 import simplejson as json
@@ -14,11 +13,13 @@ log = logging.getLogger(__name__)
 ##################################################
 # builds a new json data structure
 ##################################################
-def buildNewData(activities, **kwargs):
+def buildNewData(parent, activities, **kwargs):
     
     newList = []
     for item in activities:
-        #log.info(item.date)
+        # make a link for this item
+        url = utils.thingURL(parent, item)
+        # get the date and vote stats
         thisTime = str(item.date)
         if 'type' in kwargs:
             if kwargs['type'] == 'downs':
@@ -27,9 +28,15 @@ def buildNewData(activities, **kwargs):
                 val = int(item['ups'])
         else:
             val = int(item['ups'])
+        #log.info(item['title'])
+        #label = utils.cap(item['workshop_title'],30)
+        label = item.objType
+        #title = 'yo ma'
         newList.append({
             'date':thisTime,
-            'close':val
+            'title':label,
+            'close':val,
+            'url':url
         })
 
     return json.dumps(newList)

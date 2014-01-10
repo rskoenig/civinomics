@@ -928,8 +928,8 @@ class WorkshopController(BaseController):
         c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
         c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
         
-        c.jsonNewData = graphData.buildNewData(activities)
-        c.jsonNewData2 = graphData.buildNewData(activities, type='downs')
+        c.jsonNewData = graphData.buildNewData(c.w, activities)
+        c.jsonNewData2 = graphData.buildNewData(c.w, activities, type='downs')
         
         # a radar plot will show relative totals of views, votes and popularity
         # one plot per type?

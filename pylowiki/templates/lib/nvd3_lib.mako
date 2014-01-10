@@ -71,6 +71,7 @@
       <input name="updateButton" type="button" value="Update" onclick="updateData()"/>
     </div>-->
   </div>
+  <div id='link'></div>
 
   <script id="nvd3On" src="/nvd3/lib/d3.v3.js"></script>
   <script>
@@ -113,7 +114,6 @@
 
 
     var valueline = d3.svg.line()
-      .interpolate("basis-open")
       .x(function(d) { return x(parseDate(d.date)); }) 
       .y(function(d) { return y(d.close); });
 
@@ -151,7 +151,6 @@
 
     svg.append("path")  // Add the valueline path.
       .attr("class", "line")
-      .style("stroke-dasharray", ("3, 3"))
       .attr("d", valueline(graphData));
 
     var tooltipTime = d3.time.format("%e %B");
@@ -161,6 +160,8 @@
       .attr("class", "tooltip") 
       .style("opacity", 0);
 
+    var linkDiv = d3.select("#link")
+
     svg.selectAll("dot") 
         .data(graphData)
       .enter().append("circle")
@@ -168,8 +169,11 @@
         .attr("cx", function(d) { return x(parseDate(d.date)); })
         .attr("cy", function(d) { return y(d.close); })
         .style("fill", function(d) {
-          if (d.close > 10) { return "red"}
-          else { return "blue"};
+          if (d.close > 10) { return "blue"}
+          else { return "black"};
+        })
+        .on("click", function(d) {
+          linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
         })
         .on("mouseover", function(d) {
           ttDiv.transition() 
@@ -185,7 +189,6 @@
             .duration(500)
             .style("opacity", 0);
         });
-
 
     svg.append("g") // Add the X Axis 
       .attr("class", "x axis") 
@@ -238,6 +241,7 @@
         updateData();
       }, 5000);
     */
+
     function updateData() {
 
       // Scale the range of the data again
