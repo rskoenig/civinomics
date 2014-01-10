@@ -110,13 +110,13 @@
                         <h4 class="section-header initiative smaller section-header-inner">Share It</h4>
                         <div class="row-fluid centered">
                             <span>
+                                <%
+                                    subj = 'Vote on "' + c.initiative['title'] + '"'
+                                    subj = subj.replace(' ','%20')
+                                    body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+                                %>
                                 % if c.initiative['public'] == '1':
                                     ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True, btn=True)}
-                                    <%
-                                        subj = 'Vote on "' + c.initiative['title'] + '"'
-                                        subj = subj.replace(' ','%20')
-                                        body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
-                                    %>
 
                                     <a class="btn btn-danger" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
 
@@ -125,11 +125,10 @@
                                         <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
                                     #%endif -->
                                 % else:
-                                    <div class="btn-group facebook unpublished" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it.">
-                                        <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
-                                            <i class="icon-facebook-sign icon-2x"></i>
-                                        </a>
-                                    </div>
+                                    <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
+                                        <i class="icon-facebook icon-light right-space"></i> | Share
+                                    </a>
+                                    <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
                                 % endif
                             </span>
                         
@@ -176,6 +175,7 @@
    <script type="text/javascript">
       $(".followButton").tooltip();
       $(".facebook.unpublished").tooltip();
+      $(".email-invite").tooltip();
    </script>
    <script src="/js/bootstrap/bootstrap-affix.js"></script>
     <script type="text/javascript"> 
