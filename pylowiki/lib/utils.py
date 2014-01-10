@@ -160,7 +160,7 @@ def thingURL(thingParent, thing, **kwargs):
 
     if 'returnTitle' in kwargs:
         if kwargs['returnTitle'] == True:
-            return thing['title'], returnString
+            return thing['views'], thing['title'], returnString
         else:
             return returnString
     else:

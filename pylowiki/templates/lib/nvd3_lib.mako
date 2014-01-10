@@ -7,7 +7,7 @@
 ## NVD3 library
 ################################################
 
-<%def name="newGraph(newData, newData2)">
+<%def name="newGraph(newData)">
 
   <style>
 
@@ -53,19 +53,18 @@
     div.tooltip { 
       position: absolute; 
       text-align: center; 
-      width: 60px; 
-      height: 28px; 
-      padding: 2px; 
-      font: 12px sans-serif; 
+      width: 7em; 
+      height: 4.5em; 
+      padding: 0.4em; 
+      font: 1em sans-serif; 
       background: lightsteelblue; 
       border: 0px; 
-      border-radius: 8px; 
+      border-radius: 0.6em; 
       pointer-events: none;
     }
 
   </style>
 
-  <h5>Upvotes by Activity Type</h5>
   <div id="newChart">
     <!--<div id="option"> 
       <input name="updateButton" type="button" value="Update" onclick="updateData()"/>
@@ -76,13 +75,13 @@
   <script id="nvd3On" src="/nvd3/lib/d3.v3.js"></script>
   <script>
     var margin = {
-      top: 80, 
+      top: 30, 
       right: 20, 
-      bottom: 80, 
-      left: 50
+      bottom: 100, 
+      left: 60
     }; 
-    var width = 600 - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
+    var width = 850 - margin.left - margin.right;
+    var height = 480 - margin.top - margin.bottom;
 
     // expecting date to arrive in standard msql format
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
@@ -109,13 +108,13 @@
       return d3.svg.axis()
         .scale(y) 
         .orient("left") 
-        .ticks(5)
+        .ticks(10)
     }
 
 
     var valueline = d3.svg.line()
       .x(function(d) { return x(parseDate(d.date)); }) 
-      .y(function(d) { return y(d.close); });
+      .y(function(d) { return y(+d.views); });
 
     var svg = d3.select("#newChart") 
       .append("svg")
@@ -127,12 +126,13 @@
 
     // Get the data - in this case it's json in a variable
     var graphData = ${newData | n}
-    var graphData2 = ${newData2 | n}
     //console.log(graphData);
 
     // Scale the range of the data
+    var maxViews = d3.max(graphData, function(d) { return +d.views; });
+    var maxVotes = d3.max(graphData, function(d) { return +d.totalVotes; });
     x.domain(d3.extent(graphData, function(d) { return parseDate(d.date); })); 
-    y.domain([0, d3.max(graphData, function(d) { return d.close; })]);
+    y.domain([0, maxViews]);
     
     svg.append("g") 
       .attr("class", "grid") 
@@ -149,26 +149,49 @@
         .tickFormat("")
       )
 
+    /*
     svg.append("path")  // Add the valueline path.
       .attr("class", "line")
       .attr("d", valueline(graphData));
+    */
 
     var ttDiv = d3.select("#newChart")
       .append("div") 
       .attr("class", "tooltip") 
       .style("opacity", 0);
 
+    function approval(t,u) {
+      console.log(t + " " + u);
+      if (+t > 0) {
+        var approval = Math.ceil(u/t)*100;
+        return approval+"% approval <br/>";
+      } else {
+        return "";
+      }
+    }
+
     var linkDiv = d3.select("#link")
 
     svg.selectAll("dot") 
         .data(graphData)
       .enter().append("circle")
-        .attr("r", 5)
+        .attr("r", 4)
         .attr("cx", function(d) { return x(parseDate(d.date)); })
-        .attr("cy", function(d) { return y(d.close); })
+        .attr("cy", function(d) { return y(+d.views); })
         .style("fill", function(d) {
-          if (d.close > 10) { return "blue"}
-          else { return "black"};
+          if (+d.totalVotes > 3*maxVotes/4) {
+            return "red";
+          } else if (+d.totalVotes > maxVotes/2) {
+            return "orange";
+          } else if (+d.totalVotes > maxVotes/4) {
+            return "green";
+          } else if (+d.totalVotes > 1) {
+            return "blue";
+          } else if (+d.totalVotes > 0) {
+            return "grey";
+          } else {
+            return "black";
+          }
         })
         .on("click", function(d) {
           linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
@@ -177,7 +200,7 @@
           ttDiv.transition() 
             .duration(200)
             .style("opacity", .9); 
-          ttDiv.html(d.type + "<br/>" + d.close + " votes")
+          ttDiv.html(d.type + "<br/>" + d.totalVotes + " votes" + "<br/>" + approval(d.totalVotes, d.upVotes) + d.views + " views")
             .style("left", (d3.event.pageX) + "px") 
             .style("top", (d3.event.pageY - 58) + "px")
             .style("pointer-events", "none");
@@ -197,7 +220,7 @@
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", function(d) {
-            return "rotate(-65)"
+            return "rotate(-35)"
         });
 
     svg.append("g") 
@@ -206,9 +229,9 @@
 
     // text label for the x axis
     svg.append("text")  
-      .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+      .attr("transform", "translate(" + (width / 2) + " ," + (height + 3*margin.bottom/4) + ")")
       .style("text-anchor", "middle") 
-      .text("Date");
+      .text("Last Activity");
 
     svg.append("text") 
       .attr("transform", "rotate(-90)") 
@@ -216,7 +239,7 @@
       .attr("x", 0 - (height / 2)) 
       .attr("dy", "1em") 
       .style("text-anchor", "middle") 
-      .text("Value");
+      .text("# of Views");
     
     svg.append("text") 
       .attr("x", (width / 2)) 
@@ -225,7 +248,7 @@
       .style("font-size", "16px") 
       .style("text-decoration", "underline")
       .attr("class", "shadow")
-      .text("Value vs Date Graph");
+      .text("All Activities");
 
     svg.append("text") 
       .attr("x", (width / 2)) 
@@ -233,7 +256,7 @@
       .attr("text-anchor", "middle") 
       .style("font-size", "16px") 
       .style("text-decoration", "underline") 
-      .text("Value vs Date Graph");
+      .text("All Activities");
 
     /*var inter = setInterval( function () {
         updateData();
@@ -243,8 +266,8 @@
     function updateData() {
 
       // Scale the range of the data again
-      x.domain(d3.extent(graphData2, function(d) { return parseDate(d.date); })); 
-      y.domain([0, d3.max(graphData2, function(d) { return d.close; })]);
+      x.domain(d3.extent(graphData, function(d) { return parseDate(d.date); })); 
+      y.domain([0, d3.max(graphData, function(d) { return d.totalVotes; })]);
 
       // Select the section we want to apply our changes to
       var svg = d3.select("#newChart").transition();
@@ -252,7 +275,7 @@
       // Make the changes 
       svg.select(".line") // change the line
         .duration(750)
-        .attr("d", valueline(graphData2)); 
+        .attr("d", valueline(graphData)); 
       svg.select(".x.axis") // change the x axis
         .duration(750)
         .call(xAxis); 

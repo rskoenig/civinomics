@@ -6,6 +6,7 @@ from pylons import tmpl_context as c, config, session
 import pylowiki.lib.d3Helpers       as d3Helpers
 import pylowiki.lib.utils           as utils
 
+from math import ceil
 from operator import itemgetter
 import simplejson as json
 log = logging.getLogger(__name__)
@@ -19,22 +20,22 @@ def buildNewData(parent, activities, **kwargs):
     for item in activities:
         # make a link for this item
         # note: for some reason, 'title' isn't accessible in here so I've modded thingURL to get it for me
-        title, url = utils.thingURL(parent, item, returnTitle=True)
+        views, title, url = utils.thingURL(parent, item, returnTitle=True)
+        log.info("views: %s"%views)
         # get the date and vote stats
         thisTime = str(item.date)
-        if 'type' in kwargs:
-            if kwargs['type'] == 'downs':
-                val = int(item['downs'])
-            else:
-                val = int(item['ups'])
-        else:
-            val = int(item['ups'])
+        upVotes = int(item['ups'])
+        downVotes = int(item['downs'])
+        totalVotes = upVotes + downVotes
         newList.append({
-            'close':val,
             'date':thisTime,
+            'downVotes':downVotes,
             'title':title,
+            'totalVotes':totalVotes,
             'type':item.objType,
-            'url':url
+            'upVotes':upVotes,
+            'url':url,
+            'views':views
         })
 
     return json.dumps(newList)

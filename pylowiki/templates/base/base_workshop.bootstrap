@@ -50,10 +50,11 @@
               forumHref = linkHref + '/discussion'
               activityHref= linkHref + '/activity'
               adminHref= linkHref + '/preferences'
-              publicStatsHref= linkHref + '/publicStats'
+              publicStats1Href= linkHref + '/1/publicStats'
+              publicStats2Href= linkHref + '/2/publicStats'
 
     
-              summaryActive = infoActive = activityActive = forumActive = adminActive = publicStatsActive = ''
+              summaryActive = infoActive = activityActive = forumActive = adminActive = publicStats1Active = publicStats2Active = ''
 
               if c.listingType == 'resources' or listingType == 'resource':
                 infoActive = 'active'
@@ -65,8 +66,10 @@
                 activityActive = 'active'
               elif c.adminPanel == True:
                 adminActive = 'active'
-              elif c.listingType == 'publicStats':
-                publicStatsActive = 'active'
+              elif c.listingType == 'publicStats1':
+                publicStats1Active = 'active'
+              elif c.listingType == 'publicStats2':
+                publicStats2Active = 'active'
             %>
 
             <ul class="nav nav-tabs workshop-tabs">
@@ -76,9 +79,8 @@
               <li class="${infoActive}"><a href="${infoHref | n}">Info</a></li>
               <li class="${forumActive}"><a href="${forumHref | n}">Forum</a></li>
               <li class="${activityActive}"><a href="${activityHref | n}">Activity</a></li>
-              % if c.privs['participant']:
-                <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
-              % endif
+              <li class="${publicStats1Active}"><a href="${publicStats1Href | n}">Stats1</a></li>
+              <li class="${publicStats2Active}"><a href="${publicStats2Href | n}">Stats2</a></li>
               % if c.privs['admin'] or c.privs['facilitator']: 
                 <li class="pull-right ${adminActive}" style="margin-right: 10px;"><a href="${adminHref | n}">Admin</a></li>
               % endif

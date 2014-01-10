@@ -920,17 +920,10 @@ class WorkshopController(BaseController):
 
         return feed.writeString('utf-8')
 
-    def publicStats(self, workshopCode, workshopURL):
+    def publicStats(self, workshopCode, workshopURL, version):
             
         #stacked bar graph data struct 1
         activities = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
-        
-        c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
-        c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
-        
-        c.jsonNewData = graphData.buildNewData(c.w, activities)
-        c.jsonNewData2 = graphData.buildNewData(c.w, activities, type='downs')
-        
         # a radar plot will show relative totals of views, votes and popularity
         # one plot per type?
         # paginated plotting?
@@ -940,8 +933,14 @@ class WorkshopController(BaseController):
         
         c.publicStats = 'all the data we need for graphs of the public'
 
-        c.listingType = 'publicStats'
-        #log.info('hi made it')
+        if version == '1':
+            c.listingType = 'publicStats1'
+            c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
+            c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
+        else:
+            c.listingType = 'publicStats2'
+            c.jsonNewData = graphData.buildNewData(c.w, activities)
+
         return render('/derived/6_detailed_listing.bootstrap')
         
     def display(self, workshopCode, workshopURL):
