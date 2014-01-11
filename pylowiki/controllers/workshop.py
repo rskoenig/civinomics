@@ -37,6 +37,8 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
@@ -120,13 +122,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'publicStats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'displayAllResources', 'publicStats']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -918,6 +920,29 @@ class WorkshopController(BaseController):
         response.content_type = 'application/xml'
 
         return feed.writeString('utf-8')
+
+    def publicStats(self, workshopCode, workshopURL, version):
+            
+        #stacked bar graph data struct 1
+        activities = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
+        # a radar plot will show relative totals of views, votes and popularity
+        # one plot per type?
+        # paginated plotting?
+        # sort for highest/lowest first?
+
+        # a stacked bar graph will show how things have gone over time
+        
+        c.publicStats = 'all the data we need for graphs of the public'
+
+        if version == '1':
+            c.listingType = 'publicStats1'
+            c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
+            c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
+        else:
+            c.listingType = 'publicStats2'
+            c.jsonNewData = graphData.buildNewData(c.w, activities)
+
+        return render('/derived/6_detailed_listing.bootstrap')
         
     def display(self, workshopCode, workshopURL):
         # check to see if this is a request from the iphone app

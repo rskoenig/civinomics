@@ -3,6 +3,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="workshopHelpers" file="/lib/derived/6_workshop_home.mako" />
+<%namespace name="nvd3Lib" file="/lib/nvd3_lib.mako"/>
 
 <% 
    lib.return_to()
@@ -20,6 +21,12 @@
       helperText += '<strong class="orange"> Vote</strong> existing ideas <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on how well they address the goals.'
    elif c.listingType == 'activity':
       itemList = c.activity
+      helperText = ''
+   elif c.listingType == 'publicStats1':
+      itemList = c.jsonSbgData
+      helperText = ''
+   elif c.listingType == 'publicStats2':
+      itemList = c.jsonNewData
       helperText = ''
 
    self.showListing(c.listingType, itemList, helperText)
@@ -42,6 +49,14 @@
          itemAlert = '<div class="alert alert-info">There are no ideas here yet. Be the first to add one!</div>'
       elif listingType == 'activity':
          pluralType = 'activity'
+      elif listingType == 'publicStats1':
+         pluralType = 'Workshop statistics 1.0'
+         numItems = '1'
+         itemAlert = ''
+      elif listingType == 'publicStats2':
+         pluralType = 'Workshop statistics 2.0'
+         numItems = '1'
+         itemAlert = ''
    %>
    <div class="row-fluid">
       <div class="span12">
@@ -54,6 +69,12 @@
                    %endif
                    </h4>
                     ${workshopHelpers.showActivity(c.activity)}
+               % elif listingType == 'publicStats1':
+                   <h4 class="section-header smaller">Statistics</h4>
+                   ${nvd3Lib.activityStackedGroupedData(c.jsonSbgData, c.jsonSbgData2)}
+               % elif listingType == 'publicStats2':
+                   <h4 class="section-header smaller">Statistics</h4>
+                   ${nvd3Lib.newGraph(c.jsonNewData)}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                     % if listingType != 'activity':
