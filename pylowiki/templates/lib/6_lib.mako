@@ -1584,8 +1584,8 @@
     % endfor
 </%def>
 
-<%def name="bookmarkOptions(user, workshop)">
-  <% f = followLib.getFollow(user, workshop) %>
+<%def name="bookmarkOptions(user, parent)">
+  <% f = followLib.getFollow(user, parent) %>
     % if f:
       <%
           itemsChecked = ''
@@ -1595,7 +1595,7 @@
           if 'digest' in f and f['digest'] == '1':
               digestChecked = 'checked'
       %>
-      <div class="btn-group pull-right" ng-controller="followerController" ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'">
+      <div class="btn-group pull-right" ng-controller="followerController" ng-init="parentType='${parent.objType}';code='${parent['urlCode']}'; url='${parent['url']}'; user='${user['urlCode']}'">
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
           <i class="icon-envelope"></i>
           <span class="caret"></span>

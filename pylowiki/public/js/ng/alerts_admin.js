@@ -57,7 +57,7 @@ function followerController($scope, $http, $location) {
   $scope.emailOnAddedShow     = false;
   
   $scope.emailOnAdded = function() {
-    var addedURL = '/workshop/' + $scope.code + '/' + $scope.url + '/follow/' + $scope.user+ '/notifications/handler';
+    var addedURL = '/' + $scope.parentType + '/' + $scope.code + '/' + $scope.url + '/follow/' + $scope.user+ '/notifications/handler';
     var postData = {'user':$scope.user, 'alert':'items'};
     $http.post(addedURL, postData).success(function(data){
       $scope.emailOnAddedShow = true;
@@ -66,7 +66,7 @@ function followerController($scope, $http, $location) {
   }
   
   $scope.emailDigest = function() {
-    var digestURL = '/workshop/' + $scope.code + '/' + $scope.url + '/follow/' + $scope.user+ '/notifications/handler';
+    var digestURL = '/' + $scope.parentType + '/' + $scope.code + '/' + $scope.url + '/follow/' + $scope.user+ '/notifications/handler';
     var postData = {'user':$scope.user, 'alert':'digest'};
     $http.post(digestURL, postData).success(function(data){
       $scope.emailDigestShow = true;

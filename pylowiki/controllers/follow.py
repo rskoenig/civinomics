@@ -40,13 +40,13 @@ class FollowController(BaseController):
             return "ok"
         
     @h.login_required
-    def followerNotificationHandler(self, workshopCode, url, userCode):
+    def followerNotificationHandler(self, parentCode, url, userCode):
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
 
-        user = userLib.getUserByCode(userCode)
-        workshop = workshopLib.getWorkshopByCode(workshopCode)
-        follower = followLib.getFollow(user, workshop)
+        user = generic.getThing(userCode)
+        parent = generic.getThing(parentCode)
+        follower = followLib.getFollow(user, parent)
         # initialize to current value if any, '0' if not set in object
         iAlerts = '0'
         eAction = ''

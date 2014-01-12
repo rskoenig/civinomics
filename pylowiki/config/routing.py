@@ -116,7 +116,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/rss{end:/?}', controller = 'workshop', action = 'rss')    
 
     # Workshop follower, private member notifications
-    map.connect('/{workshop:workshops?}/{workshopCode}/{url}/follow/{userCode}/notifications/{handler:handler/?}', controller = 'follow', action = 'followerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
+    map.connect('/{workshop:workshops?}/{parentCode}/{url}/follow/{userCode}/notifications/{handler:handler/?}', controller = 'follow', action = 'followerNotificationHandler', parentCode = '{parentCode}', url='{url}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/private/{userCode}/notifications/{handler:handler/?}', controller = 'workshop', action = 'pmemberNotificationHandler', workshopCode = '{workshopCode}', workshopURL='{workshopURL}', userCode = '{userCode}')
     
     # Workshop goals
@@ -383,6 +383,7 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateEdit/{id3}{end:/?}', controller = 'initiative', action = 'updateEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateEditHandler/{id3}{end:/?}', controller = 'initiative', action = 'updateEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/initiative/{parentCode}/{url}/follow/{userCode}/notifications/{handler:handler/?}', controller = 'follow', action = 'followerNotificationHandler', parentCode = '{parentCode}', url='{url}', userCode = '{userCode}')
     
     ################
     # Messaging    #
