@@ -1623,26 +1623,41 @@
       <tr>
         <td>
             <div class="media profile-workshop" style="overflow:visible;">
-                <a class="pull-left" ${workshopLink(item)}>
-                  <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
-                </a>
-                <div class="media-body" style="overflow:visible;">
-                  <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
-                    % if ltitle == 'Facilitating' or ltitle == 'Author' or userLib.isAdmin(c.authuser.id):
-                      <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Edit Workshop</strong></a> &nbsp;
-                    % else:
-                      % if ltitle == 'Bookmarked':
-                        ${homeHelpers.watchButton(item, following = True)}
-                      % endif
-                      ${bookmarkOptions(c.authuser, item)}
-                    % endif
-                    <br>
-                    % if item['public_private'] == 'public':
-                      <span class="grey">Workshop for</span> ${showScope(item) | n}
-                    % else:
-                      <span class="grey">Private Workshop</span>
-                    % endif
-                </div>
+                % if item.objType == 'workshop':
+                    <a class="pull-left" ${workshopLink(item)}>
+                    <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+                    </a>
+                    <div class="media-body" style="overflow:visible;">
+                        <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+                        % if ltitle == 'Facilitating' or ltitle == 'Author' or userLib.isAdmin(c.authuser.id):
+                            <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Edit Workshop</strong></a> &nbsp;
+                        % else:
+                            % if ltitle == 'Bookmarked':
+                                ${homeHelpers.watchButton(item, following = True)}
+                            % endif
+                            ${bookmarkOptions(c.authuser, item)}
+                        % endif
+                        <br>
+                        % if item['public_private'] == 'public':
+                            <span class="grey">Workshop for</span> ${showScope(item) | n}
+                        % else:
+                            <span class="grey">Private Workshop</span>
+                        % endif
+                    </div>
+                % elif item.objType == 'initiative':
+                    <a class="pull-left" ${initiativeLink(item)}>
+                    <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${initiativeImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+                    </a>
+                    <div class="media-body" style="overflow:visible;">
+                        <a ${initiativeLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+                        % if ltitle == 'Bookmarked':
+                            ${homeHelpers.watchButton(item, following = True)}
+                        % endif
+                        ${bookmarkOptions(c.authuser, item)}
+                        <br>
+                        <span class="grey">Initiative for</span> ${showScope(item) | n}
+                    </div>
+                % endif
             </div>
         </td>
       </tr>
@@ -1748,8 +1763,12 @@
     ${scopeString | n}
 </%def>
 
-<%def name="initiativeImage(i)">
+<%def name="initiativeImage(i, **kwargs)">
   <%
+    if 'raw' in kwargs:
+        if kwargs['raw'] == True:
+            return "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
+               
     if 'directoryNum_photos' in i and 'pictureHash_photos' in i:
       imgURL = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png" 
     else:

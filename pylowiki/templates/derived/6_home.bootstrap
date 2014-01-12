@@ -112,13 +112,7 @@
           % endif
           <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
           % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
-            <table class="table table-hover table-condensed no-bottom">
-              <tbody>
-              % for item in c.initiativeBookmarks:
-                  <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
-              % endfor
-              </tbody>
-            </table>
+            ${lib_6.listBookmarks(c.initiativeBookmarks, 'Bookmarked')}
             ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
           % else:
             <hr class="top-space">
