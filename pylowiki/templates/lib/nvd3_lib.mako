@@ -161,7 +161,7 @@
       .style("opacity", 0);
 
     function approval(t,u) {
-      console.log(t + " " + u);
+      //console.log(t + " " + u);
       if (+t > 0) {
         var approval = Math.ceil(u/t)*100;
         return approval+"% approval <br/>";
@@ -169,13 +169,32 @@
         return "";
       }
     }
+    // call with?
+    // function(d) { return shapeType(d.type); }
+    function shapeType(t) {
+      if (t != 'comment') {
+        return "triangle";
+      } else {
+        return "circle";
+      }
+    }
 
     var linkDiv = d3.select("#link")
 
     svg.selectAll("dot") 
         .data(graphData)
-      .enter().append("circle")
-        .attr("r", 4)
+      .enter().append("a") 
+        .attr("xlink:href", function(d) {
+          return d.url
+        })
+        .append( "circle" )
+        .attr("r", function(d) {
+          if (d.type == "comment") {
+            return 4
+          } else {
+            return 6
+          }
+        })
         .attr("cx", function(d) { return x(parseDate(d.date)); })
         .attr("cy", function(d) { return y(+d.views); })
         .style("fill", function(d) {
@@ -193,9 +212,9 @@
             return "black";
           }
         })
-        .on("click", function(d) {
-          linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
-        })
+        //.on("click", function(d) {
+        //  linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
+        //})
         .on("mouseover", function(d) {
           ttDiv.transition() 
             .duration(200)
