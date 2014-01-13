@@ -417,17 +417,19 @@
       .attr("x", width + 5)
       .attr("y", (9 * lineSpaceMultiplier) + "em")
       .attr("dy", ".85em")
-      .style("font-size", "16px") 
+      .style("font-size", "13px") 
       .style("text-anchor", "start") 
-      .text("Click a dot to visit that item.");
+      .style("stroke", "grey")
+      .text("Click a dot to visit the item.");
 
     svg.append("text") 
       .attr("x", width + 5)
       .attr("y", (10 * lineSpaceMultiplier) + "em")
       .attr("dy", ".85em")
-      .style("font-size", "16px") 
+      .style("font-size", "13px") 
       .style("text-anchor", "start") 
-      .text("Hover mouse over a dot to see more info.");
+      .style("stroke", "grey")
+      .text("Hover over a dot to see info.");
 
 /*
   .style("fill", function(d) {
