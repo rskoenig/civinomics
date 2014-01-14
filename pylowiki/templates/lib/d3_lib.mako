@@ -185,9 +185,13 @@
     }
     
     function popular(u,t) {
-      var score = Math.ceil(u/t)*100;
-      if (score>50) {
-        return true;
+      if (+t > 0) {
+        var score = Math.ceil(u/t)*100;
+        if (score>50) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
@@ -447,12 +451,30 @@
 
     svg.append("text") 
       .attr("x", width + 5)
-      .attr("y", (14 * lineSpaceMultiplier) + "em")
+      .attr("y", (15 * lineSpaceMultiplier) + "em")
       .attr("dy", ".85em")
       .style("font-size", "12px") 
       .style("text-anchor", "start") 
       .style("fill", "grey")
-      .text("Smaller dots are unpopular.");
+      .text("Smaller dots are unpopular,");
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (16 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "12px") 
+      .style("text-anchor", "start") 
+      .style("fill", "grey")
+      .text("or no votes have been cast");
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (17 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "12px") 
+      .style("text-anchor", "start") 
+      .style("fill", "grey")
+      .text("on the item.");
 
   </script>
 
