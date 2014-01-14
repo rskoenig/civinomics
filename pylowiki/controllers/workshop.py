@@ -40,6 +40,7 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
@@ -1138,12 +1139,16 @@ class WorkshopController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
 
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        #c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
         c.adminPanel = False
 
         c.listingType = 'activity'
+
+        # create a json data struct out of the activity list - will be used in a d3 graph
+        c.jsonNewData = graphData.buildNewData(c.w, c.activity)
 
         return render('/derived/6_detailed_listing.bootstrap')
    

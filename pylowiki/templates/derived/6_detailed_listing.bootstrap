@@ -3,6 +3,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="workshopHelpers" file="/lib/derived/6_workshop_home.mako" />
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
 
 <% 
    lib.return_to()
@@ -48,11 +49,14 @@
          <div class="section-wrapper">
             <div class="browse">
                % if listingType == 'activity':
-                   <h4 class="section-header smaller">Activity 
+                   <h4 class="section-header smaller">Activity
                    % if c.w['public_private'] == 'public':
                         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss orange"></i></a>
                    %endif
                    </h4>
+                    <div>
+                      ${d3Lib.newGraph(c.jsonNewData)}
+                    </div>
                     ${workshopHelpers.showActivity(c.activity)}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
