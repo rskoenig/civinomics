@@ -65,24 +65,28 @@
 
   </style>
 
+  <div>
+    <p id='link' class='ideaListingTitle'>
+      &nbsp;
+    </p>
+  </div>
   <div id="newChart">
     <!--<div id="option"> 
       <input name="updateButton" type="button" value="Update" onclick="updateData()"/>
     </div>-->
   </div>
-  <div id='link'></div>
 
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
     console.log("hellow work");
     var margin = {
-      top: 30, 
+      top: 46, 
       right: 200, 
       bottom: 100, 
       left: 60
     }; 
     var width = 1050 - margin.left - margin.right;
-    var height = 480 - margin.top - margin.bottom;
+    var height = 496 - margin.top - margin.bottom;
 
     var voteColors = {
       zero: "darkorchid",
@@ -170,7 +174,7 @@
       .attr("class", "tooltip") 
       .style("opacity", 0);
 
-    function approval(t,u) {
+    function approval(u,t) {
       //console.log(t + " " + u);
       if (+t > 0) {
         var approval = Math.ceil(u/t)*100;
@@ -179,13 +183,13 @@
         return "";
       }
     }
-    // call with?
-    // function(d) { return shapeType(d.type); }
-    function shapeType(t) {
-      if (t != 'comment') {
-        return "triangle";
+    
+    function popular(u,t) {
+      var score = Math.ceil(u/t)*100;
+      if (score>50) {
+        return true;
       } else {
-        return "circle";
+        return false;
       }
     }
 
@@ -199,10 +203,10 @@
         })
         .append( "circle" )
         .attr("r", function(d) {
-          if (d.type == "comment") {
-            return 4
+          if (popular(d.upVotes, d.totalVotes)) {
+            return 6;
           } else {
-            return 6
+            return 3;
           }
         })
         .attr("cx", function(d) { return x(parseDate(d.date)); })
@@ -232,12 +236,12 @@
         //.on("click", function(d) {
         //  linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
         //})
-        .on("mouseover", function(d) {
-          linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
+        .on("mouseover", function(d) {          
+          linkDiv.html('<a href="' + d.url + '" class="listed-item-title">' + d.title + '</a>')
           ttDiv.transition() 
             .duration(200)
             .style("opacity", .9); 
-          ttDiv.html(d.type + "<br/>" + d.totalVotes + " votes" + "<br/>" + approval(d.totalVotes, d.upVotes) + d.views + " views")
+          ttDiv.html(d.type + "<br/>" + d.totalVotes + " votes" + "<br/>" + approval(d.upVotes, d.totalVotes) + d.views + " views")
             .style("left", (d3.event.pageX) + "px") 
             .style("top", (d3.event.pageY - 58) + "px")
             .style("pointer-events", "none");
@@ -439,7 +443,7 @@
       .style("font-size", "12px") 
       .style("text-anchor", "start") 
       .style("fill", "grey")
-      .text("Larger dots are ideas, discussions or resources.");
+      .text("Larger dots are popular.");
 
     svg.append("text") 
       .attr("x", width + 5)
@@ -448,7 +452,7 @@
       .style("font-size", "12px") 
       .style("text-anchor", "start") 
       .style("fill", "grey")
-      .text("Smaller dots are comments.");
+      .text("Smaller dots are unpopular.");
 
   </script>
 
