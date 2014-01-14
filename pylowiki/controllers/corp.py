@@ -700,6 +700,41 @@ class CorpController(BaseController):
         c.articles=[]
        
         article={}
+        article['title']="Civinomics Rising"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html'
+        article['date']='12.11.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Dawn of Civinomicon"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/36-santa-cruz-business-news/5211-dawn-of-civinomicon.html'
+        article['date']='11.20.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Civinomics Looking for Pubic Input"
+        article['link']='http://santacruz.patch.com/groups/announcements/p/civinomics-looking-for-pubic-input'
+        article['date']='11.19.2013'
+        article['source']='Santa Cruz Patch'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Santa Cruz hackathon brings new ideas to the political table"
+        article['link']='http://www.santacruzsentinel.com/santacruz/ci_24544092/santa-cruz-hackathon-brings-new-ideas-political-table'
+        article['date']='11.17.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Civinomicon Seeks to Fix Public Discourse"
+        article['link']='http://www.santacruz.com/news/2013/11/05/civinomicon_seeks_to_fix_local_public_discourse'
+        article['date']='11.15.2013'
+        article['source']='SantaCruz.com'
+        c.articles.append(article)
+
+        article={}
         article['title']="Community gathers to discuss downtown"
         article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15440'
         article['date']='11.08.2013'
