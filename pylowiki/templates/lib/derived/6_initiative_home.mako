@@ -141,7 +141,7 @@
         printStr = ''
         if c.initiative.objType == 'initiative':
             if 'user' in session:
-                printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
+                printStr = '<a id="addButton" ng-click="showAddResource()")'
             else:
                 printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
@@ -571,7 +571,7 @@
             
     %>
     % if not c.resource:
-        <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
+        <form id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
             <fieldset>
                 <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
                 <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
@@ -609,7 +609,7 @@
             
     %>
     % if not c.update:
-        <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
+        <form id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
             <fieldset>
                 <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
                 <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>

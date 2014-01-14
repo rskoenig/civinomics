@@ -8,15 +8,15 @@
 <% lib.return_to() %>
 <div class="darkened-workshop"></div>
 <div class="spacer"></div>
-<div class="row-fluid min-container" ng-app="civ">
-    <div class="row-fluid" style="position: relative;" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'; initiativeTitle = '${c.initiative['title']}'">
+<div class="row-fluid min-container" ng-app="civ" ng-init="cost = '${c.initiative['cost']}'; initiativeTitle = '${c.initiative['title']}'; rurlCode = '${c.initiative['urlCode']}'; rurl = '${c.initiative['url']}'; thingType = '${c.thing.objType}'; addResourceURLResponse=''; addResourceResponse='';">
+    <div class="row-fluid" style="position: relative;" ng-controller="initiativeCtrl">
         <div class="span9 well initiative-panel">
 
             ####
             ### Text
             ####
 
-            <div ng-show="showingText">
+            <div ng-show="showingText" ng-cloak>
                 <div class="row-fluid">
                     <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
                 </div>
@@ -33,7 +33,6 @@
                             % elif c.initiative.objType != 'revision':
                                 <span class="pull-right">
                                     <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
                                 </span>
                             % else:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
@@ -53,14 +52,16 @@
                 % if c.initiative['public'] == '0':
                     <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
                 % endif
+
                 ${next.body()}
+
             </div> <!-- ng showingText -->
             
             ####
             ### SubPage Header
             ####
 
-            <div ng-show="!showingText">
+            <div ng-show="!showingText" ng-cloak>
                 ${ihelpers.condensedInitTitle()}
             </div>
 
@@ -68,23 +69,82 @@
             ### Resources
             ####
 
-            <div ng-show="showingResources">
+            <div ng-show="showingResources" ng-cloak>
+                <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+                <table class="table plain">
+                    <tr ng-repeat = "resource in resources" class="plain"><td>
+                        <div class="media well searchListing">
+                            <div class="span1">
+                               <i class="icon-{{resource.type}} icon-3x"></i>
+                            </div>
+                            <div class="span11 media-body">
+                                <h4 class="media-heading"><a class="listed-item-title" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                    {{resource.title}}
+                                </a></h4>
+                                <a class="break" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
 
-                        <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
-                        ${ihelpers.listResources()}
-
+                                <ul class="horizontal-list iconListing">
+                                    <li>
+                                        <i class="{{resource.parentIcon}}"></i> From {{resource.parentType}}: <a href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}">
+                                            {{resource.parentTitle}}
+                                        </a>
+                                    </li>
+                                    <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
+                                    <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
+                                </ul>
+                                <p class="hidden"> <small>Tags:</small>
+                                    <span ng-repeat="tag in resource.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </td></tr>
+                </table>    
             </div><!-- ng showingResources -->
-
 
             ####
             ### Updates
             ####
 
-            <div ng-show="showingUpdates">
-
-                Updates here
+            <div ng-show="showingUpdates" ng-cloak>
+                <h4 class="initiative-title">Updates
+                    % if c.iPrivs and c.initiative.objType != 'revision':
+                        <a class="btn btn-success pull-right" ng-click="showAddUpdate()"><strong>Add Update</strong></a>
+                    % endif
+                </h4>
+                <div ng-repeat="u in updates">
+                    {{u.title}}{{u.date}}
+                </div>
 
             </div><!-- ng showingUpdates -->
+
+            ####
+            ### addResource
+            ####
+
+            <div ng-show="showingAddResource" ng-cloak>
+
+                ${ihelpers.editResource()}
+
+            </div><!-- ng showingUpdates -->
+
+            ####
+            ### addUpdate
+            ####
+
+            <div ng-show="showingAddUpdate" ng-cloak>
+                
+                <h4 class="initiative-title">Add New Progress Report</h4>
+                ${ihelpers.editUpdate()}
+
+            </div><!-- ng showingUpdates -->
+
+
+            ####
+            ### Child
+            ####
+            <div ng-show="showingChild" ng-cloak>
+                ${next.body()}
+            </div>
 
         </div><!-- span9 initiative-panel -->
 
@@ -184,9 +244,9 @@
                 </div><!-- section-wrapper -->
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
                     <li class="active"><a ng-click="showText()" href="#">Text</a></li>
-                    <li><a>Arguments <span class="badge green">0</span></a></li>
-                    <li><a ng-click="showUpdates()" href="#">Updates <span class="badge green">0</span></a></li>
-                    <li><a ng-click="showResources()" href="#">Resources <span class="badge green">0</span></a></li>
+                    <li><a>Arguments <span class="badge green pull-right">0</span></a></li>
+                    <li><a ng-click="showUpdates()" href="#">Updates <span class="badge green pull-right">${c.numUpdates}</span></a></li>
+                    <li><a ng-click="showResources()" href="#">Resources <span class="badge green pull-right">${c.numResources}</span></a></li>
                     <!-- 
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
                     <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>

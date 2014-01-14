@@ -19,8 +19,10 @@ import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.images          as imageLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.tag          as tagLib
 
 import simplejson as json
+from hashlib import md5
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +32,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getInitiativeResources', 'getInitiativeUpdates']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -104,11 +106,13 @@ class InitiativeController(BaseController):
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
             c.updates = discussionLib.getUpdatesForInitiative(c.initiative['urlCode'])
+            c.numUpdates = len(c.updates)
             c.resources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'])
-            disabledResources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'], '1')
-            if disabledResources:
-                for dr in disabledResources:
-                    c.resources.append(dr)
+            c.numResources = len(c.resources)
+            #disabledResources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'], '1')
+            #if disabledResources:
+            #    for dr in disabledResources:
+            #        c.resources.append(dr)
                     
         if action == 'updateShow' and id3 != None:
             c.update = discussionLib.getDiscussion(id3)
@@ -554,7 +558,7 @@ class InitiativeController(BaseController):
         
     @h.login_required       
     def updateEdit(self):
-        
+
         return render('/derived/6_initiative_update.bootstrap')
         
     @h.login_required
@@ -582,4 +586,84 @@ class InitiativeController(BaseController):
         
         jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
         return jsonReturn
+
+
+    def getInitiativeResources(self):
+        resources = []
+        disabledResources = []
+        if c.initiative:
+            resources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'])
+            disabledResources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'], '1')
+
+            if disabledResources:
+                for dr in disabledResources:
+                    resources.append(dr)
+
+            result = []
+            for r in resources:
+                if 'initiative_public' in r and r['initiative_public'] != u'1':
+                    continue
+                entry = {}
+                entry['disabled'] = r['disabled']
+                entry['title'] = r['title']
+                entry['text'] = r['text']
+                entry['urlCode'] = r['urlCode']
+                entry['url'] = r['url']
+                entry['link']= r['link']
+                entry['type']= r['type']
+                entry['addedAs'] = r['addedAs']
+                entry['voteCount'] = int(r['ups']) - int(r['downs'])
+                entry['numComments'] = discussionLib.getDiscussionForThing(r)['numComments']
+                #: Note in the cases here where there are multiple tags assigned to one value,
+                #: I'm adding the standard tags to the json object here as a start for us to 
+                #: migrate the whole system over to using the same definitions everywhere.
+                if 'initiativeCode' in r:
+                    entry['parentCode'] = r['initiativeCode']
+                    entry['parentURL'] = entry['initiative_url'] = r['initiative_url']
+                    entry['parentTitle'] = entry['initiative_title'] = r['initiative_title']
+                    entry['parentType'] = 'initiative'
+                    entry['parentIcon'] = 'icon-file'
+                    
+                #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
+                u = userLib.getUserByID(r.owner)
+                entry['authorHash'] = md5(u['email']).hexdigest()
+                entry['authorCode'] = entry['userCode'] = r['userCode']
+                entry['authorURL'] = entry['user_url'] = r['user_url']
+                entry['authorName'] = entry['user_name'] = r['user_name']
+                # We dont need to look up the object here            
+                #thing = resourceLib.getResource(r['urlCode'],r['url'])
+                #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+                entry['date'] = r.date.strftime('%Y-%m-%dT%H:%M:%S')
+                tagList = []
+                if 'initiativeCode' in r:
+                    catList = []
+                    catList.append(r['initiative_tags'])
+                titleToColourMapping = tagLib.getWorkshopTagColouring()
+                for title in catList:
+                    if title and title != '':
+                        tagMapping = {}
+                        tagMapping['title'] = title
+                        tagMapping['colour'] = titleToColourMapping[title]
+                        tagList.append(tagMapping)
+                entry['tags'] = tagList
+                result.append(entry)
+            if len(result) == 0:
+                return json.dumps({'statusCode':2})
+            return json.dumps({'statusCode':0, 'result':result})
+        return json.dumps({'statusCode':1})
+
+    def getInitiativeUpdates(self):
+        log.info('got dem updates')
+        updates = discussionLib.getUpdatesForInitiative(c.initiative['urlCode'])
+
+        result = []
+        for u in updates:
+            entry = {}
+            entry['title'] = u['title']
+            entry['date'] = u.date.strftime('%Y-%m-%dT%H:%M:%S')
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
             
