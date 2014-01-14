@@ -936,11 +936,14 @@ class WorkshopController(BaseController):
 
         if version == '1':
             c.listingType = 'publicStats1'
-            c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
-            c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
+            #c.jsonSbgData = graphData.buildActivityStackedGroupedData1(activities)
+            #log.info(c.jsonSbgData)
+            #c.jsonSbgData2 = graphData.buildActivityStackedGroupedData2(activities)
+            #log.info(c.jsonSbgData2)
         else:
             c.listingType = 'publicStats2'
             c.jsonNewData = graphData.buildNewData(c.w, activities)
+            log.info(c.jsonNewData)
 
         return render('/derived/6_detailed_listing.bootstrap')
         

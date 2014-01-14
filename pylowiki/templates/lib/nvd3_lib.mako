@@ -4,7 +4,7 @@
 %>
 
 ################################################
-## NVD3 library
+## D3 graphs
 ################################################
 
 <%def name="newGraph(newData)">
@@ -72,16 +72,26 @@
   </div>
   <div id='link'></div>
 
-  <script id="nvd3On" src="/nvd3/lib/d3.v3.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
+    console.log("hellow work");
     var margin = {
       top: 30, 
-      right: 20, 
+      right: 200, 
       bottom: 100, 
       left: 60
     }; 
-    var width = 850 - margin.left - margin.right;
+    var width = 1050 - margin.left - margin.right;
     var height = 480 - margin.top - margin.bottom;
+
+    var voteColors = {
+      zero: "darkorchid",
+      one: "mediumslateblue",
+      aboveOne: "yellow",
+      aboveQuarter: "deepskyblue",
+      aboveHalf: "cyan",
+      aboveThreeQuarters: "lime"
+    }
 
     // expecting date to arrive in standard msql format
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
@@ -161,7 +171,7 @@
       .style("opacity", 0);
 
     function approval(t,u) {
-      console.log(t + " " + u);
+      //console.log(t + " " + u);
       if (+t > 0) {
         var approval = Math.ceil(u/t)*100;
         return approval+"% approval <br/>";
@@ -169,34 +179,61 @@
         return "";
       }
     }
+    // call with?
+    // function(d) { return shapeType(d.type); }
+    function shapeType(t) {
+      if (t != 'comment') {
+        return "triangle";
+      } else {
+        return "circle";
+      }
+    }
 
     var linkDiv = d3.select("#link")
 
     svg.selectAll("dot") 
         .data(graphData)
-      .enter().append("circle")
-        .attr("r", 4)
+      .enter().append("a") 
+        .attr("xlink:href", function(d) {
+          return d.url
+        })
+        .append( "circle" )
+        .attr("r", function(d) {
+          if (d.type == "comment") {
+            return 4
+          } else {
+            return 6
+          }
+        })
         .attr("cx", function(d) { return x(parseDate(d.date)); })
         .attr("cy", function(d) { return y(+d.views); })
         .style("fill", function(d) {
           if (+d.totalVotes > 3*maxVotes/4) {
-            return "red";
+            return voteColors.aboveThreeQuarters;
           } else if (+d.totalVotes > maxVotes/2) {
-            return "orange";
+            return voteColors.aboveHalf;
           } else if (+d.totalVotes > maxVotes/4) {
-            return "green";
+            return voteColors.aboveQuarter;
           } else if (+d.totalVotes > 1) {
-            return "blue";
+            return voteColors.aboveOne;
           } else if (+d.totalVotes > 0) {
-            return "grey";
+            return voteColors.one;
           } else {
-            return "black";
+            return voteColors.zero;
           }
         })
-        .on("click", function(d) {
-          linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
+        .style("stroke", function(d) {
+          if (+d.totalVotes > maxVotes/4) {
+            return "grey";
+          } else {
+            return "lavender";
+          }
         })
+        //.on("click", function(d) {
+        //  linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
+        //})
         .on("mouseover", function(d) {
+          linkDiv.html("<a href='" + d.url + "'>" + d.title + "</a>")
           ttDiv.transition() 
             .duration(200)
             .style("opacity", .9); 
@@ -258,31 +295,167 @@
       .style("text-decoration", "underline") 
       .text("All Activities");
 
-    /*var inter = setInterval( function () {
-        updateData();
-      }, 5000);
-    */
+    // legend
+    /*var voteColors = {
+      zero: "darkorchid",
+      one: "mediumslateblue",
+      aboveOne: "yellow",
+      aboveQuarter: "deepskyblue",
+      aboveHalf: "cyan",
+      aboveThreeQuarters: "lime"
+    }*/
+    
+    var boxSpacing = 105;
 
-    function updateData() {
+    var lineSpaceMultiplier = 1.3;
 
-      // Scale the range of the data again
-      x.domain(d3.extent(graphData, function(d) { return parseDate(d.date); })); 
-      y.domain([0, d3.max(graphData, function(d) { return d.totalVotes; })]);
+    svg.append("text") 
+      .attr("x", width)
+      .attr("dx", "3em")
+      .attr("y", "0.8em")
+      .style("font-size", "16px") 
+      .style("text-anchor", "start") 
+      .style("text-decoration", "underline")
+      .text("Legend");
 
-      // Select the section we want to apply our changes to
-      var svg = d3.select("#newChart").transition();
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (2 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "14px") 
+      .style("text-anchor", "start") 
+      .text("Most votes: ");
 
-      // Make the changes 
-      svg.select(".line") // change the line
-        .duration(750)
-        .attr("d", valueline(graphData)); 
-      svg.select(".x.axis") // change the x axis
-        .duration(750)
-        .call(xAxis); 
-      svg.select(".y.axis") // change the y axis
-        .duration(750) 
-        .call(yAxis);
-    }
+    svg.append("rect")
+      .attr("x", width + boxSpacing)
+      .attr("y", (2 * lineSpaceMultiplier) + "em")
+      .attr("height", "1em") 
+      .attr("width", "2em")
+      .style("fill", voteColors.aboveThreeQuarters)
+      .style("stroke", "grey")
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (3 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "14px") 
+      .style("text-anchor", "start") 
+      .text("Many votes: ");
+
+    svg.append("rect")
+      .attr("x", width + boxSpacing)
+      .attr("y", (3 * lineSpaceMultiplier) + "em")
+      .attr("height", "1em") 
+      .attr("width", "2em")
+      .style("fill", voteColors.aboveHalf)
+      .style("stroke", "grey")
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (4 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "14px") 
+      .style("text-anchor", "start") 
+      .text("Some votes: ");
+
+    svg.append("rect")
+      .attr("x", width + boxSpacing)
+      .attr("y", (4 * lineSpaceMultiplier) + "em")
+      .attr("height", "1em") 
+      .attr("width", "2em")
+      .style("fill", voteColors.aboveQuarter)
+      .style("stroke", "grey")
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (5 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "14px") 
+      .style("text-anchor", "start") 
+      .text("Above 1 vote: ");
+
+    svg.append("rect")
+      .attr("x", width + boxSpacing)
+      .attr("y", (5 * lineSpaceMultiplier) + "em")
+      .attr("height", "1em") 
+      .attr("width", "2em")
+      .style("fill", voteColors.aboveOne)
+      .style("stroke", "lavender")
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (6 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "14px") 
+      .style("text-anchor", "start") 
+      .text("One vote: ");
+
+    svg.append("rect")
+      .attr("x", width + boxSpacing)
+      .attr("y", (6 * lineSpaceMultiplier) + "em")
+      .attr("height", "1em") 
+      .attr("width", "2em")
+      .style("fill", voteColors.one)
+      .style("stroke", "lavender")
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (7 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "14px") 
+      .style("text-anchor", "start") 
+      .text("Zero votes: ");
+
+    svg.append("rect")
+      .attr("x", width + boxSpacing)
+      .attr("y", (7 * lineSpaceMultiplier) + "em")
+      .attr("height", "1em") 
+      .attr("width", "2em")
+      .style("fill", voteColors.zero)
+      .style("stroke", "lavender")
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (9 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "13px") 
+      .style("text-anchor", "start") 
+      .style("stroke", "grey")
+      .text("Click a dot to visit the item.");
+
+    svg.append("text") 
+      .attr("x", width + 5)
+      .attr("y", (10 * lineSpaceMultiplier) + "em")
+      .attr("dy", ".85em")
+      .style("font-size", "13px") 
+      .style("text-anchor", "start") 
+      .style("stroke", "grey")
+      .text("Hover over a dot to see info.");
+
+/*
+  .style("fill", function(d) {
+          if (+d.totalVotes > 3*maxVotes/4) {
+            return voteColors.aboveThreeQuarters;
+          } else if (+d.totalVotes > maxVotes/2) {
+            return voteColors.aboveHalf;
+          } else if (+d.totalVotes > maxVotes/4) {
+            return voteColors.aboveQuarter;
+          } else if (+d.totalVotes > 1) {
+            return voteColors.aboveOne;
+          } else if (+d.totalVotes > 0) {
+            return voteColors.one;
+          } else {
+            return voteColors.zero;
+          }
+        })
+        .style("stroke", function(d) {
+          if (+d.totalVotes > maxVotes/4) {
+            return "grey";
+          } else {
+            return "lavender";
+          }
+        })*/
+
 
   </script>
 

@@ -23,7 +23,7 @@
       itemList = c.activity
       helperText = ''
    elif c.listingType == 'publicStats1':
-      itemList = c.jsonSbgData
+      itemList = c.jsonNewData
       helperText = ''
    elif c.listingType == 'publicStats2':
       itemList = c.jsonNewData
@@ -71,7 +71,7 @@
                     ${workshopHelpers.showActivity(c.activity)}
                % elif listingType == 'publicStats1':
                    <h4 class="section-header smaller">Statistics</h4>
-                   ${nvd3Lib.activityStackedGroupedData(c.jsonSbgData, c.jsonSbgData2)}
+                   ${nvd3Lib.newGraph(c.jsonNewData)}
                % elif listingType == 'publicStats2':
                    <h4 class="section-header smaller">Statistics</h4>
                    ${nvd3Lib.newGraph(c.jsonNewData)}
