@@ -134,7 +134,7 @@ class ActionlistController(BaseController):
             
             itemTitle = '<a href="' + itemURL + '">' + item['title'] + '</a>'
                 
-            feed.add_item(title=item['title'], link=itemURL, guid=itemURL, description=activityStr, author_name="foo")
+            feed.add_item(title=item['title'], link=itemURL, guid=itemURL, description=activityStr)
             
         response.content_type = 'application/xml'
 
