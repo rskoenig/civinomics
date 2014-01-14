@@ -121,13 +121,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'publicStats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -1139,19 +1139,25 @@ class WorkshopController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
 
-        #c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
-
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
         c.adminPanel = False
 
         c.listingType = 'activity'
 
+        return render('/derived/6_detailed_listing.bootstrap')
+   
+    def publicStats(self, workshopCode, workshopURL):
+
+        c.listingType = 'publicStats'
+
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
         # create a json data struct out of the activity list - will be used in a d3 graph
         c.jsonNewData = graphData.buildNewData(c.w, c.activity)
 
         return render('/derived/6_detailed_listing.bootstrap')
-   
+
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
         if testGoals and c.w['description'] and c.w['description'] != '':

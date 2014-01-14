@@ -22,6 +22,9 @@
    elif c.listingType == 'activity':
       itemList = c.activity
       helperText = ''
+   elif c.listingType == 'publicStats':
+      itemList = ''
+      helperText = ''
 
    self.showListing(c.listingType, itemList, helperText)
 %>
@@ -43,21 +46,24 @@
          itemAlert = '<div class="alert alert-info">There are no ideas here yet. Be the first to add one!</div>'
       elif listingType == 'activity':
          pluralType = 'activity'
+      elif listingType == 'publicStats':
+         pluralType = 'Workshop statistics'
+         
    %>
    <div class="row-fluid">
       <div class="span12">
          <div class="section-wrapper">
             <div class="browse">
                % if listingType == 'activity':
-                   <h4 class="section-header smaller">Activity
-                   % if c.w['public_private'] == 'public':
+                    <h4 class="section-header smaller">Activity
+                    % if c.w['public_private'] == 'public':
                         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss orange"></i></a>
-                   %endif
-                   </h4>
-                    <div>
-                      ${d3Lib.newGraph(c.jsonNewData)}
-                    </div>
+                    %endif
+                    </h4>
                     ${workshopHelpers.showActivity(c.activity)}
+               % elif listingType == 'publicStats':
+                    <h4 class="section-header smaller">Statistics</h4>
+                    ${d3Lib.newGraph(c.jsonNewData)}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                     % if listingType != 'activity':
