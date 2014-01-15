@@ -145,7 +145,7 @@
             else:
                 printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
-            printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
+            printStr += ' title="Click to add a resource to this initiative" class="btn btn-success pull-right right-space"><i class="icon icon-plus"></i> Resource</a>'
         
     %>
     ${printStr | n}
@@ -887,5 +887,6 @@
             </h4>
         </div>
     </div><!-- row-fluid -->
+    <hr>
 </%def>
 

@@ -96,7 +96,7 @@ class InitiativeController(BaseController):
             if c.iPrivs == False:
                 abort(404)
                 
-            c.complete = self.initiativeCheck()
+            c.complete = self.initiativeCheck() 
             
         c.resources = []
         c.updates = []
@@ -105,6 +105,7 @@ class InitiativeController(BaseController):
             # for compatibility with comments
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
+            c.numComments = c.discussion['numComments']
             c.updates = discussionLib.getUpdatesForInitiative(c.initiative['urlCode'])
             c.numUpdates = len(c.updates)
             c.resources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'])
@@ -661,6 +662,7 @@ class InitiativeController(BaseController):
             entry = {}
             entry['title'] = u['title']
             entry['date'] = u.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['urlCode'] = u['urlCode']
             result.append(entry)
 
         if len(result) == 0:

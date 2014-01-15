@@ -24,8 +24,8 @@
     % else:
         ${ihelpers.initiativeModerationPanel(c.initiative)}
         % if c.initiative.objType != 'initiativeUnpublished':
-            <hr>
-            <h4 class="initiative-title">Arguments</h4>
+            <hr id="comments">
+            <h4 class="initiative-title">Comments</h4>
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif

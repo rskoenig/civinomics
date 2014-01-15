@@ -17,40 +17,44 @@
             ####
 
             <div ng-show="showingText" ng-cloak>
-                <div class="row-fluid">
-                    <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
-                </div>
-                <div class="row-fluid" style="position:relative;">
-                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
-                </div>
-                <h4> 
-                    <a href="${c.scopeHref}"><img class="thumbnail span small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
-                    ${lib_6.showTags(c.initiative)}
-                    % if c.iPrivs:
-                        <span>
-                            % if c.editInitiative:
-                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
-                            % elif c.initiative.objType != 'revision':
-                                <span class="pull-right">
-                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                </span>
-                            % else:
-                                <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
-                            % endif
-                        </span>
-                    % elif c.initiativeHome and c.initiative.objType != 'revision':
-                        <span>
-                            ${ihelpers.watchButton(c.initiative)}
-                        </span>
+                % if c.editInitiative:
+                    ${ihelpers.condensedInitTitle()}
+                % else:
+                    <div class="row-fluid">
+                        <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
+                    </div>
+                    <div class="row-fluid" style="position:relative;">
+                        <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
+                    </div>
+                    <h4 class="bottom-space-med"> 
+                        <a href="${c.scopeHref}"><img class="thumbnail span small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                        ${lib_6.showTags(c.initiative)}
+                        % if c.iPrivs:
+                            <span>
+                                % if c.editInitiative:
+                                    <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                                % elif c.initiative.objType != 'revision':
+                                    <span class="pull-right">
+                                        <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                    </span>
+                                % else:
+                                    <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
+                                % endif
+                            </span>
+                        % elif c.initiativeHome and c.initiative.objType != 'revision':
+                            <span>
+                                ${ihelpers.watchButton(c.initiative)}
+                            </span>
+                        % endif
+                    </h4>
+                    <hr class="narrow">
+                    <div class="row-fluid">
+                        ${ihelpers.showAuthor(c.initiative)}
+                    </div>
+                    <hr class="narrow">
+                    % if c.initiative['public'] == '0':
+                        <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
                     % endif
-                </h4>
-                <hr class="narrow">
-                <div class="row-fluid">
-                    ${ihelpers.showAuthor(c.initiative)}
-                </div>
-                <hr class="narrow">
-                % if c.initiative['public'] == '0':
-                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
                 % endif
 
                 ${next.body()}
@@ -81,14 +85,9 @@
                                 <h4 class="media-heading"><a class="listed-item-title" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                     {{resource.title}}
                                 </a></h4>
-                                <a class="break" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
-
+                                <a class="break" href="{{resource.link}}" target="_blank">{{resource.link}}</a>
+                                <br>
                                 <ul class="horizontal-list iconListing">
-                                    <li>
-                                        <i class="{{resource.parentIcon}}"></i> From {{resource.parentType}}: <a href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}">
-                                            {{resource.parentTitle}}
-                                        </a>
-                                    </li>
                                     <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
                                     <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
                                 </ul>
@@ -108,12 +107,23 @@
             <div ng-show="showingUpdates" ng-cloak>
                 <h4 class="initiative-title">Updates
                     % if c.iPrivs and c.initiative.objType != 'revision':
-                        <a class="btn btn-success pull-right" ng-click="showAddUpdate()"><strong>Add Update</strong></a>
+                        <a class="btn btn-success pull-right" ng-click="showAddUpdate()"><i class="icon-plus"></i> Update</a>
                     % endif
                 </h4>
                 <div ng-repeat="u in updates">
-                    {{u.title}}{{u.date}}
+                    <a href="/initiative/{{rurlCode}}/{{rurl}}/updateShow/{{u.urlCode}}"> {{u.title}}{{u.date}}
+                    <hr>
                 </div>
+
+            </div><!-- ng showingUpdates -->
+
+            ####
+            ### Resource
+            ####
+
+            <div ng-show="showingResource" ng-cloak>
+
+                ${ihelpers.editResource()}
 
             </div><!-- ng showingUpdates -->
 
@@ -244,7 +254,7 @@
                 </div><!-- section-wrapper -->
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
                     <li class="active"><a ng-click="showText()" href="#">Text</a></li>
-                    <li><a>Arguments <span class="badge green pull-right">0</span></a></li>
+                    <li><a href="#comments">Comments <span class="badge green pull-right">${c.numComments}</span></a></li>
                     <li><a ng-click="showUpdates()" href="#">Updates <span class="badge green pull-right">${c.numUpdates}</span></a></li>
                     <li><a ng-click="showResources()" href="#">Resources <span class="badge green pull-right">${c.numResources}</span></a></li>
                     <!-- 
