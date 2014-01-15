@@ -3,7 +3,7 @@ from pylowiki.lib.utils import urlify, toBase62
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc, with_key as wk
-from pylons import tmpl_context as c
+from pylons import session, tmpl_context as c
 
 import logging
 log = logging.getLogger(__name__)
@@ -106,4 +106,12 @@ def makeOrChangeRating(thing, user, amount, ratingType):
         
     commit(ratingObj)
     commit(thing)
+    if 'ratings' in session:
+        myRatings = session["ratings"]
+    else:
+        myRatings = {}
+    thingCode = thing['urlCode']
+    myRatings[thingCode] = str(amount)
+    session["ratings"] = myRatings
+    session.save()
     return ratingObj
