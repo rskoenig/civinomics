@@ -57,7 +57,7 @@
             </div>
             <hr class="narrow">
                 % if c.initiative['public'] == '0':
-                    <div class="alert alert-warning" style=>This initiative is unpublished. It is only viewable the author and coauthors.</div>
+                    <div class="alert alert-warning" style=>This initiative is unpublished. It does not show up in searches or on public listings.</div>
                 % endif
             ${next.body()}
         </div>
@@ -82,7 +82,7 @@
                             <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
                                 <button type="submit" class="btn btn-large btn-success input-block-level" name="public" value="publish">Publish</button>
                             </form>
-                            <p>You have added all of the required information. Click 'Publish' to make your initiative publicly viewable.</p>
+                            <p>You have added all of the required information. Click 'Publish' to make your initiative publicly discoverable.</p>
                         % elif c.initiative['public'] == '0':
                             <button class="btn btn-large btn-warning input-block-level" disabled>Publish</button>
                             <br>
@@ -93,7 +93,7 @@
                                     <button type="submit" class="btn btn-large btn-warning input-block-level" name="public" value="unpublish">Unpublish</button>
                                 </form><br>
                             </div>
-                            <p>Your initiative will only be accessible by you and coauthors.</p>
+                            <p>Unpublished initiatives don't show up in searches or on public listings.</p>
                         % endif
                     </div>
                 </div>

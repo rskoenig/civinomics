@@ -839,13 +839,13 @@
                             <td>
                                 <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
                             </td>
-                            <td ng-show="a.urlCode != authuserCode" >
+                            <td ng-show="a.urlCode != authuserCode" ng-cloak>
                                 <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
                             </td>
                             <td>
-                                <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
+                                <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler" ng-cloak>
                                     <input type="hidden" name="resign" value="resign">
-                                    <button type="button" class="btn btn-danger pull-right">Resign as Coauthor</button>
+                                    <button type="submit" class="btn btn-danger pull-right">Resign as Coauthor</button>
                                 </form>
                             </td>
                         </tr>

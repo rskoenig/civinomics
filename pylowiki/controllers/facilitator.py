@@ -266,12 +266,12 @@ class FacilitatorController(BaseController):
             f['pending'] = '1'
             dbhelpersLib.commit(f)
 
-            alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
-            return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'success'})
-
-          if 'resign' in request.params:
-            # the coauthor is resigning, he should be redirected away from the edit page
-            return redirect('/initiative/%s/%s'%(code, url))
+            if 'resign' in request.params:
+              # the coauthor is resigning, he should be redirected away from the edit page
+              return redirect('/initiative/%s/%s'%(code, url))
+            else:
+              alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
+              return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'success'})
         else:
           abort(404)
 
