@@ -7,6 +7,98 @@
 ## D3 graphs
 ################################################
 
+<%def name="barGraph(bulletData)">
+
+  <style>
+
+    .bullet { font: 10px sans-serif; } 
+    .bullet .marker { stroke: #000; stroke-width: 2px; } 
+    .bullet .tick line { stroke: #666; stroke-width: .5px; } 
+    .bullet .range.s0 { fill: #eee; } 
+    .bullet .range.s1 { fill: #ddd; } 
+    .bullet .range.s2 { fill: #ccc; } 
+    .bullet .measure.s0 { fill: steelblue; } 
+    .bullet .title { font-size: 14px; font-weight: bold; } 
+    .bullet .subtitle { fill: #999; }
+
+  </style> 
+
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/d3/bullet.js"></script>
+
+  <div>
+    <p id='link' class='ideaListingTitle'>
+      &nbsp;
+    </p>
+  </div>
+  <button>Update</button>
+  <div id="bulletChart">
+  </div>
+  
+  <script>
+    var margin = {
+      top: 46, 
+      right: 200, 
+      bottom: 100, 
+      left: 60
+    }; 
+    var width = 1050 - margin.left - margin.right;
+    var height = 496 - margin.top - margin.bottom;
+
+    var chart = d3.bullet() 
+      .width(width)
+      .height(height);
+
+    var data = ${bulletData | n}
+    
+    console.log(data);
+
+    var svg = d3.select("#bulletChart")
+      .selectAll("svg")
+        .data(data) 
+      .enter().append("svg")
+        .attr("class", "bullet") 
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom) 
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")") 
+        .call(chart);
+
+    var title = svg.append("g") 
+      .style("text-anchor", "end") 
+      .attr("transform", "translate(-6," + height / 2 + ")");
+
+    title.append("text") 
+      .attr("class", "title") 
+      .text(function(d) { return d.title; });
+
+    title.append("text") 
+      .attr("class", "subtitle") 
+      .attr("dy", "1em") 
+      .text(function(d) { return d.subtitle; });
+
+    d3.selectAll("button").on("click", function() { 
+      svg.datum(randomize).call(chart.duration(1000));
+    });
+
+    function randomize(d) { 
+      if (!d.randomizer) d.randomizer = randomizer(d); 
+      d.markers = d.markers.map(d.randomizer); 
+      d.measures = d.measures.map(d.randomizer); 
+      return d;
+    }
+
+    function randomizer(d) { 
+      var k = d3.max(d.ranges) * .2; 
+      return function(d) {
+        return Math.max(0, d + k * (Math.random() - .5));
+      }
+    };
+
+  </script>
+
+</%def>
+
 <%def name="newGraph(newData)">
 
   <style>
@@ -78,7 +170,6 @@
 
   <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   <script>
-    console.log("hellow work");
     var margin = {
       top: 46, 
       right: 200, 

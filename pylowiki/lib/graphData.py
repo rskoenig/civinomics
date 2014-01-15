@@ -12,6 +12,32 @@ import simplejson as json
 log = logging.getLogger(__name__)
 
 ##################################################
+# builds a new json data structure for a bullet chart
+##################################################
+def buildBulletData(parent, activities, **kwargs):
+    newList = []
+    for item in activities:
+        # make a link for this item
+        # note: for some reason, 'title' isn't accessible in here so I've modded thingURL to get it for me
+        views, title, url = utils.thingURL(parent, item, returnTitle=True)
+        # log.info("views: %s"%views)
+        # get the date and vote stats
+        thisTime = str(item.date)
+        upVotes = int(item['ups'])
+        downVotes = int(item['downs'])
+        totalVotes = upVotes + downVotes
+        newList.append({
+            'title':title,
+            'subtitle':item.objType,
+            'ranges':[1500, 2250, 3000],
+            'measures':[2200],
+            'markers':[2500]
+        })
+
+    return json.dumps(newList)
+
+
+##################################################
 # builds a new json data structure
 ##################################################
 def buildNewData(parent, activities, **kwargs):
