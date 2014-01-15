@@ -149,6 +149,18 @@
                                 </form>
                             % endif
 
+                        % elif message['extraInfo'] in ['authorResponse']:
+                            <% 
+                                initiative = initiativeLib.getInitiative(message['initiativeCode'])
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5 class="media-heading">${message['title']}</h5>
+                                    <p>${lib_6.userLink(sender)} ${message['text']} <a ${lib_6.initiativeLink(initiative)}>${initiative['title']}</a></p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+
                         % elif message['extraInfo'] in ['commentResponse']:
                             <%
                                 comment = commentLib.getCommentByCode(message['commentCode'])

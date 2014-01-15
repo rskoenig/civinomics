@@ -138,6 +138,7 @@ class FacilitatorController(BaseController):
                 abort(404)
             messageCode = request.params['messageCode']
             message = messageLib.getMessage(c.user, messageCode)
+            messageSender = userLib.getUserByCode(message['sender'])
             if not message:
                 abort(404)
             if itemType == 'w':
@@ -176,11 +177,23 @@ class FacilitatorController(BaseController):
                   
                   message['read'] = u'1'
                   dbhelpersLib.commit(message)
-                  
-                  if itemType == 'w':
-                    return redirect("/workshop/%s/%s"%(itemCode, itemURL))
-                  elif itemType == 'i':
-                    return redirect("/initiative/%s/%s"%(itemCode, itemURL))
+
+                  # send accept or decline message to inviter
+                  text = '%s your invitation to coauthor' % eAction
+                  title = 'Coauthor response'
+                  extraInfo = 'authorResponse'
+                  m = messageLib.Message(owner = messageSender, title = title, text = text, privs = c.privs, item = item, extraInfo = extraInfo, sender = c.authuser)
+                  m = generic.linkChildToParent(m, doF)
+                  dbhelpersLib.commit(m)
+                  eventLib.Event('CoFacilitator Invitation %s' % eAction, '%s issued an invitation to co facilitate %s'% (c.authuser['name'], item['title']), m, user = c.authuser, action = extraInfo)
+
+                  if eAction == "Accepted":
+                    if itemType == 'w':
+                      return redirect("/workshop/%s/%s"%(itemCode, itemURL))
+                    elif itemType == 'i':
+                      return redirect("/initiative/%s/%s"%(itemCode, itemURL))
+                  elif eAction == "Declined":
+                    return redirect("/messages/" + c.authuser['urlCode'] + "/" + c.authuser['url'] )
 
         alert = {'type':'error'}
         alert['title'] = 'Authorization Error. You are not authorized.'
