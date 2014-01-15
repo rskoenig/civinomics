@@ -250,6 +250,7 @@ class FacilitatorController(BaseController):
         if privs:
           for f in rList:
             f['disabled'] = '1'
+            f['pending'] = '1'
             dbhelpersLib.commit(f)
 
             alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
