@@ -28,7 +28,10 @@ def buildBarData(parent, activities, **kwargs):
         totalVotes = upVotes + downVotes
         newList.append({
             'title':item.objType,
-            'value':int(views)
+            'views':int(views),
+            'totalVotes':totalVotes,
+            'upVotes':upVotes,
+            'downVotes':downVotes
         })
 
     return json.dumps(newList)

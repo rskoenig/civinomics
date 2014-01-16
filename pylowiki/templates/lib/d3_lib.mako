@@ -9,11 +9,31 @@
 
 <%def name="barChart(barData)">
   <style>
-    #barChart rect {
+    #barChart rect.views{
       fill: steelblue;
     }
 
-    #barChart .value {
+    #barChart rect.totalVotes{
+      fill: green;
+    }
+    
+    #barChart rect.downVotes{
+      fill: red;
+    }
+
+    #barChart text.views {
+      fill: white;
+      font: 10px sans-serif;
+      text-anchor: end;
+    }
+
+    #barChart text.totalVotes {
+      fill: white;
+      font: 10px sans-serif;
+      text-anchor: end;
+    }
+
+    #barChart text.downVotes {
       fill: white;
       font: 10px sans-serif;
       text-anchor: end;
@@ -50,7 +70,7 @@
     
     var data = ${barData | n}
 
-    x.domain([0, d3.max(data, function(d) { return d.value; })]);
+    x.domain([0, d3.max(data, function(d) { return d.views; })]);
 
     chart.attr("height", barHeight * data.length + margin.top + margin.bottom);
 
@@ -61,15 +81,42 @@
 
     bar.append("rect")
           .attr("x", 0)
-          .attr("width", function(d) { return x(d.value); })
+          .attr("width", function(d) { return x(d.views); })
+          .attr("class", "views")
           .attr("height", barHeight - 1);
 
     bar.append("text")
-          .attr("x", function(d) { return x(d.value) - 3; })
+          .attr("x", function(d) { return x(d.views) - 3; })
           .attr("y", barHeight / 2)
           .attr("dy", ".35em")
-          .attr("class", "value")
-          .text(function(d) { return d.value; });
+          .attr("class", "views")
+          .text(function(d) { return d.views; });
+
+    bar.append("rect")
+          .attr("x", 0)
+          .attr("width", function(d) { return x(d.totalVotes); })
+          .attr("class", "totalVotes")
+          .attr("height", barHeight - 1);
+
+    bar.append("text")
+          .attr("x", function(d) { return x(d.totalVotes) - 3; })
+          .attr("y", barHeight / 2)
+          .attr("dy", ".35em")
+          .attr("class", "totalVotes")
+          .text(function(d) { return d.totalVotes; });
+
+    bar.append("rect")
+          .attr("x", 0)
+          .attr("width", function(d) { return x(d.downVotes); })
+          .attr("class", "downVotes")
+          .attr("height", barHeight - 1);
+
+    bar.append("text")
+          .attr("x", function(d) { return x(d.downVotes) - 3; })
+          .attr("y", barHeight / 2)
+          .attr("dy", ".35em")
+          .attr("class", "downVotes")
+          .text(function(d) { return d.downVotes; });
 
     bar.append("text")
         .attr("x", width + 5)
@@ -80,7 +127,7 @@
         .text(function(d) { return d.title; });
 
     function type(d) {
-      d.value = +d.value; // coerce to number
+      d.views = +d.views; // coerce to number
       return d;
     }
 
