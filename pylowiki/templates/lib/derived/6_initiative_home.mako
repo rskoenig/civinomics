@@ -785,9 +785,13 @@
         <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}'; authuserCode = '${c.authuser['urlCode']}'">
             <div ng-controller="userLookupCtrl">
                 <div class="row-fluid">
-                    <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
-                    <div class="spacer"></div>
-                        <table class="table-striped full-width" ng-if="!(users = '')">
+                    <form ng-submit="lookup()">
+                        <div class="input-append">
+                          <input type="text" ng-submit="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
+                          <button type="submit" class="btn"><i class="icon-search"></i></button>
+                        </div>
+                    </form>
+                        <table class="table-striped full-width" ng-if="!(users = '')" ng-cloak>
                             <tr ng-repeat="user in users | limitTo:10">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">
@@ -801,8 +805,8 @@
                             </tr>
                         </table>
                 </div><!-- row-fluid -->
-                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{hidden}}">
-                    <button type="button" class="close" ng-click="hideShow()">&times;</button>
+                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}">
+                    <button type="button" class="close" ng-click="hideShowAlert()">&times;</button>
                     {{alertMsg}}
                 </div>
                 <br>

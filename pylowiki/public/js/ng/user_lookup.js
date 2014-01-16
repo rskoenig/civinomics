@@ -6,17 +6,19 @@ function userLookupCtrl($scope, $http) {
 	$scope.authorsURL = '/initiative/' + $scope.urlCode + '/' + $scope.url + '/getAuthors';
 	$scope.userValue = '';
 	$scope.alertMsg = '';
-	$scope.hidden = 'show'
+	$scope.alertDisplay = 'show';
 	$scope.userLookupURL = '/search/people/name/' + $scope.userValue;
 
 	$scope.lookup = function() {
 		$scope.userLookupURL = '/search/people/name/' + $scope.userValue;
 		$http.get($scope.userLookupURL).success(function(data){
 			if (data.statusCode == 1){
-				$scope.noResult = true;
-			}
-			else if (data.statusCode === 0){
-				$scope.noResult = false;
+				$scope.alertDisplay = 'show';
+				$scope.alertMsg = 'No users found matching "' + $scope.userValue + '"';
+			} else if (data.statusCode == 2){
+				$scope.alertDisplay = 'show';
+				$scope.alertMsg = 'No users found matching "' + $scope.userValue + '"';
+			} else if (data.statusCode === 0){
 				$scope.users = data.result;
 			}
 		});
@@ -44,7 +46,7 @@ function userLookupCtrl($scope, $http) {
 			if (data.statusCode == 0){
 				$scope.alertMsg = data.alertMsg;
 				$scope.alertType = data.alertType;
-				$scope.hidden = 'show';
+				$scope.alertDisplay = 'show';
 			}
 		});
 		$scope.getAuthors()
@@ -57,7 +59,7 @@ function userLookupCtrl($scope, $http) {
 			if (data.statusCode == 0){
 				$scope.alertMsg = data.alertMsg;
 				$scope.alertType = data.alertType;
-				$scope.hidden = 'show';
+				$scope.alertDisplay = 'show';
 			}
 		});
 		$scope.getAuthors()
@@ -65,12 +67,12 @@ function userLookupCtrl($scope, $http) {
 		$scope.users = ''
 	}
 
-	$scope.hideShow = function(){
-		if ($scope.hidden == 'hidden'){
-			$scope.hidden = 'show';
+	$scope.hideShowAlert = function(){
+		if ($scope.alertDisplay == 'hidden'){
+			$scope.alertDisplay = 'show';
 		}
-		else if ($scope.hidden == 'show'){
-			$scope.hidden = 'hidden';
+		else if ($scope.alertDisplay == 'show'){
+			$scope.alertDisplay = 'hidden';
 		}
 	}
 
