@@ -7,7 +7,88 @@
 ## D3 graphs
 ################################################
 
-<%def name="barGraph(bulletData)">
+<%def name="barChart(barData)">
+  <style>
+    #barChart rect {
+      fill: steelblue;
+    }
+
+    #barChart .value {
+      fill: white;
+      font: 10px sans-serif;
+      text-anchor: end;
+    }
+
+    #barChart .title { 
+      font-size: 14px; 
+      font-weight: bold; 
+      fill: black;
+    }
+
+  </style>
+
+  <svg id="barChart"></svg>
+
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+
+    var margin = {
+      top: 15, 
+      right: 300, 
+      bottom: 15, 
+      left: 35
+    }; 
+    var width = 900 - margin.left - margin.right;
+    var height = 600 - margin.top - margin.bottom;
+    var barHeight = 20;
+
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var chart = d3.select("#barChart")
+        .attr("width", width + margin.left + margin.right);
+    
+    var data = ${barData | n}
+
+    x.domain([0, d3.max(data, function(d) { return d.value; })]);
+
+    chart.attr("height", barHeight * data.length + margin.top + margin.bottom);
+
+    var bar = chart.selectAll("g")
+        .data(data)
+      .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(" + margin.left + "," + i * barHeight + ")"; });
+
+    bar.append("rect")
+          .attr("x", 0)
+          .attr("width", function(d) { return x(d.value); })
+          .attr("height", barHeight - 1);
+
+    bar.append("text")
+          .attr("x", function(d) { return x(d.value) - 3; })
+          .attr("y", barHeight / 2)
+          .attr("dy", ".35em")
+          .attr("class", "value")
+          .text(function(d) { return d.value; });
+
+    bar.append("text")
+        .attr("x", width + 5)
+        .attr("y", barHeight / 2)
+        .attr("dy", ".35em")
+        .attr("class", "title")
+        .style("text-anchor", "start")
+        .text(function(d) { return d.title; });
+
+    function type(d) {
+      d.value = +d.value; // coerce to number
+      return d;
+    }
+
+  </script>
+
+</%def>
+
+<%def name="bulletChart(bulletData)">
 
   <style>
 
@@ -37,21 +118,19 @@
   
   <script>
     var margin = {
-      top: 46, 
-      right: 200, 
-      bottom: 100, 
-      left: 60
+      top: 15, 
+      right: 400, 
+      bottom: 15, 
+      left: 15
     }; 
-    var width = 1050 - margin.left - margin.right;
-    var height = 496 - margin.top - margin.bottom;
+    var width = 1000 - margin.left - margin.right;
+    var height = 60 - margin.top - margin.bottom;
 
     var chart = d3.bullet() 
       .width(width)
       .height(height);
 
     var data = ${bulletData | n}
-    
-    console.log(data);
 
     var svg = d3.select("#bulletChart")
       .selectAll("svg")
@@ -64,9 +143,11 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")") 
         .call(chart);
 
+    var titlePlacement = width + 5;
+
     var title = svg.append("g") 
-      .style("text-anchor", "end") 
-      .attr("transform", "translate(-6," + height / 2 + ")");
+      .style("text-anchor", "start") 
+      .attr("transform", "translate(" + titlePlacement + "," + height / 2 + ")");
 
     title.append("text") 
       .attr("class", "title") 

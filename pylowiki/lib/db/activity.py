@@ -153,6 +153,9 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0', **kwargs
     if 'ascendingDate' in kwargs:
         if kwargs['ascendingDate'] == True:
             dateOrder = 'date'
+    if 'descendingViews' in kwargs:
+        if kwargs['descendingViews'] == True:
+            dateOrder = '-views'
     try:
         initialActivityList = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objTypes))\

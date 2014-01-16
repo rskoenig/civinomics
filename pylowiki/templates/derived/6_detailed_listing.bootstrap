@@ -63,7 +63,7 @@
                     ${workshopHelpers.showActivity(c.activity)}
                % elif listingType == 'publicStats':
                     <h4 class="section-header smaller">Statistics</h4>
-                    ${d3Lib.barGraph(c.jsonBulletData)}
+                    ${d3Lib.barChart(c.jsonBarData)}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                     % if listingType != 'activity':

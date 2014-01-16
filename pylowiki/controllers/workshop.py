@@ -1154,7 +1154,9 @@ class WorkshopController(BaseController):
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
         # create a json data struct out of the activity list - will be used in a d3 graph
-        c.jsonNewData = graphData.buildNewData(c.w, c.activity)
+        #c.jsonNewData = graphData.buildNewData(c.w, c.activity)
+
+        c.jsonBarData = graphData.buildBarData(c.w, c.activity)
 
         c.jsonBulletData = graphData.buildBulletData(c.w, c.activity)
         #log.info(c.jsonBulletData)
