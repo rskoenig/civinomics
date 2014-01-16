@@ -1,4 +1,5 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/mako_lib.mako" import="fields_alert"/>
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
@@ -73,10 +74,10 @@
                                 Create <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                                 <li>
                                     <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                                 </li>
+                                <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                             </ul>
                         </li>
 
@@ -170,6 +171,7 @@
                 <div class="span8 no-left">
                     <ul class="horizontal-list">
                         <li><a class="green green-hover" href="/corp/about">About</a></li> 
+                        <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
                         <li><a class="green green-hover" href="/corp/polling">Polling</a></li>
                         <li><a class="green green-hover" href="/corp/contact">Contact</a></li>
                         <li><a class="green green-hover" href="/corp/terms">Terms</a></li>
@@ -329,6 +331,14 @@
             <h2 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h2>
             <h2 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h2>
         % endif
+        ${fields_alert()}
+        % if c.splashMsg:
+            <% message = c.splashMsg %>
+            <div class="alert alert-${message['type']}">
+                <button data-dismiss="alert" class="close">x</button>
+                <strong>${message['title']}</strong> ${message['content']}
+            </div> 
+        % endif
       ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
         ${signupForm()}
@@ -443,6 +453,9 @@
 <%def name="signupLoginModal()">
     <!-- Signup Login Modal -->
     <% 
+      ####
+      #### After Login URL
+      ####
       alURL= session._environ['PATH_INFO']
       if 'QUERY_STRING' in session._environ :
         alURL = alURL + '?' + session._environ['QUERY_STRING'] 
@@ -453,9 +466,10 @@
         except:
             alURL = '/browse/initiatives'
       if 'zip/lookup' in alURL or '/signup' in alURL:
-        alURL = '/browse/initiatives'
+        alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
+
     <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
