@@ -1054,17 +1054,7 @@ class WorkshopController(BaseController):
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
             else:
-                c.ideas = []
-                if c.ideaRatings:
-                    for i in sortedIdeas:
-                        i['rating'] = '0'
-                        if 'user' in session:
-                            urlCode = i['urlCode']
-                            if c.userRatings and urlCode in c.userRatings:
-                                i['rating'] = c.userRatings[urlCode]
-                        c.ideas.append(i)
-                else:
-                    c.ideas = sortedIdeas
+                c.ideas = sortedIdeas
 
         if not iPhoneApp:
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
