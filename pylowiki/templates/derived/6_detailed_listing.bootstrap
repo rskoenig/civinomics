@@ -63,7 +63,18 @@
                     ${workshopHelpers.showActivity(c.activity)}
                % elif listingType == 'publicStats':
                     <h4 class="section-header smaller">Statistics</h4>
-                    ${d3Lib.barChart(c.jsonBarData)}
+                    <!-- color pallet
+                      zero: "darkorchid",
+                      one: "mediumslateblue",
+                      aboveOne: "yellow",
+                      aboveQuarter: "deepskyblue",
+                      aboveHalf: "cyan",
+                      aboveThreeQuarters: "lime"
+                    -->
+                    ${d3Lib.barChart(c.jsonBarDataIdeas, "ideaChart", "lime", "cyan", "darkorchid", "white")}
+                    ${d3Lib.barChart(c.jsonBarDataDiscussion, "discussionChart", "slateblue", "grey", "darkorchid", "black")}
+                    ${d3Lib.barChart(c.jsonBarDataResource, "resourceChart", "lime", "cyan", "darkorchid", "white")}
+                    ${d3Lib.barChart(c.jsonBarDataComments, "commentChart", "mediumslateblue", "yellow", "deepskyblue", "grey")}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                     % if listingType != 'activity':

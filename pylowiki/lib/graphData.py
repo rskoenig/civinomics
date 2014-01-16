@@ -15,6 +15,11 @@ log = logging.getLogger(__name__)
 # builds a new json data structure for a bar chart
 ##################################################
 def buildBarData(parent, activities, **kwargs):
+    if 'typeFilter' in kwargs:
+        typeFilter = kwargs['typeFilter']
+    else:
+        typeFilter = 'all'
+
     newList = []
     for item in activities:
         # make a link for this item
@@ -26,13 +31,25 @@ def buildBarData(parent, activities, **kwargs):
         upVotes = int(item['ups'])
         downVotes = int(item['downs'])
         totalVotes = upVotes + downVotes
-        newList.append({
-            'title':item.objType,
-            'views':int(views),
-            'totalVotes':totalVotes,
-            'upVotes':upVotes,
-            'downVotes':downVotes
-        })
+
+        if typeFilter == 'all':
+            newList.append({
+                'title':item.objType,
+                'type':item.objType,
+                'views':int(views),
+                'totalVotes':totalVotes,
+                'upVotes':upVotes,
+                'downVotes':downVotes
+            })
+        elif typeFilter == item.objType:
+            newList.append({
+                'title':item.objType,
+                'type':item.objType,
+                'views':int(views),
+                'totalVotes':totalVotes,
+                'upVotes':upVotes,
+                'downVotes':downVotes
+            })
 
     return json.dumps(newList)
 

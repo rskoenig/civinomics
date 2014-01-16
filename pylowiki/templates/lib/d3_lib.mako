@@ -7,39 +7,39 @@
 ## D3 graphs
 ################################################
 
-<%def name="barChart(barData)">
+<%def name="barChart(barData, chart, views, votes, downs, barText)">
   <style>
-    #barChart rect.views{
-      fill: steelblue;
+    #${chart} rect.views{
+      fill: ${views};
     }
 
-    #barChart rect.totalVotes{
-      fill: green;
+    #${chart} rect.totalVotes{
+      fill: ${votes};
     }
     
-    #barChart rect.downVotes{
-      fill: red;
+    #${chart} rect.downVotes{
+      fill: ${downs};
     }
 
-    #barChart text.views {
+    #${chart} text.views {
+      fill: ${barText};
+      font: 10px sans-serif;
+      text-anchor: end;
+    }
+
+    #${chart} text.totalVotes {
       fill: white;
       font: 10px sans-serif;
       text-anchor: end;
     }
 
-    #barChart text.totalVotes {
+    #${chart} text.downVotes {
       fill: white;
       font: 10px sans-serif;
       text-anchor: end;
     }
 
-    #barChart text.downVotes {
-      fill: white;
-      font: 10px sans-serif;
-      text-anchor: end;
-    }
-
-    #barChart .title { 
+    #${chart} .title { 
       font-size: 14px; 
       font-weight: bold; 
       fill: black;
@@ -47,7 +47,7 @@
 
   </style>
 
-  <svg id="barChart"></svg>
+  <svg id="${chart}"></svg>
 
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script>
@@ -65,7 +65,7 @@
     var x = d3.scale.linear()
         .range([0, width]);
 
-    var chart = d3.select("#barChart")
+    var chart = d3.select("#${chart}")
         .attr("width", width + margin.left + margin.right);
     
     var data = ${barData | n}
