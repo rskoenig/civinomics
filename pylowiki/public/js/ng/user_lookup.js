@@ -53,7 +53,7 @@ function userLookupCtrl($scope, $http) {
 	}
 
 	$scope.submitInvite = function(inviteAuthorCode){
-		$scope.loading = true;
+		//$scope.loading = true;
 		$scope.inviteAuthorCode = inviteAuthorCode;
 		$http.get('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.inviteAuthorCode + '/facilitate/invite/handler').success(function(data){
 			if (data.statusCode == 0){
@@ -65,6 +65,18 @@ function userLookupCtrl($scope, $http) {
 		$scope.getAuthors()
 		$scope.userValue = ''
 		$scope.users = ''
+	}
+	
+	$scope.resendInvite = function(inviteAuthorCode){
+		//$scope.loading = true;
+		$scope.inviteAuthorCode = inviteAuthorCode;
+		$http.get('/initiative/' + $scope.urlCode + '/' + $scope.url + '/' + $scope.inviteAuthorCode + '/facilitate/invite/handler?resendInvite=true').success(function(data){
+			if (data.statusCode == 0){
+				$scope.alertMsg = data.alertMsg;
+				$scope.alertType = data.alertType;
+				$scope.alertDisplay = 'show';
+			}
+		});
 	}
 
 	$scope.hideShowAlert = function(){

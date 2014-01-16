@@ -98,10 +98,15 @@ class FacilitatorController(BaseController):
           elif existing:
             f['disabled'] = '0'
             dbhelpersLib.commit(f)
+            if 'resendInvite' in request.params:
+              alertMsg = 'A new coauthor invitation has been sent to %s.' % inviteAuthor['name']
+            else:
+              alertMsg = '%s has been activated as a coauthor.' % inviteAuthor['name']
           else:
             facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
             fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
             f = fList[0]
+            alertMsg = '%s has been added as a coauthor.' % inviteAuthor['name']
 
           text = '(This is an automated message)'
           title = 'Coauthor invitation'
@@ -112,10 +117,6 @@ class FacilitatorController(BaseController):
           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
           mailLib.sendCoauthorAddMail(inviteAuthor, c.authuser, i)
 
-          if existing:
-            alertMsg = '%s has been activated as a coauthor.' % inviteAuthor['name']
-          else:
-            alertMsg = '%s has been added as a coauthor.' % inviteAuthor['name']
           return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType': 'success'})
 
         else: 
