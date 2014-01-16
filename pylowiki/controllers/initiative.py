@@ -405,7 +405,7 @@ class InitiativeController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if c.iPrivs == False:
             abort(404)
 
         if 'files[]' in request.params:

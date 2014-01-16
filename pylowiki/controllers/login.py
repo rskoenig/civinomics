@@ -574,6 +574,8 @@ class LoginController(BaseController):
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
+            if 'loginResetPassword' in loginURL:
+                loginURL = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
             session.pop('afterLoginURL')
             session.save()
         else:
@@ -706,7 +708,7 @@ You can change your password to something you prefer on your profile page.\n\n''
                 splashMsg['content'] = '''A new password was emailed to you.'''
                 session['alert'] = splashMsg
                 session.save()
-                return redirect('/forgotPassword')
+                return redirect('/loginResetPassword')
             else:
                 log.info( "Failed forgot password for " + email )
                 splashMsg['content'] = "Email not found or account has been disabled or deleted."
@@ -788,4 +790,4 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/loginNoExtAuth.bootstrap")
 
     def forgotPassword(self):
-        return render("/derived/forgotPassword.bootstrap")
+        return render("/derived/login.bootstrap")

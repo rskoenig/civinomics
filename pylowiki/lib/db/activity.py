@@ -227,7 +227,7 @@ def getRecentActivity(number, publicPrivate = 'public'):
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative']))\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .order_by('-date')\

@@ -93,6 +93,8 @@ class ActionlistController(BaseController):
             language=u"en"
         )
         for item in c.activity:
+            if item.objType == 'comment':
+                continue
             if 'workshopCode' in item:
                 parent = getWorkshopByCode(item['workshopCode'])
                 baseURL = config['site_base_url'] + "/workshop/" + parent['urlCode'] + "/" + parent['url']
