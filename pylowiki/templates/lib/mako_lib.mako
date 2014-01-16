@@ -150,7 +150,9 @@
         <div class="alert alert-${alert['type']}">
             <button data-dismiss="alert" class="close">x</button>
             <strong>${alert['title']}</strong>
-            ${alert['content']}
+            % if 'content' in alert:
+                ${alert['content']}
+            % endif
         </div>
         <% 
            session.pop('alert')
