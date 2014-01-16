@@ -785,9 +785,13 @@
         <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}'; authuserCode = '${c.authuser['urlCode']}'">
             <div ng-controller="userLookupCtrl">
                 <div class="row-fluid">
-                    <input type="text" ng-change="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
-                    <div class="spacer"></div>
-                        <table class="table-striped full-width" ng-if="!(users = '')">
+                    <form ng-submit="lookup()">
+                        <div class="input-append">
+                          <input type="text" ng-submit="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
+                          <button type="submit" class="btn"><i class="icon-search"></i></button>
+                        </div>
+                    </form>
+                        <table class="table-striped full-width" ng-if="!(users = '')" ng-cloak>
                             <tr ng-repeat="user in users | limitTo:10">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">
@@ -801,8 +805,8 @@
                             </tr>
                         </table>
                 </div><!-- row-fluid -->
-                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{hidden}}">
-                    <button type="button" class="close" ng-click="hideShow()">&times;</button>
+                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}">
+                    <button type="button" class="close" ng-click="hideShowAlert()">&times;</button>
                     {{alertMsg}}
                 </div>
                 <br>
@@ -825,6 +829,7 @@
                                 <span class="badge badge-inverse">Original Author</span>
                             </td>
                             <td></td>
+                            <td></td>
                         </tr>
                         <tr ng-repeat="a in authors">
                             <td>
@@ -839,13 +844,16 @@
                             <td>
                                 <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
                             </td>
-                            <td ng-show="a.urlCode != authuserCode" >
-                                <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove Coauthor</button>
-                            </td>
                             <td>
-                                <form class="no-bottom" ng-show="a.urlCode == authuserCode" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler">
+                                <button type="button" ng-show="a.pending == '1'" ng-click="resendInvite(a.urlCode)" class="btn btn-primary pull-right">Resend Invite</button>
+                            </td>
+                            <td ng-show="a.urlCode != authuserCode">
+                                <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove</button>
+                            </td>
+                            <td ng-show="a.urlCode == authuserCode">
+                                <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler" ng-cloak>
                                     <input type="hidden" name="resign" value="resign">
-                                    <button type="button" class="btn btn-danger pull-right">Resign as Coauthor</button>
+                                    <button type="submit" class="btn btn-danger pull-right">Resign</button>
                                 </form>
                             </td>
                         </tr>

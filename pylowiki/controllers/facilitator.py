@@ -98,10 +98,15 @@ class FacilitatorController(BaseController):
           elif existing:
             f['disabled'] = '0'
             dbhelpersLib.commit(f)
+            if 'resendInvite' in request.params:
+              alertMsg = 'A new coauthor invitation has been sent to %s.' % inviteAuthor['name']
+            else:
+              alertMsg = '%s has been activated as a coauthor.' % inviteAuthor['name']
           else:
             facilitator = facilitatorLib.Facilitator(inviteAuthor, i, 1)
             fList = facilitatorLib.getFacilitatorsByUserAndInitiative(inviteAuthor, i)
             f = fList[0]
+            alertMsg = '%s has been added as a coauthor.' % inviteAuthor['name']
 
           text = '(This is an automated message)'
           title = 'Coauthor invitation'
@@ -112,10 +117,6 @@ class FacilitatorController(BaseController):
           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], i['title']), m, user = c.authuser, action = extraInfo)
           mailLib.sendCoauthorAddMail(inviteAuthor, c.authuser, i)
 
-          if existing:
-            alertMsg = '%s has been activated as a coauthor.' % inviteAuthor['name']
-          else:
-            alertMsg = '%s has been added as a coauthor.' % inviteAuthor['name']
           return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType': 'success'})
 
         else: 
@@ -138,6 +139,7 @@ class FacilitatorController(BaseController):
                 abort(404)
             messageCode = request.params['messageCode']
             message = messageLib.getMessage(c.user, messageCode)
+            messageSender = userLib.getUserByCode(message['sender'])
             if not message:
                 abort(404)
             if itemType == 'w':
@@ -176,11 +178,23 @@ class FacilitatorController(BaseController):
                   
                   message['read'] = u'1'
                   dbhelpersLib.commit(message)
-                  
-                  if itemType == 'w':
-                    return redirect("/workshop/%s/%s"%(itemCode, itemURL))
-                  elif itemType == 'i':
-                    return redirect("/initiative/%s/%s"%(itemCode, itemURL))
+
+                  # send accept or decline message to inviter
+                  text = '%s your invitation to coauthor' % eAction
+                  title = 'Coauthor response'
+                  extraInfo = 'authorResponse'
+                  m = messageLib.Message(owner = messageSender, title = title, text = text, privs = c.privs, item = item, extraInfo = extraInfo, sender = c.authuser)
+                  m = generic.linkChildToParent(m, doF)
+                  dbhelpersLib.commit(m)
+                  eventLib.Event('CoFacilitator Invitation %s' % eAction, '%s issued an invitation to co facilitate %s'% (c.authuser['name'], item['title']), m, user = c.authuser, action = extraInfo)
+
+                  if eAction == "Accepted":
+                    if itemType == 'w':
+                      return redirect("/workshop/%s/%s"%(itemCode, itemURL))
+                    elif itemType == 'i':
+                      return redirect("/initiative/%s/%s"%(itemCode, itemURL))
+                  elif eAction == "Declined":
+                    return redirect("/messages/" + c.authuser['urlCode'] + "/" + c.authuser['url'] )
 
         alert = {'type':'error'}
         alert['title'] = 'Authorization Error. You are not authorized.'
@@ -250,14 +264,15 @@ class FacilitatorController(BaseController):
         if privs:
           for f in rList:
             f['disabled'] = '1'
+            f['pending'] = '1'
             dbhelpersLib.commit(f)
 
-            alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
-            return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'success'})
-
-          if 'resign' in request.params:
-            # the coauthor is resigning, he should be redirected away from the edit page
-            return redirect('/initiative/%s/%s'%(code, url))
+            if 'resign' in request.params:
+              # the coauthor is resigning, he should be redirected away from the edit page
+              return redirect('/initiative/%s/%s'%(code, url))
+            else:
+              alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
+              return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'success'})
         else:
           abort(404)
 

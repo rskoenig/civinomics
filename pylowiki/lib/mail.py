@@ -1,5 +1,6 @@
 import os
 import logging
+import pylowiki.lib.utils           as utils
 from pylons import config, request
 
 log = logging.getLogger(__name__)
@@ -219,7 +220,7 @@ def sendCoauthorAddMail(recipient, user, initiative):
     
     emailDir = config['app_conf']['emailDirectory']
     txtFile = emailDir + "/addCoauthor.txt"
-    messagesURL = config['app_conf']['site_base_url'] + "messages/" + recipient['urlCode'] + "/" + recipient['url']
+    messagesURL = utils.getBaseUrl() + "/messages/" + recipient['urlCode'] + "/" + recipient['url']
 
     # open and read the text file
     fp = open(txtFile, 'r')
