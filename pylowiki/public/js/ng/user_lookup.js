@@ -13,13 +13,18 @@ function userLookupCtrl($scope, $http) {
 		$scope.userLookupURL = '/search/people/name/' + $scope.userValue;
 		$http.get($scope.userLookupURL).success(function(data){
 			if (data.statusCode == 1){
+				$scope.users = ''
 				$scope.alertDisplay = 'show';
 				$scope.alertMsg = 'No users found matching "' + $scope.userValue + '"';
+				$scope.alertType = 'danger';
 			} else if (data.statusCode == 2){
+				$scope.users = ''
 				$scope.alertDisplay = 'show';
 				$scope.alertMsg = 'No users found matching "' + $scope.userValue + '"';
+				$scope.alertType = 'danger';
 			} else if (data.statusCode === 0){
 				$scope.users = data.result;
+				$scope.alertDisplay = 'hidden';
 			}
 		});
 	}
@@ -66,7 +71,7 @@ function userLookupCtrl($scope, $http) {
 		$scope.userValue = ''
 		$scope.users = ''
 	}
-	
+
 	$scope.resendInvite = function(inviteAuthorCode){
 		//$scope.loading = true;
 		$scope.inviteAuthorCode = inviteAuthorCode;
