@@ -46,52 +46,52 @@ def buildConstancyData(parent, activities, **kwargs):
                     'code':item['urlCode'],
                     'title':title,
                     'url':url,
-                    'Total Views':int(views),
                     'views':int(views),
-                    'Total Votes':totalVotes,
                     'totalVotes':totalVotes,
-                    '% Yes':yesPercent,
                     'yesPercent':yesPercent,
-                    '% No':noPercent
+                    '% No':noPercent,
+                    '% Yes':yesPercent,
+                    'Total Votes':totalVotes,
+                    'Total Views':int(views)
                 })
             elif item.objType == 'discussion':
                 discussionList.append({
                     'code':item['urlCode'],
                     'title':title,
                     'url':url,
-                    'Total Views':int(views),
                     'views':int(views),
-                    'Total Votes':totalVotes,
                     'totalVotes':totalVotes,
-                    '% Yes':yesPercent,
                     'yesPercent':yesPercent,
-                    '% No':noPercent
+                    '% No':noPercent,
+                    '% Yes':yesPercent,
+                    'Total Votes':totalVotes,
+                    'Total Views':int(views)
                 })
             elif item.objType == 'resource':
                 resourceList.append({
                     'code':item['urlCode'],
                     'title':title,
                     'url':url,
-                    'Total Views':int(views),
                     'views':int(views),
-                    'Total Votes':totalVotes,
                     'totalVotes':totalVotes,
-                    '% Yes':yesPercent,
                     'yesPercent':yesPercent,
-                    '% No':noPercent
+                    '% No':noPercent,
+                    '% Yes':yesPercent,
+                    'Total Votes':totalVotes,
+                    'Total Views':int(views)
                 })
         elif typeFilter == item.objType:
             newList.append({
                 'code':item['urlCode'],
                 'title':title,
                 'url':url,
-                'Total Views':int(views),
                 'views':int(views),
-                'Total Votes':totalVotes,
                 'totalVotes':totalVotes,
-                '% Yes':yesPercent,
                 'yesPercent':yesPercent,
-                '% No':noPercent
+                '% No':noPercent,
+                '% Yes':yesPercent,
+                'Total Votes':totalVotes,
+                'Total Views':int(views)
             })
         #elif item.objType == 'comment':
         #    for (key, val) in item:

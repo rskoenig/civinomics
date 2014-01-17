@@ -11,10 +11,6 @@
 
 <style>
 
-  svg {
-    font: 10px sans-serif;
-  }
-
   #${chart} .bar rect {
     fill: ${barColor};
   }
