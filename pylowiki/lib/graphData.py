@@ -21,7 +21,10 @@ def buildConstancyData(parent, activities, **kwargs):
     else:
         typeFilter = 'all'
 
-    newList = []
+    oneList = []
+    ideaList = []
+    discussionList = []
+    resourceList = []
     for item in activities:
         # make a link for this item
         # note: for some reason, 'title' isn't accessible in here so I've modded thingURL to get it for me
@@ -38,32 +41,64 @@ def buildConstancyData(parent, activities, **kwargs):
         else:
             yesPercent = noPercent = 0
         if typeFilter == 'all':
-            newList.append({
-                'State':item['urlCode'],
-                'title':title,
-                'Total Views':int(views),
-                'Total Votes':totalVotes,
-                'Percentage of Yes Votes':yesPercent,
-                'Percentage of No Votes':noPercent
-            })
+            if item.objType == 'idea':
+                ideaList.append({
+                    'code':item['urlCode'],
+                    'title':title,
+                    'url':url,
+                    'Total Views':int(views),
+                    'views':int(views),
+                    'Total Votes':totalVotes,
+                    'totalVotes':totalVotes,
+                    '% Yes':yesPercent,
+                    'yesPercent':yesPercent,
+                    '% No':noPercent
+                })
+            elif item.objType == 'discussion':
+                discussionList.append({
+                    'code':item['urlCode'],
+                    'title':title,
+                    'url':url,
+                    'Total Views':int(views),
+                    'views':int(views),
+                    'Total Votes':totalVotes,
+                    'totalVotes':totalVotes,
+                    '% Yes':yesPercent,
+                    'yesPercent':yesPercent,
+                    '% No':noPercent
+                })
+            elif item.objType == 'resource':
+                resourceList.append({
+                    'code':item['urlCode'],
+                    'title':title,
+                    'url':url,
+                    'Total Views':int(views),
+                    'views':int(views),
+                    'Total Votes':totalVotes,
+                    'totalVotes':totalVotes,
+                    '% Yes':yesPercent,
+                    'yesPercent':yesPercent,
+                    '% No':noPercent
+                })
         elif typeFilter == item.objType:
             newList.append({
-                'State':item['urlCode'],
+                'code':item['urlCode'],
                 'title':title,
-                'Total':item.objType,
+                'url':url,
+                'Total Views':int(views),
                 'views':int(views),
+                'Total Votes':totalVotes,
                 'totalVotes':totalVotes,
-                'upVotes':upVotes,
-                'downVotes':downVotes,
-                'Percentage of Yes Votes':yesPercent,
-                'Percentage of No Votes':noPercent
+                '% Yes':yesPercent,
+                'yesPercent':yesPercent,
+                '% No':noPercent
             })
         #elif item.objType == 'comment':
         #    for (key, val) in item:
         #        log.info(key)
 
-    return json.dumps(newList)
-
+    #return json.dumps(newList)
+    return json.dumps(oneList), json.dumps(ideaList), json.dumps(discussionList), json.dumps(resourceList)
 
 ##################################################
 # builds a new json data structure for a bar chart

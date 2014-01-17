@@ -1156,8 +1156,7 @@ class WorkshopController(BaseController):
         # create a json data struct out of the activity list - will be used in a d3 graph
         #c.jsonNewData = graphData.buildNewData(c.w, c.activity)
 
-        c.jsonConstancyDataIdeas = graphData.buildConstancyData(c.w, c.activity, typeFilter='idea')
-        #log.info(c.jsonConstancyDataIdeas)
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all')
 
         #c.jsonBarDataIdeas = graphData.buildBarData(c.w, c.activity, typeFilter='idea')
 

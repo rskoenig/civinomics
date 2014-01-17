@@ -7,7 +7,7 @@
 ## D3 graphs
 ################################################
 
-<%def name="constancyChart(constancyData)">
+<%def name="constancyChart(constancyData, chart, typeName, barColor, barHover)">
 
 <style>
 
@@ -15,12 +15,12 @@
     font: 10px sans-serif;
   }
 
-  .bar rect {
-    fill: steelblue;
+  #${chart} .bar rect {
+    fill: ${barColor};
   }
 
-  .bar:hover rect {
-    fill: brown;
+  #${chart} .bar:hover rect {
+    fill: ${barHover};
   }
 
   .value {
@@ -37,7 +37,7 @@
   }
 
   .x.axis line {
-    stroke: #fff;
+    stroke: #eee;
     stroke-opacity: .8;
   }
 
@@ -45,33 +45,34 @@
     stroke: black;
   }
 
+
 </style>
 
 
-<p id="menu">
-  <b>Top Ideas by various counts</b><br>Compare by: 
+<p id="${chart}menu">
+  <b>Top ${typeName} by various counts</b><br>Compare by: 
   <select></select>
 </p>
-<div id="constancyChart">
+<div id="${chart}">
 </div>
 
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script>
 
   var margin = {
-      top: 0, 
+      top: 20, 
       right: 500, 
-      bottom: 0, 
+      bottom: 20, 
       left: 40
     }; 
 
   data = ${constancyData | n}
 
-  var barHeight = 20;
+  var barHeight = 28;
   var totalHeight = barHeight * data.length;
   console.log(totalHeight);
   var width = 960 - margin.left - margin.right;
-  var height = totalHeight - margin.top - margin.bottom;
+  var height = totalHeight + margin.top + margin.bottom;
 
   var format = d3.format("d");
   var states;
@@ -89,7 +90,7 @@
       .tickSize(-height - margin.bottom)
       .tickFormat(format);
 
-  var svg = d3.select("#constancyChart").append("svg")
+  var svg = d3.select("#${chart}").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .style("margin-left", -margin.left + "px")
@@ -105,27 +106,22 @@
       .attr("class", "domain")
       .attr("y2", height);
 
-  var menu = d3.select("#menu select")
+  var menu = d3.select("#${chart}menu select")
       .on("change", change);
 
   states = data;
   
   var ages = d3.keys(states[0]).filter(function(key) {
-    return key != "State" && key != "title";
+    return key != "views" && key != "code" && key != "title" && key != "url" && key != "totalVotes" && key != "yesPercent";
   });
 
-  //states.forEach(function(state) {
-  //  ages.forEach(function(age) {
-  //    state[age] = state[age];
-  //  });
-  //});
 
   menu.selectAll("option")
       .data(ages)
     .enter().append("option")
       .text(function(d) { return d; });
 
-  menu.property("value", "views");
+  menu.property("value", "Total Views");
 
   redraw();
   
@@ -137,10 +133,10 @@
       .on("keyup", function() { altKey = false; });
 
   function change() {
-    clearTimeout(timeout);
+    //clearTimeout(timeout);
 
     d3.transition()
-        .duration(altKey ? 7500 : 750)
+        .duration(altKey ? 4000 : 1050)
         .each(redraw);
   }
 
@@ -148,21 +144,26 @@
     var age1 = menu.property("value");
     var top = states.sort(function(a, b) { return b[age1] - a[age1]; });
 
-    y.domain(top.map(function(d) { return d.State; }));
+    y.domain(top.map(function(d) { return d.code; }));
 
     var bar = svg.selectAll(".bar")
-        .data(top, function(d) { return d.State; });
+        .data(top, function(d) { return d.code; });
 
     var barEnter = bar.enter().insert("g", ".axis")
         .attr("class", "bar")
-        .attr("transform", function(d) { return "translate(0," + (y(d.State) + height) + ")"; })
+        .attr("transform", function(d) { return "translate(0," + (y(d.code) + height) + ")"; })
         .style("fill-opacity", 0);
 
-    barEnter.append("rect")
+    barEnter
+        .append("rect")
         .attr("width", age && function(d) { return x(d[age]); })
         .attr("height", y.rangeBand());
 
-    barEnter.append("text")
+    barEnter.append("a") 
+        .attr("xlink:href", function(d) {
+          return d.url
+        })
+        .append("text")
         .attr("class", "label")
         .attr("x", width + 5)
         .attr("y", y.rangeBand() / 2)
@@ -180,7 +181,7 @@
     x.domain([0, top[0][age = age1]]);
 
     var barUpdate = d3.transition(bar)
-        .attr("transform", function(d) { return "translate(0," + (d.y0 = y(d.State)) + ")"; })
+        .attr("transform", function(d) { return "translate(0," + (d.y0 = y(d.code)) + ")"; })
         .style("fill-opacity", 1);
 
     barUpdate.select("rect")
@@ -206,10 +207,10 @@
         .call(xAxis);
   }
 
-  var timeout = setTimeout(function() {
-    menu.property("value", "Percentage of Yes Votes").node().focus();
-    change();
-  }, 5000);
+  //var timeout = setTimeout(function() {
+  //  menu.property("value", "% Yes").node().focus();
+  //  change();
+  //}, 3000);
 
 </script>
 
