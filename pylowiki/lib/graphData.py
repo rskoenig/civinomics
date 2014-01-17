@@ -12,6 +12,60 @@ import simplejson as json
 log = logging.getLogger(__name__)
 
 ##################################################
+# builds a new json data structure for a constancy chart
+##################################################
+def buildConstancyData(parent, activities, **kwargs):
+
+    if 'typeFilter' in kwargs:
+        typeFilter = kwargs['typeFilter']
+    else:
+        typeFilter = 'all'
+
+    newList = []
+    for item in activities:
+        # make a link for this item
+        # note: for some reason, 'title' isn't accessible in here so I've modded thingURL to get it for me
+        views, title, url = utils.thingURL(parent, item, returnTitle=True)
+        # log.info("views: %s"%views)
+        # get the date and vote stats
+        thisTime = str(item.date)
+        upVotes = int(item['ups'])
+        downVotes = int(item['downs'])
+        totalVotes = upVotes + downVotes
+        if totalVotes > 0:
+            yesPercent = int(float(upVotes)/float(totalVotes) * 100)
+            noPercent = int(float(downVotes)/float(totalVotes) * 100)
+        else:
+            yesPercent = noPercent = 0
+        if typeFilter == 'all':
+            newList.append({
+                'State':item['urlCode'],
+                'title':title,
+                'Total Views':int(views),
+                'Total Votes':totalVotes,
+                'Percentage of Yes Votes':yesPercent,
+                'Percentage of No Votes':noPercent
+            })
+        elif typeFilter == item.objType:
+            newList.append({
+                'State':item['urlCode'],
+                'title':title,
+                'Total':item.objType,
+                'views':int(views),
+                'totalVotes':totalVotes,
+                'upVotes':upVotes,
+                'downVotes':downVotes,
+                'Percentage of Yes Votes':yesPercent,
+                'Percentage of No Votes':noPercent
+            })
+        #elif item.objType == 'comment':
+        #    for (key, val) in item:
+        #        log.info(key)
+
+    return json.dumps(newList)
+
+
+##################################################
 # builds a new json data structure for a bar chart
 ##################################################
 def buildBarData(parent, activities, **kwargs):
@@ -50,6 +104,9 @@ def buildBarData(parent, activities, **kwargs):
                 'upVotes':upVotes,
                 'downVotes':downVotes
             })
+        #elif item.objType == 'comment':
+        #    for (key, val) in item:
+        #        log.info(key)
 
     return json.dumps(newList)
 

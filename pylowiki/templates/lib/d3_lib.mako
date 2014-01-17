@@ -7,6 +7,214 @@
 ## D3 graphs
 ################################################
 
+<%def name="constancyChart(constancyData)">
+
+<style>
+
+  svg {
+    font: 10px sans-serif;
+  }
+
+  .bar rect {
+    fill: steelblue;
+  }
+
+  .bar:hover rect {
+    fill: brown;
+  }
+
+  .value {
+    fill: white;
+  }
+
+  .axis {
+    shape-rendering: crispEdges;
+  }
+
+  .axis path {
+    fill: none;
+    stroke: none;
+  }
+
+  .x.axis line {
+    stroke: #fff;
+    stroke-opacity: .8;
+  }
+
+  .y.axis path {
+    stroke: black;
+  }
+
+</style>
+
+
+<p id="menu">
+  <b>Top Ideas by various counts</b><br>Compare by: 
+  <select></select>
+</p>
+<div id="constancyChart">
+</div>
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script>
+
+  var margin = {
+      top: 0, 
+      right: 500, 
+      bottom: 0, 
+      left: 40
+    }; 
+
+  data = ${constancyData | n}
+
+  var barHeight = 20;
+  var totalHeight = barHeight * data.length;
+  console.log(totalHeight);
+  var width = 960 - margin.left - margin.right;
+  var height = totalHeight - margin.top - margin.bottom;
+
+  var format = d3.format("d");
+  var states;
+  var age;
+
+  var x = d3.scale.linear()
+      .range([0, width]);
+
+  var y = d3.scale.ordinal()
+      .rangeRoundBands([0, height], .1);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("top")
+      .tickSize(-height - margin.bottom)
+      .tickFormat(format);
+
+  var svg = d3.select("#constancyChart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .style("margin-left", -margin.left + "px")
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.append("g")
+      .attr("class", "x axis");
+  
+  svg.append("g")
+      .attr("class", "y axis")
+    .append("line")
+      .attr("class", "domain")
+      .attr("y2", height);
+
+  var menu = d3.select("#menu select")
+      .on("change", change);
+
+  states = data;
+  
+  var ages = d3.keys(states[0]).filter(function(key) {
+    return key != "State" && key != "title";
+  });
+
+  //states.forEach(function(state) {
+  //  ages.forEach(function(age) {
+  //    state[age] = state[age];
+  //  });
+  //});
+
+  menu.selectAll("option")
+      .data(ages)
+    .enter().append("option")
+      .text(function(d) { return d; });
+
+  menu.property("value", "views");
+
+  redraw();
+  
+
+  var altKey;
+
+  d3.select(window)
+      .on("keydown", function() { altKey = d3.event.altKey; })
+      .on("keyup", function() { altKey = false; });
+
+  function change() {
+    clearTimeout(timeout);
+
+    d3.transition()
+        .duration(altKey ? 7500 : 750)
+        .each(redraw);
+  }
+
+  function redraw() {
+    var age1 = menu.property("value");
+    var top = states.sort(function(a, b) { return b[age1] - a[age1]; });
+
+    y.domain(top.map(function(d) { return d.State; }));
+
+    var bar = svg.selectAll(".bar")
+        .data(top, function(d) { return d.State; });
+
+    var barEnter = bar.enter().insert("g", ".axis")
+        .attr("class", "bar")
+        .attr("transform", function(d) { return "translate(0," + (y(d.State) + height) + ")"; })
+        .style("fill-opacity", 0);
+
+    barEnter.append("rect")
+        .attr("width", age && function(d) { return x(d[age]); })
+        .attr("height", y.rangeBand());
+
+    barEnter.append("text")
+        .attr("class", "label")
+        .attr("x", width + 5)
+        .attr("y", y.rangeBand() / 2)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "start")
+        .text(function(d) { return d.title; });
+
+    barEnter.append("text")
+        .attr("class", "value")
+        .attr("x", age && function(d) { return x(d[age]) - 3; })
+        .attr("y", y.rangeBand() / 2)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "end");
+
+    x.domain([0, top[0][age = age1]]);
+
+    var barUpdate = d3.transition(bar)
+        .attr("transform", function(d) { return "translate(0," + (d.y0 = y(d.State)) + ")"; })
+        .style("fill-opacity", 1);
+
+    barUpdate.select("rect")
+        .attr("width", function(d) { return x(d[age]); });
+
+    barUpdate.select(".value")
+        .attr("x", function(d) { return x(d[age]) - 3; })
+        .text(function(d) { return format(d[age]); });
+
+    var barExit = d3.transition(bar.exit())
+        .attr("transform", function(d) { return "translate(0," + (d.y0 + height) + ")"; })
+        .style("fill-opacity", 0)
+        .remove();
+
+    barExit.select("rect")
+        .attr("width", function(d) { return x(d[age]); });
+
+    barExit.select(".value")
+        .attr("x", function(d) { return x(d[age]) - 3; })
+        .text(function(d) { return format(d[age]); });
+
+    d3.transition(svg).select(".x.axis")
+        .call(xAxis);
+  }
+
+  var timeout = setTimeout(function() {
+    menu.property("value", "Percentage of Yes Votes").node().focus();
+    change();
+  }, 5000);
+
+</script>
+
+</%def>
+
 <%def name="barChart(barData, chart, views, votes, downs, barText)">
   <style>
     #${chart} rect.views{
@@ -65,10 +273,23 @@
     var x = d3.scale.linear()
         .range([0, width]);
 
+    var data = ${barData | n}
+
+    var dataViews = function(d) { return d.views; };
+    var dataVotes = function(d) { return d.totalVotes; };
+
+    var viewScale = d3.scale.linear()
+      .domain([0, d3.max(data, dataViews)])
+      .range([0, width]);
+    // if I give votes the same width scale as views I may be able to display them as a stacked bar group
+    // worth a try, if I can get this working 
+    var totalVoteScale = d3.scale.linear()
+      .domain([0, d3.max(data, dataVotes)])
+      .range([0, width]);
+
     var chart = d3.select("#${chart}")
         .attr("width", width + margin.left + margin.right);
     
-    var data = ${barData | n}
 
     x.domain([0, d3.max(data, function(d) { return d.views; })]);
 
@@ -96,7 +317,7 @@
           .attr("x", 0)
           .attr("width", function(d) { return x(d.totalVotes); })
           .attr("class", "totalVotes")
-          .attr("height", barHeight - 1);
+          .attr("height", (7 * barHeight / 8));
 
     bar.append("text")
           .attr("x", function(d) { return x(d.totalVotes) - 3; })
@@ -109,7 +330,7 @@
           .attr("x", 0)
           .attr("width", function(d) { return x(d.downVotes); })
           .attr("class", "downVotes")
-          .attr("height", barHeight - 1);
+          .attr("height", (3 * barHeight / 4));
 
     bar.append("text")
           .attr("x", function(d) { return x(d.downVotes) - 3; })
