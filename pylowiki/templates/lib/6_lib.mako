@@ -387,6 +387,7 @@
             #log.info("thingCode is %s"%thingCode)
             if thingCode in myRatings:
                 myRating = myRatings[thingCode]
+                log.info("thingCode %s myRating %s"%(thingCode, myRating))
             else:
                 myRating = "0"
                 
