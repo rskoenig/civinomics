@@ -1010,6 +1010,7 @@ class WorkshopController(BaseController):
             if not discussions:
                 c.discussions = []
             else:
+                # performance bottleneck - and sorting of results will soon be done by angular
                 #discussions = sort.sortBinaryByTopPop(discussions)
                 c.discussions = discussions[0:3]
 
@@ -1018,6 +1019,7 @@ class WorkshopController(BaseController):
         if not ideas:
             c.ideas = []
         else:
+            # performance bottleneck. also - sorting will soon be done by angular in the browser
             #sortedIdeas = sort.sortBinaryByTopPop(ideas)
             sortedIdeas = ideas
             #log.info("after sorted ideas")
