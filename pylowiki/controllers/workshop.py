@@ -1010,21 +1010,16 @@ class WorkshopController(BaseController):
             if not discussions:
                 c.discussions = []
             else:
-                discussions = sort.sortBinaryByTopPop(discussions)
+                #discussions = sort.sortBinaryByTopPop(discussions)
                 c.discussions = discussions[0:3]
 
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
-        c.ideaRatings = []
-        if 'user' in session:
-            c.ideaRatings = ratingLib.getRatingForWorkshopObjects(c.authuser, workshopCode, 'idea')
-            if not c.ideaRatings:
-                c.ideaRatings = []
-            
-        #log.info("c.ideaRatings is %s"%c.ideaRatings)
+
         if not ideas:
             c.ideas = []
         else:
-            sortedIdeas = sort.sortBinaryByTopPop(ideas)
+            #sortedIdeas = sort.sortBinaryByTopPop(ideas)
+            sortedIdeas = ideas
             #log.info("after sorted ideas")
             if iPhoneApp:
                 i = 0
