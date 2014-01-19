@@ -136,6 +136,7 @@ class WorkshopController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+        log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
@@ -920,6 +921,7 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+        log.info("inside workshop display 1")
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
@@ -949,6 +951,8 @@ class WorkshopController(BaseController):
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w)):
             if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
                 c.facilitators.append(f)
+                
+        log.info("inside workshop display 2")
               
         c.activeListeners = []
         c.pendingListeners = []
@@ -970,6 +974,8 @@ class WorkshopController(BaseController):
                 if s:
                     c.slides.append(s)
 
+        log.info("inside workshop display 3")
+        
         if not iPhoneApp:
             c.motd = motdLib.getMessage(c.w.id)
             # kludge for now
@@ -979,10 +985,15 @@ class WorkshopController(BaseController):
         if not iPhoneApp:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         
-        c.information = pageLib.getInformation(c.w)
+        # not used
+        #c.information = pageLib.getInformation(c.w)
+        
+        log.info("inside workshop display 4")
         
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+            
+        log.info("inside workshop display 4.1")
         
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
@@ -1014,6 +1025,8 @@ class WorkshopController(BaseController):
                 #discussions = sort.sortBinaryByTopPop(discussions)
                 c.discussions = discussions[0:3]
 
+        log.info("inside workshop display 5")
+        
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
 
         if not ideas:

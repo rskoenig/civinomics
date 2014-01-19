@@ -224,7 +224,7 @@ class HomeController(BaseController):
 	        initiativeList = initiativeLib.getInitiativesForUser(c.user)
 	        for i in initiativeList:
 	            if i.objType == 'initiative':
-	                log.info("initiaitve 1")
+	                #log.info("initiaitve 1")
 	                if i['public'] == '1':
 	                    if i['deleted'] != '1':
 	                        c.initiatives.append(i)
@@ -238,7 +238,7 @@ class HomeController(BaseController):
 	        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
 	        for i in initiativeList:
 	            if i.objType == 'initiative':
-	                log.info("initiative 2")
+	                #log.info("initiative 2")
 	                if i['public'] == '1':
 	                    if i['deleted'] != '1':
 	                        c.initiativeBookmarks.append(i)
