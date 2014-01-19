@@ -1,6 +1,6 @@
 from pylowiki.model import Thing, Data, meta
 from sqlalchemy import and_
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, with_key_characteristic_like as wkcl
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
 from pylowiki.lib.utils import urlify
@@ -230,6 +230,40 @@ def getRecentActivity(number, publicPrivate = 'public'):
             .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
+            .order_by('-date')\
+            .limit(limit)
+        for item in postList:
+            if 'workshopCode' in item:
+                w = generic.getThing(item['workshopCode'], keys = keys, values = values)
+                if item.objType == 'discussion' and item['discType'] != 'general':
+                    continue
+            
+                if w:
+                    returnList.append(item)
+                    
+            if item.objType == 'initiative' and item['public'] == '1':
+                returnList.append(item)
+
+            if 'initiative_public' in item and item['initiative_public'] == '1':
+                if item.objType == 'discussion' and item['discType'] != 'update':
+                    continue
+                returnList.append(item)
+                
+            if len(returnList) == number:
+                return returnList
+
+        return returnList
+
+def getRecentGeoActivity(number, scope):
+        limit = number * 15
+        returnList = []
+        keys = ['deleted', 'disabled', 'published', 'public_private']
+        values = [u'0', u'0', u'1', u'public']
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wkcl('_scope', scope)))\
             .order_by('-date')\
             .limit(limit)
         for item in postList:

@@ -34,6 +34,15 @@ def with_characteristic_like(key, value, raw = 0, case_insensitive = True):
     else:
         return and_(Data.key == key, Data.value.like(value))
 
+def with_key_characteristic_like(key, value, raw = 0, case_insensitive = True):
+    if raw == 0:
+       value = '%' + value + '%'
+       key = '%' + key + '%'
+    if case_insensitive:
+        return and_(Data.key.ilike(key), Data.value.ilike(value))
+    else:
+        return and_(Data.key.like(key), Data.value.like(value))
+
 def with_key(key, case_insensitive = True):
     value = '%'
     if case_insensitive:

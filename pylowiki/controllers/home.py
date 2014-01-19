@@ -9,7 +9,7 @@ from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.activity import getRecentActivity
+from pylowiki.lib.db.activity import getRecentActivity, getRecentGeoActivity
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
@@ -120,6 +120,10 @@ class HomeController(BaseController):
 					scope['hash'] = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|0'
 				if scope['level'] == 'postalCode':
 					scope['hash'] = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|' + c.scopeMap[5]['geoURL']
+
+
+			countyScope = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL']
+			c.geoActivity = getRecentGeoActivity(12, countyScope)
 
 			county = c.authuser_geo['countyTitle']
 			city = c.authuser_geo['cityTitle']
