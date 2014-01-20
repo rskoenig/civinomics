@@ -236,6 +236,12 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
   background-color: whitesmoke;
 }
 
+.nav-pills.civ-search-tools > li.active > a .caret{
+  border-top-color: #005d28;
+  border-bottom-color: #005d28;
+}
+
+
 .nav-pills.civ-search-tools{
   padding-bottom: 0px;
   margin-bottom: 7px;

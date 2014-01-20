@@ -13,18 +13,25 @@
 <div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid one-up" ng-controller="SearchCtrl">
-    <div class="span2 search-left-column">
-        % if c.searchType == 'region':
+    % if c.searchType == 'region':
+        <div class="span2 search-left-column">
             <img class="thumbnail tight flag pull-left" src="${c.flag}">
-        % endif
-        <div class="tabbable tabs-left">
-            <ul class="nav nav-pills civ-search-tools tags" ng-hide="showingPeople.show" ng-model="query" ng-cloak>
-                ${lib_6.public_tag_list_filter()}
-            </ul>
+            <div class="tabbable tabs-left">
+                <ul class="nav nav-pills civ-search-tools tags" ng-hide="showingPeople.show" ng-model="query" ng-cloak>
+                    ${lib_6.public_tag_list_filter()}
+                </ul>
+            </div>
         </div>
-    </div>
+    % endif
+    
+    <% 
+        if c.searchType == 'region':
+            spanX = 'span7'
+        else:
+            spanX = 'span9'
+    %>
 
-    <div class="span7 search-middle-column">
+    <div class="${spanX} search-middle-column">
         <div class="row-fluid">
             <h2 class="lead geoName">
             % if c.searchType == 'region':
@@ -32,7 +39,7 @@
             % elif c.searchType == 'tag':
                 ${c.searchTitle}
             % else:
-                <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
+                <span class="lead geoName">Results for '${c.searchQuery}'</span>
             % endif
             </h2>
         </div>
@@ -122,16 +129,17 @@
                     <li ng-class="{active : orderProp == '-voteCount'}"><a href="#" ng-click="orderProp = '-voteCount'">Most Votes</a></li>
                 </ul>
 
-                    <select class="med-width" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
-                        <option value="-date">Date Created</option>
-                        <option value="-startTime">Start Time</option>
-                        <option value="-bookmarks">Bookmarks</option>
-                        <option value="-activity">Posts</option>
-                    </select>
-                    <select class="med-width" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
-                        <option value="-date">Join Date</option>
-                        <option value="title">Alphabetical</option>
-                    </select>
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                    <li class="active" ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Date Created</a></li>
+                    <li ng-class="{active : orderProp == '-startTime'}"><a href="#" ng-click="orderProp = '-startTime'">Start Time</a></li>
+                    <li ng-class="{active : orderProp == '-bookmarks'}"><a href="#" ng-click="orderProp = '-bookmarks'">Bookmarks</a></li>
+                    <li ng-class="{active : orderProp == '-activity'}"><a href="#" ng-click="orderProp = '-activity'">Posts</a></li>
+                </ul>
+
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
+                    <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
+                    <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
+                </ul>
             </div>
         </div>
         <div class="tabbable">
@@ -440,7 +448,7 @@
                         <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain">
 
                             ${ng_helpers.initiative_listing()}
-                            
+
                         </tr>
                     </table>
                     <div class="centered" ng-show="initiatives.length>pageSize">
