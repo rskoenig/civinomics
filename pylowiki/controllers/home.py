@@ -122,10 +122,6 @@ class HomeController(BaseController):
 					scope['hash'] = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|' + c.scopeMap[5]['geoURL']
 
 
-			countyScope = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL']
-			#log.info("countyScope is %s"%countyScope)
-			c.geoActivity = activityLib.getRecentGeoActivity(12, countyScope)
-
 			county = c.authuser_geo['countyTitle']
 			city = c.authuser_geo['cityTitle']
 			if county == city:
@@ -177,7 +173,19 @@ class HomeController(BaseController):
 
 			# don't include Earth while limited to USA
 			c.scopeMap = c.scopeMap[1:]
+			
+			# get user follow acctivity
+			bookmarked = followLib.getUserFollows(c.authuser)
+			c.followingUsersList = [ followObj['userCode'] for followObj in bookmarked ]
+			log.info("c.followingUsersList is %s"%c.followingUsersList)
+			if c.followingUsersList:
+			    c.usersActivity =  activityLib.getActivityForUserList(50, c.followingUsersList)
+			    lusers = str(len(c.usersActivity))
+			    log.info("c.usersActivity has %s items"%lusers)
+			else:
+			    c.usersActivity = False
 
+			
 			# get user's bookmarks, listening and facilitating
 			bookmarked = followLib.getWorkshopFollows(c.authuser)
 			watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in bookmarked ]
@@ -235,12 +243,28 @@ class HomeController(BaseController):
 			log.info("Here be ze f items: %s" %c.facilitatorItems)
 	        c.numA = len(c.facilitatorItems)
 	        
-	        log.info("c.followingWorkshopCodes is %s"%c.followingWorkshopCodes)		
-	        c.workshopsActivity = activityLib.getActivityForWorkshopList(50, c.followingWorkshopCodes)
+	        log.info("c.followingWorkshopCodes is %s"%c.followingWorkshopCodes)
+	        if c.followingWorkshopCodes:
+	            c.workshopsActivity = activityLib.getActivityForWorkshopList(30, c.followingWorkshopCodes)
 
 	        if c.workshopsActivity:
 	            lactivity = len(c.workshopsActivity)
 	            log.info("c.workshopsActivity has %s items"%lactivity)
+	            
+	        if c.usersActivity and c.workshopsActivity:
+	            log.info("combining the lists")
+	            c.interestedActivity = c.usersActivity + c.workshopsActivity
+	            c.interestedActivity.sort(key=lambda x: x.date, reverse=True)
+	        elif c.usersActivity:
+	            log.info("user list")
+	            c.interestedActivity = c.usersActivity
+	        elif c.workshopsActivity:
+	            c.interestedActivity = c.workshopsActivity
+	        else:
+			    countyScope = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL']
+			    #log.info("countyScope is %s"%countyScope)
+			    c.interestedActivity = activityLib.getRecentGeoActivity(30, countyScope)
+
 
 	        # initiatives
 	        initiativeList = initiativeLib.getInitiativesForUser(c.user)
@@ -268,6 +292,8 @@ class HomeController(BaseController):
 	                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
 	                        c.initiativeBookmarks.append(i)
 	        c.numB += len(c.initiativeBookmarks)
+	        
+	        c.activity = c.interestedActivity
 		
 
 		return render('/derived/6_home.bootstrap')

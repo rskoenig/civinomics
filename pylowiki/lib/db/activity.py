@@ -289,7 +289,6 @@ def getRecentGeoActivity(number, scope):
         return returnList
 
 def getActivityForWorkshopList(number, workshops):
-        log.info("foo")
         limit = number * 15
         returnList = []
         postList = meta.Session.query(Thing)\
@@ -301,12 +300,36 @@ def getActivityForWorkshopList(number, workshops):
             .limit(limit)
         
         for item in postList:
-            if item.objType == 'discussion' and item['discType'] != 'general':
+            if item.objType == 'discussion' and item['discType'] != 'general' and item['discType'] != 'update':
                 continue
              
             returnList.append(item) 
             count = len(returnList)
-            log.info("count is %s item is type %s"%(str(count), item.objType))
+            #log.info("count is %s item is type %s"%(str(count), item.objType))
+            
+            if len(returnList) == number:
+                return returnList
+        
+        return returnList
+        
+def getActivityForUserList(number, users):
+        limit = number * 15
+        returnList = []
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wkil('userCode', users)))\
+            .order_by('-date')\
+            .limit(limit)
+        
+        for item in postList:
+            if item.objType == 'discussion' and item['discType'] != 'general' and item['discType'] != 'update':
+                continue
+             
+            returnList.append(item) 
+            count = len(returnList)
+            log.info("in users count is %s item is type %s"%(str(count), item.objType))
             
             if len(returnList) == number:
                 return returnList
