@@ -80,7 +80,16 @@ app.controller('SearchCtrl', function($scope, $http){
     } else {
         $scope.orderProp = '-date';
     }
+
+    /* refine the search results with a tag filter if in url */
     $scope.query = '';
+    if($scope.searchType = 'geo') {
+        var searchList = window.location.search.split('=');
+        if (searchList[1]){
+            $scope.query = searchList[1]; 
+        };
+    };
+
     $scope.votedornot = 'nvote'
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos, initiatives'};
     $scope.currentPage = 0;
