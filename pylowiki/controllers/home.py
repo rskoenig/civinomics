@@ -207,7 +207,7 @@ class HomeController(BaseController):
 	                c.followingWorkshopCodes.append(lw['urlCode'])
 	       
 	        lwactivity = len(c.followingWorkshopCodes)
-	        log.info("followingWorkshopCodes has %s items"%str(lwactivity))
+	        log.info("followingWorkshopCodes has %s items yay"%str(lwactivity))
 	                
 	        c.numLW = len(c.listeningWorkshops)
 
