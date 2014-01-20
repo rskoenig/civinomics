@@ -491,6 +491,10 @@ padding: 0;
 .red-tag, .Civil, .Health, .Safety, .Justice{
     background-color: #b94a48;
 }
+
+
+/* well */
+
 .well.footer{
    background: white;
    border-color: transparent;
@@ -501,6 +505,18 @@ padding: 0;
    margin-bottom: 10px;
    padding: 10px 10px 10px 10px;
 }
+
+.well-splash-content{
+  padding-top: 0;
+}
+
+.well-splash-content .media.well.searchListing{
+  border: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  margin-bottom: 0;
+}
+
 
 .message-workshop-image{
     margin-top:20px;
@@ -3029,10 +3045,6 @@ input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
-}
-
-.well-splash-content{
-  padding-top: 0;
 }
 
 .full-width{
