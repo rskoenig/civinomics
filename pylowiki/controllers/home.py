@@ -253,7 +253,8 @@ class HomeController(BaseController):
 	            
 	        if c.usersActivity and c.workshopsActivity:
 	            log.info("combining the lists")
-	            c.interestedActivity = c.usersActivity + c.workshopsActivity
+	            c.interestedActivity = set(c.usersActivity + c.workshopsActivity)
+	            c.interestedActivity = list(c.interestedActivity)
 	            c.interestedActivity.sort(key=lambda x: x.date, reverse=True)
 	        elif c.usersActivity:
 	            log.info("user list")
