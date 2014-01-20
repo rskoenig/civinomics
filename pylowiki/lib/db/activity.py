@@ -1,6 +1,6 @@
 from pylowiki.model import Thing, Data, meta
 from sqlalchemy import and_
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, with_key_characteristic_like as wkcl
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, with_key_characteristic_like as wkcl, with_key_in_list as wkil
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
 from pylowiki.lib.utils import urlify
@@ -286,4 +286,29 @@ def getRecentGeoActivity(number, scope):
             if len(returnList) == number:
                 return returnList
 
+        return returnList
+
+def getActivityForWorkshopList(number, workshops):
+        log.info("foo")
+        limit = number * 15
+        returnList = []
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wkil('workshopCode', workshops)))\
+            .order_by('-date')\
+            .limit(limit)
+        
+        for item in postList:
+            if item.objType == 'discussion' and item['discType'] != 'general':
+                continue
+             
+            returnList.append(item) 
+            count = len(returnList)
+            log.info("count is %s item is type %s"%(str(count), item.objType))
+            
+            if len(returnList) == number:
+                return returnList
+        
         return returnList
