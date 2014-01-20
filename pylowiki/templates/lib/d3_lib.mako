@@ -19,6 +19,10 @@
     fill: ${barHover};
   }
 
+  #${chart} a:hover {
+    fill:#D15D00;
+  }
+
   .value {
     fill: white;
   }
