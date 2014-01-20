@@ -916,6 +916,8 @@ class SearchController(BaseController):
 
             scopeInfo = utils.getPublicScope(i)
             entry['flag'] = scopeInfo['flag']
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level'].title()
             entry['location'] = scopeInfo['scopeString']
             entry['geoHref'] = scopeInfo['href']
 

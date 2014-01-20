@@ -515,6 +515,11 @@ padding: 0;
   box-shadow: none;
   -webkit-box-shadow: none;
   margin-bottom: 0;
+  padding: 8px 0;
+}
+.well-splash-content td.initiative-listing{
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 

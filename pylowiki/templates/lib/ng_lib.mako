@@ -1,6 +1,6 @@
 
 <%def name="initiative_listing()">
-    <td>
+    <td class="initiative-listing">
         <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
             <div class="media-body" ng-controller="yesNoVoteCtrl">
                 <div class="span9">
@@ -21,7 +21,7 @@
                         </h5>
                         <small>
                             % if c.searchType and c.searchType != 'region':
-                                <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" src="{{initiative.flag}}"> {{initiative.location}}</a><br>
+                                <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" src="{{initiative.flag}}"> {{initiative.scopeLevel}} of {{initiative.scopeName}}</a><br>
                             % endif
                             Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
                         </small>
