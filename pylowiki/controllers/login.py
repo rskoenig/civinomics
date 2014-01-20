@@ -14,6 +14,7 @@ import pylowiki.lib.db.user     as userLib
 import pylowiki.lib.mail        as mailLib
 from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
+import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
 
@@ -539,6 +540,11 @@ class LoginController(BaseController):
         log.info("login:logUserIn session save")
 
         c.authuser = user
+        
+        # get and cache their ratings
+        ratings = ratingLib.getRatingsForUser()
+        session["ratings"] = ratings
+        session.save()
 
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:

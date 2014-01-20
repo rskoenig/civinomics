@@ -19,8 +19,8 @@
                     <li class="small-hidden">
                         <form class="form-search" action="/search">
                             <div class="input-append">
-                                <input type="text" class="span2 search-query" name="searchQuery">
-                                <button type="submit" class="btn btn-search-first">Search</button>
+                                <input type="text" class="span2 search-query" name="searchQuery" placeholder="Search">
+                                <button type="submit" class="btn btn-search-first"><i class="icon-search"></i></button>
                                 <button type="button" class="btn" data-toggle="collapse" data-target="#search">Advanced</button>
                             </div>
                         </form>
@@ -180,7 +180,7 @@
                     </ul>
                 </div><!-- span8 -->
                 <div class="span pull-right">
-                  © 2013 Civinomics
+                  © 2014 Civinomics
                 </div><!-- span pull-right -->
             </div><!-- row footer well -->
         </div><!-- footerContainer -->
@@ -192,7 +192,7 @@
         <div id="footerContainer" class="container">
             <div class="row footer well">
                 <div class="span pull-right">
-                  © 2013 Civinomics
+                  © 2014 Civinomics
                 </div>
             </div><!-- row footer well -->
         </div><!-- footerContainer -->
@@ -205,7 +205,7 @@
             <div class="row-fluid pretty">
                 <div class="span5">
                     <div class="pull-right">
-                        © 2013 Civinomics, Inc. 
+                        © 2014 Civinomics, Inc. 
                         <ul class="horizontal-list">
                             <li><a href="/corp/terms">Terms</a></li>
                             <li><a href="/corp/privacy">Privacy</a></li>
@@ -237,7 +237,7 @@
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
-                        <li>© 2013 Civinomics, Inc. </li>
+                        <li>© 2014 Civinomics, Inc. </li>
                     </ul>
                 </div>
                 <div class="span2 centered">

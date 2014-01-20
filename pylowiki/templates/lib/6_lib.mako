@@ -19,6 +19,7 @@
    import pylowiki.lib.db.follow        as followLib
    import pylowiki.lib.db.initiative    as initiativeLib
    import pylowiki.lib.utils            as utilsLib
+   from pylons import session
    
    from hashlib import md5
    import logging, os
@@ -375,30 +376,37 @@
         if totalVotes > 0:
           percentYes = int(float(totalYes)/float(totalVotes) * 100)
           percentNo = int(float(totalNo)/float(totalVotes) * 100)
+        if 'ratings' in session:
+            myRatings = session["ratings"]
+        else:
+            myRatings = {}
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
-            if 'vote' in thing and 'amount' in thing['vote']:
-                rated = thing['vote']
+            thingCode = thing['urlCode']
+            #log.info("thingCode is %s"%thingCode)
+            if thingCode in myRatings:
+                myRating = myRatings[thingCode]
+                log.info("thingCode %s myRating %s"%(thingCode, myRating))
             else:
-                rated = ratingLib.getRatingForThing(c.authuser, thing) 
-            if rated:
-               if rated['amount'] == '1':
-                  commentClass = 'voted yesVote'
-                  displayTally = ''
-                  displayPrompt = 'hidden'
-               else:
-                  commentClass = 'yesVote'
-                  displayTally = ''
-                  displayPrompt = 'hidden'
-                  if rated['amount'] == '0' :
+                myRating = "0"
+                
+            if myRating == '1':
+                commentClass = 'voted yesVote'
+                displayTally = ''
+                displayPrompt = 'hidden'
+            else:
+                commentClass = 'yesVote'
+                displayTally = ''
+                displayPrompt = 'hidden'
+                if myRating == '0' :
                     displayTally = 'hidden'
                     displayPrompt = ''
 
-            else:
-               commentClass = 'yesVote'
-               displayTally = 'hidden'
-               displayPrompt = ''
+            #else:
+            #   commentClass = 'yesVote'
+            #   displayTally = 'hidden'
+            #   displayPrompt = ''
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
               <div class="vote-icon yes-icon detail"></div>
@@ -407,13 +415,10 @@
          <br>
          <br>
          <%
-            if rated:
-               if rated['amount'] == '-1':
-                  commentClass = 'voted noVote'
-               else:
-                  commentClass = 'noVote'
+            if myRating == '-1':
+                commentClass = 'voted noVote'
             else:
-               commentClass = 'noVote'
+                commentClass = 'noVote'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
               <div class="vote-icon no-icon detail"></div>
