@@ -100,6 +100,8 @@
       <div class="media-body">
          ${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} 
          ${lib_6.showItemInActivity(item, parent, **kwargs)}
+         ${item.date}
+
       </div>
    </div>
 </%def>
