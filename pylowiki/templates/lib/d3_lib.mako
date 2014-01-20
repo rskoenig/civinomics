@@ -208,11 +208,6 @@
         .call(${chart}xAxis);
   }
 
-  //var timeout = setTimeout(function() {
-  //  menu.property("value", "% Yes").node().focus();
-  //  change();
-  //}, 3000);
-
 </script>
 
 </%def>

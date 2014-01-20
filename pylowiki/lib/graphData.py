@@ -40,6 +40,9 @@ def buildConstancyData(parent, activities, **kwargs):
         upVotes = int(item['ups'])
         downVotes = int(item['downs'])
         totalVotes = upVotes + downVotes
+        myComments = 0
+        if 'numComments' in item:
+            myComments = int(item['numComments'])
         if totalVotes > 0:
             yesPercent = int(float(upVotes)/float(totalVotes) * 100)
             noPercent = int(float(downVotes)/float(totalVotes) * 100)
@@ -55,9 +58,10 @@ def buildConstancyData(parent, activities, **kwargs):
                     'views':int(views),
                     'totalVotes':totalVotes,
                     'yesPercent':yesPercent,
-                    '% No':noPercent,
-                    '% Yes':yesPercent,
+                    'Number of Comments':myComments,
+                    '% Yes Votes':yesPercent,
                     'Total Votes':totalVotes,
+                    '% No Votes':noPercent,
                     'Total Views':int(views)
                 })
             elif item.objType == 'discussion':
@@ -68,10 +72,11 @@ def buildConstancyData(parent, activities, **kwargs):
                     'views':int(views),
                     'totalVotes':totalVotes,
                     'yesPercent':yesPercent,
-                    '% No':noPercent,
-                    '% Yes':yesPercent,
+                    '% No Votes':noPercent,
+                    '% Yes Votes':yesPercent,
                     'Total Votes':totalVotes,
-                    'Total Views':int(views)
+                    'Total Views':int(views),
+                    'Number of Comments':myComments
                 })
             elif item.objType == 'resource':
                 resourceList.append({
@@ -81,10 +86,11 @@ def buildConstancyData(parent, activities, **kwargs):
                     'views':int(views),
                     'totalVotes':totalVotes,
                     'yesPercent':yesPercent,
-                    '% No':noPercent,
-                    '% Yes':yesPercent,
+                    '% No Votes':noPercent,
+                    '% Yes Votes':yesPercent,
                     'Total Votes':totalVotes,
-                    'Total Views':int(views)
+                    'Total Views':int(views),
+                    'Number of Comments':myComments
                 })
         elif typeFilter == item.objType:
             newList.append({
@@ -94,10 +100,11 @@ def buildConstancyData(parent, activities, **kwargs):
                 'views':int(views),
                 'totalVotes':totalVotes,
                 'yesPercent':yesPercent,
-                '% No':noPercent,
-                '% Yes':yesPercent,
+                '% No Votes':noPercent,
+                '% Yes Votes':yesPercent,
                 'Total Votes':totalVotes,
-                'Total Views':int(views)
+                'Total Views':int(views),
+                'Number of Comments':myComments
             })
         #elif item.objType == 'comment':
         #    for (key, val) in item:
