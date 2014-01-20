@@ -23,7 +23,7 @@
             </div>
         </div>
     % endif
-    
+
     <% 
         if c.searchType == 'region':
             spanX = 'span7'
@@ -80,6 +80,11 @@
                         <li ng-class="showingDiscussions.class">
                             <a href="#discussions" data-toggle="tab" ng-click="searchDiscussions()">
                                 Discussions <span class="pull-right">(${c.numDiscussions}) </span>
+                            </a>
+                        </li>
+                        <li class="search-right-column-link" ng-class="showingPhotos.class">
+                            <a href="#photos" data-toggle="tab" ng-click="searchPhotos()">
+                                Photos <span class="pull-right">(${c.numPhotos}) </span>
                             </a>
                         </li>
                     </ul>

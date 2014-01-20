@@ -3002,11 +3002,11 @@ a.no-highlight:hover{
 }
 .search-middle-column{
   min-width: 550px;
+  width: 59.8295726495726%;
 }
 
 .search-right-column{
   opacity: 0.9;
-  padding: 10px;
   min-width: 250px;
   margin-bottom: 8px;
 }
@@ -3016,15 +3016,32 @@ a.no-highlight:hover{
   margin-bottom: 8px;
 }
 
-@media (max-width: 1200px){
+/* hide these until the template gets too small to display right column */
+.search-right-column-link{
+    display: none !important;
+  }
+
+@media (max-width: 980px){
+  .search-left-column{
+    display: none !important;
+  }
+  .row-fluid .span7.search-middle-column{
+    width: 100%;
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 981px){
   .row-fluid .span7.search-middle-column{
     width: 77%;
   }
 }
 
-@media (max-width: 990px){
+@media (max-width: 1200px){
   .search-right-column{
     display: none !important;
+  }
+  .search-right-column-link{
+    display: inline !important;
   }
 }
 
