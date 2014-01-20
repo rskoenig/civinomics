@@ -115,10 +115,10 @@
 
             <div id="sortOptions" class="row-fluid collapse">
                 <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
-                    <li class="active" ng-class="{active : orderProp == '-date'}"><a href="" ng-click="orderProp = '-date'">Recent</a></li>
-                    <!-- <li ng-class="{active : orderProp == 'title'}"><a href="" ng-click="orderProp = 'title'">Alphabetical</a></li> -->
-                    <li ng-class="{active : orderProp == '-numComments'}"><a href="" ng-click="orderProp = '-numComments'">Most Comments</a></li>
-                    <li ng-class="{active : orderProp == '-voteCount'}"><a href="" ng-click="orderProp = '-voteCount'">Most Votes</a></li>
+                    <li class="active" ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Recent</a></li>
+                    <!-- <li ng-class="{active : orderProp == 'title'}"><a href="#" ng-click="orderProp = 'title'">Alphabetical</a></li> -->
+                    <li ng-class="{active : orderProp == '-numComments'}"><a href="#" ng-click="orderProp = '-numComments'">Most Comments</a></li>
+                    <li ng-class="{active : orderProp == '-voteCount'}"><a href="#" ng-click="orderProp = '-voteCount'">Most Votes</a></li>
                 </ul>
 
                     <select class="med-width" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>

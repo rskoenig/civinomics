@@ -1582,7 +1582,7 @@
   <%  categories = workshopLib.getWorkshopTagCategories() %>
       <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
     % for category in sorted(categories):
-      <li ng-class="{active: query == '${category}'}"><a href="" ng-click="query = '${category}' ">${category}</a></li>
+      <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
     % endfor
 </%def>
 
