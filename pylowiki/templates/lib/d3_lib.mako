@@ -7,15 +7,15 @@
 ## D3 graphs
 ################################################
 
-<%def name="constancyChart(constancyData, chart, typeName, barColor, barHover)">
+<%def name="constancyChart(constancyData, chart, typeName, barColor, barHover, includeD3)">
 
 <style>
 
-  #${chart} .bar rect {
+  #${chart} .${chart}bar rect {
     fill: ${barColor};
   }
 
-  #${chart} .bar:hover rect {
+  #${chart} .${chart}bar:hover rect {
     fill: ${barHover};
   }
 
@@ -52,7 +52,9 @@
 <div id="${chart}">
 </div>
 
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+% if includeD3 == 1:
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+% endif
 <script>
 
   var margin = {
@@ -64,62 +66,62 @@
 
   data = ${constancyData | n}
 
-  var barHeight = 28;
-  var totalHeight = barHeight * data.length;
-  console.log(totalHeight);
+  var ${chart}barHeight = 28;
+  var ${chart}totalHeight = ${chart}barHeight * data.length;
+  
   var width = 960 - margin.left - margin.right;
-  var height = totalHeight + margin.top + margin.bottom;
+  var ${chart}height = ${chart}totalHeight + margin.top + margin.bottom;
 
   var format = d3.format("d");
-  var states;
+  var ${chart}states;
   var age;
 
-  var x = d3.scale.linear()
+  var ${chart}x = d3.scale.linear()
       .range([0, width]);
 
-  var y = d3.scale.ordinal()
-      .rangeRoundBands([0, height], .1);
+  var ${chart}y = d3.scale.ordinal()
+      .rangeRoundBands([0, ${chart}height], .1);
 
-  var xAxis = d3.svg.axis()
-      .scale(x)
+  var ${chart}xAxis = d3.svg.axis()
+      .scale(${chart}x)
       .orient("top")
-      .tickSize(-height - margin.bottom)
+      .tickSize(-${chart}height - margin.bottom)
       .tickFormat(format);
 
-  var svg = d3.select("#${chart}").append("svg")
+  var ${chart}svg = d3.select("#${chart}").append("svg")
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("height", ${chart}height + margin.top + margin.bottom)
       .style("margin-left", -margin.left + "px")
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  svg.append("g")
+  ${chart}svg.append("g")
       .attr("class", "x axis");
   
-  svg.append("g")
+  ${chart}svg.append("g")
       .attr("class", "y axis")
     .append("line")
       .attr("class", "domain")
-      .attr("y2", height);
+      .attr("y2", ${chart}height);
 
-  var menu = d3.select("#${chart}menu select")
-      .on("change", change);
+  var ${chart}menu = d3.select("#${chart}menu select")
+      .on("change", ${chart}change);
 
-  states = data;
+  ${chart}states = data;
   
-  var ages = d3.keys(states[0]).filter(function(key) {
+  var ${chart}ages = d3.keys(${chart}states[0]).filter(function(key) {
     return key != "views" && key != "code" && key != "title" && key != "url" && key != "totalVotes" && key != "yesPercent";
   });
 
 
-  menu.selectAll("option")
-      .data(ages)
+  ${chart}menu.selectAll("option")
+      .data(${chart}ages)
     .enter().append("option")
       .text(function(d) { return d; });
 
-  menu.property("value", "Total Views");
+  ${chart}menu.property("value", "Total Views");
 
-  redraw();
+  ${chart}redraw();
   
 
   var altKey;
@@ -128,79 +130,78 @@
       .on("keydown", function() { altKey = d3.event.altKey; })
       .on("keyup", function() { altKey = false; });
 
-  function change() {
-    //clearTimeout(timeout);
+  function ${chart}change() {
 
     d3.transition()
-        .duration(altKey ? 4000 : 1050)
-        .each(redraw);
+        .duration(altKey ? 4000 : 1500)
+        .each(${chart}redraw);
   }
 
-  function redraw() {
-    var age1 = menu.property("value");
-    var top = states.sort(function(a, b) { return b[age1] - a[age1]; });
+  function ${chart}redraw() {
+    var age1 = ${chart}menu.property("value");
+    var top = ${chart}states.sort(function(a, b) { return b[age1] - a[age1]; });
 
-    y.domain(top.map(function(d) { return d.code; }));
+    ${chart}y.domain(top.map(function(d) { return d.code; }));
 
-    var bar = svg.selectAll(".bar")
+    var ${chart}bar = ${chart}svg.selectAll(".${chart}bar")
         .data(top, function(d) { return d.code; });
 
-    var barEnter = bar.enter().insert("g", ".axis")
-        .attr("class", "bar")
-        .attr("transform", function(d) { return "translate(0," + (y(d.code) + height) + ")"; })
+    var ${chart}barEnter = ${chart}bar.enter().insert("g", ".axis")
+        .attr("class", "${chart}bar")
+        .attr("transform", function(d) { return "translate(0," + (${chart}y(d.code) + ${chart}height) + ")"; })
         .style("fill-opacity", 0);
 
-    barEnter
+    ${chart}barEnter
         .append("rect")
-        .attr("width", age && function(d) { return x(d[age]); })
-        .attr("height", y.rangeBand());
+        .attr("width", age && function(d) { return ${chart}x(d[age]); })
+        .attr("height", ${chart}y.rangeBand());
 
-    barEnter.append("a") 
+    ${chart}barEnter.append("a") 
         .attr("xlink:href", function(d) {
           return d.url
         })
+        .attr("class", "listed-item-title")
         .append("text")
-        .attr("class", "label")
         .attr("x", width + 5)
-        .attr("y", y.rangeBand() / 2)
+        .attr("y", ${chart}y.rangeBand() / 2)
         .attr("dy", ".35em")
         .attr("text-anchor", "start")
         .text(function(d) { return d.title; });
 
-    barEnter.append("text")
+    ${chart}barEnter.append("text")
         .attr("class", "value")
-        .attr("x", age && function(d) { return x(d[age]) - 3; })
-        .attr("y", y.rangeBand() / 2)
+        .attr("x", age && function(d) { return ${chart}x(d[age]) - 3; })
+        .attr("y", ${chart}y.rangeBand() / 2)
         .attr("dy", ".35em")
         .attr("text-anchor", "end");
 
-    x.domain([0, top[0][age = age1]]);
+    ${chart}x.domain([0, top[0][age = age1]]);
 
-    var barUpdate = d3.transition(bar)
-        .attr("transform", function(d) { return "translate(0," + (d.y0 = y(d.code)) + ")"; })
+    var ${chart}barUpdate = d3.transition(${chart}bar)
+        .attr("transform", function(d) { return "translate(0," + (d.y0 = ${chart}y(d.code)) + ")"; })
         .style("fill-opacity", 1);
 
-    barUpdate.select("rect")
-        .attr("width", function(d) { return x(d[age]); });
+    ${chart}barUpdate.select("rect")
+        .attr("width", function(d) { return ${chart}x(d[age]); });
 
-    barUpdate.select(".value")
-        .attr("x", function(d) { return x(d[age]) - 3; })
+    ${chart}barUpdate.select(".value")
+        .attr("x", function(d) { return ${chart}x(d[age]) - 3; })
         .text(function(d) { return format(d[age]); });
 
-    var barExit = d3.transition(bar.exit())
-        .attr("transform", function(d) { return "translate(0," + (d.y0 + height) + ")"; })
+    var ${chart}barExit = d3.transition(${chart}bar.exit())
+        .attr("transform", function(d) { return "translate(0," + (d.y0 + ${chart}height) + ")"; })
         .style("fill-opacity", 0)
         .remove();
 
-    barExit.select("rect")
-        .attr("width", function(d) { return x(d[age]); });
+    ${chart}barExit.select("rect")
+        .attr("width", function(d) { return ${chart}x(d[age]); });
 
-    barExit.select(".value")
-        .attr("x", function(d) { return x(d[age]) - 3; })
+    ${chart}barExit.select(".value")
+        .attr("x", function(d) { return ${chart}x(d[age]) - 3; })
         .text(function(d) { return format(d[age]); });
 
-    d3.transition(svg).select(".x.axis")
-        .call(xAxis);
+    d3.transition(${chart}svg).select(".x.axis")
+        .call(${chart}xAxis);
   }
 
   //var timeout = setTimeout(function() {

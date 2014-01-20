@@ -15,7 +15,10 @@ log = logging.getLogger(__name__)
 # builds a new json data structure for a constancy chart
 ##################################################
 def buildConstancyData(parent, activities, **kwargs):
-
+    if 'cap' in kwargs:
+        cap = kwargs['cap']
+    else:
+        cap = 100
     if 'typeFilter' in kwargs:
         typeFilter = kwargs['typeFilter']
     else:
@@ -26,6 +29,8 @@ def buildConstancyData(parent, activities, **kwargs):
     discussionList = []
     resourceList = []
     for item in activities:
+        if (item['disabled'] == "1") or (item['deleted'] == "1"):
+            continue
         # make a link for this item
         # note: for some reason, 'title' isn't accessible in here so I've modded thingURL to get it for me
         views, title, url = utils.thingURL(parent, item, returnTitle=True)
@@ -40,11 +45,12 @@ def buildConstancyData(parent, activities, **kwargs):
             noPercent = int(float(downVotes)/float(totalVotes) * 100)
         else:
             yesPercent = noPercent = 0
+        
         if typeFilter == 'all':
             if item.objType == 'idea':
                 ideaList.append({
                     'code':item['urlCode'],
-                    'title':title,
+                    'title':utils.cap(title, cap),
                     'url':url,
                     'views':int(views),
                     'totalVotes':totalVotes,
@@ -57,7 +63,7 @@ def buildConstancyData(parent, activities, **kwargs):
             elif item.objType == 'discussion':
                 discussionList.append({
                     'code':item['urlCode'],
-                    'title':title,
+                    'title':utils.cap(title, cap),
                     'url':url,
                     'views':int(views),
                     'totalVotes':totalVotes,
@@ -70,7 +76,7 @@ def buildConstancyData(parent, activities, **kwargs):
             elif item.objType == 'resource':
                 resourceList.append({
                     'code':item['urlCode'],
-                    'title':title,
+                    'title':utils.cap(title, cap),
                     'url':url,
                     'views':int(views),
                     'totalVotes':totalVotes,
@@ -83,7 +89,7 @@ def buildConstancyData(parent, activities, **kwargs):
         elif typeFilter == item.objType:
             newList.append({
                 'code':item['urlCode'],
-                'title':title,
+                'title':utils.cap(title, 90),
                 'url':url,
                 'views':int(views),
                 'totalVotes':totalVotes,

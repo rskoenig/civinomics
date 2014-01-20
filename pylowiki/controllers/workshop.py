@@ -1152,11 +1152,14 @@ class WorkshopController(BaseController):
 
         c.listingType = 'publicStats'
 
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'], '0', '0', ascendingDate=True)
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         # create a json data struct out of the activity list - will be used in a d3 graph
         #c.jsonNewData = graphData.buildNewData(c.w, c.activity)
 
-        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all')
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=76)
+        #log.info("i: %s"%c.jsonConstancyDataIdeas)
+        #log.info("d: %s"%c.jsonConstancyDataDiscussions)
+        #log.info("r: %s"%c.jsonConstancyDataResources)
 
         #c.jsonBarDataIdeas = graphData.buildBarData(c.w, c.activity, typeFilter='idea')
 
