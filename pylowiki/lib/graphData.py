@@ -59,9 +59,9 @@ def buildConstancyData(parent, activities, **kwargs):
                     'totalVotes':totalVotes,
                     'yesPercent':yesPercent,
                     'Number of Comments':myComments,
+                    '% No Votes':noPercent,
                     '% Yes Votes':yesPercent,
                     'Total Votes':totalVotes,
-                    '% No Votes':noPercent,
                     'Total Views':int(views)
                 })
             elif item.objType == 'discussion':
