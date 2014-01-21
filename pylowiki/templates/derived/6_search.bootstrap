@@ -165,11 +165,11 @@
                 </div>
                 <div ng-show="noResult" ng-cloak>
                     <div class="row-fluid">
-                        <div class="alert centered span6 offset3">
+                        <div class="alert">
                             % if c.searchType == 'region':
-                                Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                                We couldn't find any {{objType}} scoped for <strong>${c.searchQuery}</strong>. Be the first to create one!
                             % else:
-                                Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                                Sorry, we couldn't find any {{objType}} matching <strong>${c.searchQuery}</strong>. Be the first to create one!
                             % endif
                             
                         </div>
@@ -177,7 +177,13 @@
                 </div>
                 <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
                     <table class="table plain">
-                        <tr ng-repeat="w in workshops | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                        <tr ng-repeat="w in workshopArray = (workshops | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="workshopArray.length == 0">
+                                There are no workshops in <strong>{{query}}</strong> for this region. Be the first to start one!
+                            </div>
+
+                        <td>
                             <div class="media well searchListing">
                                 <div class="span3">
                                     <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
@@ -240,7 +246,13 @@
                 </div>
                 <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
                     <table class="table plain">
-                        <tr ng-repeat = "resource in resources | filter: query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                        <tr ng-repeat = "resource in resourceArray = ( resources | filter: query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize ) " class="plain">
+
+                        <div class="alert" ng-show="resourceArray.length == 0">
+                                There are no resources in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-{{resource.type}} icon-3x"></i>
@@ -260,7 +272,7 @@
                                         <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
                                         <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
                                     </ul>
-                                    <p class="hidden"> <small>Tags:</small>
+                                    <p> <small>Tags:</small>
                                         <span ng-repeat="tag in resource.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
                                     </p>
                                 </div>
@@ -280,7 +292,13 @@
                 </div>
                 <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
                     <table class="table plain">                             
-                        <tr ng-repeat = "discussion in discussions | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                        <tr ng-repeat = "discussion in discussionArray = (discussions | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="discussionArray.length == 0">
+                                There are no discussions in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-comments icon-3x"></i>
@@ -299,7 +317,7 @@
                                             <i class="icon-comment"></i> Comments ({{discussion.numComments}})
                                         </li>
                                     </ul>
-                                    <p class="hidden"> <small>Tags:</small>
+                                    <p> <small>Tags:</small>
                                         <span ng-repeat="tag in discussion.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
                                     </p>
                                     <p class="no-bottom">
@@ -322,7 +340,13 @@
                 </div>
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
-                        <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                        <tr ng-repeat = "idea in ideaArray = (ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="ideaArray.length == 0">
+                                There are no ideas in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
                             <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span9">
@@ -391,7 +415,13 @@
                 </div>
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
                     <table class="table plain">
-                        <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                        <tr ng-repeat = "photo in photoArray = (photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="photoArray.length == 0">
+                                There are no photos in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
                             <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span1 voteWrapper" >
@@ -450,7 +480,11 @@
                 </div>
                 <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show">
                     <table class="table plain">
-                        <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain">
+                        <tr ng-repeat = "initiative in initiativeArray = (initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                            <div class="alert" ng-show="initiativeArray.length == 0">
+                                There are no initiatives in <strong>{{query}}</strong> for this region. Be the first to start one!
+                            </div>
 
                             ${ng_helpers.initiative_listing()}
 
