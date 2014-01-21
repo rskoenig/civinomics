@@ -48,6 +48,7 @@
               infoHref = linkHref + '/information'
               forumHref = linkHref + '/discussion'
               activityHref= linkHref + '/activity'
+              publicStatsHref= linkHref + '/publicStats'
               adminHref= linkHref + '/preferences'
 
     
