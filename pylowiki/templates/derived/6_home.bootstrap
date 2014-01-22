@@ -5,12 +5,12 @@
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 
-<div class="row">
-  <div class="span10">
+<div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
+  <div class="span10" ng-controller="zipLookupCtrl">
     <div class="spacer"></div>
     <div class="row-fluid">
       % if 'user' in session:
-        <ul class="thumbnails">
+        <ul class="thumbnails" ng-cloak>
 
           ###
           ### Carousel
@@ -43,25 +43,23 @@
             ###
             ### My Places
             ###
+            <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
+              <a href="{{geo.href}}">
+                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+                <table class="lead tile-title">
+                  <tr>
+                    <td>
+                      <img class="thumbnail small-flag" src="{{geo.flag}}">
+                    </td>
+                    <td style="padding-left: 5px;">
+                      {{geo.name}}
+                    </td>
+                  </tr>
+                </table>
+              </a>
+            </li>
 
-            % for scope in c.scopeMap:
-              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover; background-position: center center;">
-                <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
-                  <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                  <table class="lead tile-title">
-                    <tr>
-                      <td>
-                        <img class="thumbnail small-flag" src="${scope['flag']}">
-                      </td>
-                      <td style="padding-left: 5px;">
-                        ${scope['name']}
-                      </td>
-                    </tr>
-                  </table>
-                </a>
-              </li>
-            % endfor
-
+              
             ###
             ### Add a group
             ###
@@ -152,6 +150,10 @@
       </div> <!-- /span2 -->
   </div><!-- /row -->
 
+
+<%def name="headScripts()">
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+</%def>
 
 <%def name="extraScripts()">
    <script type="text/javascript">

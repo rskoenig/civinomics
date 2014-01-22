@@ -1051,8 +1051,64 @@ class SearchController(BaseController):
 
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')
+                continue
+
+            result.append(entry)                
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+
+
+    # kludged this function, using zipLookup with parameter would be better
+    def zipLookupPhotos(self):
+        result = []
+        j = geoInfoLib.getPostalInfo(self.zip)
+        country = 'united-states'
+        state = j['StateFullName']
+        county = j['County']
+        city = j['CityMixedCase']
+
+        countryScope = '0||' + country + '||0||0||0|0'
+        stateScope = '0||' + country + '||' + utils.urlify(state) + '||0||0|0'
+        countyScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||0|0'
+        cityScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|0'
+        zipScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|' + self.zip
+        scopeMap = []
+        scopeMap.extend((countryScope, stateScope, countyScope, cityScope, zipScope))
+
+        exceptions = utils.getGeoExceptions()
+
+        for scope in scopeMap:
+            scopeInfo = utils.getPublicScope(scope)
+            entry = {}
+            entry['name'] = scopeInfo['name']
+            entry['flag'] = scopeInfo['flag']
+            entry['href'] = scopeInfo['href']
+            entry['level'] = scopeInfo['level'].title()
+
+            if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
+                log.info('Found geo exception!')
+                continue
+
+            # for flipboard style layout    
+            log.info('photo block executing!')
+            defaultPhoto = "/images/grey.png"
+            initScope = scope.replace('||', '|0|')
+            initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
+            if initiatives and len(initiatives) != 0:
+                i = initiatives[-1]
+                entry['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
             else:
-                result.append(entry)
+                photos = photoLib.searchPhotos('scope', initScope)
+                if photos and len(photos) != 0:
+                    photos = sort.sortBinaryByTopPop(photos)
+                    p = photos[0]
+                    entry['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+                else:
+                    entry['photo'] = defaultPhoto
+
+            result.append(entry)                
 
         if len(result) == 0:
             return json.dumps({'statusCode':2})
