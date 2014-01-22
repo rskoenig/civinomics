@@ -5,46 +5,105 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% numResources = str(len(c.resources)) %>
-<div class="row-fluid">
+<div class="row-fluid"  ng-controller="infoCtrl">
    <div class="span8">
-      <div class="section-wrapper" id="introduction">
-        <div class="browse">
-            <h4 class="section-header smaller">
-            Background Information ${lib_6.createNew("resources", 'small')}
-            </h4>
-            <div class="tabbable">
-                <ul class="nav nav-tabs" id="infotab">
-                    <li class="active"><a href="#intro" data-toggle="tab">Introduction</a></li>
-                    <li class="foo"><a href="#moreresources" data-toggle="tab">Additional Information Resources (${numResources})</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="intro">${helpers.showInfo(c.w)}</div>
-                    <div class="tab-pane foo" id="moreresources">
-                        <div class="row-fluid">
-                            <div class="span10">
-                                % if numResources == '0' and c.w['allowResources'] == '1':
-                                    <div class="alert alert-info">
-                                    There are no additional information resources here yet. Be the first to add one!
-                                    </div>
-                                % else:
-                                    <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.
-                                % endif
-                            </div>
+        <div class="tabbable">
+            <div class="tab-content">
+
+                <div class="tab-pane active" id="intro">
+                    <div class="section-wrapper" id="introduction">
+                        <div class="browse">
+                            <h4 class="section-header smaller">Background Info</h4>
+                            ${helpers.showInfo(c.w)}
                         </div>
-                        ${listingHelpers.showListing(c.listingType)}
-                    </div><!-- tab-pane -->
-                </div><!-- tab-content -->
-            </div><!-- tabbable -->
-        </div><!-- browse -->
-      </div> <!-- /.section-wrapper -->
+                    </div>
+                </div><!-- tab-pane -->
+
+                <div class="tab-pane foo" id="moreimages">
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            <h4 class="section-header smaller">
+                            <a class="listed-item-title" href="#intro" data-toggle="tab" ng-click="switchInfo()">
+                                Images
+                            </a>
+                            </h4>
+                            <div class="photo-listing">
+                                ${helpers.slideshow(c.w, 'listing')}
+                            </div>
+                        </div><!-- browse -->
+                    </div><!-- section-wrapper -->
+                </div><!-- tab-pane -->
+
+                <div class="tab-pane foo" id="moreresources">
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            <h4 class="section-header smaller">
+                                <a class="listed-item-title" href="#intro" data-toggle="tab" ng-click="switchInfo()">Resources<a>
+                                ${lib_6.createNew("resources", 'small')}
+                            </h4>
+                            % if numResources == '0' and c.w['allowResources'] == '1':
+                                <div class="alert alert-info">
+                                There are no additional information resources here yet. Be the first to add one!
+                                </div>
+                            % else:
+                                <p class="muted"><strong class="orange">Vote</strong> existing resources <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.</p>
+                                <hr class="list-header">
+                            % endif
+                            ${listingHelpers.showListing(c.listingType)}
+                        </div><!-- browse -->
+                    </div><!-- section-wrapper -->
+                </div><!-- tab-pane -->
+
+            </div><!-- tab-content -->
+        </div><!-- tabbable -->
    </div> <!-- /.span8 -->
    <div class="span4">
-      <div class="section-wrapper overview">
+
+      <div class="section-wrapper overview {{infoModule}}" ng-cloak>
          <div class="browse">
             <h4 class="section-header smaller"> 
-            Images
+            <a class="listed-item-title" href="#intro" data-toggle="tab" ng-click="switchInfo()">
+                <i class="icon-chevron-left pull-left"></i>
+                <span>Background Info</span>
+            </a>
+            </h4>
+            <p class="description" >
+                ${lib_6.ellipsisIZE(c.w['description'], 150)}
+             </p>
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+
+      <div class="section-wrapper overview {{imagesModule}}">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            <a class="listed-item-title" href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+                <i class="icon-chevron-left pull-left"></i>
+                <span>Images</span>
+            </a>
             </h4> 
-            ${helpers.slideshow(c.w, 'listing')}
+            <div class="photo-listing">
+                ${helpers.imagePreviewer(c.w)}
+            </div>
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+
+      <div class="section-wrapper overview {{resourcesModule}}">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            <a class="listed-item-title" href="#moreresources" data-toggle="tab" ng-click="switchResources()">
+                <i class="icon-chevron-left pull-left"></i>
+                Resources
+                <span class="pull-right">
+                    ${lib_6.createNew("resources", 'tiny')}
+                </span>
+            </a>
+            </h4> 
+            % if numResources == '0' and c.w['allowResources'] == '1':
+                <div class="alert alert-info">
+                    There are no resources yet! Be the first to add one.
+                </div>
+            % endif
+            ${listingHelpers.showListing('resources', 'condensed')}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
@@ -62,23 +121,9 @@
          $.fn.foundationClearing         ? $doc.foundationClearing() : null;
       });
     </script>
-    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.expandable').expander({
-                slicePoint: 35,
-                widow: 2,
-                expandText: '... (more)',
-                expandPrefix: '',
-                userCollapseText: ' (less)',
-                userCollapsePrefix: '',
-                preserveWords: true
-            });
-        });
-    </script>
-
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
         <script type="text/javascript">
         $('.nullvote').tooltip();
     </script>
+    <script src="${lib_6.fingerprintFile('/js/ng/info.js')}" type="text/javascript"></script>
 </%def>

@@ -1,8 +1,10 @@
 <%!
+   import pylowiki.lib.db.workshop     as workshopLib
    import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.activity as activityLib
    import pylowiki.lib.db.facilitator   as facilitatorLib
+   import pylowiki.lib.utils   as utils
    import misaka as m
    
    import logging
@@ -12,103 +14,98 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="whoListening()">
-    <%
-        users = []
-        pending = []
-        for listener in c.listeners:
-            if 'userCode' in listener:
-                users.append(listener)
-            else:
-                pending.append(listener)
-    %>
     <h4 class="section-header smaller section-header-inner">Listeners</h4>
-    % if users:
-        <div class="green"><p>Participating</p></div>
+    % if c.activeListeners:
         <ul class="media-list" id="workshopNotables">
-        % for person in users:
-            <%
-                personTitle = person['title']
-                personClass = 'listener'
-            %>
+        % for person in c.activeListeners:
             <li class="media notables-item">
                 ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
-                    ${lib_6.userLink(person, className="orange orange-hover listener-name")}<br />
-                    <small>${personTitle}</small>
+                    ${lib_6.userLink(person, className="listener-name")}<br />
+                    <small>${lib_6.userGreetingMsg(person)}</small>
                 </div>
             </li>
             
         % endfor
         </ul>
      % endif
-    % if pending:
+    % if c.pendingListeners:
         <hr>
-        <div class="orange"><p>Not yet participating. Invite them to join in.</p></div>
+        <div><p><em class="grey">Not yet participating. Invite them to join in.</em></p></div>
         <ul class="media-list" id="workshopNotables">
-        % for person in pending:
-            <%
-                lName = person['name']
-                lTitle = person['title']
-                listenerCode = person['urlCode']
-                personClass = 'pendingListener'
-                if person['invites'] != '':
-                    inviteList = person['invites'].split(',')
-                    numInvites = str(len(inviteList))
-                else:
-                    numInvites = '0'
-            %>
+        % for person in c.pendingListeners:
             <li class="media notables-item">
                 % if 'user' in session and c.authuser:
-                    <div class="pull-left rightbuttonspacing"><a href="#invite${listenerCode}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="#invite${person['urlCode']}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % else:
-                    <div class="pull-left rightbuttonspacing"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="#signupLoginModal" data-toggle="modal" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % endif
                 <div class="media-body">
-                    <span class="listener-name">${lName}</span><br />
-                    <small>${lTitle}</small> 
+                    <span class="listener-name">${person['name']}</span><br />
+                    <small>${person['title']}</small> 
                 </div>
-                % if 'user' in session and c.authuser:
-                    <%
-                        memberMessage = "Please join me and participate in this online Civinomics workshop.\nThere are good ideas and informed discussions, please login and listen in!"
-                    %>
-                    <div id="invite${listenerCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${listenerCode}Label" aria-hidden="true">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
-                        </div><!-- modal-header -->
-                        <div class="modal-body"> 
-                            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
-                            Add your message to the listener invitation:<br />
-                            <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
-                            <br />
-                            <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
-                            <button type="submit" class="btn btn-warning">Send Invitation</button>
-                            <br />
-                            <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
-                            </form>
-                        </div><!-- modal-footer -->
-                    </div><!-- modal -->
-                % endif
             </li>
         % endfor
         </ul>
-     % endif
-     % if 'user' in session and c.authuser:
         <hr>
-        <ul class="media-list centered">
-            <li class="media pendingListener notables-item">
-            <small>Know somebody who should be listening?</small><br />
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline" name="suggestListenerForm">
-                <div class="pull-right">
-                <input type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
-                <button type="submit" class="btn btn-success btn-small">Submit</button>
-                </div>
+     % endif
+      <em class="grey">Which public officials should participate?</em><br />
+      % if 'user' in session and c.authuser:
+        <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener no-bottom" name="suggestListenerForm">
+          <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
+          <button type="submit" class="btn btn-success btn-small">Submit</button>
+          <div class="alert top-space" style="margin-bottom: 0;" ng-show="suggestListenerShow">
+            <button data-dismiss="alert" class="close">x</button>
+            {{suggestListenerResponse}}
+          </div>
+        </form>
+      % else:
+        <a href="#signupLoginModal" data-toggle='modal'>
+          <form class="form-inline no-bottom">
+            <input class="listenerInput" type="text" placeholder="Suggest a Listener">
+            <button type="submit" class="btn btn-success btn-small">Submit</button>
+          </form>
+        </a>
+      %endif
+</%def>
+
+<%def name="whoListeningModals()">
+  % if c.pendingListeners:
+    % for person in c.pendingListeners:
+      % if 'user' in session and c.authuser:
+        <%
+            memberMessage = "Please join me and participate in this Civinomics workshop. There are good ideas and informed discussions that I think you should be a part of."
+
+            if person['invites'] != '':
+                inviteList = person['invites'].split(',')
+                numInvites = str(len(inviteList))
+            else:
+                numInvites = '0'
+                
+        %>
+        <div id="invite${person['urlCode']}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${person['urlCode']}Label" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="invite${person['urlCode']}Label">Invite ${person['name']} to Listen</h3>
+            </div><!-- modal-header -->
+            <div class="modal-body"> 
+              <div class="row-fluid">
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${person['urlCode']}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
+                <div class="alert" ng-show="emailListenerShow">{{emailListenerResponse}}</div>
+                Add a personalized message to the listener invitation:<br />
+                <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
                 <br />
-                <span ng-show="suggestListenerShow">{{suggestListenerResponse}}</span>
+                <div class="spacer"></div>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn-success">Send Invitation</button>
+                <br />
                 </form>
-            </li>
-        </ul><!-- media-list -->
-    % endif
+              </div><!-- row-fluid -->
+            </div><!-- modal-footer -->
+        </div><!-- modal -->
+      % endif
+    % endfor
+  % endif
 </%def>
 
 <%def name="showFacilitators()">
@@ -123,41 +120,42 @@
         shownItems = 0
     %>
     
-    <ul class="activity"  id="workshopActivity">
-        % for item in activity:
-            <%
-                if c.demo:
-                    author = getUserByID(item.owner)
-                    if not c.privs['admin']:
-                        if 'user' in session:
-                            if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
-                                continue
-                        else:
-                            if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
-                                continue
-                if shownItems >= numItems:
-                    break
-            %>
-            <li>
-                <%
-                    lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")
-                    lib_6.userLink(item.owner, className = "green green-hover")
-                    lib_6.showItemInActivity(item, c.w, expandable = True)
-                %>
-            </li>
-        % endfor
-    </ul>
+    % for item in activity:
+      <div class="media"  id="workshopActivity">
+        <%
+          if c.demo:
+              author = getUserByID(item.owner)
+              if not c.privs['admin']:
+                  if 'user' in session:
+                      if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
+                          continue
+                  else:
+                      if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
+                          continue
+          if shownItems >= numItems:
+              break
+        %>
+        <div class="pull-left">
+          ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
+        </div>
+        <div class="media-body">
+          ${lib_6.userLink(item.owner, className = "green green-hover", maxChars = 25)}
+          ${lib_6.showItemInActivity(item, c.w, expandable = True)}
+        </div>
+      </div>
+    % endfor
+    
 </%def>
 
-<%def name="watchButton()">
+<%def name="watchButton(w, **kwargs)">
     % if 'user' in session:
-        % if c.isFollowing:
-            <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-            <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
+        % if c.isFollowing or 'following' in kwargs:
+            <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
             </button>
         % else:
-            <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-             <span><i class="icon-bookmark pull-left"></i> Bookmark </span>
+            <button class="btn pull-right followButton" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+             <span><i class="icon-bookmark med-green"></i><strong> Bookmark </strong></span>
             </button>
         % endif
     % endif
@@ -165,15 +163,15 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i>Admin</span></a>
+   <a class="btn btn-civ pull-right preferencesLink left-space" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i></span></a>
 </%def>
 
 <%def name="previewButton()">
-  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
+  <a class="btn btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
 </%def>
 
 <%def name="viewButton()">
-  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
+  <a class="btn btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">
@@ -259,73 +257,126 @@
    </div>
 </%def>
 
+<%def name="imagePreviewer(w)">
+  <!-- using the data-clearing twice on a page leads to slide skipping this function allows a preview but will not launch slideshow -->
+  <% 
+    images = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w))
+    count = 0
+  %>
+  <ul class="gallery thumbnails no-bottom">
+    % for image in images:
+      <% 
+        imageFormat = 'jpg'
+        if 'format' in image.keys():
+          imageFormat = image['format']
+
+        spanX = 'noShow'
+        if count <= 5:
+          spanX = 'span4'
+      %>
+      % if image['deleted'] != '1':
+        <li class="${spanX} slideListing">
+          % if image['pictureHash'] == 'supDawg':
+             <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+                <img src="/images/slide/slideshow/${image['pictureHash']}.slideshow"/>
+             </a>
+          % else:
+            <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+              <div class="slide-preview" style="background-image:url('/images/slide/${image['directoryNum']}/slideshow/${image['pictureHash']}.${imageFormat}');"/>
+              </div>
+            </a>
+          % endif
+        </li>
+      % endif
+      <% count += 1 %>
+    % endfor
+  </ul>
+</%def>
+
+
 <%def name="slideshow(w, *args)">
     <% 
         slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
         slideNum = 0
-      
-        if 'large' in args:
-            spanX = "span8"
-        else:
-            spanX = "span12"
-
+        spanX = ""
+        if 'hero' in args:
+          spanX = "span8"
     %>
     <div class="${spanX}">
         <ul class="gallery thumbnails no-bottom" data-clearing>
         <%
-           numSlides = len(slides)
-
-           for slide in slides:
-              if slide['deleted'] != '1':
-                if 'large' in args:
-                  _slideLarge(slide, slideNum)
-                  if slideNum == 0:
-                    slideCaption = slide['title']  
-                elif 'listing' in args:
-                  _slideListing(slide, slideNum, numSlides)
-                else:
-                  _slide(slide, slideNum, numSlides)
-                slideNum += 1
+          for slide in slides:
+            if slide['deleted'] != '1':
+              if 'hero' in args:
+                _slideListing(slide, slideNum, 'hero')
+              else:
+                _slideListing(slide, slideNum)
+              slideNum += 1
         %>
         </ul>
     </div>
-    % if 'large' in args:
+    % if 'hero' in args:
+        <% infoHref = lib_6.workshopLink(c.w, embed = True, raw = True) + '/information' %>
         <div class="span4">
-            <p style="color: #FFF; padding-top: 15px;"><strong>Click Image To View Slideshow (1 of ${slideNum})</strong><br>
-            <small><br>${lib_6.ellipsisIZE(slideCaption, 214)}</small><br></p>
+          <p class="description" style="color: #FFF; padding-top: 15px;">
+            ${lib_6.ellipsisIZE(c.w['description'], 285)}
+            <a href="${infoHref}">read more</a>
+          </p>
         </div>
     % endif
 </%def>
 
-<%def name="_slideLarge(showSlide, slideNum)">
+<%def name="_slideListing(showSlide, slideNum, *args)">
     <%
-        if slideNum == 0:
-            spanX = "span12"
-        else:
-            spanX = "noShow"
-        slideFormat = 'jpg'
-        if 'format' in showSlide.keys():
-            slideFormat = showSlide['format']
+      if slideNum == 0:
+          spanX = "span12"
+      else:
+          spanX = "noShow"
+      slideFormat = 'jpg'
+      if 'format' in showSlide.keys():
+          slideFormat = showSlide['format']
     %>
-
-    <li class="${spanX} no-bottom">
-    % if showSlide['pictureHash'] == 'supDawg':
-        <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
-        <div style="width:100%; height:240px; background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
-        </a>
+    % if slideNum == 0 and 'hero' in args:
+      <li class="${spanX} no-bottom">
+      % if showSlide['pictureHash'] == 'supDawg':
+          <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
+          <div class="slide-hero" style="background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow');" data-caption="${showSlide['title']}"/></div>
+          </a>
+      % else:
+          <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+          <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+          <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+          <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+          <div class="slide-hero" style=" background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}');" data-caption="${showSlide['title']}"/>
+              <div class="well slide-hero-caption">
+                  <i class="icon-play"></i> Slideshow
+              </div>
+          </div>
+          </a>
+      % endif
+      </li>
     % else:
-        <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
-        <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
-        <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
-        <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
-        <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
-        </a>
+      <li class="span4 slideListing">
+        % if showSlide['pictureHash'] == 'supDawg':
+           <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
+              <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${showSlide['title']}"/>
+           </a>
+        % else:
+            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+              <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+              <img class="noShow" src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+              <div class="slide-preview" style="background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}');" data-caption="${showSlide['title']}"/>
+              </div>
+            </a>
+        % endif
+      </li>
     % endif
-    </li>
 </%def>
 
-
 <%def name="_slide(slide, slideNum, numSlides)">
+  <!-- original code -->
    <% 
       if slideNum == 0:
          spanX = "span12"
@@ -360,32 +411,13 @@
    </li>
 </%def>
 
-<%def name="_slideListing(slide, slideNum, numSlides)">
-  <li class="span4 slideListing">
-    % if slide['pictureHash'] == 'supDawg':
-       <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
-          <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
-       </a>
-    % elif 'format' in slide.keys():
-       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
-          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" data-caption="${slide['title']}"/>
-       </a>
-    % else:
-       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
-          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
-       </a>
-    % endif
-  </li>
-</%def>
-
 <%def name="showInfo(workshop)">
     <div>
+    <p class="description" >
+      ${c.w['description']}
+    </p>
     % if c.information and 'data' in c.information: 
-        <p>This introduction was written and is maintained by the workshop facilitator.
-        % if c.w['allowResources'] == '1':
-            You are encouraged to add links to additional information resources.
-        % endif
-        </p>
+        <hr class="list-header">
         ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>
@@ -396,32 +428,16 @@
         <p>This workshop has no goals!</p>
     % else:
         <div id="workshopGoals">
-        Workshop Goals:
-        <ul>
+        <ol class="workshop-goals">
         % for goal in goals:
             % if goal['status'] == '100':
-                <li class="done-true">${goal['title']}</li>
+                <li class="done-true"><span>${goal['title']}</span></li>
             % else:
-                <li>${goal['title']}</li>
+                <li><span>${goal['title']}</span></li>
             % endif
         % endfor
         </ul>
         </div><!-- workshopGoals -->
-    % endif
-</%def>
-
-<%def name="showTags()">
-    <% 
-        if c.tags:
-            tagList = []
-            tagString = "Tags: "
-            for tag in c.tags:
-                tagList.append(tag['title'])
-            
-            tagString += ', '.join(tagList)
-    %>
-    % if c.tags:
-        ${tagString}<br />
     % endif
 </%def>
 
@@ -448,4 +464,32 @@
             scopeString = "Scope: This is a private workshop."
     %>
     ${scopeString | n}
+</%def>
+
+<%def name="displayWorkshopFlag(w, *args)">
+    <%
+        workshopFlag = '/images/flags/generalFlag.gif'
+        href = '#'
+        if w['public_private'] == 'public':
+            scope = workshopLib.getPublicScope(w)
+            href = scope['href']
+            workshopFlag = scope['flag']
+            level = scope['level']
+            name = scope['name']
+        else:
+            workshopFlag = '/images/flags/generalGroup.gif'
+        flagSize = 'med-flag'
+        if 'small' in args:
+          flagSize = 'small-flag'
+
+    %>
+    <a href="${href}"><img class="thumbnail ${flagSize}" src="${workshopFlag}"></a>
+    % if 'workshopFor' in args and w['public_private'] == 'public':
+        Workshop for
+        % if name == 'Earth':
+          <a href="${href}">${name}</a>
+        % else:
+          the <a href="${href}">${level} of ${name}</a>
+        % endif
+    % endif
 </%def>

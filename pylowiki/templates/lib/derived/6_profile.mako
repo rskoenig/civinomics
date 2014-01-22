@@ -1,11 +1,16 @@
 <%!
     import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.initiative   as initiativeLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
+    import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
+    
+    import logging, os
+    log = logging.getLogger(__name__)
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -25,10 +30,43 @@
     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">${title}</a></p></div>
 </%def>
 
+<%def name="showInitiative(item, **kwargs)">
+    <div class="media profile-workshop">
+        <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
+        % if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+            <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos']) %>
+        % else:
+            <% thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail" %>
+        % endif
+        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
+        </a>
+        <%
+            if 'imageOnly' in kwargs:
+                if kwargs['imageOnly'] == True:
+                    return
+        %>
+        <div class="media-body">
+            <span class="label label-inverse">Initiative</span> <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
+                    % if item['public'] == '0':
+                        Not yet public
+                    % else:
+                        Public
+                    % endif
+                % endif
+            % endif
+            <br />
+            Description: ${lib_6.ellipsisIZE(item['description'], 135)}
+        </div><!-- media-body -->
+    </div><!-- media -->
+</%def>
+
 <%def name="showWorkshop(workshop, **kwargs)">
     <div class="media profile-workshop">
         <a class="pull-left" ${lib_6.workshopLink(workshop)}>
-            <img class="media-object" src="${lib_6.workshopImage(workshop, raw=True) | n}">
+          <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${lib_6.workshopImage(workshop, raw=True) | n}); background-size: cover; background-position: center center;"></div>
         </a>
         <%
             if 'imageOnly' in kwargs:
@@ -40,8 +78,8 @@
                 role = ''
         %>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading"><span class="label label-inverse">${role}</span> ${workshop['title']}</h5></a>
-            ${workshop['description']}<br />
+            <a ${lib_6.workshopLink(workshop)} class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
+            <span class="label label-inverse pull-right">${role}</span>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     % if role == 'Facilitating':
@@ -74,7 +112,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -102,14 +140,14 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
                             </div><!-- row-fluid -->
                         </div><!-- margin-top -->
                     % endif
-                    % if role == 'Bookmarked':
+                    % if role == 'Bookmarked': 
                         <% f = followLib.getFollow(c.user, workshop) %>
                         % if f:
                             <div style="margin-top: 10px;">
@@ -131,7 +169,7 @@
                                     </div><!-- span3 -->
                                     <div class="span3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                            Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                             <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                         </form>
                                     </div><!-- span3 -->
@@ -160,7 +198,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -186,6 +224,7 @@
                         % else:
                             <tr> <td>
                         % endif
+                        % if 'workshopCode' in thing:
                             <%
                                 workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
                                 thingLink = lib_6.thingLinkRouter(thing, workshop, raw=True, embed=True)
@@ -207,6 +246,15 @@
                             % endif
                             <br />
                             Description: ${lib_6.ellipsisIZE(descriptionText, 135)}
+                        % elif 'initiativeCode' in thing and thing.objType == 'resource':
+                            <%
+                                initiative = initiativeLib.getInitiative(thing['initiativeCode'])
+                                initiativeLink = "/initiative/" + initiative['urlCode'] + "/" + initiative['url']
+                                thingLink = initiativeLink + "/resource/" + thing['urlCode'] + "/" + thing['url']
+                            %>
+                            ${showInitiative(initiative, imageOnly = True)}
+                            <a href="${thingLink}"> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in initiative <a href="${initiativeLink}"> ${initiative['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
+                        % endif
                         </td> </tr>
                         <% counter += 1 %>
                     % endfor
@@ -223,7 +271,7 @@
             % if len(things) == 0:
                 There doesn't seem to be anything here!
             % else:
-                % if c.listingType == 'watching':
+                % if c.listingType == 'watching' or c.listingType == 'listening' or c.listingType == 'facilitating':
                     <table class="table table-condensed table-hover user-thing-listing">
                         <tbody>
                             <% counter = 0 %>
@@ -233,11 +281,15 @@
                                 % else:
                                     <tr> <td>
                                 % endif
-                                
-                                ${showWorkshop(thing, imageOnly = True)}
-                                <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
-                                <br />
-                                Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                                %if thing.objType == 'workshop':
+                                    ${showWorkshop(thing, imageOnly = True)}
+                                    <span class="label label-inverse">Workshop</span> <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
+                                    <br />
+                                    Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                                % elif thing.objType == 'initiative':
+                                    ${showInitiative(thing)}
+                                % endif
+
                             % endfor
                         </tbody>
                     </table>
@@ -262,86 +314,167 @@
     % else:
         <span class="button_container">
         % if c.isFollowing:
-            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn round pull-right followButton following">
-            <span><i class="icon-user icon-white"></i> Following </span>
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn pull-right followButton following">
+            <span><i class="icon-user icon-white"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton unfollow">
-            <span><i class="icon-user"></i> Follow </span>
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn pull-right followButton unfollow">
+            <span><i class="icon-user med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
         </span>
     % endif
 </%def>
 
-<%def name="profileDashboard()">
-    <div class="centered">
-        ${lib_6.userImage(c.user, className="avatar avatar-large")}
-    </div>
-    <div class="section-wrapper">
-        <div class="browse">
-            %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
-                <div ng-init="updateGeoLinks(); dashboardFullName='${c.user['name']}'">
-                    <h3 class="section-header">{{fullName}}</h3>
-                    <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
-                </div>
-            %else:
-                <h3 class="section-header">${c.user['name']}</h3>
-                <p>${lib_6.userGeoLink(c.user)}</p>
-            %endif
-            
-            <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
-            % if c.user['greetingMsg'] != '':
-                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
-                    <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">
-                    <small class="muted expandable">{{greetingMsg}}</small>
-                %else:
-                    <small class="muted expandable">${c.user['greetingMsg']}</small>
-                %endif
-            % endif
-            % if c.user['websiteLink'] != '':
-                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
-                    <div ng-init="dashboardWebsiteLink='${c.user['websiteLink']}'">
-                    <p class = "expandable no-bottom"><a href="{{dashboardWebsiteLink}}" target="_blank">{{dashboardWebsiteLink}}</a></p>
-                %else:
-                    <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+<%def name="showMemberPosts(activity)">
+    <%
+        actionMapping = {   'resource': 'added the resource',
+                            'discussion': 'started the conversation',
+                            'idea': 'posed the idea',
+                            'photo': 'added the picture',
+                            'initiative': 'launched the initiative',
+                            'comment': 'commented on a'}
+
+        objTypeMapping = {  'resource':'resource',
+                            'discussion':'conversation',
+                            'idea':'idea',
+                            'photo':'photo',
+                            'initiative':'initiative',
+                            'comment':'comment'}
+    %>
+    <table class="table table-hover table-condensed">
+        <tbody>
+        
+        % for item in activity:
+            <% 
+                objType = item.objType.replace("Unpublished", "")
+                activityStr = actionMapping[objType]
+                
+                if 'workshopCode' in item:
+                    workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
+                else:
+                    workshopCode = "photo"
+                    workshopLink = "/foo/photo"
+                parent = False
+
+                if objType == 'comment':
+                    if 'workshopCode' in item:
+                        if 'ideaCode' in item:
+                            parentCode = item['ideaCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'idea'
+                        elif 'resourceCode' in item:
+                            parentCode = item['resourceCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'resource'
+                        elif 'discussionCode' in item:
+                            parentCode = item['discussionCode']
+                            parentURL = item['parent_url']
+                            parentObjType = 'discussion'
+                        parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+                    elif 'photoCode' in item:
+                        parentCode = item['photoCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'photo'
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+                    elif 'initiativeCode' in item and 'resourceCode' in item:
+                        parentCode = item['resourceCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'resource'
+                        parentLink = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
+                    elif 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'initiative'
+                        parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'profileCode' in item:
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+                    else:
+                        log.info("no parentObjType item is %s"%item.keys())
+                        parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+                    title = lib_6.ellipsisIZE(item['data'], 40)
+                    itemLink = parentLink + '?comment=' + item['urlCode']
+                elif objType == 'resource' and 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['initiative_url']
+                        parentObjType = 'initiative'
+                        title = lib_6.ellipsisIZE(item['title'], 40)
+                else:
+                    parentCode = False
+                    title = lib_6.ellipsisIZE(item['title'], 40)
+                    itemLink = workshopLink + "/" + objType + "/" + item['urlCode'] + "/" + item['url']
+            %>
+
+            % if objType == 'photo':
+                <% 
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/photo/show/" + item['urlCode']
+                    activityStr = "added the picture <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n}</td></tr>
                 % endif
-                % if c.user['websiteDesc'] != '':
-                    %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
-                        <div ng-init="dashboardWebsiteDesc='${c.user['websiteDesc']}'">
-                            <small class="muted expandable">{{websiteDesc}}</small>
-                        </div>
-                    %else:
-                        <small class="muted expandable">${c.user['websiteDesc']}</small>
-                    %endif
+            % elif objType == 'initiative':
+                <% 
+                    link = "/initiative/" + item['urlCode'] + "/" + item['url'] + "/show"
+                    activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0' and item['public'] == '1':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'resource' and 'initiativeCode' in item:
+                <% 
+                    link = "/initiative/" + parentCode + "/" + parentURL + "/resource/" + item['urlCode'] + "/" + item['url']
+                    activityStr = "added the resource <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and 'initiativeCode' in item and 'resourceCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">resource</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'comment' and 'initiativeCode' in item:
+                <% 
+                        activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'comment' and 'photoCode' in item:
+                <% 
+                    activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
+                    activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif 'workshopCode' in item:
+                % if item['workshop_searchable'] == '1' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+                    % if item['deleted'] == '0':
+                        <% 
+                            if objType == 'comment':
+                                if parentObjType == 'idea':
+                                    activityStr += 'n'
+                                activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                            else:
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                        %>
+                        <tr><td>${activityStr | n}</td></tr>
+                    % endif
                 % endif
             % endif
-            <hr>
-            <div class="row-fluid">
-                <div class="span4">
-                    ${thingCount(c.user, c.resources, 'resources')}
-                </div>
-                <div class="span4">
-                    ${thingCount(c.user, c.ideas, 'ideas')}
-                </div>
-                <div class="span4">
-                    ${thingCount(c.user, c.discussions, 'conversations')}
-                </div>
-            </div> <!--/.row-fluid-->
-            <hr>
-            <div class="row-fluid">
-                <div class="span4">
-                    ${thingCount(c.user, c.followers, 'followers')}
-                </div>
-                <div class="span4">
-                    ${thingCount(c.user, c.following, 'following')}
-                </div>
-                <div class="span4">
-                    ${thingCount(c.user, c.watching, 'bookmarks')}
-                </div>
-            </div> <!--/.row-fluid-->
-        </div><!--/.browse-->
-    </div><!--/.section-wrapper-->
+        % endfor
+        </tbody>
+    </table>
 </%def>
 
 <%def name="showMemberActivity(activity)">
@@ -349,10 +482,12 @@
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
+                            'photo': 'added the picture',
                             'comment': 'commented on a'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
+                            'photo':'photo',
                             'comment':'comment'}
     %>
     <table class="table table-hover table-condensed">
@@ -360,13 +495,25 @@
         
         % for itemCode in activity['itemList']:
             <% 
-                workshopCode = activity['items'][itemCode]['workshopCode']
-                workshopLink = "/workshop/" + activity['workshops'][workshopCode]['urlCode'] + "/" + activity['workshops'][workshopCode]['url']
+                objType = activity['items'][itemCode]['objType']
+                activityStr = actionMapping[objType]
+                
+                if 'workshopCode' in activity['items'][itemCode]:
+                    workshopCode = activity['items'][itemCode]['workshopCode']
+                    workshopLink = "/workshop/" + activity['workshops'][workshopCode]['urlCode'] + "/" + activity['workshops'][workshopCode]['url']
+                else:
+                    workshopCode = "photo"
+                    workshopLink = "/foo/photo"
                 parent = False
                 if activity['items'][itemCode]['objType'] == 'comment':
                     parentCode = activity['items'][itemCode]['parentCode']
                     parentObjType = activity['parents'][parentCode]['objType']
-                    parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
+                    if parentObjType == 'photo':
+                        ownerID = activity['parents'][parentCode]['owner']
+                        owner = userLib.getUserByID(ownerID)
+                        parentLink = "/profile/" + owner['urlCode'] + "/" + owner['url'] + "/photo/show/" + parentCode
+                    else:
+                        parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
                     title = lib_6.ellipsisIZE(activity['items'][itemCode]['data'], 40)
                     itemLink = parentLink + '?comment=' + itemCode
                 else:
@@ -376,23 +523,44 @@
 
                 
             %>
-            % if activity['workshops'][workshopCode]['public_private'] == 'public' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+
+            % if objType == 'photo':
+                <% 
+                    ownerID = activity['items'][itemCode]['owner']
+                    owner = userLib.getUserByID(ownerID)
+                    title = activity['items'][itemCode]['title']
+                    urlCode = activity['items'][itemCode]['urlCode']
+                    link = "/profile/" + owner['urlCode'] + "/" + owner['url'] + "/photo/show/" + urlCode
+                    activityStr = "added the picture <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
                 % if activity['items'][itemCode]['deleted'] == '0':
-                    <% 
-                        if parentCode and activity['parents'][parentCode]['deleted'] == '1':
-                            continue
-                            
-                        objType = activity['items'][itemCode]['objType']
-                        activityStr = actionMapping[objType]
-                        if objType == 'comment':
-                            if parentObjType == 'idea':
-                                activityStr += 'n'
-                            activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
-                            activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
-                        else:
-                            activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
-                    %>
                     <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and workshopCode == 'photo':
+                <% 
+                    if parentCode and activity['parents'][parentCode]['deleted'] != '1':
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                <tr><td>${activityStr | n} </td></tr>
+            % else:
+                % if activity['workshops'][workshopCode]['public_private'] == 'public' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+                    % if activity['items'][itemCode]['deleted'] == '0':
+                        <% 
+                            if parentCode and activity['parents'][parentCode]['deleted'] == '1':
+                                continue
+                            
+                            if objType == 'comment':
+                                if parentObjType == 'idea':
+                                    activityStr += 'n'
+                                activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                            else:
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                        %>
+                        <tr><td>${activityStr | n}</td></tr>
+                    % endif
                 % endif
             % endif
         % endfor
@@ -415,20 +583,20 @@
 </%def>
 
 <%def name="inviteCoFacilitate()">
-    %if 'user' in session and c.authuser:
-        <% 
+    % if 'user' in session and c.authuser:
+        <%
             fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             wListF = []
             wListL = []
             for f in fList:
-                w = workshopLib.getWorkshopByCode(f['workshopCode'])
-                if w['deleted'] == '0':
-                    wlisten = listenerLib.getListener(c.user['email'], w)
-                    if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
-                        wListF.append(w)
-                    if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
-                        wListL.append(w)
-                        
+                if not 'initiativeCode' in f:
+                    w = workshopLib.getWorkshopByCode(f['workshopCode'])
+                    if w['deleted'] == '0':
+                        wlisten = listenerLib.getListener(c.user['email'], w)
+                        if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
+                            wListF.append(w)
+                        if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
+                            wListL.append(w)
         %>
         % if c.authuser.id != c.user.id and wListF:
             <div class="row">
@@ -460,99 +628,4 @@
             </div><!-- row -->
         % endif
     %endif
-</%def>
-
-<%def name="editProfile()">
-    <%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />
-    <%
-        tab1active = ""
-        tab2active = ""
-        tab3active = ""
-        tab4active = ""
-        tab5active = ""
-        tab6active = ''
-        prefactive = ''
-                    
-        if c.tab == "tab1":
-            tab1active = "active"
-        elif c.tab == "tab2":
-            tab2active = "active"
-        elif c.tab == "tab3":
-            tab3active = "active"
-        elif c.tab == "tab4":
-            tab4active = "active"
-        elif c.tab == "tab5":
-            tab5active = "active"
-        elif c.tab == 'tab6':
-            tab6active = 'tab6'
-        else:
-            tab1active = "active"
-    
-        msgString = ''
-        if c.unreadMessageCount != 0:
-            msgString = ' (' + str(c.unreadMessageCount) + ')'
-    %>
-    <div class="row-fluid">
-        % if c.conf['read_only.value'] == 'true':
-            <h1> Sorry, Civinomics is in read only mode right now </h1>
-        % else:
-            <div class="tabbable">
-                <div class="span3">
-                    <div class="section-wrapper">
-                        <div class="browse">
-                            <div style="text-align: center">
-                                <h4 class="section-header smaller">Edit Profile</h4>
-                            </div><!-- center -->
-                            <ul class="nav nav-pills nav-stacked">
-                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
-                            </a></li>
-                            <li class="${tab6active}"><a href="#tab6" data-toggle="tab">2. Picture
-                            </a></li>
-                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Password
-                            </a></li>
-                            <li class="${prefactive}"><a href="#pref" data-toggle="tab">4. Preferences
-                            </a></li>
-                            % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate
-                            Admin only - shhh!.</a></li>
-                            % endif
-                            </ul>
-                            <div>
-                                <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
-                                <button type="submit" class="btn btn-warning">Create a Workshop!</button>
-                                </form>
-                            </div><!-- center -->
-                        </div><!-- browse -->
-                    </div><!-- section-wrapper -->
-                </div> <!-- /.span3 -->
-                <div class="span9">
-                    ${lib_6.fields_alert()}
-                    % if c.conf['read_only.value'] == 'true':
-                        <!-- read only -->
-                    % else:
-                        <div class="tab-content">
-                            <div class="tab-pane ${tab1active}" id="tab1">
-                                ${helpersEdit.profileInfo()}
-                            </div><!-- tab1 -->
-                            <div class="tab-pane ${tab4active}" id="tab4">
-                                ${helpersEdit.changePassword()}
-                            </div><!-- tab4 -->
-                            <div class="tab-pane ${tab6active}" id="tab6">
-                                ${helpersEdit.profilePicture()}
-                            </div><!-- tab4 -->
-                            <div class="tab-pane ${prefactive}" id="pref">
-                                ${helpersEdit.preferences()}
-                            </div><!-- preferences -->
-                            % if c.admin:
-                                <div class="tab-pane ${tab5active}" id="tab5">
-                                    ${helpersEdit.memberAdmin()}
-                                    ${helpersEdit.memberEvents()}
-                                </div><!-- tab5 -->
-                            % endif
-                        </div><!-- tab-content -->
-                    % endif
-                </div> <!-- /.span9 -->
-            </div><!-- tabbable -->
-        % endif
-    </div> <!-- /.row-fluid -->
 </%def>

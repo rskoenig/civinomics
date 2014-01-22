@@ -21,11 +21,13 @@ def undeleteSlideshow( slideshow ):
     slideshow['deleted'] = '0'
     commit(slideshow)
 
-def getSlideshow(workshop, deleted = u'0'):
+def getSlideshow(parent, deleted = u'0'):
     try:
+        parentKey = 'workshopCode'
+        parentValue = parent['urlCode']
         return meta.Session.query(Thing)\
             .filter_by(objType = 'slideshow')\
-            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .filter(Thing.data.any(wc(parentKey, parentValue)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .one()
     except:
@@ -50,9 +52,11 @@ def countSlideshowSlides(slideshowID, deleted = u'0'):
 def getAllSlides(slideshow):
     # Grabs all slides given a slideshow id, regardless of the slide's 'deleted' property
     try:
+        parentKey = slideshow.objType + 'Code'
+        parentValue = slideshow['urlCode']
         return meta.Session.query(Thing)\
             .filter_by(objType = 'slide')\
-            .filter(Thing.data.any(wc('slideshowCode', slideshow['urlCode'])))\
+            .filter(Thing.data.any(wc(parentKey, parentValue)))\
             .all()
     except:
         return False
@@ -67,12 +71,12 @@ def getSlidesInOrder(slideshow):
         return False
 
 # Object creation
-def Slideshow(owner, workshop):
+def Slideshow(owner, parent):
     s = Thing('slideshow', owner.id)
     s['deleted'] = '0'
     s['disabled'] = '0'
     commit(s)
-    generic.linkChildToParent(s, workshop)
+    generic.linkChildToParent(s, parent)
     s['urlCode'] = utils.toBase62(s)
     commit(s)
     return s

@@ -15,6 +15,7 @@ from revision import Revision
 import pylowiki.lib.db.revision as revisionLib
 from tldextract import extract
 import pylowiki.lib.db.generic as generic
+from embedly import Embedly
 
 log = logging.getLogger(__name__)
 
@@ -40,18 +41,11 @@ def getResourceByCode(urlCode, disabled = '0', deleted = '0'):
     except:
         return False
 
-def getResourceByLink(link, item):
-    if item.objType == 'workshop':
-        try:
-            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshopCode', item['urlCode']))).filter(Thing.data.any(wc('parent_id', '0'))).all()
-        except:
-            return False
-    elif item.objType == 'suggestion':
-        try:
-            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('parent_id', item.id))).all()
-        except:
-            return False
-    else:
+def getResourceByLink(link, parent):
+    parentCodeKey = parent.objType + 'Code'
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc(parentCodeKey, parent['urlCode']))).all()
+    except:
         return False
 
 def getResourceByURL(url, workshopCode):
@@ -77,6 +71,17 @@ def getResourcesByWorkshopCode(workshopCode, disabled = '0', deleted = '0'):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'resource')\
             .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
+    except:
+        return False
+        
+def getResourcesByInitiativeCode(initiativeCode, disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('initiativeCode', initiativeCode)))\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .all()
@@ -152,64 +157,107 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
                 .filter_by(objType = 'resource')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
-        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
-        # and apply that as an additional filter within the database level.
-        rows = q.all()
-        keys = ['deleted', 'disabled', 'published', 'public_private']
-        values = [u'0', u'0', u'1', u'public']
-        resources = []
-        for row in rows:
-            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
-            if not w:
-                continue
-            resources.append(row)
         if count:
-            return len(resources)
-        return resources
+            return q.count()
+        return q.all()
+    except Exception as e:
+        log.error(e)
+        return False
+
+def searchInitiativeResources(keys, values, deleted = u'0', disabled = u'0', count = False):
+    try:
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'resource')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('initiative_public', '1')))\
+                .filter(Thing.data.any(reduce(sa.or_, m)))
+        if count:
+            return q.count()
+        return q.all()
     except Exception as e:
         log.error(e)
         return False
 
 # setters
-def editResource(resource, title, text, url, owner):
+def getEObj(link):
+    eKey = config['app_conf']['embedly.key']
+    eClient = Embedly(eKey)
+    eObj = eClient.oembed(link)
+    if eObj['type'] == 'error':
+        return False
+    else:
+        return eObj
+    
+def setAttributes(resource, eObj):
+    resource['type'] = eObj['type']
+    if eObj['type'] == 'photo':
+        resource['info'] = eObj['url']
+    elif eObj['type'] == 'video' or eObj['type'] == 'rich':
+        resource['info'] = eObj['html']
+    if 'width' in eObj.keys():
+        resource['width'] = eObj['width']
+    if 'height' in eObj.keys():
+        resource['height'] = eObj['height']
+    if 'provider_name' in eObj.keys():
+        resource['provider_name'] = eObj['provider_name']
+        
+    if 'thumbnail_url' in eObj.keys():
+        resource['thumbnail_url'] = eObj['thumbnail_url']
+        resource['thumbnail_width'] = eObj['thumbnail_width']
+        resource['thumbnail_height'] = eObj['thumbnail_height']
+    commit(resource)
+    
+def editResource(resource, title, text, link, owner):
     try:
         revisionLib.Revision(owner, resource)
+        if not link.startswith('http://') and not link.startswith('https://'):
+                link = u'http://' + link
+        if resource['link'] != link:
+            resource['link'] = link
+            resource['url'] = urlify(title)
+            eObj = getEObj(link)
+            if eObj:
+                log.info("eObj is %s"%eObj)
+                setAttributes(resource, eObj)
+                
         resource['title'] = title
         resource['text'] = text
-        if not url.startswith('http://'):
-            url = u'http://' + url
-        resource['link'] = url
-        resource['url'] = urlify(title)
-        tldResults = extract(url)
-        resource['tld'] = tldResults.tld
-        resource['domain'] = tldResults.domain
-        resource['subdomain'] = tldResults.subdomain
+
+        commit(resource)
         return True
     except:
         log.error('ERROR: unable to edit resource')
         return False
 
 # Object
-def Resource(url, title, owner, workshop, privs, role = None, text = None, parent = None):
+def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
+    if not link.startswith('http://') and not link.startswith('https://'):
+            link = u'http://' + link
+    eObj = getEObj(link)
+    if not eObj:
+        return False
+        
     a = Thing('resource', owner.id)
-    if not url.startswith('http://'):
-        url = u'http://' + url
-    a['link'] = url # The resource's URL
-    tldResults = extract(url)
-    a['tld'] = tldResults.tld
-    a['domain'] = tldResults.domain
-    a['subdomain'] = tldResults.subdomain
+    a['link'] = link
+    setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
         a['text'] = ''
     else:
         a['text'] = text
-    a = generic.linkChildToParent(a, workshop)
+    if workshop is not None:
+        a = generic.linkChildToParent(a, workshop)
+    a = generic.linkChildToParent(a, owner)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
-    a['type'] = 'general'
     a['disabled'] = '0'
     a['deleted'] = '0'
     a['ups'] = '0'
@@ -218,5 +266,8 @@ def Resource(url, title, owner, workshop, privs, role = None, text = None, paren
     commit(a)
     a['urlCode'] = toBase62(a)
     commit(a)
-    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
+    if workshop is not None:
+        d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
+    else:
+        d = Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
     return a
