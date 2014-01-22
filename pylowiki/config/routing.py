@@ -161,7 +161,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{activity:activity?/?}', controller = 'workshop', action = 'activity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     # workshop stats
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{stats:stats?/?}', controller = 'workshop', action = 'stats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # resources
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
@@ -437,6 +437,7 @@ def make_map():
     ################
     map.connect('/browse/initiatives', controller = 'search', action = 'browseInitiatives', searchType = 'browse')
     map.connect('/zip/lookup/{zip}{end:/?}', controller = 'search', action = 'zipLookup', zip = '{zip}')
+    map.connect('/zip/lookup/{zip}/photos{end:/?}', controller = 'search', action = 'zipLookupPhotos', zip = '{zip}')
 
     ################
     # Application  #
