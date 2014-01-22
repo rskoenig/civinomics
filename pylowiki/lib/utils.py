@@ -263,6 +263,14 @@ def getPublicScope(item):
     return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
 
 
+def getGeoExceptions():
+        geoExceptions = {
+            'San Francisco' : 'County',
+        }
+
+        return geoExceptions
+
+
 def _userImageSource(user, **kwargs):
         # Assumes 'user' is a Thing.
         # Defaults to a gravatar source

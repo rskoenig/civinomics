@@ -437,6 +437,7 @@ def make_map():
     ################
     map.connect('/browse/initiatives', controller = 'search', action = 'browseInitiatives', searchType = 'browse')
     map.connect('/zip/lookup/{zip}{end:/?}', controller = 'search', action = 'zipLookup', zip = '{zip}')
+    map.connect('/zip/lookup/{zip}/photos{end:/?}', controller = 'search', action = 'zipLookupPhotos', zip = '{zip}')
 
     ################
     # Application  #
