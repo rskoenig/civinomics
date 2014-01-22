@@ -302,8 +302,12 @@
                         <p style="margin-top: 10px;">${lib_6.ellipsisIZE(item['text'], 250)}</p>
                             <% 
                                 comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
-                                fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
-                                numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text')
+                                numComments = "0"
+                                if 'numComments' in item:
+                                    numComments = item['numComments']
+                                    
+                                #numComments = discussionLib.getDiscussionForThing(item)['numComments']
                                 if 'views' in item:
                                     numViews = str(item['views'])
                                 else:
