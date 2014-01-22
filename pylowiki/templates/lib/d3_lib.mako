@@ -7,7 +7,11 @@
 ## D3 graphs
 ################################################
 
-<%def name="constancyChart(constancyData, chart, typeName, barColor, barHover, includeD3)">
+<%def name="includeD3()">
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</%def>
+
+<%def name="constancyChart(constancyData, chart, typeName, barColor, barHover)">
 
 <style>
 
@@ -17,6 +21,10 @@
 
   #${chart} .${chart}bar:hover rect {
     fill: ${barHover};
+  }
+
+  #${chart} a {
+    font-size: 1.3em;
   }
 
   #${chart} a:hover {
@@ -56,9 +64,6 @@
 <div id="${chart}">
 </div>
 
-% if includeD3 == 1:
-  <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-% endif
 <script>
 
   var margin = {
