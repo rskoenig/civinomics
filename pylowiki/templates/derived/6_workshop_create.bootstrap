@@ -1,4 +1,4 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_create.mako" />
 

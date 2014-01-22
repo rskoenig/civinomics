@@ -6,6 +6,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylons import config
 
+import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.help         as helpLib
 
@@ -42,9 +43,17 @@ class HelpController(BaseController):
         c.subSection = 'reportAbuse'
         return render('/derived/6_help.bootstrap')
 
+    def markdownGuide( self ):
+        c.subSection = 'markdownGuide'
+
+        guide = 123
+        c.guide = utils.workshopInfo
+
+        return render('/derived/6_help.bootstrap')
+
     def feedbackWorkshop( self ):
         # set feedback workshop here, by default it is left blank
-        feedbackURL = '/'
+        feedbackURL = '/workshop/4IGH/how-can-we-improve-civinomics'
         return redirect(feedbackURL)
 
     def abuseHandler( self ):

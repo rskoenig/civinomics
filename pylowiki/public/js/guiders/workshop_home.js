@@ -4,10 +4,10 @@
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
-            description: "Welcome to the Civinomics tour!<br>You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
+            description: "You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
             id: "tour_welcome",
             next: "tour_logo",
-            title: "Welcome!",
+            title: "Welcome to the tour!",
             closeOnEscape: true,
             autoFocus: true,
             overlay: "true",
@@ -19,7 +19,7 @@
             buttons: [{name: "next"}],
             description: "<br><h1 class=guiders_title>Civinomics home</h1></p><p>Click on the Civinomics logo if you want to go back to the Civinomics main page where all workshops are listed.</p> ",
             id: "tour_logo",
-            next: "tour_name",
+            next: "tour_goals",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#civinomicsLogo",
@@ -63,11 +63,11 @@
         guiders.createGuider({
             attachTo: "#workshopNotables",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "Notables are the Facilitators and Listeners monitoring the workshop.<br><p>Facilitators here are charged with keeping the peace and facilitating the workshop process.<p>Listeners have signed onto this workshop to get your feedback!",
+            description: "Listeners have signed onto this workshop to get your feedback.<br> You can suggest new listeners at any time.",
             id: "tour_notables",
             prev: "tour_goals",
             next: "tour_info",
-            title: "Notables",
+            title: "Listeners",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#workshopNotables",
@@ -77,19 +77,19 @@
         });
         
         guiders.createGuider({
-            attachTo: "#workshopInformation",
+            attachTo: "#informationButton",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
             description: "Along with the slideshow, this section provides background information about the topic of the workshop.",
             id: "tour_info",
             prev: "tour_notables",
-            next: "tour_slideshow",
-            title: "Background",
+            next: "tour_talk",
+            title: "Information",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#workshopInformation",
+            highlight: "#informationButton",
             overlay: "true",
             xButton: true,
-            position: 12
+            position: 6
         });
         
         
@@ -144,23 +144,24 @@
         });
         
         guiders.createGuider({
-            attachTo: "#ideaButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=ideasURL;}}],
+            attachTo: "#vote",
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
             description: "Vote on existing ideas or add new ideas. Ideas are short and should directly address the workshop's goals.",
             id: "tour_vote",
             prev: "tour_talk",
+            next: "tour_close",
             title: "Vote",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#ideaButton",
+            highlight: "#vote",
             overlay: "true",
             xButton: true,
-            position: 6
+            position: 12
         });
         
         guiders.createGuider({
             buttons: [{name:"close"}],
-            description: "Now go find interesting workshops or start some of your own!<br>Use Civinomics to improve your world.",
+            description: "Now go participate. We hope Civinomics helps you to improve your world.",
             id: "tour_close",
             title: "Thanks for taking the tour!",
             closeOnEscape: true,
