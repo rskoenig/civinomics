@@ -24,7 +24,7 @@
   }
 
   #${chart} a {
-    font-size: 1.2em;
+    font-size: 1.3em;
   }
 
   #${chart} a:hover {
