@@ -59,6 +59,7 @@ def getWorkshopTagCategories():
     workshopTags.append('Safety')
     workshopTags.append('Sports')
     workshopTags.append('Transportation')
+    workshopTags.append('Water')
     workshopTags.append('Other')
     return workshopTags
 
@@ -83,6 +84,7 @@ def getWorkshopTagColouring():
                 'Transportation':       'blue-tag',
                 'Infrastructure':       'blue-tag',
                 'Municipal Services':   'blue-tag',
+                'Water':                'blue-tag',
                 'Government':           'grey-tag',
                 'NonProfit':            'grey-tag',
                 'Policy':               'grey-tag'}

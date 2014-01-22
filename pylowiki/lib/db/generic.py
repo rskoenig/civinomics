@@ -2,8 +2,11 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
+#from pylowiki.lib.images import userImageSource
+#from pylowiki.lib.db.user import getUserByCode
 import sqlalchemy as sa
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, commit
+from hashlib import md5
 
 def linkChildToParent(child, parent):
     # Defines a standard for object linking.
@@ -19,10 +22,62 @@ def linkChildToParent(child, parent):
         log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
-    key = '%s%s' %(parent.objType, 'Code')
+    counters = ['idea', 'resource', 'discussion', 'photo', 'listener', 'initiative']
+    key = '%s%s' %(parent.objType.replace("Unpublished", ""), 'Code')
     if key in child:
         # Overwrite, give warning
-        log.warning("linkChildToParent(): parent object link already exists in child.")
+        log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
+    if parent.objType == 'initiative':
+        child['initiative_public'] = parent['public']
+        child['initiative_url'] = parent['url']
+        child['initiative_tags'] = parent['tags']
+        child['initiative_scope'] = parent['scope']
+        child['initiative_title'] = parent['title']
+    if 'initiativeCode' in parent and 'initiative_url' in parent and child.objType != 'rating':
+        child['initiativeCode'] = parent['initiativeCode']
+        child['initiative_url'] = parent['initiative_url']
+        child['initiative_tags'] = parent['initiative_tags']
+        child['initiative_scope'] = parent['initiative_scope']
+        child['initiative_title'] = parent['initiative_title']
+    if 'workshop_category_tags' in parent:
+        child['workshop_category_tags'] = parent['workshop_category_tags']
+    if 'workshop_public_scope' in parent:
+        child['workshop_public_scope'] = parent['workshop_public_scope']
+    if 'workshop_searchable' in parent:
+        child['workshop_searchable'] = parent['workshop_searchable']
+    if 'workshop_title' in parent:
+        child['workshop_title'] = parent['workshop_title']
+    if 'workshop_url' in parent:
+        child['workshop_url'] = parent['workshop_url']
+        if 'workshopCode' in parent:
+            child['workshopCode'] = parent['workshopCode']
+    if parent.objType == 'workshop':
+        child['workshop_title'] = parent['title']
+        child['workshop_url'] = parent['url']
+    if parent.objType == 'user':
+        child['user_name'] = parent['name']
+        child['user_url'] = parent['url']
+        #parentUser = getUserByCode(parent['urlCode'])
+        #child['user_avatar'] = userImageSource(parentUser)
+        if child.objType in counters:
+            doit = 1
+            if 'discType' in child and child['discType'] != 'general':
+                doit = 0
+            
+            if doit:
+                kName = child.objType + "_counter"
+                if kName in parent:
+                    value = int(parent[kName])
+                    value +=1
+                    parent[kName] = str(value)
+                else:
+                    parent[kName] = '1'
+                commit(parent)
+    if child.objType == 'comment':
+        if 'title' in parent:
+            child['parent_title'] = parent['title']
+        child['parent_url'] = parent['url']
+        
     child[key] = code
     return child
     
@@ -42,6 +97,15 @@ def getThing(code, keys = None, values = None):
         return q.one()
     except Exception as e:
         return False
+
+def getChildrenOfParent(parent):
+    parentCode = parent.objType.replace("Unpublished", "")  + 'Code'
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+            .all()
+    except:
+        return False
         
 def getThingByID(thingID):
     try:
@@ -49,6 +113,15 @@ def getThingByID(thingID):
             .filter_by(id = thingID)\
             .one()
     except:
+        return False
+        
+# mostly for linking listeners and pmembers to users
+def getThingsByEmail(email):
+    try:
+        q = meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc('email', email)))
+        return q.all()
+    except Exception as e:
         return False
 
 def addedItemAs(thing, privs, role = None):
@@ -75,3 +148,40 @@ def addedItemAs(thing, privs, role = None):
         else:
             thing['addedAs'] = 'user'
     return thing
+    
+def userImageSource(user, **kwargs):
+        # Assumes 'user' is a Thing.
+        # Defaults to a gravatar source
+        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+        #                          we return a source based on the value given here (civ/gravatar)
+        source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+        large = False
+        gravatar = True
+
+        if 'className' in kwargs:
+            if 'avatar-large' in kwargs['className']:
+                large = True
+        if 'forceSource' in kwargs:
+            if kwargs['forceSource'] == 'civ':
+                gravatar = False
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                else:
+                    source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
+        elif 'extSource' in user.keys():
+            if 'facebookSource' in user.keys():
+                if user['facebookSource'] == u'1':
+                    gravatar = False
+                    # NOTE - when to provide large or small link?
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+        else:
+            if 'avatarSource' in user.keys():
+                if user['avatarSource'] == 'civ':
+                    gravatar = False
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+        if large and gravatar:
+            source += '&s=200'
+        return source

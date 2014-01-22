@@ -15,7 +15,6 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.geoInfo import GeoInfo
 from pylowiki.lib.mail import send
 from revision import Revision
-import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.db.generic      as genericLib
 import pylowiki.lib.mail            as mailLib
 
@@ -61,8 +60,13 @@ def getUserByEmail(email, disabled = '0'):
 def getUserByFacebookAuthId( userid ):
     log.info("getUserByFacebookAuthId: " + userid)
     try:
-        #return meta.Session.query(Thing).filter_by(facebookAuthId = userid).one()
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
+    except:
+        return False
+
+def getUserByTwitterId( twitterid ):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('twitterAuthId', twitterid))).one()
     except:
         return False
 
@@ -82,29 +86,38 @@ def isAdmin(id):
     except:
         return False
     
-def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1', count = False):
+def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'1', count = False):
     try:
+        if type(uKeys) != type([]):
+            u_keys = [uKeys]
+            u_values = [uValues]
+        else:
+            u_keys = uKeys
+            u_values = uValues
+        map_user = map(wcl, u_keys, u_values)
         query = meta.Session.query(Thing)\
                 .filter_by(objType = 'user')\
-                .filter(Thing.data.any(wcl(uKey, uValue)))\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('activated', activated)))
+                .filter(Thing.data.any(wc('activated', activated)))\
+                .filter(Thing.data.any(reduce(or_, map_user)))
         if count:
             return query.count()
         return query.all()
     except:
         return False
+        
 
 def getUserPosts(user, active = 1):
     returnList = []
+    thingTypes = ['resource', 'comment', 'discussion', 'idea', 'initiative']
     if active == 1:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(thingTypes)).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
     else:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(thingTypes)).filter_by(owner = user.id).order_by('-date').all()
 
     for item in postList:
-        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment' or item.objType == 'idea':
+        if item.objType != 'discussion':
             returnList.append(item)
         elif item.objType == 'discussion':
             if item['discType'] == 'general':
@@ -163,6 +176,29 @@ def generatePassword():
     pool, size = letters + digits, 20
     hash =  ''.join([choice(pool) for i in range(size)])
     return hash
+    
+def setUserPrivs():
+    c.privs = {}
+    # Civinomics administrator
+    c.privs['admin'] = False
+    # Workshop facilitator
+    c.privs['facilitator'] = False
+    # Like a facilitator, but with no special privs
+    c.privs['listener'] = False
+    # Logged in member with privs to add objects
+    c.privs['participant'] = False
+    # Not logged in, privs to visit this specific workshop
+    c.privs['guest'] = False
+    # Not logged in, visitor privs in all public workshops
+    c.privs['visitor'] = True
+    # is a demo workshop
+    c.privs['demo'] = False
+    
+    if 'user' in session:
+        c.privs['admin'] = isAdmin(c.authuser.id)
+        c.privs['participant'] = True
+        c.privs['guest'] = False
+        c.privs['visitor'] = False
 
 # Helper functions
     
@@ -170,7 +206,7 @@ def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
 class User(object):
-    def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
+    def __init__(self, email, name, password, country, memberType, postalCode = '00000', **kwargs):
         u = Thing('user')
         u['greetingMsg'] = ''
         u['websiteLink'] = ''
@@ -186,25 +222,41 @@ class User(object):
         u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
+        u['commentAlerts'] = '1'
         u['url'] = urlify('%s' %name)
-        u['numSuggestions'] = 0
-        u['numReadResources'] = 0
+        u['numSuggestions'] = '0'
+        u['numReadResources'] = '0'
+        u['idea_counter'] = '0'
+        u['discussion_counter'] = '0'
+        u['resource_counter'] = '0'
+        u['follow_counter'] = '0'
+        u['facilitator_counter'] = '0'
+        u['listener_counter'] = '0'
+        u['follower_counter'] = '0'
+        u['bookmark_counter'] = '0'
+        u['photo_counter'] = '0'
         u['accessLevel'] = 0
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
         if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
-            self.generateActivationHash(u)
+            if 'externalAuthSignup' in kwargs:
+                if kwargs['externalAuthSignup'] == False:
+                    self.generateActivationHash(u)
+            else:
+                self.generateActivationHash(u)
         commit(u)
  
 
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
         
-        # update any pmembers
-        memberList = pMemberLib.getPrivateMemberWorkshopsByEmail(u['email'])
-        for pMember in memberList:
-            pMember = genericLib.linkChildToParent(pMember, u)  
+        # update any pmembers and listeners
+        updateList = genericLib.getThingsByEmail(email)
+        for uItem in updateList:
+            if uItem.objType == 'pmember' or uItem.objType == 'listener':
+                uItem = genericLib.linkChildToParent(uItem, u)
+                commit(uItem)
 
     # TODO: Should be encrypted instead of hashed
     def hashPassword(self, password):

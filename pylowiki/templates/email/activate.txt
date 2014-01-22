@@ -1,17 +1,8 @@
 
 Greetings from Civinomics!
 
-Your Civinomics registration is almost complete.
-
-Once on the Civinomics website, you can:
-
--- Start browsing and clicking on workshops with wild abandon, knowing that the green Civinomics logo will always take you home;
-
--- Click on your city or county in the top navigation bar to find workshops in your area;
-
--- Check out the Help page for tips on getting started.
-
-We're happy to have you on board! Please click on the link below to activate your account.
+Your registration is almost complete.
+Please click on the link below to activate your account.
 
 ${c.activationLink}
 

@@ -1,54 +1,44 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_wide.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
+
 <div class="row">
-    <div class="span12">
-        <div class="alert alert-info section-header">
-            <h5>Participate in workshops to improve your world. Don't see a workshop listed for your community? Become a member and start one today!</p></h5>
+   <div class="span10"> <!-- listings -->
+        <div class="row-fluid top-space" style="width: 98.12%;">
+          <span class="span5 lead grey expl-phrase">Workshops: collaborate to develop proposals</span>
+          <span class="span6 sort-buttons pull-right">
+            <a class="btn btn-civ left-space pull-right" href="/workshop/display/create/form"><i class="icon-plus icon-white"></i> New Workshop</a>
+            ${lib_6.geoDropdown()}
+            ${lib_6.public_tags()}
+            <!-- <span class="pull-right">Displaying: ${c.workshopTitlebar}</span> -->
+            
+          </span>
         </div>
-    </div><!-- span12 -->
-</div><!-- row -->
-<div class="row">
-   <div class="span8"> <!-- listings -->
-      <div class="section-wrapper">
-         <div class="browse">
-            <h3 class="section-header"> ${c.workshopTitlebar} </h3>
-            <div class="row-fluid"><!--navigation row-->
-                % if len(c.list) != 0:
-                    <ul class="thumbnails">
-                        % for item in c.list:
-                            <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
-                        % endfor
-                    </ul>
-                % else:
-                    <div class="alert alert-success centered">
-                        <p>Be the first to add a public workshop here!</p>
-                        <a class="btn btn-success" href="/workshop/display/create/form">Let's do it!</a>
-                    </div>
-                % endif
-            </div><!--/navigation row-->
-         </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
-   </div> <!-- /listings -->
-   <div class="span4"> <!-- Activity Stream -->
-      <div class="section-wrapper">
-         <div class="activity">
-            <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
-            % if len(c.activity) != 0:
-            <% 
-               numItems = 10
-               for i in range(len(c.activity)):
-                  thisActivity = c.activity[i]
-                  helpers.showActivity(thisActivity, expandable=True)
-                  if i > numItems:
-                     break
-            %>
+        <div class="row-fluid"><!--navigation row-->
+            % if len(c.list) != 0:
+                <ul class="thumbnails">
+                    % for item in c.list:
+                        <li class="span4 wrap-workshop"> ${helpers.show_workshop(item)} </li>
+                    % endfor
+                </ul>
             % else:
-                <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+                <div class="alert alert-success centered">
+                    <p>Be the first to add a public workshop here!</p>
+                    <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
+                </div>
             % endif
-         </div>
-      </div>
+        </div><!--/navigation row-->
+   </div> <!-- /listings -->
+   <div class="span2 activity pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
+        % if len(c.activity) != 0:
+        <% 
+           for thisActivity in c.activity:
+              helpers.showActivity(thisActivity, expandable=True)
+        %>
+        % else:
+            <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+        % endif
    </div> <!-- /Activity Stream -->
 </div>
 
@@ -79,3 +69,5 @@
         });
     </script>
 </%def>
+
+
