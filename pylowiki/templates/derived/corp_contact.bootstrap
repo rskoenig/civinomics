@@ -1,0 +1,31 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <div class="span8">
+            <h1>Contact Us</h1>
+            <h4>Street Address</h3>
+            877 Cedar St, STE 150 <br/>
+            Santa Cruz, CA <br/>
+            95060
+
+            <h4>Email</h4>
+            Information: ${mako.formatEmail("info@civinomics.com", "Question")}
+            <br/>
+            Sales: ${mako.formatEmail("sales@civinomics.com", "Sales Query")}
+            <br/>
+            Careers: ${mako.formatEmail("careers@civinomics.com", "Careers")}
+            
+            </p>
+        </div>      
+    </div>
+</%def>
+
+<%def name="display_body_bottom_content()"></%def>
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>

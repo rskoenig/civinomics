@@ -1,0 +1,13 @@
+${c.sender} has invited you to participate in a private Civinomics workshop 
+called "${c.workshopName}". 
+${c.inviteMessage}
+
+Civinomics workshops are online spaces where groups of people can come together and make decisions. To check out this workshop, click here:
+${c.browseLink}
+
+When you're ready to participate, you'll be prompted to log in. If you're not already a Civinomics 
+member it takes about 30 seconds to sign up.
+
+That's it! See you online shortly.
+
+The Civinomics Team
