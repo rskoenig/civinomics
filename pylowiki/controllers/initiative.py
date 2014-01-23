@@ -21,8 +21,24 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 
 import simplejson as json
+import misaka as m
+import copy as copy
+from HTMLParser import HTMLParser
 
 log = logging.getLogger(__name__)
+
+###################################
+# MLStripper is part of the process of 
+# stripping html from misaka's markdown output
+###################################
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
 class InitiativeController(BaseController):
     
@@ -499,6 +515,16 @@ class InitiativeController(BaseController):
                 c.authors.append(author)
 
         c.initiativeHome = True
+
+        # create html-free description for sharing on facebook
+        formatDescription = copy.copy(c.initiative['description'])
+        descriptionHtml = m.html(formatDescription, render_flags=m.HTML_SKIP_HTML)
+        s = MLStripper()
+        s.feed(descriptionHtml)
+        descriptionWithLineBreaks = s.get_data()
+        descriptionNoLineBreaks = descriptionWithLineBreaks.replace('\n', ' ').replace('\r', '')
+        c.description_nohtml = utils.cap(descriptionNoLineBreaks, 400)
+
             
         return render('/derived/6_initiative_home.bootstrap')
 
