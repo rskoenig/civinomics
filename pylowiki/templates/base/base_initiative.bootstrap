@@ -116,7 +116,7 @@
                                     body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
                                 %>
                                 % if c.initiative['public'] == '1':
-                                    ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True, btn=True)}
+                                    ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True, btn=True, title=c.initiative['title'], description=c.description_nohtml)}
 
                                     <a class="btn btn-danger" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
 
