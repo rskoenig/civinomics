@@ -75,10 +75,9 @@
 
         if 'description' in kwargs:
           description = kwargs['description']
-          #description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
         else:
           description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
-        log.info(description)
+
         # this is an elaborate way to get the item or workshop's description loaded as the caption
         if c.thing:
             if 'text' in c.thing.keys():
