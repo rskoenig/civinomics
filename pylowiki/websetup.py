@@ -10,7 +10,6 @@ from pylowiki.lib.db.user import User, getUserByEmail
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.dbHelpers import commit
 
-#foo
 
 log = logging.getLogger(__name__)
 
