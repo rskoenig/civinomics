@@ -85,12 +85,14 @@ class LoginController(BaseController):
         log.info("twythonLogin")
         #: https://github.com/ryanmcgrath/twython
         # create a Twython instance with Consumer Key and Consumer Secret
+        
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens()
+        auth = twitter.get_authentication_tokens(force_login=True)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
+
         session['oauth_token'] = auth['oauth_token']
         session['oauth_token_secret'] = auth['oauth_token_secret']
         session.save()
@@ -129,6 +131,7 @@ class LoginController(BaseController):
         # grab the user's creds
         myCreds = twitter.verify_credentials()
         log.info("grabbed verify_credentials")
+
         user = userLib.getUserByTwitterId( myCreds['id'] )
         if user:
             log.info('found twitter id')
@@ -668,11 +671,12 @@ class LoginController(BaseController):
     @login_required
     def logout(self):
         """ Action will logout the user. """
+        
         iPhoneApp = utils.iPhoneRequestTest(request)
 
         return_url = '/'
         username = session['user']
-        log.info( "Successful logout by - " + username )
+        log.info( "Successful logout: " + username )
         session.delete()
         if iPhoneApp:
             statusCode = 0
