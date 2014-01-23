@@ -21,6 +21,7 @@
    import pylowiki.lib.utils            as utilsLib
    from pylons import session
    
+   import misaka as m
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
@@ -67,7 +68,17 @@
         
 
         # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
-        name = c.name
+        if 'title' in kwargs:
+          name = kwargs['title']
+        else:
+          name = c.name
+
+        if 'description' in kwargs:
+          description = kwargs['description']
+          #description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+        else:
+          description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+        log.info(description)
         # this is an elaborate way to get the item or workshop's description loaded as the caption
         if c.thing:
             if 'text' in c.thing.keys():
@@ -178,7 +189,7 @@
                       link: "${link}",
                       picture: "${picture}",
                       caption: shareText,
-                      description: "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+                      description: "${description}"
                     },
                     function(response) 
                     {
