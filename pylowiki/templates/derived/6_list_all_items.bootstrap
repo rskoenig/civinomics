@@ -85,6 +85,7 @@
                     <th>owner</th>
                     <th>date</th>
                     <th>link</th>
+                    <th>status</th>
                 </tr>
             </thead>
             <tbody>
@@ -98,8 +99,14 @@
                             <td>None</td>
                         % endif
                         <td>${item.date}</td>
+                        <% activated = "" %>
                         % if itemType == 'user':
                             <td>${lib_6.userImage(item, className = 'avatar small-avatar')} ${lib_6.userLink(item)}</td>
+                            % if item['activated'] == "1":
+                                <% activated = "Activated" %>
+                            % else:
+                                <% activated = "Not activated" %>
+                            % endif
                         % elif itemType == 'workshop':
                             <td>${lib_6.workshopImage(item)} <a ${lib_6.workshopLink(item)} class="expandable">${item['title']}</a></td>
                         % elif itemType in ['idea', 'discussion', 'resource'] and 'workshopCode' in item:
@@ -120,6 +127,13 @@
                             %>
                             <td><a href="/initiative/${item['urlCode']}/${item['url']}/show"><img src="${imgSrc}">${item['title']}</a></td>
                         % endif
+                        <td> ${activated}
+                        % if 'disabled' in item:
+                            Disabled: ${item['disabled']} 
+                        % elif 'deleted' in item:
+                            Deleted: ${item['deleted']}
+                        % endif
+                        </td>
                     </tr>
                 % endfor
             </tbody>

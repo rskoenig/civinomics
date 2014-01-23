@@ -52,7 +52,7 @@
                       <img class="thumbnail small-flag" src="{{geo.flag}}">
                     </td>
                     <td style="padding-left: 5px;">
-                      {{geo.name}}
+                      <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
                     </td>
                   </tr>
                 </table>
