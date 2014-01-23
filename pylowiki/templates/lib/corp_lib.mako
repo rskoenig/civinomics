@@ -60,12 +60,12 @@
             <div class="span2">
                 <ul class="thumbnails">
                   <li>
-                      <img class="thumbnail" src="/images/corp/team/${member['photo']}" alt="">
+                      <img class="avatar avatar-large" src="/images/corp/team/${member['photo']}" alt="">
                   </li>
                 </ul>
             </div>
             <div class="span8">
-                <h4> ${member['name']} - ${member['title']} </h4>
+                <h4>Citizen ${member['name']} - ${member['title']} </h4>
                 <p>${member['bio']}</p>
             </div>
         </div><!--/.row-fluid-->
