@@ -106,6 +106,7 @@
         if c.initiative:
             if c.initiative['public'] == '1':
                 shareOk = True
+        log.info("link: "+link)
     %>
     % if shareOk:
         <div id="fb-root"></div>
