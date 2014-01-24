@@ -27,6 +27,7 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
 
+import simplejson as json
 
 
 log = logging.getLogger(__name__)
@@ -51,7 +52,6 @@ class HomeController(BaseController):
 			return redirect('/')
 		else:
 			c.title = c.heading = c.workshopTitlebar = 'Home'
-			c.activity = activityLib.getRecentActivity(12)
 			c.rssURL = "/activity/rss"
 
 			# Civinomicon
@@ -205,3 +205,31 @@ class HomeController(BaseController):
 		
 
 		return render('/derived/6_home.bootstrap')
+
+
+	def getActivity(self):
+		result = []
+		recentActivity = activityLib.getRecentActivity(12)
+		for item in recentActivity:
+			entry = {}
+			entry['title'] = item['title']
+			entry['author'] = item.owner
+			entry['objType'] = item.objType
+
+			result.append(entry)
+
+		if len(result) == 0:
+			return json.dumps({'statusCode':1})
+		return json.dumps({'statusCode':0, 'result': result})
+
+
+
+
+
+
+
+
+
+
+
+

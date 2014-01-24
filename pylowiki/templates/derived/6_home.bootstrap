@@ -75,8 +75,17 @@
           </ul><!-- thumbnails -->
 
           ###
-          ### Bookmarks
+          ### Activity Feed
           ###
+          <div ng-controller = "activityController">
+            <table>
+              <tr ng-repeat="item in activity">
+                <td>{{item.author}} {{item.objType}} {{item.title}} </td>
+              </tr>
+            </table>
+          </div>
+
+
           % if len(c.activity) != 0:
           <% 
              for thisActivity in c.activity:
@@ -99,6 +108,7 @@
 
 <%def name="headScripts()">
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">

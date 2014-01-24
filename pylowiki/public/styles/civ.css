@@ -1,6 +1,7 @@
 html,body{
    font-family: 'Roboto', sans-serif;
-   font-weight: light;
+   font-weight: 300;
+   font-size: 16px; 
    height: 100%;
    padding-top: 20px;
 }
@@ -855,9 +856,9 @@ img.avatar{
 }
 
 .avatar{
-   height: 70px;
-   width:70px;
-   min-width: 70px;
+   height: 60px;
+   width:60px;
+   min-width: 60px;
    margin-bottom:5px;
 }
 
