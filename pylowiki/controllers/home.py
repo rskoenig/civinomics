@@ -26,6 +26,7 @@ import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
+import pylowiki.lib.utils				as utils
 
 import simplejson as json
 
@@ -208,13 +209,36 @@ class HomeController(BaseController):
 
 
 	def getActivity(self):
+		# get recent activity and return it into json format
 		result = []
 		recentActivity = activityLib.getRecentActivity(12)
 		for item in recentActivity:
 			entry = {}
+			# item attributes
 			entry['title'] = item['title']
-			entry['author'] = item.owner
 			entry['objType'] = item.objType
+
+			# author data
+			author = userLib.getUserByID(item.owner)
+			entry['authorName'] = author['name']
+			entry['authorPhoto'] = utils._userImageSource(author)
+			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+			# photos
+			entry['mainPhoto'] = "0"
+			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+				entry['mainPhoto'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+
+			# attributes that vary accross objects
+			entry['text'] = '0'
+			if 'text' in item:
+				entry['text'] = item['text']
+			elif 'description' in item:
+				entry['text'] = item['description']
+
+			entry['link'] = '0'
+			if 'link' in item:
+				entry['link'] = item['link']
 
 			result.append(entry)
 

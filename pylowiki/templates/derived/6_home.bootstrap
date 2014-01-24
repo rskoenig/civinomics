@@ -8,7 +8,6 @@
 <div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
   <div class="span12" ng-controller="zipLookupCtrl">
     <div class="row-fluid">
-      % if 'user' in session:
         <ul class="thumbnails" ng-cloak>
 
           ###
@@ -77,32 +76,22 @@
           ###
           ### Activity Feed
           ###
-          <div ng-controller = "activityController">
+          <div class="span8" ng-controller = "activityController">
             <table>
               <tr ng-repeat="item in activity">
-                <td>{{item.author}} {{item.objType}} {{item.title}} </td>
+                <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+                <td>
+                  <strong><a href="{{item.authorHref}}" class="green greenhover"> {{item.authorName}} </a></strong> added the {{item.objType}} <strong><a href="#" class="no-highlight">{{item.title}}</a></strong>
+                  <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
+                  <br>
+                  <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+                  </p><p>{{item.text}}</p>
+                </td>
               </tr>
             </table>
-          </div>
-
-
-          % if len(c.activity) != 0:
-          <% 
-             for thisActivity in c.activity:
-                listingHelpers.showActivity(thisActivity, expandable=True)
-          %>
-          % else:
-              <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
-          % endif
+          </div><!-- /span8 -->
         
-        % else:
-          <div class="alert alert-success centered">
-              <p>Enter a zipcode to get started...</p>
-              <input type="number" class="span3">
-              <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
-          </div>
-        % endif
-      </div> <!-- /span10 -->
+      </div> <!-- /row-fluid -->
   </div><!-- /row -->
 
 
