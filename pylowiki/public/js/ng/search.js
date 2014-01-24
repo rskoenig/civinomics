@@ -83,7 +83,7 @@ app.controller('SearchCtrl', function($scope, $http){
 
     /* refine the search results with a tag filter if in url */
     $scope.query = '';
-    if($scope.searchType = 'geo') {
+    if ($scope.searchType == 'geo') {
         var searchList = window.location.search.split('=');
         if (searchList[1]){
             $scope.query = searchList[1]; 
