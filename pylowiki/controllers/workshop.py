@@ -1156,7 +1156,7 @@ class WorkshopController(BaseController):
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         
-        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=76)
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
 
         return render('/derived/6_detailed_listing.bootstrap')
 
