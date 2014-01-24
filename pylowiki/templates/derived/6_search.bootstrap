@@ -111,7 +111,7 @@
                 <li class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
                     % if 'user' in session:
                         % if c.searchType != 'region':
-                            <button href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                            <button class="btn btn-civ" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
                                 <i class="icon-plus"></i> Start Initiative
                             </button>
                         % else:
