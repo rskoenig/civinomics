@@ -1,4 +1,4 @@
-<%inherit file="/base/base_wide.bootstrap"/>
+<%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
@@ -6,8 +6,7 @@
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 
 <div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
-  <div class="span10" ng-controller="zipLookupCtrl">
-    <div class="spacer"></div>
+  <div class="span12" ng-controller="zipLookupCtrl">
     <div class="row-fluid">
       % if 'user' in session:
         <ul class="thumbnails" ng-cloak>
@@ -61,71 +60,32 @@
 
               
             ###
-            ### Add a group
+            ### Zip Lookup
             ###
-            <!-- coming soon... 
             <li class="span4 wrap-voting-group scope" style="background-image:url('/images/grey.png'); background-size: cover;">
-              <a href="/">
-                <span class="link-span dark-gradient"></span>
-                <table class="lead tile-title">
-                  <tr>
-                    <td>
-                      <i class="icon-plus"></i>
-                    </td>
-                    <td style="padding-left: 5px;">
-                      Add a group
-                    </td>
-                  </tr>
-                </table>
-              </a>
+              <form class="form-inline" name="zipForm">
+                <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                    <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                    <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                    <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                </div>
+              </form>
             </li>
-            -->
 
           </ul><!-- thumbnails -->
 
           ###
           ### Bookmarks
           ###
-          % if len(c.facilitatorItems) != 0 or len(c.initiatives) != 0:
-            <span class="lead"><i class="icon-dashboard"></i> Authored and Facilitating (${c.numA})</span>
-            <table class="table table-hover table-condensed no-bottom">
-              <tbody>
-              % for item in c.initiatives:
-                  <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
-              % endfor
-              </tbody>
-            </table>
-            ${lib_6.listBookmarks(c.facilitatorWorkshops, 'Facilitating')}
-            <br>
-          % endif
-          % if len(c.listeningWorkshops) != 0:
-            <span class="lead"><i class="icon-headphones"></i> Listening (${c.numLW})</span>
-            ${lib_6.listBookmarks(c.listeningWorkshops, 'Listening')}
-            <br>
-          % endif
-          % if len(c.privateWorkshops) != 0:
-            <span class="lead"><i class="icon-group"></i> Private (${c.numPW})</span>
-            ${lib_6.listBookmarks(c.privateWorkshops, 'Private')}
-            <br>
-          % endif
-          <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
-          % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
-            <table class="table table-hover table-condensed no-bottom">
-              <tbody>
-              % for item in c.initiativeBookmarks:
-                  <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
-              % endfor
-              </tbody>
-            </table>
-            ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
+          % if len(c.activity) != 0:
+          <% 
+             for thisActivity in c.activity:
+                listingHelpers.showActivity(thisActivity, expandable=True)
+          %>
           % else:
-            <hr class="top-space">
-            <div class="alert alert-info">
-              <strong>No Bookmarks!</strong> You have no bookmarked workshops or initiatives. Find some by clicking the regions above or going to 'Browse' in the top menubar.
-            </div>
+              <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
           % endif
-        </div><!-- /row-fluid -->
-
+        
         % else:
           <div class="alert alert-success centered">
               <p>Enter a zipcode to get started...</p>
@@ -134,20 +94,6 @@
           </div>
         % endif
       </div> <!-- /span10 -->
-
-      ###
-      ### Activity Stream
-      ###
-      <div class="span2 activity pull-right"> 
-        % if len(c.activity) != 0:
-          <% 
-             for thisActivity in c.activity:
-                listingHelpers.showActivity(thisActivity, expandable=True)
-          %>
-        % else:
-            <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
-        % endif
-      </div> <!-- /span2 -->
   </div><!-- /row -->
 
 
