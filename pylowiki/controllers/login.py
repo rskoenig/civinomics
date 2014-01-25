@@ -87,7 +87,7 @@ class LoginController(BaseController):
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens()
+        auth = twitter.get_authentication_tokens(force_login=True)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).

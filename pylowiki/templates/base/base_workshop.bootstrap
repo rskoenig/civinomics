@@ -28,7 +28,7 @@
           % endif
           <div class="span12" style="margin-top:10px; margin-left: 0px">
             <span class = "share-icons contrast pull-right">
-              ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
+              ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True, description=c.description)}
               ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
               % if c.w['public_private'] == 'public':
                   <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>

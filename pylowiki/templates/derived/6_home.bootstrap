@@ -17,7 +17,7 @@
           ###
           
             <li class="span4 wrap-voting-group scope">
-              % if len(c.newWorkshops) <= 3:
+              % if 0 < len(c.newWorkshops) <= 3:
               <div id="myCarousel" class="carousel slide">
                 <ol class="carousel-indicators">
                     <li data-target="#myCarousel" data-slide-to="0" class="active"></li>

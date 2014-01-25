@@ -38,6 +38,25 @@ class IdeaController(BaseController):
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
 
+        #################################################
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
+        # c.requestUrl is for lib_6.emailShare
+        c.objectUrl = c.requestUrl = request.url
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
+        c.description = c.w['description']
+        #################################################
         
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] != 'public':
@@ -113,25 +132,9 @@ class IdeaController(BaseController):
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.objectUrl = request.url
-        if c.w:
-            c.requestUrl = c.baseUrl + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
+        
         c.thingCode = ideaCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-
+        
         c.thing = ideaLib.getIdea(ideaCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(ideaCode)
@@ -141,7 +144,7 @@ class IdeaController(BaseController):
         c.name = c.thing['title']
         if 'views' not in c.thing:
             c.thing['views'] = u'0'
-            
+        
         views = int(c.thing['views']) + 1
         c.thing['views'] = str(views)
         dbHelpers.commit(c.thing)
