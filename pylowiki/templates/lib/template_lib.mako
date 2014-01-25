@@ -4,6 +4,7 @@
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
     import pylowiki.lib.db.workshop as workshopLib
+    from types import StringTypes
 %>
 
 !
@@ -245,10 +246,10 @@
                 </div>
             </div>
             <div class="row-fluid">
-		% if 'owner' in c.backgroundPhoto:
+		% if not isinstance(c.backgroundAuthor, StringTypes):
 			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
 		% else:
-			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${c.backgroundAuthor}
+			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${c.backgroundAuthor}</em>
 		% endif
             </div>
         </div>
