@@ -63,7 +63,7 @@ class HomeController(BaseController):
 			newWorkshops = []
 			workshops = getActiveWorkshops()
 			if len(workshops) == 0 :
-				c.newWorkshops = 0
+				pass#c.newWorkshops = 0
 			else:
 				workshops = workshops[:3]
 				if workshops >= 1:
