@@ -1,0 +1,198 @@
+<%inherit file="/base/base_wide.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_home.mako" />
+<%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
+<%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
+<%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
+
+<div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
+  <div class="span10" ng-controller="zipLookupCtrl">
+    <div class="spacer"></div>
+    <div class="row-fluid">
+      % if 'user' in session:
+        <ul class="thumbnails" ng-cloak>
+
+          ###
+          ### Carousel
+          ###
+          
+            <li class="span4 wrap-voting-group scope">
+              % if 0 < len(c.newWorkshops) <= 3:
+              <div id="myCarousel" class="carousel slide">
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                  </ol>
+                  <!-- Carousel items -->
+                  <div class="carousel-inner">
+                    <div class="active item">
+                      ${helpers.homeSlide(c.newWorkshops[0])}
+                    </div>
+                    <div class="item">
+                      ${helpers.homeSlide(c.newWorkshops[1])}
+                    </div>
+                    <div class="item">
+                      ${helpers.homeSlide(c.newWorkshops[2])}
+                    </div>
+                  </div>
+                </div><!-- #myCarousel -->
+                % endif
+              </li>
+
+            ###
+            ### My Places
+            ###
+            <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
+              <a href="{{geo.href}}">
+                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+                <table class="lead tile-title">
+                  <tr>
+                    <td>
+                      <img class="thumbnail small-flag" src="{{geo.flag}}">
+                    </td>
+                    <td style="padding-left: 5px;">
+                      <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
+                    </td>
+                  </tr>
+                </table>
+              </a>
+            </li>
+
+              
+            ###
+            ### Add a group
+            ###
+            <!-- coming soon... 
+            <li class="span4 wrap-voting-group scope" style="background-image:url('/images/grey.png'); background-size: cover;">
+              <a href="/">
+                <span class="link-span dark-gradient"></span>
+                <table class="lead tile-title">
+                  <tr>
+                    <td>
+                      <i class="icon-plus"></i>
+                    </td>
+                    <td style="padding-left: 5px;">
+                      Add a group
+                    </td>
+                  </tr>
+                </table>
+              </a>
+            </li>
+            -->
+
+          </ul><!-- thumbnails -->
+
+          ###
+          ### Bookmarks
+          ###
+          % if len(c.facilitatorItems) != 0 or len(c.initiatives) != 0:
+            <span class="lead"><i class="icon-dashboard"></i> Authored and Facilitating (${c.numA})</span>
+            <table class="table table-hover table-condensed no-bottom">
+              <tbody>
+              % for item in c.initiatives:
+                  <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
+              % endfor
+              </tbody>
+            </table>
+            ${lib_6.listBookmarks(c.facilitatorWorkshops, 'Facilitating')}
+            <br>
+          % endif
+          % if len(c.listeningWorkshops) != 0:
+            <span class="lead"><i class="icon-headphones"></i> Listening (${c.numLW})</span>
+            ${lib_6.listBookmarks(c.listeningWorkshops, 'Listening')}
+            <br>
+          % endif
+          % if len(c.privateWorkshops) != 0:
+            <span class="lead"><i class="icon-group"></i> Private (${c.numPW})</span>
+            ${lib_6.listBookmarks(c.privateWorkshops, 'Private')}
+            <br>
+          % endif
+          <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
+          % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
+            <table class="table table-hover table-condensed no-bottom">
+              <tbody>
+              % for item in c.initiativeBookmarks:
+                  <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
+              % endfor
+              </tbody>
+            </table>
+            ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
+          % else:
+            <hr class="top-space">
+            <div class="alert alert-info">
+              <strong>No Bookmarks!</strong> You have no bookmarked workshops or initiatives. Find some by clicking the regions above or going to 'Browse' in the top menubar.
+            </div>
+          % endif
+        </div><!-- /row-fluid -->
+
+        % else:
+          <div class="alert alert-success centered">
+              <p>Enter a zipcode to get started...</p>
+              <input type="number" class="span3">
+              <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
+          </div>
+        % endif
+      </div> <!-- /span10 -->
+
+      ###
+      ### Activity Stream
+      ###
+      <div class="span2 activity pull-right"> 
+        % if len(c.activity) != 0:
+          <% 
+             for thisActivity in c.activity:
+                listingHelpers.showActivity(thisActivity, expandable=True)
+          %>
+        % else:
+            <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+        % endif
+      </div> <!-- /span2 -->
+  </div><!-- /row -->
+
+
+<%def name="headScripts()">
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+</%def>
+
+<%def name="extraScripts()">
+   <script type="text/javascript">
+   $(document).ready(function() {
+       $('.viewport').mouseenter(function(e) {
+           $(this).children('a').children('span').fadeIn(200);
+       }).mouseleave(function(e) {
+           $(this).children('a').children('span').fadeOut(200);
+       });
+       
+       $(".small-bulb, .small-bookmark").tooltip({delay:500});
+   });
+   </script>
+   <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: '... (more)',
+                expandPrefix: '',
+                userCollapseText: ' (less)',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
+    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+      $('.carousel').carousel({
+        interval: 4500
+      })
+    </script>
+    <script>
+      // prevents bookmark options dropdown menu from closing when checkboxes are clicked 
+      $('.dropdown-menu input, .dropdown-menu label').click(function(e) {
+        e.stopPropagation();
+      });
+    </script>
+</%def>
