@@ -95,7 +95,7 @@
         flagID = 'flag-%s' % thing['urlCode']
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
-        log.info("thing keys is %s"%thing.keys())
+        #log.info("thing keys is %s"%thing.keys())
     %>
     <div class="btn-group" style="margin-top: -10px;">
         % if thing['disabled'] == '0':

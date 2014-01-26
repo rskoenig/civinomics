@@ -141,6 +141,27 @@ class WorkshopController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
+        
+        #################################################
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
+        # c.requestUrl is for lib_6.emailShare
+        c.requestUrl = request.url
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
+        c.description = c.w['description']
+        #################################################
+
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
@@ -927,23 +948,7 @@ class WorkshopController(BaseController):
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
         entry = {}
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
         
-        c.requestUrl = request.url
-        c.thingCode = workshopCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-        # name for facebook share posts
-        c.name = c.title = c.w['title']
-
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
@@ -1156,7 +1161,7 @@ class WorkshopController(BaseController):
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         
-        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=76)
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
 
         return render('/derived/6_detailed_listing.bootstrap')
 
