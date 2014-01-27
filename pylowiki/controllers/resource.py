@@ -47,6 +47,26 @@ class ResourceController(BaseController):
             # Demo workshop status
             c.demo = workshopLib.isDemo(c.w)
                     
+            #################################################
+            # these values are needed for facebook sharing
+            c.facebookAppId = config['facebook.appid']
+            c.channelUrl = config['facebook.channelUrl']
+            c.baseUrl = utils.getBaseUrl()
+            # c.requestUrl is for lib_6.emailShare
+            c.objectUrl = c.requestUrl = request.url
+            c.thingCode = parentCode
+            # standard thumbnail image for facebook shares
+            if c.mainImage['pictureHash'] == 'supDawg':
+                c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+            elif 'format' in c.mainImage.keys():
+                c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+            else:
+                c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+            # name for facebook share posts
+            c.name = c.title = c.w['title']
+            c.description = c.w['description']
+            #################################################
+
             if 'user' in session:
                 utils.isWatching(c.authuser, c.w)
         elif parent.objType == 'initiative':
@@ -74,16 +94,7 @@ class ResourceController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def showResource(self, parentCode, parentURL, resourceCode, resourceURL):
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.objectUrl = request.url
-        if c.w:
-            c.requestUrl = c.baseUrl + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
+        
         c.thingCode = resourceCode
         log.info("in showResource")
         if c.w:

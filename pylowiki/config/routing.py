@@ -245,6 +245,7 @@ def make_map():
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
+    map.connect('/activate/user/{thingCode}{end:/?}', controller = 'admin', action='activate')
     
     ########################################################################################################
     # 
