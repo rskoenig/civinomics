@@ -2803,13 +2803,13 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
-.accordion-heading.against{
+tr.con, .accordion-heading.against{
   background-color: #f2dede
 }
-.accordion-heading.favor{
+tr.pro, .accordion-heading.favor{
   background-color: #dff0d8;
 }
-.accordion-heading.neutral{
+tr.neutral, .accordion-heading.neutral{
   background-color: #e0e0e0;
 }
 

@@ -97,7 +97,7 @@
                         </div>
 
                         <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
-                          <tr ng-repeat="comment in comments">
+                          <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
                             <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}</td>
                           </tr>
                         </table>

@@ -265,6 +265,9 @@ class HomeController(BaseController):
 		for comment in comments:
 			entry = {}
 			entry['data'] = comment['data']
+			entry['commentRole'] = ''
+			if 'commentRole' in comment:
+				entry['commentRole'] = comment['commentRole']
 
 			# comment author
 			author = userLib.getUserByID(comment.owner)
