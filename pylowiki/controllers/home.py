@@ -27,8 +27,9 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
 import pylowiki.lib.db.discussion 		as discussionLib
-import pylowiki.lib.utils				as utils
 import pylowiki.lib.db.comment 			as commentLib
+import pylowiki.lib.utils				as utils
+import pylowiki.lib.fuzzyTime			as fuzzyTime	
 
 import simplejson as json
 
@@ -222,8 +223,9 @@ class HomeController(BaseController):
 			entry['numComments'] = 0
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
+			entry['urlCode'] = item['urlCode']
 			entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
-
+			entry['date'] = fuzzyTime.timeSince(item.date)
 
 			# author data
 			author = userLib.getUserByID(item.owner)
@@ -268,6 +270,8 @@ class HomeController(BaseController):
 			entry['commentRole'] = ''
 			if 'commentRole' in comment:
 				entry['commentRole'] = comment['commentRole']
+
+			entry['date'] = fuzzyTime.timeSince(comment.date)
 
 			# comment author
 			author = userLib.getUserByID(comment.owner)

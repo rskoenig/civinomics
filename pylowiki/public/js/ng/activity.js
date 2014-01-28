@@ -14,7 +14,7 @@ function activityController($scope, $http) {
 			}
 			$scope.activityLoading = false;
 		})
-	}
+	};
 
 	$scope.getActivity()
 
@@ -42,5 +42,5 @@ function commentsController($scope, $http) {
 		} else {
 			$scope.commentsHidden = true
 		}
-	}
+	};
 }

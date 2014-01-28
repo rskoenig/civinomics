@@ -86,6 +86,7 @@
                     <br>
                     <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
                     <p>{{item.text}}</p>
+                    <span class="grey">{{item.date}} ago</span>
 
                     ### Comments on item
                     <div ng-init="discussionCode = item.discussion">
@@ -98,12 +99,11 @@
 
                         <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
                           <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-                            <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}</td>
+                            <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
+                              <span class="grey">{{comment.date}} ago</span>
+                            </td>
                           </tr>
                         </table>
-
-                        <!-- ${lib_6.userImage(c.authuser, className="avatar small-avatar", noLink=True)}
-                        <input type="text" placeholder="add a comment..."> -->
                       </div>
                     </div>
                 </td>
