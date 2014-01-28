@@ -26,7 +26,9 @@ import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
+import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.utils				as utils
+import pylowiki.lib.db.comment 			as commentLib
 
 import simplejson as json
 
@@ -217,6 +219,11 @@ class HomeController(BaseController):
 			# item attributes
 			entry['title'] = item['title']
 			entry['objType'] = item.objType
+			entry['numComments'] = 0
+			if 'numComments' in item:
+				entry['numComments'] = item['numComments']
+			entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+
 
 			# author data
 			author = userLib.getUserByID(item.owner)
@@ -228,6 +235,10 @@ class HomeController(BaseController):
 			entry['mainPhoto'] = "0"
 			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['mainPhoto'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+
+			# comments
+			discussion = discussionLib.getDiscussionForThing(item)
+			entry['discussion'] = discussion['urlCode']
 
 			# attributes that vary accross objects
 			entry['text'] = '0'
@@ -246,6 +257,26 @@ class HomeController(BaseController):
 			return json.dumps({'statusCode':1})
 		return json.dumps({'statusCode':0, 'result': result})
 
+
+
+	def jsonCommentsForItem(self, urlCode):
+		result = []
+		comments = commentLib.getCommentsInDiscussionByCode(urlCode)
+		for comment in comments:
+			entry = {}
+			entry['data'] = comment['data']
+
+			# comment author
+			author = userLib.getUserByID(comment.owner)
+			entry['authorName'] = author['name']
+			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+			entry['authorPhoto'] = utils._userImageSource(author)
+
+			result.append(entry)
+
+		if len(result) == 0:
+			return json.dumps({'statusCode':1})
+		return json.dumps({'statusCode':0, 'result':result})
 
 
 

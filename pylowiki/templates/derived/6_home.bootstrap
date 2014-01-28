@@ -81,11 +81,31 @@
               <tr ng-repeat="item in activity">
                 <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
                 <td>
-                  <strong><a href="{{item.authorHref}}" class="green greenhover"> {{item.authorName}} </a></strong> added the {{item.objType}} <strong><a href="#" class="no-highlight">{{item.title}}</a></strong>
-                  <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
-                  <br>
-                  <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
-                  </p><p>{{item.text}}</p>
+                    <a href="{{item.authorHref}}" class="green greenhover"><strong> {{item.authorName}} </strong></a> added the {{item.objType}} <strong><a ng-href="{{item.href}}" class="no-highlight">{{item.title}}</a></strong>
+                    <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
+                    <br>
+                    <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+                    <p>{{item.text}}</p>
+
+                    ### Comments on item
+                    <div ng-init="discussionCode = item.discussion">
+                      <div ng-controller="commentsController">
+                        <a href="#" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
+
+                        <div class="centered" ng-show="commentsLoading" ng-cloak>
+                          <i class="icon-spinner icon-spin icon-2x"></i>
+                        </div>
+
+                        <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
+                          <tr ng-repeat="comment in comments">
+                            <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}</td>
+                          </tr>
+                        </table>
+
+                        <!-- ${lib_6.userImage(c.authuser, className="avatar small-avatar", noLink=True)}
+                        <input type="text" placeholder="add a comment..."> -->
+                      </div>
+                    </div>
                 </td>
               </tr>
             </table>
