@@ -1,0 +1,208 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="templateHelpers" file="/lib/template_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+</%def>
+
+
+% if not c.success:
+    <div id="splash-bg" style="background-image: url('${c.backgroundPhotoURL}');">
+        <div class="darkened-bg"></div>
+    </div>
+% else:
+    <div id="login-bg"></div>
+% endif
+
+<div class="row welcome">
+    % if c.success:
+            <div class="well main-well success-well green">
+                <div class="login-top">
+                    <h2>Success!</h2>
+                <div>
+                Check your email to finish setting up your account.
+                If you don't see an email from us in your inbox, try checking your junk mail folder.
+            </div>
+        </div>
+    % else: 
+    <div class="slogan centered">
+        <h1>Democracy starts at home</h1>
+        % if c.splashMsg:
+            <% message = c.splashMsg %>
+            <div class="row-fluid centered">
+                <div class="span6 offset3 alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div>
+            </div>
+        % endif
+        <button href="#signupLoginModal" data-toggle="modal" class="btn btn-large btn-primary">Sign up to Vote</button>
+        <!-- <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p> -->
+    </div>
+</div><!-- row welcome -->
+<div class="container splash-container">
+    <div class="row-fluid">
+        <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
+            <div class="well well-splash-content">
+                <h3>Zip Code Lookup</h3>
+                <form class="form-inline" name="zipForm">
+                    <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                        <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                        <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                        <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                    </div>
+                </form>
+                <div class="loading-civ" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+                </div>
+                <table ng-show="!loading">
+                    <tr ng-repeat="geo in geos">
+                        <td><a href="{{geo.href}}"><img class="thumbnail med-flag border" src="{{geo.flag}}"></a></td>
+                        <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
+            <h3>
+                Top Initiatives
+                <!--
+                <span class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
+                    % if 'user' in session:
+                        <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                            <i class="icon-plus"></i> New Initiative
+                        </a>
+                    % else:
+                        <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-edit"></i> Start an Initiative</a>
+                    % endif
+                </span>
+                -->
+            </h3>
+            <div class="loading-civ" ng-show="loading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+            </div>
+            <div ng-show="noQuery" ng-cloak>
+                <div class="row-fluid">
+                    <div class="alert alert-info centered span6 offset3">
+                        Searching for nothing yields nothing.  How zen.
+                    </div>
+                </div>
+            </div>
+            <div ng-show="noResult" ng-cloak>
+                <div class="row-fluid">
+                    <div class="alert centered span6 offset3">
+                        % if c.searchType == 'region':
+                            Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                        % else:
+                            Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                        % endif
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
+                <table class="table">
+                    <tr ng-repeat = "initiative in initiatives | orderBy:orderProp | limitTo:10"><td class="splash-initiative">
+                        <div class="media searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
+                            <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                <div class="span9">
+                                    <div class="span3">
+                                        <a href = '{{initiative.initiativeLink}}'>
+                                            <div class="i-thumb" style="background-image:url('{{initiative.thumbnail}}');"/></div>
+                                        </a>
+                                    </div>
+                                    <div class="span9">
+                                        <h4 class="media-heading">
+                                            <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
+                                        </h4>
+                                        <p style="text-align:left">{{initiative.description}}</p>
+                                        <small>
+                                            <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" src="{{initiative.flag}}"> {{initiative.location}}</a><br>
+                                            Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="span3 voteBlock ideaListing well" >
+                                    % if 'user' in session:
+                                        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                            <div class="vote-icon yes-icon detail"></div>
+                                            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
+                                        </a>
+                                        <br>
+                                        <br>
+                                        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                            <div class="vote-icon no-icon detail"></div>
+                                            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
+                                        </a>
+                                        <br>
+                                        <div class="totalVotesWrapper">
+                                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                        </div>
+                                    % else:
+                                        <a href="#signupLoginModal" data-toggle="modal" class="yesVote">
+                                            <div class="vote-icon yes-icon"></div>
+                                        </a>
+                                        <br>
+                                        <br>
+                                        <a href="#signupLoginModal" data-toggle="modal" class="noVote">
+                                            <div class="vote-icon no-icon"></div>
+                                        </a>
+                                        <br>
+                                        <div class="totalVotesWrapper">
+                                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                                        </div>
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                    </td></tr>
+                </table>
+                <div class="centered" ng-show="initiative.length>pageSize">
+                    <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                        Prev
+                    </button>
+                    <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                    <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                        Next
+                    </button>
+                    <div class="spacer"></div>
+                </div>
+                <div class="row-fluid centered">
+                    <a href="/browse/initiatives">View more initiatives</a>
+                </div>
+            </div>
+        </div><!-- span8 -->
+        
+    </div><!-- row-fluid -->
+    </div>
+    ${templateHelpers.condensedFooter()}
+    ${templateHelpers.signupLoginModal()}
+
+% endif
+<%def name="headScripts()">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+</%def>
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+        <script type="text/javascript">
+        $('.upVote.nullvote').tooltip();
+    </script>
+    </script>
+</%def>
+
+<%def name="bodyTag_extras()">
+    ng-app
+</%def>
+
