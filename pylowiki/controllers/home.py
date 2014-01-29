@@ -220,12 +220,36 @@ class HomeController(BaseController):
 			# item attributes
 			entry['title'] = item['title']
 			entry['objType'] = item.objType
+			if item.objType == 'discussion':
+				if item['discType'] == 'update':
+					entry['objType'] = 'update'
+
 			entry['numComments'] = 0
+			entry['date'] = fuzzyTime.timeSince(item.date)
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
 			entry['urlCode'] = item['urlCode']
 			entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
-			entry['date'] = fuzzyTime.timeSince(item.date)
+			entry['parentTitle'] = ''
+			entry['parentObjType'] = ''
+			entry['article'] = 'a'
+			if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
+				entry['article'] = 'an'
+
+			# modifications for children of workshops and initiatives
+			if 'workshopCode' in item:
+				entry['parentTitle'] = item['workshop_title']
+				entry['parentObjType'] = 'workshop'
+				entry['parentHref'] = entry['href'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+				entry['href'] = entry['parentHref'] + entry['href']
+			elif 'initiativeCode' in item:
+				entry['parentTitle'] = item['initiative_title']
+				entry['parentObjType'] = 'initiative'
+				entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+				if entry['objType'] == 'update':
+					entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
+				else:
+					entry['href'] = entry['parentHref'] + entry['href']
 
 			# author data
 			author = userLib.getUserByID(item.owner)

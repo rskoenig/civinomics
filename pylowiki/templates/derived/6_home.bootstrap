@@ -8,110 +8,119 @@
 <div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
   <div class="span12" ng-controller="zipLookupCtrl">
     <div class="row-fluid">
-        <ul class="thumbnails" ng-cloak>
+      <ul class="thumbnails" ng-cloak>
 
-          ###
-          ### Carousel
-          ###
-          
-            <li class="span4 wrap-voting-group scope">
-              % if len(c.newWorkshops) <= 3:
-              <div id="myCarousel" class="carousel slide">
-                <ol class="carousel-indicators">
-                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#myCarousel" data-slide-to="1"></li>
-                    <li data-target="#myCarousel" data-slide-to="2"></li>
-                  </ol>
-                  <!-- Carousel items -->
-                  <div class="carousel-inner">
-                    <div class="active item">
-                      ${helpers.homeSlide(c.newWorkshops[0])}
-                    </div>
-                    <div class="item">
-                      ${helpers.homeSlide(c.newWorkshops[1])}
-                    </div>
-                    <div class="item">
-                      ${helpers.homeSlide(c.newWorkshops[2])}
-                    </div>
-                  </div>
-                </div><!-- #myCarousel -->
-                % endif
-              </li>
-
-            ###
-            ### My Places
-            ###
-            <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
-              <a href="{{geo.href}}">
-                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                <table class="lead tile-title">
-                  <tr>
-                    <td>
-                      <img class="thumbnail small-flag" src="{{geo.flag}}">
-                    </td>
-                    <td style="padding-left: 5px;">
-                      <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
-                    </td>
-                  </tr>
-                </table>
-              </a>
-            </li>
-
-              
-            ###
-            ### Zip Lookup
-            ###
-            <li class="span4 wrap-voting-group scope" style="background-image:url('/images/grey.png'); background-size: cover;">
-              <form class="form-inline" name="zipForm">
-                <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                    <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                    <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-                    <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-                </div>
-              </form>
-            </li>
-
-          </ul><!-- thumbnails -->
-
-          ###
-          ### Activity Feed
-          ###
-          <div class="span8" ng-controller = "activityController">
-            <table>
-              <tr ng-repeat="item in activity">
-                <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-                <td>
-                    <a href="{{item.authorHref}}" class="green greenhover"><strong> {{item.authorName}} </strong></a> added the {{item.objType}} <strong><a ng-href="{{item.href}}" class="no-highlight">{{item.title}}</a></strong>
-                    <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
-                    <br>
-                    <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
-                    <p>{{item.text}}</p>
-                    <span class="grey">{{item.date}} ago</span>
-
-                    ### Comments on item
-                    <div ng-init="discussionCode = item.discussion">
-                      <div ng-controller="commentsController">
-                        <a href="#" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
-
-                        <div class="centered" ng-show="commentsLoading" ng-cloak>
-                          <i class="icon-spinner icon-spin icon-2x"></i>
-                        </div>
-
-                        <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
-                          <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-                            <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
-                              <span class="grey">{{comment.date}} ago</span>
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-                    </div>
-                </td>
-              </tr>
-            </table>
-          </div><!-- /span8 -->
+        ###
+        ### Carousel
+        ###
         
-      </div> <!-- /row-fluid -->
+          <li class="span4 wrap-voting-group scope">
+            % if len(c.newWorkshops) <= 3:
+            <div id="myCarousel" class="carousel slide">
+              <ol class="carousel-indicators">
+                  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                  <li data-target="#myCarousel" data-slide-to="1"></li>
+                  <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                  <div class="active item">
+                    ${helpers.homeSlide(c.newWorkshops[0])}
+                  </div>
+                  <div class="item">
+                    ${helpers.homeSlide(c.newWorkshops[1])}
+                  </div>
+                  <div class="item">
+                    ${helpers.homeSlide(c.newWorkshops[2])}
+                  </div>
+                </div>
+              </div><!-- #myCarousel -->
+              % endif
+            </li>
+
+          ###
+          ### My Places
+          ###
+          <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
+            <a href="{{geo.href}}">
+              <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+              <table class="lead tile-title">
+                <tr>
+                  <td>
+                    <img class="thumbnail small-flag" src="{{geo.flag}}">
+                  </td>
+                  <td style="padding-left: 5px;">
+                    <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
+                  </td>
+                </tr>
+              </table>
+            </a>
+          </li>
+        </ul><!-- thumbnails -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
+
+      ###
+      ### Activity Feed
+      ###
+      <div class="span8" ng-controller = "activityController">
+        <table ng-cloak>
+          <tr ng-repeat="item in activity">
+            <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+            <td>
+                <a href="{{item.authorHref}}" class="green greenhover"><strong> {{item.authorName}} </strong></a> 
+
+                <span ng-show="item.parentObjType == ''">
+                  added the {{item.objType}} <strong><a ng-href="{{item.href}}" class="no-highlight">{{item.title}}</a></strong>
+                </span>
+                
+                <span ng-show="!(item.parentObjType == '')">
+                  added {{item.article}} {{item.objType}} to <strong><a ng-href="{{item.parentHref}}" class="no-highlight">{{item.parentTitle}}</a></strong>:<br>
+                  <strong><a ng-href="{{item.href}}" class="no-highlight">{{item.title}}</a></strong>
+                </span>
+
+                <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
+                <br>
+                <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+                <p>{{item.text}}</p>
+                <span class="grey">{{item.date}} ago</span>
+
+                ### Comments on item
+                <div ng-init="discussionCode = item.discussion">
+                  <div ng-controller="commentsController">
+                    <a href="#" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
+
+                    <div class="centered" ng-show="commentsLoading" ng-cloak>
+                      <i class="icon-spinner icon-spin icon-2x"></i>
+                    </div>
+
+                    <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
+                      <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
+                        <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
+                          <span class="grey">{{comment.date}} ago</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+            </td>
+          </tr>
+        </table>
+      </div><!-- /span8 -->
+      <div class="span4">
+
+        ###
+        ### Zip Lookup
+        ###
+        <form class="form-inline" name="zipForm">
+          <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+              <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+              <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+              <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+          </div>
+        </form>
+      </div>
+    </div> <!-- /row-fluid -->
   </div><!-- /row -->
 
 
