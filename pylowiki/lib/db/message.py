@@ -91,6 +91,10 @@ def Message(**kwargs):
             workshop = kwargs['workshop']
             if extraInfo in ['facilitationInvite', 'listenerInvite', 'listenerSuggestion']:
                 generic.linkChildToParent(m, workshop)
+        if 'item' in kwargs:
+            item = kwargs['item']
+            if extraInfo in ['facilitationInvite', 'listenerInvite', 'listenerSuggestion']:
+                generic.linkChildToParent(m, item)
     
     m['sender']     = sender
     m['text']       = text
@@ -105,6 +109,9 @@ def Message(**kwargs):
     if 'workshop' in kwargs:
         d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
                 title = title, text = text, workshop = kwargs['workshop'], privs = kwargs['privs'], role = None)
+    elif 'item' in kwargs:
+        d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
+                title = title, text = text, item = kwargs['item'], privs = kwargs['privs'], role = None)
     else:
         d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
             title = title, text = text, privs = kwargs['privs'], role = None)

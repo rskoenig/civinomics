@@ -14,6 +14,7 @@ from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
@@ -37,8 +38,10 @@ import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime
 import webhelpers.feedgenerator     as feedgenerator
 
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
@@ -120,13 +123,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'publicStats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -136,9 +139,31 @@ class WorkshopController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+        log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
+        
+        #################################################
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
+        # c.requestUrl is for lib_6.emailShare
+        c.requestUrl = request.url
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
+        c.description = c.w['description']
+        #################################################
+
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
@@ -920,27 +945,11 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+        log.info("inside workshop display 1")
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
         entry = {}
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
-                
-        c.requestUrl = request.url
-        c.thingCode = workshopCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-        # name for facebook share posts
-        c.name = c.title = c.w['title']
-
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
@@ -949,12 +958,19 @@ class WorkshopController(BaseController):
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w)):
             if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
                 c.facilitators.append(f)
+                
+        log.info("inside workshop display 2")
               
-        c.listeners = []
+        c.activeListeners = []
+        c.pendingListeners = []
         if not iPhoneApp:
             for l in (listenerLib.getListenersForWorkshop(c.w)):
-                if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-                    c.listeners.append(l)
+                if l['disabled'] == '0':
+                    if 'userCode' in l:
+                        user = generic.getThing(l['userCode'])
+                        c.activeListeners.append(user)
+                    else:
+                        c.pendingListeners.append(l)
               
         c.slides = []
         if not iPhoneApp:
@@ -965,6 +981,8 @@ class WorkshopController(BaseController):
                 if s:
                     c.slides.append(s)
 
+        log.info("inside workshop display 3")
+        
         if not iPhoneApp:
             c.motd = motdLib.getMessage(c.w.id)
             # kludge for now
@@ -974,10 +992,15 @@ class WorkshopController(BaseController):
         if not iPhoneApp:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         
-        c.information = pageLib.getInformation(c.w)
+        # not used
+        #c.information = pageLib.getInformation(c.w)
+        
+        log.info("inside workshop display 4")
         
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+            
+        log.info("inside workshop display 4.1")
         
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
@@ -1005,17 +1028,24 @@ class WorkshopController(BaseController):
             if not discussions:
                 c.discussions = []
             else:
-                discussions = sort.sortBinaryByTopPop(discussions)
+                # performance bottleneck - and sorting of results will soon be done by angular
+                #discussions = sort.sortBinaryByTopPop(discussions)
                 c.discussions = discussions[0:3]
 
+        log.info("inside workshop display 5")
+        
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+
         if not ideas:
             c.ideas = []
         else:
-            c.ideas = sort.sortBinaryByTopPop(ideas)
+            # performance bottleneck. also - sorting will soon be done by angular in the browser
+            #sortedIdeas = sort.sortBinaryByTopPop(ideas)
+            sortedIdeas = ideas
+            #log.info("after sorted ideas")
             if iPhoneApp:
                 i = 0
-                for idea in c.ideas:
+                for idea in sortedIdeas:
                     ideaEntry = "idea" + str(i)
                     # so that we don't modify the original, we place this idea in a temporary variable
                     formatIdea = []
@@ -1040,6 +1070,8 @@ class WorkshopController(BaseController):
                             formatIdea['rated'] = "0"
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
+            else:
+                c.ideas = sortedIdeas
 
         if not iPhoneApp:
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
@@ -1124,6 +1156,16 @@ class WorkshopController(BaseController):
 
         return render('/derived/6_detailed_listing.bootstrap')
    
+    def publicStats(self, workshopCode, workshopURL):
+
+        c.listingType = 'publicStats'
+
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
+
+        return render('/derived/6_detailed_listing.bootstrap')
+
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
         if testGoals and c.w['description'] and c.w['description'] != '':
@@ -1188,7 +1230,7 @@ class WorkshopController(BaseController):
             
         if 'confTab' in session:
             c.tab = session['confTab']
-            log.info(c.tab)
+            #log.info(c.tab)
             session.pop('confTab')
             session.save()
         # hack for continue button in slideshow tab of configure
@@ -1285,7 +1327,7 @@ class WorkshopController(BaseController):
         if alert == 'items':
             if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
                 if pmember['itemAlerts'] == u'1':
-                    listener['itemAlerts'] = u'0'
+                    pmember['itemAlerts'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['itemAlerts'] = u'1'
@@ -1296,7 +1338,7 @@ class WorkshopController(BaseController):
         elif alert == 'digest':
             if 'digest' in pmember.keys(): # Not needed after DB reset
                 if pmember['digest'] == u'1':
-                    listener['digest'] = u'0'
+                    pmember['digest'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['digest'] = u'1'
@@ -1341,6 +1383,7 @@ class WorkshopController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
+            entry['date'] = fuzzyTime.timeSince(idea.date)
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
                 adopted += 1
@@ -1367,9 +1410,11 @@ class WorkshopController(BaseController):
             entry['authorCode'] = entry['userCode'] = idea['userCode']
             entry['authorURL'] = entry['user_url'] = idea['user_url']
             entry['authorName'] = entry['user_name'] = idea['user_name']
-            entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['workshopCode'] = workshopCode
             entry['workshopURL'] = workshopURL
+            entry['views'] = '0'
+            if 'views' in idea:
+                entry['views'] = numViews = str(idea['views'])
 
             result.append(entry)
         numIdeas = len(ideas) - disabled

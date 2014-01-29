@@ -37,20 +37,13 @@
     ## Display a button to login to add a comment
     ##
     ########################################################################
-    <% 
-        if c.w:
-            url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url']
-        else:
-            url = '/login'
-    %>
-
 
     <fieldset>
         <legend></legend>
         <div class="span1">
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
-        <a href="${url}"><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
         <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
     </fieldset>
@@ -314,9 +307,8 @@
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
-                if 'user' in session:
-                    if c.thing['disabled'] == '0':
-                        commentFooter(comment, author)
+                if c.thing['disabled'] == '0':
+                    commentFooter(comment, author)
             %>
             ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1)}
         </div><!--/.accordion-inner-->
@@ -341,15 +333,21 @@
     <div class="row-fluid">
         <div class="span11 offset1">
             <div class="btn-group">
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
-                % endif
-                % if c.privs['facilitator'] or c.privs['admin']:
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                % if 'user' in session:
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                    % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
+                        <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+                    % endif
+                    % if c.privs['facilitator'] or c.privs['admin']:
+                        <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                    % endif
+                % else:
+                    <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
+                    <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
             </div>
+            Added ${comment.date}
             <%
                 revisions = revisionLib.getRevisionsForThing(comment)
                 lib_6.revisionHistory(revisions, comment)
@@ -373,14 +371,16 @@
     ## Flag
     ${lib_6.flagThing(comment)}
     
-    ## Edit
-    % if c.privs['admin'] or c.authuser.id == comment.owner or c.privs['facilitator']:
-        ${lib_6.editThing(comment)}
-    % endif
+    % if 'user' in session:
+        ## Edit
+        % if c.privs['admin'] or c.authuser.id == comment.owner or c.privs['facilitator']:
+            ${lib_6.editThing(comment)}
+        % endif
     
-    ## Admin
-    % if c.privs['facilitator'] or c.privs['admin']:
-        ${lib_6.adminThing(comment)}
+        ## Admin
+        % if c.privs['facilitator'] or c.privs['admin']:
+            ${lib_6.adminThing(comment)}
+        % endif
     % endif
 </%def>
 

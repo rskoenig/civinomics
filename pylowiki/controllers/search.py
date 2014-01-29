@@ -43,6 +43,10 @@ class SearchController(BaseController):
     """
 
     def __before__(self, action, searchType = None, **kwargs):
+        # need this for facebook login in modal
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
         #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
@@ -55,6 +59,8 @@ class SearchController(BaseController):
             searchString = kwargs['searchString'].replace("+", " ")
         else:
             searchString = None
+        if 'zip' in kwargs:
+            self.zip = kwargs['zip']
             
         log.info("****SEARCH STRING**** %s"%searchString)
             
@@ -174,6 +180,14 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
             return render('/derived/6_search.bootstrap')
+
+    def browseInitiatives(self):
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        self.noQuery = False
+        c.searchType = "browse"
+        c.searchQuery = "All Initiatives" 
+        c.scope = {'level':'earth', 'name':'all'}
+        return render('/derived/6_browse.bootstrap')
         
     def getWorkshopCategoryTags(self):
         """ return a list of the categories available for search """
@@ -210,7 +224,6 @@ class SearchController(BaseController):
         c.numInitiatives = initiativeLib.searchInitiatives('tags', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('tags', self.query)
-        entry = {}
         if c.photos and len(c.photos) != 0:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
@@ -428,6 +441,7 @@ class SearchController(BaseController):
         for p in people:
             entry = {}
             entry['name'] = p['name']
+            entry['email'] = p['email']
             entry['greetingMsg'] = p['greetingMsg']
             entry['photo'] = utils._userImageSource(p)
             entry['hash'] = md5(p['email']).hexdigest()
@@ -866,6 +880,8 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             scope = '0' + self.query.replace('||', '|0|')
             initiatives = initiativeLib.searchInitiatives(['scope'], [scope])
+        elif self.searchType == 'browse':
+            initiatives = initiativeLib.getPublishedInitiatives()
         else:
             keys = ['title', 'description', 'tags']
             values = [self.query, self.query, self.query]
@@ -895,39 +911,32 @@ class SearchController(BaseController):
             if len(entry['description']) >= 200:
                 entry['description'] += "..."
             entry['tags'] = i['tags']
-            scopeList = i['scope'].split('|')
-            country = scopeList[2].replace("-", " ")
-            state = scopeList[4].replace("-", " ")
-            county = scopeList[6].replace("-", " ")
-            city = scopeList[8].replace("-", " ")
-            postalCode = scopeList[9]
-            scopeString = "Earth"
-            log.info("scopeString is %s"%scopeString)
-            if country != '0':
-                scopeString = "%s" % country.title()
-                if state != '0':
-                    scopeString += ", State of %s" % state.title()
-                    if county != '0':
-                        scopeString += ", County of %s" % county.title()
-                        if city != '0':
-                            scopeString += ", City of %s" % city.title()
-                            if postalCode != '0':
-                                scopeString += ", Zip Code of %s"%postalCode
-            entry['location'] = scopeString
+            entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
+
+            scopeInfo = utils.getPublicScope(i)
+            entry['flag'] = scopeInfo['flag']
+            entry['location'] = scopeInfo['scopeString']
+            entry['geoHref'] = scopeInfo['href']
+
             entry['voteCount'] = int(i['ups']) + int(i['downs'])
             entry['ups'] = int(i['ups'])
             entry['downs'] = int(i['downs'])
             rated = ratingLib.getRatingForThing(c.authuser, i) 
             if rated:
                 entry['rated'] = rated['amount']
+                entry['vote'] = 'voted'
             else:
                 entry['rated'] = 0
+                entry['vote'] = 'nvote'
             entry['urlCode'] = i['urlCode']
             entry['url'] = i['url']
             entry['tag'] = i['tags']
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
             entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
-            entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
+            try:
+                entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
+            except:
+                entry['numComments'] = 0
             entry['authorCode'] = u['urlCode']
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']
@@ -1013,5 +1022,101 @@ class SearchController(BaseController):
             c.things = workshopLib.getWorkshopsByScope(geoTagString, scopeLevel)
             
         return render('/derived/6_search.bootstrap')
+
+    def zipLookup(self):
+        result = []
+        j = geoInfoLib.getPostalInfo(self.zip)
+        country = 'united-states'
+        state = j['StateFullName']
+        county = j['County']
+        city = j['CityMixedCase']
+
+        countryScope = '0||' + country + '||0||0||0|0'
+        stateScope = '0||' + country + '||' + utils.urlify(state) + '||0||0|0'
+        countyScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||0|0'
+        cityScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|0'
+        zipScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|' + self.zip
+        scopeMap = []
+        scopeMap.extend((countryScope, stateScope, countyScope, cityScope, zipScope))
+
+        exceptions = utils.getGeoExceptions()
+
+        for scope in scopeMap:
+            scopeInfo = utils.getPublicScope(scope)
+            entry = {}
+            entry['name'] = scopeInfo['name']
+            entry['flag'] = scopeInfo['flag']
+            entry['href'] = scopeInfo['href']
+            entry['level'] = scopeInfo['level'].title()
+
+            if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
+                log.info('Found geo exception!')
+                continue
+
+            result.append(entry)                
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+
+
+    # kludged this function, using zipLookup with parameter would be better
+    def zipLookupPhotos(self):
+        result = []
+        j = geoInfoLib.getPostalInfo(self.zip)
+        country = 'united-states'
+        state = j['StateFullName']
+        county = j['County']
+        city = j['CityMixedCase']
+
+        countryScope = '0||' + country + '||0||0||0|0'
+        stateScope = '0||' + country + '||' + utils.urlify(state) + '||0||0|0'
+        countyScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||0|0'
+        cityScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|0'
+        zipScope = '0||' + country + '||' + utils.urlify(state) + '||' + utils.urlify(county) + '||' + utils.urlify(city) + '|' + self.zip
+        scopeMap = []
+        scopeMap.extend((countryScope, stateScope, countyScope, cityScope, zipScope))
+
+        exceptions = utils.getGeoExceptions()
+
+        for scope in scopeMap:
+            scopeInfo = utils.getPublicScope(scope)
+            entry = {}
+            entry['name'] = scopeInfo['name']
+            entry['flag'] = scopeInfo['flag']
+            entry['href'] = scopeInfo['href']
+            entry['level'] = scopeInfo['level'].title()
+
+            if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
+                log.info('Found geo exception!')
+                continue
+
+            # for flipboard style layout    
+            defaultPhoto = "/images/grey.png"
+
+            # current scope search for photos and initaitives is slightly different - should be reconciled
+            initScope = scope.replace('||', '|0|')
+            photoScope = scope[1:]
+
+            initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
+            if initiatives and len(initiatives) != 0:
+                i = initiatives[-1]
+                entry['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
+            else:
+                photos = photoLib.searchPhotos('scope', photoScope)
+                if photos and len(photos) != 0:
+                    photos = sort.sortBinaryByTopPop(photos)
+                    p = photos[0]
+                    entry['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+                else:
+                    entry['photo'] = defaultPhoto
+
+            result.append(entry)                
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+
+
     
     

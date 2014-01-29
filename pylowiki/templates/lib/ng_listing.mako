@@ -10,10 +10,11 @@
                     <p>{{idea.text}}</p>
                     <ul class="horizontal-list iconListing">
                     	<li>
-                            <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a>Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a>
+                            <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a>Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a> <span class="grey">{{idea.date}} ago</span>
                         </li>
-                        <li><i class="icon-file-text"></i> Read full text</li>
+                        <!-- <li><i class="icon-file-text"></i> Read full text</li> -->
                         <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
+                        <li><i class="icon-eye-open"></i> Views ({{idea.views}})</li>
                     </ul>
                 </div>
                 <div class="span3 voteBlock ideaListing well" >
