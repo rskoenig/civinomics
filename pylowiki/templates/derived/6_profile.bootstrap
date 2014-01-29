@@ -21,10 +21,7 @@
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
-                            % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id and not c.privs['provisional']:
-                                ${helpers.followButton(c.user)}
-                                <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
-                            % endif
+                            <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                         % else:
                             ${helpers.followButton(c.user)}
                         % endif
