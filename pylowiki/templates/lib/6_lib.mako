@@ -315,7 +315,7 @@
          <% return %>
       % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
