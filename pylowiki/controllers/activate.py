@@ -10,6 +10,7 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.db.rating       as ratingLib
 
 import time
 
