@@ -32,13 +32,12 @@
                           <option value="-voteRatio">Highest Rated</option>
                           <option value="-voteCount">Most Votes</option>
                           <option value="-numComments">Most Comments</option>
-                          <option value="title">Alphabetical</option>
                       </select>
                       Filter:
                       <select class="med-width" ng-model="filterProp" ng-cloak>
+                          <option value="!disabled">Show All</option>
                           <option value="proposed">Proposed</option>
                           <option value="adopted">Adopted</option>
-                          <option value="!disabled">Show All</option>
                           <option value="disabled">Disabled</option>
                       </select>
                     </form> 

@@ -1,7 +1,7 @@
 function workshopIdeasCtrl($scope, $http) {
 	$scope.ideasURL = '/workshop/' + $scope.code + '/' + $scope.url + '/ideas/get'
 	$scope.orderProp = '-date';
-	$scope.filterProp = 'proposed';
+	$scope.filterProp = '!disabled';
 	$scope.numAdopted = '0';
 	$scope.numIdeas = '0';
 

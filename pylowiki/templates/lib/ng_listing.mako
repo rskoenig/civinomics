@@ -41,6 +41,10 @@
                         <a href="/login" class="noVote">
                             <div class="vote-icon no-icon"></div>
                         </a>
+                        <br>
+                        <div class="totalVotesWrapper">
+                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
+                        </div>
                     % endif
                 </div>
             </div><!-- media-body -->
