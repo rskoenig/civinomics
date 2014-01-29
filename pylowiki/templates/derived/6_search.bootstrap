@@ -106,27 +106,33 @@
                     </form>
                     <span ng-show="showingWorkshops.create" ng-cloak>
                         % if c.searchType != 'region':
-                            <a class="btn btn-success" style="margin-top: 7px;" href="/workshop/display/create/form" >
-                                <i class="icon-plus"></i> New Workshop
-                            </a>
+                            % if not c.privs['provisional']:
+                                <a class="btn btn-success" style="margin-top: 7px;" href="/workshop/display/create/form" >
+                                    <i class="icon-plus"></i> New Workshop
+                                </a>
+                            % endif
                         % else:
-                            <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
-                                <input type="hidden" name="geoString" value="${c.geoString}">
-                                 <button type="submit" name="createPublic" class="btn btn-civ"><i class="icon-plus"></i> New Workshop</button>
-                            </form>
+                            % if not c.privs['provisional']:
+                                <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
+                                    <input type="hidden" name="geoString" value="${c.geoString}">
+                                    <button type="submit" name="createPublic" class="btn btn-civ"><i class="icon-plus"></i> New Workshop</button>
+                                </form>
+                            % endif
                         % endif
                     </span>
                     <span ng-show="showingInitiatives.create" ng-cloak>
                         % if 'user' in session:
-                            % if c.searchType != 'region':
-                                <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
-                                    <i class="icon-plus"></i> New Initiative
-                                </a>
-                            % else:
-                                <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
-                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
-                                    <button type="submit" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
-                                </form>
+                            % if not c.privs['provisional']:
+                                % if c.searchType != 'region':
+                                    <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                        <i class="icon-plus"></i> New Initiative
+                                    </a>
+                                % else:
+                                    <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
+                                        <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                        <button type="submit" class="btn btn-civ"><i class="icon-plus"></i> New Initiative</button>
+                                    </form>
+                                % endif
                             % endif
                         % else:
                             <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-plus"></i> New Initiative</a>
