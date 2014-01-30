@@ -239,6 +239,21 @@ class HomeController(BaseController):
 			entry['scopeHref'] = scopeInfo['href']
 			entry['flag'] = scopeInfo['flag']
 
+			#tags
+			tags = []
+			tagList = []
+			if 'tags' in item:
+				tagList = item['tags'].split('|')
+			elif 'initiative_tags' in item:
+				tagList = item['initiative_tags'].split('|')
+			elif 'workshop_category_tags' in item:
+				tagList = item['workshop_category_tags'].split('|')
+			for tag in tagList:
+				if tag and tag != '':
+					tags.append(tag)
+			entry['tags'] = tags
+
+
 			entry['numComments'] = 0
 			entry['date'] = fuzzyTime.timeSince(item.date)
 			if 'numComments' in item:

@@ -84,7 +84,12 @@
               
               ### Geo meta data
               <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
-                <span style="text-transform: capitalize;">{{item.objType}}</span> for <span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> <a class="no-highlight" href="{{scope.href}}">{{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a></small>
+                <span style="text-transform: capitalize;">{{item.objType}}</span> for <span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> <a class="no-highlight" href="{{scope.href}}">{{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
+
+                <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+
+
+                </small>
 
               <div class="activity-item-content-header">
                 <img class="media-object avatar topbar-avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
