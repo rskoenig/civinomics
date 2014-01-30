@@ -1,0 +1,160 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%! 
+    import pylowiki.lib.db.workshop     as workshopLib 
+    import pylowiki.lib.db.user         as userLib
+%>
+
+<% 
+    itemType = None
+    if len(c.list) > 0:
+        itemType = c.list[0].objType
+%>
+
+<div class="row-fluid">
+    <div class="span2">
+        <ul class="nav nav-list">
+            <li class="nav-header">Item Type</li>
+            % if itemType == 'user':
+                <li class="active"><a href="/admin/users">Users</a></li>
+            % else:
+                <li><a href="/admin/users">Users</a></li>
+            % endif
+            
+            % if itemType == 'workshop':
+                <li class="active"><a href="/admin/workshops">Workshops</a></li>
+            % else:
+                <li><a href="/admin/workshops">Workshops</a></li>
+            % endif
+            
+            % if itemType == 'idea':
+                <li class="active"><a href="/admin/ideas">Ideas</a></li>
+            % else:
+                <li><a href="/admin/ideas">Ideas</a></li>
+            % endif
+            
+            % if itemType == 'resource':
+                <li class="active"><a href="/admin/resources">Resources</a></li>
+            % else:
+                <li><a href="/admin/resources">Resources</a></li>
+            % endif
+            
+            % if itemType == 'discussion':
+                <li class="active"><a href="/admin/discussions">Discussions</a></li>
+            % else:
+                <li><a href="/admin/discussions">Discussions</a></li>
+            % endif
+            
+            % if itemType == 'comment':
+                <li class="active"><a href="/admin/comments">Comments</a></li>
+            % else:
+                <li><a href="/admin/comments">Comments</a></li>
+            % endif
+            
+             % if itemType == 'photo':
+                <li class="active"><a href="/admin/photos">Photos</a></li>
+            % else:
+                <li><a href="/admin/photos">Photos</a></li>
+            % endif
+            
+            % if itemType == 'flaggedphoto':
+                <li class="active"><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
+            % else:
+                <li><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
+            % endif
+            
+            % if itemType == 'initiative':
+                <li class="active"><a href="/admin/initiatives">Initiatives</a></li>
+            % else:
+                <li><a href="/admin/initiatives">Initiatives</a></li>
+            % endif
+            
+            % if itemType == 'flaggedinitiative':
+                <li class="active"><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+            % else:
+                <li><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+            % endif
+        </ul>
+    </div><!--/.span3-->
+
+    <div class="span10">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>owner</th>
+                    <th>date</th>
+                    <th>link</th>
+                    <th>status</th>
+                </tr>
+            </thead>
+            <tbody>
+                % for item in c.list:
+                    <tr>
+                        <td>${item.id}</td>
+                        % if item.owner != 0:
+                            <% owner = userLib.getUserByID(item.owner) %>
+                            <td>${lib_6.userImage(owner, className = 'avatar small-avatar')} ${lib_6.userLink(owner)} (${owner.id})</td>
+                        % else:
+                            <td>None</td>
+                        % endif
+                        <td>${item.date}</td>
+                        <% activated = "" %>
+                        % if itemType == 'user':
+                            <td>${lib_6.userImage(item, className = 'avatar small-avatar')} ${lib_6.userLink(item)}</td>
+                            % if item['activated'] == "1":
+                                <% activated = "Activated" %>
+                            % else:
+                                <% activated = "Not activated" %>
+                            % endif
+                        % elif itemType == 'workshop':
+                            <td>${lib_6.workshopImage(item)} <a ${lib_6.workshopLink(item)} class="expandable">${item['title']}</a></td>
+                        % elif itemType in ['idea', 'discussion', 'resource'] and 'workshopCode' in item:
+                            <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
+                            <td><a ${lib_6.thingLinkRouter(item, workshop)} class="expandable">${item['title']}</a></td>
+                        % elif itemType == 'comment' and 'workshopCode' in item:
+                            <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
+                            <td><a ${lib_6.thingLinkRouter(item, workshop, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a></td>
+                        % elif itemType == 'photo':
+                            <% imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png" %>
+                            <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
+                        % elif itemType == 'initiative':
+                            <% 
+                                if 'directoryNum_photos' in item:
+                                    imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png"
+                                else:
+                                    imgSrc = "/images/slide/thumbnail/supDawg.thumbnail"
+                            %>
+                            <td><a href="/initiative/${item['urlCode']}/${item['url']}/show"><img src="${imgSrc}">${item['title']}</a></td>
+                        % endif
+                        <td> ${activated}
+                        % if 'disabled' in item:
+                            Disabled: ${item['disabled']} 
+                        % elif 'deleted' in item:
+                            Deleted: ${item['deleted']}
+                        % endif
+                        </td>
+                    </tr>
+                % endfor
+            </tbody>
+        </table>
+    </div><!--/.span9-->
+</div> <!--/.row-fluid-->
+
+<%def name="extraScripts()">
+    <script src="/js/vendor/jquery.tablesorter.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 95,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+            $(".table").tablesorter(); 
+        });
+    </script>
+</%def>
