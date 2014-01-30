@@ -29,6 +29,218 @@
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
 
+<%def name="facebookDialogShare2(**kwargs)">
+    <%
+        # link: direct url to item being shared
+        # picture: url of the parent workshop's background image
+        facebookAppId = int(c.facebookShare.facebookAppId)
+        log.info("app id %s and %s"%(c.facebookShare.facebookAppId, facebookAppId))
+        channelUrl = c.facebookShare.channelUrl
+        thingCode = c.facebookShare.thingCode
+
+        link = c.facebookShare.url
+        image = c.facebookShare.image
+
+        userCode = ''
+        if c.facebookShare.itemType == 'workshop':
+            workshopCode = c.facebookShare.thingCode
+
+        # in order to prevent the javascript for these buttons from being included multiple
+        # times, these kwargs are now used to activate either or both of the buttons
+        if 'shareOnWall' in kwargs:
+            if kwargs['shareOnWall'] is True:
+                shareOnWall = True
+            else:
+                shareOnWall = False
+        else:
+            shareOnWall = False
+
+        if 'sendMessage' in kwargs:
+            if kwargs['sendMessage'] is True:
+                sendMessage = True
+            else:
+                sendMessage = False
+        else:
+            sendMessage = False
+        
+
+        title = c.facebookShare.title
+        description = c.facebookShare.description
+
+        # this is an elaborate way to get the item or workshop's description loaded as the caption
+        caption = c.facebookShare.caption
+        if c.thing:
+            if 'text' in c.thing.keys():
+                caption = c.thing['text']
+            else:
+                caption = ''
+
+        shareOk = False
+        if 'photoShare' in kwargs:
+            if kwargs['photoShare'] == True:
+                shareOk = True
+        
+        shareOk = c.facebookShare.shareOk
+        if c.initiative:
+            if c.initiative['public'] == '1':
+                shareOk = True
+    %>
+    % if shareOk:
+        <div id="fb-root"></div>
+        <script src="/js/extauth.js" type="text/javascript"></script>
+        <script>
+            // activate facebook javascript sdk
+            var fbAuthId = '';
+            console.log("1 "+"${facebookAppId}");
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId      : "${facebookAppId}", // App ID
+                    channelUrl : "${channelUrl}", // Channel File
+                    status     : true, // check login status
+                    cookie     : false, // enable cookies to allow the server to access the session
+                    xfbml      : true  // parse XFBML
+                });
+                FB.Event.subscribe('auth.authResponseChange', function(response) {
+                // Here we specify what we do with the response anytime this event occurs.
+                console.log('above response tree');
+                if (response.status === 'connected') {
+                    console.log('calling fb connected');
+                    fbAuthId = response.authResponse.userID;
+                } else if (response.status === 'not_authorized') {
+                    console.log('not authd');                
+                    //FB.login();
+                } else {
+                    console.log('else');
+                    //FB.login();
+                }
+                });
+            };
+            console.log("2");
+            // Load the SDK asynchronously
+            (function(d){
+                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement('script'); js.id = id; js.async = true;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                ref.parentNode.insertBefore(js, ref);
+            }(document));
+
+            function shareOnWall() {
+                // grab checked value of checkbox IF it's on the page. add to description.
+                //var shareChecked = $("#shareVote").is(':checked');
+                console.log("3");
+                var shareChecked = false;
+                var shareText = '';
+                var inputElements = document.getElementsByTagName('input');
+                for(var i=0; inputElements[i]; ++i){
+                    //console.log("input class: "+inputElements[i].className)
+                    if(inputElements[i].className=="shareVote" && inputElements[i].checked) {
+                        //console.log("it's checked ")
+                        shareChecked = true;
+                        break;
+                    }
+                }
+                console.log("4");
+                if (shareChecked) {
+                    //console.log("share checked")
+                    // get the value of the voted button
+                    var linkElements = document.getElementsByTagName('a');
+                    for(var j=0; linkElements[j]; ++j){
+                        //console.log(linkElements[j].className)
+                        if(linkElements[j].className=="voted yesVote" || linkElements[j].className=="yesVote voted"){
+                            //console.log("HURRAH!")
+                            shareText = 'I am in favor of this.';
+                            break;
+                        } else if(linkElements[j].className=="noVote voted" || linkElements[j].className=="voted noVote") {
+                            //console.log("NAH AH!")
+                            shareText = 'I am not in favor of this.';
+                            break;
+                        } else {
+                            shareText = 'I have not voted on this yet.';
+                        }
+                    }
+                }
+                console.log("5");
+                FB.ui(
+                    {
+                      method: 'feed',
+                      name: "${title}",
+                      link: "${link}",
+                      picture: "${image}",
+                      caption: shareText,
+                      description: "${description}"
+                    },
+                    function(response) 
+                    {
+                        console.log("6");
+                        if (response && response.post_id) {
+                          // if there's a post_id, create share object
+                          var thingCode = "${thingCode}";
+                          var link = "${link}"
+                          var userCode = fbAuthId;
+                          var workshopCode = "${workshopCode}"
+                          
+                          //console.log('tc: '+thingCode);
+                          //console.log('wc: '+workshopCode);
+
+                          result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
+                        }
+                    }
+                );
+            };
+
+            function messageFriends() {
+                // there is no callback for messages sent
+                // we can simply record that the message dialog was brought up
+                // grab checked value of checkbox IF it's on the page. add to description.
+                var thingCode = "${thingCode}";
+                var link = "${link}"
+                var userCode = fbAuthId;
+                var workshopCode = "${workshopCode}"
+                
+                //console.log('tc mf: '+thingCode);
+                //console.log('wc mf: '+workshopCode);
+                          
+                result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
+                FB.ui(
+                    {
+                      method: 'send',
+                      name: "${title}",
+                      link: "${link}",
+                      picture: "${image}"
+                      //description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                    }
+                );
+            };
+        
+        </script>
+        <div class="btn-group facebook">
+          % if 'btn' in kwargs:
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+              <i class="icon-facebook icon-light right-space"></i> | Share
+            </a>
+          % else:
+            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+              <i class="icon-facebook-sign icon-2x"></i>
+            </a>
+          % endif
+          <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            <li>
+              % if shareOnWall:
+                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+              % endif
+            </li>
+            <li>
+              % if sendMessage:
+                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+              % endif
+            </li>
+          </ul>
+        </div>
+        
+        
+    % endif
+</%def>
 
 <%def name="facebookDialogShare(link, picture, **kwargs)">
     <%

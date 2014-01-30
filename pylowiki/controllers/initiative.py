@@ -513,7 +513,7 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-
+        log.info(dir(c.initiative))
         c.initiativeHome = True
 
         # create html-free description for sharing on facebook

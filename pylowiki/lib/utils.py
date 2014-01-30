@@ -181,7 +181,9 @@ def initiativeURL(thing):
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
         
-    
+def workshopURL(w, **kwargs):
+    return "/workshop/%s/%s" %(w['urlCode'], w['url'])
+
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:
         if mainImage['pictureHash'] == 'supDawg':
