@@ -7,6 +7,7 @@ from hashlib import md5
 from pylons import tmpl_context as c, config, session
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as generic
+
 import urllib2
 
 
@@ -180,7 +181,6 @@ def initiativeURL(thing):
         return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
-        
     
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:

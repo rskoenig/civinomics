@@ -259,8 +259,15 @@ class HomeController(BaseController):
 
 			# photos
 			entry['mainPhoto'] = "0"
-			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+			if entry['objType'] == 'initiative':
 				entry['mainPhoto'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+			elif 'initiativeCode' in item:
+				initiative = initiativeLib.getInitiative(item['initiativeCode'])
+				entry['mainPhoto'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+			elif 'workshopCode' in item:
+				workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
+				mainImage = mainImageLib.getMainImage(workshop)
+				entry['mainPhoto'] = utils.workshopImageURL(workshop, mainImage, thumbnail = True)
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)
