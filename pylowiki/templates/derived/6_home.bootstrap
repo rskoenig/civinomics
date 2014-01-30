@@ -65,44 +65,48 @@
       ###
       <div class="span8" ng-controller = "activityController">
         <table ng-cloak>
-          <tr ng-repeat="item in activity">
+          <tr ng-repeat="item in activity" class="activity-item">
             <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-            <td>
-                <a href="{{item.authorHref}}" class="green greenhover"><strong> {{item.authorName}} </strong></a> 
+            <td class="activity-item-content">
+              <div class="activity-item-content-header">
+                <small>
+                  <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
 
-                <span ng-show="item.parentObjType == ''">
-                  added the {{item.objType}} <strong><a ng-href="{{item.href}}" class="no-highlight">{{item.title}}</a></strong>
-                </span>
-                
-                <span ng-show="!(item.parentObjType == '')">
-                  added {{item.article}} {{item.objType}} to <strong><a ng-href="{{item.parentHref}}" class="no-highlight">{{item.parentTitle}}</a></strong>:<br>
-                  <strong><a ng-href="{{item.href}}" class="no-highlight">{{item.title}}</a></strong>
-                </span>
+                  <span ng-show="item.parentObjType == ''">
+                    added the {{item.objType}}
+                  </span>
+                  <span ng-show="!(item.parentObjType == '')">
+                    added {{item.article}} {{item.objType}} to <a ng-href="{{item.parentHref}}" class="no-highlight"><strong>{{item.parentTitle}}</strong></a>
+                  </span>
+                  <span class="date">{{item.date}} ago</span>
+                </small>
+              </div>
 
-                <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
-                <br>
-                <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
-                <p>{{item.text}}</p>
-                <span class="grey">{{item.date}} ago</span>
+              <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
 
-                ### Comments on item
-                <div ng-init="discussionCode = item.discussion">
-                  <div ng-controller="commentsController">
-                    <a href="#" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
+              <strong><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></strong><br>
+              <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+              <p>{{item.text}}</p>
+              
 
-                    <div class="centered" ng-show="commentsLoading" ng-cloak>
-                      <i class="icon-spinner icon-spin icon-2x"></i>
-                    </div>
+              ### Comments on item
+              <div ng-init="discussionCode = item.discussion">
+                <div ng-controller="commentsController">
+                  <a href="#a" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
 
-                    <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
-                      <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-                        <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
-                          <span class="grey">{{comment.date}} ago</span>
-                        </td>
-                      </tr>
-                    </table>
+                  <div class="centered" ng-show="commentsLoading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-2x"></i>
                   </div>
+
+                  <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
+                    <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
+                      <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
+                        <span class="grey">{{comment.date}} ago</span>
+                      </td>
+                    </tr>
+                  </table>
                 </div>
+              </div>
             </td>
           </tr>
         </table>
@@ -112,13 +116,16 @@
         ###
         ### Zip Lookup
         ###
-        <form class="form-inline" name="zipForm">
-          <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-              <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-              <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-              <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-          </div>
-        </form>
+        <div class="well well-splash-content">
+          <h4>Zip Code Lookup</h4>
+          <form class="form-inline" name="zipForm">
+            <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+            </div>
+          </form>
+        </div>
       </div>
     </div> <!-- /row-fluid -->
   </div><!-- /row -->

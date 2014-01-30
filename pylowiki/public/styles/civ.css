@@ -39,7 +39,7 @@ h1,h2,h3,h4,h5{
   height: auto !important;
   height: 100%;
   /* Negative indent footer by it's height */
-  margin: 2px auto -55px;
+  margin: 1px auto -55px;
 }
 
 /* Set the fixed height of the footer here */
@@ -609,9 +609,7 @@ ul.activity > li {
 }
 
 .wrap-voting-group{
-    -moz-box-shadow: 0 0px 4px #111;
-    -webkit-box-shadow: 0 0px 4px #111;
-    box-shadow: 0 0px 4px #111;
+    border: 1px solid #ffffff;
     margin-top:0;
     margin-left: 0 !important;
     margin-bottom: 0 !important;
@@ -2284,9 +2282,14 @@ h1 .label.workshop-tag{
   margin-top: 0;
 }
   
-.wrap-voting-group-slide, .wrap-voting-group.scope {
+.wrap-voting-group.scope {
   height: 180px;
   position: relative;
+}
+
+.wrap-voting-group-slide{
+  position: relative;
+  height: 178px;
 }
 
 .tile-title{
@@ -2730,6 +2733,7 @@ h4.forum-topic{
 .featured-title{
   font-size: 18px;
   line-height: 22px;
+  width: 90%;
 }
 
 .featured-scope-title{
@@ -2977,3 +2981,27 @@ hr.narrow{
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
 }
+
+
+.activity-item .avatar{
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+
+.activity-item-content{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid #dddddd;
+}
+
+.activity-item-content-header{
+  margin-bottom: 10px;
+}
+
+.date{
+  color:grey;
+  font-size: 85%;
+  display:inline-block;
+}
+
