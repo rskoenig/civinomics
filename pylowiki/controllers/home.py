@@ -259,7 +259,24 @@ class HomeController(BaseController):
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
 			entry['urlCode'] = item['urlCode']
-			entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+
+			# href
+			# note: we should standardize the way object urls are constructed
+			if item.objType == 'photo':
+				entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
+			else:
+				entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+
+			if 'workshopCode' in item:
+				entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+				entry['href'] = entry['parentHref'] + entry['href']
+			elif 'initiativeCode' in item:
+				entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+				if entry['objType'] == 'update':
+					entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
+				else:
+					entry['href'] = entry['parentHref'] + entry['href']
+
 			entry['parentTitle'] = ''
 			entry['parentObjType'] = ''
 			entry['article'] = 'a'
@@ -270,16 +287,9 @@ class HomeController(BaseController):
 			if 'workshopCode' in item:
 				entry['parentTitle'] = item['workshop_title']
 				entry['parentObjType'] = 'workshop'
-				entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-				entry['href'] = entry['parentHref'] + entry['href']
 			elif 'initiativeCode' in item:
 				entry['parentTitle'] = item['initiative_title']
 				entry['parentObjType'] = 'initiative'
-				entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
-				if entry['objType'] == 'update':
-					entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
-				else:
-					entry['href'] = entry['parentHref'] + entry['href']
 
 			# author data
 			author = userLib.getUserByID(item.owner)
@@ -290,7 +300,7 @@ class HomeController(BaseController):
 			# photos
 			entry['mainPhoto'] = "0"
 			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-				entry['mainPhoto'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)
