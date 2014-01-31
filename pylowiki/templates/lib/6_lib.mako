@@ -40,7 +40,7 @@
 
         link = c.facebookShare.url
         image = c.facebookShare.image
-
+        log.info("link %s and image %s"%(link, image))
         userCode = ''
         if c.facebookShare.itemType == 'workshop':
             workshopCode = c.facebookShare.thingCode
@@ -92,6 +92,7 @@
             // activate facebook javascript sdk
             var fbAuthId = '';
             console.log("1 "+"${facebookAppId}");
+            console.log("1b "+"${channelUrl}");
             window.fbAsyncInit = function() {
                 FB.init({
                     appId      : "${facebookAppId}", // App ID

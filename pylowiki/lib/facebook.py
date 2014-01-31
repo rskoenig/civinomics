@@ -55,4 +55,7 @@ class FacebookShareObject(object):
         else:    
             self.shareOk = shareOk
 
+    def updateUrl(self, newUrl):
+        self.url = self.baseUrl + newUrl
+
 

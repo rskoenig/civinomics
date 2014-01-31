@@ -9,6 +9,9 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as generic
 import urllib2
 
+import misaka as m
+import copy as copy
+from HTMLParser import HTMLParser
 
 log = logging.getLogger(__name__)
 
@@ -264,73 +267,95 @@ def getPublicScope(item):
         flag += 'earth.gif'
     return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
 
+###################################
+# MLStripper is part of the process of 
+# stripping html from misaka's markdown output
+###################################
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
+def getTextFromMisaka(content):
+    # create html-free description for sharing on facebook
+    contentCopy = copy.copy(content)
+    contentHtml = m.html(contentCopy, render_flags=m.HTML_SKIP_HTML)
+    s = MLStripper()
+    s.feed(contentHtml)
+    contentWithLineBreaks = s.get_data()
+    contentNoLineBreaks = contentWithLineBreaks.replace('\n', ' ').replace('\r', '')
+    return contentNoLineBreaks
 
 def getGeoExceptions():
-        geoExceptions = {
-            'San Francisco' : 'County',
-        }
+    geoExceptions = {
+        'San Francisco' : 'County',
+    }
 
-        return geoExceptions
+    return geoExceptions
 
 
 def _userImageSource(user, **kwargs):
-        # Assumes 'user' is a Thing.
-        # Defaults to a gravatar source
-        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
-        #                          we return a source based on the value given here (civ/gravatar)
-        source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
-        large = False
-        gravatar = True
+    # Assumes 'user' is a Thing.
+    # Defaults to a gravatar source
+    # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+    #                          we return a source based on the value given here (civ/gravatar)
+    source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+    large = False
+    gravatar = True
 
-        if 'className' in kwargs:
-            if 'avatar-large' in kwargs['className']:
-                large = True
-        if 'forceSource' in kwargs:
-            if kwargs['forceSource'] == 'civ':
-                gravatar = False
+    if 'className' in kwargs:
+        if 'avatar-large' in kwargs['className']:
+            large = True
+    if 'forceSource' in kwargs:
+        if kwargs['forceSource'] == 'civ':
+            gravatar = False
+            if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            else:
+                source = '/images/hamilton.png'
+        elif kwargs['forceSource'] == 'facebook':
+            if large:
+                source = user['facebookProfileBig']
+            else:
+                source = user['facebookProfileSmall']
+        elif kwargs['forceSource'] == 'twitter':
+            source = user['twitterProfilePic']
+
+    else:
+        if 'avatarSource' in user.keys():
+            if user['avatarSource'] == 'civ':
                 if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
                     source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
-                else:
-                    source = '/images/hamilton.png'
-            elif kwargs['forceSource'] == 'facebook':
+                    gravatar = False
+            elif user['avatarSource'] == 'facebook':
+                gravatar = False
                 if large:
                     source = user['facebookProfileBig']
                 else:
                     source = user['facebookProfileSmall']
-            elif kwargs['forceSource'] == 'twitter':
+            elif user['avatarSource'] == 'twitter':
+                gravatar = False
                 source = user['twitterProfilePic']
 
-        else:
-            if 'avatarSource' in user.keys():
-                if user['avatarSource'] == 'civ':
-                    if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
-                        source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
-                        gravatar = False
-                elif user['avatarSource'] == 'facebook':
+        elif 'extSource' in user.keys():
+            # this is needed untl we're sure all facebook connected users have properly 
+            # functioning profile pics - the logic here is now handled 
+            # with the above user['avatarSource'] == 'facebook': ..
+            if 'facebookSource' in user.keys():
+                if user['facebookSource'] == u'1':
                     gravatar = False
+                    # NOTE - when to provide large or small link?
                     if large:
                         source = user['facebookProfileBig']
                     else:
                         source = user['facebookProfileSmall']
-                elif user['avatarSource'] == 'twitter':
-                    gravatar = False
-                    source = user['twitterProfilePic']
-
-            elif 'extSource' in user.keys():
-                # this is needed untl we're sure all facebook connected users have properly 
-                # functioning profile pics - the logic here is now handled 
-                # with the above user['avatarSource'] == 'facebook': ..
-                if 'facebookSource' in user.keys():
-                    if user['facebookSource'] == u'1':
-                        gravatar = False
-                        # NOTE - when to provide large or small link?
-                        if large:
-                            source = user['facebookProfileBig']
-                        else:
-                            source = user['facebookProfileSmall']
-        if large and gravatar:
-            source += '&s=200'
-        return source
+    if large and gravatar:
+        source += '&s=200'
+    return source
 
 
 workshopInfo = \

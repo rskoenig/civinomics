@@ -105,7 +105,10 @@ class DiscussionController(BaseController):
         # name/title for facebook sharing
         c.facebookShare.title = c.thing['title']
         # update url for this item
-        c.facebookShare.url = utils.thingURL(c.w, c.thing)
+        newUrl = utils.workshopURL(c.w) + utils.thingURL(c.w, c.thing)
+        c.facebookShare.updateUrl(newUrl)
+        # set description to be that of the topic's description
+        c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
 
         if 'views' not in c.thing:
             c.thing['views'] = u'0'
