@@ -107,10 +107,11 @@
                     <i class="icon-spinner icon-spin icon-2x"></i>
                   </div>
 
-                  <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
+                  <table class="activity-comments" ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
                     <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-                      <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
-                        <span class="grey">{{comment.date}} ago</span>
+                      <td style="vertical-align: top;"><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td style="padding: 10px;"><small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small><br>
+                       {{comment.data}}
+                        
                       </td>
                     </tr>
                   </table>

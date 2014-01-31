@@ -3018,6 +3018,11 @@ hr.narrow{
   margin-bottom: 10px;
 }
 
+.activity-comments .avatar{
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
 .date{
   color:grey;
   font-size: 85%;
