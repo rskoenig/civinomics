@@ -1383,7 +1383,8 @@ class WorkshopController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
-            entry['date'] = fuzzyTime.timeSince(idea.date)
+            entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
                 adopted += 1
