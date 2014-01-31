@@ -19,7 +19,9 @@
    import pylowiki.lib.db.follow        as followLib
    import pylowiki.lib.db.initiative    as initiativeLib
    import pylowiki.lib.utils            as utilsLib
+   from pylons import session
    
+   import misaka as m
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
@@ -66,7 +68,16 @@
         
 
         # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
-        name = c.name
+        if 'title' in kwargs:
+          name = kwargs['title']
+        else:
+          name = c.name
+
+        if 'description' in kwargs:
+          description = kwargs['description']
+        else:
+          description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+
         # this is an elaborate way to get the item or workshop's description loaded as the caption
         if c.thing:
             if 'text' in c.thing.keys():
@@ -177,7 +188,7 @@
                       link: "${link}",
                       picture: "${picture}",
                       caption: shareText,
-                      description: "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+                      description: "${description}"
                     },
                     function(response) 
                     {
@@ -304,7 +315,7 @@
          <% return %>
       % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
@@ -375,30 +386,37 @@
         if totalVotes > 0:
           percentYes = int(float(totalYes)/float(totalVotes) * 100)
           percentNo = int(float(totalNo)/float(totalVotes) * 100)
+        if 'ratings' in session:
+            myRatings = session["ratings"]
+        else:
+            myRatings = {}
       %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
-            if 'vote' in thing and 'amount' in thing['vote']:
-                rated = thing['vote']
+            thingCode = thing['urlCode']
+            #log.info("thingCode is %s"%thingCode)
+            if thingCode in myRatings:
+                myRating = myRatings[thingCode]
+                log.info("thingCode %s myRating %s"%(thingCode, myRating))
             else:
-                rated = ratingLib.getRatingForThing(c.authuser, thing) 
-            if rated:
-               if rated['amount'] == '1':
-                  commentClass = 'voted yesVote'
-                  displayTally = ''
-                  displayPrompt = 'hidden'
-               else:
-                  commentClass = 'yesVote'
-                  displayTally = ''
-                  displayPrompt = 'hidden'
-                  if rated['amount'] == '0' :
+                myRating = "0"
+                
+            if myRating == '1':
+                commentClass = 'voted yesVote'
+                displayTally = ''
+                displayPrompt = 'hidden'
+            else:
+                commentClass = 'yesVote'
+                displayTally = ''
+                displayPrompt = 'hidden'
+                if myRating == '0' :
                     displayTally = 'hidden'
                     displayPrompt = ''
 
-            else:
-               commentClass = 'yesVote'
-               displayTally = 'hidden'
-               displayPrompt = ''
+            #else:
+            #   commentClass = 'yesVote'
+            #   displayTally = 'hidden'
+            #   displayPrompt = ''
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
               <div class="vote-icon yes-icon detail"></div>
@@ -407,13 +425,10 @@
          <br>
          <br>
          <%
-            if rated:
-               if rated['amount'] == '-1':
-                  commentClass = 'voted noVote'
-               else:
-                  commentClass = 'noVote'
+            if myRating == '-1':
+                commentClass = 'voted noVote'
             else:
-               commentClass = 'noVote'
+                commentClass = 'noVote'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
               <div class="vote-icon no-icon detail"></div>
@@ -458,6 +473,8 @@
    <%
         if isReadOnly():
             readOnlyMessage(thing)
+            return
+        if c.privs['provisional']:
             return
         if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
             return

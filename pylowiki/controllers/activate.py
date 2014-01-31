@@ -42,13 +42,6 @@ class ActivateController(BaseController):
                             session.pop('afterLoginURL')
                             session.save()
                         else:
-                            # Send to the demo workshop
-                            #demo = demoLib.getDemo()
-                            #if not demo:
-                                #log.info('not demo')
-                                #returnURL = '/'
-                            #else:
-                                #returnURL = '/workshop/%s/%s#guider=tour_welcome' %(demo['urlCode'], demo['url'])
                             returnURL = '/'
                         return redirect(returnURL)
                     else:
@@ -129,3 +122,17 @@ class ActivateController(BaseController):
         session['splashMsg'] = splashMsg
         session.save()
         return redirect('/login')
+        
+    def resend(self, userCode):
+        if not userCode:
+            abort(404)
+        user = userLib.getUserByCode(userCode)
+        if not user:
+            abort(404)
+        baseURL = c.conf['activation.url']
+        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+        mailLib.sendActivationMail(user['email'], url)
+        
+        
+        
+        

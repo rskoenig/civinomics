@@ -14,6 +14,7 @@ import pylowiki.lib.db.user     as userLib
 import pylowiki.lib.mail        as mailLib
 from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
+import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
 
@@ -86,7 +87,7 @@ class LoginController(BaseController):
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens()
+        auth = twitter.get_authentication_tokens(force_login=True)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
@@ -539,6 +540,11 @@ class LoginController(BaseController):
         log.info("login:logUserIn session save")
 
         c.authuser = user
+        
+        # get and cache their ratings
+        ratings = ratingLib.getRatingsForUser()
+        session["ratings"] = ratings
+        session.save()
 
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
@@ -610,7 +616,7 @@ class LoginController(BaseController):
             if email and password:
                 user = userLib.getUserByEmail( email )
                 if user: # not none or false
-                    if user['activated'] == '0':
+                    if user['activated'] == '6':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])

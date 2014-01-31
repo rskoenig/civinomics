@@ -107,8 +107,11 @@
                     </div>
                 </div>
     </div><!-- span9 -->
-    <div class="span3 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
-        <div class="well well-splash-content">
+    % if c.authuser:
+        <span class="hidden" ng-init="zipValue = ${c.authuser['postalCode']}"></span>
+    % endif
+    <div class="span3 zipLookup">
+        <div class="well well-splash-content" ng-controller="zipLookupCtrl" ng-cloak>
             <h4>Zip Code Lookup</h4>
             <form class="form-inline" name="zipForm">
                 <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>

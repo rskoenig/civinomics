@@ -169,6 +169,15 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
     thisComment = generic.linkChildToParent(thisComment, discussion)
     if attachedThing is not None:
         thisComment = generic.linkChildToParent(thisComment, attachedThing)
+        nComments = 0
+        if 'numComments' in attachedThing:
+            nComments = int(attachedThing['numComments'])
+            
+        nComments += 1
+        
+        attachedThing['numComments'] = str(nComments)
+        commit(attachedThing)
+        
         if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
             thisComment['profileCode'] = profileOwner['urlCode']
             thisComment['profile_url'] = profileOwner['url']

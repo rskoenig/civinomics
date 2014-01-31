@@ -414,14 +414,24 @@ def setWorkshopPrivs(workshop):
     c.privs['demo'] = isDemo(workshop)
     
     if 'user' in session:
-        c.privs['admin'] = userLib.isAdmin(c.authuser.id)
-        c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
-        testL = listenerLib.getListener(c.authuser, workshop)
-        if testL and testL['pending'] != '1':
-            c.privs['listener'] = True
-        c.privs['participant'] = isScoped(c.authuser, workshop)
-        c.privs['guest'] = False
-        c.privs['visitor'] = False
+        if c.authuser['activated'] == '0':
+            c.privs['provisional'] = True
+            c.privs['admin'] = False
+            c.privs['facilitator'] = False
+            c.privs['listener'] = False
+            c.privs['participant'] = isScoped(c.authuser, workshop)
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
+        else:
+            c.privs['provisional'] = False
+            c.privs['admin'] = userLib.isAdmin(c.authuser.id)
+            c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
+            testL = listenerLib.getListener(c.authuser, workshop)
+            if testL and testL['pending'] != '1':
+                c.privs['listener'] = True
+            c.privs['participant'] = isScoped(c.authuser, workshop)
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
 
 
 def Workshop(title, owner, publicPrivate, type = "personal"):

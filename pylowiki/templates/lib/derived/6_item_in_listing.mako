@@ -95,10 +95,10 @@
         flagID = 'flag-%s' % thing['urlCode']
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
-        log.info("thing keys is %s"%thing.keys())
+        #log.info("thing keys is %s"%thing.keys())
     %>
     <div class="btn-group" style="margin-top: -10px;">
-        % if thing['disabled'] == '0':
+        % if thing['disabled'] == '0' and not c.privs['provisional']:
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):

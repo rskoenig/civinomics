@@ -161,7 +161,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{activity:activity?/?}', controller = 'workshop', action = 'activity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     # workshop stats
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{stats:stats?/?}', controller = 'workshop', action = 'stats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # resources
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
@@ -245,6 +245,7 @@ def make_map():
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
+    map.connect('/activate/user/{thingCode}{end:/?}', controller = 'admin', action='activate')
     
     ########################################################################################################
     # 
@@ -332,6 +333,7 @@ def make_map():
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index')
+    map.connect('/activateResend/{userCode}', controller = 'activate', action = 'resend')
 
     # User profile
     map.connect('/profile/{id1}/{id2}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')
@@ -437,6 +439,7 @@ def make_map():
     ################
     map.connect('/browse/initiatives', controller = 'search', action = 'browseInitiatives', searchType = 'browse')
     map.connect('/zip/lookup/{zip}{end:/?}', controller = 'search', action = 'zipLookup', zip = '{zip}')
+    map.connect('/zip/lookup/{zip}/photos{end:/?}', controller = 'search', action = 'zipLookupPhotos', zip = '{zip}')
 
     ################
     # Application  #

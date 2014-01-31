@@ -5,19 +5,19 @@
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 
-<div class="row">
-  <div class="span10">
+<div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
+  <div class="span10" ng-controller="zipLookupCtrl">
     <div class="spacer"></div>
     <div class="row-fluid">
       % if 'user' in session:
-        <ul class="thumbnails">
+        <ul class="thumbnails" ng-cloak>
 
           ###
           ### Carousel
           ###
           
             <li class="span4 wrap-voting-group scope">
-              % if len(c.newWorkshops) <= 3:
+              % if 0 < len(c.newWorkshops) <= 3:
               <div id="myCarousel" class="carousel slide">
                 <ol class="carousel-indicators">
                     <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -43,25 +43,23 @@
             ###
             ### My Places
             ###
+            <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
+              <a href="{{geo.href}}">
+                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+                <table class="lead tile-title">
+                  <tr>
+                    <td>
+                      <img class="thumbnail small-flag" src="{{geo.flag}}">
+                    </td>
+                    <td style="padding-left: 5px;">
+                      <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
+                    </td>
+                  </tr>
+                </table>
+              </a>
+            </li>
 
-            % for scope in c.scopeMap:
-              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover; background-position: center center;">
-                <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
-                  <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                  <table class="lead tile-title">
-                    <tr>
-                      <td>
-                        <img class="thumbnail small-flag" src="${scope['flag']}">
-                      </td>
-                      <td style="padding-left: 5px;">
-                        ${scope['name']}
-                      </td>
-                    </tr>
-                  </table>
-                </a>
-              </li>
-            % endfor
-
+              
             ###
             ### Add a group
             ###
@@ -110,8 +108,8 @@
             ${lib_6.listBookmarks(c.privateWorkshops, 'Private')}
             <br>
           % endif
-          <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
           % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
+            <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
             <table class="table table-hover table-condensed no-bottom">
               <tbody>
               % for item in c.initiativeBookmarks:
@@ -121,9 +119,24 @@
             </table>
             ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
           % else:
-            <hr class="top-space">
-            <div class="alert alert-info">
-              <strong>No Bookmarks!</strong> You have no bookmarked workshops or initiatives. Find some by clicking the regions above or going to 'Browse' in the top menubar.
+            % if c.authuser['activated'] == '1':
+                <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
+                <hr class="top-space">
+                <div class="alert alert-info">
+                <strong>No Bookmarks!</strong> You have no bookmarked workshops or initiatives. Find some by clicking the regions above or going to 'Browse' in the top menubar.
+                </div>
+            % endif
+          % endif
+          % if c.authuser['activated'] == '0':
+            <div class="alert alert-success">
+              <strong>Welcome!</strong> Your Civinomics registration is almost complete!<p>
+              <p>Check your email for a message from <strong>registration@civinomics.com</strong>, and click on the activation
+              link inside to validate and complete your Civinomics registration. If you do not see the message in your inbox, 
+              be sure to check your Spam or Junk folder.<p>
+              <p>Until your registration is complete, your votes are marked as provisional and will be discarded after 2 weeks.<p>
+              <p>Your completed registration will allow you to add items, make comments, cast permanent votes, 
+              launch initiatives, start workshops and utilize all of the Civinomics tools to hack your future.<p>
+              <p>Can't find the registration email? <button class="btn btn-mini btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Registration Email</button> <span id="resendMessage"></span>
             </div>
           % endif
         </div><!-- /row-fluid -->
@@ -153,6 +166,10 @@
   </div><!-- /row -->
 
 
+<%def name="headScripts()">
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+</%def>
+
 <%def name="extraScripts()">
    <script type="text/javascript">
    $(document).ready(function() {
@@ -180,6 +197,7 @@
         });
     </script>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
     <script type="text/javascript">
