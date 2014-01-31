@@ -38,6 +38,7 @@ import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime
 import webhelpers.feedgenerator     as feedgenerator
 
 import pylowiki.lib.graphData       as graphData
@@ -48,6 +49,7 @@ import simplejson as json
 import misaka as m
 import copy as copy
 
+from hashlib import md5
 from HTMLParser import HTMLParser
 
 from pylowiki.lib.base import BaseController, render
@@ -141,6 +143,27 @@ class WorkshopController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
+        
+        #################################################
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
+        # c.requestUrl is for lib_6.emailShare
+        c.requestUrl = request.url
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
+        c.description = c.w['description']
+        #################################################
+
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
@@ -927,23 +950,6 @@ class WorkshopController(BaseController):
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
         entry = {}
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
-        
-        c.requestUrl = request.url
-        c.thingCode = workshopCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-        # name for facebook share posts
-        c.name = c.title = c.w['title']
-
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
@@ -1156,7 +1162,7 @@ class WorkshopController(BaseController):
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         
-        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=76)
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
 
         return render('/derived/6_detailed_listing.bootstrap')
 
@@ -1361,4 +1367,60 @@ class WorkshopController(BaseController):
         else:
             return eAction
 
-    
+    def workshopIdeas(self, workshopCode, workshopURL):
+        ideas = ideaLib.getAllIdeasInWorkshop(workshopCode)
+        if not ideas:
+            log.info("searchIdeas return NOT ideas")
+            return json.dumps({'statusCode':2})
+        if len(ideas) == 0:
+            log.info("searchIdeas return len ideas == 0")
+            return json.dumps({'statusCode':2})
+
+        result = []
+        adopted = 0
+        disabled = 0
+        for idea in ideas:
+            entry = {}
+            entry['title'] = idea['title']
+            entry['text'] = idea['text']
+            entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
+            if idea['adopted'] == '1':
+                entry['status'] = 'adopted'
+                adopted += 1
+            elif idea['disabled'] == '1':
+                entry['status'] = 'disabled'
+                disabled += 1
+            else:
+                entry['status'] = 'proposed'
+            entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+            entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
+            entry['ups'] = int(idea['ups'])
+            entry['downs'] = int(idea['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, idea) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
+            entry['addedAs'] = idea['addedAs']
+            entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
+            u = userLib.getUserByID(idea.owner)
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            entry['authorCode'] = entry['userCode'] = idea['userCode']
+            entry['authorURL'] = entry['user_url'] = idea['user_url']
+            entry['authorName'] = entry['user_name'] = idea['user_name']
+            entry['workshopCode'] = workshopCode
+            entry['workshopURL'] = workshopURL
+            entry['views'] = '0'
+            if 'views' in idea:
+                entry['views'] = numViews = str(idea['views'])
+
+            result.append(entry)
+        numIdeas = len(ideas) - disabled
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
+
+

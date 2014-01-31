@@ -123,7 +123,7 @@
 </%def>
 
 <%def name="watchButton(i, **kwargs)">
-    % if 'user' in session:
+    % if 'user' in session and not c.privs['provisional']:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
@@ -142,10 +142,13 @@
         if c.initiative.objType == 'initiative':
             if 'user' in session:
                 printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
-            else:
+            elif not c.privs['provisional']:
                 printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
             printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
+            
+            if 'user' in session and c.privs['provisional']:
+                printStr = ''
         
     %>
     ${printStr | n}
@@ -499,7 +502,7 @@
 
 <%def name="initiativeModerationPanel(thing)">
     <%
-        if 'user' not in session or thing.objType == 'revision':
+        if 'user' not in session or thing.objType == 'revision' or c.privs['provisional']:
             return
         flagID = 'flag-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']

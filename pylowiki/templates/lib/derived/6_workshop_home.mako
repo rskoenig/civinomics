@@ -49,8 +49,9 @@
         </ul>
         <hr>
      % endif
-      <em class="grey">Which public officials should participate?</em><br />
-      % if 'user' in session and c.authuser:
+      
+     % if 'user' in session and c.authuser and not c.privs['provisional']:
+        <em class="grey">Which public officials should participate?</em><br />
         <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener no-bottom" name="suggestListenerForm">
           <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
           <button type="submit" class="btn btn-success btn-small">Submit</button>
@@ -59,14 +60,7 @@
             {{suggestListenerResponse}}
           </div>
         </form>
-      % else:
-        <a href="#signupLoginModal" data-toggle='modal'>
-          <form class="form-inline no-bottom">
-            <input class="listenerInput" type="text" placeholder="Suggest a Listener">
-            <button type="submit" class="btn btn-success btn-small">Submit</button>
-          </form>
-        </a>
-      %endif
+     %endif
 </%def>
 
 <%def name="whoListeningModals()">
@@ -148,7 +142,7 @@
 </%def>
 
 <%def name="watchButton(w, **kwargs)">
-    % if 'user' in session:
+    % if 'user' in session and not c.privs['provisional']:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>

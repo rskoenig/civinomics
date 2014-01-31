@@ -37,12 +37,12 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives']:
+        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
         # Actions that require a workshop and a workshop child object
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish', 'activate']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -68,7 +68,7 @@ class AdminController(BaseController):
                 userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item
-            if userLib.isAdmin(author.id):
+            if c.thing.objType != 'user' and userLib.isAdmin(author.id):
                 if not userLib.isAdmin(c.authuser.id):
                     """
                         Why are we not returning here?  Pylons will only accept an abort() here
@@ -467,3 +467,10 @@ class AdminController(BaseController):
     def setDemo(self, thingCode):
         response = workshopLib.setDemo(c.thing)
         return response
+        
+    def activate(self, thingCode):
+        user = c.thing
+        user['activated'] = "1"
+        dbHelpers.commit(user)
+        result = "Activated"
+        return json.dumps({'code':thingCode, 'result':result})

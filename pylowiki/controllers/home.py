@@ -48,7 +48,8 @@ class HomeController(BaseController):
 	            c.messages = messageLib.getMessages(c.authuser)
 	            c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
 		c.user = c.authuser
-		log.info("in home.py")
+		#log.info("in home.py")
+		userLib.setUserPrivs()
 
 
 	def index(self):
@@ -67,7 +68,7 @@ class HomeController(BaseController):
 			newWorkshops = []
 			workshops = getActiveWorkshops()
 			if len(workshops) == 0 :
-				c.newWorkshops = 0
+				pass#c.newWorkshops = 0
 			else:
 				workshops = workshops[:3]
 				if workshops >= 1:

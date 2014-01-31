@@ -88,7 +88,7 @@
                                 <div class="row">
                                     <div class="span4 offset1">
                                         <input type="hidden" name="chkTOS" id="chkTOS" value="true">
-                                        <small>By signing up, you agree to our <a href="/corp/terms" target="_blank" style="color: #075D00;">terms of use</a> and <a href="/corp/privacy" target="_blank" style="color: #075D00;">privacy policy</small>
+                                        <small>You agree to our <a href="/corp/terms" target="_blank" style="color: #075D00;">terms of use</a> and <a href="/corp/privacy" target="_blank" style="color: #075D00;">privacy policy</small>
                                     </div>
                                 </div>
                                 <div class="control-group">
