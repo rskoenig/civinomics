@@ -1389,7 +1389,7 @@ voting ribbon triangle
 }
 
 .alert.workshop-admin{
-  margin: 10px 0 0 0;
+  margin: 10px 0 10px 0;
 } 
 
 .link-span{
@@ -3070,6 +3070,13 @@ a.no-highlight:hover{
   font-weight: bold;
 }
 
+.helper-text-img{
+  height: 16px;
+}
+.helper-sort{
+  margin: 0 0 3px 0;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
@@ -3077,8 +3084,38 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
+.object-in-listing.adopted{
+  background-color: rgba(0,93,40,0.2);
+}
+.object-in-listing.disabled{
+  background-color: rgba(144, 0, 10,0.2);
+  border-radius: 0;
+}
+
+hr.narrow{
+  margin: 10px 0 10px 0;
+}
+
+.object-in-listing{
+  padding: 10px 10px 0 15px;
+  margin: 0 -10px;
+}
+
+.well-splash-content{
+  padding-top: 0;
+}
+
+hr.object-list-header{
+  margin-bottom: 0;
+}
+
 .full-width{
   width: 100%;
+}
+
+.section-wrapper.metrics{
+  background-color: whitesmoke;
+  padding-top: 10px;
 }
 
 .splash-initiative{
