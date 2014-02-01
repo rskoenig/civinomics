@@ -163,9 +163,8 @@ class WorkshopController(BaseController):
         c.name = c.title = c.w['title']
         c.description = c.w['description']
         #################################################
-
+        workshopLib.setWorkshopPrivs(c.w)
         if action in setPrivs:
-            workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
                 if not c.privs['admin'] and not c.privs['facilitator']:
                     return(redirect("/"))
