@@ -48,7 +48,7 @@ app.controller('SearchCtrl', function($scope, $http){
         if (pathlen === 9) {
             $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||" + pathList[7] + "|" + pathList[8];
         }
-    } else if (action === 'browse' || action === 'signup'){
+    } else if (action === 'browse' || action === 'splash'){
         $scope.searchType = 'browse';
     }
 
@@ -75,7 +75,7 @@ app.controller('SearchCtrl', function($scope, $http){
     //$scope.showingInitiatives = {'class': '', 'show': false, 'create': false};
     $scope.objType = 'initiatives';
     //$scope.objType = 'workshops';
-    if(action === 'signup'){
+    if(action === 'splash'){
         $scope.orderProp = '-voteCount';
     } else {
         $scope.orderProp = '-date';

@@ -36,7 +36,7 @@ class RegisterController(BaseController):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
-    def signupDisplay(self):
+    def splashDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
 	c.title = config['custom.titlebar']
@@ -80,7 +80,7 @@ class RegisterController(BaseController):
                     session.pop('workshopCode')
                     session.save()
             
-        return render("/derived/signup.bootstrap")
+        return render("/derived/splash.bootstrap")
 
     def signupNoExtAuthDisplay(self):
 
