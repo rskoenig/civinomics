@@ -401,7 +401,7 @@
                 </div>
                 <div class="span9">
                     <div class="alert alert-info">
-                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
+                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the affected region wherever possible.
                     </div>
                 </div>
             </div>
