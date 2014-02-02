@@ -794,7 +794,7 @@
                           <button type="submit" class="btn"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                        <table class="table-striped full-width" ng-if="!(users = '')" ng-cloak>
+                        <table class="table-striped full-width" ng-cloak>
                             <tr ng-repeat="user in users | limitTo:10">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">
@@ -808,7 +808,7 @@
                             </tr>
                         </table>
                 </div><!-- row-fluid -->
-                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}">
+                <div ng-if="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}" ng-cloak>
                     <button type="button" class="close" ng-click="hideShowAlert()">&times;</button>
                     {{alertMsg}}
                 </div>
@@ -819,7 +819,7 @@
                     <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
                 </div>
                 <div class="row-fluid" ng-show="!loading"> -->
-                    <table class="table-striped full-width">
+                    <table class="table-striped full-width" ng-cloak>
                         <tr>
                             <td>
                                 ${lib_6.userImage(c.user, className="avatar med-avatar")}
@@ -845,15 +845,15 @@
                                 <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
                             </td>
                             <td>
-                                <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
+                                <span ng-if="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
                             </td>
                             <td>
-                                <button type="button" ng-show="a.pending == '1'" ng-click="resendInvite(a.urlCode)" class="btn btn-primary pull-right">Resend Invite</button>
+                                <button type="button" ng-if="a.pending == '1'" ng-click="resendInvite(a.urlCode)" class="btn btn-primary pull-right">Resend Invite</button>
                             </td>
-                            <td ng-show="a.urlCode != authuserCode">
+                            <td ng-if="a.urlCode != authuserCode">
                                 <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove</button>
                             </td>
-                            <td ng-show="a.urlCode == authuserCode">
+                            <td ng-if="a.urlCode == authuserCode">
                                 <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler" ng-cloak>
                                     <input type="hidden" name="resign" value="resign">
                                     <button type="submit" class="btn btn-danger pull-right">Resign</button>

@@ -6,7 +6,6 @@
 </%def>
 
 <%def name="headScripts()">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
     <script src="/js/ng/signup_login.js" type="text/javascript"></script>
     <script src="/js/geo.js" type="text/javascript"></script>
 </%def>
@@ -20,26 +19,26 @@
 
 <div class="login">
   <div class="container">
-      <div class="row">
-          % if 'forgot' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'pTitle'">
-          % elif 'login' or 'Login' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'lTitle'">
-          % elif 'signup' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'sTitle'">
-          % elif 'forgot' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'pTitle'">
-          % endif
-              <div class="well main-well login" ng-controller="signupController">
-                  <div class="row-fluid">
-                    ${template_lib.tabbableSignupLogin('title')}
-                  </div>
-                  <div class="social-sign-in-separator sc-font-light sc-text-light no-bottom"></div>
-                  <div class="row-fluid centered tcs">
-                      <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
-                  </div>
-              </div><!-- main-well -->
-          </div><!-- sapn6 -->
-      </div><!-- row -->
+    <div class="row">
+      % if 'forgot' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'pTitle'">
+      % elif 'login' or 'Login' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'lTitle'">
+      % elif 'signup' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'sTitle'">
+      % elif 'forgot' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'pTitle'">
+      % endif
+          <div class="well main-well login" ng-controller="signupController">
+              <div class="row-fluid">
+                ${template_lib.tabbableSignupLogin('title')}
+              </div>
+              <div class="social-sign-in-separator sc-font-light sc-text-light no-bottom"></div>
+              <div class="row-fluid centered tcs">
+                  <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+              </div>
+          </div><!-- main-well -->
+        </div><!-- ng-init -->
+    </div><!-- row -->
   </div><!-- container -->
 </div><!-- login -->

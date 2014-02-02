@@ -89,9 +89,11 @@
                 </div>
                 <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                     <table class="table plain">
-                        <tr ng-repeat = "initiative in initiatives | filter:votedornot | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain">
+                        <tr ng-repeat = "item in initiatives | filter:votedornot | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain">
 
-                            ${ng_helpers.initiative_listing()}
+                            <td>
+                                ${ng_helpers.initiative_listing()}
+                            </td>
                             
                         </tr>
                     </table>

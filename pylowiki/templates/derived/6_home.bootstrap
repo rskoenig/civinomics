@@ -4,6 +4,7 @@
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
 <div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
   <div class="span12" ng-controller="zipLookupCtrl">
@@ -66,7 +67,21 @@
       <div class="span8" ng-controller = "activityController">
         <table ng-cloak>
           <tr ng-repeat="item in activity" class="activity-item">
-            <td class="activity-item-content">
+
+            <td ng-if="item.objType == 'initiative'">
+
+              ${ng_helpers.initiative_listing()}
+
+            </td>
+
+            <!-- 
+            <td ng-if="item.objType == 'resource'">
+              ### For extending the listing
+            </td>
+            -->
+
+
+            <td ng-if="!(item.objType == 'initiative')" class="activity-item-content">
               <h4><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></h4>
               <div ng-show="!(item.mainPhoto == '0')" class="photo" style="background-image:url('{{item.mainPhoto}}');"></div>
               <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
@@ -144,6 +159,7 @@
 <%def name="headScripts()">
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">

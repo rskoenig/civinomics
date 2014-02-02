@@ -216,6 +216,10 @@ class HomeController(BaseController):
 		# get recent activity and return it into json format
 		result = []
 		recentActivity = activityLib.getRecentActivity(12)
+		myRatings = {}
+		if 'ratings' in session:
+		   myRatings = session['ratings']
+
 		for item in recentActivity:
 			entry = {}
 			# item attributes
@@ -224,6 +228,8 @@ class HomeController(BaseController):
 			if item.objType == 'discussion':
 				if item['discType'] == 'update':
 					entry['objType'] = 'update'
+			entry['urlCode'] = item['urlCode']
+			entry['url'] = item['url']
 
 			# scope attributes
 			if 'scope' in item:
@@ -256,10 +262,11 @@ class HomeController(BaseController):
 
 
 			entry['numComments'] = 0
-			entry['date'] = fuzzyTime.timeSince(item.date)
+			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
-			entry['urlCode'] = item['urlCode']
+			
 
 			# href
 			# note: we should standardize the way object urls are constructed
@@ -296,12 +303,31 @@ class HomeController(BaseController):
 			author = userLib.getUserByID(item.owner)
 			entry['authorName'] = author['name']
 			entry['authorPhoto'] = utils._userImageSource(author)
+			# can pick one or the other way to do href
+			#either include two atributes in entry and construct in html or construct here in one attribute
+			entry['authorCode'] = author['urlCode']
+			entry['authorURL'] = author['url']
 			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
 			# photos
-			entry['mainPhoto'] = "0"
 			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+			else:
+				entry['mainPhoto'] = '0'
+				entry['thumbnail'] = '0'
+
+			# user ratings
+			if entry['urlCode'] in myRatings:
+			    entry['rated'] = myRatings[entry['urlCode']]
+			    entry['vote'] = 'voted'
+			else:
+				entry['rated'] = 0
+				entry['vote'] = 'nvote'
+			# votes
+			entry['voteCount'] = int(item['ups']) + int(item['downs'])
+			entry['ups'] = int(item['ups'])
+			entry['downs'] = int(item['downs'])
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)
@@ -310,13 +336,21 @@ class HomeController(BaseController):
 			# attributes that vary accross objects
 			entry['text'] = '0'
 			if 'text' in item:
-				entry['text'] = item['text']
+				entry['text'] = item['text'][:200]
 			elif 'description' in item:
-				entry['text'] = item['description']
+				entry['text'] = item['description'][:200]
+			if len(entry['text']) >= 200:
+				entry['text'] += "..."
 
-			entry['link'] = '0'
 			if 'link' in item:
 				entry['link'] = item['link']
+			else:
+				entry['link'] = '0'
+
+			if 'cost' in item:
+				entry['cost'] = item['cost']
+			else:
+				entry['cost'] = ''
 
 			result.append(entry)
 

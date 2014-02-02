@@ -110,9 +110,10 @@
             <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                 <table class="table">
 
-                    <tr ng-repeat = "initiative in initiatives | orderBy:orderProp | limitTo:10">
-
-                        ${ng_helpers.initiative_listing()}
+                    <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:10">
+                        <td>
+                            ${ng_helpers.initiative_listing()}
+                        </td>
 
                     </tr>
 

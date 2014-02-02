@@ -10,6 +10,7 @@ from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, get
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime    
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
@@ -20,7 +21,6 @@ import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
-import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.workshop     as workshopLib
@@ -907,12 +907,19 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = i['title']
-            entry['description'] = i['description'][:200]
-            if len(entry['description']) >= 200:
-                entry['description'] += "..."
+            entry['text'] = i['description'][:200]
+            if len(entry['text']) >= 200:
+                entry['text'] += "..."
             entry['cost'] = i['cost']
-            entry['tags'] = i['tags']
+            tags = []
+            tagList = i['tags'].split('|')
+            for tag in tagList:
+                if tag and tag != '':
+                    tags.append(tag)
+            entry['tags'] = tags
+
             entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(i.date)
 
             scopeInfo = utils.getPublicScope(i)
             entry['flag'] = scopeInfo['flag']
@@ -935,7 +942,7 @@ class SearchController(BaseController):
             entry['url'] = i['url']
             entry['tag'] = i['tags']
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
-            entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
+            entry['href'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
             try:
                 entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
             except:
