@@ -245,22 +245,9 @@
                   ${watchButton(item, following = True)}
                 </span>
             % else:
-                % if 'user' in session:
-                    % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-                        <div class="row-fluid" ng-controller="followerController">
-                            <div class="span3">Email when:</div>
-                            <div class="span3">
-                                x
-                            </div><!-- span3 -->
-                            <div class="span3">
-                                x
-                            </div><!-- span3 -->
-                            <div class="span3">
-                                <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                            </div><!-- span3 -->
-                        </div><!-- row-fluid -->
-                    % endif
-                % endif
+                <span>
+                    <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
+                </span><!-- span -->
             % endif
         </div><!-- media-body -->
     </div><!-- media -->
