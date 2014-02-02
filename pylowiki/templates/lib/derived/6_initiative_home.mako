@@ -37,7 +37,7 @@
                                 % if author != c.authors[0] and len(c.authors) >= 3:
                                     ,
                                 % endif
-                                % if author == c.authors[-1]:
+                                % if author != c.authors[0] and author == c.authors[-1]:
                                     and
                                 % endif
                                 ${lib_6.userLink(author)}
