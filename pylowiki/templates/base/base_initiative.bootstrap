@@ -88,7 +88,7 @@
                             <br>
                             <p>You must complete all required information and upload a picture before you can publish.</p>
                         % else:
-                            <div class="row-fluid"
+                            <div class="row-fluid">
                                 <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
                                     <button type="submit" class="btn btn-large btn-warning input-block-level" name="public" value="unpublish">Unpublish</button>
                                 </form><br>

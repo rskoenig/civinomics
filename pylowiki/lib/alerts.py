@@ -107,9 +107,11 @@ def emailAlerts(thing):
         for facilitator in facilitators:
             if ('flagAlerts' in facilitator and facilitator['flagAlerts'] == '1' and thing.objType == 'flag') or ('itemAlerts' in facilitator and facilitator['itemAlerts'] == '1'):
                 facilitatorUser = userLib.getUserByID(facilitator.owner)
-                toEmail = facilitatorUser['email']
-  
-                mailLib.send(toEmail, fromEmail, subject, textMessage)
+                # don't send emails if the facilitator created the object
+                if thingUser != facilitatorUser:
+                    toEmail = facilitatorUser['email']
+      
+                    mailLib.send(toEmail, fromEmail, subject, textMessage)
 
         # Flag alerts only go to facilitators
         if thing.objType != 'flag':

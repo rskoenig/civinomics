@@ -37,7 +37,7 @@
                                 % if author != c.authors[0] and len(c.authors) >= 3:
                                     ,
                                 % endif
-                                % if author == c.authors[-1]:
+                                % if author != c.authors[0] and author == c.authors[-1]:
                                     and
                                 % endif
                                 ${lib_6.userLink(author)}
@@ -245,22 +245,9 @@
                   ${watchButton(item, following = True)}
                 </span>
             % else:
-                % if 'user' in session:
-                    % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-                        <div class="row-fluid" ng-controller="followerController">
-                            <div class="span3">Email when:</div>
-                            <div class="span3">
-                                x
-                            </div><!-- span3 -->
-                            <div class="span3">
-                                x
-                            </div><!-- span3 -->
-                            <div class="span3">
-                                <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                            </div><!-- span3 -->
-                        </div><!-- row-fluid -->
-                    % endif
-                % endif
+                <span>
+                    <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
+                </span><!-- span -->
             % endif
         </div><!-- media-body -->
     </div><!-- media -->
@@ -401,7 +388,7 @@
                 </div>
                 <div class="span9">
                     <div class="alert alert-info">
-                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
+                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the affected region wherever possible.
                     </div>
                 </div>
             </div>
