@@ -2988,6 +2988,9 @@ hr.narrow{
   margin-right: 10px;
 }
 
+.activity-item h4{
+  margin-bottom: 5px;
+}
 
 .activity-item-content{
   padding-top: 10px;
@@ -2995,13 +2998,33 @@ hr.narrow{
   border-top: 1px solid #dddddd;
 }
 
+.activity-item-content .photo{
+  width: 525px;
+  height: 275px;
+  background-position: center, center;
+  background-size: cover;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
 .activity-item-content-header{
   margin-bottom: 10px;
+}
+
+.activity-comments .avatar{
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+table.activity-comments{
+  width: 100%;
 }
 
 .date{
   color:grey;
   font-size: 85%;
+  margin-left: 5px;
   display:inline-block;
 }
 

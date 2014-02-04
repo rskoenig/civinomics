@@ -78,11 +78,13 @@
                   <span ng-show="!(item.parentObjType == '')">
                     added {{item.article}} {{item.objType}} to <a ng-href="{{item.parentHref}}" class="no-highlight"><strong>{{item.parentTitle}}</strong></a>
                   </span>
-                  <span class="date">{{item.date}} ago</span>
+                  <span class="date">{{item.fuzzyTime}} ago</span>
                 </small>
               </div>
 
-              <img class="thumbnail pull-right" ng-show="!(item.mainPhoto == '0')" ng-src="{{item.mainPhoto}}" ng-cloak>
+              <a href = '{{item.href}}' ng-show="!(item.mainPhoto == '0')" ng-cloak>
+                  <div class="span2 i-thumb pull-right left-space" style="background-image:url('{{item.thumbnail}}');"/></div>
+              </a>
 
               <strong><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></strong><br>
               <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
@@ -92,16 +94,18 @@
               ### Comments on item
               <div ng-init="discussionCode = item.discussion">
                 <div ng-controller="commentsController">
-                  <a href="#a" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
+                  <span class="no-highlight" ng-show="item.numComments == '0'"><i class="icon-comments"></i> Comments {{item.numComments}}</span>
+                  <a href="#a" class="no-highlight" ng-click="getComments()" ng-show="!(item.numComments == '0')"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
 
                   <div class="centered" ng-show="commentsLoading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-2x"></i>
                   </div>
 
-                  <table ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
+                  <table class="activity-comments" ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
                     <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-                      <td><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a> {{comment.data}}<br>
-                        <span class="grey">{{comment.date}} ago</span>
+                      <td style="vertical-align: top; width: 35px;"><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td style="padding: 10px;"><small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small><br>
+                       {{comment.data}}
+                        
                       </td>
                     </tr>
                   </table>
