@@ -1,4 +1,4 @@
-<%inherit file="/base/base_wide.bootstrap"/>
+<%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
@@ -6,168 +6,138 @@
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 
 <div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
-  <div class="span10" ng-controller="zipLookupCtrl">
-    <div class="spacer"></div>
+  <div class="span12" ng-controller="zipLookupCtrl">
     <div class="row-fluid">
-      % if 'user' in session:
-        <ul class="thumbnails" ng-cloak>
+      <ul class="thumbnails" ng-cloak>
 
-          ###
-          ### Carousel
-          ###
-          
-            <li class="span4 wrap-voting-group scope">
-              % if 0 < len(c.newWorkshops) <= 3:
-              <div id="myCarousel" class="carousel slide">
-                <ol class="carousel-indicators">
-                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#myCarousel" data-slide-to="1"></li>
-                    <li data-target="#myCarousel" data-slide-to="2"></li>
-                  </ol>
-                  <!-- Carousel items -->
-                  <div class="carousel-inner">
-                    <div class="active item">
-                      ${helpers.homeSlide(c.newWorkshops[0])}
-                    </div>
-                    <div class="item">
-                      ${helpers.homeSlide(c.newWorkshops[1])}
-                    </div>
-                    <div class="item">
-                      ${helpers.homeSlide(c.newWorkshops[2])}
-                    </div>
+        ###
+        ### Carousel
+        ###
+        
+          <li class="span4 wrap-voting-group scope">
+            % if len(c.newWorkshops) <= 3:
+            <div id="myCarousel" class="carousel slide">
+              <ol class="carousel-indicators">
+                  <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                  <li data-target="#myCarousel" data-slide-to="1"></li>
+                  <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                  <div class="active item">
+                    ${helpers.homeSlide(c.newWorkshops[0])}
                   </div>
-                </div><!-- #myCarousel -->
-                % endif
-              </li>
-
-            ###
-            ### My Places
-            ###
-            <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
-              <a href="{{geo.href}}">
-                <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                <table class="lead tile-title">
-                  <tr>
-                    <td>
-                      <img class="thumbnail small-flag" src="{{geo.flag}}">
-                    </td>
-                    <td style="padding-left: 5px;">
-                      <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
-                    </td>
-                  </tr>
-                </table>
-              </a>
-            </li>
-
-              
-            ###
-            ### Add a group
-            ###
-            <!-- coming soon... 
-            <li class="span4 wrap-voting-group scope" style="background-image:url('/images/grey.png'); background-size: cover;">
-              <a href="/">
-                <span class="link-span dark-gradient"></span>
-                <table class="lead tile-title">
-                  <tr>
-                    <td>
-                      <i class="icon-plus"></i>
-                    </td>
-                    <td style="padding-left: 5px;">
-                      Add a group
-                    </td>
-                  </tr>
-                </table>
-              </a>
-            </li>
-            -->
-
-          </ul><!-- thumbnails -->
-
-          ###
-          ### Bookmarks
-          ###
-          % if len(c.facilitatorItems) != 0 or len(c.initiatives) != 0:
-            <span class="lead"><i class="icon-dashboard"></i> Authored and Facilitating (${c.numA})</span>
-            <table class="table table-hover table-condensed no-bottom">
-              <tbody>
-              % for item in c.initiatives:
-                  <tr><td>${ihelpers.listInitiative(item, 'Author')}</td></tr>
-              % endfor
-              </tbody>
-            </table>
-            ${lib_6.listBookmarks(c.facilitatorWorkshops, 'Facilitating')}
-            <br>
-          % endif
-          % if len(c.listeningWorkshops) != 0:
-            <span class="lead"><i class="icon-headphones"></i> Listening (${c.numLW})</span>
-            ${lib_6.listBookmarks(c.listeningWorkshops, 'Listening')}
-            <br>
-          % endif
-          % if len(c.privateWorkshops) != 0:
-            <span class="lead"><i class="icon-group"></i> Private (${c.numPW})</span>
-            ${lib_6.listBookmarks(c.privateWorkshops, 'Private')}
-            <br>
-          % endif
-          % if len(c.bookmarks) != 0 or len(c.initiativeBookmarks) != 0:
-            <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
-            <table class="table table-hover table-condensed no-bottom">
-              <tbody>
-              % for item in c.initiativeBookmarks:
-                  <tr><td>${ihelpers.listInitiative(item, 'Bookmarked')}</td></tr>
-              % endfor
-              </tbody>
-            </table>
-            ${lib_6.listBookmarks(c.bookmarks, 'Bookmarked')}
-          % else:
-            % if c.authuser['activated'] == '1':
-                <span class="lead"><i class="icon-bookmark"></i> Bookmarks (${c.numB})</span>
-                <hr class="top-space">
-                <div class="alert alert-info">
-                <strong>No Bookmarks!</strong> You have no bookmarked workshops or initiatives. Find some by clicking the regions above or going to 'Browse' in the top menubar.
+                  <div class="item">
+                    ${helpers.homeSlide(c.newWorkshops[1])}
+                  </div>
+                  <div class="item">
+                    ${helpers.homeSlide(c.newWorkshops[2])}
+                  </div>
                 </div>
-            % endif
-          % endif
-          % if c.authuser['activated'] == '0':
-            <div class="alert alert-success">
-              <strong>Welcome!</strong> Your Civinomics registration is almost complete!<p>
-              <p>Check your email for a message from <strong>registration@civinomics.com</strong>, and click on the activation
-              link inside to validate and complete your Civinomics registration. If you do not see the message in your inbox, 
-              be sure to check your Spam or Junk folder.<p>
-              <p>Until your registration is complete, your votes are marked as provisional and will be discarded after 2 weeks.<p>
-              <p>Your completed registration will allow you to add items, make comments, cast permanent votes, 
-              launch initiatives, start workshops and utilize all of the Civinomics tools to hack your future.<p>
-              <p>Can't find the registration email? <button class="btn btn-mini btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Registration Email</button> <span id="resendMessage"></span>
+              </div><!-- #myCarousel -->
+              % endif
+            </li>
+
+          ###
+          ### My Places
+          ###
+          <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
+            <a href="{{geo.href}}">
+              <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+              <table class="lead tile-title">
+                <tr>
+                  <td>
+                    <img class="thumbnail small-flag" src="{{geo.flag}}">
+                  </td>
+                  <td style="padding-left: 5px;">
+                    <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
+                  </td>
+                </tr>
+              </table>
+            </a>
+          </li>
+        </ul><!-- thumbnails -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
+
+      ###
+      ### Activity Feed
+      ###
+      <div class="span8" ng-controller = "activityController">
+        <table ng-cloak>
+          <tr ng-repeat="item in activity" class="activity-item">
+            <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+            <td class="activity-item-content">
+              <div class="activity-item-content-header">
+                <small>
+                  <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+
+                  <span ng-show="item.parentObjType == ''">
+                    added the {{item.objType}}
+                  </span>
+                  <span ng-show="!(item.parentObjType == '')">
+                    added {{item.article}} {{item.objType}} to <a ng-href="{{item.parentHref}}" class="no-highlight"><strong>{{item.parentTitle}}</strong></a>
+                  </span>
+                  <span class="date">{{item.fuzzyTime}} ago</span>
+                </small>
+              </div>
+
+              <a href = '{{item.href}}' ng-show="!(item.mainPhoto == '0')" ng-cloak>
+                  <div class="span2 i-thumb pull-right left-space" style="background-image:url('{{item.thumbnail}}');"/></div>
+              </a>
+
+              <strong><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></strong><br>
+              <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+              <p>{{item.text}}</p>
+              
+
+              ### Comments on item
+              <div ng-init="discussionCode = item.discussion">
+                <div ng-controller="commentsController">
+                  <span class="no-highlight" ng-show="item.numComments == '0'"><i class="icon-comments"></i> Comments {{item.numComments}}</span>
+                  <a href="#a" class="no-highlight" ng-click="getComments()" ng-show="!(item.numComments == '0')"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
+
+                  <div class="centered" ng-show="commentsLoading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-2x"></i>
+                  </div>
+
+                  <table class="activity-comments" ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
+                    <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
+                      <td style="vertical-align: top; width: 35px;"><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td style="padding: 10px;"><small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small><br>
+                       {{comment.data}}
+                        
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div><!-- /span8 -->
+      <div class="span4">
+
+        ###
+        ### Zip Lookup
+        ###
+        <div class="well well-splash-content">
+          <h4>Zip Code Lookup</h4>
+          <form class="form-inline" name="zipForm">
+            <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
             </div>
-          % endif
-        </div><!-- /row-fluid -->
-
-        % else:
-          <div class="alert alert-success centered">
-              <p>Enter a zipcode to get started...</p>
-              <input type="number" class="span3">
-              <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
-          </div>
-        % endif
-      </div> <!-- /span10 -->
-
-      ###
-      ### Activity Stream
-      ###
-      <div class="span2 activity pull-right"> 
-        % if len(c.activity) != 0:
-          <% 
-             for thisActivity in c.activity:
-                listingHelpers.showActivity(thisActivity, expandable=True)
-          %>
-        % else:
-            <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
-        % endif
-      </div> <!-- /span2 -->
+          </form>
+        </div>
+      </div>
+    </div> <!-- /row-fluid -->
   </div><!-- /row -->
 
 
 <%def name="headScripts()">
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">
@@ -197,7 +167,6 @@
         });
     </script>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
-    <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
     <script type="text/javascript">
