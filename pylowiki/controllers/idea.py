@@ -52,9 +52,7 @@ class IdeaController(BaseController):
         # these values are needed for facebook sharing of a workshop
         # - details for sharing a specific idea are modified in the view idea function
         c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-        shareOk = False
-        if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
-            shareOk = True
+        shareOk = workshopLib.isPublic(c.w)
         c.facebookShare = FacebookShareObject(
             itemType='workshop',
             url=utils.workshopURL(c.w),

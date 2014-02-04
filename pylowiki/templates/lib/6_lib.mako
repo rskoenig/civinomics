@@ -34,13 +34,13 @@
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
         facebookAppId = int(c.facebookShare.facebookAppId)
-        log.info("app id %s and %s"%(c.facebookShare.facebookAppId, facebookAppId))
+        #log.info("app id %s and %s"%(c.facebookShare.facebookAppId, facebookAppId))
         channelUrl = c.facebookShare.channelUrl
         thingCode = c.facebookShare.thingCode
 
         link = c.facebookShare.url
         image = c.facebookShare.image
-        log.info("link %s and image %s"%(link, image))
+        #log.info("link %s and image %s"%(link, image))
         userCode = ''
 
         workshopCode = c.facebookShare.thingCode
@@ -81,9 +81,7 @@
                 shareOk = True
         
         shareOk = c.facebookShare.shareOk
-        if c.initiative:
-            if c.initiative['public'] == '1':
-                shareOk = True
+
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -91,8 +89,7 @@
         <script>
             // activate facebook javascript sdk
             var fbAuthId = '';
-            console.log("1 "+"${facebookAppId}");
-            console.log("1b "+"${channelUrl}");
+            
             window.fbAsyncInit = function() {
                 FB.init({
                     appId      : "${facebookAppId}", // App ID
@@ -116,7 +113,7 @@
                 }
                 });
             };
-            console.log("2");
+            
             // Load the SDK asynchronously
             (function(d){
                 var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
@@ -129,7 +126,7 @@
             function shareOnWall() {
                 // grab checked value of checkbox IF it's on the page. add to description.
                 //var shareChecked = $("#shareVote").is(':checked');
-                console.log("3");
+                
                 var shareChecked = false;
                 var shareText = '';
                 var inputElements = document.getElementsByTagName('input');
@@ -141,7 +138,7 @@
                         break;
                     }
                 }
-                console.log("4");
+                
                 if (shareChecked) {
                     //console.log("share checked")
                     // get the value of the voted button
@@ -161,7 +158,7 @@
                         }
                     }
                 }
-                console.log("5");
+                
                 FB.ui(
                     {
                       method: 'feed',
@@ -173,7 +170,7 @@
                     },
                     function(response) 
                     {
-                        console.log("6");
+                        
                         if (response && response.post_id) {
                           // if there's a post_id, create share object
                           var thingCode = "${thingCode}";

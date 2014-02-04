@@ -45,9 +45,7 @@ class DiscussionController(BaseController):
         #################################################
         # these values are needed for facebook sharing
         c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-        shareOk = False
-        if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
-            shareOk = True
+        shareOk = workshopLib.isPublic(c.w)
         c.facebookShare = FacebookShareObject(
             itemType='workshop',
             url=utils.workshopURL(c.w) + '/discussion',

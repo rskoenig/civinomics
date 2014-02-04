@@ -39,11 +39,12 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
-from pylowiki.lib.facebook import FacebookShareObject
+from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.graphData       as graphData
-import pylowiki.lib.db.dbHelpers as dbHelpers
-import pylowiki.lib.utils as utils
-import pylowiki.lib.sort as sort
+import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.utils           as utils
+import pylowiki.lib.sort            as sort
+
 import simplejson as json
 import misaka as m
 import copy as copy
@@ -152,9 +153,7 @@ class WorkshopController(BaseController):
         #################################################
         # these values are needed for facebook sharing
         c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-        shareOk = False
-        if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
-            shareOk = True
+        shareOk = workshopLib.isPublic(c.w)
         c.facebookShare = FacebookShareObject(
             itemType='workshop',
             url=utils.workshopURL(c.w),
