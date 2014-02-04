@@ -124,6 +124,7 @@ def isWatching(user, workshop):
 ##################################################
 def thingURL(thingParent, thing, **kwargs):
     thingUrl = True
+    
     if thingParent.objType.replace("Unpublished", "") == 'workshop':
         parentBase = "workshop"
     elif thingParent.objType.replace("Unpublished", "") == 'user':
@@ -183,7 +184,20 @@ def initiativeURL(thing):
         return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
+
+def initiativeURL(i):
+    return "/initiative/%s/%s" %(i['urlCode'], i['url'])
         
+def initiativeImageURL(i):
+    if 'directoryNum_photos' in i and 'pictureHash_photos' in i:
+        photo_url = "/images/photos/%s/photo/%s.png"%(i['directoryNum_photos'], i['pictureHash_photos'])
+        thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(i['directoryNum_photos'], i['pictureHash_photos'])
+    else:
+        photo_url = "/images/icons/generalInitiative.jpg"
+        thumbnail_url = "/images/icons/generalInitiative.jpg"
+    bgPhoto_url = "'" + photo_url + "'"
+    return (bgPhoto_url, photo_url, thumbnail_url)
+
 def workshopURL(w, **kwargs):
     return "/workshop/%s/%s" %(w['urlCode'], w['url'])
 

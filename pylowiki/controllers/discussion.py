@@ -102,13 +102,15 @@ class DiscussionController(BaseController):
             c.thing = revisionLib.getRevisionByCode(discussionCode)
             if not c.thing:
                 abort(404)
-        # name/title for facebook sharing
+        
+        ################## FB SHARE ###############################
         c.facebookShare.title = c.thing['title']
         # update url for this item
         newUrl = utils.workshopURL(c.w) + utils.thingURL(c.w, c.thing)
         c.facebookShare.updateUrl(newUrl)
         # set description to be that of the topic's description
         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
 
         if 'views' not in c.thing:
             c.thing['views'] = u'0'

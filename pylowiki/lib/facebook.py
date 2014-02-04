@@ -58,4 +58,6 @@ class FacebookShareObject(object):
     def updateUrl(self, newUrl):
         self.url = self.baseUrl + newUrl
 
+    def updateImageUrl(self, newUrl):
+        self.image = self.baseUrl + newUrl
 

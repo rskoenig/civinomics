@@ -42,8 +42,8 @@
         image = c.facebookShare.image
         log.info("link %s and image %s"%(link, image))
         userCode = ''
-        if c.facebookShare.itemType == 'workshop':
-            workshopCode = c.facebookShare.thingCode
+
+        workshopCode = c.facebookShare.thingCode
 
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
