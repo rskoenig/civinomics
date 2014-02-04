@@ -21,6 +21,7 @@
    import pylowiki.lib.utils            as utilsLib
    from pylons import session
    
+   import misaka as m
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
@@ -67,7 +68,16 @@
         
 
         # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
-        name = c.name
+        if 'title' in kwargs:
+          name = kwargs['title']
+        else:
+          name = c.name
+
+        if 'description' in kwargs:
+          description = kwargs['description']
+        else:
+          description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+
         # this is an elaborate way to get the item or workshop's description loaded as the caption
         if c.thing:
             if 'text' in c.thing.keys():
@@ -178,7 +188,7 @@
                       link: "${link}",
                       picture: "${picture}",
                       caption: shareText,
-                      description: "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+                      description: "${description}"
                     },
                     function(response) 
                     {
@@ -252,7 +262,7 @@
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
@@ -261,7 +271,7 @@
 </%def>
 
 <%def name="emailShareModal(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "I thought this might interest you!"
         %>
@@ -305,7 +315,7 @@
          <% return %>
       % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
@@ -381,7 +391,7 @@
         else:
             myRatings = {}
       %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             thingCode = thing['urlCode']
             #log.info("thingCode is %s"%thingCode)
@@ -463,6 +473,8 @@
    <%
         if isReadOnly():
             readOnlyMessage(thing)
+            return
+        if c.privs['provisional']:
             return
         if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
             return
@@ -1582,6 +1594,15 @@
     % endfor
   </select>
 </%def>
+
+<%def name="public_tag_list_filter()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+      <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
+    % for category in sorted(categories):
+      <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
+    % endfor
+</%def>
+
 <%def name="public_tag_links()">
   <%  categories = workshopLib.getWorkshopTagCategories() %>
     % for category in sorted(categories):

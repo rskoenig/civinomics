@@ -63,9 +63,6 @@ class ProfileController(BaseController):
                 if c.user.id == c.authuser.id or c.isAdmin:
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-        
-
-
                     
         userLib.setUserPrivs()
   
@@ -570,7 +567,7 @@ class ProfileController(BaseController):
     @h.login_required
     def edit(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
-        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
             c.title = 'Edit Profile'
             if 'confTab' in session:
                 c.tab = session['confTab']
@@ -605,7 +602,7 @@ class ProfileController(BaseController):
         SQLtoday = now.strftime("%Y-%m-%d")
 
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1 and not c.privs['provisional']:
             abort(404)
             
         session['confTab'] = "tab1"
@@ -769,7 +766,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
@@ -869,7 +866,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
@@ -946,6 +943,10 @@ class ProfileController(BaseController):
             
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
+        
+        if c.privs['provisional']:
+            abort(404)
+            
         photo = photoLib.getPhotoByHash(id3)
         if not photo:
             abort(404)
@@ -1056,7 +1057,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1 or c.privs['provisional']:
             abort(404)      
                     
         session['confTab'] = "tab4"

@@ -26,7 +26,12 @@ import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
+import pylowiki.lib.db.discussion 		as discussionLib
+import pylowiki.lib.db.comment 			as commentLib
+import pylowiki.lib.utils				as utils
+import pylowiki.lib.fuzzyTime			as fuzzyTime	
 
+import simplejson as json
 
 
 log = logging.getLogger(__name__)
@@ -43,7 +48,8 @@ class HomeController(BaseController):
 	            c.messages = messageLib.getMessages(c.authuser)
 	            c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
 		c.user = c.authuser
-		log.info("in home.py")
+		#log.info("in home.py")
+		userLib.setUserPrivs()
 
 
 	def index(self):
@@ -51,7 +57,6 @@ class HomeController(BaseController):
 			return redirect('/')
 		else:
 			c.title = c.heading = c.workshopTitlebar = 'Home'
-			c.activity = activityLib.getRecentActivity(12)
 			c.rssURL = "/activity/rss"
 
 			# Civinomicon
@@ -63,7 +68,7 @@ class HomeController(BaseController):
 			newWorkshops = []
 			workshops = getActiveWorkshops()
 			if len(workshops) == 0 :
-				c.newWorkshops = 0
+				pass#c.newWorkshops = 0
 			else:
 				workshops = workshops[:3]
 				if workshops >= 1:
@@ -205,3 +210,172 @@ class HomeController(BaseController):
 		
 
 		return render('/derived/6_home.bootstrap')
+
+
+	def getActivity(self):
+		# get recent activity and return it into json format
+		result = []
+		recentActivity = activityLib.getRecentActivity(12)
+		myRatings = {}
+		if 'ratings' in session:
+		   myRatings = session['ratings']
+
+		for item in recentActivity:
+			entry = {}
+			# item attributes
+			entry['title'] = item['title']
+			entry['objType'] = item.objType
+			if item.objType == 'discussion':
+				if item['discType'] == 'update':
+					entry['objType'] = 'update'
+			entry['urlCode'] = item['urlCode']
+			entry['url'] = item['url']
+
+			#tags
+			tags = []
+			tagList = []
+			if 'tags' in item:
+				tagList = item['tags'].split('|')
+			elif 'initiative_tags' in item:
+				tagList = item['initiative_tags'].split('|')
+			elif 'workshop_category_tags' in item:
+				tagList = item['workshop_category_tags'].split('|')
+			for tag in tagList:
+				if tag and tag != '':
+					tags.append(tag)
+			entry['tags'] = tags
+
+
+			entry['numComments'] = 0
+			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+			if 'numComments' in item:
+				entry['numComments'] = item['numComments']
+			
+
+			# href
+			# note: we should standardize the way object urls are constructed
+			if item.objType == 'photo':
+				entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
+			else:
+				entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+
+			if 'workshopCode' in item:
+				entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+				entry['href'] = entry['parentHref'] + entry['href']
+			elif 'initiativeCode' in item:
+				entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+				if entry['objType'] == 'update':
+					entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
+				else:
+					entry['href'] = entry['parentHref'] + entry['href']
+
+			entry['parentTitle'] = ''
+			entry['parentObjType'] = ''
+			entry['article'] = 'a'
+			if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
+				entry['article'] = 'an'
+
+			# modifications for children of workshops and initiatives
+			if 'workshopCode' in item:
+				entry['parentTitle'] = item['workshop_title']
+				entry['parentObjType'] = 'workshop'
+			elif 'initiativeCode' in item:
+				entry['parentTitle'] = item['initiative_title']
+				entry['parentObjType'] = 'initiative'
+
+			# author data
+			author = userLib.getUserByID(item.owner)
+			entry['authorName'] = author['name']
+			entry['authorPhoto'] = utils._userImageSource(author)
+			# can pick one or the other way to do href
+			#either include two atributes in entry and construct in html or construct here in one attribute
+			entry['authorCode'] = author['urlCode']
+			entry['authorURL'] = author['url']
+			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+			# photos
+			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+			else:
+				entry['mainPhoto'] = '0'
+				entry['thumbnail'] = '0'
+
+			# user ratings
+			if entry['urlCode'] in myRatings:
+			    entry['rated'] = myRatings[entry['urlCode']]
+			    entry['vote'] = 'voted'
+			else:
+				entry['rated'] = 0
+				entry['vote'] = 'nvote'
+			# votes
+			entry['voteCount'] = int(item['ups']) + int(item['downs'])
+			entry['ups'] = int(item['ups'])
+			entry['downs'] = int(item['downs'])
+
+			# comments
+			discussion = discussionLib.getDiscussionForThing(item)
+			entry['discussion'] = discussion['urlCode']
+
+			# attributes that vary accross objects
+			entry['text'] = '0'
+			if 'text' in item:
+				entry['text'] = item['text'][:200]
+			elif 'description' in item:
+				entry['text'] = item['description'][:200]
+			if len(entry['text']) >= 200:
+				entry['text'] += "..."
+
+			if 'link' in item:
+				entry['link'] = item['link']
+			else:
+				entry['link'] = '0'
+
+			if 'cost' in item:
+				entry['cost'] = item['cost']
+			else:
+				entry['cost'] = ''
+
+			result.append(entry)
+
+		if len(result) == 0:
+			return json.dumps({'statusCode':1})
+		return json.dumps({'statusCode':0, 'result': result})
+
+
+
+	def jsonCommentsForItem(self, urlCode):
+		result = []
+		comments = commentLib.getCommentsInDiscussionByCode(urlCode)
+		for comment in comments:
+			entry = {}
+			entry['data'] = comment['data']
+			entry['commentRole'] = ''
+			if 'commentRole' in comment:
+				entry['commentRole'] = comment['commentRole']
+
+			entry['date'] = fuzzyTime.timeSince(comment.date)
+
+			# comment author
+			author = userLib.getUserByID(comment.owner)
+			entry['authorName'] = author['name']
+			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+			entry['authorPhoto'] = utils._userImageSource(author)
+
+			result.append(entry)
+
+		if len(result) == 0:
+			return json.dumps({'statusCode':1})
+		return json.dumps({'statusCode':0, 'result':result})
+
+
+
+
+
+
+
+
+
+
+

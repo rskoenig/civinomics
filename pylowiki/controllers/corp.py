@@ -660,36 +660,26 @@ class CorpController(BaseController):
 
         c.advisors=[]
         
+        lloydT={}
+        lloydT["name"]="Lloyd Tabb"
+        lloydT['title']='Advisor'
+        lloydT['bio']="Lloyd has been a technology revolutionary for 25 years, driving important trends in how the world uses the Internet. Originally a database and languages architect at Borland International, Lloyd left Borland to found Commerce Tools, where he wrote the first application server for the web. After Commerce Tools was acquired by Netscape in 1995, Lloyd was Principal Engineer on Netscape Navigator Gold, led several releases of Communicator, and helped define the creation of Mozilla.org. As CTO of LiveOps, the first commercial crowd-sourced company, he designed the crowd-sourced ecosystem. Lloyd was also a co-founder of Readyforce and advisor to Luminate. He is currently Founder, Chairman and CTO of Looker."
+        lloydT['photo']='lloyd_tabb.jpg'
+        c.advisors.append(lloydT)
+
         edolfoG={}
         edolfoG["name"]="Edolfo Garza-Licudine"
-        edolfoG['title']='Technichal Advisor & Founder'
+        edolfoG['title']='Advisor & Co-founder'
         edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
         edolfoG['photo']='edolfo_garzalicudine.jpg'
         c.advisors.append(edolfoG)
+
         tomY={}
         tomY["name"]="Tom Yoritaka"
         tomY['title']='Strategy, Products and Technology'
         tomY['bio']= "Tom Yoritaka is a Senior Director & General Manager at Cisco Systems, Inc. He is also the Managing Director of Cisco Entrepreneurs in Residence - the company's innovation program for eary-stage start-ups. Prior to joining Cisco, he held various executive & leadershiop positions in Web techbology & product management at Yahoo! & Microsoft. He also worked as a strategy consultant at The Boston Consulting Group & McKenna Group. He holds a master's degree from Harvard University John F. Kennedy School of Government, an MBA from The University of Chicago Booth School of Business & an undergraduate degree from Northwestern University."
         tomY['photo']='tom_yoritaka.png'
         c.advisors.append(tomY)
-        davidP={}
-        davidP["name"]="David Pascal"
-        davidP['title']='Fundraising'
-        davidP['bio']="David was most recently President of the San Francisco Carbon Collaborative. Previously, David was the Lead Clean Technology and Green Business Advocate for the City and County of San Francisco, where his time was split between the Mayor's Office of Economic and Workforce Development and the City's Department of the Environment. In that capacity, David was responsible for attracting and retaining companies whose products and services address our greatest environmental challenges. Prior to entering the government sector, David worked as an environmental sustainability consultant, and served as the Director of Events and Entertainment for Al Gore's Alliance for Climate Protection."
-        davidP['photo']='david_pascal.jpg'
-        c.advisors.append(davidP)
-        traciH={}
-        traciH["name"]="Traci Hukill"
-        traciH['title']='Public Relations'
-        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
-        traciH['photo']='traci_hukill.jpg'
-        c.advisors.append(traciH)
-        kevinB={}
-        kevinB["name"]="Kevin Bell"
-        kevinB['title']='Energy and Sustainability'
-        kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
-        kevinB['photo']='kevin_bell.jpg'
-        c.advisors.append(kevinB)
 
         return render('/derived/corp_team.bootstrap')
 
