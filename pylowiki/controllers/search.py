@@ -579,6 +579,11 @@ class SearchController(BaseController):
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
+
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
         for r in resources:
             # We don't need to look up this discussion's workshop anymore.
             # w = generic.getThing(r['workshopCode'])
@@ -604,6 +609,10 @@ class SearchController(BaseController):
             #entry['domain'] = r['domain']
             #entry['tld'] = r['tld']
             entry['voteCount'] = int(r['ups']) - int(r['downs'])
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+            else:
+                entry['rated'] = 0
             entry['numComments'] = discussionLib.getDiscussionForThing(r)['numComments']
             #: Note in the cases here where there are multiple tags assigned to one value,
             #: I'm adding the standard tags to the json object here as a start for us to 
@@ -674,6 +683,11 @@ class SearchController(BaseController):
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
+
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
         for d in discussions:
             # We don't need to look up this discussion's workshop anymore.
             # w = generic.getThing(d['workshopCode'])
@@ -692,6 +706,10 @@ class SearchController(BaseController):
             entry['url'] = d['url']
             entry['addedAs'] = d['addedAs']
             entry['voteCount'] = int(d['ups']) - int(d['downs'])
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+            else:
+                entry['rated'] = 0
             entry['numComments'] = d['numComments']
             #: Note in the cases here where there are multiple tags assigned to one value,
             #: I'm adding the standard tags to the json object here as a start for us to 
@@ -751,6 +769,11 @@ class SearchController(BaseController):
             log.info("searchIdeas return len ideas == 0")
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
+
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
         for idea in ideas:
             # We don't need to look up this idea's workshop anymore.
             # w = generic.getThing(idea['workshopCode'])
@@ -764,16 +787,17 @@ class SearchController(BaseController):
             #    continue
             entry = {}
             entry['title'] = idea['title']
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
             entry['ups'] = int(idea['ups'])
             entry['downs'] = int(idea['downs'])
             rated = ratingLib.getRatingForThing(c.authuser, idea) 
-            if rated:
-                entry['rated'] = rated['amount']
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
             else:
                 entry['rated'] = 0
-            entry['urlCode'] = idea['urlCode']
-            entry['url'] = idea['url']
+
             entry['addedAs'] = idea['addedAs']
             entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
             #: Note in the cases here where there are multiple tags assigned to one value,
@@ -831,6 +855,11 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
             
         colors = workshopLib.getWorkshopTagColouring()
+
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
         for photo in photos:
             p = generic.getThing(photo['urlCode'])
             if p['deleted'] != u'0' or p['disabled'] != u'0':
@@ -840,6 +869,8 @@ class SearchController(BaseController):
             u = generic.getThing(photo['userCode'])
             entry['authorHash'] = md5(u['email']).hexdigest()
             entry['title'] = p['title']
+            entry['urlCode'] = p['urlCode']
+            entry['url'] = p['url']
             tagList = p['tags'].split('|')
             tags = []
             tagColors = []
@@ -853,13 +884,10 @@ class SearchController(BaseController):
             entry['location'] = photoLib.getPhotoLocation(p)
             entry['voteCount'] = int(p['ups']) + int(p['downs'])
             entry['netVotes'] = int(p['ups']) - int(p['downs'])
-            rated = ratingLib.getRatingForThing(c.authuser, photo) 
-            if rated:
-                entry['rated'] = rated['amount']
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
             else:
                 entry['rated'] = 0
-            entry['urlCode'] = p['urlCode']
-            entry['url'] = p['url']
             entry['thumbnail'] = "/images/photos/" + p['directoryNum_photos'] + "/thumbnail/" + p['pictureHash_photos'] + ".png"
             entry['photoLink'] = "/profile/" + u['urlCode'] + "/" + u['url'] + "/photo/show/" + p['urlCode']
             entry['numComments'] = discussionLib.getDiscussionForThing(p)['numComments']
@@ -893,6 +921,10 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(initiatives) == 0:
             return json.dumps({'statusCode':2})
+
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
             
         for initiative in initiatives:
             i = initiative
@@ -914,8 +946,10 @@ class SearchController(BaseController):
             if len(entry['description']) >= 200:
                 entry['description'] += "..."
             entry['cost'] = i['cost']
-            entry['tags'] = i['tags']
+            entry['tag'] = i['tags']
             entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['urlCode'] = i['urlCode']
+            entry['url'] = i['url']
 
             scopeInfo = utils.getPublicScope(i)
             entry['flag'] = scopeInfo['flag']
@@ -927,16 +961,15 @@ class SearchController(BaseController):
             entry['voteCount'] = int(i['ups']) + int(i['downs'])
             entry['ups'] = int(i['ups'])
             entry['downs'] = int(i['downs'])
-            rated = ratingLib.getRatingForThing(c.authuser, i) 
-            if rated:
-                entry['rated'] = rated['amount']
+
+            # user ratings
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
                 entry['vote'] = 'voted'
             else:
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
-            entry['urlCode'] = i['urlCode']
-            entry['url'] = i['url']
-            entry['tag'] = i['tags']
+
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
             entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
             try:

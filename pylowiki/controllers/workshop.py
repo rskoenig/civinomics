@@ -1378,12 +1378,18 @@ class WorkshopController(BaseController):
         result = []
         adopted = 0
         disabled = 0
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
         for idea in ideas:
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
                 adopted += 1
@@ -1396,13 +1402,15 @@ class WorkshopController(BaseController):
             entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
             entry['ups'] = int(idea['ups'])
             entry['downs'] = int(idea['downs'])
-            rated = ratingLib.getRatingForThing(c.authuser, idea) 
-            if rated:
-                entry['rated'] = rated['amount']
+
+            # user ratings
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
             else:
                 entry['rated'] = 0
-            entry['urlCode'] = idea['urlCode']
-            entry['url'] = idea['url']
+                entry['vote'] = 'nvote'
+
             entry['addedAs'] = idea['addedAs']
             entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
             u = userLib.getUserByID(idea.owner)
