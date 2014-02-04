@@ -1,6 +1,7 @@
 html,body{
    font-family: 'Roboto', sans-serif;
-   font-weight: light;
+   font-weight: 300;
+   font-size: 16px; 
    height: 100%;
    padding-top: 20px;
 }
@@ -46,7 +47,7 @@ h5.h45, h4.h45{
   height: auto !important;
   height: 100%;
   /* Negative indent footer by it's height */
-  margin: 2px auto -55px;
+  margin: 1px auto -55px;
 }
 
 /* Set the fixed height of the footer here */
@@ -848,9 +849,7 @@ ul.activity > li {
 }
 
 .wrap-voting-group{
-    -moz-box-shadow: 0 0px 4px #111;
-    -webkit-box-shadow: 0 0px 4px #111;
-    box-shadow: 0 0px 4px #111;
+    border: 1px solid #ffffff;
     margin-top:0;
     margin-left: 0 !important;
     margin-bottom: 0 !important;
@@ -1003,9 +1002,9 @@ img.avatar{
 }
 
 .avatar{
-   height: 70px;
-   width:70px;
-   min-width: 70px;
+   height: 60px;
+   width:60px;
+   min-width: 60px;
    margin-bottom:5px;
 }
 
@@ -1224,7 +1223,7 @@ td.scope-icon{
 }
 
 .chevron-score{
-  margin-top: 5px;
+  margin-top: 9px;
   margin-bottom: -2px;
   font-size: 0.85em;
   color: grey;
@@ -2420,9 +2419,14 @@ h1 .label.workshop-tag{
   margin-top: 0;
 }
   
-.wrap-voting-group-slide, .wrap-voting-group.scope {
+.wrap-voting-group.scope {
   height: 180px;
   position: relative;
+}
+
+.wrap-voting-group-slide{
+  position: relative;
+  height: 178px;
 }
 
 .tile-title{
@@ -2866,6 +2870,7 @@ h4.forum-topic{
 .featured-title{
   font-size: 18px;
   line-height: 22px;
+  width: 90%;
 }
 
 .featured-scope-title{
@@ -2939,13 +2944,13 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
-.accordion-heading.against{
+tr.con, .accordion-heading.against{
   background-color: #f2dede
 }
-.accordion-heading.favor{
+tr.pro, .accordion-heading.favor{
   background-color: #dff0d8;
 }
-.accordion-heading.neutral{
+tr.neutral, .accordion-heading.neutral{
   background-color: #e0e0e0;
 }
 
@@ -3160,3 +3165,50 @@ hr.object-list-header{
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
 }
+
+
+.activity-item .avatar{
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
+.activity-item h4{
+  margin-bottom: 5px;
+}
+
+.activity-item-content{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid #dddddd;
+}
+
+.activity-item-content .photo{
+  width: 525px;
+  height: 275px;
+  background-position: center, center;
+  background-size: cover;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.activity-item-content-header{
+  margin-bottom: 10px;
+}
+
+.activity-comments .avatar{
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+table.activity-comments{
+  width: 100%;
+}
+
+.date{
+  color:grey;
+  font-size: 85%;
+  margin-left: 5px;
+  display:inline-block;
+}
+
