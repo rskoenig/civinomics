@@ -37,7 +37,7 @@
                                 % if author != c.authors[0] and len(c.authors) >= 3:
                                     ,
                                 % endif
-                                % if author != c.authors[0] and author == c.authors[-1]:
+                                % if author == c.authors[-1]:
                                     and
                                 % endif
                                 ${lib_6.userLink(author)}
@@ -140,12 +140,15 @@
     <% 
         printStr = ''
         if c.initiative.objType == 'initiative':
-            if 'user' in session and not c.privs['provisional']:
+            if 'user' in session:
                 printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
             elif not c.privs['provisional']:
                 printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
             printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
+            
+            if 'user' in session and c.privs['provisional']:
+                printStr = ''
         
     %>
     ${printStr | n}
@@ -245,9 +248,16 @@
                   ${watchButton(item, following = True)}
                 </span>
             % else:
-                <span>
-                    <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                </span><!-- span -->
+                % if 'user' in session:
+                    % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                        <div class="row-fluid" ng-controller="followerController">
+                            <div class="span9"></div>
+                            <div class="span3">
+                                <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
+                            </div><!-- span3 -->
+                        </div><!-- row-fluid -->
+                    % endif
+                % endif
             % endif
         </div><!-- media-body -->
     </div><!-- media -->
@@ -388,7 +398,7 @@
                 </div>
                 <div class="span9">
                     <div class="alert alert-info">
-                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the affected region wherever possible.
+                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
                     </div>
                 </div>
             </div>

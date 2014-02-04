@@ -913,11 +913,14 @@ class SearchController(BaseController):
             entry['description'] = i['description'][:200]
             if len(entry['description']) >= 200:
                 entry['description'] += "..."
+            entry['cost'] = i['cost']
             entry['tags'] = i['tags']
             entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
 
             scopeInfo = utils.getPublicScope(i)
             entry['flag'] = scopeInfo['flag']
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level'].title()
             entry['location'] = scopeInfo['scopeString']
             entry['geoHref'] = scopeInfo['href']
 

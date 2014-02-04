@@ -1,6 +1,7 @@
 <%inherit file="/base/base_splash.bootstrap"/>
 <%namespace name="templateHelpers" file="/lib/template_lib.mako" />
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
@@ -108,60 +109,11 @@
             </div>
             <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                 <table class="table">
-                    <tr ng-repeat = "initiative in initiatives | orderBy:orderProp | limitTo:10"><td class="splash-initiative">
-                        <div class="media searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
-                            <div class="media-body" ng-controller="yesNoVoteCtrl">
-                                <div class="span9">
-                                    <div class="span3">
-                                        <a href = '{{initiative.initiativeLink}}'>
-                                            <div class="i-thumb" style="background-image:url('{{initiative.thumbnail}}');"/></div>
-                                        </a>
-                                    </div>
-                                    <div class="span9">
-                                        <h4 class="media-heading">
-                                            <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
-                                        </h4>
-                                        <p style="text-align:left">{{initiative.description}}</p>
-                                        <small>
-                                            <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" src="{{initiative.flag}}"> {{initiative.location}}</a><br>
-                                            Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
-                                        </small>
-                                    </div>
-                                </div>
-                                <div class="span3 voteBlock ideaListing well" >
-                                    % if 'user' in session:
-                                        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
-                                            <div class="vote-icon yes-icon detail"></div>
-                                            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
-                                        </a>
-                                        <br>
-                                        <br>
-                                        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
-                                            <div class="vote-icon no-icon detail"></div>
-                                            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
-                                        </a>
-                                        <br>
-                                        <div class="totalVotesWrapper">
-                                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
-                                        </div>
-                                    % else:
-                                        <a href="#signupLoginModal" data-toggle="modal" class="yesVote">
-                                            <div class="vote-icon yes-icon"></div>
-                                        </a>
-                                        <br>
-                                        <br>
-                                        <a href="#signupLoginModal" data-toggle="modal" class="noVote">
-                                            <div class="vote-icon no-icon"></div>
-                                        </a>
-                                        <br>
-                                        <div class="totalVotesWrapper">
-                                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
-                                        </div>
-                                    % endif
-                                </div>
-                            </div>
-                        </div>
-                    </td></tr>
+                    <tr ng-repeat = "initiative in initiatives | orderBy:orderProp | limitTo:10">
+
+                        ${ng_helpers.initiative_listing()}
+
+                    </tr>
                 </table>
                 <div class="centered" ng-show="initiative.length>pageSize">
                     <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
@@ -189,6 +141,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">

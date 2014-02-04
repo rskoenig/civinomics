@@ -197,29 +197,29 @@ def updateWorkshopChildren(workshop, workshopKey):
 
 def getWorkshopTagCategories():
     workshopTags = []
-    workshopTags.append('Animals')
+    #workshopTags.append('Animals')
     workshopTags.append('Arts')
     workshopTags.append('Business')
     workshopTags.append('Civil Rights')
     workshopTags.append('Community')
     workshopTags.append('Economy')
     workshopTags.append('Education')
-    workshopTags.append('Employment')
-    workshopTags.append('Entertainment')
+    #workshopTags.append('Employment')
+    #workshopTags.append('Entertainment')
     workshopTags.append('Environment')
-    workshopTags.append('Family')
+    #workshopTags.append('Family')
     workshopTags.append('Government')
     workshopTags.append('Health')
     workshopTags.append('Housing')
-    workshopTags.append('Infrastructure')
-    workshopTags.append('Justice')
+    #workshopTags.append('Infrastructure')
+    #workshopTags.append('Justice')
     workshopTags.append('Land Use')
     workshopTags.append('Municipal Services')
-    workshopTags.append('NonProfit')
-    workshopTags.append('Outdoors')
-    workshopTags.append('Policy')
+    #workshopTags.append('NonProfit')
+    workshopTags.append('Parks and Rec')
+    #workshopTags.append('Policy')
     workshopTags.append('Safety')
-    workshopTags.append('Sports')
+    #workshopTags.append('Sports')
     workshopTags.append('Transportation')
     workshopTags.append('Water')
     workshopTags.append('Other')
@@ -408,6 +408,8 @@ def setWorkshopPrivs(workshop):
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
     c.privs['guest'] = isGuest(workshop)
+    # User not yet activated
+    c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
     # is a demo workshop
