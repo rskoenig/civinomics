@@ -57,7 +57,8 @@
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/admin/users">Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
                                     <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
                                     <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
                                     <li><a tabindex="-1" href="/admin/resources">Resources</a></li>

@@ -41,6 +41,12 @@ def getActiveUsers(disabled = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
+        
+def getNotActivatedUsers():
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('activated', "0"))).all()
+    except:
+        return False
 
 def getAllUsers(disabled = '0', deleted = '0'):
     try:

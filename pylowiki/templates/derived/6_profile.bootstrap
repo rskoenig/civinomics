@@ -31,6 +31,11 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-activity">
+                        % if c.user['activated'] == "0" and isAdmin(c.authuser.id):
+                            <button class="btn btn-civ activateButton notactivated" data-URL-list="user_${c.user['urlCode']}_${c.user['url']}" rel="tooltip" data-placement="bottom" data-original-title="Activate this user" id="userActivate"> 
+                            <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
+                            </button>
+                        % endif
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
                     <div class="tab-pane" id="tab-workshops">
@@ -78,6 +83,7 @@
 
 <%def name = 'extraScripts()'>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
