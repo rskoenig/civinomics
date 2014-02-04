@@ -37,7 +37,7 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
+        if action in ['users', 'usersNotActivated', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
@@ -132,6 +132,10 @@ class AdminController(BaseController):
                 
     def users(self):
         c.list = userLib.getAllUsers()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def usersNotActivated(self):
+        c.list = userLib.getNotActivatedUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def photos(self):
