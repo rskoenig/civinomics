@@ -196,6 +196,9 @@
                 var userCode = fbAuthId;
                 var workshopCode = "${workshopCode}"
                 
+                
+                //caption: shareText,
+                //description: "${description}"
                 //console.log('tc mf: '+thingCode);
                 //console.log('wc mf: '+workshopCode);
                           
@@ -206,7 +209,6 @@
                       name: "${title}",
                       link: "${link}",
                       picture: "${image}"
-                      //description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
                     }
                 );
             };
