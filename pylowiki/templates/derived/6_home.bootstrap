@@ -92,7 +92,7 @@
               </a>
 
               <strong><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></strong><br>
-              <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+              <a ng-href="{{item.link}}" target="_blank" ng-show="!(item.link == '0')">{{item.link}}</a>
               <p>{{item.text}}</p>
               
 
