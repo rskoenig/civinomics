@@ -23,12 +23,10 @@
       <div class="row">
           % if 'forgot' in session._environ['PATH_INFO']:
             <div ng-init="showTitle = 'pTitle'">
-          % elif 'login' or 'Login' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'lTitle'">
           % elif 'signup' in session._environ['PATH_INFO']:
             <div ng-init="showTitle = 'sTitle'">
-          % elif 'forgot' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'pTitle'">
+          % elif 'login' or 'Login' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'lTitle'">
           % endif
               <div class="well main-well login" ng-controller="signupController">
                   <div class="row-fluid">

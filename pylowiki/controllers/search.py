@@ -52,6 +52,8 @@ class SearchController(BaseController):
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
         c.user = c.authuser
+        userLib.setUserPrivs()
+        
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
@@ -126,6 +128,7 @@ class SearchController(BaseController):
         #log.info("S E A R C H + Q U E R Y 5:  %s %s"%(self.query, self.noQuery))
         #log.info("****SEARCH QUERY**** %s"%self.query)
         c.searchQuery = self.query
+
 
     def _noSearch(self, noRender = False):
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -910,11 +913,14 @@ class SearchController(BaseController):
             entry['description'] = i['description'][:200]
             if len(entry['description']) >= 200:
                 entry['description'] += "..."
+            entry['cost'] = i['cost']
             entry['tags'] = i['tags']
             entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
 
             scopeInfo = utils.getPublicScope(i)
             entry['flag'] = scopeInfo['flag']
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level'].title()
             entry['location'] = scopeInfo['scopeString']
             entry['geoHref'] = scopeInfo['href']
 

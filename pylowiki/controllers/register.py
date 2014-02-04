@@ -36,7 +36,7 @@ class RegisterController(BaseController):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
-    def signupDisplay(self):
+    def splashDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
 	c.title = config['custom.titlebar']
@@ -80,7 +80,7 @@ class RegisterController(BaseController):
                     session.pop('workshopCode')
                     session.save()
             
-        return render("/derived/signup.bootstrap")
+        return render("/derived/splash.bootstrap")
 
     def signupNoExtAuthDisplay(self):
 
@@ -839,33 +839,37 @@ class RegisterController(BaseController):
                     session['registerSuccess'] = True
                     session.save()
                     
-                    log.info( message )
-                    splashMsg['type'] = 'success'
-                    splashMsg['title'] = 'Success'
-                    splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
-                    session['splashMsg'] = splashMsg
-                    session.save()
-                    # if they are a guest signing up, activate and log them in
-                    if c.w:
-                        user = u.u
-                        if 'laston' in user:
-                            t = time.localtime(float(user['laston']))
-                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                    #log.info( message )
+                    #splashMsg['type'] = 'success'
+                    #splashMsg['title'] = 'Success'
+                    #splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                    #session['splashMsg'] = splashMsg
+                    #session.save()
+                    
+                    user = u.u
+                    if 'laston' in user:
+                        t = time.localtime(float(user['laston']))
+                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                             
-                        user['laston'] = time.time()
-                        user['activated'] = u'1'
-                        loginTime = time.localtime(float(user['laston']))
-                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                        commit(user)
-                        session["user"] = user['name']
-                        session["userCode"] = user['urlCode']
-                        session["userURL"] = user['url']
-                        session.save()
-                        log.info('session of user: %s' % session['user'])
-                        log.info('%s logged in %s' % (user['name'], loginTime))
-                        c.authuser = user
+                    user['laston'] = time.time()
+                    #user['activated'] = u'1'
+                    loginTime = time.localtime(float(user['laston']))
+                    loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    commit(user)
+                    session["user"] = user['name']
+                    session["userCode"] = user['urlCode']
+                    session["userURL"] = user['url']
+                    session.save()
+                    log.info('session of user: %s' % session['user'])
+                    log.info('%s logged in %s' % (user['name'], loginTime))
+                    c.authuser = user
                         
+                    # if they are a guest signing up, activate them   
+                    if c.w:
+                        user['activated'] = u'1'
+                        commit(user)
                         log.info( "Successful guest activation with credentials - " + email )
+                        
                         returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                         if c.listingType:
                             returnPage += "/add/" + c.listingType
@@ -874,6 +878,9 @@ class RegisterController(BaseController):
                             return json.dumps({'statusCode':0, 'user':dict(user)})
                         else:
                             return redirect(returnPage)
+                            
+                    returnPage = "/"
+                    
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':0, 'user':dict(u.u)})

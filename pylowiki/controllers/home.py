@@ -43,7 +43,8 @@ class HomeController(BaseController):
 	            c.messages = messageLib.getMessages(c.authuser)
 	            c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
 		c.user = c.authuser
-		log.info("in home.py")
+		#log.info("in home.py")
+		userLib.setUserPrivs()
 
 
 	def index(self):

@@ -70,34 +70,38 @@
                                 </ul>
                             </li>
                         % endif
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                Create <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                <li>
-                                    <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
-                                </li>
-                                <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
-                            </ul>
-                        </li>
+                        % if c.authuser['activated'] == '1':
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    Create <span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li>
+                                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                                    </li>
+                                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                </ul>
+                            </li>
 
-                        <li class="${mSelected}">
-                            <%
-                                messageCount = ''
-                                numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
-                                if numMessages:
-                                    if numMessages > 0:
-                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
-                            %>
-                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
-                        </li>
+                            <li class="${mSelected}">
+                                <%
+                                    messageCount = ''
+                                    numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                    if numMessages:
+                                        if numMessages > 0:
+                                            messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                                %>
+                                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
+                            </li>
+                        % endif
                         <li class="dropdown ${pSelected}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                 <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
-                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                                % if c.authuser['activated'] == '1':
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                                % endif
                                 <li><a href="/help">Help</a></li>
                                 <li><a tabindex="-1" href="/login/logout">Logout</a></li>
                             </ul>
@@ -106,7 +110,7 @@
                         <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         <li class="${hSelected}"><a href="/help">Help</a></li>
                         <li><a href="/login">Login</a></li>
-                        <li><a href="/signup2">Signup</a></li>
+                        <li><a href="/signup">Signup</a></li>
                     % endif
                     <li class="small-show">
                         <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>
@@ -396,13 +400,24 @@
                 <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
                 <div class="controls">
                     <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
-                    <button type="submit" class="btn btn-success signup">Sign up</button>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
                     <div id="postalCodeResult"></div>
                 </div>
             </div>
-            <input type="hidden" name="chkTOS" id="chkTOS" value="true">
+            <div class="control-group">
+                <label class="control-label" for="terms">&nbsp;</label>
+                <div class="controls">
+                    <span id="terms">&nbsp;</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="submit">&nbsp;</label>
+                <div class="controls">
+                    <button type="submit" name="submit" class="btn btn-success signup">Sign up</button>
+                </div>
+            </div>
         </form>
+        <script src="/js/signup.js" type="text/javascript"></script>
         <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" class="green green-hover" data-toggle="tab">Log in</a></p>
 </%def>
 

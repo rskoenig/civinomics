@@ -616,7 +616,7 @@ class LoginController(BaseController):
             if email and password:
                 user = userLib.getUserByEmail( email )
                 if user: # not none or false
-                    if user['activated'] == '0':
+                    if user['activated'] == '6':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])

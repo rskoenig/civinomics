@@ -184,6 +184,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{idea:ideas?/?}', controller = 'idea', action = 'addIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{idea:ideas?}/{handler:handler/?}', controller = 'idea', action = 'addIdeaHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{idea:ideas?}/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', ideaCode = '{ideaCode}', ideaURL = '{ideaURL}')    
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/ideas/get{end:/?}', controller = 'workshop', action = 'workshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     # ADD HERE: threaded discussion route
 
     # Cofacilitation invitation and response
@@ -293,16 +294,16 @@ def make_map():
     # 
     ########################################################################################################
     
-    # Login and signup
+    # Login, signup, and splash page
     map.connect('/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
-    map.connect('/signup2{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/signup{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/loginNoExtAuth{end:/?}', controller = 'login', action = 'loginNoExtAuthDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/clogin/{thing}/{thingCode}/{thingURL}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = '{thingCode}', thingURL = '{thingURL}')
     map.connect('/{page}/login{end:/?}', controller = 'login', action = 'loginRedirects', page = '{page}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
-    map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
+    map.connect('/{splash:splash/?}', controller = 'register', action = 'splashDisplay')
     map.connect('/{signupNoExtAuth:signupNoExtAuth/?}', controller = 'register', action = 'signupNoExtAuthDisplay')
     map.connect('/signup/handler{end:/?}', controller = 'register', action= 'signupHandler')
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
@@ -333,6 +334,7 @@ def make_map():
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index')
+    map.connect('/activateResend/{userCode}', controller = 'activate', action = 'resend')
 
     # User profile
     map.connect('/profile/{id1}/{id2}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')

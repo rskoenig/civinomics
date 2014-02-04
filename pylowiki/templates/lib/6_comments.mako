@@ -22,7 +22,7 @@
 ########################################################################
 <%def name="comments(thing, discussion, **kwargs)">
     <%
-        if 'user' in session and discussion.objType != 'comment':
+        if 'user' in session and discussion.objType != 'comment' and not c.privs['provisional']:
             if thing['disabled'] != '1':
                 addCommentToDiscussion(thing, discussion)
         elif 'user' not in session and discussion.objType != 'comment':
@@ -333,7 +333,7 @@
     <div class="row-fluid">
         <div class="span11 offset1">
             <div class="btn-group">
-                % if 'user' in session:
+                % if 'user' in session and not c.privs['provisional']:
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
                     % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
@@ -342,7 +342,7 @@
                     % if c.privs['facilitator'] or c.privs['admin']:
                         <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
-                % else:
+                % elif not c.privs['provisional']:
                     <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
                     <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
