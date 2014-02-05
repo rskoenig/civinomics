@@ -14,6 +14,7 @@ import pylowiki.lib.db.user     as userLib
 import pylowiki.lib.mail        as mailLib
 from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
+import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
 
@@ -86,7 +87,7 @@ class LoginController(BaseController):
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens()
+        auth = twitter.get_authentication_tokens(force_login=True)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
@@ -155,17 +156,7 @@ class LoginController(BaseController):
                 return redirect(loginURL)
         else:
             log.info('did not find twitter id')
-            c.numAccounts = 1000
-            c.numUsers = len(userLib.getActiveUsers())
-
-            if c.numUsers >= c.numAccounts:
-                splashMsg = {}
-                splashMsg['type'] = 'error'
-                splashMsg['title'] = 'Error:'
-                splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-                session['splashMsg'] = splashMsg
-                session.save()
-                return redirect('/')
+            
             # save necessary info in session for registering this user
             session['twitterId'] = myCreds['id']
             session['twitter_oauth_token'] = final_step['oauth_token']
@@ -262,9 +253,12 @@ class LoginController(BaseController):
         facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
-        # get user by email, if no match look for match by facebook user id
-        user = userLib.getUserByEmail( email )
-        log.info('asked for email')
+        if utils.badEmail(email):
+            user = False
+        else:
+            # get user by email, if no match look for match by facebook user id
+            user = userLib.getUserByEmail( email )
+            log.info('asked for email')
         if user:
             log.info('found email')
             alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
@@ -345,7 +339,8 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
-            return redirect("/fbLoggingIn")
+            loginURL = LoginController.logUserIn(self, user)
+            return redirect(loginURL)
         else:
             log.info('did not find by email')
             user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
@@ -359,9 +354,17 @@ class LoginController(BaseController):
                 user['externalAuthType'] = 'facebook'
                 # a user's account email can be different from the email on their facebook account.
                 # we should keep track of this, it'll be handy
-                user['fbEmail'] = email
+                if not utils.badEmail(email):
+                    user['fbEmail'] = email
+                    # a bug may have set some user emails to be made from their fb auth id
+                    # so this is in place to fix that
+                    if user['email'] == "%s@%s.com"%(facebookAuthId, facebookAuthId):
+                        log.info('fixing facebook id generated email')
+                        user['email'] = email
                 commit(user)
-                return redirect("/fbLoggingIn")
+                #return redirect("/fbLoggingIn")
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
             else:
                 return redirect("signup/fbSigningUp")
         
@@ -498,7 +501,12 @@ class LoginController(BaseController):
         email = session['fbEmail']
         log.info("login:fbLoggingIn")
         # get user
-        user = userLib.getUserByEmail( email )
+        if utils.badEmail(email):
+            user = False
+        else:
+            # get user by email, if no match look for match by facebook user id
+            user = userLib.getUserByEmail( email )
+
         if not user:
             user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
@@ -532,28 +540,48 @@ class LoginController(BaseController):
         log.info("login:logUserIn session save")
 
         c.authuser = user
+        
+        # get and cache their ratings
+        ratings = ratingLib.getRatingsForUser()
+        session["ratings"] = ratings
+        session.save()
 
         log.info("login:logUserIn")
-        if 'externalAuthType' in user.keys():
-            log.info("login:logUserIn externalAuthType in user keys")
-            if user['externalAuthType'] == 'facebook':
-                log.info("login:logUserIn externalAuthType facebook")
-                user['facebookAccessToken'] = session['fbAccessToken']
-                if 'fbSmallPic' in session:
-                    user['facebookProfileSmall'] = session['fbSmallPic']
-                    user['facebookProfileBig'] = session['fbBigPic']
-            else:
-                user['externalAuthType'] = ''
+        if 'iPhoneApp' in kwargs:
+            if kwargs['iPhoneApp'] != True:
+                if 'externalAuthType' in user.keys():
+                    log.info("login:logUserIn externalAuthType in user keys")
+                    if user['externalAuthType'] == 'facebook':
+                        log.info("login:logUserIn externalAuthType facebook")
+                        user['facebookAccessToken'] = session['fbAccessToken']
+                        if 'fbSmallPic' in session:
+                            user['facebookProfileSmall'] = session['fbSmallPic']
+                            user['facebookProfileBig'] = session['fbBigPic']
+                    else:
+                        user['externalAuthType'] = ''
+        else:
+            if 'externalAuthType' in user.keys():
+                log.info("login:logUserIn externalAuthType in user keys")
+                if user['externalAuthType'] == 'facebook':
+                    log.info("login:logUserIn externalAuthType facebook")
+                    user['facebookAccessToken'] = session['fbAccessToken']
+                    if 'fbSmallPic' in session:
+                        user['facebookProfileSmall'] = session['fbSmallPic']
+                        user['facebookProfileBig'] = session['fbBigPic']
+                else:
+                    user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
         commit(user)
         log.info("login:logUserIn commit user")
-        
+
         
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
+            if 'loginResetPassword' in loginURL:
+                loginURL = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
             session.pop('afterLoginURL')
             session.save()
         else:
@@ -588,7 +616,7 @@ class LoginController(BaseController):
             if email and password:
                 user = userLib.getUserByEmail( email )
                 if user: # not none or false
-                    if user['activated'] == '0':
+                    if user['activated'] == '6':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
@@ -599,7 +627,7 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
-                        loginURL = LoginController.logUserIn(self, user)
+                        loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             # iphone app is having problems with the case where a user logs in after 
@@ -686,7 +714,7 @@ You can change your password to something you prefer on your profile page.\n\n''
                 splashMsg['content'] = '''A new password was emailed to you.'''
                 session['alert'] = splashMsg
                 session.save()
-                return redirect('/forgotPassword')
+                return redirect('/loginResetPassword')
             else:
                 log.info( "Failed forgot password for " + email )
                 splashMsg['content'] = "Email not found or account has been disabled or deleted."
@@ -711,15 +739,33 @@ You can change your password to something you prefer on your profile page.\n\n''
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
 
-        if workshopCode != 'None' and workshopURL != 'None':
+        if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
-            if thing != 'None':
+            if thing != 'None' and thing != 'newWorkshop':
                 afterLoginURL += "/" + thing
                 if thingCode != 'None' and thingURL != 'None':
                     afterLoginURL += "/%s/%s"%(thingCode, thingURL)
             session['afterLoginURL'] = afterLoginURL
             session.save()
             log.info('loginDisplay afterLoginURL is %s'%afterLoginURL)
+        
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+            
+        return render("/derived/login.bootstrap")
+
+    def loginRedirects(self, page):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
+        afterLoginURL = ''
+        if page == 'newWorkshop':
+            afterLoginURL += "/workshop/display/create/form"
+        session['afterLoginURL'] = afterLoginURL
+        session.save()
+        log.info('loginDisplay afterLoginURL is %s'%afterLoginURL)
         
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
@@ -750,4 +796,4 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/loginNoExtAuth.bootstrap")
 
     def forgotPassword(self):
-        return render("/derived/forgotPassword.bootstrap")
+        return render("/derived/login.bootstrap")

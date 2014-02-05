@@ -2,7 +2,10 @@
    from pylowiki.lib.db.geoInfo import getGeoInfo
 
    import locale
-   locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+   try:
+      locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+   except: #windows
+      locale.setlocale(locale.LC_ALL, 'eng_US')
 
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
@@ -14,12 +17,17 @@
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
    import pylowiki.lib.db.follow        as followLib
+   import pylowiki.lib.db.initiative    as initiativeLib
+   import pylowiki.lib.utils            as utilsLib
+   from pylons import session
    
+   import misaka as m
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
 %>
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
+<%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
 
 
 <%def name="facebookDialogShare(link, picture, **kwargs)">
@@ -29,14 +37,17 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
         thingCode = c.thingCode
+        if not thingCode:
+          thingCode = 'noCode'
+
         userCode = ''
         if c.w:
             if 'urlCode' in c.w.keys():
                 workshopCode = c.w['urlCode']
             else:
-                workshopCode = ''
+                workshopCode = 'noCode'
         else:
-            workshopCode = ''
+            workshopCode = 'noCode'
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
         if 'shareOnWall' in kwargs:
@@ -57,7 +68,16 @@
         
 
         # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
-        name = c.name
+        if 'title' in kwargs:
+          name = kwargs['title']
+        else:
+          name = c.name
+
+        if 'description' in kwargs:
+          description = kwargs['description']
+        else:
+          description = "Civinomics is an Open Intelligence platform. Collaborate to create solutions."
+
         # this is an elaborate way to get the item or workshop's description loaded as the caption
         if c.thing:
             if 'text' in c.thing.keys():
@@ -82,6 +102,9 @@
                 shareOk = True
         if c.w:
             if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+                shareOk = True
+        if c.initiative:
+            if c.initiative['public'] == '1':
                 shareOk = True
     %>
     % if shareOk:
@@ -124,14 +147,48 @@
             }(document));
 
             function shareOnWall() {
+                // grab checked value of checkbox IF it's on the page. add to description.
+                //var shareChecked = $("#shareVote").is(':checked');
+                var shareChecked = false;
+                var shareText = '';
+                var inputElements = document.getElementsByTagName('input');
+                for(var i=0; inputElements[i]; ++i){
+                    //console.log("input class: "+inputElements[i].className)
+                    if(inputElements[i].className=="shareVote" && inputElements[i].checked) {
+                        //console.log("it's checked ")
+                        shareChecked = true;
+                        break;
+                    }
+                }
+                
+                if (shareChecked) {
+                    //console.log("share checked")
+                    // get the value of the voted button
+                    var linkElements = document.getElementsByTagName('a');
+                    for(var j=0; linkElements[j]; ++j){
+                        //console.log(linkElements[j].className)
+                        if(linkElements[j].className=="voted yesVote" || linkElements[j].className=="yesVote voted"){
+                            //console.log("HURRAH!")
+                            shareText = 'I am in favor of this.';
+                            break;
+                        } else if(linkElements[j].className=="noVote voted" || linkElements[j].className=="voted noVote") {
+                            //console.log("NAH AH!")
+                            shareText = 'I am not in favor of this.';
+                            break;
+                        } else {
+                            shareText = 'I have not voted on this yet.';
+                        }
+                    }
+                }
+
                 FB.ui(
                     {
                       method: 'feed',
                       name: "${name}",
                       link: "${link}",
                       picture: "${picture}",
-                      caption: "",
-                      description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                      caption: shareText,
+                      description: "${description}"
                     },
                     function(response) 
                     {
@@ -141,6 +198,10 @@
                           var link = "${link}"
                           var userCode = fbAuthId;
                           var workshopCode = "${workshopCode}"
+                          
+                          //console.log('tc: '+thingCode);
+                          //console.log('wc: '+workshopCode);
+
                           result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
                         }
                     }
@@ -150,10 +211,15 @@
             function messageFriends() {
                 // there is no callback for messages sent
                 // we can simply record that the message dialog was brought up
+                // grab checked value of checkbox IF it's on the page. add to description.
                 var thingCode = "${thingCode}";
                 var link = "${link}"
                 var userCode = fbAuthId;
                 var workshopCode = "${workshopCode}"
+                
+                //console.log('tc mf: '+thingCode);
+                //console.log('wc mf: '+workshopCode);
+                          
                 result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
                 FB.ui(
                     {
@@ -161,48 +227,74 @@
                       name: "${name}",
                       link: "${link}",
                       picture: "${picture}"
-                      //caption: "",
                       //description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
                     }
                 );
             };
         
         </script>
-        % if shareOnWall:
-            <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon-2x"></i></a>
-        % endif
-        % if sendMessage:
-            <a href="#" target='_top' onClick="messageFriends()"><i class="icon-facebook icon-2x"></i></a>
-        % endif:
+        <div class="btn-group facebook">
+          % if 'btn' in kwargs:
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+              <i class="icon-facebook icon-light right-space"></i> | Share
+            </a>
+          % else:
+            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+              <i class="icon-facebook-sign icon-2x"></i>
+            </a>
+          % endif
+          <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            <li>
+              % if shareOnWall:
+                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+              % endif
+            </li>
+            <li>
+              % if sendMessage:
+                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+              % endif
+            </li>
+          </ul>
+        </div>
+        
         
     % endif
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
-        <a href="#emailShare" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
-        <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <a href="#emailShare${itemCode}" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
+    % endif
+</%def>
+
+<%def name="emailShareModal(itemURL, itemCode)">
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
+        <% 
+            memberMessage = "I thought this might interest you!"
+        %>
+        <div id="emailShare${itemCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Share This With a Friend</h3>
             </div><!-- modal-header -->
             <div class="modal-body">
+              <div class="row-fluid">
                 <form ng-controller="shareController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; itemURL='${itemURL}'; itemCode='${itemCode}'; memberMessage='${memberMessage}'; recipientEmail=''; recipientName=''; shareEmailResponse='';" id="shareEmailForm" ng-submit="shareEmail()" class="form-inline" name="shareEmailForm">
-                    Your friend's name:<br>
-                    <input type="text" name="recipientName" ng-model="recipientName" required><br />
+                    <div class="alert" ng-show="shareEmailShow">{{shareEmailResponse}}</div>
                     Your friend's email:<br>
-                    <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br />
+                    <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br>
+                    <br>
                     Add a message for your friend:<br />
                     <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
                     <div class="spacer"></div>
-                    <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button type="submit" class="btn btn-warning">Send Email</button>
+                    <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="submit" class="btn btn-success">Send Email</button>
                     <br />
-                    <span ng-show="shareEmailShow">{{shareEmailResponse}}</span>
                 </form>
+              </div><!-- row -->
             </div><!-- modal-body -->
         </div><!-- modal -->
     % endif
@@ -223,7 +315,7 @@
          <% return %>
       % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
@@ -266,20 +358,12 @@
          <i class="${voteClass}"></i>
          </a>
       % else:
-        % if thing.objType == 'photo':
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % endif
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-        % if thing.objType == 'photo':
-            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % else:
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-        % endif
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
@@ -302,27 +386,37 @@
         if totalVotes > 0:
           percentYes = int(float(totalYes)/float(totalVotes) * 100)
           percentNo = int(float(totalNo)/float(totalVotes) * 100)
+        if 'ratings' in session:
+            myRatings = session["ratings"]
+        else:
+            myRatings = {}
       %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
-            rated = ratingLib.getRatingForThing(c.authuser, thing) 
-            if rated:
-               if rated['amount'] == '1':
-                  commentClass = 'voted yesVote'
-                  displayTally = ''
-                  displayPrompt = 'hidden'
-               else:
-                  commentClass = 'yesVote'
-                  displayTally = ''
-                  displayPrompt = 'hidden'
-                  if rated['amount'] == '0' :
+            thingCode = thing['urlCode']
+            #log.info("thingCode is %s"%thingCode)
+            if thingCode in myRatings:
+                myRating = myRatings[thingCode]
+                log.info("thingCode %s myRating %s"%(thingCode, myRating))
+            else:
+                myRating = "0"
+                
+            if myRating == '1':
+                commentClass = 'voted yesVote'
+                displayTally = ''
+                displayPrompt = 'hidden'
+            else:
+                commentClass = 'yesVote'
+                displayTally = ''
+                displayPrompt = 'hidden'
+                if myRating == '0' :
                     displayTally = 'hidden'
                     displayPrompt = ''
 
-            else:
-               commentClass = 'yesVote'
-               displayTally = 'hidden'
-               displayPrompt = ''
+            #else:
+            #   commentClass = 'yesVote'
+            #   displayTally = 'hidden'
+            #   displayPrompt = ''
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
               <div class="vote-icon yes-icon detail"></div>
@@ -331,13 +425,10 @@
          <br>
          <br>
          <%
-            if rated:
-               if rated['amount'] == '-1':
-                  commentClass = 'voted noVote'
-               else:
-                  commentClass = 'noVote'
+            if myRating == '-1':
+                commentClass = 'voted noVote'
             else:
-               commentClass = 'noVote'
+                commentClass = 'noVote'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
               <div class="vote-icon no-icon detail"></div>
@@ -351,13 +442,13 @@
           Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
         </div>
       % else:
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-          <div class="vote-icon yes-icon"></div>
+         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+         <div class="vote-icon yes-icon"></div>
          </a>
          <br>
          <br>
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-          <div class="vote-icon no-icon"></div>
+         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+         <div class="vote-icon no-icon"></div>
          </a>
          <br>
          <div class="totalVotesWrapper">
@@ -383,6 +474,8 @@
         if isReadOnly():
             readOnlyMessage(thing)
             return
+        if c.privs['provisional']:
+            return
         if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
             return
         if c.w['allowIdeas'] == '0' and thing == 'ideas' and not (c.privs['admin'] or c.privs['facilitator']):
@@ -396,7 +489,7 @@
         if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
             printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
         else:
-            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/'
+            printStr = '<a href="#signupLoginModal" data-toggle="modal"'
             
         if thing == 'discussion':
             printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
@@ -462,12 +555,16 @@
 <%def name="userGreetingMsg(user)">
   <%
     if type(user) == type(1L):
-      user = userLib.getUserByID(user)
+       user = userLib.getUserByID(user)
     elif type(user) == type(u''):
-         user = userLib.getUserByCode(user)
+       user = userLib.getUserByCode(user)
+    if user.objType == 'facilitator':
+       user = userLib.getUserByID(user.owner)
+    if user.objType == 'listener':
+       user = userLib.getUserByEmail(user['email'])
   %>
   % if len(user['greetingMsg']) > 0:
-    , ${ellipsisIZE(user['greetingMsg'], 50)}
+    ${ellipsisIZE(user['greetingMsg'], 35)}
   % endif
 </%def>
 
@@ -531,22 +628,31 @@
     %>
 </%def>
 
-<%def name="resourceLink(r, w, **kwargs)">
+<%def name="resourceLink(r, p, **kwargs)">
    <%
+        if 'initiativeCode' in p:
+            parentBase = 'initiative'
+            parentCode = p['initiativeCode']
+            parentURL = p['initiative_url']
+        else:
+            parentBase = 'workshop'
+            parentCode = p['urlCode']
+            parentURL = p['url']
+            
         if 'directLink' in kwargs:
             if kwargs['directLink'] == True and r['type'] == 'url':
                     resourceStr = 'href="%s' %(r['info'])
             else:
                 if 'noHref' in kwargs:
-                    resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
                 else:
-                    resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                    resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
         else:
             if 'noHref' in kwargs:
-                resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                resourceStr = '/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
             else:
-                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
-        
+                resourceStr = 'href="/%s/%s/%s/resource/%s/%s' %(parentBase, parentCode, parentURL, r["urlCode"], r["url"])
+
         resourceStr += commentLinkAppender(**kwargs)
         if 'noHref' in kwargs:
             resourceStr += ''
@@ -577,6 +683,28 @@
    ${photoStr | n}
 </%def>
 
+<%def name="initiativeLink(initiative, **kwargs)">
+   <%
+        if 'noHref' in kwargs:
+            initiativeStr = '/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+            if 'fullURL' in kwargs:
+              baseURL = utilsLib.getBaseUrl()
+              initiativeStr = '%s/initiative/%s/%s/show' %(baseURL, initiative["urlCode"], initiative["url"])
+
+        else:
+            initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+        initiativeStr += commentLinkAppender(**kwargs)
+        if 'noHref' in kwargs:
+            initiativeStr += ''
+        else:
+            initiativeStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return initiativeStr
+   %>
+   ${initiativeStr | n}
+</%def>
+
 <%def name="ideaLink(i, w, **kwargs)">
    <%
         if 'noHref' in kwargs:
@@ -597,15 +725,21 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        if 'noHref' in kwargs:
-            discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        else:
-            discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        discussionStr += commentLinkAppender(**kwargs)
-        if 'noHref' in kwargs:
-            discussionStr += ''
-        else:
-            discussionStr += '"'
+        if 'workshopCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            else:
+                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+            discussionStr += commentLinkAppender(**kwargs)
+            if 'noHref' in kwargs:
+                discussionStr += ''
+            else:
+                discussionStr += '"'
+        elif 'initiativeCode' in d:
+            if 'noHref' in kwargs:
+                discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+            else:
+                discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -620,6 +754,8 @@
             commentSuffix = "/comment/%s"%comment['urlCode']
         elif dparent.objType.replace("Unpublished", "") == 'user':
             parentBase = 'profile'
+        elif dparent.objType.replace("Unpublished", "") == 'initiative':
+            parentBase = 'initiative'
             
         if 'noHref' in kwargs:
             linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
@@ -638,12 +774,17 @@
             objType = thing['objType'].replace("Unpublished", "")
         else:
             objType = thing.objType.replace("Unpublished", "")
+            
+        #log.info("working on objType %s with id of %s"%(thing.objType, thing.id))
         if objType == 'discussion':
             return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
+            #log.info("before resouce link, parent is type %s"%dparent.objType)
             return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
             return ideaLink(thing, dparent, **kwargs)
+        elif objType == 'initiative':
+            return initiativeLink(thing, **kwargs)
         elif objType == 'comment':
             if thing.objType == 'revision':
                 return commentLink(thing, dparent, **kwargs)
@@ -663,6 +804,11 @@
                 if not photo:
                     return False
                 return photoLink(photo, dparent, **kwargs)
+            elif 'initiativeCode' in thing.keys():
+                initiative = initiativeLib.getInitiative(thing['initiativeCode'])
+                if not initiative:
+                    return False
+                return initiativeLink(initiative, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
@@ -1132,6 +1278,30 @@
         text = ''
         if 'text' in thing.keys():
             text = thing['text']
+            
+        ctype = ""
+        if thing.objType == 'comment':
+            if 'initiativeCode' in thing and 'resourceCode' not in thing:
+                ctype = "initiative"
+            elif 'ideaCode' in thing:
+                ctype = "idea"
+            else:
+                ctype = "reguar"
+
+            yesChecked = ""
+            noChecked = ""
+            neutralChecked = ""
+            
+            if ctype != "regular":
+                if 'commentRole' in thing:
+                    if thing['commentRole'] == 'yes':
+                        yesChecked = 'checked'
+                    elif thing['commentRole'] == 'no':
+                        noChecked = 'checked'
+                    else:
+                        neutralChecked = 'checked'
+                else:
+                    neutralChecked = 'checked'
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
@@ -1142,6 +1312,19 @@
                 <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
+                    % if ctype == 'initiative' or ctype == 'idea':
+                        <div class="row-fluid">
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="neutral" ${neutralChecked}> Neutral
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> I am against this ${ctype}
+                                </label>
+                        </div><!-- row-fluid -->
+                    % endif
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
@@ -1282,37 +1465,40 @@
 
 <%def name="revisionHistory(revisions, parent)">
     % if revisions:
-      <div class="accordion" id="revision-wrapper">
-          <div class="accordion-group no-border">
-              <div class="accordion-heading">
-                  <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
-                      <small>Click to show revisions</small>
-                  </a>
-              </div>
-              <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
-                  <div class="accordion-inner no-border">
-                      <table class="table table-hover table-condensed">
-                          <tr>
-                              <th>Revision</th>
-                              <th>Author</th>
-                          </tr>
-                          % for rev in revisions:
-                            <% 
+        <div class="accordion" id="revision-wrapper">
+            <div class="accordion-group no-border">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
+                        <small>Click to show revisions</small>
+                    </a>
+                </div>
+                <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
+                    <div class="accordion-inner no-border">
+                        <table class="table table-hover table-condensed">
+                            <tr>
+                                <th>Revision</th>
+                                <th>Author</th>
+                            </tr>
+                            % for rev in revisions:
+                                <% 
                                     if c.w:
                                         dparent = c.w
+                                    elif c.initiative:
+                                        dparent = c.initiative
                                     elif c.user:
                                         dparent = c.user
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
-                            %>
-                              <tr>
-                                  <td>${linkStr | n}</td>
-                                  <td>${userLink(rev.owner)}</td>
-                              </tr>
-                          % endfor
-                      </table>
-                  </div>
-              </div>
-          </div>
+                                %>
+                                <tr>
+                                    <td>${linkStr | n}</td>
+                                    <td>${userLink(rev.owner)}</td>
+                                </tr>
+                            % endfor
+                        </table>
+                    </div><!-- accordian-inner -->
+                </div><!-- accordian-body -->
+            </div><!-- accordian-group -->
+        </div><!-- accordian -->
     % endif
 </%def>
 
@@ -1321,11 +1507,14 @@
         thisUser = userLib.getUserByID(item.owner)
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
+                            'update': 'added an initiative progress report',
                             'idea': 'posed the idea',
+                            'initiative': 'launched the initiative',
                             'comment': 'commented on a'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
+                            'initiative':'initiative',
                             'comment':'comment'}
         eclass = ""
         if 'expandable' in kwargs:
@@ -1346,7 +1535,10 @@
             else:
                 title = ellipsisIZE(item['title'], 40)
         
-        activityStr = actionMapping[item.objType]
+        if item.objType == 'discussion' and item['discType'] == 'update':
+            activityStr = actionMapping['update']
+        else:
+            activityStr = actionMapping[item.objType]
         # used for string mapping below
         objType = item.objType
         if item.objType == 'comment':
@@ -1355,6 +1547,8 @@
                 objType = 'idea'
             elif 'resourceCode' in item.keys():
                 objType = 'resource'
+            elif 'initiativeCode' in item.keys():
+                objType = 'initiative'
             elif item.keys():
                 objType = 'discussion'
             
@@ -1401,6 +1595,21 @@
   </select>
 </%def>
 
+<%def name="public_tag_list_filter()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+      <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
+    % for category in sorted(categories):
+      <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
+    % endfor
+</%def>
+
+<%def name="public_tag_links()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+    % for category in sorted(categories):
+      <a href="/searchTags/${category}">${category}</a><br>
+    % endfor
+</%def>
+
 <%def name="bookmarkOptions(user, workshop)">
   <% f = followLib.getFollow(user, workshop) %>
     % if f:
@@ -1434,25 +1643,146 @@
     % endif
 </%def>
 
-<%def name="listBookmarks(bookmarked)">
-  <table class="table plain">
+<%def name="listBookmarks(bookmarked, ltitle)">
+  <table class="table table-hover table-condensed no-bottom">
     % for item in bookmarked:
       <tr>
         <td>
-          <div class="media well searchListing bookmarks" style="overflow:visible;">
-              <a class="pull-left" ${workshopLink(item)}>
-                <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
-              </a>
-            <div class="span6">
-              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            <div class="media profile-workshop" style="overflow:visible;">
+                <a class="pull-left" ${workshopLink(item)}>
+                  <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+                </a>
+                <div class="media-body" style="overflow:visible;">
+                  <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+                    % if ltitle == 'Facilitating' or ltitle == 'Author' or userLib.isAdmin(c.authuser.id):
+                      <a class="btn pull-right" href="/workshop/${item['urlCode']}/${item['url']}/preferences"><strong>Edit Workshop</strong></a> &nbsp;
+                    % else:
+                      % if ltitle == 'Bookmarked':
+                        ${homeHelpers.watchButton(item, following = True)}
+                      % endif
+                      ${bookmarkOptions(c.authuser, item)}
+                    % endif
+                    <br>
+                    % if item['public_private'] == 'public':
+                      <span class="grey">Workshop for</span> ${showScope(item) | n}
+                    % else:
+                      <span class="grey">Private Workshop</span>
+                    % endif
+                </div>
             </div>
-            <div>
-              ${homeHelpers.watchButtonListing(item)}
-              ${bookmarkOptions(c.authuser, item)}
-            </div>
-          </div>
         </td>
       </tr>
     % endfor
   </table>
+</%def>
+
+<%def name="formattingGuide()">
+  <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-picture"></i> <i class="icon-list"></i> View Formatting Guide</a></label>
+</%def>
+
+<%def name="showTags(item)">
+    <% 
+        colors = workshopLib.getWorkshopTagColouring()
+        try:
+          tagList = item['tags'].split('|')
+        except KeyError:
+          tagList = item['workshop_category_tags'].split('|')
+        tagList = tagList[:3]
+    %>
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% 
+                tagClass = colors[tag] 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <a class="label workshop-tag ${tagClass}" href="/searchTags/${tagValue}/" >${tag}</a>
+          % endif
+      % endfor
+</%def>
+
+<%def name="showScope(item)">
+    <%  
+        try:
+          try:
+            scopeList = item['scope']
+          except KeyError:
+            scopeList = item['workshop_public_scope']
+        except:
+          scopeList = "0|0|0|0|0|0|0|0|0|0"
+
+        scopeList = scopeList.split('|')
+        country = scopeList[2].replace("-", " ")
+        state = scopeList[4].replace("-", " ")
+        county = scopeList[6].replace("-", " ")
+        city = scopeList[8].replace("-", " ")
+        postalCode = scopeList[9]
+        scopeString = ""
+        if country == '0':
+            scopeString = 'Planet Earth'
+        elif state == '0':
+            scopeString = 'Country of %s' %country.title()
+        elif county == '0':
+            scopeString = 'State of %s' %state.title()
+        elif city == '0':
+            scopeString = 'County of %s'%county.title()
+        elif postalCode == '0':
+            scopeString += 'City of %s'%city.title()
+        else:
+            scopeString += 'Zip Code %s</span>'%postalCode
+    %>
+    <span class="badge badge-info">${scopeString | n}</span>
+</%def>
+
+<%def name="showFullScope(item)">
+    <%  
+        try:
+          try:
+            scopeList = item['scope']
+          except KeyError:
+            scopeList = item['workshop_public_scope']
+        except:
+          scopeList = "0|0|0|0|0|0|0|0|0|0"
+
+        scopeList = scopeList.split('|')
+        country = scopeList[2].replace("-", " ")
+        state = scopeList[4].replace("-", " ")
+        county = scopeList[6].replace("-", " ")
+        city = scopeList[8].replace("-", " ")
+        postalCode = scopeList[9]
+        if country == '0':
+            scopeString = '<span class="badge badge-info">Planet Earth</span>'
+        else:
+            scopeString = "Planet Earth"
+            if state == '0':
+                scopeString += ', <span class="badge badge-info">Country of %s</span>'%country.title()
+            else:
+                scopeString += ', Country of %s'%country.title()
+                if county == '0':
+                    scopeString += ', <span class="badge badge-info">State of %s</span>'%state.title()
+                else:
+                    scopeString += ', State of %s'%state.title()
+                    if city == '0':
+                        scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
+                    else:
+                        scopeString += ', County of %s'%county.title()
+                        if postalCode == '0':
+                            scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
+                        else:
+                            scopeString += ", City of %s"%city.title()
+                            scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
+    %>
+    ${scopeString | n}
+</%def>
+
+<%def name="initiativeImage(i)">
+  <%
+    if 'directoryNum_photos' in i and 'pictureHash_photos' in i:
+      imgURL = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png" 
+    else:
+      imgURL = "/images/icons/generalInitiative.jpg"
+  %>
+
+  <a ${initiativeLink(i)}>
+      <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+  </a>
 </%def>

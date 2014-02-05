@@ -15,6 +15,7 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.idea             as ideaLib
 import pylowiki.lib.db.photo            as photoLib
+import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.resource         as resourceLib
 import pylowiki.lib.db.comment          as commentLib
@@ -36,12 +37,12 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos']:
+        if action in ['users', 'usersNotActivated', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
         # Actions that require a workshop and a workshop child object
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish', 'activate']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -58,9 +59,16 @@ class AdminController(BaseController):
             elif c.thing.objType.replace("Unpublished", "") == 'photo':
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
+            elif 'initiativeCode' in c.thing:
+                parent = generic.getThing(c.thing['initiativeCode'])
+                c.user = generic.getThing(parent['userCode'])
+                userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'initiative':
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item
-            if userLib.isAdmin(author.id):
+            if c.thing.objType != 'user' and userLib.isAdmin(author.id):
                 if not userLib.isAdmin(c.authuser.id):
                     """
                         Why are we not returning here?  Pylons will only accept an abort() here
@@ -97,12 +105,13 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt', 'publish', 'unpublish']:
-            if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
-                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
-                    abort(404)
-            else:
+            if 'workshopCode' in c.thing:
                 if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                     abort(404)
+            else:
+                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
+                    abort(404)
+                    
         if action in ['enable', 'disable', 'immunify', 'delete', 'adopt']:
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
@@ -116,11 +125,17 @@ class AdminController(BaseController):
                 pass
             elif (c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
                 abort(404)
+            elif (c.thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
+                abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
                 
     def users(self):
         c.list = userLib.getAllUsers()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def usersNotActivated(self):
+        c.list = userLib.getNotActivatedUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def photos(self):
@@ -131,6 +146,18 @@ class AdminController(BaseController):
         
     def flaggedPhotos(self):
         c.list = flagLib.getFlaggedThings('photo')
+        if not c.list:
+            c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def initiatives(self):
+        c.list = initiativeLib.getAllInitiatives()
+        if not c.list:
+            c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def flaggedInitiatives(self):
+        c.list = flagLib.getFlaggedThings('initiative')
         if not c.list:
             c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )
@@ -168,7 +195,12 @@ class AdminController(BaseController):
             data = request.params['textarea' + thingCode]
             data = data.strip()
             
-            c.thing = commentLib.editComment(c.thing, data)
+            commentRole = 'neutral'
+            if 'initiativeCode' in c.thing or 'ideaCode' in c.thing:
+                if 'commentRole' + thingCode in request.params:
+                    commentRole = request.params['commentRole' + thingCode]
+            
+            c.thing = commentLib.editComment(c.thing, data, commentRole)
             if not c.thing:
                 alert = {'type':'error'}
                 alert['title'] = 'Comment edit failed.'
@@ -223,9 +255,13 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
-        if c.w:
+        if 'workshopCode' in c.thing:
             return redirect(utils.thingURL(c.w, c.thing))
-        elif c.user:
+        elif 'initiativeCode' in c.thing:
+            initiative = generic.getThing(c.thing['initiativeCode'])
+            return redirect(utils.thingURL(initiative, c.thing))
+        elif 'profileCode' in c.thing:
+            user = generic.getThing(c.thing['profileCode'])
             return redirect(utils.thingURL(c.user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
@@ -237,21 +273,36 @@ class AdminController(BaseController):
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
-        if thing.objType.replace("Unpublished", "") == 'photo':
+        if 'workshopCode' in thing:
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        elif thing.objType.replace("Unpublished", "") == 'photo':
             extraInfo = action + 'Photo'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, photoCode = thing['urlCode'])
-        else:
-            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        elif thing.objType.replace("Unpublished", "") == 'initiative':
+            extraInfo = action + 'Initiative'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, initiativeCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'discussion':
+            eventTitle = '%s Initiative Update' % (action.title())
+            extraInfo = action + 'InitiativeUpdate'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, updateCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'resource':
+            extraInfo = action + 'InitiativeResource'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, resourceCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'comment':
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user)
+
+
         eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
         message = generic.linkChildToParent(message, thing)
         dbHelpers.commit(message)
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
-                if thing.objType.replace("Unpublished", "") == 'photo':
-                    flagLib.Flag(thing, user)
-                else:
+                if 'workshopCode' in thing:
                     flagLib.Flag(thing, user, workshop = c.w)
+                else:
+                    flagLib.Flag(thing, user)
+                    
                 
     def _adoptEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType)
@@ -325,6 +376,8 @@ class AdminController(BaseController):
         if 'workshopCode' in c.thing:
             dparent = generic.getThing(c.thing['workshopCode'])
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'initiative':
+            returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -352,13 +405,15 @@ class AdminController(BaseController):
         if 'workshopCode' in c.thing:
             dparent = generic.getThing(c.thing['workshopCode'])
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'initiative':
+            returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
         return redirect(returnURL)
         
     def flag(self, thingCode):
-        if c.thing.objType != 'photo' and 'photoCode' not in c.thing:
+        if 'workshopCode' in c.thing:
             if not workshopLib.isScoped(c.authuser, c.w):
                 return json.dumps({'code':thingCode, 'result':'Error: Unable to flag.'})
         if c.error:
@@ -378,10 +433,10 @@ class AdminController(BaseController):
                 return json.dumps({'code':thingCode, 'result':result})
             else:
                 result += ' Warning: %s has marked this as immune because %s.' % (author['email'], immunifyEvent['reason'])
-        if c.thing.objType == 'photo' or 'photoCode' in c.thing:
-            newFlag = flagLib.Flag(c.thing, c.authuser)
-        else:
+        if 'workshopCode' in c.thing:
             newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
+        else:
+            newFlag = flagLib.Flag(c.thing, c.authuser)
         alertsLib.emailAlerts(newFlag)
         return json.dumps({'code':thingCode, 'result':result})
         
@@ -416,3 +471,10 @@ class AdminController(BaseController):
     def setDemo(self, thingCode):
         response = workshopLib.setDemo(c.thing)
         return response
+        
+    def activate(self, thingCode):
+        user = c.thing
+        user['activated'] = "1"
+        dbHelpers.commit(user)
+        result = "Activated"
+        return json.dumps({'code':thingCode, 'result':result})

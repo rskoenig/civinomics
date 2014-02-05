@@ -1,17 +1,17 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_splash.bootstrap"/>
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
 <div id="bg">
-    <img src='/images/splash/Large_CityHall.jpg' alt="">
+    <img src='/images/splash/liberty.jpg' alt="">
 </div>
 <div class="login">
   <div class="container">
       <div class="row">
           <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well">
+              <div class="well main-well login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -20,9 +20,9 @@
                       </div>
                   % endif
                   <div class="login-top">
-                      <h2> Link your account with Twitter Login</h2>
+                      <h2> Link your Civinomics account with Twitter</h2>
                       <p>Since you haven't used Twitter to log in on Civinomics 
-                        yet, we need you to verify your identity by asking you enter the password you use on our site. After this, pressing the 'Sign in with Twitter' button will log you in directly.</p>
+                        yet, we need you to verify your identity by entering the password you use with your existing Civinomics account.</p>
                   </div>
                   <div class="login-body">
                       % if c.conf['read_only.value'] == 'true':

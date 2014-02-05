@@ -41,6 +41,12 @@ def getActiveUsers(disabled = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
+        
+def getNotActivatedUsers():
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('activated', "0"))).all()
+    except:
+        return False
 
 def getAllUsers(disabled = '0', deleted = '0'):
     try:
@@ -110,13 +116,14 @@ def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'
 
 def getUserPosts(user, active = 1):
     returnList = []
+    thingTypes = ['resource', 'comment', 'discussion', 'idea', 'initiative']
     if active == 1:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(thingTypes)).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
     else:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(thingTypes)).filter_by(owner = user.id).order_by('-date').all()
 
     for item in postList:
-        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment' or item.objType == 'idea':
+        if item.objType != 'discussion':
             returnList.append(item)
         elif item.objType == 'discussion':
             if item['discType'] == 'general':
@@ -188,16 +195,26 @@ def setUserPrivs():
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
     c.privs['guest'] = False
+    # Logged in but not yet activated
+    c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
     # is a demo workshop
     c.privs['demo'] = False
     
     if 'user' in session:
-        c.privs['admin'] = isAdmin(c.authuser.id)
-        c.privs['participant'] = True
-        c.privs['guest'] = False
-        c.privs['visitor'] = False
+        if c.authuser['activated'] == '0':
+            c.privs['provisional'] = True
+            c.privs['admin'] = False
+            c.privs['participant'] = False
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
+        else:
+            c.privs['admin'] = isAdmin(c.authuser.id)
+            c.privs['provisional'] = False
+            c.privs['participant'] = True
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
 
 # Helper functions
     

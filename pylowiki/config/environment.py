@@ -29,6 +29,7 @@ def load_environment(global_conf, app_conf):
     config['routes.map'] = make_map()
     config['pylons.app_globals'] = app_globals.Globals()
     config['pylons.h'] = pylowiki.lib.helpers
+    config['pylons.strict_tmpl_context'] = False #later versions of pylon have this True by default, which breaks significant portions of the site, so it's best to be explicit
 
     # Create the Mako TemplateLookup, with the default auto-escaping
     config['pylons.app_globals'].mako_lookup = TemplateLookup(

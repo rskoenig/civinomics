@@ -169,7 +169,7 @@
 </%def>
 
 <%def name="uploadPhoto()">
-    % if 'user' in session and (c.authuser.id == c.user.id):
+    % if 'user' in session and (c.authuser.id == c.user.id) and not c.privs['provisional']:
         <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
             <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
                 <div class="span10 offset1">

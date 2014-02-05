@@ -39,6 +39,9 @@ def getPrivateMemberWorkshopsByEmail(email, deleted = '0'):
 def getPrivateMemberWorkshops(user, deleted = '0'):
     email = user['email']
     elist = email.split('@')
+    retlist = []
+    if len(elist) < 2:
+        return retlist
     domain = elist[1]
     pmalist =  meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('userCode', user['urlCode']))).filter(Thing.data.any(wc('type', 'A'))).filter(Thing.data.any(wc('deleted', deleted))).all()
     if not pmalist:

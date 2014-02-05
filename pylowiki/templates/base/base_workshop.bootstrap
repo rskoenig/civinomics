@@ -9,29 +9,26 @@
 
 <div class="darkened-workshop"></div>
 <div class="spacer"></div>
-<div class="row-fluid" ng-app="civ">
+<div class="row-fluid one-up" ng-app="civ">
       <div class="row-fluid">
         <div class="span10">
           
           <h1 class="workshop-title"> 
-            ${helpers.displayWorkshopFlag(c.w)}
             <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
               {{workshopTitle}}
             </a>
-            ${helpers.showTags()}
           </h1>
+          <h4 style="color: #fff">${helpers.displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
         </div>
         <div class="span2">
           % if 'user' in session:
             <div class="span12">
-              ${helpers.watchButton()}
+              ${helpers.watchButton(c.w)}
             </div>
           % endif
           <div class="span12" style="margin-top:10px; margin-left: 0px">
             <span class = "share-icons contrast pull-right">
-              % if c.listingType == 'ideas':
-                  ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True)}
-              % endif
+              ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True, description=c.description)}
               ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
               % if c.w['public_private'] == 'public':
                   <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
@@ -51,10 +48,11 @@
               infoHref = linkHref + '/information'
               forumHref = linkHref + '/discussion'
               activityHref= linkHref + '/activity'
+              publicStatsHref= linkHref + '/publicStats'
               adminHref= linkHref + '/preferences'
 
     
-              summaryActive = infoActive = activityActive = forumActive = adminActive = ''
+              summaryActive = infoActive = activityActive = forumActive = publicStatsActive = adminActive = ''
 
               if c.listingType == 'resources' or listingType == 'resource':
                 infoActive = 'active'
@@ -64,6 +62,8 @@
                 summaryActive = 'active'
               elif c.listingType == 'activity':
                 activityActive = 'active'
+              elif c.listingType == 'publicStats':
+                publicStatsActive = 'active'
               elif c.adminPanel == True:
                 adminActive = 'active'
             %>
@@ -75,6 +75,7 @@
               <li class="${infoActive}"><a href="${infoHref | n}">Info</a></li>
               <li class="${forumActive}"><a href="${forumHref | n}">Forum</a></li>
               <li class="${activityActive}"><a href="${activityHref | n}">Activity</a></li>
+              <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
               % if c.privs['admin'] or c.privs['facilitator']: 
                 <li class="pull-right ${adminActive}" style="margin-right: 10px;"><a href="${adminHref | n}">Admin</a></li>
               % endif
@@ -85,6 +86,11 @@
       ${next.body()}
    </div><!-- /.span12.well -->
 </div><!--/.row-->
+% if c.thing:
+  ${lib_6.emailShareModal(c.objectUrl, c.thing['urlCode'])}
+% endif
+${lib_6.emailShareModal(c.requestUrl, c.w['urlCode'])}
+${helpers.whoListeningModals()}
 
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
@@ -102,12 +108,6 @@
       $(".followButton").tooltip();
       $(".preferencesLink").tooltip();
       $(".publishButton").tooltip();
-   </script>
-   <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
-   <script>
-      $(document).ready(function(){
-        $('textarea').autosize();   
-      });
    </script>
 </%def>
 
