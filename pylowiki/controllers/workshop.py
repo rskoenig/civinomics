@@ -1033,18 +1033,13 @@ class WorkshopController(BaseController):
 
         log.info("inside workshop display 5")
         
-        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
-
-        if not ideas:
-            c.ideas = []
-        else:
-            # performance bottleneck. also - sorting will soon be done by angular in the browser
-            #sortedIdeas = sort.sortBinaryByTopPop(ideas)
-            sortedIdeas = ideas
-            #log.info("after sorted ideas")
-            if iPhoneApp:
+        # since angular fetching ideas in workshopIdeas() - this is only needed to support current iPhone app
+        c.listingType = 'ideas'
+        if iPhoneApp:
+            ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+            if ideas:
                 i = 0
-                for idea in sortedIdeas:
+                for idea in ideas:
                     ideaEntry = "idea" + str(i)
                     # so that we don't modify the original, we place this idea in a temporary variable
                     formatIdea = []
@@ -1069,15 +1064,7 @@ class WorkshopController(BaseController):
                             formatIdea['rated'] = "0"
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
-            else:
-                c.ideas = sortedIdeas
 
-        if not iPhoneApp:
-            disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
-            if disabled:
-                c.ideas = c.ideas + disabled
-
-        c.listingType = 'ideas'
         if iPhoneApp:
             entry['mainImage'] = dict(c.mainImage)
             entry['baseUrl'] = c.baseUrl
@@ -1378,12 +1365,18 @@ class WorkshopController(BaseController):
         result = []
         adopted = 0
         disabled = 0
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
         for idea in ideas:
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
                 adopted += 1
@@ -1396,13 +1389,15 @@ class WorkshopController(BaseController):
             entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
             entry['ups'] = int(idea['ups'])
             entry['downs'] = int(idea['downs'])
-            rated = ratingLib.getRatingForThing(c.authuser, idea) 
-            if rated:
-                entry['rated'] = rated['amount']
+
+            # user ratings
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
             else:
                 entry['rated'] = 0
-            entry['urlCode'] = idea['urlCode']
-            entry['url'] = idea['url']
+                entry['vote'] = 'nvote'
+
             entry['addedAs'] = idea['addedAs']
             entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
             u = userLib.getUserByID(idea.owner)
