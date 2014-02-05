@@ -144,7 +144,7 @@ class ListenerController(BaseController):
                 else:
                     lValue = 0
             user[lKey] = str(lValue)
-            commit(user)
+            dbHelpers.commit(user)
             
         eventLib.Event(returnMsg, '%s by %s'%(returnMsg, c.authuser['name']), listener, user = c.authuser)
             
@@ -342,6 +342,9 @@ class ListenerController(BaseController):
         
     @h.login_required
     def listenerNotificationHandler(self, workshopCode, url, userCode):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         user = userLib.getUserByCode(userCode)
         listener = listenerLib.getListener(user['email'], c.w)
         # initialize to current value if any, '0' if not set in object
@@ -350,10 +353,19 @@ class ListenerController(BaseController):
         if 'itemAlerts' in listener:
             iAlerts = listener['itemAlerts']
         
-        payload = json.loads(request.body)
-        if 'alert' not in payload:
-            return "Error"
-        alert = payload['alert']
+        if iPhoneApp:
+            try:
+                alert = request.params['alert']
+            except:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+        else:
+            payload = json.loads(request.body)
+            if 'alert' not in payload:
+                return "Error"
+            alert = payload['alert']
         if alert == 'items':
             if 'itemAlerts' in listener.keys(): # Not needed after DB reset
                 if listener['itemAlerts'] == u'1':
@@ -377,10 +389,24 @@ class ListenerController(BaseController):
                 listener['digest'] = u'1'
                 eAction = 'Turned on'
         else:
-            return "Error"   
+            if iPhoneApp:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+            else:
+                return "Error"
+
         dbHelpers.commit(listener)
         if eAction != '':
             eventLib.Event('Listener item notifications set', eAction, listener, c.authuser)
-        return eAction
+
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            result = eAction
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return eAction
 
             

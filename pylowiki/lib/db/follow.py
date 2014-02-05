@@ -39,6 +39,17 @@ def getWorkshopFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'workshopCode'))).all()
     except:
         return False
+        
+# Which initiatives is the user following
+def getInitiativeFollows( user, disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'follow')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(and_(Data.key == u'initiativeCode'))).all()
+    except:
+        return False
 
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):
@@ -72,10 +83,11 @@ def isFollowing(user, thing):
             .filter(Thing.data.any(wc('disabled', False)))\
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).all()
         if f:
-           return True
+            return True
         else:
-           return False
+            return False
     except:
+        log.info("broken following query")
         return False
 
 # Object creation/modification here
@@ -112,9 +124,9 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
                 else:
                     thing[fKey] = '0'
             fKey = 'follow_counter'
-        elif thing.objType == 'workshop':
+        elif thing.objType == 'workshop' or thing.objType == 'initiative':
             fKey = 'bookmark_counter'
-            
+        
         if f['disabled'] == '0':
             if fKey in user:
                 fValue = int(user[fKey])
@@ -129,7 +141,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
                 user[fKey] = str(fValue)
             else:
                 user[fKey] = '0'
-                
+
         commit(user)
         commit(f)
         return True

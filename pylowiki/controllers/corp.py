@@ -659,32 +659,27 @@ class CorpController(BaseController):
         c.team.append(russellSterten)
 
         c.advisors=[]
-        kevinB={}
+        
+        lloydT={}
+        lloydT["name"]="Lloyd Tabb"
+        lloydT['title']='Advisor'
+        lloydT['bio']="Lloyd has been a technology revolutionary for 25 years, driving important trends in how the world uses the Internet. Originally a database and languages architect at Borland International, Lloyd left Borland to found Commerce Tools, where he wrote the first application server for the web. After Commerce Tools was acquired by Netscape in 1995, Lloyd was Principal Engineer on Netscape Navigator Gold, led several releases of Communicator, and helped define the creation of Mozilla.org. As CTO of LiveOps, the first commercial crowd-sourced company, he designed the crowd-sourced ecosystem. Lloyd was also a co-founder of Readyforce and advisor to Luminate. He is currently Founder, Chairman and CTO of Looker."
+        lloydT['photo']='lloyd_tabb.jpg'
+        c.advisors.append(lloydT)
+
         edolfoG={}
         edolfoG["name"]="Edolfo Garza-Licudine"
-        edolfoG['title']='Technichal Advisor & Founder'
+        edolfoG['title']='Advisor & Co-founder'
         edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
         edolfoG['photo']='edolfo_garzalicudine.jpg'
         c.advisors.append(edolfoG)
-        traciH={}
-        traciH["name"]="Traci Hukill"
-        traciH['title']='Public Relations'
-        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
-        traciH['photo']='traci_hukill.jpg'
-        c.advisors.append(traciH)
-        kevinB["name"]="Kevin Bell"
-        kevinB['title']='Energy and Sustainability'
-        kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
-        kevinB['photo']='kevin_bell.jpg'
-        c.advisors.append(kevinB)
-        davidP={}
-        davidP["name"]="David Pascal"
-        davidP['title']='Fundraising'
-        davidP['bio']="David was most recently President of the San Francisco Carbon Collaborative. Previously, David was the Lead Clean Technology and Green Business Advocate for the City and County of San Francisco, where his time was split between the Mayor's Office of Economic and Workforce Development and the City's Department of the Environment. In that capacity, David was responsible for attracting and retaining companies whose products and services address our greatest environmental challenges. Prior to entering the government sector, David worked as an environmental sustainability consultant, and served as the Director of Events and Entertainment for Al Gore's Alliance for Climate Protection."
-        davidP['photo']='david_pascal.jpg'
-        c.advisors.append(davidP)
 
-
+        tomY={}
+        tomY["name"]="Tom Yoritaka"
+        tomY['title']='Strategy, Products and Technology'
+        tomY['bio']= "Tom Yoritaka is a Senior Director & General Manager at Cisco Systems, Inc. He is also the Managing Director of Cisco Entrepreneurs in Residence - the company's innovation program for eary-stage start-ups. Prior to joining Cisco, he held various executive & leadershiop positions in Web techbology & product management at Yahoo! & Microsoft. He also worked as a strategy consultant at The Boston Consulting Group & McKenna Group. He holds a master's degree from Harvard University John F. Kennedy School of Government, an MBA from The University of Chicago Booth School of Business & an undergraduate degree from Northwestern University."
+        tomY['photo']='tom_yoritaka.png'
+        c.advisors.append(tomY)
 
         return render('/derived/corp_team.bootstrap')
 
@@ -693,6 +688,138 @@ class CorpController(BaseController):
         c.pagetype="news" 
 
         c.articles=[]
+       
+        article={}
+        article['title']="Civinomics Rising"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html'
+        article['date']='12.11.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Dawn of Civinomicon"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/36-santa-cruz-business-news/5211-dawn-of-civinomicon.html'
+        article['date']='11.20.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Civinomics Looking for Pubic Input"
+        article['link']='http://santacruz.patch.com/groups/announcements/p/civinomics-looking-for-pubic-input'
+        article['date']='11.19.2013'
+        article['source']='Santa Cruz Patch'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Santa Cruz hackathon brings new ideas to the political table"
+        article['link']='http://www.santacruzsentinel.com/santacruz/ci_24544092/santa-cruz-hackathon-brings-new-ideas-political-table'
+        article['date']='11.17.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Civinomicon Seeks to Fix Public Discourse"
+        article['link']='http://www.santacruz.com/news/2013/11/05/civinomicon_seeks_to_fix_local_public_discourse'
+        article['date']='11.15.2013'
+        article['source']='SantaCruz.com'
+        c.articles.append(article)
+
+        article={}
+        article['title']="Community gathers to discuss downtown"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15440'
+        article['date']='11.08.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomicon Seeks to Fix Public Discourse"
+        article['link']='http://www.santacruz.com/news/2013/11/05/civinomicon_seeks_to_fix_local_public_discourse'
+        article['date']='11.05.2013'
+        article['source']='Santa Cruz Weekly'
+        c.articles.append(article)
+        article={}
+        article['title']="Tech startup Civinomics to host civic engagement conference"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72'
+        article['date']='10.25.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
+        article={}
+        article['title']="KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
+        article['link']='http://podcast.ethanbearman.com/ksco-presents-ethan-bearman-october-3-2013/'
+        article['date']='10.03.2013'
+        article['source']='KSCO'
+        c.articles.append(article)
+        article={}
+        article['title']="(Video) KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
+        article['link']='http://www.youtube.com/watch?v=VfXiMWpUBZ8&feature=youtu.be'
+        article['date']='10.03.2013'
+        article['source']='YouTube'
+        c.articles.append(article)
+        article={}
+        article['title']="Lack of eatery, entertainment options top downtown Watsonville survey"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15248'
+        article['date']='10.03.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
+        article={}
+        article['title']="Survey: Watsonville downtown needs more restaurants, shops, entertainment: Downtown vision project seeks to engage public"
+        article['link']='http://www.santacruzsentinel.com/watsonville/ci_24226760/survey-watsonville-downtown-needs-more-restaurants-shops-entertainment'
+        article['date']='10.02.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Get Stoked on Social. Santa Cruzs Best Twitter Accounts"
+        article['link']='http://santacruzlife.com/get-stoked-social-santa-cruzs-best-twitter-accounts/'
+        article['date']='9.30.2013'
+        article['source']='SantaCruzLife.com'
+        c.articles.append(article)
+        article={}
+        article['title']="The Civinomics blog on civic discourse"
+        article['link']='http://santacruznews.org/people/the-civinomics-blog-on-civic-discourse/'
+        article['date']='9.30.2013'
+        article['source']='SantaCruzNews.org'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomics tackles Shakespeare, downtown Watsonville, plastic bags"
+        article['link']='http://www.santacruzsentinel.com/santacruz/ci_24008994/civinomics-tackles-shakespeare-downtown-watsonville-plastic-bags?source=rss&utm_source=dlvr.it&utm_medium=twitter'
+        article['date']='9.03.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Building an Entrepreneurial Pipeline in Santa Cruz (Part 3)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/08/01/building-an-entrepreneurial-pipeline-in-santa-cruz/'
+        article['date']='8.1.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Seeding a New Generation of Startups in Santa Cruz (Part 2)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/07/31/seeding-a-new-generation-of-startups-in-santa-cruz/'
+        article['date']='7.31.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Santa Cruz, the City Over the Hill, Works to Build Its Own Startup Culture (Part 1)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/'
+        article['date']='7.30.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="BUSINESS DIGEST, JULY 20, 2013: CIVINOMICS INVITES ELECTED OFFICIALS"
+        article['link']='http://www.contentboost.com/news/2013/07/19/7289426.htm'
+        article['date']='7.19.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Monterey County Herald publisher, advertising director add Santa Cruz Sentinel to duties Omernick, Powell fill roles at Santa Cruz Sentinel"
+        article['link']='http://robertpowelldigitalfirst.wordpress.com/2013/06/29/monterey-county-herald-publisher-advertising-director-add-santa-cruz-sentinel-to-duties-omernick-powell-fill-roles-at-santa-cruz-sentinel/'
+        article['date']='6.20.2013'
+        article['source']='Robert Powell Blog'
+        c.articles.append(article)
+        article={}
+        article['title']="Bring Your Own Bag"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/santa-cruz-environmental-news/4771-bring-your-own-bag.html'
+        article['date']='5.07.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
         article={}
         article['title']="Civinomics: A new kind of civic participation for the social media world"
         article['link']='http://santacruznews.org/people/civinomics-a-new-kind-of-civic-participation-for-the-social-media-world/'

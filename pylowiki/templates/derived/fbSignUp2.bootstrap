@@ -5,13 +5,13 @@
 </%def>
 
 <div id="bg">
-    <img src='/images/splash/Large_CityHall.jpg' alt="">
+    <img src='/images/splash/liberty.jpg' alt="">
 </div>
 <div class="login">
   <div class="container">
       <div class="row">
           <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well">
+              <div class="well main-well login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">

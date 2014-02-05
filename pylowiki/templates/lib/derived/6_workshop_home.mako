@@ -4,6 +4,7 @@
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.activity as activityLib
    import pylowiki.lib.db.facilitator   as facilitatorLib
+   import pylowiki.lib.utils   as utils
    import misaka as m
    
    import logging
@@ -13,100 +14,92 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="whoListening()">
-    <%
-        users = []
-        pending = []
-        for listener in c.listeners:
-            if 'userCode' in listener:
-                users.append(listener)
-            else:
-                pending.append(listener)
-    %>
     <h4 class="section-header smaller section-header-inner">Listeners</h4>
-    % if users:
+    % if c.activeListeners:
         <ul class="media-list" id="workshopNotables">
-        % for person in users:
-            <%
-                personTitle = person['title']
-                personClass = 'listener'
-            %>
+        % for person in c.activeListeners:
             <li class="media notables-item">
                 ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
                     ${lib_6.userLink(person, className="listener-name")}<br />
-                    <small>${personTitle}</small>
+                    <small>${lib_6.userGreetingMsg(person)}</small>
                 </div>
             </li>
             
         % endfor
         </ul>
      % endif
-    % if pending:
+    % if c.pendingListeners:
         <hr>
         <div><p><em class="grey">Not yet participating. Invite them to join in.</em></p></div>
         <ul class="media-list" id="workshopNotables">
-        % for person in pending:
-            <%
-                lName = person['name']
-                lTitle = person['title']
-                listenerCode = person['urlCode']
-                personClass = 'pendingListener'
-                if person['invites'] != '':
-                    inviteList = person['invites'].split(',')
-                    numInvites = str(len(inviteList))
-                else:
-                    numInvites = '0'
-            %>
+        % for person in c.pendingListeners:
             <li class="media notables-item">
                 % if 'user' in session and c.authuser:
-                    <div class="pull-left rightbuttonspacing"><a href="#invite${listenerCode}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="#invite${person['urlCode']}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % else:
-                    <div class="pull-left rightbuttonspacing"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="#signupLoginModal" data-toggle="modal" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % endif
                 <div class="media-body">
-                    <span class="listener-name">${lName}</span><br />
-                    <small>${lTitle}</small> 
+                    <span class="listener-name">${person['name']}</span><br />
+                    <small>${person['title']}</small> 
                 </div>
-                % if 'user' in session and c.authuser:
-                    <%
-                        memberMessage = "Please join me and participate in this online Civinomics workshop.\nThere are good ideas and informed discussions, please login and listen in!"
-                    %>
-                    <div id="invite${listenerCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${listenerCode}Label" aria-hidden="true">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
-                        </div><!-- modal-header -->
-                        <div class="modal-body"> 
-                            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
-                            Add your message to the listener invitation:<br />
-                            <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
-                            <br />
-                            <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
-                            <button type="submit" class="btn btn-warning">Send Invitation</button>
-                            <br />
-                            <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
-                            </form>
-                        </div><!-- modal-footer -->
-                    </div><!-- modal -->
-                % endif
             </li>
         % endfor
         </ul>
         <hr>
      % endif
-     % if 'user' in session and c.authuser:
-        <ul class="media-list">
-            <li class="media pendingListener notables-item">
-                <em class="grey">Which public officials should participate?</em><br />
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener" name="suggestListenerForm">
-                <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
-                <button type="submit" class="btn btn-success btn-small">Submit</button>
+      
+     % if 'user' in session and c.authuser and not c.privs['provisional']:
+        <em class="grey">Which public officials should participate?</em><br />
+        <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener no-bottom" name="suggestListenerForm">
+          <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
+          <button type="submit" class="btn btn-success btn-small">Submit</button>
+          <div class="alert top-space" style="margin-bottom: 0;" ng-show="suggestListenerShow">
+            <button data-dismiss="alert" class="close">x</button>
+            {{suggestListenerResponse}}
+          </div>
+        </form>
+     %endif
+</%def>
+
+<%def name="whoListeningModals()">
+  % if c.pendingListeners:
+    % for person in c.pendingListeners:
+      % if 'user' in session and c.authuser:
+        <%
+            memberMessage = "Please join me and participate in this Civinomics workshop. There are good ideas and informed discussions that I think you should be a part of."
+
+            if person['invites'] != '':
+                inviteList = person['invites'].split(',')
+                numInvites = str(len(inviteList))
+            else:
+                numInvites = '0'
+                
+        %>
+        <div id="invite${person['urlCode']}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${person['urlCode']}Label" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="invite${person['urlCode']}Label">Invite ${person['name']} to Listen</h3>
+            </div><!-- modal-header -->
+            <div class="modal-body"> 
+              <div class="row-fluid">
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${person['urlCode']}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
+                <div class="alert" ng-show="emailListenerShow">{{emailListenerResponse}}</div>
+                Add a personalized message to the listener invitation:<br />
+                <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
                 <br />
-                <span ng-show="suggestListenerShow">{{suggestListenerResponse}}</span>
+                <div class="spacer"></div>
+                <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button type="submit" class="btn btn-success">Send Invitation</button>
+                <br />
                 </form>
-            </li>
-        </ul><!-- media-list -->
-    % endif
+              </div><!-- row-fluid -->
+            </div><!-- modal-footer -->
+        </div><!-- modal -->
+      % endif
+    % endfor
+  % endif
 </%def>
 
 <%def name="showFacilitators()">
@@ -148,25 +141,17 @@
     
 </%def>
 
-<%def name="watchButton()">
-    % if 'user' in session:
-        % if c.isFollowing:
-            <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+<%def name="watchButton(w, **kwargs)">
+    % if 'user' in session and not c.privs['provisional']:
+        % if c.isFollowing or 'following' in kwargs:
+            <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
             </button>
         % else:
-            <button class="btn pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <button class="btn pull-right followButton" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
              <span><i class="icon-bookmark med-green"></i><strong> Bookmark </strong></span>
             </button>
         % endif
-    % endif
-</%def>
-
-<%def name="watchButtonListing(w)">
-    % if 'user' in session:
-        <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-        <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
-        </button>
     % endif
 </%def>
 
@@ -369,7 +354,7 @@
       <li class="span4 slideListing">
         % if showSlide['pictureHash'] == 'supDawg':
            <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
-              <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
+              <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${showSlide['title']}"/>
            </a>
         % else:
             <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
@@ -450,19 +435,6 @@
     % endif
 </%def>
 
-<%def name="showTags()">
-    <% 
-        colors = workshopLib.getWorkshopTagColouring()
-        tagList = c.w['workshop_category_tags'].split('|')
-    %>
-    % for tag in tagList[0:3]:
-        % if tag and tag != '':
-            <% tagClass = colors[tag] %>
-            <span class="label workshop-tag ${tagClass}" >${tag}</span>
-        % endif
-    % endfor
-</%def>
-
 <%def name="showScope()">
     <%
         if c.w['public_private'] == 'public':
@@ -488,16 +460,30 @@
     ${scopeString | n}
 </%def>
 
-<%def name="displayWorkshopFlag()">
+<%def name="displayWorkshopFlag(w, *args)">
     <%
-        if c.w['public_private'] == 'public':
-            scope = workshopLib.getPublicScope(c.w)
+        workshopFlag = '/images/flags/generalFlag.gif'
+        href = '#'
+        if w['public_private'] == 'public':
+            scope = workshopLib.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
+            level = scope['level']
+            name = scope['name']
         else:
-            workshopFlag = '/images/flags/generalFlag.gif'
-            href = '#'
+            workshopFlag = '/images/flags/generalGroup.gif'
+        flagSize = 'med-flag'
+        if 'small' in args:
+          flagSize = 'small-flag'
 
     %>
-    <a href="${href}"><img class="thumbnail span med-flag" src="${workshopFlag}"></a>
+    <a href="${href}"><img class="thumbnail ${flagSize}" src="${workshopFlag}"></a>
+    % if 'workshopFor' in args and w['public_private'] == 'public':
+        Workshop for
+        % if name == 'Earth':
+          <a href="${href}">${name}</a>
+        % else:
+          the <a href="${href}">${level} of ${name}</a>
+        % endif
+    % endif
 </%def>

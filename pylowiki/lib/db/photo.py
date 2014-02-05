@@ -60,7 +60,7 @@ def getPhotoLocation(photo):
     
 
 def searchPhotos( keys, values, deleted = u'0', count = False):
-    log.info("db search")
+    #log.info("db search")
     try:
         if type(keys) != type([]):
             p_keys = [keys]

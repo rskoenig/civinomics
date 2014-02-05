@@ -12,10 +12,13 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.utils           as utils
 
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -44,6 +47,8 @@ class RatingController(BaseController):
             thing = ideaLib.getIdea(code)
         elif action == 'ratePhoto':
             thing = photoLib.getPhoto(code)
+        elif action == 'rateInitiative':
+            thing = initiativeLib.getInitiative(code)
         
         if thing['disabled'] == '1':
             # Should only get triggered when the user posts directly and bypasses the UI
@@ -76,10 +81,25 @@ class RatingController(BaseController):
 
     @h.login_required
     def rateIdea(self, code, amount):
-        return redirect(session['return_to'])
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        if iPhoneApp:
+            entry = {}
+            entry['voted'] = amount
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return redirect(session['return_to'])
         
     @h.login_required
     def ratePhoto(self, code, amount):
+        return redirect(session['return_to'])
+        
+    @h.login_required
+    def rateInitiative(self, code, amount):
         return redirect(session['return_to'])
 
     ########################################################################
