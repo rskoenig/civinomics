@@ -1,0 +1,11 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+
+<div id="wrap">
+   ${helpers.mainNavbar()}
+   <div class="container main">
+      ${next.body()}
+   </div>
+</div><!-- close wrap -->
+${helpers.shortFooter()}
+${helpers.signupLoginModal()}
