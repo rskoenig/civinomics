@@ -112,7 +112,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -140,7 +140,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -169,7 +169,7 @@
                                     </div><!-- span3 -->
                                     <div class="span3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                            Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                             <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                         </form>
                                     </div><!-- span3 -->
@@ -198,7 +198,7 @@
                                 </div><!-- span3 -->
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
@@ -311,7 +311,7 @@
 <%def name="followButton(user)">
     % if c.conf['read_only.value'] == 'true':
           <% pass %>
-    % else:
+    % elif not c.privs['provisional']:
         <span class="button_container">
         % if c.isFollowing:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn pull-right followButton following">
@@ -583,20 +583,20 @@
 </%def>
 
 <%def name="inviteCoFacilitate()">
-    %if 'user' in session and c.authuser:
-        <% 
+    % if 'user' in session and c.authuser:
+        <%
             fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             wListF = []
             wListL = []
             for f in fList:
-                w = workshopLib.getWorkshopByCode(f['workshopCode'])
-                if w['deleted'] == '0':
-                    wlisten = listenerLib.getListener(c.user['email'], w)
-                    if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
-                        wListF.append(w)
-                    if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
-                        wListL.append(w)
-                        
+                if not 'initiativeCode' in f:
+                    w = workshopLib.getWorkshopByCode(f['workshopCode'])
+                    if w['deleted'] == '0':
+                        wlisten = listenerLib.getListener(c.user['email'], w)
+                        if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
+                            wListF.append(w)
+                        if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
+                            wListL.append(w)
         %>
         % if c.authuser.id != c.user.id and wListF:
             <div class="row">

@@ -3,6 +3,7 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="ngHelpers" file="/lib/ng_lib.mako" />
 
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid">
@@ -13,27 +14,78 @@
         </div>
       </div> <!-- /.section-wrapper -->
 
-      <div class="section-wrapper" id="vote">
-          <div class="browse">
+      <div class="section-wrapper" id="vote" ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
+          <div class="browse" ng-controller="workshopIdeasCtrl">
              <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
              </h4>
-             % if numIdeas == '0' and c.w['allowIdeas'] == '1':
-                <div class="alert alert-info">
-                There are no ideas here yet. Be the first to add one!
-                </div>
-             % else:  
-                <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.<strong class="orange"> Vote to display ratings.</strong></p>
-                <hr class="list-header">
-             % endif
-             <% 
-                lib.return_to() 
-                listingHelpers.showIdeaListing("ideas")
-             %>
-          </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
+              <div class="row-fluid helper-sort">
+              <div class="span9">
+                <form class="form-search inline">
+                  Sort by: 
+                  <select class="med-width" ng-model="orderProp" ng-cloak>
+                      <option value="-date">Recent</option>
+                      <option value="-voteRatio">Highest Rated</option>
+                      <option value="-voteCount">Most Votes</option>
+                      <option value="-numComments">Most Comments</option>
+                  </select>
+                  Filter:
+                  <select class="med-width" ng-model="filterProp" ng-cloak>
+                      <option value="!disabled">Show All</option>
+                      <option value="proposed">Proposed</option>
+                      <option value="adopted">Adopted</option>
+                      <option value="disabled">Disabled</option>
+                  </select>
+                </form> 
+              </div>
+              <div class="span3"><strong class="orange"> Vote <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png"> to view ratings.</strong></div>
+            </div>
+            <hr class="object-list-header">
 
+            <div class="centered" ng-show="ideasLoading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x"></i>
+            </div>
+
+            <div class="alert alert-info" ng-show="noResult" ng-cloak>
+                There are no ideas for this workshop. Be the first to add one!
+            </div>
+
+            <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
+                ${ngHelpers.listIdeas()}
+            </div>
+        </div><!--/.browse-->
+    </div><!--/.section-wrapper-->
    </div> <!-- /.span8 -->
+
    <div class="span4">
+    <!--
+      <div class="section-wrapper metrics" ng-controller="workshopIdeasCtrl" ng-cloak>
+        <div class="row-fluid">
+          <div class="span3 offset3 centered">
+            <i class="icon-lightbulb icon-3x"></i><br>
+            {{numIdeas}}<br>
+            Ideas
+          </div>
+          <div class="span3 centered">
+            <a class="no-highlight" ng-click="switchAdopted()">
+              <i class="icon-star icon-3x"></i><br>
+              {{numAdopted}}<br>
+              Adopted
+              {{filterProp}}
+            </a>
+          </div>
+          <div class="span3 centered">
+            <i class="icon-eye-open icon-3x"></i><br>
+            ${c.numViews}<br>
+            Views
+          </div>
+          <div class="span3 centered">
+            <i class="icon-share icon-3x"></i><br>
+            {{numAdopted}}<br>
+            Shares
+          </div>
+        </div>
+      </div>
+          -->
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
@@ -46,9 +98,14 @@
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-            Forum Topics
+            Forum
+            <span class="pull-right" style="margin-left: -50px;">${lib_6.createNew('discussion', 'small')}</span>
             </h4>
-            ${listingHelpers.showListing('discussion', 'condensed')}
+            % if len(c.discussions) == 0:
+              <div class="alert alert-info no-bottom">There are no forum topics here yet. Be the first to add one!</div>
+            % else:
+              ${listingHelpers.showListing('discussion', 'condensed')}
+            % endif
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
       <div class="section-wrapper overview">
@@ -61,7 +118,6 @@
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
 </div> <!-- /.row -->
-
 
 
 <%def name="extraScripts2()">
@@ -100,4 +156,6 @@
 
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
 </%def>

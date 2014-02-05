@@ -41,6 +41,26 @@ class DiscussionController(BaseController):
             
         c.mainImage = mainImageLib.getMainImage(c.w)
         
+        #################################################
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
+        # c.requestUrl is for lib_6.emailShare
+        c.objectUrl = c.requestUrl = request.url
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
+        c.description = c.w['description']
+        #################################################
+
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
         
@@ -74,23 +94,9 @@ class DiscussionController(BaseController):
         #get the scope to display jurisidction flag
         if c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.requestUrl = request.url
-        c.thingCode = discussionCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-
+        
+        # sharing - extra details
+        c.thingCode = discussionCode        
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(discussionCode)
@@ -98,6 +104,7 @@ class DiscussionController(BaseController):
                 abort(404)
         # name/title for facebook sharing
         c.name = c.thing['title']
+        
         if 'views' not in c.thing:
             c.thing['views'] = u'0'
             

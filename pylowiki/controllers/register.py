@@ -17,6 +17,9 @@ from pylowiki.lib.db.dbHelpers    import commit
 import pylowiki.lib.db.mainImage  as mainImageLib
 from pylowiki.lib.db.revision     import Revision
 import pylowiki.lib.mail          as mailLib
+import pylowiki.lib.db.photo      as photoLib
+import pylowiki.lib.sort          as sort
+import pylowiki.lib.db.user       as userLib
 import re
 import simplejson as json
 
@@ -33,12 +36,29 @@ class RegisterController(BaseController):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
-    def signupDisplay(self):
+    def splashDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+	c.title = config['custom.titlebar']
 
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
+        c.photos = photoLib.getAllPhotos()
+        if c.photos and len(c.photos) != 0:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = p
+            c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+        else: 
+            c.backgroundPhoto = {'title': 'Santa Cruz Beach Boardwalk'}
+            c.backgroundPhotoURL = '/images/splash/sc_boardwalk.jpg'
+            c.backgroundAuthor = 'Ester Kim'
+
+        self.noQuery = False
+        c.searchType = "browse"
+        self.searchType = "browse"
+        c.searchQuery = "All Initiatives" 
+        c.scope = {'level':'earth', 'name':'all'}
+
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
             session.pop('splashMsg')
@@ -60,14 +80,12 @@ class RegisterController(BaseController):
                     session.pop('workshopCode')
                     session.save()
             
-        return render("/derived/signup.bootstrap")
+        return render("/derived/splash.bootstrap")
 
     def signupNoExtAuthDisplay(self):
 
         # todo - clear splash message if this came from /fbSignUp
 
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
             session.pop('splashMsg')
@@ -118,17 +136,6 @@ class RegisterController(BaseController):
     def fbSignUpDisplay( self ):
         """ This is an intermediary page for the signup process when a facebook user first
         creates an account. """
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            return redirect('/')
 
         c.title = c.heading = "Registration using your Facbook Account"
         c.success = False
@@ -144,17 +151,6 @@ class RegisterController(BaseController):
     def twitterSignUpDisplay( self ):
         """ This is an intermediary page for the signup process when a twitter user first
         creates an account. """
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            return redirect('/')
 
         c.title = c.heading = "Registration using your Twitter Account"
         c.success = False
@@ -172,17 +168,6 @@ class RegisterController(BaseController):
         """ handles creating an account for a twitter user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            return redirect('/')
 
         """ Handler for registration, validates """
         returnPage = "/signup"
@@ -474,17 +459,6 @@ class RegisterController(BaseController):
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
-        c.numAccounts = 1000
-        c.numUsers = len(getActiveUsers())
-
-        if c.numUsers >= c.numAccounts:
-            splashMsg = {}
-            splashMsg['type'] = 'error'
-            splashMsg['title'] = 'Error:'
-            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-            session['splashMsg'] = splashMsg
-            session.save()
-            return redirect('/')
 
         """ Handler for registration, validates """
         returnPage = "/signup"
@@ -865,33 +839,37 @@ class RegisterController(BaseController):
                     session['registerSuccess'] = True
                     session.save()
                     
-                    log.info( message )
-                    splashMsg['type'] = 'success'
-                    splashMsg['title'] = 'Success'
-                    splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
-                    session['splashMsg'] = splashMsg
-                    session.save()
-                    # if they are a guest signing up, activate and log them in
-                    if c.w:
-                        user = u.u
-                        if 'laston' in user:
-                            t = time.localtime(float(user['laston']))
-                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                    #log.info( message )
+                    #splashMsg['type'] = 'success'
+                    #splashMsg['title'] = 'Success'
+                    #splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                    #session['splashMsg'] = splashMsg
+                    #session.save()
+                    
+                    user = u.u
+                    if 'laston' in user:
+                        t = time.localtime(float(user['laston']))
+                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                             
-                        user['laston'] = time.time()
-                        user['activated'] = u'1'
-                        loginTime = time.localtime(float(user['laston']))
-                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                        commit(user)
-                        session["user"] = user['name']
-                        session["userCode"] = user['urlCode']
-                        session["userURL"] = user['url']
-                        session.save()
-                        log.info('session of user: %s' % session['user'])
-                        log.info('%s logged in %s' % (user['name'], loginTime))
-                        c.authuser = user
+                    user['laston'] = time.time()
+                    #user['activated'] = u'1'
+                    loginTime = time.localtime(float(user['laston']))
+                    loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    commit(user)
+                    session["user"] = user['name']
+                    session["userCode"] = user['urlCode']
+                    session["userURL"] = user['url']
+                    session.save()
+                    log.info('session of user: %s' % session['user'])
+                    log.info('%s logged in %s' % (user['name'], loginTime))
+                    c.authuser = user
                         
+                    # if they are a guest signing up, activate them   
+                    if c.w:
+                        user['activated'] = u'1'
+                        commit(user)
                         log.info( "Successful guest activation with credentials - " + email )
+                        
                         returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                         if c.listingType:
                             returnPage += "/add/" + c.listingType
@@ -900,6 +878,9 @@ class RegisterController(BaseController):
                             return json.dumps({'statusCode':0, 'user':dict(user)})
                         else:
                             return redirect(returnPage)
+                            
+                    returnPage = "/"
+                    
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':0, 'user':dict(u.u)})
@@ -923,7 +904,7 @@ class RegisterController(BaseController):
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
                 else:
-                    splashMsg['content'] = "The email '" + email + "' is already in use"
+                    splashMsg['content'] = "The email '" + email + "' is already in use. If you own this account, try Log in or Forgot password."
                     session['splashMsg'] = splashMsg
                     session.save()
                     if returnJson:

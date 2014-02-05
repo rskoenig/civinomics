@@ -111,7 +111,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'preferences', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
-    # workshop activity feeds
+    # workshop rss
     map.connect('/activity/rss{end:/?}', controller='actionlist', action='rss')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/rss{end:/?}', controller = 'workshop', action = 'rss')    
 
@@ -159,9 +159,10 @@ def make_map():
     
     # activity
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{activity:activity?/?}', controller = 'workshop', action = 'activity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/getSiteActivity{end:/?}' , controller = 'home', action = 'getActivity')
 
     # workshop stats
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{stats:stats?/?}', controller = 'workshop', action = 'stats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # resources
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
@@ -184,12 +185,15 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{idea:ideas?/?}', controller = 'idea', action = 'addIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{idea:ideas?}/{handler:handler/?}', controller = 'idea', action = 'addIdeaHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{idea:ideas?}/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', ideaCode = '{ideaCode}', ideaURL = '{ideaURL}')    
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/ideas/get{end:/?}', controller = 'workshop', action = 'workshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     # ADD HERE: threaded discussion route
 
     # Cofacilitation invitation and response
     map.connect('/profile/{code}/{url}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', code = '{code}', url='{url}')
     map.connect('/profile/{code}/{url}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', code = '{code}', url='{url}')
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', code = '{code}', url='{url}')
+    map.connect('/{initiative:initiatives?}/{code}/{url}/{userCode}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'iFacilitateResignHandler', code = '{code}', url='{url}', userCode='{userCode}')
+    map.connect('/{initiative:initiatives?}/{code}/{url}/{userCode}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'iFacilitateInviteHandler', code = '{code}', url='{url}', userCode='{userCode}')
 
     # Facilitator notifications
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
@@ -221,6 +225,7 @@ def make_map():
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
     map.connect('/profile/{urlCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto', urlCode = '{urlCode}')
+    map.connect('/getComments/{urlCode}{end:/?}', controller = 'home', action = 'jsonCommentsForItem', urlCode = '{urlCode}')
 
     # Ratings
     #map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
@@ -243,6 +248,7 @@ def make_map():
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
+    map.connect('/activate/user/{thingCode}{end:/?}', controller = 'admin', action='activate')
     
     ########################################################################################################
     # 
@@ -290,19 +296,21 @@ def make_map():
     # 
     ########################################################################################################
     
-    # Login and signup
+    # Login, signup, and splash page
     map.connect('/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/signup{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/loginNoExtAuth{end:/?}', controller = 'login', action = 'loginNoExtAuthDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/clogin/{thing}/{thingCode}/{thingURL}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = '{thingCode}', thingURL = '{thingURL}')
     map.connect('/{page}/login{end:/?}', controller = 'login', action = 'loginRedirects', page = '{page}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
-    map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
+    map.connect('/{splash:splash/?}', controller = 'register', action = 'splashDisplay')
     map.connect('/{signupNoExtAuth:signupNoExtAuth/?}', controller = 'register', action = 'signupNoExtAuthDisplay')
     map.connect('/signup/handler{end:/?}', controller = 'register', action= 'signupHandler')
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
+    map.connect('/{loginResetPassword:loginResetPassword/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
 
     # external authentication routes
     map.connect('/fbLinkAccountHandler{end:/?}', controller = 'login', action = 'fbLinkAccountHandler')
@@ -328,6 +336,7 @@ def make_map():
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index')
+    map.connect('/activateResend/{userCode}', controller = 'activate', action = 'resend')
 
     # User profile
     map.connect('/profile/{id1}/{id2}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')
@@ -367,6 +376,7 @@ def make_map():
     # Initiatives #
     ###############
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/show{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
@@ -379,12 +389,11 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateEdit/{id3}{end:/?}', controller = 'initiative', action = 'updateEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateEditHandler/{id3}{end:/?}', controller = 'initiative', action = 'updateEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-
     
     ################
     # Messaging    #
     ################
-    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'profile', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
+    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
     map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
     
     ################
@@ -428,6 +437,12 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    ################
+    # Browse       #
+    ################
+    map.connect('/browse/initiatives', controller = 'search', action = 'browseInitiatives', searchType = 'browse')
+    map.connect('/zip/lookup/{zip}{end:/?}', controller = 'search', action = 'zipLookup', zip = '{zip}')
+    map.connect('/zip/lookup/{zip}/photos{end:/?}', controller = 'search', action = 'zipLookupPhotos', zip = '{zip}')
 
     ################
     # Application  #

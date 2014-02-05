@@ -14,6 +14,7 @@ import pylowiki.lib.db.user     as userLib
 import pylowiki.lib.mail        as mailLib
 from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
+import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
 
@@ -86,7 +87,7 @@ class LoginController(BaseController):
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens()
+        auth = twitter.get_authentication_tokens(force_login=True)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
@@ -155,17 +156,7 @@ class LoginController(BaseController):
                 return redirect(loginURL)
         else:
             log.info('did not find twitter id')
-            c.numAccounts = 1000
-            c.numUsers = len(userLib.getActiveUsers())
-
-            if c.numUsers >= c.numAccounts:
-                splashMsg = {}
-                splashMsg['type'] = 'error'
-                splashMsg['title'] = 'Error:'
-                splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
-                session['splashMsg'] = splashMsg
-                session.save()
-                return redirect('/')
+            
             # save necessary info in session for registering this user
             session['twitterId'] = myCreds['id']
             session['twitter_oauth_token'] = final_step['oauth_token']
@@ -549,6 +540,11 @@ class LoginController(BaseController):
         log.info("login:logUserIn session save")
 
         c.authuser = user
+        
+        # get and cache their ratings
+        ratings = ratingLib.getRatingsForUser()
+        session["ratings"] = ratings
+        session.save()
 
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
@@ -584,6 +580,8 @@ class LoginController(BaseController):
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
+            if 'loginResetPassword' in loginURL:
+                loginURL = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
             session.pop('afterLoginURL')
             session.save()
         else:
@@ -618,7 +616,7 @@ class LoginController(BaseController):
             if email and password:
                 user = userLib.getUserByEmail( email )
                 if user: # not none or false
-                    if user['activated'] == '0':
+                    if user['activated'] == '6':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
@@ -716,7 +714,7 @@ You can change your password to something you prefer on your profile page.\n\n''
                 splashMsg['content'] = '''A new password was emailed to you.'''
                 session['alert'] = splashMsg
                 session.save()
-                return redirect('/forgotPassword')
+                return redirect('/loginResetPassword')
             else:
                 log.info( "Failed forgot password for " + email )
                 splashMsg['content'] = "Email not found or account has been disabled or deleted."
@@ -798,4 +796,4 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/loginNoExtAuth.bootstrap")
 
     def forgotPassword(self):
-        return render("/derived/forgotPassword.bootstrap")
+        return render("/derived/login.bootstrap")

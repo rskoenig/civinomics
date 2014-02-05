@@ -1,5 +1,5 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace name="helpers" file="/lib/template_lib.mako" />
+<%namespace name="template_lib" file="/lib/template_lib.mako" />
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
@@ -14,10 +14,11 @@
       <link rel="stylesheet" href="/styles/vendor/font-awesome/css/font-awesome.min.css">
       <link rel="stylesheet" href="${lib_6.fingerprintFile('/styles/civ.css')}">
       <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
-      <link href='http://fonts.googleapis.com/css?family=Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
+      <link href='//fonts.googleapis.com/css?family=Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
       <script src="/js/geoSearch.js"></script>
+      <script src="/js/ng/signup_login.js" type="text/javascript"></script>
       <script>
         var dummyApp = angular.module('civ', []);
       </script>
@@ -28,13 +29,11 @@
       ${self.google_analytics()}
       <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
       <!--[if lt IE 9]>
-         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+         <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
-
     ${next.body()}
-    
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
@@ -55,6 +54,16 @@
           return this.hostname != window.location.hostname;
       }).attr('target', '_blank');
    </script>
+
+   <!-- Javascript to enable link to tab -->
+   <script type="text/javascript">
+      $(function () { 
+        var a = $('[href=' + location.hash + ']'); 
+        a && a.tab('show'); 
+      });
+    </script>
+
+
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}

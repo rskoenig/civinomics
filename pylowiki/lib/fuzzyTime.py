@@ -3,7 +3,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def ungettext(a,b,count):
-    if count:
+    if count and count > 1:
         return b
     return a
 

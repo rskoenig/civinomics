@@ -16,14 +16,26 @@ log = logging.getLogger(__name__)
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
+##################################################
+# simple string capper
+##################################################
+def cap(s, l):
+    return s if len(s)<=l else s[0:l-3]+'...'
+
+##################################################
+# simple email checker
+##################################################
 def badEmail(email):
-    log.info("fx badEmail: %s"%email)
+    log.info("fx checking for bad Email: %s"%email)
     if email.find('@') < 0:
         # if there's not an @ in the string this is a bad email
         return True
     else:
         return False
 
+##################################################
+# returns the base url without an ending '/'
+##################################################
 def getBaseUrl():
     baseUrl = config['site_base_url']
     # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
@@ -103,7 +115,12 @@ def isWatching(user, workshop):
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
   
-def thingURL(thingParent, thing):
+##################################################
+# generates a url for a thing
+# kwarg returnTitle gets the title out of the thing as well.
+##################################################
+def thingURL(thingParent, thing, **kwargs):
+    thingUrl = True
     if thingParent.objType.replace("Unpublished", "") == 'workshop':
         parentBase = "workshop"
     elif thingParent.objType.replace("Unpublished", "") == 'user':
@@ -112,11 +129,11 @@ def thingURL(thingParent, thing):
         parentBase = "initiative"
     baseURL = '/%s/%s/%s' % (parentBase, thingParent['urlCode'], thingParent['url'])
     if thing.objType.replace("Unpublished", "") == 'photo':
-        return baseURL + "/photo/show" + thing['urlCode']
+        returnString = baseURL + "/photo/show" + thing['urlCode']
+        thingUrl = False
     if thing.objType.replace("Unpublished", "") == 'initiative':
-        return baseURL + "/show"
-    if thing.objType == 'discussion' and thing['discType'] == 'update':
-        return baseURL + "/updateShow/" + thing['urlCode']
+        returnString = baseURL + "/show"
+        thingUrl = False
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
@@ -124,15 +141,27 @@ def thingURL(thingParent, thing):
             thing = generic.getThing(thing['resourceCode'])
         elif 'photoCode' in thing.keys():
             thing = generic.getThing(thing['photoCode'])
-            return baseURL + "/photo/show/" + thing['urlCode'] 
+            returnString = baseURL + "/photo/show/" + thing['urlCode'] 
+            thingUrl = False
         elif 'initiativeCode' in thing.keys():
             thing = generic.getThing(thing['initiativeCode'])
-            return baseURL + "/show/" 
+            returnString = baseURL + "/show/" 
+            thingUrl = False
         elif 'discussionCode' in thing.keys():
             thing = generic.getThing(thing['discussionCode'])
         else:
-            return baseURL
-    return baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+            returnString = baseURL
+            thingUrl = False
+    if thingUrl:
+        returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+
+    if 'returnTitle' in kwargs:
+        if kwargs['returnTitle'] == True:
+            return thing['views'], thing['title'], returnString
+        else:
+            return returnString
+    else:
+        return returnString
     
 def profilePhotoURL(thing):
     owner = generic.getThing(thing['userCode'])
@@ -170,39 +199,50 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
             return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
             
 def getPublicScope(item):
-    # takes scope string and returns scope level, name, flag and href
+    # takes an item with scope attribute and returns scope level, name, flag and href
     flag = '/images/flags/'
     href = '/workshops/geo/earth'
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
-        if scope[9] != '0':
-            scopeLevel = 'postalCode'
-            scopeName  = scope[9].replace('-', ' ')
-            flag += 'generalFlag.gif'
-            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6] + '/' + scope[8] + '/' + scope[9]
-        elif scope[8] != '0':
-            scopeLevel = 'city'
-            scopeName  = scope[8].replace('-', ' ')
-            flag += 'country/' + scope[2] + '/states/' + scope[4] + '/counties/' + scope[6] + '/cities/' + scope[8] + '.gif'
-            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6] + '/' + scope[8]
-        elif scope[6] != '0':
-            scopeLevel = 'county'
-            scopeName  = scope[6].replace('-', ' ')
-            flag += 'country/' + scope[2] + '/states/' + scope[4] + '/counties/' + scope[6] + '.gif'
-            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6]
-        elif scope[4] != '0':
-            scopeLevel = 'state'
-            scopeName  = scope[4].replace('-', ' ')
-            flag += 'country/' + scope[2] + '/states/' + scope[4] + '.gif'
-            href += '/' + scope[2] + '/' + scope[4]
-        elif scope[2] != '0':
+    elif '||' in item:
+        scope = item.split('|')
+    if scope:
+        if scope[2] != '0':
             scopeLevel = 'country'
-            scopeName  = scope[2].replace('-', ' ')
-            flag += 'country/' + scope[2] + '.gif'
+            scopeName  = scope[2].replace('-', ' ').title()
+            scopeString = scopeName
+            flag += 'country/' + scope[2]
             href += '/' + scope[2]
+            if scope[4] != '0':
+                scopeLevel = 'state'
+                scopeName  = scope[4].replace('-', ' ').title()
+                scopeString += ', State of %s' % scopeName
+                flag += '/states/' + scope[4]
+                href += '/' + scope[4]
+                if scope[6] != '0':
+                    scopeLevel = 'county'
+                    scopeName  = scope[6].replace('-', ' ').title()
+                    scopeString += ', County of %s' % scopeName
+                    flag += '/counties/' + scope[6]
+                    href += '/' + scope[6]
+                    if scope[8] != '0':
+                        scopeLevel = 'city'
+                        scopeName  = scope[8].replace('-', ' ').title()
+                        scopeString += ', City of %s' % scopeName
+                        flag += '/cities/' + scope[8]
+                        log.info('The city flag url is %s' % flag)
+                        href += '/' + scope[8]
+                        if scope[9] != '0':
+                            scopeLevel = 'postalCode'
+                            scopeName  = scope[9].replace('-', ' ').title()
+                            scopeString += ', Zip Code %s' % scopeName
+                            flag += 'generalFlag.gif'
+                            href += '/' + scope[9]
+            flag += '.gif'
         else:
             scopeLevel = 'earth'
-            scopeName  = 'earth'
+            scopeName  = 'Earth'
+            scopeString  = 'Earth'
             flag += 'earth.gif'
             href += '/0'
 
@@ -220,7 +260,15 @@ def getPublicScope(item):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
-    return {'level':scopeLevel, 'name':scopeName, 'flag':flag, 'href':href}
+    return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
+
+
+def getGeoExceptions():
+        geoExceptions = {
+            'San Francisco' : 'County',
+        }
+
+        return geoExceptions
 
 
 def _userImageSource(user, **kwargs):

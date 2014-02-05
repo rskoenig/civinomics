@@ -6,4 +6,13 @@ function signupController($scope) {
     $scope.clearEmail = function() {
         $scope.email = '';
     };
+    $scope.switchLoginTitle = function(){
+    	$scope.showTitle = 'lTitle'
+    }
+    $scope.switchSignupTitle = function(){
+    	$scope.showTitle = 'sTitle'
+    }
+    $scope.switchPasswordTitle = function(){
+    	$scope.showTitle = 'pTitle'
+    }
 }

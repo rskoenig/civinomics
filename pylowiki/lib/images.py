@@ -178,10 +178,7 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, subIdentifier)
     savename = imageHash + '.png'
-    if not os.path.exists(pathname):
-        os.makedirs(pathname)
     
-    fullpath = os.path.join(pathname, savename)
     if 'thing' in kwargs:
         thing = kwargs['thing']
         thing['directoryNum'] = directoryNumber
@@ -191,6 +188,10 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
         thing[imageHashIdentifier] = imageHash
         commit(thing)
     
+    if not os.path.exists(pathname):
+        os.makedirs(pathname)
+    fullpath = os.path.join(pathname, savename)
+	
     # Now convert and save
     # only gif conversions seem to give trouble.
     # tested formats:   tiff (lzw/packbits/no compression, alpha/no-alpha)
