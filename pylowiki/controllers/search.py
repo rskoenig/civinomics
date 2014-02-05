@@ -16,7 +16,6 @@ import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
-import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.mainImage    as mainImageLib
@@ -792,7 +791,6 @@ class SearchController(BaseController):
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
             entry['ups'] = int(idea['ups'])
             entry['downs'] = int(idea['downs'])
-            rated = ratingLib.getRatingForThing(c.authuser, idea) 
             if entry['urlCode'] in myRatings:
                 entry['rated'] = myRatings[entry['urlCode']]
             else:
