@@ -12,22 +12,23 @@
 </%def>
 
 <div id="login-bg"></div>
+
+<%
+  if 'loginResetPassword' in session._environ['PATH_INFO']:
+    session['afterLoginURL'] = 'loginResetPassword'
+%>
+
 <div class="login">
   <div class="container">
       <div class="row">
-          % if 'login' in session._environ['PATH_INFO']:
-            <div ng-init="showTitle = 'lTitle'">
+          % if 'forgot' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'pTitle'">
           % elif 'signup' in session._environ['PATH_INFO']:
             <div ng-init="showTitle = 'sTitle'">
+          % elif 'login' or 'Login' in session._environ['PATH_INFO']:
+            <div ng-init="showTitle = 'lTitle'">
           % endif
               <div class="well main-well login" ng-controller="signupController">
-                  % if c.splashMsg:
-                      <% message = c.splashMsg %>
-                      <div class="alert alert-${message['type']}">
-                          <button data-dismiss="alert" class="close">x</button>
-                          <strong>${message['title']}</strong> ${message['content']}
-                      </div>
-                  % endif
                   <div class="row-fluid">
                     ${template_lib.tabbableSignupLogin('title')}
                   </div>

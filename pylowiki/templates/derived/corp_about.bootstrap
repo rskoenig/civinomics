@@ -1,4 +1,6 @@
 <%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
 
 <%def name="display_body_right_content()">
     <div class="row-fluid">
@@ -43,9 +45,12 @@
         </div>
         </br>
         </br>
-        <p>Interested in polling or engaging your community? Reach us <a href="mailto:info@civinomics.com">here</a>.</p>
+        <p>Interested in polling or engaging your community? Reach us at ${mako.formatEmail("info@civinomics.com")}.</p>
         <p>For more information on past outreach visit our <a href="/corp/caseStudies/">case studies</a> section.</p>
         </br>
     </div>
 </%def>
 
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>

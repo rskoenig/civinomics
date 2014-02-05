@@ -67,11 +67,6 @@
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
-                            <div>
-                                <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
-                                <button type="submit" class="btn btn-warning">Create a Workshop!</button>
-                                </form>
-                            </div><!-- center -->
                         </div><!-- browse -->
                     </div><!-- section-wrapper -->
                 </div> <!-- /.span3 -->
@@ -282,13 +277,14 @@
 <%def name="changePassword()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Change Your Password</h4>
+            <h4 class="section-header smaller">Update Your Password</h4>
             <form action="/profile/${c.user['urlCode']}/${c.user['url']}/password/update/handler" enctype="multipart/form-data" method="post" class="form-horizontal">
 		    <fieldset>
             <div class="control-group">
                 <label for="oldPassword" class="control-label">Old Password:</label>
                 <div class="controls">
                     <input type="password" id="oldPassword" name="oldPassword">
+                    <span class="help-inline"> If you reset your password, this is the random string you received via email.</span>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
             <div class="control-group">
@@ -303,8 +299,12 @@
                     <input type="password" id="reNewPassword" name="reNewPassword">
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                </div> <!-- /.controls -->
+            </div> <!-- /.control-group -->
             </fieldset>
-            <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
             </form>
         </div><!-- browse -->
     </div><!-- section-wrapper-->

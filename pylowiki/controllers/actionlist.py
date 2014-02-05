@@ -93,12 +93,17 @@ class ActionlistController(BaseController):
             language=u"en"
         )
         for item in c.activity:
+            if item.objType == 'comment':
+                continue
             if 'workshopCode' in item:
                 parent = getWorkshopByCode(item['workshopCode'])
                 baseURL = config['site_base_url'] + "/workshop/" + parent['urlCode'] + "/" + parent['url']
                 baseTitle = 'the workshop named <a href="' + baseURL + '">' + parent['title'] + '</a>'
-            elif 'initiativeCode' in item:
-                parent = initiativeLib.getInitiative(item['initiativeCode'])
+            elif 'initiativeCode' in item or item.objType == 'initiative':
+                if 'initiativeCode' in item:
+                    parent = initiativeLib.getInitiative(item['initiativeCode'])
+                else:
+                    parent = item
                 baseURL = config['site_base_url'] + "/initiative/" + parent['urlCode'] + "/" + parent['url']
                 baseTitle = 'the initiative named "<a href="' + baseURL + '">' + parent['title'] + '</a>"'
             
