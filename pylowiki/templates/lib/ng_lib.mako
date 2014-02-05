@@ -28,41 +28,7 @@
                     </div>
                 </div>
                 <div class="span3 voteBlock ideaListing well" >
-                    % if 'user' in session:
-                        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
-                            <div class="vote-icon yes-icon detail"></div>
-                            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
-                        </a>
-                        <br>
-                        <br>
-                        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
-                            <div class="vote-icon no-icon detail"></div>
-                            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
-                        </a>
-                        <br>
-                        <div class="totalVotesWrapper">
-                            <span class="grey pull-left">Votes:</span>
-                            <strong class="pull-right">
-                                <span class="totalVotes">{{totalVotes}}</span>
-                            </strong>
-                        </div>
-                    % else:
-                        <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
-                            <div class="vote-icon yes-icon"></div>
-                        </a>
-                        <br>
-                        <br>
-                        <a href="#signupLoginModal" role="button" data-toggle="modal" class="noVote">
-                            <div class="vote-icon no-icon"></div>
-                        </a>
-                        <br>
-                        <div class="totalVotesWrapper">
-                            <small class="grey pull-left">Votes:</small>
-                            <strong class="pull-right">
-                                <span class="totalVotes">{{totalVotes}}</span>
-                            </strong>
-                        </div>
-                    % endif
+                    ${yesNoVoteBlock()}
                 </div>
             </div>
         </div>
@@ -89,36 +55,46 @@
                     </ul>
                 </div>
                 <div class="span3 voteBlock ideaListing well" >
-                    % if 'user' in session:
-                        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
-                            <div class="vote-icon yes-icon detail"></div>
-                            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
-                        </a>
-                        <br>
-                        <br>
-                        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
-                            <div class="vote-icon no-icon detail"></div>
-                            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
-                        </a>
-                        <br>
-                        <div class="totalVotesWrapper">
-                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
-                        </div>
-                    % else:
-                        <a href="/login" class="yesVote">
-                            <div class="vote-icon yes-icon"></div>
-                        </a>
-                        <br>
-                        <br>
-                        <a href="/login" class="noVote">
-                            <div class="vote-icon no-icon"></div>
-                        </a>
-                        <br>
-                        <div class="totalVotesWrapper">
-                            Total Votes: <span class="totalVotes">{{totalVotes}}</span>
-                        </div>
-                    % endif
-                </div>
+                    ${yesNoVoteBlock()}
+                </div><!-- voteBlock -->
             </div><!-- media-body -->
         </div><!-- search-listing -->
+</%def>
+
+<%def name="yesNoVoteBlock()">
+    % if 'user' in session:
+        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+            <div class="vote-icon yes-icon detail"></div>
+            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
+        </a>
+        <br>
+        <br>
+        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+            <div class="vote-icon no-icon detail"></div>
+            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
+        </a>
+        <br>
+        <div class="totalVotesWrapper">
+            <span class="grey pull-left">Votes:</span>
+            <strong class="pull-right">
+                <span class="totalVotes">{{totalVotes}}</span>
+            </strong>
+        </div>
+    % else:
+        <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
+            <div class="vote-icon yes-icon"></div>
+        </a>
+        <br>
+        <br>
+        <a href="#signupLoginModal" role="button" data-toggle="modal" class="noVote">
+            <div class="vote-icon no-icon"></div>
+        </a>
+        <br>
+        <div class="totalVotesWrapper">
+            <small class="grey pull-left">Votes:</small>
+            <strong class="pull-right">
+                <span class="totalVotes">{{totalVotes}}</span>
+            </strong>
+        </div>
+    % endif
 </%def>
