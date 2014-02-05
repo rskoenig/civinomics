@@ -1,252 +1,609 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-
-<%!
-    import pylowiki.lib.db.workshop     as workshopLib
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+<%! 
+    import locale
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.utf8')
+    except: #windows
+        locale.setlocale(locale.LC_ALL, 'eng_US')
 %>
-
+<% lib.return_to() %>
+<div class="darkened-bg"></div> 
 <div class="spacer"></div>
-<div class="row">
-    <div class="span6">
-        % if c.searchType == 'region':
-            Results for search by ${c.searchType} scoped for '${c.searchQuery}'
-        % else:
-            Results for search by ${c.searchType} with search term '${c.searchQuery}'
-        % endif
-        
-    </div><!-- span6 -->
-    <div class="span6">
-        ${lib_6.geoDropdown()}
-        ${lib_6.public_tags()}
-    </div><!-- span6 -->
-</div>
-<div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="tabbable tabs-left civ-search">
-        <ul class="nav nav-tabs">
-            <li ng-class="showingWorkshops.class">
-                <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                    <span class="pull-left"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_061_keynote.png" class="workshop-search-icon"> Workshops </span>
-                    <span class="pull-right">(${c.numWorkshops})</span>
-                </a>
-            </li>
-            <li ng-class="showingPeople.class">
-                <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"> People </span>
-                    <span class="pull-right">(${c.numUsers})</span>
-                </a>
-            </li>
-            <li ng-class="showingResources.class">
-                <a href="#resources" class = "green green-hover" ng-click="searchResources()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources </span>
-                    <span class="pull-right">(${c.numResources})</span>
-                </a>
-            </li>
-            <li ng-class="showingDiscussions.class">
-                <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussions </span>
-                    <span class="pull-right">(${c.numDiscussions})</span>
-                </a>
-            </li>
-            <li ng-class="showingIdeas.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas </span>
-                    <span class="pull-right">(${c.numIdeas})</span>
-                </a>
-            </li>
-            <li ng-class="showingPhotos.class">
-                <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_138_picture.png"> Pictures </span>
-                    <span class="pull-right">(${c.numPhotos})</span>
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="loading-civ" ng-show="loading" ng-cloak>
-                <img src="/images/civ-loader.gif">
-            </div>
-            <div ng-show="noQuery" ng-cloak>
-                <div class="row-fluid">
-                    <div class="alert alert-info centered span6 offset3">
-                        Searching for nothing yields nothing.  How zen.
-                    </div>
-                </div>
-            </div>
-            <div ng-show="noResult" ng-cloak>
-                <div class="row-fluid">
-                    <div class="alert centered span6 offset3">
-                        % if c.searchType == 'region':
-                            Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
-                        % else:
-                            Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
-                        % endif
-                        
-                    </div>
-                </div>
-            </div>
-            <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat="w in workshops"><td>
-                        <div class="media">
-                            <a class="pull-left" href = '/workshops/{{w.urlCode}}/{{w.url}}'>
-                                <img class="media-object" ng-src="{{w.imageURL}}" alt="{{w.title}}" title="{{w.title}}">
-                            </a>
-                            <div class="media-body">
-                                <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
-                                <p>{{w.description}}</p>
-                                <p> Tags:
-                                    <span ng-repeat="tag in w.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
-                                </p>
-                                <p>
-                                    <span>
-                                        {{w.bookmarks}} <img class="small-bookmark" bs-tooltip="tooltip.bookmark" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-                                    </span>
-                                    <span>
-                                        {{w.activity}} <img class="small-bulb" bs-tooltip="tooltip.activity" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "p in people"><td>
-                        <div class="media">
-                            <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
-                                <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
-                            </a>
-                            <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
-                            <p>from <a href="{{p.cityURL}}" class="green green-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="green green-hover">{{p.stateTitle}}</a></p>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "resource in resources"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="/profile/{{resource.authorCode}}/{{resource.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{resource.authorHash}}?r=pg&d=identicon&s=200" alt="{{resource.authorName}}" title="{{resource.authorName}}">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
-                                    {{resource.authorName}}
-                                </a>
-                                added the resource
-                                <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
-                                    {{resource.title}}
-                                </a>
-                                in the workshop
-                                <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
-                                    {{resource.workshopTitle}}
-                                </a>
-                                <p>
-                                    Net votes: {{resource.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{resource.numComments}}
-                                </p>
-                            </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "discussion in discussions"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">
-                                    {{discussion.authorName}}
-                                </a>
-                                added the discussion
-                                <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
-                                    {{discussion.title}}
-                                </a>
-                                in the workshop
-                                <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
-                                    {{discussion.workshopTitle}}
-                                </a>
-                                <p>
-                                    Net votes: {{discussion.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{discussion.numComments}}
-                                </p>
-                            </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "idea in ideas"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">
-                                    {{idea.authorName}}
-                                </a>
-                                posed the idea
-                                <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
-                                    {{idea.title}}
-                                </a>
-                                in the workshop
-                                <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
-                                    {{idea.workshopTitle}}
-                                </a>
-                                <p>
-                                    Net votes: {{idea.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{idea.numComments}}
-                                </p>
-                            </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "photo in photos"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
-                            </div>
-                            <div class="media-body">
-                                <a href="{{photo.photoLink}}">{{photo.title}}</a><br />
-                                Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
-                                Location: {{photo.location}}<br />
-                                Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-                                <br />
-                                <p>
-                                    Net votes: {{photo.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{photo.numComments}}
-                                </p>
-                            </div>
-                        </div>
-                    </td></tr>
-                </table>
+<div class="row-fluid one-up" ng-controller="SearchCtrl">
+    % if c.searchType == 'region':
+        <div class="span2 search-left-column">
+            <img class="thumbnail tight flag pull-left" src="${c.flag}">
+            <div class="tabbable tabs-left">
+                <ul class="nav nav-pills civ-search-tools tags" ng-hide="showingPeople.show" ng-model="query" ng-cloak>
+                    ${lib_6.public_tag_list_filter()}
+                </ul>
             </div>
         </div>
-    </div>
-</div>
+    % endif
+
+    <% 
+        if c.searchType == 'region':
+            spanX = 'span7'
+        else:
+            spanX = 'span9'
+    %>
+
+    <div class="${spanX} search-middle-column">
+        <div class="row-fluid">
+            <h2 class="lead geoName">
+            % if c.searchType == 'region':
+                ${c.searchQuery}
+            % elif c.searchType == 'tag':
+                ${c.searchTitle}
+            % else:
+                <span class="lead geoName">Results for '${c.searchQuery}'</span>
+            % endif
+            </h2>
+        </div>
+        <div class="row-fluid">
+            <ul class="nav nav-pills civ-search-tools">
+                <li ng-class="showingInitiatives.class">
+                    <a href="#initiatives" data-toggle="tab" ng-click="searchInitiatives()">
+                        Initiatives (${c.numInitiatives})
+                    </a>
+                </li>
+                <li ng-class="showingWorkshops.class">
+                    <a href="#workshops" data-toggle="tab" ng-click="searchWorkshops()">
+                        Workshops (${c.numWorkshops})
+                    </a>
+                </li>
+                % if c.numUsers != 0 or c.searchType == "name":
+                    <li ng-class="showingPeople.class">
+                        <a href="#users" data-toggle="tab" ng-click="searchPeople()">
+                            People (${c.numUsers})
+                        </a>
+                    </li>
+                % endif
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        More <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="showingIdeas.class">
+                            <a href="#ideas" data-toggle="tab" ng-click="searchIdeas()">
+                                Ideas <span class="pull-right">(${c.numIdeas})</span>
+                            </a>
+                        </li>
+                        <li ng-class="showingResources.class">
+                            <a href="#resources" data-toggle="tab" ng-click="searchResources()">
+                                Resources <span class="pull-right">(${c.numResources})</span>
+                            </a>
+                        </li>
+                        <li ng-class="showingDiscussions.class">
+                            <a href="#discussions" data-toggle="tab" ng-click="searchDiscussions()">
+                                Discussions <span class="pull-right">(${c.numDiscussions}) </span>
+                            </a>
+                        </li>
+                        <li class="search-right-column-link" ng-class="showingPhotos.class">
+                            <a href="#photos" data-toggle="tab" ng-click="searchPhotos()">
+                                Photos <span class="pull-right">(${c.numPhotos}) </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="accordion-toggle" href="#sortOptions" data-toggle="collapse">
+                        Search tools
+                    </a>
+                </li>
+
+                ### Add a thing buttons
+                <li class="pull-right" ng-show="showingWorkshops.create" ng-cloak>
+                    % if c.searchType != 'region':
+                        % if not c.privs['provisional']:
+                            <button class="btn btn-civ" href="/workshop/display/create/form" >
+                                <i class="icon-plus"></i> Start Workshop
+                            </button>
+                        % endif
+                    % else:
+                        % if not c.privs['provisional']:
+                            <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
+                                <input type="hidden" name="geoString" value="${c.geoString}">
+                                <button class="btn btn-civ" type="submit" name="createPublic"><i class="icon-plus"></i> Start Workshop</button>
+                            </form>
+                        % endif
+                    % endif
+                </li>
+                <li class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
+                    % if 'user' in session:
+                        % if c.searchType != 'region':
+                            % if not c.privs['provisional']:
+                                <button class="btn btn-civ" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                    <i class="icon-plus"></i> Start Initiative
+                                </button>
+                            % endif
+                        % else:
+                            % if not c.privs['provisional']:
+                                <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
+                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                    <button class="btn btn-civ" type="submit"><i class="icon-plus"></i> Start Initiative</button>
+                                </form>
+                            % endif
+                        % endif
+                    % else:
+                        <button class="btn btn-civ" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"><i class="icon-plus"></i> Start Initiative</button>
+                    % endif
+                </li>
+            </ul>
+
+            <div id="sortOptions" class="row-fluid collapse">
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
+                    <li class="active" ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Recent</a></li>
+                    <!-- <li ng-class="{active : orderProp == 'title'}"><a href="#" ng-click="orderProp = 'title'">Alphabetical</a></li> -->
+                    <li ng-class="{active : orderProp == '-numComments'}"><a href="#" ng-click="orderProp = '-numComments'">Most Comments</a></li>
+                    <li ng-class="{active : orderProp == '-voteCount'}"><a href="#" ng-click="orderProp = '-voteCount'">Most Votes</a></li>
+                </ul>
+
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                    <li class="active" ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Date Created</a></li>
+                    <li ng-class="{active : orderProp == '-startTime'}"><a href="#" ng-click="orderProp = '-startTime'">Start Time</a></li>
+                    <li ng-class="{active : orderProp == '-bookmarks'}"><a href="#" ng-click="orderProp = '-bookmarks'">Bookmarks</a></li>
+                    <li ng-class="{active : orderProp == '-activity'}"><a href="#" ng-click="orderProp = '-activity'">Posts</a></li>
+                </ul>
+
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
+                    <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
+                    <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="tabbable">
+            <div class="tab-content">
+                <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
+                    <form class="form-search inline">
+                    </form>
+                </div>
+                <div class="loading-civ" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x"></i>
+                </div>
+                <div ng-show="noQuery" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert alert-info centered span6 offset3">
+                            Searching for nothing yields nothing.  How zen.
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="noResult" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert">
+                            % if c.searchType == 'region':
+                                We couldn't find any {{objType}} scoped for <strong>${c.searchQuery}</strong>. Be the first to create one!
+                            % else:
+                                Sorry, we couldn't find any {{objType}} matching <strong>${c.searchQuery}</strong>. Be the first to create one!
+                            % endif
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
+                    <table class="table plain">
+                        <tr ng-repeat="w in workshopArray = (workshops | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="workshopArray.length == 0">
+                                There are no workshops in <strong>{{query}}</strong> for this region. Be the first to start one!
+                            </div>
+
+                        <td>
+                            <div class="media well searchListing">
+                                <div class="span3">
+                                    <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
+                                        <div style="height:100px; background-image:url('{{w.imageURL}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+                                    </a>
+                                </div>
+                                <div class="span9 media-body">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
+                                    <p class="grey"><small>{{w.description}}</small></p>
+                                    <ul class="horizontal-list iconListing">
+                                        <li><i class="icon-bookmark"></i> Bookmarks ({{w.bookmarks}})</li>
+                                        <li><i class="icon-edit"></i> Posts ({{w.activity}})</li>
+                                    </ul>
+                                    <p> <small>Tags:</small>
+                                        <span ng-repeat="tag in w.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="workshops.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= workshops.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "p in people | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                            <div class="media well searchListing">
+                                <div class="span2">
+                                    <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
+                                        <img class="media-object avatar" ng-src="{{p.photo}}" alt="{{p.name}}" title="{{p.name}}">
+                                    </a>
+                                </div>
+                                <div class="span10">
+                                    <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
+                                    <p class="grey">{{p.greetingMsg}}</p>
+                                    <small><p>from <a href="{{p.cityURL}}" class="orange oreange-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="orange orange-hover">{{p.stateTitle}}</a><br>
+                                        joined {{p.date}}</p></small>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="people.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= people.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "resource in resourceArray = ( resources | filter: query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize ) " class="plain">
+
+                        <div class="alert" ng-show="resourceArray.length == 0">
+                                There are no resources in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
+                            <div class="media well searchListing">
+                                <div class="span1">
+                                   <i class="icon-{{resource.type}} icon-3x"></i>
+                                </div>
+                                <div class="span11 media-body">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                        {{resource.title}}
+                                    </a></h4>
+                                    <a class="break" href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
+
+                                    <ul class="horizontal-list iconListing">
+                                        <li>
+                                            <i class="{{resource.parentIcon}}"></i> From {{resource.parentType}}: <a href="/{{resource.parentType}}/{{resource.parentCode}}/{{resource.parentURL}}">
+                                                {{resource.parentTitle}}
+                                            </a>
+                                        </li>
+                                        <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
+                                        <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
+                                    </ul>
+                                    <p> <small>Tags:</small>
+                                        <span ng-repeat="tag in resource.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="resources.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= resources.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
+                    <table class="table plain">                             
+                        <tr ng-repeat = "discussion in discussionArray = (discussions | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="discussionArray.length == 0">
+                                There are no discussions in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
+                            <div class="media well searchListing">
+                                <div class="span1">
+                                   <i class="icon-comments icon-3x"></i>
+                                </div>
+                                <div class="span11 media-body">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
+                                        {{discussion.title}}
+                                    </a></h4>
+                                    <ul class="horizontal-list iconListing">
+                                        <li>
+                                            <i class="icon-cog"></i> From workshop: <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
+                                                {{discussion.workshopTitle}}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-comment"></i> Comments ({{discussion.numComments}})
+                                        </li>
+                                    </ul>
+                                    <p> <small>Tags:</small>
+                                        <span ng-repeat="tag in discussion.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
+                                    <p class="no-bottom">
+                                        <span class="left-space"><a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">{{discussion.authorName}}</a></small></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="discussions.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= discussions.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "idea in ideaArray = (ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="ideaArray.length == 0">
+                                There are no ideas in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
+                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span9">
+                                        <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
+                                            {{idea.title}}
+                                        </a></p>
+                                        <ul class="horizontal-list iconListing">
+                                            <li><i class="icon-check-sign"></i> Total votes ({{totalVotes}})</li>
+                                            <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
+                                            <li>
+                                                <i class="icon-cog"></i> From workshop: <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
+                                                    {{idea.workshopTitle}}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <small>Tags:</small>
+                                            <span ng-repeat="tag in idea.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                        <p>
+                                            <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
+                                        </p>
+                                    </div>
+                                    <div class="span3 voteBlock ideaListing well" >
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                                <div class="vote-icon yes-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
+                                            </a>
+                                            <br>
+                                            <br>
+                                            <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                                <div class="vote-icon no-icon detail"></div>
+                                                <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
+                                            </a>
+                                            <br>
+                                            <div class="totalVotesWrapper">
+                                                <small class="grey pull-left">Votes:</small>
+                                                <strong class="pull-right">
+                                                    <span class="totalVotes">{{totalVotes}}</span>
+                                                </strong>
+                                            </div>
+                                        % else:
+                                            <a href="#signupLoginModal" class="yesVote">
+                                                <div class="vote-icon yes-icon"></div>
+                                            </a>
+                                            <br>
+                                            <br>
+                                            <a href="#signupLoginModal" class="noVote">
+                                                <div class="vote-icon no-icon"></div>
+                                            </a>
+                                        % endif
+                                    </div>
+                                </div><!-- media-body -->
+                            </div><!-- search-listing -->
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="ideas.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= ideas.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "photo in photoArray = (photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                        <div class="alert" ng-show="photoArray.length == 0">
+                                There are no photos in <strong>{{query}}</strong> for this region. Be the first to add one!
+                            </div>
+
+                        <td>
+                            <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span1 voteWrapper" >
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
+                                                <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
+                                                <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+                                            </a>
+                                        % else:
+                                            <a href="/login" class="upVote">
+                                                <i class="icon-chevron-sign-up icon-2x"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a href="/login" class="downVote">
+                                                <i class="icon-chevron-sign-down icon-2x"></i>
+                                            </a>
+                                        % endif
+                                        <br>
+                                    </div>
+                                    <div class="pull-left">
+                                        <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">
+                                            <a class="listed-item-title" href="{{photo.photoLink}}">{{photo.title}}</a>
+                                        </h4>
+                                        <small>
+                                            Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
+                                            Location: {{photo.location}}<br />
+                                            Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                        </small>
+                                        <br />
+                                        <ul class="horizontal-list iconListing">
+                                            <li><i class="icon-comment"></i> Comments ({{photo.numComments}})</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="photos.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "initiative in initiativeArray = (initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+
+                            <div class="alert" ng-show="initiativeArray.length == 0">
+                                There are no initiatives in <strong>{{query}}</strong> for this region. Be the first to start one!
+                            </div>
+
+                            ${ng_helpers.initiative_listing()}
+
+                        </tr>
+                    </table>
+                    <div class="centered" ng-show="initiatives.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= initiatives.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+            </div><!-- tab-content -->
+        </div><!-- tabbable tabs-left civ-search -->
+    </div><!-- span7 -->
+    % if c.searchType == 'region' or c.searchType == 'tag':
+        <div class="span2 search-right-column">
+            % if c.searchType == 'region' and c.geoInfo:
+                <div class="well">
+                    <span>Stats</span>
+                    <form class="form-horizontal stats">
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Population:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Median Age:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Persons per Household:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        % if 'Postal Code' in c.searchQuery:
+                            <hr class="stats">
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                        % endif
+                    </form>
+                </div>
+            % endif
+            <div class="well">
+                <span>
+                    <a href="#photos" class="green green-hover" ng-click="searchPhotos()">
+                        Photos (${c.numPhotos})
+                    </a>
+                    % if c.authuser:
+                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                        </a>
+                    % else:
+                        <a href="/login" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                        </a>
+                    % endif
+                </span>
+                % if c.photos:
+                    <img class="thumbnail tight" src="${c.backgroundPhoto}">
+                    Top photo by ${lib_6.userLink(c.backgroundAuthor)}
+                % else:
+                    <div class="alert photo-alert">
+                      <strong>No photos!</strong> Be the first to add one.
+                    </div>
+                % endif
+            </div>
+        </div> <!-- span3 search-right-column -->
+    % endif
+</div><!-- row-fluid -->
 
 <%def name="headScripts()">
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+</%def>
+
+<%def name="extraScripts()">
+    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+   <%
+        backgroundImage = '"' + c.backgroundPhoto + '"'
+
+   %>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+</%def>
+
+<%def name="extraScripts2()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.upVote.nullvote').tooltip();
+    </script>
 </%def>

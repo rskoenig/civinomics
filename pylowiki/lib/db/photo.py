@@ -19,6 +19,12 @@ def getUserPhotos(user, deleted = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('userCode', user['urlCode']))).filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
         return False
+        
+def getAllPhotos(deleted = '0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('deleted', deleted))).all()
+    except:
+        return False
 
 def getPhoto(photoCode):
     try:
@@ -54,7 +60,7 @@ def getPhotoLocation(photo):
     
 
 def searchPhotos( keys, values, deleted = u'0', count = False):
-    log.info("db search")
+    #log.info("db search")
     try:
         if type(keys) != type([]):
             p_keys = [keys]

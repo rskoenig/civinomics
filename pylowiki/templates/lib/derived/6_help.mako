@@ -3,21 +3,21 @@
         <li class="span4 well help">
             <a href="${c.tutorialURL}">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_071_book.png">  Tutorial 101</h3>
-                <p>Where to begin if you are entirely new to Civinomics and just don't get it.</p>
+                <h3><i class="icon-book"></i> Tutorial 101</h3>
+                <p>Takes you through a guided tour of the workshop layout. A good place to begin if you are entirely new to Civinomics.</p>
             </a>
         </li>
          <li class="span4 well help">
-            <a href="help/facilitatorGuide">
+            <a href="/help/facilitatorGuide">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_043_group.png">  How to start a workshop</h3>
+                <h3><i class="icon-gear"></i>  How to start a workshop</h3>
                 <p>Ready to start a workshop of your own? Here are some things you'll need to keep in mind as a facilitator.</p>
             </a>
          </li>
         <li class="span4 well help"> 
             <a href="/help/faq">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_194_circle_question_mark.png">  FAQ</h3>   
+                <h3><i class="icon-question-sign"></i>  FAQ</h3>   
                 <p>Answers to such questions as...</p>    
                 <ul>
                     <li>How do I vote?</li>
@@ -29,22 +29,29 @@
         <li class="span4 well help">
             <a id="helpCenter_bugReporter">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_360_bug.png">  Something's not working</h3>
+                <h3><i class="icon-bug"></i>  Something's not working</h3>
                 <p>Can't login, missing objects, load failures, can't edit your workshop...</p>
             </a>
         </li>
         <li class="span4 well help">
             <a href="/help/reportAbuse">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_266_flag.png">  Report abuse or policy violations</h3>
+                <h3><i class="icon-flag"></i>  Report abuse or policy violations</h3>
                 <p>Is someone misbehaving? Here's what you can do.</p>
             </a>
         </li>
         <li class="span4 well help">
-            <a href="help/feedbackWorkshop">
+            <a href="/help/feedbackWorkshop">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_374_claw_hammer.png">  Suggest new features</h3>
-                <p>Help make Civinomics more effective.</p>
+                <h3><i class="icon-lightbulb"></i>  Suggest new features</h3>
+                <p>Yup, we're in beta. So help us get the Civinomics engine purring.</p>
+            </a>
+        </li>
+        <li class="span4 well help">
+            <a href="#" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">
+                <span class="link-span"></span>
+                <h3><i class="icon-picture"></i> <i class="icon-list"></i>  Formatting Guide</h3>
+                <p>Civinomics uses markdown for most text throughout the site. This quick guide will show you the syntax for bold, italic, links and adding pictures to text fields.</p>
             </a>
         </li>
     </ul><!-- thumbnails -->
@@ -252,8 +259,8 @@
                 <strong>Will everyone be able to see how I voted?</strong>
                 <p>No. Your votes are always confidential. However, if you try to vote twice on an item it won’t work. </p>
                 <strong>Is it free?</strong>
-                <p>Joining Civinomics is free. Voting, commenting and adding resources—all free. Creating a personal workshop (visible only to people you invite; limited to 20 people)—that’s free too.</p>
-                <p>Creating a public workshop or a private workshop for more than 20 people costs $100 per month. </p>
+                <p>Yes. Civinomics is free. Voting, commenting and adding resources—all free. Even creating a workshop is free, be it public or private.</p>
+                <p>When you create a public workshop you are able to set the geographic scope of that workshop, in order to specify the area it applies to. A private workshop will only be visible to you and anyone you invite to participate in it.</p>
                 <strong>Can anyone join?</strong>
                 <p>Yes! The more the merrier, and the better for the civic process.</p>
             </div>
@@ -541,3 +548,16 @@
         </div><!-- longText -->
     </div><!-- span9 -->
 </%def>
+
+<%def name="markdownGuide()">
+    <div class="span12">
+        <textarea rows="10" id="data" name="data" class="span12">${c.guide}</textarea>
+        <div class="preview-information-wrapper" id="live_preview">
+           hi
+        </div>
+    </div>
+
+</%def>
+
+
+

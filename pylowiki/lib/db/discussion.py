@@ -43,7 +43,11 @@ def getDiscussionForThing(parent):
         return parent
     thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['discussion', 'discussionUnpublished'])).filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['discussion', 'discussionUnpublished']))\
+        .filter(Thing.data.any(wc(thisKey, parent['urlCode'])))\
+        .filter(Thing.data.any(wc('discType', parent.objType)))\
+        .one()
     except:
         return False
 
@@ -54,6 +58,18 @@ def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', delete
         .filter(Thing.data.any(wc('discType', discType)))\
         .filter(Thing.data.any(wc('disabled', disabled)))\
         .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
+    except:
+        return False
+        
+def getUpdatesForInitiative(code, disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc('initiativeCode', code)))\
+        .filter(Thing.data.any(wc('discType', 'update')))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .order_by('-date')\
         .all()
     except:
         return False
@@ -133,6 +149,8 @@ class Discussion(object):
             workshop = kwargs['workshop']
             d = generic.linkChildToParent(d, workshop)
             d = generic.addedItemAs(d, kwargs['privs'], role)
+        if 'owner' in kwargs.keys():
+            d = generic.linkChildToParent(d, kwargs['owner'])
         if 'text' in kwargs:
             d['text'] = kwargs['text']
         if 'attachedThing' in kwargs.keys():

@@ -7,7 +7,7 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showListing(thing)">
+<%def name="showListing(thing, *args)">
    <%
       target = "_self"
       if c.paginator != '':
@@ -16,7 +16,10 @@
          if thing == 'discussion':
             renderList = c.discussions
          elif thing == 'resources':
-            renderList = c.resources
+            if 'condensed' in args:
+                renderList = c.resources[0:5]
+            else:
+                renderList = c.resources
             target = "_blank"
          elif thing == 'ideas':
             renderList = c.ideas
@@ -87,14 +90,14 @@
                                             % if c.demo:
                                                 See ${comments | n}
                                             % else:
-                                                See ${comments | n} (${numComments})
+                                                See ${comments | n} (${numComments}) 
                                             % endif
                                     </div><!--/.span9-->
                                     <%doc>
                                     <div class="span9 list-item-text">
                                         <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
-                                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
+                                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)} ${item.date}
                                             <br />
                                             <% 
                                                 comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
@@ -109,56 +112,93 @@
                     </div>
                 </div>
             % else:
-                <div class="${authorClass}">
-                    <div class="span1 voteBlock" id="vote_${itemCounter}">
-                        ${lib_6.upDownVote(item)}
-                    </div>
-                    % if thing == 'resources':
-                        <div class="span1">
+                <div class="row-fluid list-item border-bottom">
+                    % if not 'condensed' in args:
+                        <div class="span1 voteBlock" id="vote_${itemCounter}">
+                            ${lib_6.upDownVote(item)}
                         </div>
-                    % else:
-                        <div class="span2" id="author_${itemCounter}">
-                            ${lib_6.userImage(author, className = 'avatar')}
+                    % endif
+                    <%
+                        if 'condensed' in args:
+                            spanX = "span2"
+                        else:
+                            spanX = "span1"
+                    %>
+                    % if thing == 'resources':
+                        <% 
+                            iconClass = ""
+                            if item['type'] == 'link' or item['type'] == 'general':
+                                iconClass="icon-link"
+                            elif item['type'] == 'photo':
+                                iconClass="icon-picture"
+                            elif item['type'] == 'video':
+                                iconClass="icon-youtube-play"
+                            elif item['type'] == 'rich':
+                                iconClass="icon-file"
+                            endif
+                        %>
+                        <div class="${spanX}">
+                            <div class="spacer"></div>
+                            <i class="${iconClass} icon-3x"></i>
+                        </div>
+                    % elif not 'condensed' in args:
+                        <div class="${spanX}">
+                            <div class="spacer"></div>
+                            <i class="icon-comments icon-3x"></i>
                         </div> <!--/.span2-->
                     % endif
-                    <div class="span9 list-item-text" id="content_${itemCounter}">
-                        <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
-                        ${itemTitle | n}
-                        % if item.objType == 'idea':
-                            % if item['adopted'] == '1':
-                                <small><i class="icon-star"></i> This idea adopted!</small>
-                            % endif
-                        % endif
+                    <%
+                        spanY = "span10"
+                        discStyle = ''
+                        if thing == 'discussion':
+                            discStyle = "forum-topic"
+                            if 'condensed' in args:
+                                spanY = "span12"
+                    %>
+                    <div class="${spanY} list-item-text" id="content_${itemCounter}">
+                        <h4 class="media-heading ${discStyle}">
+                            <% itemTitle = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
+                            ${itemTitle | n}
+                        </h4>
+
                         % if item.objType == 'resource':
                             <% 
-                                extraClass = ""
-                                if item['type'] == 'link' or item['type'] == 'general':
-                                    extraClass="resource-link"
-                                elif item['type'] == 'photo':
-                                    extraClass="resource-photo"
-                                elif item['type'] == 'video':
-                                    extraClass="resource-video"
-                                elif item['type'] == 'rich':
-                                    extraClass="resource-file"
-                                endif
-                            %>
-                            <p>
-                                <% itemLink = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
-                                <span class="${extraClass}">${itemLink | n}</span>
-                            </p>
+                                if 'condensed' in args:
+                                    chars = 35
+                                else:
+                                    chars = 70
+                                itemLink = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], chars)) %>
+
+                            ${itemLink | n}
                         % endif
-                        <p class="no-bottom">
-                            Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
-                        </p>
+
                             <% 
-                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                                comments = '<a %s class="listed-item-title"><i class="icon-comments"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), ' Comments') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                if 'views' in item:
+                                    numViews = str(item['views'])
+                                else:
+                                    numViews = "0"
                             %>
-                            % if c.demo:
-                                See ${comments | n}
-                            % else:
-                                See ${comments | n} (${numComments})
+                            <br />
+                            <ul class="horizontal-list iconListing">
+                                <li>
+                                    % if c.demo:
+                                        ${comments | n}
+                                    % else:
+                                        ${comments | n} (${numComments})
+                                    % endif
+                                </li>
+                                <li>
+                                    <i class="icon-eye-open"></i> Views ${numViews}
+                                </li>
+
+                            % if item.objType != 'resource':
+                                % if not 'condensed' in args:
+                                    <li><span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)} ${item.date}</small></li>
+                                % endif
                             % endif
+                            </ul>
                     </div><!--/.span9-->
                 </div><!--/.row-fluid-->
             % endif
@@ -219,12 +259,13 @@
                             </div>
                             <div class="accordion-body collapse" id="item-body-${item['urlCode']}">
                                 <div class="row-fluid list-item border-bottom">
-                                    <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">
+                                    <div class="span9 offset1 list-item-text ideaListing" style="position:relative;" id="content_${itemCounter}">
                                         <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
                                         % if item['adopted'] == '1':
                                             <small><i class="icon-star"></i> This idea adopted!</small>
                                         % endif
+                                        <p style="margin-top: 10px;">${lib_6.ellipsisIZE(item['text'], 250)}</p>
                                             <% 
                                                 comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
                                                 fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
@@ -232,7 +273,8 @@
 
                                                 totalVotes = int(item['ups']) + int(item['downs'])
                                             %>
-                                            <ul class="horizontal-list ideaListing">
+                                            <ul class="horizontal-list iconListing">
+                                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs} ${item.date}</li>
                                                 <li>${fullText | n}</li>
                                                 % if c.demo:
                                                     <li>${comments | n}</li>
@@ -240,11 +282,8 @@
                                                     <li>${comments | n} (${numComments})</li>
                                                 % endif
                                             </ul>
-                                            <p class="no-bottom">
-                                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
-                                            </p>
                                     </div><!--/.span9-->
-                                    <div class="span2 voteBlock ideaListing" id="vote_${itemCounter}">
+                                    <div class="span3 voteBlock ideaListing" id="vote_${itemCounter}">
                                         ${lib_6.yesNoVote(item)}
                                     </div>
                                 </div><!--/.row-fluid-->
@@ -254,32 +293,43 @@
                 </div><!-- accordion --> 
             % else:
                 <div class="row-fluid list-item border-bottom">
-                    <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">
+                    <div class="span9 list-item-text ideaListing" id="content_${itemCounter}">
                         <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
                         % if item['adopted'] == '1':
                             <small><i class="icon-star"></i> This idea adopted!</small>
                         % endif
+                        <p style="margin-top: 10px;">${lib_6.ellipsisIZE(item['text'], 250)}</p>
                             <% 
                                 comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
-                                fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
-                                numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text')
+                                numComments = "0"
+                                if 'numComments' in item:
+                                    numComments = item['numComments']
+                                    
+                                #numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                if 'views' in item:
+                                    numViews = str(item['views'])
+                                else:
+                                    numViews = "0"
+                                views = '<i class="icon-eye-open"></i> Views %s</a>'%numViews
 
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
-                            <ul class="horizontal-list ideaListing">
+                            <ul class="horizontal-list iconListing">
+                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs} on ${item.date}</li>
+                            </ul><br />
+                            <ul class="horizontal-list iconListing">
                                 <li>${fullText | n}</li>
                                 % if c.demo:
                                     <li>${comments | n}</li>
                                 % else:
                                     <li>${comments | n} (${numComments})</li>
                                 % endif
+                                <li>${views | n}</li>
                             </ul>
-                            <p class="no-bottom">
-                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
-                            </p>
                     </div><!--/.span9-->
-                    <div class="span2 voteBlock ideaListing" id="vote_${itemCounter}">
+                    <div class="span3 voteBlock ideaListing well" style="background-color: whiteSmoke;" id="vote_${itemCounter}">
                         ${lib_6.yesNoVote(item)}
                     </div>
                 </div><!--/.row-fluid-->

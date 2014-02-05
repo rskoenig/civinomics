@@ -2,6 +2,8 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
+#from pylowiki.lib.images import userImageSource
+#from pylowiki.lib.db.user import getUserByCode
 import sqlalchemy as sa
 from dbHelpers import with_characteristic as wc, commit
 from hashlib import md5
@@ -20,16 +22,61 @@ def linkChildToParent(child, parent):
         log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
+    counters = ['idea', 'resource', 'discussion', 'photo', 'listener', 'initiative']
     key = '%s%s' %(parent.objType.replace("Unpublished", ""), 'Code')
     if key in child:
         # Overwrite, give warning
-        log.warning("linkChildToParent(): parent object link already exists in child.")
+        log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
+    if parent.objType == 'initiative':
+        child['initiative_public'] = parent['public']
+        child['initiative_url'] = parent['url']
+        child['initiative_tags'] = parent['tags']
+        child['initiative_scope'] = parent['scope']
+        child['initiative_title'] = parent['title']
+    if 'initiativeCode' in parent and 'initiative_url' in parent and child.objType != 'rating':
+        child['initiativeCode'] = parent['initiativeCode']
+        child['initiative_url'] = parent['initiative_url']
+        child['initiative_tags'] = parent['initiative_tags']
+        child['initiative_scope'] = parent['initiative_scope']
+        child['initiative_title'] = parent['initiative_title']
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:
         child['workshop_public_scope'] = parent['workshop_public_scope']
     if 'workshop_searchable' in parent:
         child['workshop_searchable'] = parent['workshop_searchable']
+    if 'workshop_title' in parent:
+        child['workshop_title'] = parent['workshop_title']
+    if 'workshop_url' in parent:
+        child['workshop_url'] = parent['workshop_url']
+        if 'workshopCode' in parent:
+            child['workshopCode'] = parent['workshopCode']
+    if parent.objType == 'workshop':
+        child['workshop_title'] = parent['title']
+        child['workshop_url'] = parent['url']
+    if parent.objType == 'user':
+        child['user_name'] = parent['name']
+        child['user_url'] = parent['url']
+        #parentUser = getUserByCode(parent['urlCode'])
+        #child['user_avatar'] = userImageSource(parentUser)
+        if child.objType in counters:
+            doit = 1
+            if 'discType' in child and child['discType'] != 'general':
+                doit = 0
+            
+            if doit:
+                kName = child.objType + "_counter"
+                if kName in parent:
+                    value = int(parent[kName])
+                    value +=1
+                    parent[kName] = str(value)
+                else:
+                    parent[kName] = '1'
+                commit(parent)
+    if child.objType == 'comment':
+        if 'title' in parent:
+            child['parent_title'] = parent['title']
+        child['parent_url'] = parent['url']
         
     child[key] = code
     return child

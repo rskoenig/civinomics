@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import math
 
 from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -13,6 +14,7 @@ from pylons import config
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
+import pylowiki.lib.db.generic          as genericLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.facilitator      as facilitatorLib
@@ -26,10 +28,13 @@ import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.utils               as utils
+import pylowiki.lib.db.mainImage        as mainImageLib
+import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.images              as imageLib
 
 import time, datetime
 import simplejson as json
+import copy as copy
 
 
 log = logging.getLogger(__name__)
@@ -59,68 +64,15 @@ class ProfileController(BaseController):
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
                     
-        following = followLib.getUserFollows(c.user) # list of follow objects
-        c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
-
-        followers = followLib.getUserFollowers(c.user)
-        c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
-        
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-        c.pendingListeners = []
-        c.listeningWorkshops = []
-        for l in listenerList:
-            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-            c.listeningWorkshops.append(lw)
-            
-        
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
-        c.facilitatorWorkshops = []
-        c.pendingFacilitators = []
-        for f in facilitatorList:
-           if 'pending' in f and f['pending'] == '1':
-              c.pendingFacilitators.append(f)
-           elif f['disabled'] == '0':
-              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-                 # show to the workshop owner, show to the facilitator owner, show to admin
-                 if 'user' in session: 
-                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                         c.facilitatorWorkshops.append(myW)
-              else:
-                    c.facilitatorWorkshops.append(myW)
-                    
-        # this still needs to be optimized so we don't get the activity twice
-        c.resources = []
-        c.discussions = []
-        c.comments = []
-        c.ideas = []
-        c.photos = []
-        
-        c.rawActivity = activityLib.getMemberActivity(c.user)
-        c.unpublishedActivity = activityLib.getMemberActivity(c.user, '1')
-        
-        for itemCode in c.rawActivity['itemList']:
-            # ony active objects
-            if c.rawActivity['items'][itemCode]['deleted'] == '0' and c.rawActivity['items'][itemCode]['disabled'] == '0':
-                # only public objects unless author or admin
-                if 'workshopCode' in c.rawActivity['items'][itemCode]:
-                    workshopCode = c.rawActivity['items'][itemCode]['workshopCode']
-                    if c.rawActivity['workshops'][workshopCode]['deleted'] == '0' and c.rawActivity['workshops'][workshopCode]['published'] == '1' and c.rawActivity['workshops'][workshopCode]['public_private'] == 'public' or (c.isUser or c.isAdmin):
-                        if c.rawActivity['items'][itemCode]['objType'] == 'resource':
-                            c.resources.append(c.rawActivity['items'][itemCode])
-                        elif c.rawActivity['items'][itemCode]['objType'] == 'discussion':
-                            c.discussions.append(c.rawActivity['items'][itemCode])
-                        elif c.rawActivity['items'][itemCode]['objType'] == 'idea':
-                            c.ideas.append(c.rawActivity['items'][itemCode])
-                        elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
-                            c.comments.append(c.rawActivity['items'][itemCode])
-                elif c.rawActivity['items'][itemCode]['objType'] == 'photo':
-                    c.photos.append(c.rawActivity['items'][itemCode])
-                    
         userLib.setUserPrivs()
   
-
     def showUserPage(self, id1, id2, id3 = ''):
+        # check to see if this is a request from the iphone app
+        # entry is used for packing a json object for the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        if iPhoneApp:
+            entry = {}
+            displayWorkshops = utils.profileDisplayWorkshops(request)
         # Called when visiting /profile/urlCode/url
         rev = id3
         if id3 != '':
@@ -128,7 +80,7 @@ class ProfileController(BaseController):
         else:
             c.revision = False
 
-        c.revisions = revisionLib.getParentRevisions(c.user.id)
+        #c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
                
         c.isFollowing = False
@@ -150,7 +102,7 @@ class ProfileController(BaseController):
         for workshop in watchList:
             if workshop['public_private'] == 'public' or (c.isUser or c.isAdmin):
                 c.watching.append(workshop)
-                
+
         c.bookmarkedWorkshops = []
         for workshop in c.watching:
             if workshop['public_private'] == 'public':
@@ -158,7 +110,29 @@ class ProfileController(BaseController):
             if workshop['public_private'] == 'private' and 'user' in session and c.authuser:
                 if c.isUser or c.isAdmin:
                     c.bookmarkedWorkshops.append(workshop)
- 
+        if iPhoneApp:
+            if displayWorkshops:
+                i = 0
+                for bWorkshop in c.bookmarkedWorkshops:
+                    bookmarkedWorkshopEntry = "bookmarkedWorkshop" + str(i)
+                    bWorkshopCopy = copy.copy(bWorkshop)
+                    bWorkshopCopy['type'] = 'Bookmarked'
+                    mainImage = mainImageLib.getMainImage(bWorkshop)
+                    bWorkshopCopy['imageURL'] = utils.workshopImageURL(bWorkshop, mainImage, thumbnail = True)
+                    if c.isUser:
+                        f = followLib.getFollow(c.user, bWorkshop)
+                        if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                            bWorkshopCopy['newItems'] = '1'
+                        else:
+                            bWorkshopCopy['newItems'] = '0'
+                        if 'digest' in f and f['digest'] == '1':
+                            bWorkshopCopy['dailyDigest'] = '1'
+                        else:
+                            bWorkshopCopy['dailyDigest'] = '0'
+                    entry[bookmarkedWorkshopEntry] = dict(bWorkshopCopy)
+                    i = i + 1
+
+        # NOTE this looks unused:
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
         
         c.privateWorkshops = []
@@ -167,17 +141,185 @@ class ProfileController(BaseController):
                 privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
                 if privateList:
                     c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+        if iPhoneApp:
+            if displayWorkshops:
+                i = 0
+                for privateWorkshop in c.privateWorkshops:
+                    privateWorkshopEntry = "privateWorkshop" + str(i)
+                    privateWorkshopCopy = copy.copy(privateWorkshop)
+                    privateWorkshopCopy['type'] = 'Private'
+                    mainImage = mainImageLib.getMainImage(privateWorkshop)
+                    privateWorkshopCopy['imageURL'] = utils.workshopImageURL(privateWorkshop, mainImage, thumbnail = True)
+                    if c.isUser:
+                        p = pMemberLib.getPrivateMember(privateWorkshop['urlCode'], c.user['email'])
+                        if 'itemAlerts' in p and p['itemAlerts'] == '1':
+                            privateWorkshopCopy['newItems'] = '1'
+                        else:
+                            privateWorkshopCopy['newItems'] = '0'
+                        if 'digest' in p and p['digest'] == '1':
+                            privateWorkshopCopy['dailyDigest'] = '1'
+                        else:
+                            privateWorkshopCopy['dailyDigest'] = '0'
+                    entry[privateWorkshopEntry] = dict(privateWorkshopCopy)
+                    i = i + 1
 
-        following = followLib.getUserFollows(c.user) # list of follow objects
-        c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.pendingListeners = []
+        c.listeningWorkshops = []
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            c.listeningWorkshops.append(lw)
+        if iPhoneApp:
+            if displayWorkshops:
+                i = 0
+                for lWorkshop in c.listeningWorkshops:
+                    listeningWorkshopEntry = "listeningWorkshop" + str(i)
+                    lWorkshopCopy = copy.copy(lWorkshop)
+                    lWorkshopCopy['type'] = 'Listening'
+                    mainImage = mainImageLib.getMainImage(lWorkshop)
+                    lWorkshopCopy['imageURL'] = utils.workshopImageURL(lWorkshop, mainImage, thumbnail = True)
+                    if c.isUser:
+                        l = listenerLib.getListener(c.user['email'], lWorkshop)
+                        if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                            lWorkshopCopy['newItems'] = '1'
+                        else:
+                            lWorkshopCopy['newItems'] = '0'
+                        if 'digest' in l and l['digest'] == '1':
+                            lWorkshopCopy['dailyDigest'] = '1'
+                        else:
+                            lWorkshopCopy['dailyDigest'] = '0'
+                    entry[listeningWorkshopEntry] = dict(lWorkshopCopy)
+                    i = i + 1
+            
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+        c.facilitatorWorkshops = []
+        c.facilitatorInitiatives = []
+        c.pendingFacilitators = []
+        for f in facilitatorList:
+           if 'pending' in f and f['pending'] == '1':
+              c.pendingFacilitators.append(f)
+           elif f['disabled'] == '0':
+                try:
+                    myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+                    if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+                     # show to the workshop owner, show to the facilitator owner, show to admin
+                        if 'user' in session: 
+                            if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                                c.facilitatorWorkshops.append(myW)
+                    else:
+                        c.facilitatorWorkshops.append(myW)
+                except:
+                    myI = initiativeLib.getInitiative(f['initiativeCode'])
+                    if myI['public'] == '0':
+                     # show to the workshop owner, show to the facilitator owner, show to admin
+                        if 'user' in session: 
+                            if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                                c.facilitatorInitiatives.append(myI)
+                    else:
+                        c.facilitatorInitiatives.append(myI)
 
-        followers = followLib.getUserFollowers(c.user)
-        c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
-        
-        return render("/derived/6_profile.bootstrap")
+                    
+        # initiatives
+        c.initiatives = []
+        initiativeList = initiativeLib.getInitiativesForUser(c.user)
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiatives.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiatives.append(i)
+                        
+        c.initiativeBookmarks = []
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiativeBookmarks.append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiativeBookmarks.append(i)
+        if iPhoneApp:
+            if displayWorkshops:
+                i = 0
+                for facilitatorWorkshop in c.facilitatorWorkshops:
+                    facilitatorWorkshopEntry = "facilitatorWorkshop" + str(i)
+                    facilitatorWorkshopCopy = copy.copy(facilitatorWorkshop)
+                    facilitatorWorkshopCopy['type'] = 'Facilitating'
+                    mainImage = mainImageLib.getMainImage(facilitatorWorkshop)
+                    facilitatorWorkshopCopy['imageURL'] = utils.workshopImageURL(facilitatorWorkshop, mainImage, thumbnail = True)
+                    if c.isUser:
+                        f = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, facilitatorWorkshop)[0]
+                        #log.info("f itema: %s"%f['itemAlerts'])
+                        if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                            facilitatorWorkshopCopy['newItems'] = '1'
+                        else:
+                            facilitatorWorkshopCopy['newItems'] = '0'
+                        if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                            facilitatorWorkshopCopy['newFlags'] = '1'
+                        else:
+                            facilitatorWorkshopCopy['newFlags'] = '0'
+                        if 'digest' in f and f['digest'] == '1':
+                            facilitatorWorkshopCopy['dailyDigest'] = '1'
+                        else:
+                            facilitatorWorkshopCopy['dailyDigest'] = '0'
+                    entry[facilitatorWorkshopEntry] = dict(facilitatorWorkshopCopy)
+                    i = i + 1
+            #i = 0
+            #for pendingFacilitator in c.pendingFacilitators:
+            #    pendingFacilitatorEntry = "pendingFacilitator" + str(i)
+            #    entry[pendingFacilitatorEntry] = dict(pendingFacilitator)
+            #    i = i + 1
+                
+        #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
+        c.memberPosts = activityLib.getMemberPosts(c.user)
+        if not c.memberPosts:
+            c.memberPosts = []
+        #if iPhoneApp:
+        #    i = 0
+        #    for mPost in c.memberPosts:
+        #        mPostEntry = "memberPost" + str(i)
+        #        entry[mPostEntry] = dict(mPost)
+        #        i = i + 1
 
-    def showUserMessages(self, id1, id2, id3 = ''):
-        return render("/derived/6_messages.bootstrap")
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        if not c.unpublishedActivity:
+            c.unpublishedActivity = []
+        #if iPhoneApp:
+        #    i = 0
+        #    for umPost in c.unpublishedActivity:
+        #        umPostEntry = "unpublishedActivity" + str(i)
+        #        entry[umPostEntry] = dict(umPost)
+        #        i = i + 1
+
+        if iPhoneApp:
+            entry['profilePic'] = imageLib.userImageSource(c.user)
+            entry['title'] = c.title
+            #entry['isFollowing'] = c.isFollowing
+            entry['isUser'] = c.isUser
+            entry['browse'] = c.browse
+            # next entries represented as __workshop/facilitator/post0..len(c.__-1)
+            #entry['watching'] = c.watching
+            #entry['bookmarkedWorkshops'] = c.bookmarkedWorkshops
+            #entry['privateWorkshops'] = c.privateWorkshops
+            #entry['listeningWorkshops'] = c.listeningWorkshops
+            #entry['pendingFacilitators'] = c.pendingFacilitators
+            #entry['facilitatorWorkshops'] = c.facilitatorWorkshops
+            #entry['memberPosts'] = c.memberPosts
+            #entry['unpublishedActivity'] = c.unpublishedActivity
+            
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:    
+            return render("/derived/6_profile.bootstrap")
+
         
     def showUserPhotos(self, id1, id2):
         # defaults for photo editor
@@ -201,6 +343,9 @@ class ProfileController(BaseController):
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        if not c.unpublishedActivity:
+            c.unpublishedActivity = []
 
         return render("/derived/6_profile_archives.bootstrap")
         
@@ -208,6 +353,26 @@ class ProfileController(BaseController):
         if not id3 or id3 == '':
             abort(404)
         c.photo = photoLib.getPhoto(id3)
+        if not c.photo:
+            # see if it is a revision
+            c.photo = revisionLib.getRevisionByCode(id3)
+        if not c.photo:
+            log.info("no photo, no revision with %s"%id3)
+            abort(404)
+
+        # the next area of fields is needed for sharing functions
+        c.imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png"
+        c.photoLink = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + c.photo['urlCode']
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
+        c.requestUrl = request.url
+        c.thingCode = id3
+
         if 'views' not in c.photo:
             c.photo['views'] = u'0'
             
@@ -223,6 +388,8 @@ class ProfileController(BaseController):
         else:
             c.revisions = revisionLib.getRevisionsForThing(c.photo)
         c.photoTitle = c.photo['title']
+        # this value is needed for sharing
+        c.name = c.photo['title']
         c.description = c.photo['description']
         # for the 6_lib item functions we leverage
         c.thing = c.photo
@@ -346,14 +513,26 @@ class ProfileController(BaseController):
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['watching'].append(workshop)
                 
+        iwatching = followLib.getInitiativeFollows(c.user)
+        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        items['watching'].append(i)
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        items['watching'].append(i)
+
+
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
         items['listening'] = []
-        for workshop in c.listeningWorkshops:
-            if workshop['public_private'] == 'public' or (isUser or isAdmin):
-                items['listening'].append(workshop)
-                log.info("listening workshop")
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            items['listening'].append(lw)
                 
         items['facilitating'] = []
-        for workshop in c.facilitatorWorkshop:
+        for workshop in c.facilitatorWorkshops:
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['facilitating'].append(workshop)
             
@@ -364,26 +543,31 @@ class ProfileController(BaseController):
         items['resources'] = []
         items['discussions'] = []
         items['ideas'] = []
+        items['initiatives'] = []
         items['searchWorkshops'] = []
         items['searchUsers'] = []
         for thing in createdThings:
             if 'workshopCode' in thing:
-                w = workshopLib.getWorkshopByCode(thing['workshopCode'])
-                if workshopLib.isPublished(w) or isAdmin:
-                    if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
-                        if thing.objType == 'resource':
-                            items['resources'].append(thing)
-                        elif thing.objType == 'discussion':
-                            items['discussions'].append(thing)
-                        elif thing.objType == 'idea':
-                            items['ideas'].append(thing)
-
+                if thing['disabled'] == '0' and thing['deleted'] == '0':
+                    w = workshopLib.getWorkshopByCode(thing['workshopCode'])
+                    if workshopLib.isPublished(w) or isAdmin:
+                        if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
+                            if thing.objType == 'resource':
+                                items['resources'].append(thing)
+                            elif thing.objType == 'discussion':
+                                items['discussions'].append(thing)
+                            elif thing.objType == 'idea':
+                                items['ideas'].append(thing)
+            elif 'initiativeCode' in thing and thing.objType == 'resource' and ('initiative_public' in thing and thing['initiative_public'] == '1') and thing['deleted'] == '0':
+                items['resources'].append(thing)
+            elif thing.objType == 'initiative' and thing['public'] == '1' and thing['public'] == '1' and thing['deleted'] == '0':
+                items['initiatives'].append(thing)
         return items
 
     @h.login_required
     def edit(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
-        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
             c.title = 'Edit Profile'
             if 'confTab' in session:
                 c.tab = session['confTab']
@@ -418,7 +602,7 @@ class ProfileController(BaseController):
         SQLtoday = now.strftime("%Y-%m-%d")
 
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1 and not c.privs['provisional']:
             abort(404)
             
         session['confTab'] = "tab1"
@@ -518,6 +702,13 @@ class ProfileController(BaseController):
 
         if nameChange:
             c.user['url'] = urlify(c.user['name'])
+            cList = genericLib.getChildrenOfParent(c.user)
+            for child in cList:
+                if child.objType in ['idea', 'resource', 'discussion', 'comment', 'photo']:
+                    child['user_name'] = c.user['name']
+                    child['user_url'] = c.user['url']
+                    dbHelpers.commit(child)
+                
             if c.user.id == c.authuser.id:
                 session["userURL"] = c.user['url']
                 session.save()
@@ -575,7 +766,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
@@ -592,22 +783,38 @@ class ProfileController(BaseController):
             width = min(image.size)
             x = 0
             y = 0
-            if 'width' in requestKeys:
-                width = int(float(request.params['width']))
-            if 'x' in requestKeys:
-                x = int(float(request.params['x']))
-            if 'y' in requestKeys:
-                y = int(float(request.params['y']))
+            if 'width' in request.params:
+                width = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
             dims = {'x': x, 
                     'y': y, 
                     'width':width,
                     'height':width}
             clientWidth = -1
             clientHeight = -1
-            if 'clientWidth' in requestKeys:
+            if 'clientWidth' in request.params:
                 clientWidth = request.params['clientWidth']
-            if 'clientHeight' in requestKeys:
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
                 clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 200, 200)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
@@ -659,17 +866,15 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
-        log.info('got %s'%requestKeys)
         title = "Sample Title"
         description = "Sample Description"
         tags = "|"
         scope = "||0||0||0||0|0"
         
-        log.info("got title %s description %s and scope %s"%(title, description, scope))
         # first make sure the title, description, tag and location are set
         if 'files[]' in requestKeys:
             file = request.params['files[]']
@@ -687,22 +892,38 @@ class ProfileController(BaseController):
             width = min(image.size)
             x = 0
             y = 0
-            if 'width' in requestKeys:
-                width = int(float(request.params['width']))
-            if 'x' in requestKeys:
-                x = int(float(request.params['x']))
-            if 'y' in requestKeys:
-                y = int(float(request.params['y']))
+            if 'width' in request.params:
+                width = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
             dims = {'x': x, 
                     'y': y, 
                     'width':width,
                     'height':width}
             clientWidth = -1
             clientHeight = -1
-            if 'clientWidth' in requestKeys:
+            if 'clientWidth' in request.params:
                 clientWidth = request.params['clientWidth']
-            if 'clientHeight' in requestKeys:
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
                 clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 480, 480)
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
@@ -722,9 +943,12 @@ class ProfileController(BaseController):
             
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
+        
+        if c.privs['provisional']:
+            abort(404)
+            
         photo = photoLib.getPhotoByHash(id3)
         if not photo:
-            log.info("photo hash is %s"%id3)
             abort(404)
         
         if 'title' in request.params:
@@ -833,7 +1057,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1 or c.privs['provisional']:
             abort(404)      
                     
         session['confTab'] = "tab4"
@@ -932,7 +1156,6 @@ class ProfileController(BaseController):
         session.save()
         
         if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
-           log.info('disabled is %s' % c.user['disabled'])
            enableUserReason = request.params['enableUserReason']
 
            if c.user['disabled'] == '1':
