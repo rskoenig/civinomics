@@ -197,30 +197,31 @@ def updateWorkshopChildren(workshop, workshopKey):
 
 def getWorkshopTagCategories():
     workshopTags = []
-    workshopTags.append('Animals')
+    #workshopTags.append('Animals')
     workshopTags.append('Arts')
     workshopTags.append('Business')
     workshopTags.append('Civil Rights')
     workshopTags.append('Community')
     workshopTags.append('Economy')
     workshopTags.append('Education')
-    workshopTags.append('Employment')
-    workshopTags.append('Entertainment')
+    #workshopTags.append('Employment')
+    #workshopTags.append('Entertainment')
     workshopTags.append('Environment')
-    workshopTags.append('Family')
+    #workshopTags.append('Family')
     workshopTags.append('Government')
     workshopTags.append('Health')
     workshopTags.append('Housing')
-    workshopTags.append('Infrastructure')
-    workshopTags.append('Justice')
+    #workshopTags.append('Infrastructure')
+    #workshopTags.append('Justice')
     workshopTags.append('Land Use')
     workshopTags.append('Municipal Services')
-    workshopTags.append('NonProfit')
-    workshopTags.append('Outdoors')
-    workshopTags.append('Policy')
+    #workshopTags.append('NonProfit')
+    workshopTags.append('Parks and Rec')
+    #workshopTags.append('Policy')
     workshopTags.append('Safety')
-    workshopTags.append('Sports')
+    #workshopTags.append('Sports')
     workshopTags.append('Transportation')
+    workshopTags.append('Water')
     workshopTags.append('Other')
     return workshopTags
 
@@ -247,6 +248,7 @@ def getWorkshopTagColouring():
                 'Housing':              'black-tag',
                 'Transportation':       'blue-tag',
                 'Infrastructure':       'blue-tag',
+                'Water':                'blue-tag',
                 'Municipal Services':   'blue-tag',
                 'Government':           'grey-tag',
                 'NonProfit':            'grey-tag',
@@ -324,10 +326,10 @@ def getWorkshopsByScope(searchScope, scopeLevel):
         return False
     
 def getPublicScope(workshop):
+    flag = '/images/flags/'
+    href = '/workshops/geo/earth'
     if 'workshop_public_scope' in workshop and workshop['workshop_public_scope'] != '':
         scope = workshop['workshop_public_scope'].split('|')
-        flag = '/images/flags/'
-        href = '/workshops/geo/earth'
         if scope[9] != '0':
             scopeLevel = 'postalCode'
             scopeName  = scope[9]
@@ -356,6 +358,7 @@ def getPublicScope(workshop):
         else:
             scopeLevel = 'earth'
             scopeName  = 'earth'
+            href += '/0'
             flag += 'earth.gif'
 
         # make sure the flag exists
@@ -372,6 +375,10 @@ def getPublicScope(workshop):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
+        href += '/0'
+    scopeName = scopeName.replace('-', ' ')
+    scopeName = scopeName.title()
+    scopeLevel = scopeLevel.title()
     return {'level':scopeLevel, 'name':scopeName, 'flag':flag, 'href':href}
 
 def setDemo(workshop): 
@@ -401,20 +408,32 @@ def setWorkshopPrivs(workshop):
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
     c.privs['guest'] = isGuest(workshop)
+    # User not yet activated
+    c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
     # is a demo workshop
     c.privs['demo'] = isDemo(workshop)
     
     if 'user' in session:
-        c.privs['admin'] = userLib.isAdmin(c.authuser.id)
-        c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
-        testL = listenerLib.getListener(c.authuser, workshop)
-        if testL and testL['pending'] != '1':
-            c.privs['listener'] = True
-        c.privs['participant'] = isScoped(c.authuser, workshop)
-        c.privs['guest'] = False
-        c.privs['visitor'] = False
+        if c.authuser['activated'] == '0':
+            c.privs['provisional'] = True
+            c.privs['admin'] = False
+            c.privs['facilitator'] = False
+            c.privs['listener'] = False
+            c.privs['participant'] = isScoped(c.authuser, workshop)
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
+        else:
+            c.privs['provisional'] = False
+            c.privs['admin'] = userLib.isAdmin(c.authuser.id)
+            c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
+            testL = listenerLib.getListener(c.authuser, workshop)
+            if testL and testL['pending'] != '1':
+                c.privs['listener'] = True
+            c.privs['participant'] = isScoped(c.authuser, workshop)
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
 
 
 def Workshop(title, owner, publicPrivate, type = "personal"):
@@ -440,6 +459,8 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['allowDiscussions']  = u'1'
     w['workshop_category_tags'] = ''
     w['workshop_searchable'] = u'0'
+    w['numPosts'] = 0
+    w['numBookmarks'] = 0
     commit(w)
     w['urlCode'] = utils.toBase62(w)
     background = utils.workshopInfo

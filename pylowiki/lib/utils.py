@@ -3,14 +3,45 @@ import logging, string
 from urllib import quote
 from zlib import adler32
 from pylons import session, tmpl_context as c
+from hashlib import md5
+from pylons import tmpl_context as c, config, session
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as generic
+import urllib2
+
 
 log = logging.getLogger(__name__)
 
 # For base62 conversion
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
+
+##################################################
+# simple string capper
+##################################################
+def cap(s, l):
+    return s if len(s)<=l else s[0:l-3]+'...'
+
+##################################################
+# simple email checker
+##################################################
+def badEmail(email):
+    log.info("fx checking for bad Email: %s"%email)
+    if email.find('@') < 0:
+        # if there's not an @ in the string this is a bad email
+        return True
+    else:
+        return False
+
+##################################################
+# returns the base url without an ending '/'
+##################################################
+def getBaseUrl():
+    baseUrl = config['site_base_url']
+    # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+    if baseUrl[-1:] == "/":
+        baseUrl = baseUrl[:-1]
+    return baseUrl
 
 def iPhoneRequestTest(req):
     """ check for json=1 in the request parameters, if so this is a request from our iphone app """
@@ -84,14 +115,25 @@ def isWatching(user, workshop):
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
   
-def thingURL(thingParent, thing):
+##################################################
+# generates a url for a thing
+# kwarg returnTitle gets the title out of the thing as well.
+##################################################
+def thingURL(thingParent, thing, **kwargs):
+    thingUrl = True
     if thingParent.objType.replace("Unpublished", "") == 'workshop':
         parentBase = "workshop"
     elif thingParent.objType.replace("Unpublished", "") == 'user':
         parentBase = "profile"
+    elif thingParent.objType.replace("Unpublished", "") == 'initiative':
+        parentBase = "initiative"
     baseURL = '/%s/%s/%s' % (parentBase, thingParent['urlCode'], thingParent['url'])
     if thing.objType.replace("Unpublished", "") == 'photo':
-        return baseURL + "/photo/show" + thing['urlCode']
+        returnString = baseURL + "/photo/show" + thing['urlCode']
+        thingUrl = False
+    if thing.objType.replace("Unpublished", "") == 'initiative':
+        returnString = baseURL + "/show"
+        thingUrl = False
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
@@ -99,17 +141,46 @@ def thingURL(thingParent, thing):
             thing = generic.getThing(thing['resourceCode'])
         elif 'photoCode' in thing.keys():
             thing = generic.getThing(thing['photoCode'])
-            return baseURL + "/photo/show/" + thing['urlCode'] 
+            returnString = baseURL + "/photo/show/" + thing['urlCode'] 
+            thingUrl = False
+        elif 'initiativeCode' in thing.keys():
+            thing = generic.getThing(thing['initiativeCode'])
+            returnString = baseURL + "/show/" 
+            thingUrl = False
         elif 'discussionCode' in thing.keys():
             thing = generic.getThing(thing['discussionCode'])
         else:
-            return baseURL
-    return baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+            returnString = baseURL
+            thingUrl = False
+    if thingUrl:
+        returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+
+    if 'returnTitle' in kwargs:
+        if kwargs['returnTitle'] == True:
+            return thing['views'], thing['title'], returnString
+        else:
+            return returnString
+    else:
+        return returnString
     
 def profilePhotoURL(thing):
     owner = generic.getThing(thing['userCode'])
 
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
+    
+def initiativeURL(thing):
+    
+    log.info("objType is %s"%thing.objType)
+    if thing.objType == 'resource':
+        # an initiative resource
+        return "/initiative/%s/%s/resource/%s/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'], thing['url'])
+    elif thing.objType == 'discussion' and thing['discType'] == 'update':
+        returnURL =  "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
+        log.info("return URL is %s"%returnURL)
+        return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
+    else:
+        return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
+        
     
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:
@@ -127,79 +198,190 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
         else:
             return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
             
+def getPublicScope(item):
+    # takes an item with scope attribute and returns scope level, name, flag and href
+    flag = '/images/flags/'
+    href = '/workshops/geo/earth'
+    if 'scope' in item and item['scope'] != '':
+        scope = item['scope'].split('|')
+    elif '||' in item:
+        scope = item.split('|')
+    if scope:
+        if scope[2] != '0':
+            scopeLevel = 'country'
+            scopeName  = scope[2].replace('-', ' ').title()
+            scopeString = scopeName
+            flag += 'country/' + scope[2]
+            href += '/' + scope[2]
+            if scope[4] != '0':
+                scopeLevel = 'state'
+                scopeName  = scope[4].replace('-', ' ').title()
+                scopeString += ', State of %s' % scopeName
+                flag += '/states/' + scope[4]
+                href += '/' + scope[4]
+                if scope[6] != '0':
+                    scopeLevel = 'county'
+                    scopeName  = scope[6].replace('-', ' ').title()
+                    scopeString += ', County of %s' % scopeName
+                    flag += '/counties/' + scope[6]
+                    href += '/' + scope[6]
+                    if scope[8] != '0':
+                        scopeLevel = 'city'
+                        scopeName  = scope[8].replace('-', ' ').title()
+                        scopeString += ', City of %s' % scopeName
+                        flag += '/cities/' + scope[8]
+                        log.info('The city flag url is %s' % flag)
+                        href += '/' + scope[8]
+                        if scope[9] != '0':
+                            scopeLevel = 'postalCode'
+                            scopeName  = scope[9].replace('-', ' ').title()
+                            scopeString += ', Zip Code %s' % scopeName
+                            flag += 'generalFlag.gif'
+                            href += '/' + scope[9]
+            flag += '.gif'
+        else:
+            scopeLevel = 'earth'
+            scopeName  = 'Earth'
+            scopeString  = 'Earth'
+            flag += 'earth.gif'
+            href += '/0'
+
+        # make sure the flag exists
+        baseUrl = config['site_base_url']
+        if baseUrl[-1] == "/":
+            baseUrl = baseUrl[:-1]
+        flag = baseUrl + flag
+        try:
+            f = urllib2.urlopen(urllib2.Request(flag))
+            flag = flag
+        except:
+            flag = '/images/flags/generalFlag.gif'
+    else:
+        scopeLevel = 'earth'
+        scopeName  = 'earth'
+        flag += 'earth.gif'
+    return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
+
+
+def getGeoExceptions():
+        geoExceptions = {
+            'San Francisco' : 'County',
+        }
+
+        return geoExceptions
+
+
+def _userImageSource(user, **kwargs):
+        # Assumes 'user' is a Thing.
+        # Defaults to a gravatar source
+        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+        #                          we return a source based on the value given here (civ/gravatar)
+        source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+        large = False
+        gravatar = True
+
+        if 'className' in kwargs:
+            if 'avatar-large' in kwargs['className']:
+                large = True
+        if 'forceSource' in kwargs:
+            if kwargs['forceSource'] == 'civ':
+                gravatar = False
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                else:
+                    source = '/images/hamilton.png'
+            elif kwargs['forceSource'] == 'facebook':
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+            elif kwargs['forceSource'] == 'twitter':
+                source = user['twitterProfilePic']
+
+        else:
+            if 'avatarSource' in user.keys():
+                if user['avatarSource'] == 'civ':
+                    if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                        source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                        gravatar = False
+                elif user['avatarSource'] == 'facebook':
+                    gravatar = False
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+                elif user['avatarSource'] == 'twitter':
+                    gravatar = False
+                    source = user['twitterProfilePic']
+
+            elif 'extSource' in user.keys():
+                # this is needed untl we're sure all facebook connected users have properly 
+                # functioning profile pics - the logic here is now handled 
+                # with the above user['avatarSource'] == 'facebook': ..
+                if 'facebookSource' in user.keys():
+                    if user['facebookSource'] == u'1':
+                        gravatar = False
+                        # NOTE - when to provide large or small link?
+                        if large:
+                            source = user['facebookProfileBig']
+                        else:
+                            source = user['facebookProfileSmall']
+        if large and gravatar:
+            source += '&s=200'
+        return source
+
 
 workshopInfo = \
 """
-Quick Markdown Syntax Guide
-===========================
+The following is a suggested list of sections to include. This background wiki uses Markdown for styling. See the Formatting Guide above for help.
 
-This guide shows you how to use Markdown instead of HTML when
-writing background information.
 
-Markdown simplifies the HTML rendering
+Overview
+-----
+_A summary of the key ideas associated with your workshop topic._
 
-Links
+
+Stats and Trends
+-----
+_What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?
+
+
+Existing Taxes and/or Revenues
+-----
+_Are there any public taxes associated with your workshop topic? Are there other current funding sources?_
+
+
+Current Spending
+-----
+_What money is currently spent on your workshop topic? What might it look like in the future?_
+
+
+Current Legislation
+-----
+_What publicly funded programs related to your workshop topic currently exist?_
+
+
+Case Studies
+-----
+_How have other groups or regions tackled this workshop topic already?_
+
+
+"""
+
+initiativeFields = \
+"""
+Background
 -----
 
-Raw links: <http://civ.io>
+_incl. reference to Current Legislation_
 
-Links with [text](http://civ.io).
 
-You can add hover words(which show up under the cursor), 
-[like this](http://civ.io "Hovering text").
+Proposal
+-----
 
-Text
-----
 
-There are *two* ways to _italicize_ (or emphasize) text.
+Fiscal Effects
+-----
 
-Blank lines separate paragraphs.
 
-So this is a new paragraph. But any text on adjacent lines
-will all end up 
-in the same paragraph.
-
-Quoting
-----------
-> This is quoted *like email*
-Even though this line doesn't have the '>' character, it's still part of the same paragraph, so it's still quoted.
-
-This paragraph is not quoted.
-
-Literal text
-----------------
-
-You can use `*backquotes*` to mark certain sections as literal text (Note it is not italicized)
-
-    You can apply this to entire paragraphs by starting with four spaces
-    These two lines start off with four spaces.
-
-Lists
---------
-Bulleted lists
-
-* Asterisks
-* make
-* unordered
-* lists
-
-Numbered lists
-
-1. numbers
-2. make
-3. numbered
-4. lists
-1. the number used does not matter        
-
-Headers
-----------
-
-# Biggest #
-## Big ##
-### Medium-big ###
-#### Medium-small ####
-##### Smaller #####
-###### smallest
-
-None of these require us to wrap both sides with hashes.
 """

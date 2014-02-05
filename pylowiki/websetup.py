@@ -23,11 +23,6 @@ def setup_app(command, conf, vars):
     if filename == 'developmentTodd.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
-    if filename == 'testTodd.ini':    
-        log.info("Dropping existing tables...")
-        meta.metadata.drop_all(bind=meta.engine)
-    if filename == 'testToddNoReset.ini':    
-        log.info("Keeping existing tables...")
         
 
     #Create the tables if they don't already exist

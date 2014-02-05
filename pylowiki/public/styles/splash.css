@@ -170,9 +170,11 @@ div.hidden{
     color:#252f1e;
 }
 
+/*
 .login-top > h2,p{
     text-align:center;
 }
+*/
 
 .login-top > p{
     text-align:center;
@@ -181,10 +183,6 @@ div.hidden{
 
 .login-bottom{
     margin-top:20px;
-}
-
-.login-body{
-    border-bottom: 1px solid #DDDDDD;
 }
 
 .howitworks-number{
