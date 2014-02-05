@@ -18,44 +18,44 @@
           <div class="browse" ng-controller="workshopIdeasCtrl">
              <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
              </h4>
-             % if numIdeas == '0' and c.w['allowIdeas'] == '1':
-                <div class="alert alert-info">
-                There are no ideas here yet. Be the first to add one!
-                </div>
-             % else:
-                <div class="row-fluid helper-sort">
-                  <div class="span9">
-                    <form class="form-search inline">
-                      Sort by: 
-                      <select class="med-width" ng-model="orderProp" ng-cloak>
-                          <option value="-date">Recent</option>
-                          <option value="-voteRatio">Highest Rated</option>
-                          <option value="-voteCount">Most Votes</option>
-                          <option value="-numComments">Most Comments</option>
-                      </select>
-                      Filter:
-                      <select class="med-width" ng-model="filterProp" ng-cloak>
-                          <option value="!disabled">Show All</option>
-                          <option value="proposed">Proposed</option>
-                          <option value="adopted">Adopted</option>
-                          <option value="disabled">Disabled</option>
-                      </select>
-                    </form> 
-                  </div>
-                  <div class="span3"><strong class="orange"> Vote <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png"> to view ratings.</strong></div>
-                  </div>
-                <hr class="object-list-header">
-             % endif
-              <div class="centered" ng-show="ideasLoading" ng-cloak>
-                  <i class="icon-spinner icon-spin icon-4x"></i>
+              <div class="row-fluid helper-sort">
+              <div class="span9">
+                <form class="form-search inline">
+                  Sort by: 
+                  <select class="med-width" ng-model="orderProp" ng-cloak>
+                      <option value="-date">Recent</option>
+                      <option value="-voteRatio">Highest Rated</option>
+                      <option value="-voteCount">Most Votes</option>
+                      <option value="-numComments">Most Comments</option>
+                  </select>
+                  Filter:
+                  <select class="med-width" ng-model="filterProp" ng-cloak>
+                      <option value="!disabled">Show All</option>
+                      <option value="proposed">Proposed</option>
+                      <option value="adopted">Adopted</option>
+                      <option value="disabled">Disabled</option>
+                  </select>
+                </form> 
               </div>
-              <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
-                  ${ngHelpers.listIdeas()}
-              </div>
-          </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
+              <div class="span3"><strong class="orange"> Vote <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png"> to view ratings.</strong></div>
+            </div>
+            <hr class="object-list-header">
 
+            <div class="centered" ng-show="ideasLoading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x"></i>
+            </div>
+
+            <div class="alert alert-info" ng-show="noResult" ng-cloak>
+                There are no ideas for this workshop. Be the first to add one!
+            </div>
+
+            <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
+                ${ngHelpers.listIdeas()}
+            </div>
+        </div><!--/.browse-->
+    </div><!--/.section-wrapper-->
    </div> <!-- /.span8 -->
+
    <div class="span4">
     <!--
       <div class="section-wrapper metrics" ng-controller="workshopIdeasCtrl" ng-cloak>

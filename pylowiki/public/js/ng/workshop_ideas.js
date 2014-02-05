@@ -17,7 +17,11 @@ function workshopIdeasCtrl($scope, $http) {
 
 	$http.get($scope.ideasURL).success(function(data){
 		$scope.ideasLoading = true;
-		if (data.statusCode == 1){
+		if (data.statusCode === 1){
+			$scope.noResult = true;
+			$scope.ideasLoading = false;
+		}
+		else if (data.statusCode === 2){
 			$scope.noResult = true;
 			$scope.ideasLoading = false;
 		}

@@ -1033,18 +1033,13 @@ class WorkshopController(BaseController):
 
         log.info("inside workshop display 5")
         
-        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
-
-        if not ideas:
-            c.ideas = []
-        else:
-            # performance bottleneck. also - sorting will soon be done by angular in the browser
-            #sortedIdeas = sort.sortBinaryByTopPop(ideas)
-            sortedIdeas = ideas
-            #log.info("after sorted ideas")
-            if iPhoneApp:
+        # since angular fetching ideas in workshopIdeas() - this is only needed to support current iPhone app
+        c.listingType = 'ideas'
+        if iPhoneApp:
+            ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+            if ideas:
                 i = 0
-                for idea in sortedIdeas:
+                for idea in ideas:
                     ideaEntry = "idea" + str(i)
                     # so that we don't modify the original, we place this idea in a temporary variable
                     formatIdea = []
@@ -1069,15 +1064,7 @@ class WorkshopController(BaseController):
                             formatIdea['rated'] = "0"
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
-            else:
-                c.ideas = sortedIdeas
 
-        if not iPhoneApp:
-            disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
-            if disabled:
-                c.ideas = c.ideas + disabled
-
-        c.listingType = 'ideas'
         if iPhoneApp:
             entry['mainImage'] = dict(c.mainImage)
             entry['baseUrl'] = c.baseUrl
