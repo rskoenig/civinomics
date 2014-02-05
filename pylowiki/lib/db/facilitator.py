@@ -50,6 +50,24 @@ def getFacilitatorsByUserAndWorkshop(user, workshop, disabled = '0'):
     except:
         return False
 
+def getAllFacilitatorsByInitiative(initiative):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('initiativeCode', initiative['urlCode']))).all()
+    except:
+        return False
+
+def getFacilitatorsByInitiative(initiative, disabled = '0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('initiativeCode', initiative['urlCode']))).all()
+    except:
+        return False
+
+def getFacilitatorsByUserAndInitiative(user, item, disabled = '0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('initiativeCode', item['urlCode']))).filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+        return False
+
 def getFacilitatorInWorkshop(user, workshop):
     try:
         return meta.Session.query(Thing)\

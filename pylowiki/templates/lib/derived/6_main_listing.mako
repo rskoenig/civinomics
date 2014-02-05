@@ -96,7 +96,7 @@
         
         thisUser = getUserByID(item.owner)
       %>
-      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar small-avatar', linkClass = 'media-object')}</div> 
+      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar', linkClass = 'media-object')}</div> 
       <div class="media-body">
          ${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} 
          ${lib_6.showItemInActivity(item, parent, **kwargs)}
