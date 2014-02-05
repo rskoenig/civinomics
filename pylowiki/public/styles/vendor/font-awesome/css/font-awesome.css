@@ -1381,7 +1381,7 @@ a .icon-flip-vertical:before {
 .icon-xing-sign:before {
   content: "\f169";
 }
-.icon-youtube-play:before {
+.icon-youtube-play:before, .icon-video:before{
   content: "\f16a";
 }
 .icon-dropbox:before {

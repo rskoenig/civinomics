@@ -9,6 +9,8 @@ from pylowiki.lib.db.flag import checkFlagged
 from pylowiki.lib.db.workshop import getWorkshopByCode
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.resource     as resourceLib
+import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
@@ -48,6 +50,17 @@ def getCommentsInDiscussion(discussion, deleted = '0', disabled = '0'):
             .all()
     except:
        return False  
+
+def getCommentsInDiscussionByCode(discussionCode, deleted = '0', disabled = '0'):
+    try:
+       return meta.Session.query(Thing)\
+            .filter_by(objType = 'comment')\
+            .filter(Thing.data.any(wc('discussionCode', discussionCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+    except:
+       return False 
 
 def getDeletedComments(discussionID):
     try:
@@ -131,64 +144,90 @@ def getCommentsInWorkshop(workshop, disabled = '0', deleted = '0'):
         return False
 
 # Setters
-def editComment(comment, data):
+def editComment(comment, data, commentRole = 'neutral'):
     r = Revision(c.authuser, comment)
     comment['data'] = data
+    if 'initiativeCode' in comment or 'ideaCode' in comment:
+        comment['commentRole'] = commentRole
     commit(comment)
     return comment
 
 # Object
-class Comment(object):
-    # parent is a Thing id
-    def __init__(self, data, owner, discussion, privs, role = None, parent = 0):
+def Comment(data, owner, discussion, privs, role = None, parent = 0):
+    attachedThing = None
+    thisComment = Thing('comment', owner.id)
+        
+    if 'workshopCode' in discussion:
         w = getWorkshopByCode(discussion['workshopCode'])
+        thisComment = generic.linkChildToParent(thisComment, w)
         if discussion['discType'] == 'idea':
             attachedThing = ideaLib.getIdea(discussion['ideaCode'])
         elif discussion['discType'] == 'resource':
             attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
-        else:
-            attachedThing = None
-        thisComment = Thing('comment', owner.id)
-        thisComment = generic.linkChildToParent(thisComment, w)
-        thisComment = generic.linkChildToParent(thisComment, discussion)
-        if attachedThing is not None:
-            thisComment = generic.linkChildToParent(thisComment, attachedThing)
-        thisComment['disabled'] = '0'
-        thisComment['deleted'] = '0'
-        thisComment['pending'] = '0'
-        thisComment['parent'] = parent
-        thisComment['children'] = '0'
-        thisComment['data'] = data
-        thisComment['pending'] = '0'
-        thisComment['ups'] = '0'
-        thisComment['downs'] = '0'
-        thisComment['lastModified'] = datetime.now().ctime()
-        thisComment = generic.addedItemAs(thisComment, privs, role)
-        commit(thisComment)
-        thisComment['urlCode'] = toBase62(thisComment)
-        commit(thisComment)
+    if discussion['discType'] == 'photo':
+        attachedThing = photoLib.getPhoto(discussion['photoCode'])
+        profileOwner = generic.getThingByID(attachedThing.owner)
+    if discussion['discType'] == 'initiative':
+        attachedThing = initiativeLib.getInitiative(discussion['initiativeCode'])
+        profileOwner = generic.getThingByID(attachedThing.owner)
+    if discussion['discType'] == 'resource' and 'initiativeCode' in discussion:
+        initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
+        thisComment = generic.linkChildToParent(thisComment, initiative)
+        attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+            
+    thisComment = generic.linkChildToParent(thisComment, owner)
+            
+    thisComment = generic.linkChildToParent(thisComment, discussion)
+    if attachedThing is not None:
+        thisComment = generic.linkChildToParent(thisComment, attachedThing)
+        nComments = 0
+        if 'numComments' in attachedThing:
+            nComments = int(attachedThing['numComments'])
+            
+        nComments += 1
         
-        if parent == 0:
-            thisComment['isRoot'] = '1'
+        attachedThing['numComments'] = str(nComments)
+        commit(attachedThing)
+        
+        if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
+            thisComment['profileCode'] = profileOwner['urlCode']
+            thisComment['profile_url'] = profileOwner['url']
+    thisComment['disabled'] = '0'
+    thisComment['deleted'] = '0'
+    thisComment['pending'] = '0'
+    thisComment['parent'] = parent
+    thisComment['children'] = '0'
+    thisComment['data'] = data
+    thisComment['pending'] = '0'
+    thisComment['ups'] = '0'
+    thisComment['downs'] = '0'
+    thisComment['lastModified'] = datetime.now().ctime()
+    thisComment = generic.addedItemAs(thisComment, privs, role)
+    commit(thisComment)
+    thisComment['urlCode'] = toBase62(thisComment)
+    commit(thisComment)
+        
+    if parent == 0:
+        thisComment['isRoot'] = '1'
+    else:
+        thisComment['isRoot'] = '0'
+        parentComment = getComment(parent)
+        children = [int(item) for item in parentComment['children'].split(',')]
+        if children[0] == 0:
+            parentComment['children'] = thisComment.id
         else:
-            thisComment['isRoot'] = '0'
-            parentComment = getComment(parent)
-            children = [int(item) for item in parentComment['children'].split(',')]
-            if children[0] == 0:
-                parentComment['children'] = thisComment.id
-            else:
                 parentComment['children'] = parentComment['children'] + ',' + str(thisComment.id)
-            commit(parentComment)
+        commit(parentComment)
         
-        self.setDiscussionProperties(thisComment, discussion)
-        self.c = thisComment
+    setDiscussionProperties(thisComment, discussion)
+    return thisComment
         
-    def setDiscussionProperties(self, comment, discussion):
-        if int(comment['isRoot']) == 1: 
-            if 'children' not in discussion.keys():
-                discussion['children'] = comment.id
-            else:
-                discussion['children'] = discussion['children'] + ',' + str(comment.id)
-        discussion['numComments'] = int(discussion['numComments']) + 1
-        commit(discussion)
+def setDiscussionProperties(comment, discussion):
+    if int(comment['isRoot']) == 1: 
+        if 'children' not in discussion.keys():
+            discussion['children'] = comment.id
+        else:
+            discussion['children'] = discussion['children'] + ',' + str(comment.id)
+    discussion['numComments'] = int(discussion['numComments']) + 1
+    commit(discussion)
         

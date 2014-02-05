@@ -1,11 +1,12 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace name="helpers" file="/lib/template_lib.mako" />
+<%namespace name="template_lib" file="/lib/template_lib.mako" />
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
 <html lang="en-US" ng-app='civ'>
    <head>
       <meta charset="UTF-8">
+      <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
       <title>${c.title}</title>
       <!-- Third-party assets -->
       <link rel="stylesheet" href="/styles/vendor/bootstrap.css">
@@ -13,9 +14,11 @@
       <link rel="stylesheet" href="/styles/vendor/font-awesome/css/font-awesome.min.css">
       <link rel="stylesheet" href="${lib_6.fingerprintFile('/styles/civ.css')}">
       <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
-      <link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+      <link href='//fonts.googleapis.com/css?family=Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+      <script src="/js/geoSearch.js"></script>
+      <script src="/js/ng/signup_login.js" type="text/javascript"></script>
       <script>
         var dummyApp = angular.module('civ', []);
       </script>
@@ -26,17 +29,41 @@
       ${self.google_analytics()}
       <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
       <!--[if lt IE 9]>
-         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-      <![endif]-->
+         <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
-
     ${next.body()}
-    
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
+   <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+   <script type="text/javascript">
+    // fix for bootstrap dropdown menus not working on iPad
+    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+   </script>
+   <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+   </script>
+   <!-- makes non-local links open in a new tab/window -->
+   <script type="text/javascript">
+      $(document.links).filter(function() {
+          return this.hostname != window.location.hostname;
+      }).attr('target', '_blank');
+   </script>
+
+   <!-- Javascript to enable link to tab -->
+   <script type="text/javascript">
+      $(function () { 
+        var a = $('[href=' + location.hash + ']'); 
+        a && a.tab('show'); 
+      });
+    </script>
+
+
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
@@ -47,6 +74,8 @@
        %>
        <div id="fb-root"></div>
        <script>
+         //console.log('in fb init')
+         // activate facebook javascript sdk
          window.fbAsyncInit = function() {
             FB.init({
               appId      : "${facebookAppId}",
@@ -55,60 +84,39 @@
               cookie     : false, // enable cookies to allow the server to access the session
               xfbml      : true  // parse XFBML
             });
-
-            // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
-            // for any authentication related change, such as login, logout or session refresh. This means that
-            // whenever someone who was previously logged out tries to log in again, the correct case below 
-            // will be handled. 
-            console.log('window init');
+            // this is needed to prevent a hangup with one of the login flows
             FB.Event.subscribe('auth.login', function(response1) {
-              console.log('auth.login fired');
               authSignal();
             });
+            // check facebook login status
             FB.Event.subscribe('auth.authResponseChange', function(response) {
-              // Here we specify what we do with the response anytime this event occurs. 
-              
-              console.log('above response tree');
               if (response.status === 'connected') {
-                //  We're given the token and other info - good for makig calls to fb
-                // locally, we've found that this person is logged into fb, and has given us 
-                // permission to work with this auth.
-                //  In order to preserve a standard login/signup experience, we will save this 
-                // info in the user's session, including a stamp (if necessary) confirming this
-                // person is auth'd for an fb-backed login.
-                // * store the auth token and exp time in this person's session
-                // * change the fb button into a button that will ask the server to 'log in'
-                // by confirming it's ok with fb
-                //console.log('token: ' + response.authResponse.accessToken);
-                // we can use fb to login to the site. at this point store the token and exp
-                console.log('calling fb connected');
+                // this person is logged into facebook and our app has auth
                 fbConnected(response.authResponse);
               } else if (response.status === 'not_authorized') {
-                // In this case, the person is logged into Facebook, but not into the app, so we call
-                // FB.login() to prompt them to do so. 
-                // In real-life usage, you wouldn't want to immediately prompt someone to login 
-                // like this, for two reasons:
-                // (1) JavaScript created popup windows are blocked by most browsers unless they 
-                // result from direct interaction from people using the app (such as a mouse click)
-                // (2) it is a bad experience to be continually prompted to login upon page load.
-                console.log('not authd');                
-                FB.login();
-                
-                //FB.login(function(response) {
-                  // handle the response
-                //}, {scope: 'name, email, user_location, user_hometown'});
+                // this person is logged into facebook but our app does not have auth
+                FB.login(function(response) {
+                  if (response.authResponse) {
+                    //console.log('Welcome!  Fetching your information.... ');
+                    //console.log("response status: " + response.status)
+                    //console.log("response email: " + response.email)
+                    fbConnected(response.authResponse);
+                  } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                  }
+                }, {scope: 'email'});
               } else {
-                // In this case, the person is not logged into Facebook, so we call the login() 
-                // function to prompt them to do so. Note that at this stage there is no indication
-                // of whether they are logged into the app. If they aren't then they'll see the Login
-                // dialog right after they log in to Facebook. 
-                // The same caveats as above apply to the FB.login() call here.
-                console.log('else');
-                FB.login();
-                
-                //FB.login(function(response) {
-                  // handle the response
-                //}, {scope: 'name, email, user_location, user_hometown'});
+                // user not logged into facebook
+                FB.login(function(response) {
+                  if (response.authResponse) {
+                    //console.log('Welcome!  Fetching your information.... ');
+                    //console.log("response status: " + response.status)
+                    //console.log("response email: " + response.email)
+                    fbConnected(response.authResponse);
+                  } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                  }
+                }, {scope: 'email'});
               }
             });
          };
@@ -122,35 +130,32 @@
           ref.parentNode.insertBefore(js, ref);
          }(document));
 
-         // Here we run a very simple test of the Graph API after login is successful. 
-         // This testAPI() function is only called in those cases. 
-         function testAPI() {
-           console.log('Welcome!  Fetching your information.... ');
-           FB.api('/me', function(response) {
-             console.log('name: ' + response.name + '.email: ' + response.email + '.username: ' + response.username + '.user_location' + response.user_location + '.user_hometown' +  response.user_hometown + '.');
-           });
-         }
-
          function authSignal() {
-           console.log('in auth signal')
            var authSignal = '<div id="authSignal"></div>'
            $('#fbLoginButton1').append(authSignal);
            $('#fbLoginButton2').append(authSignal);
-           console.log('should have added this: '+authSignal)
          }
+
+         /*
+         function printObject(o) {
+           var out = '';
+           for (var p in o) {
+             out += p + ': ' + o[p] + '\n';
+           }
+           console.log(out);
+         }
+         */
 
          function fbConnected(authResponse) {
            FB.api('/me', function(response) {
-             // the FQL query: Get the link of the image, that is the first in the album "Profile pictures" of this user.
-
-             //var bigPicFql = FB.Data.query('select src_big from photo where pid in (select cover_pid from album where owner={0} and name="Profile Pictures")', response.id);
+             // grab the url to a 200x200 photo of this user
              var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
              var bigPic = '';
              bigPicFql.wait(function (rows) {
                // the big pic link
                bigPic = rows[0].url;
-               console.log('big pic: ' + bigPic)
              });
+             // grab the url to a 50x50 photo of this user
              var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
              var smallPic = '';
              var holder = 0;
@@ -161,12 +166,11 @@
              });
              var result = ''
              setTimeout(function(){
-               // fbCheckAccount will verify a spoof is not happening then determine if there's
-               // a matching account on site yet. if so, result will contain html for visiting a 
-               // page that will log this user in.
+               // check account status on our site for this user
+               //console.log('ya');
+               //printObject(authResponse);
                result = fbCheckAccount(response, authResponse, smallPic, bigPic);
                if (result == "not found") {
-                 console.log('no account on site yet')
                  // no account on site yet.
                  // this is a unique situation where the person has authorized us to use their
                  // fb identity, but hasn't created an account yet. This assumes that's what they
@@ -177,16 +181,14 @@
                    window.location = '/signup/fbSignUp/';
                  }
                } else {
-                 console.log('account found')
+                 // found a matching account on our site
                  if ($('#authSignal').length) {
-                   console.log('auth signal heard')
-                   // this triggers when a person has arrived but was not yet logged inot facebook or
-                   // had not yet given auth to our app
+                   // this triggers when a person has arrived but was not yet logged into facebook,
+                   // or had not yet given auth to our app
                    var newButton = 'Logging In'
                    $('#fbLoginButton1').html(newButton);
                    $('#fbLoginButton2').html(newButton);
                    window.location = '/fbLoggingIn/';
-                 
                  } else if ($('#fbLoggingIn').length) {
                    // this element is only found on a page meant to be used as a redirect when
                    // the 'login with facebook' link has been clicked.
@@ -195,7 +197,7 @@
                    // this code is used when a person arrives and it is seen that they have 
                    // auth'd our app and are logged into facebook 
                    // replace current button with returned result
-                   var newButton = '<a href="/fbLogin"><img src="/images/fb_signin.png"></a>'
+                   var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
                    $('#fbLoginButton1').html(newButton);
                    $('#fbLoginButton2').html(newButton);
                  }
@@ -255,17 +257,18 @@
 </%def>
 
 <%def name="atlassian_issueCollector()">
-   <script type="text/javascript" src="https://civinomics.atlassian.net/s/en_US-pdztjm-418945332/6030/29/1.3.4/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=610d78ad"></script>
+   <script type="text/javascript" src="https://civinomics.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e/en_US523t43-1988229788/6206/29/1.4.1/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=cd6cc7a9"></script>
+
 
    <script type="text/javascript">window.ATL_JQ_PAGE_PROPS =  {
     "triggerFunction": function(showCollectorDialog) {
       $("#footerFeedbackButton").on( 'click', function(e) {
-        e.preventDefault();
-        showCollectorDialog();
-      });
-      $("#helpCenter_bugReporter").on( 'click', function(e) {
-        e.preventDefault();
-        showCollectorDialog();
-      });
-    }};</script>
+          e.preventDefault();
+          showCollectorDialog();
+        });
+        $("#helpCenter_bugReporter").on( 'click', function(e) {
+          e.preventDefault();
+          showCollectorDialog();
+        });
+      }};</script>
 </%def>

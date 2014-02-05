@@ -41,9 +41,6 @@
                     % endif
                     <div class="login-top">
                         <h2> Sign Up </h2><br />
-                        % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
-                            <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
-                        % endif
                     </div>
                     % if c.conf['read_only.value'] == 'true':
                         <h1> Sorry, Civinomics is in read only mode right now </h1>
@@ -88,11 +85,10 @@
                                         <div id="postalCodeResult"></div>
                                     </div>
                                 </div>
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <label class="checkbox">
-                                            <input type="checkbox" name="chkTOS" id="chkTOS" ng-model="chkTOS" required>  I agree to the <a href="/corp/terms" style="color: #075D00;">Terms Of Use</a>
-                                        </label>
+                                <div class="row">
+                                    <div class="span4 offset1">
+                                        <input type="hidden" name="chkTOS" id="chkTOS" value="true">
+                                        <small>You agree to our <a href="/corp/terms" target="_blank" style="color: #075D00;">terms of use</a> and <a href="/corp/privacy" target="_blank" style="color: #075D00;">privacy policy</small>
                                     </div>
                                 </div>
                                 <div class="control-group">

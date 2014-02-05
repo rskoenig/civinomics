@@ -1,42 +1,42 @@
 from pylowiki.model import Thing, Data, meta
 from sqlalchemy import and_
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, with_key_characteristic_like as wkcl, with_key_in_list as wkil
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
 from pylowiki.lib.utils import urlify
 import logging
 log = logging.getLogger(__name__)
 
-def getMemberPosts(user, disabled = '0', deleted = '0'):
-    activityTypes = ['resource', 'comment', 'discussion', 'idea']
-    codes = ['resourceCode', 'ideaCode', 'discussionCode']
-    keys = ['deleted', 'disabled']
-    values = [deleted, disabled]
+def getMemberPosts(user, unpublished = '0'):
+    if unpublished == '1':
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished']
+    else:
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
+    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
+    keys = ['deleted']
+    values = ['0']
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
-            .filter(Thing.data.any(wc('deleted', deleted)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', '0')))\
             .order_by('-date').all()
         # Messy
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
-            elif activity.objType == 'comment':
-                parentCode = [i for i in codes if i in activity.keys()]
-                thing = generic.getThing(activity[parentCode[0]], keys, values)
-                if thing:
-                    finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
         return finalActivityList
     except:
         return False
         
-def getMemberActivity(user):
-    activityTypes = ['resource', 'comment', 'discussion', 'idea']
-    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+def getMemberActivity(user, unpublished = '0'):
+    if unpublished == '1':
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished']
+    else:
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo']
+    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title', 'published']
     itemKeys = ['deleted', 'disabled', 'urlCode', 'workshopCode']
     
@@ -52,18 +52,20 @@ def getMemberActivity(user):
         .order_by('-date').all()
     # Messy
     for activity in initialActivityList:
-        if activity.objType == 'discussion' and activity['discType'] != 'general':
+        if activity.objType.replace("Unpublished", "") == 'discussion' and activity['discType'] != 'general':
             continue
             
         # load the itemDict for this item
         itemCode = activity['urlCode']
         itemList.append(itemCode)
         itemDict[itemCode] = {}
-        itemDict[itemCode]['objType'] = activity.objType
+        itemDict[itemCode]['objType'] = activity.objType.replace("Unpublished", "")
+        itemDict[itemCode]['owner'] = activity.owner
         for key in itemKeys:
-            itemDict[itemCode][key] = activity[key]
+            if key in activity:
+                itemDict[itemCode][key] = activity[key]
                 
-        if activity.objType == 'comment':
+        if activity.objType.replace("Unpublished", "") == 'comment':
             key = 'data'
             # comprehensions return a list
             parentCodeList = [i for i in codes if i in activity.keys()]
@@ -74,16 +76,18 @@ def getMemberActivity(user):
             if parentCode not in parentDict.keys():
                 parent = generic.getThing(activity[parentCodeField])
                 parentDict[parentCode] = {}
-                parentDict[parentCode]['objType'] = parent.objType
+                parentDict[parentCode]['objType'] = parent.objType.replace("Unpublished", "")
+                parentDict[parentCode]['owner'] = parent.owner
                 for pkey in itemKeys:
-                    parentDict[parentCode][pkey] = parent[pkey]
+                    if pkey in parent:
+                        parentDict[parentCode][pkey] = parent[pkey]
                 if parent.objType == 'comment':
                     pkey = 'data'
                 else:
                     parentDict[parentCode]['url'] = parent['url']
                     pkey = 'title'
-                    
-                parentDict[parentCode][pkey] = parent[pkey]
+                if pkey in parent:    
+                    parentDict[parentCode][pkey] = parent[pkey]
                 
         else:
             itemDict[itemCode]['url'] = activity['url']
@@ -92,7 +96,7 @@ def getMemberActivity(user):
         itemDict[itemCode][key] = activity[key]
             
         # see if we need to lookup the workshop and add it to the workshopDict
-        if activity['workshopCode'] not in workshopDict:
+        if 'workshopCode' in activity and activity['workshopCode'] not in workshopDict:
             workshopCode = activity['workshopCode']
             workshop = generic.getThing(workshopCode)
             workshopDict[workshopCode] = {}
@@ -156,11 +160,11 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
-            elif activity.objType == 'comment':
-                parentCode = [i for i in codes if i in activity.keys()]
-                thing = generic.getThing(activity[parentCode[0]], keys, values)
-                if thing:
-                    finalActivityList.append(activity)
+            #elif activity.objType == 'comment':
+                #parentCode = [i for i in codes if i in activity.keys()]
+                #thing = generic.getThing(activity[parentCode[0]], keys, values)
+                #if thing:
+                    #finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
         return finalActivityList
@@ -223,20 +227,111 @@ def getRecentActivity(number, publicPrivate = 'public'):
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
-            .filter(Thing.data.any(and_(Data.key == u'workshopCode')))\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative']))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .order_by('-date')\
             .limit(limit)
         for item in postList:
-            w = generic.getThing(item['workshopCode'], keys = keys, values = values)
-            if item.objType == 'discussion' and item['discType'] != 'general':
-                continue
+            if 'workshopCode' in item:
+                w = generic.getThing(item['workshopCode'], keys = keys, values = values)
+                if item.objType == 'discussion' and item['discType'] != 'general':
+                    continue
             
-            if w:
+                if w:
+                    returnList.append(item)
+                    
+            if item.objType == 'initiative' and item['public'] == '1':
                 returnList.append(item)
-                if len(returnList) == number:
-                    return returnList
 
+            if 'initiative_public' in item and item['initiative_public'] == '1':
+                if item.objType == 'discussion' and item['discType'] != 'update':
+                    continue
+                returnList.append(item)
+                
+            if len(returnList) == number:
+                return returnList
+
+        return returnList
+
+def getRecentGeoActivity(number, scope):
+        limit = number * 15
+        returnList = []
+        keys = ['deleted', 'disabled', 'published', 'public_private']
+        values = [u'0', u'0', u'1', u'public']
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wkcl('_scope', scope)))\
+            .order_by('-date')\
+            .limit(limit)
+        for item in postList:
+            if 'workshopCode' in item:
+                w = generic.getThing(item['workshopCode'], keys = keys, values = values)
+                if item.objType == 'discussion' and item['discType'] != 'general':
+                    continue
+            
+                if w:
+                    returnList.append(item)
+                    
+            if item.objType == 'initiative' and item['public'] == '1':
+                returnList.append(item)
+
+            if 'initiative_public' in item and item['initiative_public'] == '1':
+                if item.objType == 'discussion' and item['discType'] != 'update':
+                    continue
+                returnList.append(item)
+                
+            if len(returnList) == number:
+                return returnList
+
+        return returnList
+
+def getActivityForWorkshopList(number, workshops):
+        limit = number * 15
+        returnList = []
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wkil('workshopCode', workshops)))\
+            .order_by('-date')\
+            .limit(limit)
+        
+        for item in postList:
+            if item.objType == 'discussion' and item['discType'] != 'general' and item['discType'] != 'update':
+                continue
+             
+            returnList.append(item) 
+            count = len(returnList)
+            #log.info("count is %s item is type %s"%(str(count), item.objType))
+            
+            if len(returnList) == number:
+                return returnList
+        
+        return returnList
+        
+def getActivityForUserList(number, users):
+        limit = number * 15
+        returnList = []
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wkil('userCode', users)))\
+            .order_by('-date')\
+            .limit(limit)
+        
+        for item in postList:
+            if item.objType == 'discussion' and item['discType'] != 'general' and item['discType'] != 'update':
+                continue
+             
+            returnList.append(item) 
+            count = len(returnList)
+            log.info("in users count is %s item is type %s"%(str(count), item.objType))
+            
+            if len(returnList) == number:
+                return returnList
+        
         return returnList

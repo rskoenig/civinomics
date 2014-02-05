@@ -14,6 +14,7 @@ from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
@@ -37,17 +38,34 @@ import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime
 import webhelpers.feedgenerator     as feedgenerator
 
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
 import simplejson as json
+import misaka as m
+import copy as copy
+
+from hashlib import md5
+from HTMLParser import HTMLParser
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
 log = logging.getLogger(__name__)
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
 class CommaSepList(validators.FancyValidator):
     cannot_be_empty=True
@@ -105,13 +123,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'publicStats', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -121,11 +139,32 @@ class WorkshopController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+        log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
+        
+        #################################################
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = utils.getBaseUrl()
+        # c.requestUrl is for lib_6.emailShare
+        c.requestUrl = request.url
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
+        c.description = c.w['description']
+        #################################################
+        workshopLib.setWorkshopPrivs(c.w)
         if action in setPrivs:
-            workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
                 if not c.privs['admin'] and not c.privs['facilitator']:
                     return(redirect("/"))
@@ -156,7 +195,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configureBasicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        session['confTab'] = "tab1"
+        session['confTab'] = "basicInfo"
         session.save()
 
         slideshow = slideshowLib.getSlideshow(c.w)
@@ -174,6 +213,7 @@ class WorkshopController(BaseController):
                 c.w['title'] = wTitle
                 oldTitle = c.w['url']
                 c.w['url'] = utils.urlify(wTitle)
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_title')
                 wchanges = 1
                 weventMsg += "Updated name. "
         else:
@@ -238,7 +278,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             # to reload at the next tab
             if not workshopLib.isPublished(c.w):
-                session['confTab'] = "tab2"
+                session['confTab'] = "tags"
             session.save()
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
@@ -251,7 +291,7 @@ class WorkshopController(BaseController):
             if tag and tag != '':
                 currentTags.append(tag)
                 
-        session['confTab'] = "tab3"
+        session['confTab'] = "tags"
         session.save()
             
         werror = 0
@@ -304,7 +344,7 @@ class WorkshopController(BaseController):
             alert['title'] = weventMsg
             session['alert'] = alert
             if c.w['startTime'] == '0000-00-00':
-                session['confTab'] = "tab4"
+                session['confTab'] = "slideshow"
             session.save()
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
@@ -312,7 +352,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configurePublicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "participants"
         session.save()
         
         werror = 0
@@ -321,18 +361,18 @@ class WorkshopController(BaseController):
         werrMsg = ''
            
         if c.w['type'] == 'personal':
-            alert = {'type':'error'}
-            alert['title'] = 'In order to switch from private to public, you must upgrade this workshop from Free to Professional. Click on the Upgrade to Professional button to upgrade this workshop.'
+            alert = {'type':'info'}
+            alert['title'] = 'You must upgrade to a Professional workshop in order to change the scope to public.'
             session['alert'] = alert
             session.save()
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
-            c.w['workshop_public_scope'] =  "||0|0|0|0|0|0|0|0"
-            workshopLib.updateWorkshopChildren(workshop, 'workshop_public_scope')
+            c.w['workshop_public_scope'] =  "||united-states||0||0||0|0"
+            workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             if c.w['disabled'] == '0' and c.w['deleted'] == '0' and c.w['published'] == '1':
                 c.w['workshop_searchable'] = '1'
-                workshopLib.updateWorkshopChildren(workshop, 'workshop_searchable')
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
                 
             weventMsg = 'Workshop scope changed from private to public.'
             c.w['public_private'] = 'public'
@@ -347,7 +387,7 @@ class WorkshopController(BaseController):
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
             geoTagCountry = request.params['geoTagCountry']
         else:
-            geoTagCountry = "0"
+            geoTagCountry = "united-states"
             
         if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
             geoTagState = request.params['geoTagState']
@@ -397,7 +437,7 @@ class WorkshopController(BaseController):
             session.save()
             
         if c.w['startTime'] == '0000-00-00':
-            session['confTab'] = "tab3"
+            session['confTab'] = "participants"
             session.save()
             
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
@@ -405,7 +445,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configurePrivateWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "participants"
         session.save()
             
         werror = 0
@@ -423,7 +463,11 @@ class WorkshopController(BaseController):
                 else:
                     newMember = request.params['newMember']
                     counter = 0
-                    mList = newMember.split('\n')
+                    # clean the list to enable separation by either comma or return
+                    cList = newMember.replace(',', '\n')
+                    cList.strip()
+                    mList = cList.split('\n')
+
                     if c.w['type'] == 'personal' and (len(pList) + len(mList) > 20):
                         werror = 1
                         werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, Free workshops are limited to a maximum of 20 participants.'
@@ -472,39 +516,62 @@ class WorkshopController(BaseController):
                 werror = 1
                 werrMsg += 'No email address entered.'
 
-                
-        if 'deleteMember' in request.params:
-            if 'removeMember' in request.params and request.params['removeMember'] != '':
-                removeMember = request.params['removeMember']
-                pTest = pMemberLib.getPrivateMember(workshopCode, removeMember)
-                if pTest:
-                    pTest['deleted'] = '1'
-                    dbHelpers.commit(pTest)
-                    # see if they have the workshop bookmarked
-                    user = userLib.getUserByEmail(pTest['email'])
-                    follow = followLib.getFollow(user, c.w)
-                    if follow:
-                        follow['disabled'] = '1'
-                        dbHelpers.commit(follow)
-                    weventMsg += 'Member removed: ' +  removeMember
+
+
+        if 'deleteMembers' in request.params:
+            if 'selected_members' in request.params and request.params['selected_members'] != '':
+                selected_members = request.params.getall('selected_members')
+                counter = 0
+
+                for member in selected_members:    
+                    pTest = pMemberLib.getPrivateMember(workshopCode, member)
+                    if pTest:
+                        pTest['deleted'] = '1'
+                        dbHelpers.commit(pTest)
+                        # see if they have the workshop bookmarked
+                        user = userLib.getUserByEmail(pTest['email'])
+                        follow = followLib.getFollow(user, c.w)
+                        if follow:
+                            follow['disabled'] = '1'
+                            dbHelpers.commit(follow)
+                        counter += 1
+                    else:
+                        werror = 1
+                        werrMsg += 'No current member email: %s. ' % member
+                if counter > 1:
+                    weventMsg += '%s members removed. ' % counter
                 else:
-                    werror = 1
-                    werrMsg += 'No current member email: ' +  removeMember
+                    weventMsg += "1 member removed. "
                 
             else:
                 werror = 1
                 werrMsg += 'No email address entered.'
-                
-        if 'sendInvitation' in request.params:
-            if 'inviteMember' in request.params and request.params['inviteMember'] != '':
-                inviteMember = request.params['inviteMember']
+
+
+        if 'resendInvites' in request.params:
+            if 'selected_members' in request.params and request.params['selected_members'] != '':
+                selected_members = request.params.getall('selected_members')
+                counter = 0
+
                 inviteMsg = ''
                 if 'inviteMsg' in request.params:
                     inviteMsg = request.params['inviteMsg']
                 myURL = config['app_conf']['site_base_url']
                 browseURL = '%s/workshop/%s/%s'%(myURL, c.w['urlCode'], c.w['url'])
-                mailLib.sendPMemberInvite(c.w['title'], c.authuser['name'], inviteMember, inviteMsg, browseURL)
-                weventMsg += ' An email invitation has been resent.'
+
+                for member in selected_members:                        
+                    mailLib.sendPMemberInvite(c.w['title'], c.authuser['name'], member, inviteMsg, browseURL)
+                    counter += 1
+
+                if counter > 1:
+                    weventMsg += '%s invitations have been resent. ' % counter
+                else:
+                    weventMsg += "1 invitation has been resent. "
+                
+            else:
+                werror = 1
+                werrMsg += 'No email address entered.'
+
 
         if c.w['public_private'] == 'public' and 'changeScope' in request.params:
             weventMsg = 'Workshop scope changed from public to private.'
@@ -512,7 +579,7 @@ class WorkshopController(BaseController):
             dbHelpers.commit(c.w)
             
         if 'continueToNext' in request.params:
-            session['confTab'] = "tab3"
+            session['confTab'] = "participants"
             session.save()
         else:
             if werror:
@@ -549,7 +616,7 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "participants"
         session.save()
         
         if c.w['public_private'] == 'public' and 'changeScopeToPrivate' in request.params:
@@ -723,6 +790,23 @@ class WorkshopController(BaseController):
     def createWorkshopHandler(self):
         if 'createPersonal' in request.params:
             wType = 'personal'
+            scope = 'private'
+        # added to make workshops free
+        elif 'createPublic' in request.params:
+            wType = 'professional'
+            scope = 'public'
+            c.stripeToken = "ADMINCOMP"
+            c.billingName = c.authuser['name']
+            c.billingEmail = "billing@civinomics.com"
+            c.coupon = ''
+        elif 'createPrivate' in request.params:
+            wType = 'professional'
+            scope = 'private'
+            c.stripeToken = "ADMINCOMP"
+            c.billingName = c.authuser['name']
+            c.billingEmail = "billing@civinomics.com"
+            c.coupon = ''
+        # end addition
         else:
             if self.validatePaymentForm():
                 wType = 'professional'
@@ -730,14 +814,18 @@ class WorkshopController(BaseController):
                 c.stripeKey = config['app_conf']['stripePublicKey'].strip()
                 return render('/derived/6_workshop_payment.bootstrap')
                 
-        w = workshopLib.Workshop('replace with a real workshop name!', c.authuser, 'private', wType)
+        w = workshopLib.Workshop('New Workshop', c.authuser, scope, wType)
+        if 'createPublic' in request.params and 'geoString' in request.params:
+            w['workshop_public_scope'] =  request.params['geoString']
+        else:
+            w['workshop_public_scope'] = '0||united-states||0||0||0|0'
         c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)
         if wType == 'professional':
             account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, w, 'PRO', c.coupon)
         alert = {'type':'success'}
-        alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
+        alert['title'] = 'Your new ' + scope + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
         session.save()
 
@@ -856,13 +944,11 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.requestUrl = request.url
-        
-        c.title = c.w['title']
-
+        log.info("inside workshop display 1")
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        # iphone app json data structure:
+        entry = {}
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
@@ -871,54 +957,142 @@ class WorkshopController(BaseController):
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w)):
             if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
                 c.facilitators.append(f)
+                
+        log.info("inside workshop display 2")
               
-        c.listeners = []
-        for l in (listenerLib.getListenersForWorkshop(c.w)):
-            if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-                c.listeners.append(l)
+        c.activeListeners = []
+        c.pendingListeners = []
+        if not iPhoneApp:
+            for l in (listenerLib.getListenersForWorkshop(c.w)):
+                if l['disabled'] == '0':
+                    if 'userCode' in l:
+                        user = generic.getThing(l['userCode'])
+                        c.activeListeners.append(user)
+                    else:
+                        c.pendingListeners.append(l)
               
         c.slides = []
-        c.slideshow = slideshowLib.getSlideshow(c.w)
-        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
-        for id in slide_ids:
-            s = slideLib.getSlide(id) # Don't grab deleted slides
-            if s:
-                c.slides.append(s)
+        if not iPhoneApp:
+            c.slideshow = slideshowLib.getSlideshow(c.w)
+            slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+            for id in slide_ids:
+                s = slideLib.getSlide(id) # Don't grab deleted slides
+                if s:
+                    c.slides.append(s)
 
-        c.motd = motdLib.getMessage(c.w.id)
-        # kludge for now
-        if c.motd == False:
-           c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+        log.info("inside workshop display 3")
+        
+        if not iPhoneApp:
+            c.motd = motdLib.getMessage(c.w.id)
+            # kludge for now
+            if c.motd == False:
+               c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
-        c.information = pageLib.getInformation(c.w)
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-        if c.w['public_private'] == 'public':
-            c.scope = workshopLib.getPublicScope(c.w)
+        if not iPhoneApp:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        
+        # not used
+        #c.information = pageLib.getInformation(c.w)
+        
+        log.info("inside workshop display 4")
+        
+        if not iPhoneApp:
+            c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+            
+        log.info("inside workshop display 4.1")
+        
+        if not iPhoneApp:
+            if c.w['public_private'] == 'public':
+                c.scope = workshopLib.getPublicScope(c.w)
+
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
+        elif iPhoneApp:
+            i = 0
+            for goal in c.goals:
+                goalEntry = "goal" + str(i)
+                entry[goalEntry] = dict(goal)
+                i = i + 1
         
-        # Demo workshop status
-        c.demo = workshopLib.isDemo(c.w)
+        if not iPhoneApp:
+            # Demo workshop status
+            c.demo = workshopLib.isDemo(c.w)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
+
+        if not iPhoneApp:        
+            discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
+            if not discussions:
+                c.discussions = []
+            else:
+                # performance bottleneck - and sorting of results will soon be done by angular
+                #discussions = sort.sortBinaryByTopPop(discussions)
+                c.discussions = discussions[0:3]
+
+        log.info("inside workshop display 5")
         
-        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
-        if not ideas:
-            c.ideas = []
-        else:
-            c.ideas = sort.sortBinaryByTopPop(ideas)
-        disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
-        if disabled:
-            c.ideas = c.ideas + disabled
+        # since angular fetching ideas in workshopIdeas() - this is only needed to support current iPhone app
         c.listingType = 'ideas'
-        
-        return render('/derived/6_workshop_home.bootstrap')
+        if iPhoneApp:
+            ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+            if ideas:
+                i = 0
+                for idea in ideas:
+                    ideaEntry = "idea" + str(i)
+                    # so that we don't modify the original, we place this idea in a temporary variable
+                    formatIdea = []
+                    formatIdea = copy.copy(idea)
+                    ideaHtml = m.html(formatIdea['text'], render_flags=m.HTML_SKIP_HTML)
+                    s = MLStripper()
+                    s.feed(ideaHtml)
+                    formatIdea['text'] = s.get_data()
+                    # if this person has voted on the idea, we need to pack their vote data in
+                    if 'user' in session:
+                        rated = ratingLib.getRatingForThing(c.authuser, idea)
+                        if rated:
+                            if rated['amount'] == '1':
+                                formatIdea['rated'] = "1"
+                            elif rated['amount'] == '-1':
+                                formatIdea['rated'] = "-1"
+                            elif rated['amount'] == '0' :
+                                formatIdea['rated'] = "0"
+                            else:
+                                formatIdea['rated'] = "0"
+                        else:
+                            formatIdea['rated'] = "0"
+                    entry[ideaEntry] = dict(formatIdea)
+                    i = i + 1
+
+        if iPhoneApp:
+            entry['mainImage'] = dict(c.mainImage)
+            entry['baseUrl'] = c.baseUrl
+            entry['thingCode'] = c.thingCode
+            entry['backgroundImage'] = c.backgroundImage
+            entry['title'] = c.w['title']
+            entry['isFollowing'] = c.isFollowing
+            #entry['facilitators'] = dict(c.facilitators)
+            #entry['listeners'] = c.listeners
+            if c.information and 'data' in c.information:         
+                entry['information'] = m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML)
+            #entry['information'] = dict(c.information)
+            #entry['goals'] = dict(c.goals)
+            #entry['ideas'] = dict(c.ideas)
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return render('/derived/6_workshop_home.bootstrap')
         
     def info(self, workshopCode, workshopURL):
         c.title = c.w['title']
+
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
 
         c.isFollowing = False
         if 'user' in session:
@@ -952,6 +1126,9 @@ class WorkshopController(BaseController):
     def activity(self, workshopCode, workshopURL):
         c.title = c.w['title']
 
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
+
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
@@ -965,6 +1142,16 @@ class WorkshopController(BaseController):
 
         return render('/derived/6_detailed_listing.bootstrap')
    
+    def publicStats(self, workshopCode, workshopURL):
+
+        c.listingType = 'publicStats'
+
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
+
+        return render('/derived/6_detailed_listing.bootstrap')
+
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
         if testGoals and c.w['description'] and c.w['description'] != '':
@@ -998,12 +1185,21 @@ class WorkshopController(BaseController):
         page = pageLib.getInformation(c.w)
         if page and 'data' in page:
             background = page['data']
-        if background and background != '':
+        if background and background != utils.workshopInfo:
             c.backConfig = 1
         else:
             c.backConfig = 0
             
-        if c.basicConfig and c.tagConfig and c.slideConfig and c.backConfig:
+        pList = pMemberLib.getPrivateMembers(c.w['urlCode'], "0")
+        if c.w['public_private'] == 'private' and len(pList) != 0:
+            c.participantsConfig = 1
+        elif c.w['public_private'] == 'public':
+            c.participantsConfig = 1
+        else:
+            c.participantsConfig = 0
+
+
+        if c.basicConfig and c.tagConfig and c.slideConfig and c.backConfig and c.participantsConfig:
             return True
         
         return False
@@ -1020,12 +1216,12 @@ class WorkshopController(BaseController):
             
         if 'confTab' in session:
             c.tab = session['confTab']
-            log.info(c.tab)
+            #log.info(c.tab)
             session.pop('confTab')
             session.save()
-        # hack for continue button in tab4 of configure
+        # hack for continue button in slideshow tab of configure
         if 'continueToNext' in request.params:
-            c.tab = 'tab5'
+            c.tab = 'background'
             
         slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow)
@@ -1080,6 +1276,9 @@ class WorkshopController(BaseController):
         if c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
 
+        myURL = config['app_conf']['site_base_url']
+        c.shareURL = '%s/workshop/%s/%s'%(myURL, c.w['urlCode'], c.w['url'])
+
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = True
 
@@ -1087,6 +1286,9 @@ class WorkshopController(BaseController):
         
     @h.login_required
     def pmemberNotificationHandler(self, workshopCode, workshopURL, userCode):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         user = userLib.getUserByCode(userCode)
         pmember = pMemberLib.getPrivateMember(workshopCode, user['email'])
         # initialize to current value if any, '0' if not set in object
@@ -1095,14 +1297,23 @@ class WorkshopController(BaseController):
         if 'itemAlerts' in pmember:
             iAlerts = pmember['itemAlerts']
         
-        payload = json.loads(request.body)
-        if 'alert' not in payload:
-            return "Error"
-        alert = payload['alert']
+        if iPhoneApp:
+            try:
+                alert = request.params['alert']
+            except:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+        else:
+            payload = json.loads(request.body)
+            if 'alert' not in payload:
+                return "Error"
+            alert = payload['alert']
         if alert == 'items':
             if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
                 if pmember['itemAlerts'] == u'1':
-                    listener['itemAlerts'] = u'0'
+                    pmember['itemAlerts'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['itemAlerts'] = u'1'
@@ -1113,7 +1324,7 @@ class WorkshopController(BaseController):
         elif alert == 'digest':
             if 'digest' in pmember.keys(): # Not needed after DB reset
                 if pmember['digest'] == u'1':
-                    listener['digest'] = u'0'
+                    pmember['digest'] = u'0'
                     eAction = 'Turned off'
                 else:
                     pmember['digest'] = u'1'
@@ -1122,10 +1333,88 @@ class WorkshopController(BaseController):
                 pmember['digest'] = u'1'
                 eAction = 'Turned on'
         else:
-            return "Error"   
+            if iPhoneApp:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+            else:
+                return "Error"
+
         dbHelpers.commit(pmember)
         if eAction != '':
             eventLib.Event('Private member item notifications set', eAction, pmember, c.authuser)
-        return eAction
+        
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            result = eAction
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return eAction
 
-    
+    def workshopIdeas(self, workshopCode, workshopURL):
+        ideas = ideaLib.getAllIdeasInWorkshop(workshopCode)
+        if not ideas:
+            log.info("searchIdeas return NOT ideas")
+            return json.dumps({'statusCode':2})
+        if len(ideas) == 0:
+            log.info("searchIdeas return len ideas == 0")
+            return json.dumps({'statusCode':2})
+
+        result = []
+        adopted = 0
+        disabled = 0
+        myRatings = {}
+        if 'ratings' in session:
+           myRatings = session['ratings']
+
+        for idea in ideas:
+            entry = {}
+            entry['title'] = idea['title']
+            entry['text'] = idea['text']
+            entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
+            if idea['adopted'] == '1':
+                entry['status'] = 'adopted'
+                adopted += 1
+            elif idea['disabled'] == '1':
+                entry['status'] = 'disabled'
+                disabled += 1
+            else:
+                entry['status'] = 'proposed'
+            entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+            entry['voteRatio'] = 0 + int(idea['ups']) -  int(idea['downs'])
+            entry['ups'] = int(idea['ups'])
+            entry['downs'] = int(idea['downs'])
+
+            # user ratings
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
+            else:
+                entry['rated'] = 0
+                entry['vote'] = 'nvote'
+
+            entry['addedAs'] = idea['addedAs']
+            entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
+            u = userLib.getUserByID(idea.owner)
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            entry['authorCode'] = entry['userCode'] = idea['userCode']
+            entry['authorURL'] = entry['user_url'] = idea['user_url']
+            entry['authorName'] = entry['user_name'] = idea['user_name']
+            entry['workshopCode'] = workshopCode
+            entry['workshopURL'] = workshopURL
+            entry['views'] = '0'
+            if 'views' in idea:
+                entry['views'] = numViews = str(idea['views'])
+
+            result.append(entry)
+        numIdeas = len(ideas) - disabled
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
+
+

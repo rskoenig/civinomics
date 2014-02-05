@@ -41,6 +41,12 @@ def getActiveUsers(disabled = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
+        
+def getNotActivatedUsers():
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('activated', "0"))).all()
+    except:
+        return False
 
 def getAllUsers(disabled = '0', deleted = '0'):
     try:
@@ -60,8 +66,13 @@ def getUserByEmail(email, disabled = '0'):
 def getUserByFacebookAuthId( userid ):
     log.info("getUserByFacebookAuthId: " + userid)
     try:
-        #return meta.Session.query(Thing).filter_by(facebookAuthId = userid).one()
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
+    except:
+        return False
+
+def getUserByTwitterId( twitterid ):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('twitterAuthId', twitterid))).one()
     except:
         return False
 
@@ -105,13 +116,14 @@ def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'
 
 def getUserPosts(user, active = 1):
     returnList = []
+    thingTypes = ['resource', 'comment', 'discussion', 'idea', 'initiative']
     if active == 1:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(thingTypes)).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
     else:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(thingTypes)).filter_by(owner = user.id).order_by('-date').all()
 
     for item in postList:
-        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment' or item.objType == 'idea':
+        if item.objType != 'discussion':
             returnList.append(item)
         elif item.objType == 'discussion':
             if item['discType'] == 'general':
@@ -170,6 +182,39 @@ def generatePassword():
     pool, size = letters + digits, 20
     hash =  ''.join([choice(pool) for i in range(size)])
     return hash
+    
+def setUserPrivs():
+    c.privs = {}
+    # Civinomics administrator
+    c.privs['admin'] = False
+    # Workshop facilitator
+    c.privs['facilitator'] = False
+    # Like a facilitator, but with no special privs
+    c.privs['listener'] = False
+    # Logged in member with privs to add objects
+    c.privs['participant'] = False
+    # Not logged in, privs to visit this specific workshop
+    c.privs['guest'] = False
+    # Logged in but not yet activated
+    c.privs['provisional'] = False
+    # Not logged in, visitor privs in all public workshops
+    c.privs['visitor'] = True
+    # is a demo workshop
+    c.privs['demo'] = False
+    
+    if 'user' in session:
+        if c.authuser['activated'] == '0':
+            c.privs['provisional'] = True
+            c.privs['admin'] = False
+            c.privs['participant'] = False
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
+        else:
+            c.privs['admin'] = isAdmin(c.authuser.id)
+            c.privs['provisional'] = False
+            c.privs['participant'] = True
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
 
 # Helper functions
     
@@ -195,8 +240,17 @@ class User(object):
         u['totalPoints'] = 1
         u['commentAlerts'] = '1'
         u['url'] = urlify('%s' %name)
-        u['numSuggestions'] = 0
-        u['numReadResources'] = 0
+        u['numSuggestions'] = '0'
+        u['numReadResources'] = '0'
+        u['idea_counter'] = '0'
+        u['discussion_counter'] = '0'
+        u['resource_counter'] = '0'
+        u['follow_counter'] = '0'
+        u['facilitator_counter'] = '0'
+        u['listener_counter'] = '0'
+        u['follower_counter'] = '0'
+        u['bookmark_counter'] = '0'
+        u['photo_counter'] = '0'
         u['accessLevel'] = 0
         commit(u)
         u['urlCode'] = toBase62(u)

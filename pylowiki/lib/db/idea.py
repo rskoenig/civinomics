@@ -32,6 +32,15 @@ def getIdeasInWorkshop(workshopCode, deleted = '0', disabled = '0'):
     except:
         return False
 
+def getAllIdeasInWorkshop(workshopCode, deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted))).all()
+    except:
+        return False
+
 def getAllIdeas(deleted = '0', disabled = '0'):
     try:
         return meta.Session.query(Thing)\
@@ -99,5 +108,6 @@ def Idea(user, title, text, workshop, privs, role = None):
     idea['urlCode'] = toBase62(idea)
     d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
     idea = generic.linkChildToParent(idea, workshop)
+    idea = generic.linkChildToParent(idea, user)
     commit(idea)
     return idea
