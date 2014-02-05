@@ -64,6 +64,11 @@
       ### Activity Feed
       ###
       <div class="span8" ng-controller = "activityController">
+
+        <div class="centered" ng-show="activityLoading" ng-cloak>
+            <i class="icon-spinner icon-spin icon-4x"></i>
+        </div>
+
         <table ng-cloak>
           <tr ng-repeat="item in activity" class="activity-item">
             <td style="vertical-align: top;"><img class="media-object avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
@@ -87,7 +92,7 @@
               </a>
 
               <strong><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></strong><br>
-              <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
+              <a ng-href="{{item.link}}" target="_blank" ng-show="!(item.link == '0')">{{item.link}}</a>
               <p>{{item.text}}</p>
               
 
