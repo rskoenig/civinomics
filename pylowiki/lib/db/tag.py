@@ -43,22 +43,16 @@ def getWorkshopTagCategories():
     workshopTags.append('Community')
     workshopTags.append('Economy')
     workshopTags.append('Education')
-    workshopTags.append('Employment')
-    workshopTags.append('Entertainment')
     workshopTags.append('Environment')
-    workshopTags.append('Family')
     workshopTags.append('Government')
     workshopTags.append('Health')
     workshopTags.append('Housing')
-    workshopTags.append('Infrastructure')
-    workshopTags.append('Justice')
     workshopTags.append('Land Use')
     workshopTags.append('Municipal Services')
-    workshopTags.append('NonProfit')
-    workshopTags.append('Policy')
+    workshopTags.append('Parks and Rec')
     workshopTags.append('Safety')
-    workshopTags.append('Sports')
     workshopTags.append('Transportation')
+    workshopTags.append('Water')
     workshopTags.append('Other')
     return workshopTags
 
@@ -83,6 +77,7 @@ def getWorkshopTagColouring():
                 'Transportation':       'blue-tag',
                 'Infrastructure':       'blue-tag',
                 'Municipal Services':   'blue-tag',
+                'Water':                'blue-tag',
                 'Government':           'grey-tag',
                 'NonProfit':            'grey-tag',
                 'Policy':               'grey-tag'}

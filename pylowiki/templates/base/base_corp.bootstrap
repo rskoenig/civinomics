@@ -20,22 +20,18 @@
                       <span class="pull-left">About</span>
                   </a>
               </li>
-                <li
-                % if c.pagetype == "polling":
-                   class ="active"
-                % endif
-              >
-                  <a href="/corp/polling" class="green green-hover">
-                      <span class="pull-left">Polling</span>
-                  </a>
+              <li>
+                <a href="http://civinomics.wordpress.com" target="_blank" class="green green-hover">
+                    <span class="pull-left">Blog</span>
+                </a>
               </li>
               <li
-                % if c.pagetype == "caseStudies":
+                % if c.pagetype == "news":
                    class ="active"
                 % endif
               >
-                  <a href="/corp/caseStudies" class="green green-hover">
-                      <span class="pull-left">Case Studies</span>
+                  <a href="/corp/news" class="green green-hover">
+                      <span class="pull-left">News</span>
                   </a>
               </li>
               <li
@@ -57,6 +53,15 @@
                   </a>
               </li>
               <li
+                % if c.pagetype == "caseStudies":
+                   class ="active"
+                % endif
+              >
+                  <a href="/corp/caseStudies" class="green green-hover">
+                      <span class="pull-left">Case Studies</span>
+                  </a>
+              </li>
+              <li
                 % if c.pagetype == "terms":
                    class ="active"
                 % endif
@@ -72,20 +77,6 @@
               >
                   <a href="/corp/privacy" class="green green-hover">
                       <span class="pull-left">Privacy</span>
-                  </a>
-              </li>
-              <li>
-                  <a href="http://civinomics.wordpress.com" target="_blank" class="green green-hover">
-                      <span class="pull-left">Blog</span>
-                  </a>
-              </li>
-              <li
-                % if c.pagetype == "news":
-                   class ="active"
-                % endif
-              >
-                  <a href="/corp/news" class="green green-hover">
-                      <span class="pull-left">News</span>
                   </a>
               </li>
               <li

@@ -17,7 +17,7 @@
             <div class="row-fluid">
                 <div class="span10 offset1">
                     <div class="alert alert-error">
-                        <h4>Warning!</h4>
+                        <h4>Notice</h4>
                         You are looking at a previous version (dated ${c.revision.date} PST), kept in the interests of transparency and history.
                     </div>
                 </div>

@@ -124,6 +124,10 @@ div .well.sidebar-nav{
   width: 400px;
 }
 
-
+@media (max-width: 979px) and (min-width: 768px) {
+  .tabs-left > .nav-tabs {
+    margin-right: 0;
+  }
+}
 
 

@@ -1,4 +1,6 @@
 <%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
 <%def name="page_specific_css()">
     <!-- None -->
 </%def>
@@ -7,17 +9,17 @@
     <div class="row-fluid">
        <div>
             <h1>Privacy Policy</h1>
-                <p class="lead">This Privacy Policy explains how Civinomics collects, uses, and may in some cases disclose information collected through your use of the Services. This Privacy Policy is expressly incorporated into our Terms of Service. If you have any questions concerning this Privacy Policy, please email us at <a href="#">privacy @ civinomics.com</a>.</p>
+                <p class="lead">This Privacy Policy explains how Civinomics collects, uses, and may in some cases disclose information collected through your use of the Services. This Privacy Policy is expressly incorporated into our Terms of Service. If you have any questions concerning this Privacy Policy, please email us at ${mako.formatEmail("privacy@civinomics.com", "Privacy Concerns")}.</p>
             </div>
          </div>
-        <p>
 
         <h2>
         User Information Collection and Use by Civinomics
         </h2>
-        Civinomics contains features that allow you to control how you express yourself and to whom. Primarily, this means we help you express yourself to elected officials. Therefore, you should view those communications as public. We may provide controls that allow you to control or reveal some information about yourself with others within the Service itself. Primarily, this means that when you communicate with your elected officials, we give you a choice as to whether those communications can be included within reports produced by Civinomics. You can choose generally not to permit such inclusion, or you may choose not to include such information on a per message or communication basis. We try to make this clear and easy for you to understand. Most importantly, you should understand that things that you do in public are public and you should act accordingly. Civinomics is not responsible for any such use, sharing, or disclosures.
         <p>
+        Civinomics contains features that allow you to control how you express yourself and to whom. Primarily, this means we help you express yourself to elected officials. Therefore, you should view those communications as public. We may provide controls that allow you to control or reveal some information about yourself with others within the Service itself. Primarily, this means that when you communicate with your elected officials, we give you a choice as to whether those communications can be included within reports produced by Civinomics. You can choose generally not to permit such inclusion, or you may choose not to include such information on a per message or communication basis. We try to make this clear and easy for you to understand. Most importantly, you should understand that things that you do in public are public and you should act accordingly. Civinomics is not responsible for any such use, sharing, or disclosures.
         <h2>Privacy and Public Expression</h2>
+        <p>
         Civinomics collects user-submitted information such as first and last name, email address, and date of birth. This information is used to authenticate you with various voter registrars. This is helpful because elected officials may listen more closely to their own constituents. We may also collect and use information regarding your communications to elected officials, and with any other use of the Services to personal information you have provided to us.
         We may use this information to:
         <ol>
@@ -26,19 +28,21 @@
             <li>aggregate your views in reports with those of others who have expressed similar views</li>
             <li>contact you in support of the Service.</li>
         </ol>
+        <p>
         Most commonly, we create aggregate statistics that are compiled into reports regarding the views of users on particular issues as expressed to elected officials. These aggregate statistics may then be made publicly available or be made available by subscription. The underlying data, including your communications to elected officials on a subject with your real name, may then be accessible to other users or subscribers. You may choose not to have your communications included in such reports by adjusting your Account Settings. If you do so, within Civinomics the information on your communications to elected officials will only be used on an aggregate anonymous basis. However, any communication sent to your public official will become part of the public record regardless of your Civinomics Account Settings.
-        <p>
         <h2>IP Address and Technical Information</h2>
+        <p>
         Civinomics logs non-personally-identifiable information including IP address, profile information, aggregate user data, and browser type, from users and visitors to the website. This data is used to manage the website, track usage, and improve the Services. This non-personally-identifiable information may be shared with third parties to provide more relevant services and opportunities for civic participation without identifying you individually in any way to such parties. User IP addresses may be recorded for security and monitoring purposes.
-        <p>
         <h2>User Account Information</h2>
+        <p>
         Users real-name information may be displayed to other users or subscribers by the Services. When a user communicates Content to an elected official, the user's name will be visible to the other users viewing the shared Content unless the user chooses through the Account Settings features not to permit inclusion of such information in reports. Any communications sent to elected officials via the Services by a user may contain the user's actual contact details including their real name.
-        <p>
         <h2>Email Addresses and In-Service Communications</h2>
-        Civinomics may use a user's email address to send updates, a newsletter, or news regarding the Services. Civinomics does not make email address information available to others except in accordance with this Privacy Policy or when explicitly authorized by the user.
-        Within the Services, via display or other messaging systems, you may receive messages that Civinomics or its subscribers believe may be of interest to you. We help voters leverage the power of their views with others who may share similar views. We may do this by offering services that enable subscribers to communicate with like-minded users through the Service. Users may elect to forgo such communications through a setting in their Account Settings.
         <p>
+        Civinomics may use a user's email address to send updates, a newsletter, or news regarding the Services. Civinomics does not make email address information available to others except in accordance with this Privacy Policy or when explicitly authorized by the user.
+        <p>
+        Within the Services, via display or other messaging systems, you may receive messages that Civinomics or its subscribers believe may be of interest to you. We help voters leverage the power of their views with others who may share similar views. We may do this by offering services that enable subscribers to communicate with like-minded users through the Service. Users may elect to forgo such communications through a setting in their Account Settings.
         <h2>Additional Uses of Information</h2>
+        <p>
         In addition to any other purposes set forth in this Privacy Policy, Civinomics may process personal information collected through your use of the Services for the following purposes:
         <ol>
             <li>to provide our products and services to users, including the display of customized Content and new services;</li>
@@ -46,23 +50,25 @@
             <li>to ensure the technical functioning of the Services; and</li>
             <li>to develop new services.</li>
         </ol>
-        <p>
         <h2>Use of Cookies</h2>
+        <p>
         Civinomics uses cookies to maintain context during visits to the website, enabling a more personalized and enhanced experience for each user. When asked to do so by the user, Civinomics will also use cookies to remember repeat visitors to our website, enabling automatic login to the website.
         You may be able to configure your browser to accept or reject all or some cookies, or notify you when a cookie is set each browser is different, so check the Help menu of your browser to learn how to change your cookie preferences. You must enable cookies from Civinomics to have the best experience using the Services.
-        <p>
         <h2>Links</h2>
+        <p>
         Civinomics websites may contain links to other websites not controlled by Civinomics. Civinomics is not responsible for the privacy policies and/or practices on other websites. When linking to another website, a user should read the privacy policy stated on that website. Our Privacy Policy only governs information collected on the Services.
-        <p>
         <h2>Correcting/Updating or Removing Information</h2>
+        <p>
         Users may modify or remove any of their personal information at any time by logging into their account and accessing their Account Settings.
-        <p>
         <h2>Security</h2>
-        Civinomics user accounts are secured by user-created passwords. Civinomics takes precautions to ensure that Member account information is kept private. We use reasonable measures to protect user information that is stored within our database, and we restrict access to user information to those employees who need access to perform their job functions, such as our customer service personnel, service administrators, and technical staff. Please note that we cannot guarantee the security of user account information. Unauthorized entry or use, hardware or software failure, and other factors may compromise the security of user information at any time.
-        If Civinomics learns of a security systems breach we may attempt to notify you electronically so that you can take appropriate protective steps. Civinomics may post a notice on our website if a security breach occurs. If this happens, you will need a web browser enabling you to view the website. Civinomics may also send an email to you at the email address you have provided to us in these circumstances. Depending on where you live, you may have a legal right to receive notice of a security breach in writing. To receive free written notice of a security breach (or to withdraw your consent from receiving electronic notice), you should notify us at privacy AT Civinomics DOT com.
-        Due to the existing regulatory environment, Civinomics cannot ensure that all of your personally-identifiable information and communications will remain private and will never be disclosed in ways not otherwise described in this Privacy Policy. Therefore, although we maintain and make every effort to comply with evolving privacy standards, we do not promise, nor should you expect, that your personally-identifiable information or private communications will always remain private.
         <p>
+        Civinomics user accounts are secured by user-created passwords. Civinomics takes precautions to ensure that Member account information is kept private. We use reasonable measures to protect user information that is stored within our database, and we restrict access to user information to those employees who need access to perform their job functions, such as our customer service personnel, service administrators, and technical staff. Please note that we cannot guarantee the security of user account information. Unauthorized entry or use, hardware or software failure, and other factors may compromise the security of user information at any time.
+        <p>
+        If Civinomics learns of a security systems breach we may attempt to notify you electronically so that you can take appropriate protective steps. Civinomics may post a notice on our website if a security breach occurs. If this happens, you will need a web browser enabling you to view the website. Civinomics may also send an email to you at the email address you have provided to us in these circumstances. Depending on where you live, you may have a legal right to receive notice of a security breach in writing. To receive free written notice of a security breach (or to withdraw your consent from receiving electronic notice), you should notify us at privacy AT Civinomics DOT com.
+        <p>
+        Due to the existing regulatory environment, Civinomics cannot ensure that all of your personally-identifiable information and communications will remain private and will never be disclosed in ways not otherwise described in this Privacy Policy. Therefore, although we maintain and make every effort to comply with evolving privacy standards, we do not promise, nor should you expect, that your personally-identifiable information or private communications will always remain private.
         <h2>Sharing and Disclosure of Information Civinomics Collects</h2>
+        <p>
         Civinomics will not disclose personally-identifiable information to any third party without the users permission in accordance with the Terms or this Privacy Policy unless we believe that disclosure is necessary to:
         <ol>
             <li>conform to legal requirements or to respond to a subpoena, search warrant, or other legal process received by Civinomics, whether or not a response is required by applicable law;</li>
@@ -70,29 +76,28 @@
             <li>protect the safety of members of the public and users of the Service.</li>
         </ol>
         Civinomics reserves the right to transfer personal information to a successor in interest that acquires rights to that information because of the sale of Civinomics or substantially all of its assets to that successor in interest.
-        <p>
         <h2>Changes in Our Privacy Policy</h2>
+        <p>
         From time to time we may make changes to our Privacy Policy. Our most current Privacy Policy will always be posted on all of the Services. A user is bound by any minor changes to the Privacy Policy when she or he uses the website after those changes have been posted. If, however, we are going to use users personally-identifiable information in a manner materially less restrictive from that stated at the time of collection, we will seek to obtain your consent through reasonable means which may include posting a notice on the Services for 30 days.
-        <p>
         <h2>Contacting Civinomics</h2>
-        If you have any questions about this Privacy Policy, the practices of this website, or your dealings with this website, please contact us at:
         <p>
+        If you have any questions about this Privacy Policy, the practices of this website, or your dealings with this website, please contact us at:
         <address>
             <strong>Civinomics, Inc.</strong>
             <br/>
             877 Cedar Street, STE 150
-            </br>
+            <br/>
             Santa Cruz, CA 95060
-            </br>
-            info @ civinomics.com
+            <br/>
+            ${mako.formatEmail("info@civinomics.com", "Question")}
         </address>
-        </br>
         <h3>Effective: May 5, 2012</h3>
-        </br>
-        </br>
 
         </div><!--/.span6-->
     </div>
 
 </%def>
 <%def name="display_body_bottom_content()"></%def>
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>

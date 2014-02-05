@@ -3,25 +3,27 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="workshopHelpers" file="/lib/derived/6_workshop_home.mako" />
-
-<div class="spacer" style="height:20px;"></div>
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
 
 <% 
    lib.return_to()
    if c.listingType == 'discussion':
       itemList = c.discussions
       helperText = 'Ask a question, give feedback, join a conversation about the workshop, or add your own.'
-      helperText += '<br /><strong class="orange">Vote</strong> existing forum topics <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.'
+      helperText += '<strong class="orange"> Vote</strong> existing forum topics <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.'
    elif c.listingType == 'resources':
       itemList = c.resources
       helperText = 'Link to educational information resources like videos, articles and reports.'
-      helperText += '<br />View and <strong class="orange">Vote</strong> existing resources <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.'
+      helperText += 'View and <strong class="orange"> Vote</strong> existing resources <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.'
    elif c.listingType == 'ideas':
       itemList = c.ideas
       helperText = 'Add an idea to meet the goals of the workshop!'
-      helperText += '<br /><strong class="orange">Vote</strong> existing ideas <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on how well they address the goals.'
+      helperText += '<strong class="orange"> Vote</strong> existing ideas <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on how well they address the goals.'
    elif c.listingType == 'activity':
       itemList = c.activity
+      helperText = ''
+   elif c.listingType == 'publicStats':
+      itemList = ''
       helperText = ''
 
    self.showListing(c.listingType, itemList, helperText)
@@ -44,33 +46,40 @@
          itemAlert = '<div class="alert alert-info">There are no ideas here yet. Be the first to add one!</div>'
       elif listingType == 'activity':
          pluralType = 'activity'
+      elif listingType == 'publicStats':
+         pluralType = 'Workshop statistics'
    %>
-   % if listingType != 'activity':
-        <div class="row-fluid">
-            <div class="span8">
-                <span class = "muted">
-                    ${helperText | n}
-                </span>
-            </div><!-- span8 -->
-            <div class="span4">
-                ${lib_6.createNew(listingType)}
-            </div><!--/.span4 -->
-        </div><!--/.row-fluid-->
-   % endif 
    <div class="row-fluid">
       <div class="span12">
          <div class="section-wrapper">
             <div class="browse">
-               
                % if listingType == 'activity':
-                   <h3 class="section-header">Activity 
+                   <h4 class="section-header smaller">Activity 
                    % if c.w['public_private'] == 'public':
-                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
+                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss orange"></i></a>
                    %endif
-                   </h3>
+                   </h4>
                     ${workshopHelpers.showActivity(c.activity)}
+               % elif listingType == 'publicStats':
+                    <h4 class="section-header smaller">Statistics</h4>
+                    ${d3Lib.includeD3()}
+                    % if len(c.jsonConstancyDataIdeas) > 2:
+                      ${d3Lib.constancyChart(c.jsonConstancyDataIdeas, "ideaChart", "Ideas", "ForestGreen", "DarkSlateGrey")}
+                    % endif
+                    % if len(c.jsonConstancyDataResources) > 2:
+                      ${d3Lib.constancyChart(c.jsonConstancyDataResources, "resourceChart", "Resources", "MidnightBlue", "DarkSlateGrey")}
+                    % endif
+                    % if len(c.jsonConstancyDataDiscussions) > 2:
+                      ${d3Lib.constancyChart(c.jsonConstancyDataDiscussions, "discussionChart", "Discussions", "DarkOrange", "DarkSlateGrey")}
+                    % endif
                % else:
-                    <h3 class="section-header"> ${pluralType.title()}</h3>
+                    <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
+                    % if listingType != 'activity':
+                        <p class = "muted">
+                            ${helperText | n}
+                        </p>
+                      <hr class="list-header">
+                    % endif
                     % if numItems == '0':
                         ${itemAlert | n}
                     % endif
