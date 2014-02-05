@@ -269,6 +269,23 @@ def getActivityForWorkshopList(number, workshops, comments = 0, offset = 0, json
 
         return postList
         
+def getActivityForInitiativeList(number, initiatives, comments = 0, offset = 0, json = 0):
+        limit = number
+        returnList = []
+        objectList = ['resource', 'discussion']
+        if comments:
+            objectList.append('comment')
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objectList))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wc('public', u'1')))\
+            .filter(Thing.data.any(wkil('initiativeCode', workshops)))\
+            .order_by('-date')\
+            .limit(limit)
+
+        return postList
+        
 def getActivityForUserList(number, users, offset = 0, json = 0):
         limit = number
         returnList = []

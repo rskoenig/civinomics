@@ -126,6 +126,16 @@ def getThingsByEmail(email):
         return q.all()
     except Exception as e:
         return False
+ 
+def getThingsByCodeList(urlCodeList, disabled = "0", deleted = "0"):
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wkil('urlCode', urlCodeList)))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .all()
+    except Exception as e:
+        return False       
 
 def addedItemAs(thing, privs, role = None):
     """

@@ -23,6 +23,7 @@ import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.initiative   	as initiativeLib
 
 # twython imports
 from twython import Twython
@@ -560,7 +561,7 @@ class LoginController(BaseController):
         interestedWorkshops = []
         facilitatorInitiatives = []
         bookmarkedInitiatives = []
-        interestedInitiatives = []
+        facilitatorInitiatives = []
         
         bookmarked = followLib.getWorkshopFollows(c.authuser)
         bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
@@ -586,7 +587,7 @@ class LoginController(BaseController):
                 if 'workshopCode' in f:
                     facilitatorWorkshops.append(f['workshopCode'])
                 elif 'initiativeCode' in f:
-                    facilitatorInitiatives(f['initiativeCode'])
+                    facilitatorInitiatives.append(f['initiativeCode'])
                     
         session["facilitatorWorkshops"] = facilitatorWorkshops
         session.save()
@@ -594,8 +595,26 @@ class LoginController(BaseController):
         interestedWorkshops = list(set(listenerWorkshops + bookmarkedWorkshops + privateWorkshops + facilitatorWorkshops))
         session["interestedWorkshops"] = interestedWorkshops
         session.save()
+        
+        # initiatives
+        initiativeList = initiativeLib.getInitiativesForUser(c.authuser)
+        facilitatorInitiatives = [initiative['urlCode'] for initiative in initiativeList]
 
-	       
+        session["facilitatorInitiatives"] = facilitatorInitiatives
+        session.save()
+        
+        iwatching = followLib.getInitiativeFollows(c.user)
+        if iwatching:
+            initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+            for i in initiativeList:
+                if i.objType == 'initiative':
+                    if i['public'] == '1':
+                        if i['deleted'] != '1':
+                            bookmarkedInitiatives.append(i)
+                            
+        session["bookmarkedInitiatives"] = bookmarkedInitiatives
+        session.save()
+
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
             if kwargs['iPhoneApp'] != True:
