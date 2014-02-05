@@ -65,6 +65,11 @@
       ### Activity Feed
       ###
       <div class="span8" ng-controller = "activityController">
+
+        <div class="centered" ng-show="activityLoading" ng-cloak>
+            <i class="icon-spinner icon-spin icon-4x"></i>
+        </div>
+
         <table ng-cloak>
           <tr ng-repeat="item in activity" class="activity-item">
 

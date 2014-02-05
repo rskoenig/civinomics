@@ -4,6 +4,7 @@ function workshopIdeasCtrl($scope, $http) {
 	$scope.filterProp = '!disabled';
 	$scope.numAdopted = '0';
 	$scope.numIdeas = '0';
+	$scope.ideasLoading = true;
 
 	$scope.switchAdopted = function(){
 		if ($scope.filterProp == 'adopted'){
@@ -15,14 +16,21 @@ function workshopIdeasCtrl($scope, $http) {
 	}
 
 	$http.get($scope.ideasURL).success(function(data){
-		if (data.statusCode == 1){
+		$scope.ideasLoading = true;
+		if (data.statusCode === 1){
 			$scope.noResult = true;
+			$scope.ideasLoading = false;
+		}
+		else if (data.statusCode === 2){
+			$scope.noResult = true;
+			$scope.ideasLoading = false;
 		}
 		else if (data.statusCode === 0){
 			$scope.noResult = false;
 			$scope.ideas = data.result;
 			$scope.numAdopted = data.adopted;
 			$scope.numIdeas = data.numIdeas;
+			$scope.ideasLoading = false;
 		}
 	});
 
