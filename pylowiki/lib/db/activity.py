@@ -252,11 +252,14 @@ def getRecentGeoActivity(number, scope, offset = 0, json = 0):
 
         return postList
 
-def getActivityForWorkshopList(number, workshops, offset = 0, json = 0):
+def getActivityForWorkshopList(number, workshops, comments = 0, offset = 0, json = 0):
         limit = number
         returnList = []
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        if comments:
+            objectList.append('comment')
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wkil('workshopCode', workshops)))\

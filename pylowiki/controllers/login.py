@@ -17,6 +17,12 @@ from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
+import pylowiki.lib.db.follow       	as followLib
+import pylowiki.lib.db.workshop     	as workshopLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.pmember      	as pMemberLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
 
 # twython imports
 from twython import Twython
@@ -545,7 +551,51 @@ class LoginController(BaseController):
         ratings = ratingLib.getRatingsForUser()
         session["ratings"] = ratings
         session.save()
+        
+        # get their workshops and initiatives of interest
+        bookmarkedWorkshops = []
+        privateWorkshops = []
+        listenerWorkshops = []
+        facilitatorWorkshops = []
+        interestedWorkshops = []
+        facilitatorInitiatives = []
+        bookmarkedInitiatives = []
+        interestedInitiatives = []
+        
+        bookmarked = followLib.getWorkshopFollows(c.authuser)
+        bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+        session["bookmarkedWorkshops"] = bookmarkedWorkshops
+        session.save()
 
+        privateList = pMemberLib.getPrivateMemberWorkshops(c.authuser, deleted = '0')
+        if privateList:
+            pmemberWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+            privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+            privateWorkshops = [w['urlCode'] for w in privateList]
+        session["privateWorkshops"] = privateWorkshops
+        session.save()
+		
+        listenerList = listenerLib.getListenersForUser(c.authuser, disabled = '0')
+        listenerWorkshops = [lw['workshoplCode'] for lw in listenerList]
+        session["listenerWorkshops"] = listenerWorkshops
+        session.save()
+        
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.authuser)
+        for f in facilitatorList:
+            if f['disabled'] == '0':
+                if 'workshopCode' in f:
+                    facilitatorWorkshops.append(f['workshopCode'])
+                elif 'initiativeCode' in f:
+                    facilitatorInitiatives(f['initiativeCode'])
+                    
+        session["facilitatorWorkshops"] = facilitatorWorkshops
+        session.save()
+        
+        interestedWorkshops = list(set(listenerWorkshops + bookmarkedWorkshops + privateWorkshops + facilitatorWorkshops))
+        session["interestedWorkshops"] = interestedWorkshops
+        session.save()
+
+	       
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
             if kwargs['iPhoneApp'] != True:
