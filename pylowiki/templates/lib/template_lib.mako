@@ -57,7 +57,8 @@
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/admin/users">Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
                                     <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
                                     <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
                                     <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
@@ -110,7 +111,7 @@
                         <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
                         <li class="${hSelected}"><a href="/help">Help</a></li>
                         <li><a href="/login">Login</a></li>
-                        <li><a href="/signup2">Signup</a></li>
+                        <li><a href="/signup">Signup</a></li>
                     % endif
                     <li class="small-show">
                         <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>

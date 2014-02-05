@@ -262,7 +262,7 @@
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
@@ -271,7 +271,7 @@
 </%def>
 
 <%def name="emailShareModal(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "I thought this might interest you!"
         %>

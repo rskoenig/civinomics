@@ -766,7 +766,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id or c.privs['provisional']:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
@@ -866,7 +866,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id or c.privs['provisional']:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()

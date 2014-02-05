@@ -98,27 +98,35 @@
                 ### Add a thing buttons
                 <li class="pull-right" ng-show="showingWorkshops.create" ng-cloak>
                     % if c.searchType != 'region':
-                        <button class="btn btn-civ" href="/workshop/display/create/form" >
-                            <i class="icon-plus"></i> Start Workshop
-                        </button>
+                        % if not c.privs['provisional']:
+                            <button class="btn btn-civ" href="/workshop/display/create/form" >
+                                <i class="icon-plus"></i> Start Workshop
+                            </button>
+                        % endif
                     % else:
-                        <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
-                            <input type="hidden" name="geoString" value="${c.geoString}">
-                             <button class="btn btn-civ" type="submit" name="createPublic"><i class="icon-plus"></i> Start Workshop</button>
-                        </form>
+                        % if not c.privs['provisional']:
+                            <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
+                                <input type="hidden" name="geoString" value="${c.geoString}">
+                                <button class="btn btn-civ" type="submit" name="createPublic"><i class="icon-plus"></i> Start Workshop</button>
+                            </form>
+                        % endif
                     % endif
                 </li>
                 <li class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
                     % if 'user' in session:
                         % if c.searchType != 'region':
-                            <button class="btn btn-civ" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
-                                <i class="icon-plus"></i> Start Initiative
-                            </button>
+                            % if not c.privs['provisional']:
+                                <button class="btn btn-civ" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                    <i class="icon-plus"></i> Start Initiative
+                                </button>
+                            % endif
                         % else:
-                            <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
-                                <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
-                                <button class="btn btn-civ" type="submit"><i class="icon-plus"></i> Start Initiative</button>
-                            </form>
+                            % if not c.privs['provisional']:
+                                <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
+                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                    <button class="btn btn-civ" type="submit"><i class="icon-plus"></i> Start Initiative</button>
+                                </form>
+                            % endif
                         % endif
                     % else:
                         <button class="btn btn-civ" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"><i class="icon-plus"></i> Start Initiative</button>

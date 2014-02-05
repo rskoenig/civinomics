@@ -408,6 +408,8 @@ def setWorkshopPrivs(workshop):
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
     c.privs['guest'] = isGuest(workshop)
+    # User not yet activated
+    c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
     # is a demo workshop

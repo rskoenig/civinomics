@@ -3174,14 +3174,18 @@ hr.object-list-header{
 
 
 .activity-item .avatar{
+
   display: inline;
   margin-right: 0;
+/*
+  margin-top: 10px;
+  margin-right: 10px;
+*/
 }
 
 .activity-item h4{
   margin-bottom: 5px;
 }
-
 
 .activity-item-content{
   padding-top: 10px;
@@ -3205,6 +3209,11 @@ hr.object-list-header{
 .activity-comments .avatar{
   margin-top: 10px;
   margin-left: 10px;
+  margin-right: 0;
+}
+
+table.activity-comments{
+  width: 100%;
 }
 
 .date{

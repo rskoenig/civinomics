@@ -22,12 +22,10 @@
     <div class="row">
       % if 'forgot' in session._environ['PATH_INFO']:
         <div ng-init="showTitle = 'pTitle'">
-      % elif 'login' or 'Login' in session._environ['PATH_INFO']:
-        <div ng-init="showTitle = 'lTitle'">
       % elif 'signup' in session._environ['PATH_INFO']:
         <div ng-init="showTitle = 'sTitle'">
-      % elif 'forgot' in session._environ['PATH_INFO']:
-        <div ng-init="showTitle = 'pTitle'">
+      % elif 'login' or 'Login' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'lTitle'">
       % endif
           <div class="well main-well login" ng-controller="signupController">
               <div class="row-fluid">
@@ -38,7 +36,7 @@
                   <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
               </div>
           </div><!-- main-well -->
-        </div><!-- ng-init -->
+      </div><!-- sapn6 -->
     </div><!-- row -->
   </div><!-- container -->
 </div><!-- login -->

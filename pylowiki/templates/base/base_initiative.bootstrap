@@ -88,7 +88,7 @@
                             <br>
                             <p>You must complete all required information and upload a picture before you can publish.</p>
                         % else:
-                            <div class="row-fluid"
+                            <div class="row-fluid">
                                 <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
                                     <button type="submit" class="btn btn-large btn-warning input-block-level" name="public" value="unpublish">Unpublish</button>
                                 </form><br>
@@ -118,9 +118,10 @@
                                 % if c.initiative['public'] == '1':
                                     ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True, btn=True, title=c.initiative['title'], description=c.description_nohtml)}
 
-                                    <a class="btn btn-danger" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                                    % if not c.privs['provisional']:
+                                        <a class="btn btn-danger" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                                    % endif
 
-                                    ${lib_6.emailShare(c.requestUrl, c.initiative['urlCode'])}
                                     <!-- % if c.initiative['public'] == '1':
                                         <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
                                     #%endif -->

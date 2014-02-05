@@ -4,13 +4,13 @@
         <div class="media-body" ng-controller="yesNoVoteCtrl">
             <div class="span9">
                 <div class="span3">
-                    <a href = '{{item.initiativeLink}}'>
+                    <a href = '{{item.href}}'>
                         <div class="i-thumb" style="background-image:url('{{item.thumbnail}}');"/></div>
                     </a>
                 </div>
                 <div class="span9">
                     <h4 class="media-heading">
-                        <a class="listed-item-title initiative-title" href="{{item.initiativeLink}}">{{item.title}}</a>
+                        <a class="listed-item-title initiative-title" href="{{item.href}}">{{item.title}}</a>
                     </h4>
                     <p>{{item.text}}</p>
                     <hr class="no-bottom no-top">
