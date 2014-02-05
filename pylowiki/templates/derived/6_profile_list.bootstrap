@@ -1,8 +1,10 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 
-<div class="row-fluid">
+<div class="spacer"></div>
+<div class="row-fluid" ng-controller="ProfileEditController">
     <div class="span8">
     <%
         if c.listingType == 'discussions' or c.listingType == 'resources' or c.listingType == 'ideas':
@@ -18,7 +20,7 @@
     %>
     </div>
     <div class="span4">
-        ${helpers.profileDashboard()}
+        ${dashboard.profileDashboard()}
     </div><!--/.span4-->
 </div>
 
@@ -27,6 +29,7 @@
         $('.hoverTip').tooltip();
     </script>
     <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.expandable').expander({

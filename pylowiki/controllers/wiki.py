@@ -31,7 +31,7 @@ class WikiController(BaseController):
             abort(404)
    
     def updateBackgroundHandler(self, workshopCode, workshopURL):
-        session['confTab'] = "tab5"
+        session['confTab'] = "background"
         
         try:
             request.params['submit'] #Try submit, if false redirect back.
@@ -49,5 +49,7 @@ class WikiController(BaseController):
             alert['title'] = 'Error updating information.'
             
         session['alert'] = alert
+        if c.w['startTime'] == '0000-00-00':
+            session['confTab'] = "participants"
         session.save()
         return redirect('/workshop/%s/%s/preferences' %(c.w['urlCode'], c.w['url']))

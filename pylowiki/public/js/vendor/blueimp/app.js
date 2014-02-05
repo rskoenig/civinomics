@@ -17,7 +17,17 @@
     var isOnGitHub = window.location.hostname === 'blueimp.github.com' ||
             window.location.hostname === 'blueimp.github.io';
         //url = isOnGitHub ? '//jquery-file-upload.appspot.com/' : '/picture/upload/handler';
-        
+    
+    // hack so we can upload larger photos for profile My Pictures 
+    var isPhotoUpload = 0;
+    var isInitiativeUpload = 0;
+    var testPhotos = window.location.pathname.split("/");
+    if(testPhotos[4] == 'photos' && testPhotos[5] == 'show') {
+        isPhotoUpload = 1;
+    }
+    if(testPhotos[1] == 'initiative') {
+        isInitiativeUpload = 1;
+    }  
 
     angular.module('civ', [
         'blueimp.fileupload'
@@ -32,6 +42,26 @@
                         disableImageResize: false,
                         maxFileSize: 5000000,
                         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                    });
+                }
+                else if(isPhotoUpload) {
+                    angular.extend(fileUploadProvider.defaults, {
+                        disableImageResize: true,
+                        maxFileSize: 5000000, // 5MB
+                        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                        maxNumberOfFiles: 1,
+                        previewMaxWidth: 400,
+                        imageMaxWidth: 400,
+                    });
+                }
+                else if(isInitiativeUpload) {
+                    angular.extend(fileUploadProvider.defaults, {
+                        disableImageResize: true,
+                        maxFileSize: 5000000, // 5MB
+                        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                        maxNumberOfFiles: 1,
+                        previewMaxWidth: 400,
+                        imageMaxWidth: 400,
                     });
                 }
                 else {

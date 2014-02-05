@@ -10,7 +10,7 @@ $('button.geoButton').click(function(e){
     }).responseText;
     var gobj = jQuery.parseJSON(geoScope);
     if (gobj.result == "0") {
-            document.getElementById("werror").innerText = document.getElementById("werror").textContent = "No such postal code: " + document.getElementById("publicPostal").value;
+            document.getElementById("werror").innerText = document.getElementById("werror").textContent = "No such zip code: " + document.getElementById("publicPostal").value;
             document.getElementById("publicPostal").value = document.getElementById("wpostal").innerText;
             document.getElementById("publicPostal").value = document.getElementById("wpostal").textContent;
     } else {
@@ -42,7 +42,7 @@ function geoTagCityChange(){
     document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
     document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     if (citySelectIndex === 0) {
-        document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if specific to the entire county."; 
+        document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "Leave 'City' blank if specific to the entire county."; 
     } else {
         document.getElementById("postalSelect").innerText = "";
         var urlString = '/geo/postalList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-") + "/" + cityName.replace(" ", "-");
@@ -54,7 +54,7 @@ function geoTagCityChange(){
         var gobj = jQuery.parseJSON(postalList);
         if (gobj.result != "0") {
             var postalCodes = gobj.result.split(/\|/);
-            var postalMenu = "<div class=\"span1\"></div><div class=\"span2\">Postal Code:</div><div class=\"span9\">  <select id=\"geoTagPost\" name=\"geoTagPostal\" class=\"geoTagPostal\" onChange=\"geoTagPostalChange(); return 1;\"><option value=\"0\">Select a postal code</option>";
+            var postalMenu = "<div class=\"span3\">Zip Code:</div><div class=\"span8\">  <select id=\"geoTagPost\" name=\"geoTagPostal\" class=\"geoTagPostal\" onChange=\"geoTagPostalChange(); return 1;\"><option value=\"0\">Select a Zip Code</option>";
             for(var i = 0;i < postalCodes.length;i++){
                 if (postalCodes[i] !== "") {
                     postalMenu = postalMenu + "<option value=\"" + postalCodes[i] + "\">" + postalCodes[i] + "</option>";
@@ -63,7 +63,7 @@ function geoTagCityChange(){
             postalMenu = postalMenu + "</select></div>";
             document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
             document.getElementById("postalSelect").innerHTML = postalMenu;  
-            document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "or leave blank if specific to the entire city.";
+            document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "Leave 'Zip Code' blank if specific to the entire city.";
         }
     }
 }
@@ -80,7 +80,7 @@ function geoTagCountyChange(){
     document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if specific to the entire state."; 
+        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "Leave 'County' blank if specific to the entire state."; 
     } else {
         document.getElementById("citySelect").innerText = "";
         var urlString = '/geo/cityList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-");
@@ -92,7 +92,7 @@ function geoTagCountyChange(){
         var gobj = jQuery.parseJSON(cityList);
         if (gobj.result != "0") {
             var cities = gobj.result.split(/\|/);
-            var cityMenu = "<div class=\"span1\"></div><div class=\"span2\">City:</div><div class=\"span9\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"0\">Select a city</option>";
+            var cityMenu = "<div class=\"span3\">City:</div><div class=\"span8\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"0\">Select a city</option>";
             for(var i = 0;i < cities.length;i++){
                 if (cities[i] !== "") {
                     cityMenu = cityMenu + "<option value=\"" + cities[i] + "\">" + cities[i] + "</option>";
@@ -101,7 +101,7 @@ function geoTagCountyChange(){
             cityMenu = cityMenu + "</select></div>";
             document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
             document.getElementById("citySelect").innerHTML = cityMenu;  
-            document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if specific to the entire county.";
+            document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "Leave 'City' blank if specific to the entire county.";
         }
     }
 }
@@ -117,7 +117,7 @@ function geoTagStateChange(){
     document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if specific to the entire country.";
+        document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "Leave 'City' blank if specific to the entire country.";
     } else {
         document.getElementById("countySelect").innerText = "";
         var urlString = '/geo/countyList/united-states/' + stateName.replace(" ", "-");
@@ -129,7 +129,7 @@ function geoTagStateChange(){
         var gobj = jQuery.parseJSON(countyList);
         if (gobj.result != "0") {
             var counties = gobj.result.split(/\|/);
-            var countyMenu = "<div class=\"span1\"></div><div class=\"span2\">County:</div><div class=\"span9\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"0\">Select a county</option>";
+            var countyMenu = "<div class=\"span3\">County:</div><div class=\"span8\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"0\">Select a county</option>";
             for(var i = 0;i < counties.length;i++){
                 if (counties[i] !== "") {
                     countyMenu = countyMenu + "<option value=\"" + counties[i] + "\">" + counties[i] + "</option>";
@@ -138,7 +138,41 @@ function geoTagStateChange(){
             countyMenu = countyMenu + "</select></div>";
             document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
             document.getElementById("countySelect").innerHTML = countyMenu;  
-            document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if specific to the entire state.";
+            document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "Leave 'County' blank if specific to the entire state.";
+        }
+    }
+}
+
+function geoTagCountryChange(){
+    var selectIndex = document.getElementById("geoTagCountry").selectedIndex;
+    document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
+    document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
+    document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
+    document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
+    document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
+    if (selectIndex === 0) {
+        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "Leave 'Country' blank if specific to the entire planet.";
+    }
+    if (selectIndex === 1) {
+        var urlString = '/geo/stateList/united-states';
+        var stateList = $.ajax({
+            type : 'POST',
+            async : false,
+            url  : urlString
+        }).responseText;
+        var gobj = jQuery.parseJSON(stateList);
+        if (gobj.result != "0") {
+            var states = gobj.result.split(/\|/);
+            var stateMenu = "<div class=\"span3\">State:</div><div class=\"span8\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
+            for(var i = 0;i < states.length;i++){
+                if (states[i] !== "") {
+                    stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
+                }
+            }
+            stateMenu = stateMenu + "</select></div>";
+            document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
+            document.getElementById("stateSelect").innerHTML = stateMenu;            
+            document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "Leave 'State' blank if specific to the entire country.";
         }
     }
 }
@@ -153,7 +187,7 @@ $('.geoTagCountry').change(function(e){
     document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "or leave blank if specific to the entire planet.";
+        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "Leave 'Country' blank if specific to the entire planet.";
     }
     if (selectIndex === 1) {
         var urlString = '/geo/stateList/united-states';
@@ -165,7 +199,7 @@ $('.geoTagCountry').change(function(e){
         var gobj = jQuery.parseJSON(stateList);
         if (gobj.result != "0") {
             var states = gobj.result.split(/\|/);
-            var stateMenu = "<div class=\"span1\"></div><div class=\"span2\">State:</div><div class=\"span9\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
+            var stateMenu = "<div class=\"span3\">State:</div><div class=\"span8\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
             for(var i = 0;i < states.length;i++){
                 if (states[i] !== "") {
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
@@ -174,7 +208,7 @@ $('.geoTagCountry').change(function(e){
             stateMenu = stateMenu + "</select></div>";
             document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
             document.getElementById("stateSelect").innerHTML = stateMenu;            
-            document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if specific to the entire country.";
+            document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "Leave 'State' blank if specific to the entire country.";
         }
     }
 });

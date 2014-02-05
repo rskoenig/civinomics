@@ -39,11 +39,15 @@ def getDiscussions(disabled = '0', deleted = '0', discType = 'general'):
         return False
     
 def getDiscussionForThing(parent):
-    if parent.objType == 'discussion':
+    if parent.objType.replace("Unpublished", "") == 'discussion':
         return parent
-    thisKey = '%sCode' % parent.objType
+    thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['discussion', 'discussionUnpublished']))\
+        .filter(Thing.data.any(wc(thisKey, parent['urlCode'])))\
+        .filter(Thing.data.any(wc('discType', parent.objType)))\
+        .one()
     except:
         return False
 
@@ -54,6 +58,18 @@ def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', delete
         .filter(Thing.data.any(wc('discType', discType)))\
         .filter(Thing.data.any(wc('disabled', disabled)))\
         .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
+    except:
+        return False
+        
+def getUpdatesForInitiative(code, disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc('initiativeCode', code)))\
+        .filter(Thing.data.any(wc('discType', 'update')))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .order_by('-date')\
         .all()
     except:
         return False
@@ -80,23 +96,13 @@ def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = Fal
                 .filter_by(objType = 'discussion')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
         if rootDiscussions:
             q = q.filter(Thing.data.any(wc('discType', 'general')))
-        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
-        # and apply that as an additional filter within the database level.
-        rows = q.all()
-        keys = ['deleted', 'disabled', 'published', 'public_private']
-        values = [u'0', u'0', u'1', u'public']
-        discussions = []
-        for row in rows:
-            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
-            if not w:
-                continue
-            discussions.append(row)
         if count:
-            return len(discussions)
-        return discussions
+            return q.count()
+        return q.all()
     except Exception as e:
         print e
         return False
@@ -143,6 +149,8 @@ class Discussion(object):
             workshop = kwargs['workshop']
             d = generic.linkChildToParent(d, workshop)
             d = generic.addedItemAs(d, kwargs['privs'], role)
+        if 'owner' in kwargs.keys():
+            d = generic.linkChildToParent(d, kwargs['owner'])
         if 'text' in kwargs:
             d['text'] = kwargs['text']
         if 'attachedThing' in kwargs.keys():
