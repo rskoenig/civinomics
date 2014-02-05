@@ -143,8 +143,7 @@ class IdeaController(BaseController):
         ################## FB SHARE ###############################
         c.facebookShare.title = c.thing['title']
         # update url for this item
-        newUrl = utils.workshopURL(c.w) + utils.thingURL(c.w, c.thing)
-        c.facebookShare.updateUrl(newUrl)
+        c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
         # set description to be that of the topic's description
         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
         #################################################

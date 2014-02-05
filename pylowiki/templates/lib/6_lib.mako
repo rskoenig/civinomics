@@ -191,18 +191,17 @@
                 // there is no callback for messages sent
                 // we can simply record that the message dialog was brought up
                 // grab checked value of checkbox IF it's on the page. add to description.
+                
                 var thingCode = "${thingCode}";
-                var link = "${link}"
+                var link = "${link}";
                 var userCode = fbAuthId;
-                var workshopCode = "${workshopCode}"
+                var workshopCode = "${workshopCode}";
                 
-                
-                //caption: shareText,
-                //description: "${description}"
                 //console.log('tc mf: '+thingCode);
                 //console.log('wc mf: '+workshopCode);
                           
                 result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
+                console.log("3");
                 FB.ui(
                     {
                       method: 'send',
@@ -211,6 +210,7 @@
                       picture: "${image}"
                     }
                 );
+
             };
         
         </script>

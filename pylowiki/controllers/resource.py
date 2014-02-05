@@ -161,8 +161,7 @@ class ResourceController(BaseController):
         ################## FB SHARE ###############################
         c.facebookShare.title = c.thing['title']
         # update url for this item
-        newUrl = utils.thingURL(thingParent, c.thing)
-        c.facebookShare.updateUrl(newUrl)
+        c.facebookShare.updateUrl(utils.thingURL(thingParent, c.thing))
         # set description to be that of the topic's description
         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
         #################################################

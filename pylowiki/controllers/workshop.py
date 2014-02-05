@@ -1100,8 +1100,7 @@ class WorkshopController(BaseController):
         
     def info(self, workshopCode, workshopURL):
         
-        c.facebookShare.url = utils.workshopURL(c.w) + '/information'
-
+        c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/information')
         c.title = c.w['title']
 
         if c.w['public_private'] == 'public':
@@ -1138,8 +1137,7 @@ class WorkshopController(BaseController):
         
     def activity(self, workshopCode, workshopURL):
 
-        c.facebookShare.url = utils.workshopURL(c.w) + '/activity'
-
+        c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/activity')
         c.title = c.w['title']
 
         if c.w['public_private'] == 'public':
@@ -1160,8 +1158,7 @@ class WorkshopController(BaseController):
    
     def publicStats(self, workshopCode, workshopURL):
 
-        c.facebookShare.url = utils.workshopURL(c.w) + '/publicStats'
-
+        c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/publicStats')
         c.listingType = 'publicStats'
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
