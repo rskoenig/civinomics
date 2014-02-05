@@ -97,59 +97,59 @@ class HomeController(BaseController):
                     c.newWorkshops = newWorkshops
                     
             # get user's bookmarks, listening and facilitating
-            bookmarked = followLib.getWorkshopFollows(c.authuser)
-            watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in bookmarked ]
-            c.bookmarks = []
-            c.followingWorkshopCodes = []
-            for workshop in watchList:
-                c.bookmarks.append(workshop)
-                c.followingWorkshopCodes.append(workshop['urlCode'])
-            c.numB = len(c.bookmarks)
+            #bookmarked = followLib.getWorkshopFollows(c.authuser)
+            #watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in bookmarked ]
+            #c.bookmarks = []
+            #c.followingWorkshopCodes = []
+            #for workshop in watchList:
+                #c.bookmarks.append(workshop)
+                #c.followingWorkshopCodes.append(workshop['urlCode'])
+            #c.numB = len(c.bookmarks)
 
-            privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
-            if privateList:
-                pmemberWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
-                c.privateWorkshops = [w for w in pmemberWorkshops if w['public_private'] != 'public']
-                c.followingWorkshopCodes += [w['urlCode'] for w in pmemberWorkshops if w['public_private'] != 'public' and w['urlCode'] not in c.followingWorkshopCodes]
-            c.numPW = len(c.privateWorkshops)
+            #privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
+            #if privateList:
+                #pmemberWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                #c.privateWorkshops = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+                #c.followingWorkshopCodes += [w['urlCode'] for w in pmemberWorkshops if w['public_private'] != 'public' and w['urlCode'] not in c.followingWorkshopCodes]
+            #c.numPW = len(c.privateWorkshops)
 
-            listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-            c.pendingListeners = []
-            c.listeningWorkshops = []
-            for l in listenerList:
-                lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-                c.listeningWorkshops.append(lw)
+            #listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+            #c.pendingListeners = []
+            #c.listeningWorkshops = []
+            #for l in listenerList:
+                #lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+                #c.listeningWorkshops.append(lw)
                 #if lw['urlCode'] not in c.followingWorkshopCodes:
                 #c.followingWorkshopCodes.append(lw['urlCode'])
 
             #lwactivity = len(c.followingWorkshopCodes)
             #log.info("followingWorkshopCodes has %s items"%str(lwactivity))
        
-            c.numLW = len(c.listeningWorkshops)
+            #c.numLW = len(c.listeningWorkshops)
 
-            facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+            #facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
             #log.info('The facilitator objects: %s' % facilitatorList)
-            c.facilitatorWorkshops = []
+            #c.facilitatorWorkshops = []
             #declare initiatives here for facilitated initiatives
-            c.initiatives = []
-            c.pendingFacilitators = []
-            for f in facilitatorList:
-                if 'pending' in f and f['pending'] == '1':
-                    c.pendingFacilitators.append(f)
+            #c.initiatives = []
+            #c.pendingFacilitators = []
+            #for f in facilitatorList:
+                #if 'pending' in f and f['pending'] == '1':
+                    #c.pendingFacilitators.append(f)
                     #log.info('pending invitation!')
-                elif f['disabled'] == '0':
-                    if 'workshopCode' in f:
-                        myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-                        c.followingWorkshopCodes.append(myW['urlCode'])
-                        c.facilitatorWorkshops.append(myW)
+                #elif f['disabled'] == '0':
+                    #if 'workshopCode' in f:
+                        #myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+                        #c.followingWorkshopCodes.append(myW['urlCode'])
+                        #c.facilitatorWorkshops.append(myW)
                         #log.info('workshop added!')
-                    elif 'initiativeCode' in f:
-                        myI = initiativeLib.getInitiative(f['initiativeCode'])
-                        c.initiatives.append(myI)
-                        log.info('initiative added!')
+                    #elif 'initiativeCode' in f:
+                        #myI = initiativeLib.getInitiative(f['initiativeCode'])
+                        #c.initiatives.append(myI)
+                        #log.info('initiative added!')
 
             #log.info("Here be ze f items: %s" %c.facilitatorItems)
-            c.numA = len(c.facilitatorItems)
+            #c.numA = len(c.facilitatorItems)
 	        
             #log.info("c.followingWorkshopCodes is %s"%c.followingWorkshopCodes)
             #if c.followingWorkshopCodes:
@@ -175,31 +175,31 @@ class HomeController(BaseController):
                 #c.interestedActivity = activityLib.getRecentGeoActivity(30, countyScope)
 
 	        # initiatives
-            initiativeList = initiativeLib.getInitiativesForUser(c.user)
-            for i in initiativeList:
-                if i.objType == 'initiative':
+            #initiativeList = initiativeLib.getInitiativesForUser(c.user)
+            #for i in initiativeList:
+                #if i.objType == 'initiative':
                     #log.info("initiaitve 1")
-                    if i['public'] == '1':
-                        if i['deleted'] != '1':
-                            c.initiatives.append(i)
-                    else:
-                        if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
-                            c.initiatives.append(i)
-            c.numA += len(c.initiatives)
+                    #if i['public'] == '1':
+                        #if i['deleted'] != '1':
+                            #c.initiatives.append(i)
+                    #else:
+                        #if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                            #c.initiatives.append(i)
+            #c.numA += len(c.initiatives)
        
-            c.initiativeBookmarks = []
-            iwatching = followLib.getInitiativeFollows(c.user)
-            initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
-            for i in initiativeList:
-                if i.objType == 'initiative':
+            #c.initiativeBookmarks = []
+            #iwatching = followLib.getInitiativeFollows(c.user)
+            #initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
+            #for i in initiativeList:
+                #if i.objType == 'initiative':
                     #log.info("initiative 2")
-                    if i['public'] == '1':
-                        if i['deleted'] != '1':
-                            c.initiativeBookmarks.append(i)
-                    else:
-                        if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
-                            c.initiativeBookmarks.append(i)
-            c.numB += len(c.initiativeBookmarks)
+                    #if i['public'] == '1':
+                        #if i['deleted'] != '1':
+                            #c.initiativeBookmarks.append(i)
+                    #else:
+                        #if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                            #c.initiativeBookmarks.append(i)
+            #c.numB += len(c.initiativeBookmarks)
 	        
 	        #c.activity = c.interestedActivity
 
