@@ -951,7 +951,6 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
-        log.info("inside workshop display 1")
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
@@ -965,8 +964,6 @@ class WorkshopController(BaseController):
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w)):
             if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
                 c.facilitators.append(f)
-                
-        log.info("inside workshop display 2")
               
         c.activeListeners = []
         c.pendingListeners = []
@@ -987,8 +984,6 @@ class WorkshopController(BaseController):
                 s = slideLib.getSlide(id) # Don't grab deleted slides
                 if s:
                     c.slides.append(s)
-
-        log.info("inside workshop display 3")
         
         if not iPhoneApp:
             c.motd = motdLib.getMessage(c.w.id)
@@ -1002,12 +997,8 @@ class WorkshopController(BaseController):
         # not used
         #c.information = pageLib.getInformation(c.w)
         
-        log.info("inside workshop display 4")
-        
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-            
-        log.info("inside workshop display 4.1")
         
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
@@ -1038,8 +1029,6 @@ class WorkshopController(BaseController):
                 # performance bottleneck - and sorting of results will soon be done by angular
                 #discussions = sort.sortBinaryByTopPop(discussions)
                 c.discussions = discussions[0:3]
-
-        log.info("inside workshop display 5")
         
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
 

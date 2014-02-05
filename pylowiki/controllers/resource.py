@@ -57,14 +57,14 @@ class ResourceController(BaseController):
                 utils.isWatching(c.authuser, c.w)
 
             shareType = 'workshop'
-            shareUrl = c.shareUrlBase = utils.workshopURL(c.w)
+            shareUrl = utils.workshopURL(c.w)
             shareDescription = c.w['description'].replace("'", "\\'")
             shareOk = workshopLib.isPublic(c.w)
         elif parent.objType == 'initiative':
             c.initiative = parent
             userLib.setUserPrivs()
             shareType = 'initiative'
-            shareUrl = c.shareUrlBase = utils.initiativeURL(c.initiative)
+            shareUrl = utils.initiativeURL(c.initiative)
             # note: why doesn't the workshop description use misaka? if this changes over we'll need to
             #   catch this happening and mod the uses of c.w['description'] in places that can't handle html
             shareDescription = utils.getTextFromMisaka(c.initiative['description'])
@@ -146,7 +146,7 @@ class ResourceController(BaseController):
             #c.bgPhoto_url = "'" + c.photo_url + "'"
 
             c.bgPhoto_url, c.photo_url, c.thumbnail_url = utils.initiativeImageURL(c.initiative)
-            c.facebookShare.updateImageUrl(c.thumbnail_url)
+            c.facebookShare.updateImageUrl(c.photo_url)
             thingParent = c.initiative
 
         c.thing = resourceLib.getResourceByCode(resourceCode)

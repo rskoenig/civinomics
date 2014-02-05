@@ -5,20 +5,22 @@ from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.discussion   as discussionLib
-import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
-import pylowiki.lib.images          as imageLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+
+from pylowiki.lib.facebook          import FacebookShareObject
+import pylowiki.lib.helpers         as h
+import pylowiki.lib.images          as imageLib
+import pylowiki.lib.utils           as utils
 
 import simplejson as json
 
@@ -473,10 +475,6 @@ class InitiativeController(BaseController):
             
  
     def initiativeShowHandler(self):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
-        c.thingCode = c.initiative['urlCode']
 
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
         c.isFollowing = False
@@ -497,11 +495,29 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-        log.info(dir(c.initiative))
+        
         c.initiativeHome = True
 
         c.description_nohtml = utils.getTextFromMisaka(c.initiative['description'])
             
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        shareOk = initiativeLib.isPublic(c.initiative)
+        bgPhoto_url, photo_url, thumbnail_url = utils.initiativeImageURL(c.initiative)
+        c.facebookShare = FacebookShareObject(
+            itemType='initiative',
+            url=utils.initiativeURL(c.initiative),
+            thingCode=c.initiative['urlCode'],
+            title=c.initiative['title'],
+            description=c.description_nohtml,
+            image=photo_url,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
+
         return render('/derived/6_initiative_home.bootstrap')
 
 
