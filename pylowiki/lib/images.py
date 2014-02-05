@@ -178,10 +178,7 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, subIdentifier)
     savename = imageHash + '.png'
-    if not os.path.exists(pathname):
-        os.makedirs(pathname)
     
-    fullpath = os.path.join(pathname, savename)
     if 'thing' in kwargs:
         thing = kwargs['thing']
         thing['directoryNum'] = directoryNumber
@@ -191,6 +188,10 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
         thing[imageHashIdentifier] = imageHash
         commit(thing)
     
+    if not os.path.exists(pathname):
+        os.makedirs(pathname)
+    fullpath = os.path.join(pathname, savename)
+	
     # Now convert and save
     # only gif conversions seem to give trouble.
     # tested formats:   tiff (lzw/packbits/no compression, alpha/no-alpha)
@@ -251,6 +252,66 @@ def makeSurveyThumbnail(filename, directory, x, y, postfix):
     except:
         return False
     
+def userImageSource(user, **kwargs):
+    # Assumes 'user' is a Thing.
+    # Defaults to a gravatar source
+    # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+    #                          we return a source based on the value given here (civ/gravatar)
+    source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+    large = False
+    gravatar = True
+
+    if 'className' in kwargs:
+        if 'avatar-large' in kwargs['className']:
+            large = True
+    if 'forceSource' in kwargs:
+        if kwargs['forceSource'] == 'civ':
+            gravatar = False
+            if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            else:
+                source = '/images/hamilton.png'
+        elif kwargs['forceSource'] == 'facebook':
+            if large:
+                source = user['facebookProfileBig']
+            else:
+                source = user['facebookProfileSmall']
+        elif kwargs['forceSource'] == 'twitter':
+            source = user['twitterProfilePic']
+
+    else:
+        if 'avatarSource' in user.keys():
+            if user['avatarSource'] == 'civ':
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                    gravatar = False
+            elif user['avatarSource'] == 'facebook':
+                gravatar = False
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+            elif user['avatarSource'] == 'twitter':
+                gravatar = False
+                source = user['twitterProfilePic']
+
+        elif 'extSource' in user.keys():
+            # this is needed untl we're sure all facebook connected users have properly 
+            # functioning profile pics - the logic here is now handled 
+            # with the above user['avatarSource'] == 'facebook': ..
+            if 'facebookSource' in user.keys():
+                if user['facebookSource'] == u'1':
+                    gravatar = False
+                    # NOTE - when to provide large or small link?
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+    if large and gravatar:
+        source += '&s=200'
+    return source
+
+
 def smartCrop(directory, filename):
     """
          Takes an image at the path specified by 'filepath' and scane each row for transparent pixels.

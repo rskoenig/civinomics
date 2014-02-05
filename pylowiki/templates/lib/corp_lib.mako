@@ -46,8 +46,8 @@
 
 <%def name='list_news(articles)'>
     % for article in articles:
-        <div class="span8 news">   
-            <h4><a href="${article['link']}" target="_blank">${article['title']}</a></h3>
+        <div class="span10 news">   
+            <h4><a style="color: #333333;" href="${article['link']}" target="_blank">${article['title']}</a></h3>
             <strong>${article['source']}</strong>
             <p>${article['date']}</p>
         </div>
@@ -60,12 +60,12 @@
             <div class="span2">
                 <ul class="thumbnails">
                   <li>
-                      <img class="thumbnail" src="/images/corp/team/${member['photo']}" alt="">
+                      <img class="avatar avatar-large" src="/images/corp/team/${member['photo']}" alt="">
                   </li>
                 </ul>
             </div>
             <div class="span8">
-                <h4> ${member['name']} - ${member['title']} </h4>
+                <h4>Citizen ${member['name']} - ${member['title']} </h4>
                 <p>${member['bio']}</p>
             </div>
         </div><!--/.row-fluid-->

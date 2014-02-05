@@ -1,6 +1,7 @@
 <%! 
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.workshop      as workshopLib
+   import pylowiki.lib.db.initiative    as initiativeLib
    import pylowiki.lib.db.follow        as followLib
    import pylowiki.lib.db.activity      as activityLib
    import pylowiki.lib.db.goal          as goalLib
@@ -19,19 +20,26 @@
             % if not goals:
                This workshop has no goals!
             % else:
-               <div class="left-indent">
+               <div class="goals-preview">
                   Goals:
                   <br>
-                  <br>
                   <ul>
+                  <% count = 0 %>
                   % for goal in goals:
-                     % if goal['status'] == u'100':
-                        <li class="done-true">${goal['title']}</li>
-                     % else:
-                        <li>${goal['title']}</li>
+                     % if count <= 2:
+                        % if goal['status'] == u'100':
+                           <li class="done-true">${goal['title']}</li>
+                        % else:
+                           <li>${goal['title']}</li>
+                        % endif
+                        <% count += 1%>
                      % endif
                   % endfor
                   </ul>
+                  % if len(goals) > 3:
+                     <% moreGoals = len(goals) - 3 %>
+                     <p class="centered more">${moreGoals} more</p>
+                  % endif
                </div>
             % endif
          </span>
@@ -79,13 +87,19 @@
 <%def name="showActivity(item, **kwargs)">
    <div class="media">
       <%
-         w = workshopLib.getWorkshopByCode(item['workshopCode'])
-         thisUser = getUserByID(item.owner)
+        if 'workshopCode' in item:
+            parent = workshopLib.getWorkshopByCode(item['workshopCode'])
+        elif 'initiativeCode' in item:
+            parent = initiativeLib.getInitiative(item['initiativeCode'])
+        else:
+            parent = item
+        
+        thisUser = getUserByID(item.owner)
       %>
-      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar small-avatar', linkClass = 'media-object')}</div> 
+      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar', linkClass = 'media-object')}</div> 
       <div class="media-body">
          ${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} 
-         ${lib_6.showItemInActivity(item, w, **kwargs)}
+         ${lib_6.showItemInActivity(item, parent, **kwargs)}
       </div>
    </div>
 </%def>

@@ -2,7 +2,8 @@ from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, with_key as wk
+from pylons import session, tmpl_context as c
 
 import logging
 log = logging.getLogger(__name__)
@@ -22,6 +23,36 @@ def getRatingForThing(user, thing):
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
     except:
         return False
+     
+def getRatingsForUser():
+    userRatings = {}
+    itemTypes = {"commentCode" : "1", "ideaCode" : "1", "resourceCode" : "1", "photoCode" : "1", "initiativeCode" : "1"}
+    if c.authuser:
+        ratings = meta.Session.query(Thing)\
+            .filter_by(objType = 'rating')\
+            .filter_by(owner = c.authuser.id).all()
+
+        for rating in ratings:
+            for k in rating.keys():
+                if k in itemTypes:
+                    thingCode = rating[k];
+                    userRatings[thingCode] = rating['amount']
+                    
+        return userRatings
+        #log.info("c.ratings is %s"%c.ratings)
+    else:
+        return False
+
+        
+def getRatingForWorkshopObjects(user, workshopCode, objType):
+    objCode = objType + 'Code'
+    #log.info("objCode is %s workshopCode is %s"%(objCode, workshopCode))
+    return meta.Session.query(Thing)\
+            .filter_by(objType = 'rating')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wk(objCode)))\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
+
 
 def makeOrChangeRating(thing, user, amount, ratingType):
     if 'ups' not in thing.keys():
@@ -71,9 +102,21 @@ def makeOrChangeRating(thing, user, amount, ratingType):
             thing['ups'] = int(thing['ups']) + 1
         else:
             thing['downs'] = int(thing['downs']) + 1
+            
+        if user['activated'] == '0':
+            ratingObj['provisional'] = '1'
+            
         generic.linkChildToParent(ratingObj, thing)
         ratingObj['ratingType'] = ratingType
-        
+      
     commit(ratingObj)
     commit(thing)
+    if 'ratings' in session:
+        myRatings = session["ratings"]
+    else:
+        myRatings = {}
+    thingCode = thing['urlCode']
+    myRatings[thingCode] = str(amount)
+    session["ratings"] = myRatings
+    session.save()
     return ratingObj

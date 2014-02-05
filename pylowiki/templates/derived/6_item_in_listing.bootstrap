@@ -9,13 +9,25 @@
     d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
 %>
 
-<div class="spacer" style="height:20px;"></div>
-
 <div class="row-fluid">
   <div class="span12">
      <div class="section-wrapper">
         <div class="browse">
-            <h3 class="section-header"> ${d[c.listingType]} </h3>
+            <h4 class="section-header smaller"> ${d[c.listingType]} </h4>
+            % if 'alert' in session:
+                <% alert = session['alert'] %> 
+                <div class="alert alert-${alert['type']} workshop-admin">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${alert['title']}</strong>
+                    % if 'content' in alert:
+                        ${alert['content']}
+                    % endif
+                </div>
+                <% 
+                    session.pop('alert')
+                    session.save()
+                %>
+            % endif
             % if c.thing.objType == 'revision':
                 <div class="row-fluid">
                     <div class="span10 offset1">
@@ -26,14 +38,36 @@
                     </div>
                 </div>
             % endif
-            <div class="row-fluid">
-                 <div class="span1">
-                    ${lib_6.upDownVote(c.thing)}
+
+            % if c.thing.objType == 'idea':
+                <div class="row-fluid">
+                    <div class="span1">
+                    </div>
+                    <div class="span11">
+                        <div class="well yesNoWell">
+                            ${lib_6.yesNoVote(c.thing, 'detail')}
+                        </div>
+                        ${helpers.showItemTitle(c.thing)}
+                        <div class="spacer"></div>
+                        ${helpers.extraText(c.thing)}
+                    </div>
+                </div><!--/.row-fluid-->
+            % else:
+                <div class="row-fluid">
+                     <div class="span1">
+                        ${lib_6.upDownVote(c.thing)}
+                    </div>
+                    <div class="span11">
+                        ${helpers.showItemTitle(c.thing)}
+                    </div>
+                </div><!--/.row-fluid-->
+                <div class="row-fluid">
+                    <div class="span11 offset1">
+                        ${helpers.extraText(c.thing)}
+                    </div>
                 </div>
-                <div class="span11">
-                    ${helpers.showItemTitle(c.thing)}
-                </div>
-            </div><!--/.row-fluid-->
+            % endif
+
             <div class="spacer"></div>
             <%
                 if c.thing['disabled'] == '1':
@@ -42,18 +76,24 @@
                     if c.thing['adopted'] == '1':
                         helpers.showAdoptedMessage(c.thing)
             %>
-                ${helpers.extraText(c.thing)}
-                <div class="row-fluid">
-                    <div class="span12">
-                        <span class="pull-right">${helpers.showItemOwner(c.thing)}</span>
-                    </div>
+                
+            <div class="row-fluid">
+                <div class="span11 offset1">
+                    <span class="pull-right">${helpers.showItemOwner(c.thing)}</span>
                 </div>
-                <div class="row-fluid">
-                    <div class="span11 offset1">
-                        ${lib_6.facebookDialogShare(c.requestUrl)} ${lib_6.emailShare(c.requestUrl, c.thing['urlCode'])} ${helpers.moderationPanel(c.thing)}
-                        ${lib_6.revisionHistory(c.revisions, c.thing)}
-                    </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span11 offset1">
+                    <span class="share-icons right-space">
+                        ${lib_6.facebookDialogShare("%s%s"%(c.baseUrl, lib_6.thingLinkRouter(c.thing, c.w, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True, description=c.description)} 
+
+                        ${lib_6.emailShare(c.objectUrl, c.thing['urlCode'])}
+                    </span>
+                    ${helpers.moderationPanel(c.thing)}
+                    ${lib_6.revisionHistory(c.revisions, c.thing)}
                 </div>
+            </div>
+            
             % if c.thing.objType != 'revision':
             <div class="row-fluid">
                 <div class="span12">
@@ -77,6 +117,7 @@
 
 <%def name="extraScripts2()">
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
         $('.nullvote').tooltip();
