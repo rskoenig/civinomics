@@ -51,6 +51,17 @@ def getCommentsInDiscussion(discussion, deleted = '0', disabled = '0'):
     except:
        return False  
 
+def getCommentsInDiscussionByCode(discussionCode, deleted = '0', disabled = '0'):
+    try:
+       return meta.Session.query(Thing)\
+            .filter_by(objType = 'comment')\
+            .filter(Thing.data.any(wc('discussionCode', discussionCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+    except:
+       return False 
+
 def getDeletedComments(discussionID):
     try:
        cList = meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
@@ -169,6 +180,15 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
     thisComment = generic.linkChildToParent(thisComment, discussion)
     if attachedThing is not None:
         thisComment = generic.linkChildToParent(thisComment, attachedThing)
+        nComments = 0
+        if 'numComments' in attachedThing:
+            nComments = int(attachedThing['numComments'])
+            
+        nComments += 1
+        
+        attachedThing['numComments'] = str(nComments)
+        commit(attachedThing)
+        
         if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
             thisComment['profileCode'] = profileOwner['urlCode']
             thisComment['profile_url'] = profileOwner['url']

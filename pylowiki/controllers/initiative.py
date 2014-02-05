@@ -18,18 +18,36 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.images          as imageLib
 import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
 
 import simplejson as json
+import misaka as m
+import copy as copy
+from HTMLParser import HTMLParser
 
 log = logging.getLogger(__name__)
+
+###################################
+# MLStripper is part of the process of 
+# stripping html from misaka's markdown output
+###################################
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
 class InitiativeController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
+        log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit']
-        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
+        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
@@ -37,43 +55,53 @@ class InitiativeController(BaseController):
             if not c.user:
                 abort(404)
         elif action in existingList and id1 is not None and id2 is not None:
-                c.initiative = initiativeLib.getInitiative(id1)
+            c.initiative = initiativeLib.getInitiative(id1)
+            if not c.initiative:
+                c.initiative = revisionLib.getRevisionByCode(id1)
                 if not c.initiative:
-                    c.initiative = revisionLib.getRevisionByCode(id1)
-                    if not c.initiative:
-                        abort(404)
+                    abort(404)
                             
-                if c.initiative:
-                    c.user = userLib.getUserByCode(c.initiative['userCode'])
+            if c.initiative:
+                #log.info("got initiative")
+                c.user = userLib.getUserByCode(c.initiative['userCode'])
 
-                    scopeProps = utils.getPublicScope(c.initiative)
-                    scopeName = scopeProps['name'].title()
-                    scopeLevel = scopeProps['level'].title()
-                    if scopeLevel == 'Earth':
-                        c.scopeTitle = scopeName
-                    else:
-                        c.scopeTitle = scopeLevel + ' of ' + scopeName
-                    c.scopeFlag = scopeProps['flag']
-                    c.scopeHref = scopeProps['href']
-
-                    if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                        c.photo_url = "/images/photos/%s/orig/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                        c.bgPhoto_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                        c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                    else:
-                        c.photo_url = "/images/icons/generalInitiative_lg.jpg"
-                        c.thumbnail_url = "/images/icons/generalInitiative.jpg"
-                    c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
-
+                scopeProps = utils.getPublicScope(c.initiative)
+                scopeName = scopeProps['name'].title()
+                scopeLevel = scopeProps['level'].title()
+                if scopeLevel == 'Earth':
+                    c.scopeTitle = scopeName
                 else:
-                  abort(404)  
+                    c.scopeTitle = scopeLevel + ' of ' + scopeName
+                c.scopeFlag = scopeProps['flag']
+                c.scopeHref = scopeProps['href']
+
+                if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                    c.photo_url = "/images/photos/%s/orig/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                    c.bgPhoto_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                    c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                else:
+                    c.photo_url = "/images/icons/generalInitiative_lg.jpg"
+                    c.bgPhoto_url = "/images/icons/generalInitiative_lg.jpg"
+                    c.thumbnail_url = "/images/icons/generalInitiative.jpg"
+                c.bgPhoto_url = "'" + c.bgPhoto_url + "'"
+
+            else:
+                #log.info("abort 1")
+                abort(404)  
         else:
+            #log.info("abort 2")
             abort(404)
 
-        
         # only the author or an admin can edit 
         c.iPrivs = False
-        if 'user' in session and (c.user['email'] == c.authuser['email'] or userLib.isAdmin(c.authuser.id)):
+
+        facilitator = False
+        f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)
+        if f != False and f != 'NoneType' and len(f) != 0:
+            if f[0]['pending'] == '0' and f[0]['disabled'] == '0':
+                facilitator = True
+
+        if 'user' in session and (c.user['email'] == c.authuser['email'] or userLib.isAdmin(c.authuser.id)) or facilitator:
             c.iPrivs = True
 
         if action in adminList:
@@ -85,16 +113,37 @@ class InitiativeController(BaseController):
             c.complete = self.initiativeCheck()
             
         c.resources = []
+        c.updates = []
         if c.initiative:
+            #log.info("got initiative 2 action is %s"%action)
             # for compatibility with comments
             c.thing = c.initiative
             c.discussion = discussionLib.getDiscussionForThing(c.initiative)
+            c.updates = discussionLib.getUpdatesForInitiative(c.initiative['urlCode'])
             c.resources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'])
             disabledResources = resourceLib.getResourcesByInitiativeCode(c.initiative['urlCode'], '1')
             if disabledResources:
                 for dr in disabledResources:
                     c.resources.append(dr)
+                    
+        if action == 'updateShow' and id3 != None:
+            c.update = discussionLib.getDiscussion(id3)
+            if not c.update:
+                c.update = revisionLib.getRevisionByCode(id3)
+                if not c.update:
+                    abort(404)
+            # for compatability with comments
+            c.thing = c.update
             
+        if c.user:
+            userGeo = geoInfoLib.getGeoInfo(c.user.id)[0]
+            c.authorGeo = {}
+            c.authorGeo['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            c.authorGeo['cityTitle'] = userGeo['cityTitle']
+            c.authorGeo['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            c.authorGeo['stateTitle'] = userGeo['stateTitle']
+
+
         userLib.setUserPrivs()
 
 
@@ -113,7 +162,7 @@ class InitiativeController(BaseController):
         if 'initiativeRegionScope' in request.params:
             scope = request.params['initiativeRegionScope']
         else:
-            scope = '0|0|0|0|0|0|0|0|0|0'
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
@@ -372,7 +421,7 @@ class InitiativeController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if c.iPrivs == False:
             abort(404)
 
         if 'files[]' in request.params:
@@ -443,6 +492,7 @@ class InitiativeController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.baseUrl = utils.getBaseUrl()
+        c.thingCode = c.initiative['urlCode']
 
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
         c.isFollowing = False
@@ -458,10 +508,53 @@ class InitiativeController(BaseController):
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
 
+        c.authors = [c.user]
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            if author['pending'] == '0' and author['disabled'] == '0':
+                c.authors.append(author)
+
         c.initiativeHome = True
+
+        # create html-free description for sharing on facebook
+        formatDescription = copy.copy(c.initiative['description'])
+        descriptionHtml = m.html(formatDescription, render_flags=m.HTML_SKIP_HTML)
+        s = MLStripper()
+        s.feed(descriptionHtml)
+        descriptionWithLineBreaks = s.get_data()
+        descriptionNoLineBreaks = descriptionWithLineBreaks.replace('\n', ' ').replace('\r', '')
+        c.description_nohtml = utils.cap(descriptionNoLineBreaks, 400)
+
             
         return render('/derived/6_initiative_home.bootstrap')
-        
+
+
+    def getInitiativeAuthors(self):
+        authors = []
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
+        for author in coAuthors:
+            authors.append(author)
+
+        result = []
+        for a in authors:
+            entry = {}
+            u = userLib.getUserByID(a.owner)
+            entry['name'] = u['name']
+            entry['photo'] = utils._userImageSource(u)
+            entry['urlCode'] = u['urlCode']
+            entry['url'] = u['url']
+            entry['pending'] = a['pending']
+            userGeo = geoInfoLib.getGeoInfo(u.id)[0]
+            entry['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            entry['cityTitle'] = userGeo['cityTitle']
+            entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            entry['stateTitle'] = userGeo['stateTitle']
+
+            result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode': 0, 'result': result})
+
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):
@@ -480,23 +573,39 @@ class InitiativeController(BaseController):
             
         return render('/derived/6_initiative_resource.bootstrap')
         
-    @h.login_required
-    def resourceEditHandler(self, id1, id2, id3):
+    def updateShow(self):
+        c.revisions = revisionLib.getRevisionsForThing(c.update)
         
-        if 'user' not in session:
-            abort(404)
-        if 'resourceTitle' in request.params():
-            title = request.params('resourceTitle')
+        return render('/derived/6_initiative_update.bootstrap')
+        
+    @h.login_required       
+    def updateEdit(self):
+        
+        return render('/derived/6_initiative_update.bootstrap')
+        
+    @h.login_required
+    def updateEditHandler(self):
+        
+        payload = json.loads(request.body)
+        if 'title' in payload:
+            title = payload['title']
         else:
-            title = "Sample title"
+            title = "Sample Title"
+        
+        if not c.update:
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'update', attachedThing = c.initiative, title = title)
+            log.info("got d.d, objtype of d is %s"%d.d.objType)
             
-        if 'resourceLink' in request.params():
-            link = request.params('resourceLink')
-        else:
-            title = "http://example.com"
+        d.d['title'] = title
             
-        if 'resourceText' in request.params():
-            title = request.params('resourceText')
+        if 'text' in payload:
+            d.d['text'] = payload['text']
         else:
-            title = "Sample text"
+            d.d['text'] = "Sample text"
+            
+        dbHelpers.commit(d.d)
+        revisionLib.Revision(c.authuser, d.d)
+        
+        jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
+        return jsonReturn
             

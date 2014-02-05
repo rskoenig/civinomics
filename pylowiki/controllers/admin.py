@@ -37,12 +37,12 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives']:
+        if action in ['users', 'usersNotActivated', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
         # Actions that require a workshop and a workshop child object
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish', 'activate']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -60,7 +60,6 @@ class AdminController(BaseController):
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
             elif 'initiativeCode' in c.thing:
-                # a comment of a photo
                 parent = generic.getThing(c.thing['initiativeCode'])
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
@@ -69,7 +68,7 @@ class AdminController(BaseController):
                 userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item
-            if userLib.isAdmin(author.id):
+            if c.thing.objType != 'user' and userLib.isAdmin(author.id):
                 if not userLib.isAdmin(c.authuser.id):
                     """
                         Why are we not returning here?  Pylons will only accept an abort() here
@@ -106,12 +105,13 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt', 'publish', 'unpublish']:
-            if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
-                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
-                    abort(404)
-            else:
+            if 'workshopCode' in c.thing:
                 if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                     abort(404)
+            else:
+                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
+                    abort(404)
+                    
         if action in ['enable', 'disable', 'immunify', 'delete', 'adopt']:
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
@@ -132,6 +132,10 @@ class AdminController(BaseController):
                 
     def users(self):
         c.list = userLib.getAllUsers()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def usersNotActivated(self):
+        c.list = userLib.getNotActivatedUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def photos(self):
@@ -277,6 +281,10 @@ class AdminController(BaseController):
         elif thing.objType.replace("Unpublished", "") == 'initiative':
             extraInfo = action + 'Initiative'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, initiativeCode = thing['urlCode'])
+        elif thing.objType.replace("Unpublished", "") == 'discussion':
+            eventTitle = '%s Initiative Update' % (action.title())
+            extraInfo = action + 'InitiativeUpdate'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, updateCode = thing['urlCode'])
         elif thing.objType.replace("Unpublished", "") == 'resource':
             extraInfo = action + 'InitiativeResource'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, resourceCode = thing['urlCode'])
@@ -368,6 +376,8 @@ class AdminController(BaseController):
         if 'workshopCode' in c.thing:
             dparent = generic.getThing(c.thing['workshopCode'])
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'initiative':
+            returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -461,3 +471,10 @@ class AdminController(BaseController):
     def setDemo(self, thingCode):
         response = workshopLib.setDemo(c.thing)
         return response
+        
+    def activate(self, thingCode):
+        user = c.thing
+        user['activated'] = "1"
+        dbHelpers.commit(user)
+        result = "Activated"
+        return json.dumps({'code':thingCode, 'result':result})

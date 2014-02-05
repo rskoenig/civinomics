@@ -1,4 +1,6 @@
 <%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
 <%def name="display_body_right_content()">
     <div class="rowfluid">
 
@@ -29,7 +31,7 @@
                     </br>
                     <div class="pull-right" style="padding-right: 30px;">
                         <div class="divButton">
-                            <a class="btn btn-primary btn-large" href="mailto:info@civinomics.com" target="_blank">Request a Quote</a>
+                            ${mako.formatEmail("info@civinomics.com", "Request a Quote", 2)}
                         </div>  
                     </div>
                     <div class="span5" style="text-align: left;">
@@ -46,3 +48,6 @@
     
 </%def>
 
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>

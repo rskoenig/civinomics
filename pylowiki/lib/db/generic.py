@@ -49,6 +49,8 @@ def linkChildToParent(child, parent):
         child['workshop_title'] = parent['workshop_title']
     if 'workshop_url' in parent:
         child['workshop_url'] = parent['workshop_url']
+        if 'workshopCode' in parent:
+            child['workshopCode'] = parent['workshopCode']
     if parent.objType == 'workshop':
         child['workshop_title'] = parent['title']
         child['workshop_url'] = parent['url']
