@@ -120,3 +120,9 @@ def Initiative(owner, title, description, scope, workshop = None):
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
     return i
+
+def isPublic(initiative):
+    if initiative['public'] == '1':
+        return True
+    else:
+        return False
