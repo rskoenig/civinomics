@@ -116,7 +116,7 @@
                                     body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
                                 %>
                                 % if c.initiative['public'] == '1':
-                                    ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.initiativeLink(c.initiative, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.thumbnail_url), shareOnWall=True, sendMessage=True, btn=True, title=c.initiative['title'], description=c.description_nohtml)}
+                                    ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
 
                                     % if not c.privs['provisional']:
                                         <a class="btn btn-danger" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
@@ -170,6 +170,26 @@
         </div><!-- span4 -->
     </div><!-- row-fluid -->
 </div><!-- row-fluid -->
+
+<%def name="headScripts()">
+    % if c.facebookShare.facebookAppId:
+        <meta property="fb:app_id" content="${c.facebookShare.facebookAppId}" />
+    % endif
+    % if c.facebookShare.title:
+        <meta property="og:title" content="${c.facebookShare.title}" />
+    % endif
+    <meta property="og:site_name" content="Civinomics"/>
+    <meta property="og:locale" content="en_US" /> 
+    % if c.facebookShare.url:
+        <meta property="og:url" content="${c.facebookShare.url}" />
+    % endif
+    % if c.facebookShare.description:
+        <meta property="og:description" content="${c.facebookShare.description}" />
+    % endif
+    % if c.facebookShare.image:
+        <meta property="og:image" content="${c.facebookShare.image}"/>
+    % endif
+</%def>
 
 <%def name="extraScripts()">
    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>

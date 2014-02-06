@@ -27,10 +27,12 @@ import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
-import pylowiki.lib.utils               as utils
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+
+from pylowiki.lib.facebook              import FacebookShareObject
 import pylowiki.lib.images              as imageLib
+import pylowiki.lib.utils               as utils
 
 import time, datetime
 import simplejson as json
@@ -363,15 +365,6 @@ class ProfileController(BaseController):
         # the next area of fields is needed for sharing functions
         c.imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png"
         c.photoLink = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + c.photo['urlCode']
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.requestUrl = request.url
-        c.thingCode = id3
 
         if 'views' not in c.photo:
             c.photo['views'] = u'0'
@@ -418,7 +411,24 @@ class ProfileController(BaseController):
                         c.city = geoInfoLib.geoDeurlify(scope[8].title())
                         if scope[9] != '' and scope[9] != '0':
                             c.postal = scope[9]
-                            
+                    
+
+        #################################################
+        # these values are needed for facebook sharing
+        shareOk = photoLib.isPublic(c.photo)
+        c.facebookShare = FacebookShareObject(
+            itemType='photo',
+            url=c.photoLink,
+            thingCode=id3, 
+            image=c.imgSrc,
+            title=c.photoTitle,
+            description=c.description,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
+
         return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):
