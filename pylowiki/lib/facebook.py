@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 class FacebookShareObject(object):
 
-    def __init__(self, itemType=None, url=None, thingCode=None, image=None, title="", description=None, caption="", shareOk=None):
+    def __init__(self, itemType=None, url=None, parentCode=None, thingCode=None, image=None, title="", description=None, caption="", shareOk=None):
     
         self.facebookAppId = config['facebook.appid']
         self.channelUrl = config['facebook.channelUrl']
@@ -30,6 +30,11 @@ class FacebookShareObject(object):
             self.url = self.baseUrl
         else:
             self.url = self.baseUrl + url
+
+        if parentCode is None:
+            self.parentCode = 'noCode'
+        else:
+            self.parentCode = parentCode
 
         if thingCode is None:
             self.thingCode = 'noCode'

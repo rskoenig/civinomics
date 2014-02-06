@@ -80,7 +80,7 @@ class ResourceController(BaseController):
         c.facebookShare = FacebookShareObject(
             itemType=shareType,
             url=shareUrl,
-            thingCode=parentCode,
+            parentCode=parentCode,
             title=c.title,
             description=shareDescription,
             shareOk = shareOk
@@ -160,6 +160,7 @@ class ResourceController(BaseController):
 
         ################## FB SHARE ###############################
         c.facebookShare.title = c.thing['title']
+        c.facebookShare.thingCode = c.thingCode
         # update url for this item
         c.facebookShare.updateUrl(utils.thingURL(thingParent, c.thing))
         # set description to be that of the topic's description

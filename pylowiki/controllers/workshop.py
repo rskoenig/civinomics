@@ -157,7 +157,7 @@ class WorkshopController(BaseController):
         c.facebookShare = FacebookShareObject(
             itemType='workshop',
             url=utils.workshopURL(c.w),
-            thingCode=workshopCode, 
+            parentCode=workshopCode, 
             image=c.backgroundImage,
             title=c.w['title'],
             description=c.w['description'].replace("'", "\\'"),

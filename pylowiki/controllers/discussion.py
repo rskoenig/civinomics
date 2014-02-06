@@ -49,7 +49,7 @@ class DiscussionController(BaseController):
         c.facebookShare = FacebookShareObject(
             itemType='workshop',
             url=utils.workshopURL(c.w) + '/discussion',
-            thingCode=workshopCode, 
+            parentCode=workshopCode, 
             image=c.backgroundImage,
             title=c.w['title'],
             description=c.w['description'].replace("'", "\\'"),
@@ -103,6 +103,7 @@ class DiscussionController(BaseController):
         
         ################## FB SHARE ###############################
         c.facebookShare.title = c.thing['title']
+        c.facebookShare.thingCode = c.thingCode
         # update url for this item
         c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
         # set description to be that of the topic's description

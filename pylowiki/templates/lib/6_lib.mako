@@ -43,7 +43,7 @@
         #log.info("link %s and image %s"%(link, image))
         userCode = ''
 
-        workshopCode = c.facebookShare.thingCode
+        parentCode = c.facebookShare.parentCode
 
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
@@ -176,12 +176,12 @@
                           var thingCode = "${thingCode}";
                           var link = "${link}"
                           var userCode = fbAuthId;
-                          var workshopCode = "${workshopCode}"
+                          var parentCode = "${parentCode}"
                           
                           //console.log('tc: '+thingCode);
-                          //console.log('wc: '+workshopCode);
+                          //console.log('wc: '+parentCode);
 
-                          result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode, 'facebook-wall');
+                          result = postShared(response, thingCode, link, response.post_id, userCode, parentCode, 'facebook-wall');
                         }
                     }
                 );
@@ -195,12 +195,12 @@
                 var thingCode = "${thingCode}";
                 var link = "${link}";
                 var userCode = fbAuthId;
-                var workshopCode = "${workshopCode}";
+                var parentCode = "${parentCode}";
                 
                 //console.log('tc mf: '+thingCode);
-                //console.log('wc mf: '+workshopCode);
+                //console.log('wc mf: '+parentCode);
                           
-                result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
+                result = postShared("no response", thingCode, link, '0', userCode, parentCode, 'facebook-message');
                 console.log("3");
                 FB.ui(
                     {

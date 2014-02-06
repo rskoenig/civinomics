@@ -508,7 +508,7 @@ class InitiativeController(BaseController):
         c.facebookShare = FacebookShareObject(
             itemType='initiative',
             url=utils.initiativeURL(c.initiative),
-            thingCode=c.initiative['urlCode'],
+            parentCode=c.initiative['urlCode'],
             title=c.initiative['title'],
             description=c.description_nohtml,
             image=photo_url,
