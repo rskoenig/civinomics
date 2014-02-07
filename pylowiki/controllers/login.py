@@ -554,66 +554,12 @@ class LoginController(BaseController):
         session.save()
         
         # get their workshops and initiatives of interest
-        bookmarkedWorkshops = []
-        privateWorkshops = []
-        listenerWorkshops = []
-        facilitatorWorkshops = []
-        interestedWorkshops = []
-        facilitatorInitiatives = []
-        bookmarkedInitiatives = []
-        facilitatorInitiatives = []
-        
-        bookmarked = followLib.getWorkshopFollows(c.authuser)
-        bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
-        session["bookmarkedWorkshops"] = bookmarkedWorkshops
-        session.save()
-
-        privateList = pMemberLib.getPrivateMemberWorkshops(c.authuser, deleted = '0')
-        if privateList:
-            pmemberWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
-            privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
-            privateWorkshops = [w['urlCode'] for w in privateList]
-        session["privateWorkshops"] = privateWorkshops
-        session.save()
-		
-        listenerList = listenerLib.getListenersForUser(c.authuser, disabled = '0')
-        listenerWorkshops = [lw['workshoplCode'] for lw in listenerList]
-        session["listenerWorkshops"] = listenerWorkshops
-        session.save()
-        
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.authuser)
-        for f in facilitatorList:
-            if f['disabled'] == '0':
-                if 'workshopCode' in f:
-                    facilitatorWorkshops.append(f['workshopCode'])
-                elif 'initiativeCode' in f:
-                    facilitatorInitiatives.append(f['initiativeCode'])
-                    
-        session["facilitatorWorkshops"] = facilitatorWorkshops
-        session.save()
-        
-        interestedWorkshops = list(set(listenerWorkshops + bookmarkedWorkshops + privateWorkshops + facilitatorWorkshops))
-        session["interestedWorkshops"] = interestedWorkshops
-        session.save()
-        
-        # initiatives
-        initiativeList = initiativeLib.getInitiativesForUser(c.authuser)
-        facilitatorInitiatives = [initiative['urlCode'] for initiative in initiativeList]
-
-        session["facilitatorInitiatives"] = facilitatorInitiatives
-        session.save()
-        
-        iwatching = followLib.getInitiativeFollows(c.user)
-        if iwatching:
-            initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
-            for i in initiativeList:
-                if i.objType == 'initiative':
-                    if i['public'] == '1':
-                        if i['deleted'] != '1':
-                            bookmarkedInitiatives.append(i)
-                            
-        session["bookmarkedInitiatives"] = bookmarkedInitiatives
-        session.save()
+        followLib.setWorkshopFollowsInSession()
+        pMemberLib.setPrivateMemberWorkshopsInSession()
+        listenerLib.setListenersForUserInSession()
+        facilitatorLib.setFacilitatorsByUserInSession()
+        initiativeLib.setInitiativesForUserInSession()
+        followLib.setInitiativeFollowsInSession()
 
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:

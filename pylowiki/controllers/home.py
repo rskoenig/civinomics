@@ -209,7 +209,7 @@ class HomeController(BaseController):
         # get recent activity and return it into json format
         result = []
 		
-        interestedWorkshops = []
+        interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
         if 'interestedWorkshops' in session:
             interestedWorkshops = session['interestedWorkshops']
         if interestedWorkshops:

@@ -2,6 +2,7 @@
 import logging
 
 from sqlalchemy import and_
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit, with_characteristic as wc
@@ -39,6 +40,13 @@ def getWorkshopFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'workshopCode'))).all()
     except:
         return False
+
+def setWorkshopFollowsInSession(fwdisabled = '0'):        
+    bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
+    bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+    session["bookmarkedWorkshops"] = bookmarkedWorkshops
+    session.save()
+    log.info("workshop follows")
         
 # Which initiatives is the user following
 def getInitiativeFollows( user, disabled = '0'):
@@ -50,6 +58,20 @@ def getInitiativeFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'initiativeCode'))).all()
     except:
         return False
+        
+def setInitiativeFollowsInSession(idisabled = '0'):
+        bookmarkedInitiatives = []
+        iwatching = getInitiativeFollows(c.authuser)
+        if iwatching:
+            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in iwatching ]
+            for i in initiativeList:
+                if i.objType == 'initiative':
+                    if i['public'] == '1':
+                        if i['deleted'] != '1':
+                            bookmarkedInitiatives.append(i['urlCode'])
+                            
+        session["bookmarkedInitiatives"] = bookmarkedInitiatives
+        session.save()
 
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):

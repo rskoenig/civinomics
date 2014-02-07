@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
-from pylons import tmpl_context as c
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.utils import toBase62
 import sqlalchemy as sa
@@ -53,6 +53,15 @@ def getPrivateMemberWorkshops(user, deleted = '0'):
 
     retlist = pmalist + pmdlist
     return retlist
+
+def setPrivateMemberWorkshopsInSession(pwdeleted = '0'): 
+    privateList = getPrivateMemberWorkshops(c.authuser, deleted = pwdeleted)
+    if privateList:
+        pmemberWorkshops = [genericLib.getThing(pMemberObj['workshopCode']) for pMemberObj in privateList]
+        privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+        privateWorkshops = [w['urlCode'] for w in privateList]
+    session["privateWorkshops"] = privateWorkshops
+    session.save()
 
 def PMember(workshopCode, email, type, owner, user = None):
     p = Thing('pmember', owner.id)
