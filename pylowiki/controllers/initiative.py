@@ -129,6 +129,24 @@ class InitiativeController(BaseController):
             c.authorGeo['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
             c.authorGeo['stateTitle'] = userGeo['stateTitle']
 
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        shareOk = initiativeLib.isPublic(c.initiative)
+        bgPhoto_url, photo_url, thumbnail_url = utils.initiativeImageURL(c.initiative)
+        c.description_nohtml = utils.getTextFromMisaka(c.initiative['description'])
+        c.facebookShare = FacebookShareObject(
+            itemType='initiative',
+            url=utils.initiativeURL(c.initiative),
+            parentCode=c.initiative['urlCode'],
+            title=c.initiative['title'],
+            description=c.description_nohtml,
+            image=photo_url,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
 
         userLib.setUserPrivs()
 
@@ -497,26 +515,6 @@ class InitiativeController(BaseController):
                 c.authors.append(author)
         
         c.initiativeHome = True
-
-        c.description_nohtml = utils.getTextFromMisaka(c.initiative['description'])
-            
-        ################## FB SHARE ###############################
-        # these values are needed for facebook sharing of a workshop
-        # - details for sharing a specific idea are modified in the view idea function
-        shareOk = initiativeLib.isPublic(c.initiative)
-        bgPhoto_url, photo_url, thumbnail_url = utils.initiativeImageURL(c.initiative)
-        c.facebookShare = FacebookShareObject(
-            itemType='initiative',
-            url=utils.initiativeURL(c.initiative),
-            parentCode=c.initiative['urlCode'],
-            title=c.initiative['title'],
-            description=c.description_nohtml,
-            image=photo_url,
-            shareOk = shareOk
-        )
-        # add this line to tabs in the workshop in order to link to them on a share:
-        # c.facebookShare.url = c.facebookShare.url + '/activity'
-        #################################################
 
         return render('/derived/6_initiative_home.bootstrap')
 
