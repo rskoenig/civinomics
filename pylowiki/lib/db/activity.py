@@ -204,20 +204,16 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
     objTypes = ['resource', 'discussion', 'idea']
     finalActivityList = []
     try:
-        initialActivityList = meta.Session.query(Thing)\
+        activityList = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objTypes))\
             .filter(Thing.data.any(and_(Data.key == u'workshopCode', Data.value.in_(workshopCodes))))\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('workshop_searchable', u'1')))\
             .order_by('-date')\
             .all()
-        # Messy
-        for activity in initialActivityList:
-            if activity.objType == 'discussion' and activity['discType'] != 'general':
-                continue
-            else:
-                finalActivityList.append(activity)
-        return finalActivityList
+            
+        return activityList
     except:
         return False
 

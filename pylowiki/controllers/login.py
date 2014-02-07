@@ -554,6 +554,7 @@ class LoginController(BaseController):
         session.save()
         
         # get their workshops and initiatives of interest
+        #log.info("start session cache")
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
         pMemberLib.setPrivateMemberWorkshopsInSession()
@@ -561,8 +562,9 @@ class LoginController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
+        #log.info("end session cache")
 
-        log.info("login:logUserIn")
+        #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
             if kwargs['iPhoneApp'] != True:
                 if 'externalAuthType' in user.keys():
