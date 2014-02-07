@@ -544,7 +544,7 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        log.info("login:logUserIn session save")
+        #log.info("login:logUserIn session save")
 
         c.authuser = user
         
@@ -555,6 +555,7 @@ class LoginController(BaseController):
         
         # get their workshops and initiatives of interest
         followLib.setWorkshopFollowsInSession()
+        followLib.setUserFollowsInSession()
         pMemberLib.setPrivateMemberWorkshopsInSession()
         listenerLib.setListenersForUserInSession()
         facilitatorLib.setFacilitatorsByUserInSession()
