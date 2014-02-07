@@ -172,23 +172,25 @@
 </div><!-- row-fluid -->
 
 <%def name="headScripts()">
-    % if c.facebookShare.facebookAppId:
+    % if c.facebookShare:
         % if c.facebookShare.facebookAppId:
-            <meta property="fb:app_id" content="${c.facebookShare.facebookAppId}" />
-        % endif
-        % if c.facebookShare.title:
-            <meta property="og:title" content="${c.facebookShare.title}" />
-        % endif
-        <meta property="og:site_name" content="Civinomics"/>
-        <meta property="og:locale" content="en_US" /> 
-        % if c.facebookShare.url:
-            <meta property="og:url" content="${c.facebookShare.url}" />
-        % endif
-        % if c.facebookShare.description:
-            <meta property="og:description" content="${c.facebookShare.description}" />
-        % endif
-        % if c.facebookShare.image:
-            <meta property="og:image" content="${c.facebookShare.image}"/>
+            % if c.facebookShare.facebookAppId:
+                <meta property="fb:app_id" content="${c.facebookShare.facebookAppId}" />
+            % endif
+            % if c.facebookShare.title:
+                <meta property="og:title" content="${c.facebookShare.title}" />
+            % endif
+            <meta property="og:site_name" content="Civinomics"/>
+            <meta property="og:locale" content="en_US" /> 
+            % if c.facebookShare.url:
+                <meta property="og:url" content="${c.facebookShare.url}" />
+            % endif
+            % if c.facebookShare.description:
+                <meta property="og:description" content="${c.facebookShare.description}" />
+            % endif
+            % if c.facebookShare.image:
+                <meta property="og:image" content="${c.facebookShare.image}"/>
+            % endif
         % endif
     % endif
 </%def>
