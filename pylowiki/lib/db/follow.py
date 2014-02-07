@@ -124,15 +124,33 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
     # (dict notation).
     try:
         f = getFollow(user, thing)
+        thingCode = thing['urlCode']
+        if thing.objType == 'workshop':
+            sKey = 'bookmarkedWorkshops'
+        elif thing.objType == 'initiative':
+            sKey = 'bookmarkedInitiatives'
+        elif thing.objType == 'user':
+            sKey = 'followingUsers'
         if f:
             # Ugly hack to reverse the bit when it's stored as a string
             f['disabled'] = str(int(not int(f['disabled'])))
+            if f['disabled'] == '1':
+                if sKey in session and thingCode in session[sKey]:
+                    session[sKey].remove(thingCode)
+                    log.info("follow - removing %s from session"%thingCode)
+            else:
+                if sKey in session and thingCode not in session[sKey]:
+                    session[sKey].append(thingCode)
+                    log.info("follow - adding %s to session"%thingCode)
         else:
             f = Thing('follow', user.id)
             generic.linkChildToParent(f, thing)
             f['itemAlerts'] = '0'
             f['digest'] = '0'
             f['disabled'] = disabled
+            
+            if sKey in session and thingCode not in session[sKey]:
+                session[sKey].append(thingCode)
         
         if thing.objType == 'user': 
             fKey = 'follower_counter'
@@ -171,6 +189,8 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
 
         commit(user)
         commit(f)
+        
+        session.save()
         return True
     except:
         return False

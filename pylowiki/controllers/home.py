@@ -210,10 +210,10 @@ class HomeController(BaseController):
         result = []
 		
         interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
-        if 'interestedWorkshops' in session:
-            interestedWorkshops = session['interestedWorkshops']
+        log.info("interestedWorkshops is %s"%interestedWorkshops)
         if interestedWorkshops:
             recentActivity =  activityLib.getActivityForWorkshopList(12, interestedWorkshops)
+            log.info("interestedWorkshops used as list")
         else:
             recentActivity = activityLib.getRecentActivity(12)
             
