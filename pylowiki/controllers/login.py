@@ -17,13 +17,6 @@ from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
-import pylowiki.lib.db.workshop     	as workshopLib
-import pylowiki.lib.db.facilitator      as facilitatorLib
-import pylowiki.lib.db.listener         as listenerLib
-import pylowiki.lib.db.pmember      	as pMemberLib
-import pylowiki.lib.db.facilitator      as facilitatorLib
-import pylowiki.lib.db.initiative   	as initiativeLib
-import pylowiki.lib.db.follow       	as followLib
 
 # twython imports
 from twython import Twython
@@ -552,15 +545,6 @@ class LoginController(BaseController):
         ratings = ratingLib.getRatingsForUser()
         session["ratings"] = ratings
         session.save()
-        
-        # get their workshops and initiatives of interest
-        pMemberLib.setPrivateMemberWorkshopsInSession()
-        listenerLib.setListenersForUserInSession()
-        facilitatorLib.setFacilitatorsByUserInSession()
-        initiativeLib.setInitiativesForUserInSession()
-        followLib.setWorkshopFollowsInSession()
-        followLib.setInitiativeFollowsInSession()
-        followLib.setUserFollowsInSession()
 
         log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:

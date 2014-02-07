@@ -40,12 +40,6 @@ def getWorkshopFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'workshopCode'))).all()
     except:
         return False
-
-def setWorkshopFollowsInSession(fwdisabled = '0'):        
-    bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
-    bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
-    session["bookmarkedWorkshops"] = bookmarkedWorkshops
-    session.save()
         
 # Which initiatives is the user following
 def getInitiativeFollows( user, disabled = '0'):
@@ -58,20 +52,6 @@ def getInitiativeFollows( user, disabled = '0'):
     except:
         return False
         
-def setInitiativeFollowsInSession(idisabled = '0'):
-        bookmarkedInitiatives = []
-        iwatching = getInitiativeFollows(c.authuser)
-        if iwatching:
-            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in iwatching ]
-            for i in initiativeList:
-                if i.objType == 'initiative':
-                    if i['public'] == '1':
-                        if i['deleted'] != '1':
-                            bookmarkedInitiatives.append(i['urlCode'])
-                            
-        session["bookmarkedInitiatives"] = bookmarkedInitiatives
-        session.save()
-
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):
     try:
@@ -82,12 +62,6 @@ def getUserFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'userCode'))).all()
     except:
         return False
-        
-def setUserFollowsInSession(udisabled = '0'):        
-    following = getUserFollows(c.authuser, disabled = udisabled)
-    followingUsers = [ followObj['userCode'] for followObj in following ]
-    session["followingUsers"] = followingUsers
-    session.save()
 
 # get the Follow object for this user and thing
 def getFollow( user, thing ):
