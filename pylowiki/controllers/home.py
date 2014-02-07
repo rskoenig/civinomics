@@ -101,12 +101,20 @@ class HomeController(BaseController):
     def getActivity(self):
         # get recent activity and return it into json format
         result = []
+        allActivity = []
 		
         interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
-        log.info("interestedWorkshops is %s"%interestedWorkshops)
         if interestedWorkshops:
-            recentActivity =  activityLib.getActivityForWorkshopList(12, interestedWorkshops)
-            log.info("interestedWorkshops used as list")
+            allActivity +=  activityLib.getActivityForWorkshopList(12, interestedWorkshops)
+            
+        interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
+        if interestedInitiatives:
+            allActivity +=  activityLib.getActivityForInitiativeList(12, interestedInitiatives)
+
+        if allActivity:
+            allActivity.sort(key=lambda x: x.date, reverse=True)
+            la = len(allActivity)
+            recentActivity = allActivity[0:12]
         else:
             recentActivity = activityLib.getRecentActivity(12)
             

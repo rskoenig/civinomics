@@ -219,7 +219,6 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
 
 def getRecentActivity(number, publicPrivate = 'public'):
         limit = number
-        returnList = []
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
         postList = meta.Session.query(Thing)\
@@ -230,11 +229,13 @@ def getRecentActivity(number, publicPrivate = 'public'):
             .order_by('-date')\
             .limit(limit)
 
-        return postList
+        if postList:
+            return postList
+        else:
+            return []
 
 def getRecentGeoActivity(number, scope, offset = 0, json = 0):
         limit = number
-        returnList = []
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
         postList = meta.Session.query(Thing)\
@@ -246,11 +247,13 @@ def getRecentGeoActivity(number, scope, offset = 0, json = 0):
             .order_by('-date')\
             .limit(limit)
 
-        return postList
+        if postList:
+            return postList
+        else:
+            return []
 
 def getActivityForWorkshopList(number, workshops, comments = 0, offset = 0, json = 0):
         limit = number
-        returnList = []
         objectList = ['idea', 'resource', 'discussion', 'initiative']
         if comments:
             objectList.append('comment')
@@ -263,11 +266,13 @@ def getActivityForWorkshopList(number, workshops, comments = 0, offset = 0, json
             .order_by('-date')\
             .limit(limit)
 
-        return postList
+        if postList:
+            return postList
+        else:
+            return []
         
 def getActivityForInitiativeList(number, initiatives, comments = 0, offset = 0, json = 0):
         limit = number
-        returnList = []
         objectList = ['resource', 'discussion']
         if comments:
             objectList.append('comment')
@@ -275,12 +280,14 @@ def getActivityForInitiativeList(number, initiatives, comments = 0, offset = 0, 
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(wc('public', u'1')))\
-            .filter(Thing.data.any(wkil('initiativeCode', workshops)))\
+            .filter(Thing.data.any(wc('initiative_public', u'1')))\
+            .filter(Thing.data.any(wkil('initiativeCode', initiatives)))\
             .order_by('-date')\
             .limit(limit)
-
-        return postList
+        if postList:
+            return postList
+        else:
+            return []
         
 def getActivityForUserList(number, users, offset = 0, json = 0):
         limit = number
@@ -294,4 +301,7 @@ def getActivityForUserList(number, users, offset = 0, json = 0):
             .order_by('-date')\
             .limit(limit)
         
-        return postList
+        if postList:
+            return postList
+        else:
+            return []
