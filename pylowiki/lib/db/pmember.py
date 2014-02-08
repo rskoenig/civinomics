@@ -54,12 +54,14 @@ def getPrivateMemberWorkshops(user, deleted = '0'):
     retlist = pmalist + pmdlist
     return retlist
 
-def setPrivateMemberWorkshopsInSession(pwdeleted = '0'): 
+def setPrivateMemberWorkshopsInSession(pwdeleted = '0'):
+    privateWorkshops = []
     privateList = getPrivateMemberWorkshops(c.authuser, deleted = pwdeleted)
     if privateList:
         pmemberWorkshops = [genericLib.getThing(pMemberObj['workshopCode']) for pMemberObj in privateList]
         privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
-        privateWorkshops = [w['urlCode'] for w in privateList]
+        privateWorkshops += [w['urlCode'] for w in privateList]
+        
     session["privateWorkshops"] = privateWorkshops
     session.save()
 

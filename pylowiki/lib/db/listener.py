@@ -52,14 +52,11 @@ def getListenersForUser(user, disabled = 0):
         return False
 
 def setListenersForUserInSession(lwdisabled = 0):
+    listenerWorkshops = []
     listenerList = getListenersForUser(c.authuser, disabled = lwdisabled)
-    if not listenerList:
-        listenerWorkshops = []
-    else:
-        listenerWorkshops = [lw['workshoplCode'] for lw in listenerList]
-        
-    if not listenerWorkshops:
-        listenerWorkshops = []
+    if listenerList:
+        listenerWorkshops += [lw['workshopCode'] for lw in listenerList]      
+
     session["listenerWorkshops"] = listenerWorkshops
     session.save()
         

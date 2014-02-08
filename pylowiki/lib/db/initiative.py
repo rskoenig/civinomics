@@ -27,17 +27,17 @@ def getInitiativesForUser(user):
         return False
 
 def setInitiativesForUserInSession():        
-        # initiatives
-        if 'facilitatorInitiatives' in session:
-            facilitatorInitiatives = session['facilitatorInitiatives']
-        else:
-            facilitatorInitiatives = []
+    # initiatives
+    if 'facilitatorInitiatives' in session:
+        facilitatorInitiatives = session['facilitatorInitiatives']
+    else:
+        facilitatorInitiatives = []
             
-        initiativeList = getInitiativesForUser(c.authuser)
-        facilitatorInitiatives += [initiative['urlCode'] for initiative in initiativeList if initiative['urlCode'] not in facilitatorInitiatives]
+    initiativeList = getInitiativesForUser(c.authuser)
+    facilitatorInitiatives += [initiative['urlCode'] for initiative in initiativeList if initiative['urlCode'] not in facilitatorInitiatives]
 
-        session["facilitatorInitiatives"] = facilitatorInitiatives
-        session.save()
+    session["facilitatorInitiatives"] = facilitatorInitiatives
+    session.save()
         
 def getAllInitiatives():
     try:

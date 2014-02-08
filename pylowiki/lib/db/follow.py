@@ -43,7 +43,10 @@ def getWorkshopFollows( user, disabled = '0'):
 
 def setWorkshopFollowsInSession(fwdisabled = '0'):        
     bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
-    bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+    if bookmarked:
+        bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+    else:
+        bookmarkedWorkshops = []
     session["bookmarkedWorkshops"] = bookmarkedWorkshops
     session.save()
         
@@ -85,8 +88,11 @@ def getUserFollows( user, disabled = '0'):
         
 def setUserFollowsInSession(udisabled = '0'):        
     following = getUserFollows(c.authuser, disabled = udisabled)
-    userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
-    followingUsers = [ user.id for user in userList ]
+    if following:
+        userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
+        followingUsers = [ user.id for user in userList ]
+    else:
+        followingUsers = []
     session["followingUsers"] = followingUsers
     session.save()
 
