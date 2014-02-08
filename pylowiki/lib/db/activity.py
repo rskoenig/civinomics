@@ -234,12 +234,15 @@ def getRecentActivity(number, publicPrivate = 'public'):
         else:
             return []
 
-def getRecentGeoActivity(number, scope, offset = 0, json = 0):
+def getRecentGeoActivity(number, scope, comments = 0, offset = 0, json = 0):
         limit = number
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        if comments:
+            objectList.append('comment')
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wkcl('_scope', scope)))\
@@ -291,7 +294,6 @@ def getActivityForInitiativeList(number, initiatives, comments = 0, offset = 0, 
         
 def getActivityForUserList(number, users, comments = 0, offset = 0, json = 0):
         limit = number
-        log.info("users is %s"%users)
         objectList = ['idea', 'resource', 'discussion', 'initiative']
         if comments:
             objectList.append('comment')
@@ -304,7 +306,6 @@ def getActivityForUserList(number, users, comments = 0, offset = 0, json = 0):
             .order_by('-date')\
             .limit(limit)
         if postList:
-            log.info("got postList %s"%postList)
             return postList
         else:
             return []

@@ -11,7 +11,7 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.page import get_all_pages
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
-from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
+from pylowiki.lib.db.geoInfo import getGeoInfo, getGeoScope, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.workshop import getActiveWorkshops
 
 import pylowiki.lib.db.user         	as userLib
@@ -98,30 +98,42 @@ class HomeController(BaseController):
 
         return render('/derived/6_home.bootstrap')
         
-    def getActivity(self):
+    def getActivity(self, max = 0, offset = 0):
         # get recent activity and return it into json format
         result = []
         allActivity = []
-		
-        interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
-        if interestedWorkshops:
-            allActivity +=  activityLib.getActivityForWorkshopList(12, interestedWorkshops)
+        
+        # for now, until the angular call is set up to handle slices
+        max = 30
+
+        if c.privs['participant']:
+            interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
+            if interestedWorkshops:
+                allActivity +=  activityLib.getActivityForWorkshopList(max, interestedWorkshops)
             
-        interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
-        if interestedInitiatives:
-            allActivity +=  activityLib.getActivityForInitiativeList(12, interestedInitiatives)
+            interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
+            if interestedInitiatives:
+                allActivity +=  activityLib.getActivityForInitiativeList(max, interestedInitiatives)
             
-        interestedUsers = session['followingUsers']
-        if interestedUsers:
-            allActivity +=  activityLib.getActivityForUserList(12, interestedUsers)
-            log.info("interestedUsers is %s"%interestedUsers)
+            interestedUsers = session['followingUsers']
+            
+            if interestedUsers:
+                allActivity +=  activityLib.getActivityForUserList(max, interestedUsers)
 
         if allActivity:
             allActivity.sort(key=lambda x: x.date, reverse=True)
             la = len(allActivity)
-            recentActivity = allActivity[0:12]
+            recentActivity = allActivity[0:max]
         else:
-            recentActivity = activityLib.getRecentActivity(12)
+            # try getting the activity of their area
+            userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+            scopeList = userScope.split('|')
+            countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
+            #log.info("countyScope is %s"%countyScope)
+            recentActivity = activityLib.getRecentGeoActivity(max, countyScope)
+            if not recentActivity:
+                # okay, get the recent system activity in general
+                recentActivity = activityLib.getRecentActivity(max)
             
         myRatings = {}
         if 'ratings' in session:
