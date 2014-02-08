@@ -58,6 +58,20 @@
           </li>
         </ul><!-- thumbnails -->
     </div><!-- row-fluid -->
+    % if c.authuser['activated'] == '0':
+        <div class="row-fluid">
+            <div class="alert alert-success">
+                <strong>Welcome!</strong> Your Civinomics registration is almost complete!<p>
+                <p>Check your email for a message from <strong>registration@civinomics.com</strong>, and click on the activation
+                link inside to validate and complete your Civinomics registration. If you do not see the message in your inbox, 
+                be sure to check your Spam or Junk folder.<p>
+                <p>Until your registration is complete, your votes are marked as provisional and will be discarded after 2 weeks.<p>
+                <p>Your completed registration will allow you to add items, make comments, cast permanent votes, 
+                launch initiatives, start workshops and utilize all of the Civinomics tools to hack your future.<p>
+                <p>Can't find the registration email? <button class="btn btn-mini btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Registration Email</button> <span id="resendMessage"></span>
+            </div><!-- alert -->
+        </div><!-- row-fluid -->
+    % endif
     <div class="row-fluid">
 
       ###
@@ -172,6 +186,7 @@
         });
     </script>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
     <script type="text/javascript">
