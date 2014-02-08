@@ -110,6 +110,11 @@ class HomeController(BaseController):
         interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
         if interestedInitiatives:
             allActivity +=  activityLib.getActivityForInitiativeList(12, interestedInitiatives)
+            
+        interestedUsers = session['followingUsers']
+        if interestedUsers:
+            allActivity +=  activityLib.getActivityForUserList(12, interestedUsers)
+            log.info("interestedUsers is %s"%interestedUsers)
 
         if allActivity:
             allActivity.sort(key=lambda x: x.date, reverse=True)

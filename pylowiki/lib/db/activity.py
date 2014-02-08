@@ -289,19 +289,22 @@ def getActivityForInitiativeList(number, initiatives, comments = 0, offset = 0, 
         else:
             return []
         
-def getActivityForUserList(number, users, offset = 0, json = 0):
+def getActivityForUserList(number, users, comments = 0, offset = 0, json = 0):
         limit = number
-        returnList = []
+        log.info("users is %s"%users)
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        if comments:
+            objectList.append('comment')
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative', 'comment']))\
+            .filter(Thing.owner.in_(users))\
+            .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(wkil('userCode', users)))\
             .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
             .order_by('-date')\
             .limit(limit)
-        
         if postList:
+            log.info("got postList %s"%postList)
             return postList
         else:
             return []

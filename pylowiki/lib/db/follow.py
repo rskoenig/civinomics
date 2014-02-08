@@ -85,7 +85,8 @@ def getUserFollows( user, disabled = '0'):
         
 def setUserFollowsInSession(udisabled = '0'):        
     following = getUserFollows(c.authuser, disabled = udisabled)
-    followingUsers = [ followObj['userCode'] for followObj in following ]
+    userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
+    followingUsers = [ user.id for user in userList ]
     session["followingUsers"] = followingUsers
     session.save()
 
@@ -131,6 +132,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             sKey = 'bookmarkedInitiatives'
         elif thing.objType == 'user':
             sKey = 'followingUsers'
+            thingCode = user.id
         if f:
             # Ugly hack to reverse the bit when it's stored as a string
             f['disabled'] = str(int(not int(f['disabled'])))
