@@ -98,7 +98,7 @@ class HomeController(BaseController):
 
         return render('/derived/6_home.bootstrap')
         
-    def getActivity(self, max = 0, offset = 0):
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 0):
         # get recent activity and return it into json format
         result = []
         allActivity = []
@@ -110,23 +110,26 @@ class HomeController(BaseController):
             # combine the list of interested workshops
             interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
             if interestedWorkshops:
-                allActivity +=  activityLib.getActivityForWorkshopList(max, interestedWorkshops)
+                allActivity +=  activityLib.getActivityForWorkshopList(0, interestedWorkshops, 0, offset)
+                log.info("activity len workshoplist is %s"%len(allActivity))
             
             # combine the list of interested initiatives
             interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
             if interestedInitiatives:
-                allActivity +=  activityLib.getActivityForInitiativeList(max, interestedInitiatives)
+                allActivity +=  activityLib.getActivityForInitiativeList(0, interestedInitiatives)
+                log.info("activity len workshoplist is %s"%len(allActivity))
             
             # users being followed
             interestedUsers = session['followingUsers']
             if interestedUsers:
-                allActivity +=  activityLib.getActivityForUserList(max, interestedUsers)
+                allActivity +=  activityLib.getActivityForUserList(0, interestedUsers, 0, offset)
+                log.info("activity len workshoplist is %s"%len(allActivity))
 
         if allActivity:
             # the use of set() removes duplicate entries from the list of objects
             # and the other arguments specify the object key for sorting and the sort order
             allActivity = sorted(set(allActivity), key=lambda x: x.date, reverse=True)
-            recentActivity = allActivity[0:max]
+            recentActivity = allActivity[offset:max]
         else:
             # try getting the activity of their area
             userScope = getGeoScope( c.authuser['postalCode'], "United States" )

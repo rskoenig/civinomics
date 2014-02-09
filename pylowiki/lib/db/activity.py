@@ -217,94 +217,112 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
     except:
         return False
 
-def getRecentActivity(number, publicPrivate = 'public'):
-        limit = number
-        keys = ['deleted', 'disabled', 'published', 'public_private']
-        values = [u'0', u'0', u'1', u'public']
-        postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative']))\
+def getRecentActivity(limit, comments = 0, offset = 0):
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        if comments:
+            objectList.append('comment')
+        q = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
             .order_by('-date')\
-            .limit(limit)
+            .offset(offset)
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
 
         if postList:
             return postList
         else:
             return []
 
-def getRecentGeoActivity(number, scope, comments = 0, offset = 0, json = 0):
-        limit = number
+def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
         objectList = ['idea', 'resource', 'discussion', 'initiative']
         if comments:
             objectList.append('comment')
-        postList = meta.Session.query(Thing)\
+        q = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wkcl('_scope', scope)))\
             .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
             .order_by('-date')\
-            .limit(limit)
+            .offset(offset)
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
 
         if postList:
             return postList
         else:
             return []
 
-def getActivityForWorkshopList(number, workshops, comments = 0, offset = 0, json = 0):
-        limit = number
+def getActivityForWorkshopList(limit, workshops, comments = 0, offset = 0):
         objectList = ['idea', 'resource', 'discussion', 'initiative']
         if comments:
             objectList.append('comment')
-        postList = meta.Session.query(Thing)\
+        q = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wkil('workshopCode', workshops)))\
             .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
             .order_by('-date')\
-            .limit(limit)
+            .offset(offset)
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
 
         if postList:
             return postList
         else:
             return []
         
-def getActivityForInitiativeList(number, initiatives, comments = 0, offset = 0, json = 0):
-        limit = number
+def getActivityForInitiativeList(limit, initiatives, comments = 0, offset = 0):
         objectList = ['resource', 'discussion']
         if comments:
             objectList.append('comment')
-        postList = meta.Session.query(Thing)\
+        q = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wc('initiative_public', u'1')))\
             .filter(Thing.data.any(wkil('initiativeCode', initiatives)))\
             .order_by('-date')\
-            .limit(limit)
+            .offset(offset)
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
+            
         if postList:
             return postList
         else:
             return []
         
-def getActivityForUserList(number, users, comments = 0, offset = 0, json = 0):
-        limit = number
+def getActivityForUserList(limit, users, comments = 0, offset = 0):
         objectList = ['idea', 'resource', 'discussion', 'initiative']
         if comments:
             objectList.append('comment')
-        postList = meta.Session.query(Thing)\
+        q = meta.Session.query(Thing)\
             .filter(Thing.owner.in_(users))\
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
             .order_by('-date')\
-            .limit(limit)
+            .offset(offset)
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
+
         if postList:
             return postList
         else:
