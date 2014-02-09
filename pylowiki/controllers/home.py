@@ -121,7 +121,8 @@ class HomeController(BaseController):
                 allActivity +=  activityLib.getActivityForUserList(max, interestedUsers)
 
         if allActivity:
-            allActivity.sort(key=lambda x: x.date, reverse=True)
+            allActivity = sorted(set(allActivity), key=lambda x: x.date, reverse=True)
+            #allActivity.sort(key=lambda x: x.date, reverse=True)
             la = len(allActivity)
             recentActivity = allActivity[0:max]
         else:
