@@ -2,6 +2,7 @@
 import logging
 
 from sqlalchemy import and_
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit, with_characteristic as wc
@@ -50,7 +51,7 @@ def getInitiativeFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'initiativeCode'))).all()
     except:
         return False
-
+        
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):
     try:
