@@ -327,3 +327,29 @@ def getActivityForUserList(limit, users, comments = 0, offset = 0):
             return postList
         else:
             return []
+            
+def getActivityForObjectAndUserList(limit, objects, users, comments = 0, offset = 0):
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        if comments:
+            objectList.append('comment')
+        q = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objectList))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
+            .filter(Thing.data.any(or_(or_(wkil('initiativeCode', objects), wkil('workshopCode', objects), Thing.owner.in_(users)))))\
+            .order_by('-date').offset(offset)
+        
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
+            
+        if postList:
+            return postList
+        else:
+            return []
+
+
+
+            return []
