@@ -31,59 +31,60 @@
 
 <%def name="facebookDialogShare2(**kwargs)">
     <%
-        # link: direct url to item being shared
-        # picture: url of the parent workshop's background image
-        facebookAppId = int(c.facebookShare.facebookAppId)
-        #log.info("app id %s and %s"%(c.facebookShare.facebookAppId, facebookAppId))
-        channelUrl = c.facebookShare.channelUrl
-        thingCode = c.facebookShare.thingCode
-
-        link = c.facebookShare.url
-        image = c.facebookShare.image
-        #log.info("link %s and image %s"%(link, image))
-        userCode = ''
-
-        parentCode = c.facebookShare.parentCode
-
-        # in order to prevent the javascript for these buttons from being included multiple
-        # times, these kwargs are now used to activate either or both of the buttons
-        if 'shareOnWall' in kwargs:
-            if kwargs['shareOnWall'] is True:
-                shareOnWall = True
-            else:
-                shareOnWall = False
-        else:
-            shareOnWall = False
-
-        if 'sendMessage' in kwargs:
-            if kwargs['sendMessage'] is True:
-                sendMessage = True
-            else:
-                sendMessage = False
-        else:
-            sendMessage = False
-        
-
-        title = c.facebookShare.title
-        description = c.facebookShare.description
-
-        # this is an elaborate way to get the item or workshop's description loaded as the caption
-        caption = c.facebookShare.caption
-        if c.thing:
-            if 'text' in c.thing.keys():
-                caption = c.thing['text']
-            else:
-                caption = ''
-
         shareOk = False
-        if 'photoShare' in kwargs:
-            if kwargs['photoShare'] == True:
-                shareOk = True
-        
-        shareOk = c.facebookShare.shareOk
+        shareOn = False
+        if c.facebookShare:
+            if c.facebookShare.facebookAppId:
+                shareOn = True
+                # link: direct url to item being shared
+                # picture: url of the parent workshop's background image
+                facebookAppId = int(c.facebookShare.facebookAppId)
+                #log.info("app id %s and %s"%(c.facebookShare.facebookAppId, facebookAppId))
+                channelUrl = c.facebookShare.channelUrl
+                thingCode = c.facebookShare.thingCode
+
+                link = c.facebookShare.url
+                image = c.facebookShare.image
+                #log.info("link %s and image %s"%(link, image))
+                userCode = ''
+
+                parentCode = c.facebookShare.parentCode
+
+                # in order to prevent the javascript for these buttons from being included multiple
+                # times, these kwargs are now used to activate either or both of the buttons
+                if 'shareOnWall' in kwargs:
+                    if kwargs['shareOnWall'] is True:
+                        shareOnWall = True
+                    else:
+                        shareOnWall = False
+                else:
+                    shareOnWall = False
+
+                if 'sendMessage' in kwargs:
+                    if kwargs['sendMessage'] is True:
+                        sendMessage = True
+                    else:
+                        sendMessage = False
+                else:
+                    sendMessage = False
+                
+
+                title = c.facebookShare.title
+                description = c.facebookShare.description
+
+                # this is an elaborate way to get the item or workshop's description loaded as the caption
+                caption = c.facebookShare.caption
+                if c.thing:
+                    if 'text' in c.thing.keys():
+                        caption = c.thing['text']
+                    else:
+                        caption = ''
+                
+                shareOk = c.facebookShare.shareOk
 
     %>
-    % if shareOk:
+
+    % if shareOk and shareOn:
         <div id="fb-root"></div>
         <script src="/js/extauth.js" type="text/javascript"></script>
         <script>
