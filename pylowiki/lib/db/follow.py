@@ -138,7 +138,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             sKey = 'bookmarkedInitiatives'
         elif thing.objType == 'user':
             sKey = 'followingUsers'
-            thingCode = user.id
+            thingCode = thing.id
         if f:
             # Ugly hack to reverse the bit when it's stored as a string
             f['disabled'] = str(int(not int(f['disabled'])))
@@ -158,6 +158,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             f['disabled'] = disabled
             
             if sKey in session and thingCode not in session[sKey]:
+                log.info("follow of %s in %s"%(thingCode, skey))
                 session[sKey].append(thingCode)
         
         if thing.objType == 'user': 

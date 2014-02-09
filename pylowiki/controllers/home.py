@@ -107,23 +107,25 @@ class HomeController(BaseController):
         max = 30
 
         if c.privs['participant']:
+            # combine the list of interested workshops
             interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
             if interestedWorkshops:
                 allActivity +=  activityLib.getActivityForWorkshopList(max, interestedWorkshops)
             
+            # combine the list of interested initiatives
             interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
             if interestedInitiatives:
                 allActivity +=  activityLib.getActivityForInitiativeList(max, interestedInitiatives)
             
+            # users being followed
             interestedUsers = session['followingUsers']
-            
             if interestedUsers:
                 allActivity +=  activityLib.getActivityForUserList(max, interestedUsers)
 
         if allActivity:
+            # the use of set() removes duplicate entries from the list of objects
+            # and the other arguments specify the object key for sorting and the sort order
             allActivity = sorted(set(allActivity), key=lambda x: x.date, reverse=True)
-            #allActivity.sort(key=lambda x: x.date, reverse=True)
-            la = len(allActivity)
             recentActivity = allActivity[0:max]
         else:
             # try getting the activity of their area
@@ -131,9 +133,10 @@ class HomeController(BaseController):
             scopeList = userScope.split('|')
             countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
             #log.info("countyScope is %s"%countyScope)
+            # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
             recentActivity = activityLib.getRecentGeoActivity(max, countyScope)
             if not recentActivity:
-                # okay, get the recent system activity in general
+                # # this is sorted by reverse date order by the SELECT in getRecentActivity
                 recentActivity = activityLib.getRecentActivity(max)
             
         myRatings = {}
