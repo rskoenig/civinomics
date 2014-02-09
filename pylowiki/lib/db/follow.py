@@ -145,23 +145,25 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             if f['disabled'] == '1':
                 if sKey in session and thingCode in session[sKey]:
                     session[sKey].remove(thingCode)
-                    log.info("follow - removing %s from session"%thingCode)
             else:
+                log.info("follow thing enabled")
                 if sKey in session and thingCode not in session[sKey]:
                     session[sKey].append(thingCode)
-                    log.info("follow - adding %s to session"%thingCode)
         else:
             f = Thing('follow', user.id)
             generic.linkChildToParent(f, thing)
             f['itemAlerts'] = '0'
             f['digest'] = '0'
             f['disabled'] = disabled
-            
-            if sKey in session and thingCode not in session[sKey]:
-                log.info("follow of %s in %s"%(thingCode, skey))
+            if sKey in session and session[sKey] and thingCode not in session[sKey]:
                 session[sKey].append(thingCode)
+            elif sKey in session and not session[sKey]:
+                session[sKey].append(thingCode)
+                
+            log.info("follow after new thing 4")
         
-        if thing.objType == 'user': 
+        if thing.objType == 'user':
+            log.info("follow type is user")
             fKey = 'follower_counter'
             if f['disabled'] == '0':
                 if fKey in thing:
@@ -179,6 +181,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
                     thing[fKey] = '0'
             fKey = 'follow_counter'
         elif thing.objType == 'workshop' or thing.objType == 'initiative':
+            log.info("follow type is workshop or initiative")
             fKey = 'bookmark_counter'
         
         if f['disabled'] == '0':
@@ -195,7 +198,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
                 user[fKey] = str(fValue)
             else:
                 user[fKey] = '0'
-
+        log.info("doing commit")
         commit(user)
         commit(f)
         

@@ -329,6 +329,8 @@ def getActivityForUserList(limit, users, comments = 0, offset = 0):
             return []
             
 def getActivityForObjectAndUserList(limit, objects, users, comments = 0, offset = 0):
+        if not objects and not users:
+            return []
         objectList = ['idea', 'resource', 'discussion', 'initiative']
         if comments:
             objectList.append('comment')
