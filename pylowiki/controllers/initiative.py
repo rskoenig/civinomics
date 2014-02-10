@@ -132,18 +132,19 @@ class InitiativeController(BaseController):
         ################## FB SHARE ###############################
         # these values are needed for facebook sharing of a workshop
         # - details for sharing a specific idea are modified in the view idea function
-        shareOk = initiativeLib.isPublic(c.initiative)
-        bgPhoto_url, photo_url, thumbnail_url = utils.initiativeImageURL(c.initiative)
-        c.description_nohtml = utils.getTextFromMisaka(c.initiative['description'])
-        c.facebookShare = FacebookShareObject(
-            itemType='initiative',
-            url=utils.initiativeURL(c.initiative),
-            parentCode=c.initiative['urlCode'],
-            title=c.initiative['title'],
-            description=c.description_nohtml,
-            image=photo_url,
-            shareOk = shareOk
-        )
+        if c.initiative:
+            shareOk = initiativeLib.isPublic(c.initiative)
+            bgPhoto_url, photo_url, thumbnail_url = utils.initiativeImageURL(c.initiative)
+            c.description_nohtml = utils.getTextFromMisaka(c.initiative['description'])
+            c.facebookShare = FacebookShareObject(
+                itemType='initiative',
+                url=utils.initiativeURL(c.initiative),
+                parentCode=c.initiative['urlCode'],
+                title=c.initiative['title'],
+                description=c.description_nohtml,
+                image=photo_url,
+                shareOk = shareOk
+            )
         # add this line to tabs in the workshop in order to link to them on a share:
         # c.facebookShare.url = c.facebookShare.url + '/activity'
         #################################################

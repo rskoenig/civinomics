@@ -149,7 +149,7 @@
                                 </form>
                             % endif
 
-                        % elif message['extraInfo'] in ['authorResponse']:
+                        % elif message['extraInfo'] in ['authorResponse'] and 'initiativeCode' in message:
                             <% 
                                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                             %>
