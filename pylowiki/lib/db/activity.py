@@ -349,7 +349,3 @@ def getActivityForObjectAndUserList(limit, objects, users, comments = 0, offset 
             return postList
         else:
             return []
-
-
-
-            return []

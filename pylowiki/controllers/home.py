@@ -120,7 +120,7 @@ class HomeController(BaseController):
                 log.info("activity interestedUsers is %s"%interestedUsers)
 
                 # this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
-                allActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, comments = 0, offset = 0)
+                allActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, 0)
 
             if allActivity:
                 log.info("activity allActivity")
@@ -133,7 +133,7 @@ class HomeController(BaseController):
                 countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
                 #log.info("countyScope is %s"%countyScope)
                 # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-                recentActivity = activityLib.getRecentGeoActivity(max, countyScope)
+                recentActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, 0)
                 if not recentActivity:
                     log.info("activity try all recent")
                     # this is sorted by reverse date order by the SELECT in getRecentActivity
@@ -215,6 +215,7 @@ class HomeController(BaseController):
                 entry['parentObjType'] = 'initiative'
 
             # author data
+            # CCN - need to find a way to optimize this lookup
             author = userLib.getUserByID(item.owner)
             entry['authorName'] = author['name']
             entry['authorPhoto'] = utils._userImageSource(author)
