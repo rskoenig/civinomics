@@ -96,3 +96,7 @@
         </div>
     % endif
 </%def>
+
+<%def name="moreLess()">
+    <a href="#a" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+</%def>

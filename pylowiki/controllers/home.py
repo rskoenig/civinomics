@@ -336,11 +336,9 @@ class HomeController(BaseController):
 			# attributes that vary accross objects
 			entry['text'] = '0'
 			if 'text' in item:
-				entry['text'] = item['text'][:200]
+				entry['text'] = item['text']
 			elif 'description' in item:
-				entry['text'] = item['description'][:200]
-			if len(entry['text']) >= 200:
-				entry['text'] += "..."
+				entry['text'] = item['description']
 
 			if 'link' in item:
 				entry['link'] = item['link']
