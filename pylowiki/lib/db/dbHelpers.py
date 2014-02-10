@@ -21,6 +21,7 @@ def commit(obj):
 
 def with_characteristic(key, value):
     return and_(Data.key == key, Data.value == value)
+
 #with_characteristic = lambda key, value: and_(Data.key == key, Data.value == value)
 
 def without_characteristic(key, value):

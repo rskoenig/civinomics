@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from sqlalchemy import and_, not_, or_
@@ -24,6 +25,19 @@ def getInitiativesForUser(user):
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
     except:
         return False
+
+def setInitiativesForUserInSession():        
+    # initiatives
+    if 'facilitatorInitiatives' in session:
+        facilitatorInitiatives = session['facilitatorInitiatives']
+    else:
+        facilitatorInitiatives = []
+            
+    initiativeList = getInitiativesForUser(c.authuser)
+    facilitatorInitiatives += [initiative['urlCode'] for initiative in initiativeList if initiative['urlCode'] not in facilitatorInitiatives]
+
+    session["facilitatorInitiatives"] = facilitatorInitiatives
+    session.save()
         
 def getAllInitiatives():
     try:
