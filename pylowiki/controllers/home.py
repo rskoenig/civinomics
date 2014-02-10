@@ -133,8 +133,10 @@ class HomeController(BaseController):
                 countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
                 #log.info("countyScope is %s"%countyScope)
                 # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+                log.info("activity before geo")
                 recentActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, 0)
-                if recentActivity:
+                log.info("activity after geo recentActivity is %s"%recentActivity)
+                if not recentActivity:
                     log.info("activity try all recent")
                     # this is sorted by reverse date order by the SELECT in getRecentActivity
                     recentActivity = activityLib.getRecentActivity(max)
