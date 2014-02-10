@@ -1374,7 +1374,9 @@ class WorkshopController(BaseController):
         for idea in ideas:
             entry = {}
             entry['title'] = idea['title']
-            entry['text'] = idea['text']
+            entry['text'] = idea['text'][:200]
+            if len(entry['text']) >= 200:
+                entry['text'] += "..."
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             entry['urlCode'] = idea['urlCode']
