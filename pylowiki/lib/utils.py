@@ -184,9 +184,6 @@ def initiativeURL(thing):
         return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
-
-def initiativeURL(i):
-    return "/initiative/%s/%s" %(i['urlCode'], i['url'])
         
 def initiativeImageURL(i):
     if 'directoryNum_photos' in i and 'pictureHash_photos' in i:
