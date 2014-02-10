@@ -104,7 +104,7 @@ class HomeController(BaseController):
         allActivity = []
         
         if type == 'auto':
-            log.info("activity auto")
+            #log.info("activity auto")
             if c.privs['participant']:
                 # combine the list of interested workshops
                 interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
@@ -113,17 +113,17 @@ class HomeController(BaseController):
                 interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
                 
                 interestedObjects = interestedWorkshops + interestedInitiatives
-                log.info("activity interestedObjects is %s"%interestedObjects)
+                #log.info("activity interestedObjects is %s"%interestedObjects)
             
                 # users being followed
                 interestedUsers = session['followingUsers']
-                log.info("activity interestedUsers is %s"%interestedUsers)
+                #log.info("activity interestedUsers is %s"%interestedUsers)
 
                 # this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
                 allActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, 0)
 
             if allActivity:
-                log.info("activity allActivity")
+                #log.info("activity allActivity")
                 recentActivity = allActivity[offset:max]
             else:
                 log.info("activity try geo")
@@ -134,7 +134,7 @@ class HomeController(BaseController):
                 #log.info("countyScope is %s"%countyScope)
                 # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
                 recentActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, 0)
-                if not recentActivity:
+                if recentActivity:
                     log.info("activity try all recent")
                     # this is sorted by reverse date order by the SELECT in getRecentActivity
                     recentActivity = activityLib.getRecentActivity(max)
@@ -185,7 +185,7 @@ class HomeController(BaseController):
             # href
             # note: we should standardize the way object urls are constructed
             if item.objType == 'photo':
-                log.info("home - got a photo")
+                #log.info("home - got a photo")
                 entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
             else:
                 entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
