@@ -185,6 +185,7 @@ class HomeController(BaseController):
             # href
             # note: we should standardize the way object urls are constructed
             if item.objType == 'photo':
+                log.info("home - got a photo")
                 entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
             else:
                 entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']

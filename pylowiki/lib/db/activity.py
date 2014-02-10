@@ -218,7 +218,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
         return False
 
 def getRecentActivity(limit, comments = 0, offset = 0):
-        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
         if comments:
             objectList.append('comment')
         q = meta.Session.query(Thing)\
@@ -307,7 +307,7 @@ def getActivityForInitiativeList(limit, initiatives, comments = 0, offset = 0):
             return []
         
 def getActivityForUserList(limit, users, comments = 0, offset = 0):
-        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
         if comments:
             objectList.append('comment')
         q = meta.Session.query(Thing)\
@@ -315,7 +315,7 @@ def getActivityForUserList(limit, users, comments = 0, offset = 0):
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
+            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .order_by('-date')\
             .offset(offset)
         if limit:
@@ -331,14 +331,14 @@ def getActivityForUserList(limit, users, comments = 0, offset = 0):
 def getActivityForObjectAndUserList(limit, objects, users, comments = 0, offset = 0):
         if not objects and not users:
             return []
-        objectList = ['idea', 'resource', 'discussion', 'initiative']
+        objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
         if comments:
             objectList.append('comment')
         q = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
+            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .filter(Thing.data.any(or_(or_(wkil('initiativeCode', objects), wkil('workshopCode', objects), Thing.owner.in_(users)))))\
             .order_by('-date').offset(offset)
         
