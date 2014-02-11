@@ -30,6 +30,7 @@ import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.fuzzyTime			as fuzzyTime	
+import misaka as m
 
 import simplejson as json
 
@@ -339,6 +340,8 @@ class HomeController(BaseController):
 				entry['text'] = item['text']
 			elif 'description' in item:
 				entry['text'] = item['description']
+
+			entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
 
 			if 'link' in item:
 				entry['link'] = item['link']
