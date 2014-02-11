@@ -687,7 +687,7 @@ form.addGoal{
   border: 1px solid #ddd;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  margin-top:10px;
+  margin-top:8px;
   overflow:hidden;
   padding-bottom:10px;
 }
@@ -1334,8 +1334,13 @@ voting ribbon triangle
    text-align: center;
 }
 
-.summary a{
+h3.summary a{
   color: #333333;
+}
+
+h4.summary{
+  min-height: 30px;
+  padding-bottom: 0;
 }
 
 .well{
@@ -2058,6 +2063,7 @@ li.thumbnail-gallery{
 
 .well.searchListing{
   opacity: 0.9;
+  margin-bottom: 8px;
 }
 
 .table.plain{
@@ -3095,10 +3101,10 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-.object-in-listing.adopted{
+.searchListing.adopted{
   background-color: rgba(0,93,40,0.2);
 }
-.object-in-listing.disabled{
+.searchListing.disabled{
   background-color: rgba(144, 0, 10,0.2);
   border-radius: 0;
 }

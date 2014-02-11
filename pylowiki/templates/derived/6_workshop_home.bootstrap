@@ -6,54 +6,52 @@
 <%namespace name="ngHelpers" file="/lib/ng_lib.mako" />
 
 <% numIdeas = str(len(c.ideas)) %>
-<div class="row-fluid">
-   <div class="span8">
+<div class="row-fluid" ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
+   <div class="span8" ng-controller="workshopIdeasCtrl">
       <div class="section-wrapper slideshow">
         <div id="workshopSlideshow">
           ${helpers.slideshow(c.w, 'hero')}
         </div>
       </div> <!-- /.section-wrapper -->
 
-      <div class="section-wrapper" id="vote" ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
-          <div class="browse" ng-controller="workshopIdeasCtrl">
-             <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
-             </h4>
-              <div class="row-fluid helper-sort">
-              <div class="span9">
-                <form class="form-search inline">
-                  Sort by: 
-                  <select class="med-width" ng-model="orderProp" ng-cloak>
-                      <option value="-date">Recent</option>
-                      <option value="-voteRatio">Highest Rated</option>
-                      <option value="-voteCount">Most Votes</option>
-                      <option value="-numComments">Most Comments</option>
-                  </select>
-                  Filter:
-                  <select class="med-width" ng-model="filterProp" ng-cloak>
-                      <option value="!disabled">Show All</option>
-                      <option value="proposed">Proposed</option>
-                      <option value="adopted">Adopted</option>
-                      <option value="disabled">Disabled</option>
-                  </select>
-                </form> 
-              </div>
-              <div class="span3"><strong class="orange"> Vote <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png"> to view ratings.</strong></div>
-            </div>
-            <hr class="object-list-header">
+      <div class="browse" id="vote">
+        <h4 class="summary"> Vote ${lib_6.createNew("ideas", 'small')}</h4>
+      </div><!--/.browse-->
 
-            <div class="centered" ng-show="ideasLoading" ng-cloak>
-                <i class="icon-spinner icon-spin icon-4x"></i>
-            </div>
+      <div class="row-fluid helper-sort">
+        <div class="span9">
+          <form class="form-search inline">
+            Sort by: 
+            <select class="med-width" ng-model="orderProp" ng-cloak>
+              <option value="-date">Recent</option>
+              <option value="-voteRatio">Highest Rated</option>
+              <option value="-voteCount">Most Votes</option>
+              <option value="-numComments">Most Comments</option>
+            </select>
+            Filter:
+            <select class="med-width" ng-model="filterProp" ng-cloak>
+              <option value="!disabled">Show All</option>
+              <option value="proposed">Proposed</option>
+              <option value="adopted">Adopted</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </form> 
+        </div><!-- span9 -->
+        <div class="span3"><strong class="orange"> Vote <img class="helper-text-img" alt="yes vote" src="/images/yes_selected.png"> or <img class="helper-text-img" alt="no vote" src="/images/no_selected.png"> to view ratings.</strong></div>
+      </div><!-- helper-sort -->
 
-            <div class="alert alert-info" ng-show="noResult" ng-cloak>
-                There are no ideas for this workshop. Be the first to add one!
-            </div>
+      <div class="centered" ng-show="ideasLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
 
-            <div class="row-fluid" ng-repeat="idea in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
-                ${ngHelpers.listIdeas()}
-            </div>
-        </div><!--/.browse-->
-    </div><!--/.section-wrapper-->
+      <div class="alert alert-info" ng-show="noResult" ng-cloak>
+          There are no ideas for this workshop. Be the first to add one!
+      </div>
+
+      <div class="row-fluid" ng-repeat="item in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
+          ${ngHelpers.idea_listing()}
+      </div>
+
    </div> <!-- /.span8 -->
 
    <div class="span4">
@@ -135,20 +133,6 @@
       $(document).ready(function() {
          $.fn.foundationClearing         ? $doc.foundationClearing() : null;
       });
-    </script>
-    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.expandable').expander({
-                slicePoint: 35,
-                widow: 2,
-                expandText: '... (more)',
-                expandPrefix: '',
-                userCollapseText: ' (less)',
-                userCollapsePrefix: '',
-                preserveWords: true
-            });
-        });
     </script>
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>

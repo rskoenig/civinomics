@@ -33,23 +33,23 @@
     </div>
 </%def>
 
-<%def name="listIdeas()">
-        <div ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
-            <div class="media-body object-in-listing {{idea.status}} border-bottom" ng-controller="yesNoVoteCtrl">
+<%def name="idea_listing()">
+        <div class="media well searchListing initiative-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='idea';">
+            <div class="media-body" ng-controller="yesNoVoteCtrl">
                 <div class="span9">
-                    <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
-                        {{idea.title}}
+                    <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{item.workshopCode}}/{{item.workshopURL}}/idea/{{item.urlCode}}/{{item.url}}">
+                        {{item.title}}
                     </a></p>
-                    <strong ng-show="idea.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
-                    <strong ng-show="idea.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
-                    <p>{{idea.text}}</p>
+                    <strong ng-show="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
+                    <strong ng-show="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
+                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                     <ul class="horizontal-list iconListing">
                         <li>
-                            <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a>Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a> <span class="grey">{{idea.fuzzyTime}} ago</span>
+                            <a href="/profile/{{item.authorCode}}/{{item.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{item.authorHash}}?r=pg&d=identicon&s=200" alt="{{item.authorName}}" title="{{item.authorName}}"></a>Posted by <a class="green green-hover" href="/profile/{{item.authorCode}}/{{item.authorURL}}">{{item.authorName}}</a> <span class="grey">{{item.fuzzyTime}} ago</span>
                         </li>
                         <!-- <li><i class="icon-file-text"></i> Read full text</li> -->
-                        <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
-                        <li><i class="icon-eye-open"></i> Views ({{idea.views}})</li>
+                        <li><i class="icon-comment"></i> Comments ({{item.numComments}})</li>
+                        <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
                     </ul>
                 </div>
                 <div class="span3 voteBlock ideaListing well" >

@@ -1373,6 +1373,7 @@ class WorkshopController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['text'] = idea['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             entry['urlCode'] = idea['urlCode']

@@ -1,6 +1,4 @@
-var app = angular.module('civ', []);
-
-app.controller('GoalsCtrl', function($scope, $http){
+function GoalsCtrl($scope, $http) {
   $scope.baseURL = location.pathname;
   if ($scope.baseURL.match('preferences'))
   {

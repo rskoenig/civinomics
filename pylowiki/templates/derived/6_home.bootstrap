@@ -77,6 +77,10 @@
               ${ng_helpers.initiative_listing()}
             </td>
 
+            <td ng-if="item.objType == 'idea'">
+              ${ng_helpers.idea_listing()}
+            </td>
+
             <!-- 
             <td ng-if="item.objType == 'resource'">
               ### For extending the listing
@@ -84,11 +88,11 @@
             -->
 
 
-            <td id="{{item.urlCode}}" ng-if="!(item.objType == 'initiative')" class="activity-item-content">
+            <td id="{{item.urlCode}}" ng-if="!(item.objType == 'initiative' || item.objType == 'idea')" class="activity-item-content">
               <h4><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></h4>
               <div ng-show="!(item.mainPhoto == '0')" class="photo" style="background-image:url('{{item.mainPhoto}}');"></div>
               <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
-              <p ng-init="stringLimit=300"><div ng-bind-html="item.html | limitTo:stringLimit"></div>${ng_helpers.moreLess()}</p>
+              <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${ng_helpers.moreLess()}</p>
               <!--
               <span ng-show="item.parentObjType == ''">
                 added the {{item.objType}}
