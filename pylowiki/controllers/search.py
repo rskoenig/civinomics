@@ -944,6 +944,7 @@ class SearchController(BaseController):
             if len(entry['text']) >= 200:
                 entry['text'] += "..."
             entry['cost'] = i['cost']
+            entry['objType'] = 'Initiative'
             tags = []
             tagList = i['tags'].split('|')
             for tag in tagList:
@@ -973,6 +974,20 @@ class SearchController(BaseController):
             else:
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
+
+            # comments
+            entry['numComments'] = 0
+            if 'numComments' in i:
+                entry['numComments'] = i['numComments']
+            discussion = discussionLib.getDiscussionForThing(i)
+            if discussion:
+                entry['discussion'] = discussion['urlCode']
+            else:
+                entry['discussion'] = 0
+            if 'views' in i:
+                entry['views'] = str(i['views'])
+            else:
+                entry['views'] = '0'
 
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
             entry['href'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"

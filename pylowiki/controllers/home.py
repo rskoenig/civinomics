@@ -231,6 +231,10 @@ class HomeController(BaseController):
 					entry['objType'] = 'update'
 			entry['urlCode'] = item['urlCode']
 			entry['url'] = item['url']
+			if 'views' in item:
+				entry['views'] = str(item['views'])
+			else:
+				entry['views'] = '0'
 
 			# scope attributes
 			if 'scope' in item:
@@ -261,10 +265,9 @@ class HomeController(BaseController):
 					tags.append(tag)
 			entry['tags'] = tags
 
-
-			entry['numComments'] = 0
 			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
 			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+			entry['numComments'] = 0
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
 			
@@ -329,6 +332,7 @@ class HomeController(BaseController):
 			entry['voteCount'] = int(item['ups']) + int(item['downs'])
 			entry['ups'] = int(item['ups'])
 			entry['downs'] = int(item['downs'])
+			entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)

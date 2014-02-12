@@ -70,9 +70,22 @@
             <i class="icon-spinner icon-spin icon-4x"></i>
         </div>
 
-        <table ng-cloak>
-          <tr ng-repeat="item in activity" class="activity-item">
-
+        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-cloak>
+          <tr>
+            <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="activity-item-content-header">
+                <small>
+                  <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                  <span class="date">{{item.fuzzyTime}} ago</span>
+                </small>
+              </div>
+            </td>
+          </tr>
+          <tr>
             <td ng-if="item.objType == 'initiative'">
               ${ng_helpers.initiative_listing()}
             </td>
@@ -81,14 +94,15 @@
               ${ng_helpers.idea_listing()}
             </td>
 
-            <!-- 
             <td ng-if="item.objType == 'resource'">
-              ### For extending the listing
+              ${ng_helpers.resource_listing()}
             </td>
-            -->
 
+            <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+              ${ng_helpers.discussion_listing()}
+            </td>
 
-            <td id="{{item.urlCode}}" ng-if="!(item.objType == 'initiative' || item.objType == 'idea')" class="activity-item-content">
+            <td id="{{item.urlCode}}" ng-if="!(item.objType == 'initiative' || item.objType == 'idea' || item.objType == 'resource' || item.objType == 'discussion' || item.objType == 'update')" class="activity-item-content">
               <h4><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></h4>
               <div ng-show="!(item.mainPhoto == '0')" class="photo" style="background-image:url('{{item.mainPhoto}}');"></div>
               <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
@@ -107,9 +121,7 @@
                 <span style="text-transform: capitalize;">{{item.objType}}</span> for <span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> <a class="no-highlight" href="{{scope.href}}">{{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
 
                 <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-
-
-                </small>
+              </small>
 
               <div class="activity-item-content-header">
                 <img class="media-object avatar topbar-avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">

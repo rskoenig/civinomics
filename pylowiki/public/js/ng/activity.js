@@ -1,6 +1,6 @@
 function activityController($scope, $http) {
+	$scope.listingType = 'activity';
 	$scope.activityLoading = true
-	$scope.testing = '1 2 3 4'
 
 	$scope.getActivity = function() {
 		$scope.activityLoading = true;
@@ -23,7 +23,6 @@ function activityController($scope, $http) {
 function commentsController($scope, $http) {
 	$scope.commentsLoading = false
 	$scope.commentsHidden = true
-	$scope.testing = '1 2 3 4';
 
 	$scope.getComments = function(){
 		if ($scope.commentsHidden == true){

@@ -556,9 +556,10 @@ padding: 0;
 
 .horizontal-list.iconListing{
   margin-left: 0px;
+  margin-top:15px;
   margin-bottom: 0px;
   font-size: .85em;
-  margin-top:15px;
+  font-weight: 500;
 }
 
 img.workshop-listing{
@@ -1212,16 +1213,6 @@ td.scope-icon{
   background-image:url(/images/no_selected.png);
 }
 
-.voteBlock{
-  padding:2px;
-}
-
-.voteBlock.ideaListing{
-  padding:10px;
-  min-height: 95px;
-  background-color: whitesmoke !important;
-}
-
 .chevron-score{
   margin-top: 9px;
   margin-bottom: -2px;
@@ -1263,6 +1254,16 @@ a.yesVote, a.noVote{
   padding-left: 40px;
   width: 165px;
   background-color:whitesmoke;
+}
+.searchListing .well.yesNoWell{
+  width: 130px;
+  margin-left: 10px;
+  padding:10px;
+  min-height: 95px;
+}
+
+.voteBlock{
+  padding:2px;
 }
 
 .initiative-well-wrapper{
@@ -3178,15 +3179,22 @@ hr.object-list-header{
   border-radius: 0 !important;
 }
 
+.activity-item{
+  width: 100%;
+  margin-bottom: 16px;
+}
 
-.activity-item .avatar{
-
-  display: inline;
-  margin-right: 0;
+.activity-item .avatar-cell{
+  vertical-align: top;
+  width: 70px;
 /*
   margin-top: 10px;
   margin-right: 10px;
 */
+}
+
+.activity-item .avatar{
+  display: inline;
 }
 
 .activity-item h4{
