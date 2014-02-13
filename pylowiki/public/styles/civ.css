@@ -3165,9 +3165,16 @@ hr.object-list-header{
   padding: 8px 0 8px 0 !important;
 }
 
-.i-thumb{
+.i-photo{
   height:300px;
   width:100%;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+}
+.main-photo{
+  width:100%;
+  height:400px;
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;

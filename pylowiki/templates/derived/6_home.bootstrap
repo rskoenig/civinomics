@@ -52,59 +52,10 @@
               ${ng_helpers.discussion_listing()}
             </td>
 
-            <td id="{{item.urlCode}}" ng-if="!(item.objType == 'initiative' || item.objType == 'idea' || item.objType == 'resource' || item.objType == 'discussion' || item.objType == 'update')" class="activity-item-content">
-              <h4><a ng-href="{{item.href}}" class="green green-hover">{{item.title}}</a></h4>
-              <div ng-show="!(item.mainPhoto == '0')" class="photo" style="background-image:url('{{item.mainPhoto}}');"></div>
-              <a ng-href="{{item.link}}" ng-show="!(item.link == '0')">{{item.link}}</a>
-              <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${ng_helpers.moreLess()}</p>
-              <!--
-              <span ng-show="item.parentObjType == ''">
-                added the {{item.objType}}
-              </span>
-              <span ng-show="!(item.parentObjType == '')">
-                added {{item.article}} {{item.objType}} to <a ng-href="{{item.parentHref}}" class="no-highlight"><strong>{{item.parentTitle}}</strong></a>
-              </span>
-              -->
-              
-              ### Geo meta data
-              <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
-                <span style="text-transform: capitalize;">{{item.objType}}</span> for <span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> <a class="no-highlight" href="{{scope.href}}">{{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
-
-                <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-              </small>
-
-              <div class="activity-item-content-header">
-                <img class="media-object avatar topbar-avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
-                <small> Posted by
-                  <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
-                  <span class="date">{{item.date}} ago</span>
-                </small>
-              </div>
-
-              ### Comments on item
-              <div ng-init="discussionCode = item.discussion">
-                <div ng-controller="commentsController">
-
-                  <span class="no-highlight" ng-show="item.numComments == '0'"><i class="icon-comments"></i> Comments {{item.numComments}}</span>
-                  <a href="#a" class="no-highlight" ng-click="getComments()" ng-show="!(item.numComments == '0')"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
-
-                  <div class="centered" ng-show="commentsLoading" ng-cloak>
-                    <i class="icon-spinner icon-spin icon-2x"></i>
-                  </div>
-
-                  <table class="activity-comments" ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
-                    <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-
-                      <td style="vertical-align: top; width: 35px;"><img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}"></td><td style="padding: 10px;"><small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small><br>
-
-                       {{comment.data}}
-                        
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-              </div>
+            <td ng-if="item.objType == 'photo'">
+              ${ng_helpers.photo_listing()}
             </td>
+
           </tr>
         </table>
       </div><!-- /span8 -->

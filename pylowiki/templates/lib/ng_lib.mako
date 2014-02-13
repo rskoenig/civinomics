@@ -6,7 +6,7 @@
                 <div class="span12">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-thumb" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                            <div class="i-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
                         </a>
                     </div>
                     <div class="well yesNoWell" >
@@ -71,6 +71,29 @@
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
         <div ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                <p><small>${metaData()}</small></p>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <div>
+                    ${stats()}
+                </div>
+            </div>
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
+            </div>
+        </div>
+    </div>
+</%def>
+
+<%def name="photo_listing()">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
+        <div ng-controller="yesNoVoteCtrl">
+            <div class="span11 media-body">
+                <div class="listed-photo">
+                    <a href = '{{item.href}}'>
+                        <div class="main-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                    </a>
+                </div>
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
