@@ -103,7 +103,7 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
-                        % elif message['extraInfo'] in ['authorInvite']:
+                        % elif message['extraInfo'] in ['authorInvite'] and 'initiativeCode' in message:
                             <% 
                                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                                 formStr = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
@@ -149,7 +149,7 @@
                                 </form>
                             % endif
 
-                        % elif message['extraInfo'] in ['authorResponse']:
+                        % elif message['extraInfo'] in ['authorResponse'] and 'initiativeCode' in message:
                             <% 
                                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                             %>

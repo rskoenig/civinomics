@@ -16,6 +16,8 @@ import pylowiki.lib.db.geoInfo      as  geoInfoLib
 import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
+
+from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.utils           as  utils
 import pylowiki.lib.alerts          as  alertsLib
 import pylowiki.lib.mail            as  mailLib
@@ -26,6 +28,8 @@ import pylowiki.lib.helpers as h
 class CommentController(BaseController):
     
     def __before__(self, action, workshopCode = None, workshopURL = None, urlCode = None):
+        shareOk = False
+        shareUrl = None
         if action in ['permalink', 'showThread']:
             if workshopCode is not None:
                 c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
@@ -36,14 +40,32 @@ class CommentController(BaseController):
                 if c.w['public_private'] != 'public':
                     if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                         abort(404)
+                shareUrl = utils.workshopURL(c.w)
+                shareOk = workshopLib.isPublic(c.w)
             elif urlCode is not None:
                 thing = genericLib.getThing(urlCode)
                 if not thing:
                     abort(404)
                 if thing.objType == 'initiative':
                     c.initiative = thing
+                    shareOk = initiativeLib.isPublic(c.initiative)
+                    shareUrl = utils.initiativeURL(c.initiative)
                 elif thing.objType == 'profile':
+                    # note: should we be assigning this something?
                     c.user
+                    shareOk = True
+                
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        c.facebookShare = FacebookShareObject(
+            itemType='comment',
+            url=shareUrl,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
     
     @h.login_required
     def commentAddHandler(self):
@@ -141,16 +163,19 @@ class CommentController(BaseController):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+            c.facebookShare.url = request.url
         return render('/derived/6_permaComment.bootstrap')
         
     def permalinkPhoto(self, urlCode, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
         c.user = userLib.getUserByCode(urlCode)
+        c.facebookShare.url = request.url
         return render('/derived/6_permaPhotoComment.bootstrap')
         
     def permalinkInitiative(self, urlCode, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
         c.initiative = genericLib.getThing(urlCode)
+        c.facebookShare.url = request.url
         return render('/derived/6_permaInitiativeComment.bootstrap')
         
     ####################################################

@@ -16,6 +16,16 @@ import time
 log = logging.getLogger(__name__)
 
 class ActivateController(BaseController):
+    
+    def setSession(self):
+        session['listenerWorkshops'] = []
+        session['bookmarkedWorkshops'] = [] 
+        session['privateWorkshops'] = []
+        session['facilitatorWorkshops'] = []
+        session['facilitatorInitiatives'] = [] 
+        session['bookmarkedInitiatives'] = []
+        session['followingUsers'] = []
+        session.save()
 
     def index(self, id):
         hash, sep, email = id.partition('__')
@@ -36,6 +46,7 @@ class ActivateController(BaseController):
                         session["userURL"] = user['url']
                         session.save()
                         c.authuser = user
+                        self.setSession()
                         mailLib.sendWelcomeMail(user)
                         if 'afterLoginURL' in session:
                             returnURL = session['afterLoginURL']
@@ -72,6 +83,8 @@ class ActivateController(BaseController):
                             session["userURL"] = user['url']
                             session.save()
                             c.authuser = user
+                            self.setSession()
+
                             mailLib.sendWelcomeMail(user)
                             if 'afterLoginURL' in session:
                                 #log.info('after login url')

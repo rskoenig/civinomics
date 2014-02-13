@@ -863,6 +863,16 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
+                    
+                    # set up their session for the feeds
+                    session['listenerWorkshops'] = [] 
+                    session['bookmarkedWorkshops'] = [] 
+                    session['privateWorkshops'] = []
+                    session['facilitatorWorkshops'] = []
+                    session['facilitatorInitiatives'] = []
+                    session['bookmarkedInitiatives'] = []
+                    session['followingUsers'] = []
+                    session.save()
                         
                     # if they are a guest signing up, activate them   
                     if c.w:

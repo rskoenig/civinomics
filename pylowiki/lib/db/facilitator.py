@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
 from dbHelpers import commit, with_characteristic as wc
 import pylowiki.lib.db.generic      as generic
@@ -43,6 +44,25 @@ def getFacilitatorsByUser(user, disabled = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
+        
+def setFacilitatorsByUserInSession(fdisabled = '0'):
+        facilitatorList = getFacilitatorsByUser(c.authuser, disabled = fdisabled)
+        facilitatorWorkshops = []
+        if 'facilitatorInitiatives' in session:
+            facilitatorInitiatives = session['facilitatorInitiatives']
+        else:
+            facilitatorInitiatives = []
+        
+        for f in facilitatorList:
+            if f['disabled'] == fdisabled:
+                if 'workshopCode' in f:
+                    facilitatorWorkshops.append(f['workshopCode'])
+                elif 'initiativeCode' in f:
+                    facilitatorInitiatives.append(f['initiativeCode'])
+                    
+        session["facilitatorWorkshops"] = facilitatorWorkshops
+        session["facilitatorInitiatives"] = facilitatorInitiatives
+        session.save()
 
 def getFacilitatorsByUserAndWorkshop(user, workshop, disabled = '0'):
     try:
