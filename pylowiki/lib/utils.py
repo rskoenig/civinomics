@@ -26,6 +26,12 @@ def cap(s, l):
     return s if len(s)<=l else s[0:l-3]+'...'
 
 ##################################################
+# location of our avatar image
+##################################################
+def civinomicsAvatar():
+    return "/images/handdove_medium.png"
+
+##################################################
 # simple email checker
 ##################################################
 def badEmail(email):

@@ -93,8 +93,10 @@ class MessageController(BaseController):
             entry['itemImage'] = ''
             entry['itemLink'] = ''
             entry['itemTitle'] = ''
+            entry['itemCode'] = ''
+            entry['itemURL'] = ''
             entry['messageText'] = ''
-
+            entry['messageCode'] = message['urlCode']
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                  
@@ -109,6 +111,15 @@ class MessageController(BaseController):
                     entry['action'] = 'facilitate'
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
+                entry['itemCode'] = workshop['urlCode']
+                entry['itemURL'] = workshop['url']
+                entry['itemImage'] = lib_6.workshopImage(workshop)
+                entry['itemLink'] = lib_6.workshopLink(workshop)
+                entry['itemTitle'] = workshop['title']
+
+                entry['messageTitle'] = message['title']
+                entry['messageText'] = message['text']
+                entry['messageDate'] = message.date
                 
                 if message['read'] == u'1':
                 
@@ -121,93 +132,65 @@ class MessageController(BaseController):
                     else:
                         entry['responseAction'] = 'accepting'
 
-                    entry['itemImage'] = lib_6.workshopImage(workshop, linkClass="pull-left message-workshop-image")
-                    entry['itemLink'] = lib_6.workshopLink(workshop)
-                    entry['itemTitle'] = workshop['title']
-                    entry['messageText'] = message['text']
-                    entry['messageDate'] = message.date
+                    
+                    entry['itemImageClass'] = utils.whatDoICallThis("pull-left message-workshop-image")
+                    
+
                 else:
-                    #
-                    formStr
-                    workshop['urlCode']
-                    workshop['url']
-                    message['urlCode']
-                    entry['itemImage'] = lib_6.workshopImage(workshop, linkClass="pull-left")
-                    message['title']
-                    lib_6.userLink(sender) 
-                    #invites you to 
-                    action
-                    lib_6.workshopLink(workshop)
-                    workshop['title']
-                    message['text']
-                    #<button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to 
-                    action 
-                    #the workshop">Accept</button> name="declineInvite" 
-                    #action
-                    message.date
+                    entry['itemImageClass'] = utils.whatDoICallThis("pull-left")
+                    entry['button1Name'] =  "acceptInvite" 
+                    entry['button1Type'] = "submit"
+                    entry['button1Class'] = "btn btn-mini btn-civ" 
+                    entry['button1Title'] = "Accept the invitation to " + action + " the workshop"
+                    entry['button1Text'] = "Accept"
+
+                    entry['button2Name'] =  "declineInvite"
+                    entry['button2Type'] = "submit"
+                    entry['button2Class'] = "btn btn-mini btn-danger" 
+                    entry['button2Title'] = "Decline the invitation to " + action + " the workshop"
+                    entry['button2Text'] = "Decline"
                 
             elif message['extraInfo'] in ['listenerSuggestion']:
-                workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
-                message['title']
-                lib_6.userLink(sender)
-                # has a listener suggestion for workshop
-                lib_6.workshopLink(workshop)
-                workshop['title']
-                message['text']
-                message.date
+                
+                entry['itemTitle'] = workshop['title']
+                entry['messageTitle'] = message['title']
+                entry['messageText'] = message['text']
+                entry['messageDate'] = message.date
+                
             elif message['extraInfo'] in ['authorInvite']:
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                #inviteFacilitate" id="inviteFacilitate" 
-                #action="/profile/%s/%s/facilitate/response/handler/
-                c.user['urlCode']
-                c.user['url']
-                #action = 'coauthor'
+                entry['formStr'] = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                entry['action'] = 'coauthor'
                 # note: commenting out this next line because it appears to not be used or needed anymore
                 # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
-                
+                entry['itemImage'] = lib_6.initiativeImage(initiative)
+                entry['itemTitle'] = initiative['title']
+                entry['itemCode'] = initiative['urlCode']
+                entry['itemURL'] = initiative['url']
+                entry['messageTitle'] = message['title']
+                entry['itemLink'] = lib_6.initiativeLink(initiative)
+                entry['messageText'] = message['text']
+                entry['messageDate'] = message.date
+
+                # * *
                 if message['read'] == u'1':
                     
-                        # Since this is tied to the individual message, we will only have one action
-                        # The query here should be rewritten to make use of map/reduce for a single query
-                        event = eventLib.getEventsWithAction(message, 'accepted')
-                        if not event:
-                            responseAction = 'declining'
-                        else:
-                            responseAction = 'accepting'
-                    
-                    <div class="media">
-                        lib_6.initiativeImage(initiative)
-                        <div class="media-body">
-                            <h5 class="media-heading">message['title']
-                            lib_6.userLink(sender) invites you to facilitate lib_6.initiativeLink(initiative)>initiative['title']
-                            message['text']
-                            (You have already responded by responseAction)
-                            message.date
-                        
-                    
+                    # Since this is tied to the individual message, we will only have one action
+                    # The query here should be rewritten to make use of map/reduce for a single query
+                    event = eventLib.getEventsWithAction(message, 'accepted')
+                    if not event:
+                        entry['responseAction'] = 'declining'
+                    else:
+                        entry['responseAction'] = 'accepting'
+                    " invites you to facilitate "
+                    # (You have already responded by response Action)
                 else:
-                    formStr
-                        
-                        initiative['urlCode']
-                        initiative['url']
-                        message['urlCode']
-                        
-                        lib_6.initiativeImage(initiative)
-                        
-                        
-                        message['title']
-                        lib_6.userLink(sender)
-                        # invites you to action 
-                        lib_6.initiativeLink(initiative)
-                        initiative['title']
-                        message['text']
-                        #acceptInvite" class="btn btn-mini btn-civ"
-                        #declineInvite" class="btn btn-mini btn-danger"
-                        message.date
-                
+                    # invites you to action 
+                    #acceptInvite" class="btn btn-mini btn-civ"
+                    #declineInvite" class="btn btn-mini btn-danger"
 
             elif message['extraInfo'] in ['authorResponse']:
-                
+                # (:                
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                 
                 message['title']
