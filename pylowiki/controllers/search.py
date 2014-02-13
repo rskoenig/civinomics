@@ -26,6 +26,7 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
+import misaka                       as m
 
 import simplejson as json
 from hashlib import md5
@@ -940,9 +941,8 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = i['title']
-            entry['text'] = i['description'][:200]
-            if len(entry['text']) >= 200:
-                entry['text'] += "..."
+            entry['text'] = i['description']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['cost'] = i['cost']
             entry['objType'] = 'Initiative'
             tags = []
@@ -990,6 +990,7 @@ class SearchController(BaseController):
                 entry['views'] = '0'
 
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
+            entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(i['directoryNum_photos'], i['pictureHash_photos'])
             entry['href'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
             try:
                 entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']

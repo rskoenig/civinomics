@@ -1,30 +1,28 @@
 
 <%def name="initiative_listing()">
-    <div class="media well searchListing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='initiative';">
-        <div class="media-body" ng-controller="yesNoVoteCtrl"> 
-            <div class="span2">
-                <a href = '{{item.href}}'>
-                    <div class="i-thumb" style="background-image:url('{{item.thumbnail}}');"/></div>
-                </a>
-            </div>
-            <div class="span10">
-                <div class="well yesNoWell" >
-                    ${yesNoVoteBlock()}
-                </div>
-                <h4 class="media-heading">
-                    <a class="listed-item-title initiative-title" href="{{item.href}}">{{item.title}}</a>
-                </h4>
-                <p>{{item.text}}</p>
-                <hr class="no-bottom no-top">
-                <h5 class="h45">
-                    <small class="grey centered">Estimated Cost:</small>
-                    <span class="pull-right">{{item.cost | currency}}</span>
-                </h5>
-                <div>
-                    <small>${metaData()}</small>
-                </div>
-                <div>
-                    ${stats()}
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='initiative';">
+        <div class="listing-body" ng-controller="yesNoVoteCtrl"> 
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="listed-photo">
+                        <a href = '{{item.href}}'>
+                            <div class="i-thumb" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                        </a>
+                    </div>
+                    <div class="well yesNoWell" >
+                        ${yesNoVoteBlock()}
+                    </div>
+                    <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <p><small>${metaData()}</small></p>
+                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    <hr class="no-bottom no-top">
+                    <h4>
+                        <small class="grey centered">Estimated Cost:</small>
+                        <span class="pull-right">{{item.cost | currency}}</span>
+                    </h4>
+                    <div>
+                        ${stats()}
+                    </div>
                 </div>
             </div>
         </div>
@@ -32,22 +30,18 @@
 </%def>
 
 <%def name="idea_listing()">
-        <div class="media well searchListing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='idea';">
+        <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='idea';">
             <div class="media-body" ng-controller="yesNoVoteCtrl">
                 <div class="well yesNoWell" >
                     ${yesNoVoteBlock()}
                 </div>
-                <p class="ideaListingTitle"><a class="listed-item-title" ng-href="{{item.href}}">
-                    {{item.title}}
-                </a></p>
-                <strong ng-show="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
-                <strong ng-show="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
-                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 % if not c.w:
-                    <div>
-                        <small>${metaData()}</small>
-                    </div>
+                    <p><small>${metaData()}</small></p>
                 % endif
+                <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
+                <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 <div>
                     ${stats()}
                 </div>
@@ -56,48 +50,36 @@
 </%def>
 
 <%def name="resource_listing()">
-    <div class="media well searchListing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
         <div ng-controller="yesNoVoteCtrl">
-
-            <div class="span1 voteWrapper">
-                ${upDownVoteBlock()}
-            </div>
             <div class="span11 media-body">
-                <h4 class="media-heading"><a class="listed-item-title" ng-href="{{item.href}}">
-                    {{item.title}}
-                </a></h4>
-                <a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a>
-
-                <div>
-                    <small>${metaData()}</small>
-                </div>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                <p><small>${metaData()}</small></p>
+                <p><a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a><p>
                 <div>
                     ${stats()}
                 </div>
+            </div>
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
             </div>
         </div>
     </div>
 </%def>
 
 <%def name="discussion_listing()">
-    <div class="media well searchListing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
         <div ng-controller="yesNoVoteCtrl">
-
-            <div class="span1 voteWrapper">
-                ${upDownVoteBlock()}
-            </div>
             <div class="span11 media-body">
-                <h4 class="media-heading"><a class="listed-item-title" ng-href="{{item.href}}">
-                    {{item.title}}
-                </a></h4>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-
-                <div>
-                    <small>${metaData()}</small>
-                </div>
                 <div>
                     ${stats()}
                 </div>
+            </div>
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
             </div>
         </div>
     </div>
@@ -183,8 +165,8 @@
         <div ng-controller="commentsController">
             <ul class="horizontal-list iconListing">
                 <li>
-                    <span ng-show="item.numComments == '0'" class="no-highlight"><i class="icon-comments"></i> Comments {{item.numComments}}</span>
-                    <a ng-show="!(item.numComments == '0')" class="no-highlight" href="#a" ng-click="getComments()"><i class="icon-comments"></i> Comments {{item.numComments}}</a>
+                    <span ng-show="item.numComments == '0'" class="no-highlight"><i class="icon-comments"></i> Comments ({{item.numComments}})</span>
+                    <a ng-show="!(item.numComments == '0')" class="no-highlight" href="#a" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{item.numComments}})</a>
                 </li>
                 <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
             </ul>

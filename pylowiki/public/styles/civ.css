@@ -29,6 +29,20 @@ html,body{
   }
 }
 
+/* a */
+
+h4.listed-item-title{
+  margin-top: 0px;
+}
+.listed-item-title a{
+  color: #333333;
+  margin-bottom: 10px;
+}
+.listed-item-title a:hover{
+  color: #005d28;
+}
+
+
 /* h */
 
 h1,h2,h3,h4,h5{
@@ -39,6 +53,10 @@ h5.h45, h4.h45{
   font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.listed-item-title{
+  color: #333333;
 }
 
 /* Wrapper for page content to push down footer; */
@@ -521,7 +539,7 @@ padding: 0;
   padding-top: 0;
 }
 
-.well-splash-content .media.well.searchListing{
+.well-splash-content .media.well.search-listing{
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -1216,8 +1234,7 @@ td.scope-icon{
 .chevron-score{
   margin-top: 9px;
   margin-bottom: -2px;
-  font-size: 0.85em;
-  color: grey;
+  font-weight: bold;
 }
 
 .ynScoreWrapper{
@@ -1255,9 +1272,11 @@ a.yesVote, a.noVote{
   width: 165px;
   background-color:whitesmoke;
 }
-.searchListing .well.yesNoWell{
+
+.search-listing .well.yesNoWell{
   width: 130px;
   margin-left: 10px;
+  margin-bottom: 0;
   padding:10px;
   min-height: 95px;
 }
@@ -1584,9 +1603,6 @@ a.btn.nav-login:hover, .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-ci
     display: block;
 }
 
-.listed-item-title{
-   color: #333333;
-}
 
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
@@ -2062,7 +2078,16 @@ li.thumbnail-gallery{
   font-size: 20px;
 }
 
-.well.searchListing{
+.listing-body{
+  margin-bottom:20px;
+}
+/*
+.listing-footer{
+  padding-bottom: 8px;
+}
+*/
+
+.well.search-listing{
   opacity: 0.9;
   margin-bottom: 8px;
 }
@@ -2451,7 +2476,7 @@ h1 .label.workshop-tag{
   color: #FFFFFF;
 }
 
-.searchListing.bookmarks{
+.search-listing.bookmarks{
   padding: 5px; 
   border: none;
   opacity: 1;
@@ -3102,10 +3127,10 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-.searchListing.adopted{
+.search-listing.adopted{
   background-color: rgba(0,93,40,0.2);
 }
-.searchListing.disabled{
+.search-listing.disabled{
   background-color: rgba(144, 0, 10,0.2);
   border-radius: 0;
 }
@@ -3141,11 +3166,15 @@ hr.object-list-header{
 }
 
 .i-thumb{
-  height:80px;
+  height:300px;
   width:100%;
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;
+}
+
+.listed-photo{
+  margin-bottom: 10px;
 }
 
 @media (min-width: 768px){
