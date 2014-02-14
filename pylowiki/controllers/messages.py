@@ -67,10 +67,11 @@ class MessageController(BaseController):
                 continue
             
             entry = {}
+
             entry['rowClass'] = ''
             if message['read'] == u'0':
                 entry['rowClass']= 'warning unread-message'
-            
+            # note: should we have an object for Civinomics just as we do for users with a code?
             if message['sender'] == u'0':
                 sender = 'Civinomics'
                 entry['userLink'] = '#'
@@ -80,23 +81,36 @@ class MessageController(BaseController):
                 entry['userLink'] = lib_6.userLink(sender)
                 entry['userImage'] = lib_6.userImage(sender, className="avatar")
             
+
             # fields used in all if not most of the message types are loaded here
             if 'title' in message:    
                 entry['messageTitle'] = message['title']
             else:
                 entry['messageTitle'] = ''
+            if 'messageText' in message:
+                entry['messageText'] = message['messageText']
+            else:
+                entry['messageText'] = ''
+            if 'messageCode' in message:
+                entry['messageCode'] = message['urlCode']
+            else:
+                entry['messageCode'] = ''
+            entry['messageDate'] = message.date
+            
+            entry['responseAction'] = ''
 
             # all fields are initialized here
             entry['formStr'] = ''
             entry['action'] = ''
             entry['responseAction'] = ''
+            
+            entry['itemCode'] = ''
             entry['itemImage'] = ''
             entry['itemLink'] = ''
             entry['itemTitle'] = ''
-            entry['itemCode'] = ''
             entry['itemURL'] = ''
-            entry['messageText'] = ''
-            entry['messageCode'] = message['urlCode']
+            
+            entry['commentData'] = ''
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                  
@@ -116,13 +130,8 @@ class MessageController(BaseController):
                 entry['itemImage'] = lib_6.workshopImage(workshop)
                 entry['itemLink'] = lib_6.workshopLink(workshop)
                 entry['itemTitle'] = workshop['title']
-
-                entry['messageTitle'] = message['title']
-                entry['messageText'] = message['text']
-                entry['messageDate'] = message.date
                 
                 if message['read'] == u'1':
-                
                     # Since this is tied to the individual message, we will only have one action
                     # The query here should be rewritten to make use of map/reduce for a single query
                     # note: marking this with "note:" so the above statement is noticed more easily
@@ -131,24 +140,13 @@ class MessageController(BaseController):
                         entry['responseAction'] = 'declining'
                     else:
                         entry['responseAction'] = 'accepting'
-
-                    
-                    entry['itemImageClass'] = utils.whatDoICallThis("pull-left message-workshop-image")
-                    
-
-                else:
-                    entry['itemImageClass'] = utils.whatDoICallThis("pull-left")
-                    entry['button1Name'] =  "acceptInvite" 
-                    entry['button1Type'] = "submit"
-                    entry['button1Class'] = "btn btn-mini btn-civ" 
-                    entry['button1Title'] = "Accept the invitation to " + action + " the workshop"
-                    entry['button1Text'] = "Accept"
-
-                    entry['button2Name'] =  "declineInvite"
-                    entry['button2Type'] = "submit"
-                    entry['button2Class'] = "btn btn-mini btn-danger" 
-                    entry['button2Title'] = "Decline the invitation to " + action + " the workshop"
-                    entry['button2Text'] = "Decline"
+                    # note: I should be doing this in the template
+                    #entry['itemImageClass'] = utils.whatDoICallThis("pull-left message-workshop-image")
+                #else:
+                    # note: I should be doing this in the template
+                    #entry['itemImageClass'] = utils.whatDoICallThis("pull-left")
+                    #...
+                    #entry['button2Text'] = "Decline"
                 
             elif message['extraInfo'] in ['listenerSuggestion']:
                 
@@ -163,18 +161,17 @@ class MessageController(BaseController):
                 entry['action'] = 'coauthor'
                 # note: commenting out this next line because it appears to not be used or needed anymore
                 # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
-                entry['itemImage'] = lib_6.initiativeImage(initiative)
-                entry['itemTitle'] = initiative['title']
                 entry['itemCode'] = initiative['urlCode']
-                entry['itemURL'] = initiative['url']
-                entry['messageTitle'] = message['title']
+                entry['itemImage'] = lib_6.initiativeImage(initiative)
                 entry['itemLink'] = lib_6.initiativeLink(initiative)
-                entry['messageText'] = message['text']
-                entry['messageDate'] = message.date
+                entry['itemTitle'] = initiative['title']
+                entry['itemURL'] = initiative['url']
 
-                # * *
-                if message['read'] == u'1':
-                    
+                entry['messageDate'] = message.date
+                entry['messageText'] = message['text']
+                entry['messageTitle'] = message['title']
+
+                if message['read'] == u'1':                    
                     # Since this is tied to the individual message, we will only have one action
                     # The query here should be rewritten to make use of map/reduce for a single query
                     event = eventLib.getEventsWithAction(message, 'accepted')
@@ -182,71 +179,41 @@ class MessageController(BaseController):
                         entry['responseAction'] = 'declining'
                     else:
                         entry['responseAction'] = 'accepting'
-                    " invites you to facilitate "
-                    # (You have already responded by response Action)
-                else:
-                    # invites you to action 
-                    #acceptInvite" class="btn btn-mini btn-civ"
-                    #declineInvite" class="btn btn-mini btn-danger"
-
+                #else:                                    
+                    # note: ?what to do?
+                                                            
             elif message['extraInfo'] in ['authorResponse']:
-                # (:                
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                
-                message['title']
-                lib_6.userLink(sender)
-                message['text'] 
-                lib_6.initiativeLink(initiative)
-                initiative['title']
-                message.date
+                entry['itemTitle'] = initiative['title']
 
             elif message['extraInfo'] in ['commentResponse']:
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
-                
-                lib_6.userLink(sender) 
-                message['title']
                         
-                lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']
-                    
+                entry['itemLink'] = lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode'])
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
-                
-                lib_6.userLink(sender) 
-                message['title']
-                lib_6.thingLinkRouter(comment, c.user, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']                                
+                entry['itemLink'] = lib_6.thingLinkRouter(comment, c.user, embed=True, commentCode=comment['urlCode'])
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnResource']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 resource = generic.getThing(comment['resourceCode'])
                 
-                lib_6.userLink(sender) 
-                message['title']
-                lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']
-                message.date
+                entry['itemLink'] = lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode'])
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnUpdate']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 update = generic.getThing(comment['discussionCode'])
                 
-                
-                lib_6.userLink(sender) 
-                message['title']
-                lib_6.thingLinkRouter(comment, update, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']
-                message.date
-                    
+                entry['itemLink'] = lib_6.thingLinkRouter(comment, update, embed=True, commentCode=comment['urlCode'])
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
                 
@@ -260,25 +227,22 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedPhoto']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                event['action'] = event[0]['action']
+                event['reason'] = event[0]['reason']
                 
-                message['title']
+                # note: make photo link?
                 # It was action because: reason
                 #Your photo:
                 #href="/profile/
                 #c.user['urlCode']/
                 #c.user['url']
                 #/photo/show/photoCode" class="green green-hover">title
-                        
-                if 'text' in message:
-                    message['text']                                
                 
             elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
                 
                 initiativeCode = message['initiativeCode']
                 thing = generic.getThing(initiativeCode)
-                title = thing['title']
+                entry['itemTitle'] = thing['title']
                 if message['extraInfo'] in ['disabledInitiative']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
                 elif message['extraInfo'] in ['enabledInitiative']:
@@ -286,25 +250,17 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiative']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                event['action'] = event[0]['action']
+                event['reason'] = event[0]['reason']
                 
                 
-                message['title']
-                #It was action because: 
-                reason
-                #Your initiative:
-                #href="/initiative/thing['urlCode']/thing['url']/show
-                #title
-                        
-                if 'text' in message:
-                    message['text']
+                entry['itemLink'] = lib_6.initiativeLink(thing)
                 
             elif message['extraInfo'] in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
                 
                 resourceCode = message['resourceCode']
                 thing = generic.getThing(resourceCode)
-                title = thing['title']
+                entry['itemTitle'] = thing['title']
                 if message['extraInfo'] in ['disabledInitiativeResource']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
                 elif message['extraInfo'] in ['enabledInitiativeResource']:
@@ -312,17 +268,13 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiativeResource']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                event['action'] = event[0]['action']
+                event['reason'] = event[0]['reason']
                 
-                message['title']</h4>
-                #It was action because: reason
+                entry['itemLink'] = lib_6.initiativeResourceLink(thing)
                 #Your initiative resource:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/resource/thing['urlCode']/thing['url']" class="green green-hover">title
-                        
-                if 'text' in message:
-                    message['text']
-                
+
             elif message['extraInfo'] in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
                 
                 if 'updateCode' in message:
@@ -330,7 +282,8 @@ class MessageController(BaseController):
                 else:
                     updateCode = message['discussionCode']
                 thing = generic.getThing(updateCode)
-                title = thing['title']
+                entry['itemTitle'] = thing['title']
+
                 if message['extraInfo'] in ['disabledInitiativeUpdate']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
                 elif message['extraInfo'] in ['enabledInitiativeUpdate']:
@@ -338,24 +291,18 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiativeUpdate']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                event['action'] = event[0]['action']
+                event['reason'] = event[0]['reason']
                 
-                message['title']
-                #It was action because: reason
+                entry['itemLink'] = lib_6.initiativeUpdateLink(thing)
                 #Your initiative update:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/updateShow/thing['urlCode']" class="green green-hover">title
-                        
-                if 'text' in message:
-                    message['text']
-                    
-                
+
             elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                 
                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
                 if not event:
                     continue
-                event = event[0]
                     
                 # Mako was bugging out on me when I tried to do this with sets
                 codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode', 'initiativeCode']
@@ -373,18 +320,14 @@ class MessageController(BaseController):
                 elif 'resourceCode' in thing:
                     parent = generic.getThing(thing['resourceCode'])
                 
-                message['title']
-                event['action'] 
-                #because: 
-                event['reason']
+                event['action'] = event[0]['action']
+                event['reason'] = event[0]['reason']
+                
                 #You posted:
                 if thing.objType == 'comment':
-                    lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n class="green green-hover">thing['data']
+                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n class="green green-hover">thing['data']
                 else:
-                    lib_6.thingLinkRouter(thing, parent, embed=True) | n class="green green-hover">thing['title']
-                        
-                        
-                message['text']
-                
+                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True) | n class="green green-hover">thing['title']
+
                                 
         return render("/derived/6_messages.bootstrap")
