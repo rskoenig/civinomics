@@ -1,10 +1,11 @@
-function messagesCtrl($scope, $http) {
-	$scope.messagesURL = '/workshop/' + $scope.code + '/' + $scope.url + '/ideas/get'
+function profileMessagesCtrl($scope, $http) {
+	// '/workshop/' + $scope.code + '/' + $scope.url + '/ideas/get'
+	$scope.messagesURL = '/messages/' + $scope.code + '/' + $scope.url
 	$scope.orderProp = '-date';
 	$scope.filterProp = '!disabled';
 	$scope.numAdopted = '0';
-	$scope.numIdeas = '0';
-	$scope.ideasLoading = true;
+	$scope.numMessages = '0';
+	$scope.messagesLoading = true;
 
 	$scope.switchAdopted = function(){
 		if ($scope.filterProp == 'adopted'){
@@ -15,22 +16,22 @@ function messagesCtrl($scope, $http) {
 		}
 	}
 
-	$http.get($scope.ideasURL).success(function(data){
-		$scope.ideasLoading = true;
+	$http.get($scope.messagesURL).success(function(data){
+		$scope.messagesLoading = true;
 		if (data.statusCode === 1){
 			$scope.noResult = true;
-			$scope.ideasLoading = false;
+			$scope.messagesLoading = false;
 		}
 		else if (data.statusCode === 2){
 			$scope.noResult = true;
-			$scope.ideasLoading = false;
+			$scope.messagesLoading = false;
 		}
 		else if (data.statusCode === 0){
 			$scope.noResult = false;
-			$scope.ideas = data.result;
+			$scope.messages = data.result;
 			$scope.numAdopted = data.adopted;
-			$scope.numIdeas = data.numIdeas;
-			$scope.ideasLoading = false;
+			$scope.numMessages = data.numMessages;
+			$scope.messagesLoading = false;
 		}
 	});
 

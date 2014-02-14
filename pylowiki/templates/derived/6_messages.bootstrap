@@ -6,6 +6,11 @@
 <div class="row-fluid">
     <div class="span8">
         <span class="lead grey expl-phrase">Messages</span>
+        <div class="browse" ng-controller="profileMessagesCtrl">
+            <div class="row-fluid" ng-repeat="message in messages | orderBy:orderProp | filter:filterProp " ng-cloak>
+                ${messages.listProfileMessages()}
+            </div>
+        </div>
         <div id="tab-messages">
             ${messages.profileMessages()}
         </div>
@@ -22,6 +27,7 @@
             <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
             <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
             <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/ng/messages.js')}" type="text/javascript"></script>
         % endif
     % endif
 </%def>
