@@ -74,10 +74,12 @@ class MessageController(BaseController):
             # note: should we have an object for Civinomics just as we do for users with a code?
             if message['sender'] == u'0':
                 sender = 'Civinomics'
+                entry['userName'] = 'Civinomics'
                 entry['userLink'] = '#'
                 entry['userImage'] = utils.civinomicsAvatar()
             else:
                 sender = userLib.getUserByCode(message['sender'])
+                entry['userName'] = ''
                 entry['userLink'] = lib_6.userLink(sender)
                 entry['userImage'] = lib_6.userImage(sender, className="avatar")
             
@@ -95,6 +97,11 @@ class MessageController(BaseController):
                 entry['messageCode'] = message['urlCode']
             else:
                 entry['messageCode'] = ''
+            if 'read' in message:
+                entry['read'] = message['read']
+            else:
+                entry['read'] = ''
+
             entry['messageDate'] = message.date
             
             entry['responseAction'] = ''
@@ -111,6 +118,8 @@ class MessageController(BaseController):
             entry['itemURL'] = ''
             
             entry['commentData'] = ''
+
+            entry['extraInfo'] = message['extraInfo']
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                  
@@ -230,7 +239,9 @@ class MessageController(BaseController):
                 event['action'] = event[0]['action']
                 event['reason'] = event[0]['reason']
                 
-                # note: make photo link?
+                entry['itemLink'] = lib_6.photoLinkRouter(c.user)
+                # note: make photo link
+                # ? are we linking to the photo page or an individual photo?
                 # It was action because: reason
                 #Your photo:
                 #href="/profile/
@@ -325,9 +336,11 @@ class MessageController(BaseController):
                 
                 #You posted:
                 if thing.objType == 'comment':
-                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n class="green green-hover">thing['data']
+                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n class="green green-hover">
+                    entry['itemTitle'] = thing['data']
                 else:
-                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True) | n class="green green-hover">thing['title']
+                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True) | n class="green green-hover">
+                    entry['itemTitle'] = thing['title']
 
                                 
         return render("/derived/6_messages.bootstrap")
