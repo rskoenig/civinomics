@@ -69,6 +69,7 @@ class MessageController(BaseController):
             entry = {}
 
             entry['rowClass'] = ''
+            entry['read'] = message['read']
             if message['read'] == u'0':
                 entry['rowClass']= 'warning unread-message'
             # note: should we have an object for Civinomics just as we do for users with a code?
@@ -115,7 +116,7 @@ class MessageController(BaseController):
             entry['itemImage'] = ''
             entry['itemLink'] = ''
             entry['itemTitle'] = ''
-            entry['itemURL'] = ''
+            entry['itemUrl'] = ''
             
             entry['commentData'] = ''
 
@@ -135,8 +136,8 @@ class MessageController(BaseController):
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                 entry['itemCode'] = workshop['urlCode']
-                entry['itemURL'] = workshop['url']
-                entry['itemImage'] = lib_6.workshopImage(workshop)
+                entry['itemUrl'] = workshop['url']
+                entry['itemImage'] = utils.workshopImage(workshop)
                 entry['itemLink'] = lib_6.workshopLink(workshop)
                 entry['itemTitle'] = workshop['title']
                 
@@ -174,7 +175,7 @@ class MessageController(BaseController):
                 entry['itemImage'] = lib_6.initiativeImage(initiative)
                 entry['itemLink'] = lib_6.initiativeLink(initiative)
                 entry['itemTitle'] = initiative['title']
-                entry['itemURL'] = initiative['url']
+                entry['itemUrl'] = initiative['url']
 
                 entry['messageDate'] = message.date
                 entry['messageText'] = message['text']

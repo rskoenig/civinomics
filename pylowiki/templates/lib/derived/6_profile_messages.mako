@@ -19,12 +19,6 @@
     <div ng-init="">
         <div class="media-body object-in-listing {{message.rowClass}} border-bottom" data-code="{{message.messageCode}}">
             
-            <%
-                if message['sender'] == u'0':
-                    sender = 'Civinomics'
-                else:
-                    sender = userLib.getUserByCode(message['sender'])
-            %>
             <div class="span2 message-avatar">
                 <img src="{{message.userImage}}" title="{{message.userName}}" alt="{{message.userName}}">
             </div>
@@ -33,30 +27,55 @@
                 % if {{message.extraInfo}} in ['listenerInvite', 'facilitationInvite']:
                     % if {{message.read}} == u'1':
                         <div class="media">
-                            ${lib_6.workshopImage2(link="{{message.itemImage}}", linkClass="pull-left message-workshop-image")}
-                            <img src="{{message.itemImage}}" class="pull-left message-workshop-image">
+                            ${lib_6.itemImage(link="{{message.itemImage}}", linkClass="pull-left message-workshop-image")}
                             <div class="media-body">
-                                <h5 class="media-heading">{{message.messageTitle}}</h5>
-                                <p>${lib_6.userLink2(link="{{message.userLink}}")} invites you to facilitate ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}</p>
-                                <p>{{message.messageText}}</p>
-                                <p>(You have already responded by {{message.responseAction}}</p>
-                                <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                                <h5 class="media-heading">
+                                    {{message.messageTitle}}
+                                </h5>
+                                <p>
+                                    ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                    invites you to facilitate 
+                                    ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
+                                </p>
+                                <p>
+                                    {{message.messageText}}
+                                </p>
+                                <p>
+                                    (You have already responded by 
+                                    {{message.responseAction}}
+                                </p>
+                                <p class="pull-right"><small>
+                                    {{message.messageDate}}
+                                     (PST)
+                                </small></p>
                             </div>
                         </div>
                     % else:
                         {{message.formStr}}
-                            <input type="hidden" name="workshopCode" value="{{message.urlCode}}">
-                            <input type="hidden" name="workshopURL" value="{{message.url}}">
-                            <input type="hidden" name="messageCode" value="{{message.urlCode}}">
+                            <input type="hidden" name="workshopCode" value="{{message.itemCode}}">
+                            <input type="hidden" name="workshopURL" value="{{message.itemUrl}}">
+                            <input type="hidden" name="messageCode" value="{{message.messageCode}}">
                             <div class="media">
-                                ${lib_6.workshopImage2(link="{{message.itemImage}}", linkClass="pull-left")}
+                                ${lib_6.itemImage(link="{{message.itemImage}}", linkClass="pull-left")}
                                 <div class="media-body">
-                                    <h5 class="media-heading">{{message.messageTitle}}</h5>
-                                    <p>${lib_6.userLink2(link="{{message.userLink}}")} invites you to {{message.action}} ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}</p>
-                                    <p>{{message.messageText}}</p>
+                                    <h5 class="media-heading">
+                                        {{message.messageTitle}}
+                                    </h5>
+                                    <p>
+                                        ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                        invites you to 
+                                        {{message.action}} 
+                                        ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
+                                    </p>
+                                    <p>
+                                        {{message.messageText}}
+                                    </p>
                                     <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{message.action}} the workshop">Accept</button>
                                     <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{message.action}} the workshop">Decline</button>
-                                    <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                                    <p class="pull-right"><small>
+                                        {{message.messageDate}} 
+                                        (PST)
+                                    </small></p>
                                 </div>
                             </div>
                         </form>
@@ -65,38 +84,75 @@
                 % elif {{message.extraInfo}} in ['listenerSuggestion']:
                     <div class="media">
                         <div class="media-body">
-                            <h5 class="media-heading">{{message.messageTitle}}</h5>
-                            Member ${lib_6.userLink2(link="{{message.userLink}}")} has a listener suggestion for workshop ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}:<br />
-                            <p>{{message.messageText}}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h5 class="media-heading">
+                                {{message.messageTitle}}
+                            </h5>
+                            Member 
+                            ${lib_6.userLink2(link="{{message.userLink}}")} 
+                            has a listener suggestion for workshop 
+                            ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}:
+                            <br />
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['authorInvite']:
                     % if {{message.read}} == u'1':
                         <div class="media">
-                            ${lib_6.initiativeImage2(link="{{message.itemImage}}")}
+                            ${lib_6.itemImage(link="{{message.itemImage}}")}
                             <div class="media-body">
-                                <h5 class="media-heading">{{message.messageTitle}}</h5>
-                                <p>${lib_6.userLink2(link="{{message.userLink}}")} invites you to facilitate ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}</p>
-                                <p>{{message.messageText}}</p>
-                                <p>(You have already responded by ${responseAction})</p>
-                                <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                                <h5 class="media-heading">
+                                    {{message.messageTitle}}
+                                </h5>
+                                <p>
+                                    ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                    invites you to facilitate 
+                                    ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
+                                </p>
+                                <p>
+                                    {{message.messageText}}
+                                </p>
+                                <p>
+                                    (You have already responded by 
+                                    {{message.responseAction}})
+                                </p>
+                                <p class="pull-right"><small>
+                                    {{message.messageDate}} 
+                                    (PST)
+                                </small></p>
                             </div>
                         </div>
                     % else:
-                        ${formStr | n}
-                            <input type="hidden" name="initiativeCode" value="${initiative['urlCode']}">
-                            <input type="hidden" name="initiativeURL" value="${initiative['url']}">
-                            <input type="hidden" name="messageCode" value="${message['urlCode']}">
+                        {{message.formStr}}
+                            <input type="hidden" name="initiativeCode" value="{{message.itemCode}}">
+                            <input type="hidden" name="initiativeURL" value="{{message.itemUrl}}">
+                            <input type="hidden" name="messageCode" value="{{message.messageCode}}">
                             <div class="media">
-                                ${lib_6.initiativeImage2(link="{{message.itemImage}}")}
+                                ${lib_6.itemImage(link="{{message.itemImage}}")}
                                 <div class="media-body">
-                                    <h5 class="media-heading">{{message.messageTitle}}</h5>
-                                    <p>${lib_6.userLink2(link="{{message.userLink}}")} invites you to {{message.action}} ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}</p>
-                                    <p>{{message.messageText}}</p>
+                                    <h5 class="media-heading">
+                                        {{message.messageTitle}}
+                                    </h5>
+                                    <p>
+                                        ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                        invites you to 
+                                        {{message.action}} 
+                                        ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
+                                    </p>
+                                    <p>
+                                        {{message.messageText}}
+                                    </p>
                                     <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{message.action}} the initiative">Accept</button>
                                     <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{message.action}} the initiative">Decline</button>
-                                    <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                                    <p class="pull-right"><small>
+                                        {{message.messageDate}} 
+                                        (PST)
+                                    </small></p>
                                 </div>
                             </div>
                         </form>
@@ -105,117 +161,220 @@
                 % elif {{message.extraInfo}} in ['authorResponse']:
                     <div class="media">
                         <div class="media-body">
-                            <h5 class="media-heading">{{message.messageTitle}}</h5>
-                            <p>${lib_6.userLink2(link="{{message.userLink}}")} {{message.messageText}} ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h5 class="media-heading">
+                                {{message.messageTitle}}
+                            </h5>
+                            <p>
+                                ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                {{message.messageText}} 
+                                ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
 
                 % elif {{message.extraInfo}} in ['commentResponse']:
                     <div class="media">
                         <div class="media-body">
-                            <h5 class="media-heading">${lib_6.userLink2(link="{{message.userLink}}")} {{message.messageTitle}}</h5>
-                            <p>${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", title="{{message.commentData}}")}</p>
-                            <p>{{message.messageText}}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h5 class="media-heading">
+                                ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                {{message.messageTitle}}
+                            </h5>
+                            <p>
+                                ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", title="{{message.commentData}}")}
+                            </p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['commentOnPhoto', 'commentOnInitiative']:
                     <div class="media">
                         <div class="media-body">
-                            <h5 class="media-heading">${lib_6.userLink2(link="{{message.userLink}}")} {{message.messageTitle}}</h5>
-                            <p>${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", title="{{message.commentData}}")}</p>
-                            <p>{{message.messageText}}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h5 class="media-heading">
+                                ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                {{message.messageTitle}}
+                            </h5>
+                            <p>
+                                ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", title="{{message.commentData}}")}
+                            </p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['commentOnResource']:
                     <div class="media">
                         <div class="media-body">
-                            <h5 class="media-heading">${lib_6.userLink2(link="{{message.userLink}}")} {{message.messageTitle}}</h5>
-                            <p>${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover")}</p>
-                            <p>{{message.messageText}}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h5 class="media-heading">
+                                ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                {{message.messageTitle}}
+                            </h5>
+                            <p>
+                                ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover")}
+                            </p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['commentOnUpdate']:
-                    <%
-                        comment = commentLib.getCommentByCode(message['commentCode'])
-                        update = generic.getThing(comment['discussionCode'])
-                    %>
                     <div class="media">
                         <div class="media-body">
-                            <h5 class="media-heading">${lib_6.userLink2(link="{{message.userLink}}")} {{message.messageTitle}}</h5>
-                            <p>${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover")}</p>
-                            <p>{{message.messageText}}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h5 class="media-heading">
+                                ${lib_6.userLink2(link="{{message.userLink}}")} 
+                                {{message.messageTitle}}
+                            </h5>
+                            <p>
+                                ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover")}
+                            </p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading centered">{{message.messageTitle}}</h4>
-                            <p>It was {{message.action}} because: {{message.reason}}</p>
-                            <p>Your photo:
+                            <h4 class="media-heading centered">
+                                {{message.messageTitle}}
+                            </h4>
+                            <p>
+                                It was 
+                                {{message.action}} 
+                                because: 
+                                {{message.reason}}
+                            </p>
+                            <p>
+                                Your photo:
                                 ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", photo=True)}
                             </p>
-                            % if 'text' in message:
-                                <p>{{message.messageText}}</p>
-                            % endif
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading centered">{{message.messageTitle}}</h4>
-                            <p>It was {{message.action}} because: {{message.reason}}</p>
-                            <p>Your initiative:
+                            <h4 class="media-heading centered">
+                                {{message.messageTitle}}
+                            </h4>
+                            <p>
+                                It was 
+                                {{message.action}} 
+                                because: 
+                                {{message.reason}}
+                            </p>
+                            <p>
+                                Your initiative:
                                 ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
                             </p>
-                            % if 'text' in message:
-                                <p>{{message.messageText}}</p>
-                            % endif
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading centered">{{message.messageTitle}}</h4>
-                            <p>It was {{message.action}} because: {{message.reason}}</p>
-                            <p>Your initiative resource:
+                            <h4 class="media-heading centered">
+                                {{message.messageTitle}}
+                            </h4>
+                            <p>
+                                It was 
+                                {{message.action}} 
+                                because: 
+                                {{message.reason}}
+                            </p>
+                            <p>
+                                Your initiative resource:
                                 ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
                             </p>
-                            % if 'text' in message:
-                                <p>{{message.messageText}}</p>
-                            % endif
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading centered">{{message.messageTitle}}</h4>
-                            <p>It was {{message.action}} because: {{message.reason}}</p>
-                            <p>Your initiative update:
+                            <h4 class="media-heading centered">
+                                {{message.messageTitle}}
+                            </h4>
+                            <p>
+                                It was 
+                                {{message.action}} 
+                                because: 
+                                {{message.reason}}
+                            </p>
+                            <p>
+                                Your initiative update:
                                 ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
                             </p>
-                            % if 'text' in message:
-                                <p>{{message.messageText}}</p>
-                            % endif
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % elif {{message.extraInfo}} in ['disabled', 'enabled', 'deleted', 'adopted']:
                     <div class="media">
                         <div class="media-body">
-                            <h4 class="media-heading centered">{{message.messageTitle}}</h4>
-                            <p>It was {{message.action}} because: {{message.reason}}</p>
-                            <p>You posted:
-                                ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}</p>
-                            <p>{{message.messageText}}</p>
-                            <p class="pull-right"><small>{{message.messageDate}} (PST)</small></p>
+                            <h4 class="media-heading centered">
+                                {{message.messageTitle}}
+                            </h4>
+                            <p>
+                                It was 
+                                {{message.action}} 
+                                because: 
+                                {{message.reason}}
+                            </p>
+                            <p>
+                                You posted:
+                                ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
+                            </p>
+                            <p>
+                                {{message.messageText}}
+                            </p>
+                            <p class="pull-right"><small>
+                                {{message.messageDate}} 
+                                (PST)
+                            </small></p>
                         </div>
                     </div>
                 % endif
