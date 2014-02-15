@@ -1,6 +1,5 @@
 import logging, re, pickle, formencode
 import datetime
-import re
 import stripe
 
 from formencode import validators, htmlfill
@@ -41,10 +40,12 @@ import pylowiki.lib.mail            as mailLib
 import pylowiki.lib.fuzzyTime       as fuzzyTime
 import webhelpers.feedgenerator     as feedgenerator
 
+from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.graphData       as graphData
-import pylowiki.lib.db.dbHelpers as dbHelpers
-import pylowiki.lib.utils as utils
-import pylowiki.lib.sort as sort
+import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.utils           as utils
+import pylowiki.lib.sort            as sort
+
 import simplejson as json
 import misaka as m
 import copy as copy
@@ -144,24 +145,28 @@ class WorkshopController(BaseController):
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
         
+        #if c.mainImage['pictureHash'] == 'supDawg':
+        #    c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        #elif 'format' in c.mainImage.keys():
+        #    c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        #else:
+        #    c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
         #################################################
         # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
-        # c.requestUrl is for lib_6.emailShare
-        c.requestUrl = request.url
-        c.thingCode = workshopCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-        # name for facebook share posts
-        c.name = c.title = c.w['title']
-        c.description = c.w['description']
+        c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+        shareOk = workshopLib.isPublic(c.w)
+        c.facebookShare = FacebookShareObject(
+            itemType='workshop',
+            url=utils.workshopURL(c.w),
+            parentCode=workshopCode, 
+            image=c.backgroundImage,
+            title=c.w['title'],
+            description=c.w['description'].replace("'", "\\'"),
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
         #################################################
         workshopLib.setWorkshopPrivs(c.w)
         if action in setPrivs:
@@ -906,6 +911,9 @@ class WorkshopController(BaseController):
         if c.w['public_private'] == 'private':
             abort(404)
             
+        # note: should we update the facebook share url to be this rss url?
+        # could always try, but I don't think linking to an xml feed on fb is gonna do much
+        
         activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity",
@@ -944,7 +952,6 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
-        log.info("inside workshop display 1")
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
@@ -957,8 +964,6 @@ class WorkshopController(BaseController):
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w)):
             if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
                 c.facilitators.append(f)
-                
-        log.info("inside workshop display 2")
               
         c.activeListeners = []
         c.pendingListeners = []
@@ -979,8 +984,6 @@ class WorkshopController(BaseController):
                 s = slideLib.getSlide(id) # Don't grab deleted slides
                 if s:
                     c.slides.append(s)
-
-        log.info("inside workshop display 3")
         
         if not iPhoneApp:
             c.motd = motdLib.getMessage(c.w.id)
@@ -994,12 +997,8 @@ class WorkshopController(BaseController):
         # not used
         #c.information = pageLib.getInformation(c.w)
         
-        log.info("inside workshop display 4")
-        
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-            
-        log.info("inside workshop display 4.1")
         
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
@@ -1030,8 +1029,6 @@ class WorkshopController(BaseController):
                 # performance bottleneck - and sorting of results will soon be done by angular
                 #discussions = sort.sortBinaryByTopPop(discussions)
                 c.discussions = discussions[0:3]
-
-        log.info("inside workshop display 5")
         
         # since angular fetching ideas in workshopIdeas() - this is only needed to support current iPhone app
         c.listingType = 'ideas'
@@ -1089,6 +1086,8 @@ class WorkshopController(BaseController):
             return render('/derived/6_workshop_home.bootstrap')
         
     def info(self, workshopCode, workshopURL):
+        
+        c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/information')
         c.title = c.w['title']
 
         if c.w['public_private'] == 'public':
@@ -1124,6 +1123,8 @@ class WorkshopController(BaseController):
         return render('/derived/6_workshop_info.bootstrap')
         
     def activity(self, workshopCode, workshopURL):
+
+        c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/activity')
         c.title = c.w['title']
 
         if c.w['public_private'] == 'public':
@@ -1144,6 +1145,7 @@ class WorkshopController(BaseController):
    
     def publicStats(self, workshopCode, workshopURL):
 
+        c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/publicStats')
         c.listingType = 'publicStats'
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
