@@ -80,7 +80,7 @@ class MessageController(BaseController):
                 entry['userImage'] = utils.civinomicsAvatar()
             else:
                 sender = userLib.getUserByCode(message['sender'])
-                entry['userName'] = ''
+                entry['userName'] = lib_6.userName(sender)
                 entry['userLink'] = lib_6.userLink(sender)
                 entry['userImage'] = lib_6.userImage(sender, className="avatar")
             

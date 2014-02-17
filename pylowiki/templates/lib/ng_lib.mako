@@ -98,3 +98,63 @@
         </div>
     % endif
 </%def>
+
+<%def name="listenerFacilitationInvite()">
+    
+    % if {{read}} == u'1':
+        <div class="media">
+            <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+            <div class="media-body">
+                <h5 class="media-heading">
+                    {{messageTitle}}
+                </h5>
+                <p>
+                    <a href="{{userLink}}">{{userName}}</a>
+                    invites you to facilitate 
+                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                </p>
+                <p>
+                    {{messageText}}
+                </p>
+                <p>
+                    (You have already responded by 
+                    {{responseAction}})
+                </p>
+                <p class="pull-right"><small>
+                    {{messageDate}}
+                    (PST)
+                </small></p>
+            </div>
+        </div>
+    % else:
+        {{formStr}}
+            <input type="hidden" name="workshopCode" value="{{itemCode}}">
+            <input type="hidden" name="workshopURL" value="{{itemUrl}}">
+            <input type="hidden" name="messageCode" value="{{messageCode}}">
+            <div class="media">
+                <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        {{messageTitle}}
+                    </h5>
+                    <p>
+                        <a href="{{userLink}}">{{userName}}</a>
+                        invites you to 
+                        {{action}} 
+                        <a href="{{itemLink}}">{{itemTitle}}</a>
+                    </p>
+                    <p>
+                        {{messageText}}
+                    </p>
+                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the workshop">Accept</button>
+                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the workshop">Decline</button>
+                    <p class="pull-right"><small>
+                        {{messageDate}} 
+                        (PST)
+                    </small></p>
+                </div>
+            </div>
+        </form>
+    % endif
+
+</%def>
