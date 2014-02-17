@@ -1,4 +1,6 @@
-function GoalsCtrl($scope, $http) {
+var app = angular.module('civ', ['ngSanitize']);
+
+app.controller('GoalsCtrl', function($scope, $http){
   $scope.baseURL = location.pathname;
   if ($scope.baseURL.match('preferences'))
   {
