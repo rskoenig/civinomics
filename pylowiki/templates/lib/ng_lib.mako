@@ -1,6 +1,6 @@
 
 <%def name="initiative_listing()">
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='initiative';">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div class="listing-body" ng-controller="yesNoVoteCtrl"> 
             <div class="row-fluid">
                 <div class="span12">
@@ -30,7 +30,7 @@
 </%def>
 
 <%def name="idea_listing()">
-        <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType='idea';">
+        <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
             <div class="media-body" ng-controller="yesNoVoteCtrl">
                 <div class="well yesNoWell" >
                     ${yesNoVoteBlock()}
@@ -50,7 +50,7 @@
 </%def>
 
 <%def name="resource_listing()">
-    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
@@ -68,7 +68,7 @@
 </%def>
 
 <%def name="discussion_listing()">
-    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
         <div ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
@@ -86,7 +86,7 @@
 </%def>
 
 <%def name="photo_listing()">
-    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes;; objType='initiative';">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <div class="listed-photo">
@@ -184,7 +184,7 @@
 </%def>
 
 <%def name="stats()">
-    <div ng-init="discussionCode = item.discussion">
+    <div ng-init="discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; commentRole = 'yes'; submit = 'reply' ">
         <div ng-controller="commentsController">
             <ul class="horizontal-list iconListing">
                 <li>
