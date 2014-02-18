@@ -207,7 +207,9 @@ class MessageController(BaseController):
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 resource = generic.getThing(comment['resourceCode'])
                 
-                entry['itemLink'] = lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode'])
+                # note: gonna need to decide how best to give these links their titles
+                entry['itemLink'], entry['itemTitle'] = lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode'])
+
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnUpdate']:

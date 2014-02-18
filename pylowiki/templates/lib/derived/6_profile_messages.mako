@@ -30,199 +30,21 @@
                 <div class="span8 message-content">
                     <!-- this init clause covers all varaiables that can possibly be used in the following cases -->
                     <div ng-init="rowClass=message.rowClass; read=message.read; userName=message.userName; userLink=message.userLink; userImage=message.userImage; messageTitle=message.messageTitle; messageText=message.messageText; messageCode=message.messageCode; messageDate=message.messageDate; responseAction=message.responseAction; formStr=message.formStr; action=message.action; itemCode=message.itemCode; itemImage=message.itemImage; itemLink=message.itemLink; itemTitle=message.itemTitle; itemUrl=message.itemUrl; commentData=message.commentData; extraInfo=message.extraInfo; eventAction=message.eventAction; eventReason=message.eventReason;">
-                        % if {{message.extraInfo}} in ['listenerInvite', 'facilitationInvite']:
-                            ${ng_helpers.listenerFacilitationInvite()}
-                        % elif {{message.extraInfo}} in ['listenerSuggestion']:
-                            ${ng_helpers.listenerSuggestion()}
-                        % elif {{message.extraInfo}} in ['authorInvite']:
-                            ${ng_helpers.authorInvite()}
-                        % elif {{message.extraInfo}} in ['authorResponse']:
-                            ${ng_helpers.authorResponse()}
-                        % elif {{message.extraInfo}} in ['commentResponse']:
-                            
-                        % elif {{message.extraInfo}} in ['commentOnPhoto', 'commentOnInitiative']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h5 class="media-heading">
-                                        ${lib_6.userLink2(link="{{message.userLink}}")} 
-                                        {{message.messageTitle}}
-                                    </h5>
-                                    <p>
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", title="{{message.commentData}}")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['commentOnResource']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h5 class="media-heading">
-                                        ${lib_6.userLink2(link="{{message.userLink}}")} 
-                                        {{message.messageTitle}}
-                                    </h5>
-                                    <p>
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['commentOnUpdate']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h5 class="media-heading">
-                                        ${lib_6.userLink2(link="{{message.userLink}}")} 
-                                        {{message.messageTitle}}
-                                    </h5>
-                                    <p>
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="media-heading centered">
-                                        {{message.messageTitle}}
-                                    </h4>
-                                    <p>
-                                        It was 
-                                        {{message.action}} 
-                                        because: 
-                                        {{message.reason}}
-                                    </p>
-                                    <p>
-                                        Your photo:
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", class="green green-hover", photo=True)}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="media-heading centered">
-                                        {{message.messageTitle}}
-                                    </h4>
-                                    <p>
-                                        It was 
-                                        {{message.action}} 
-                                        because: 
-                                        {{message.reason}}
-                                    </p>
-                                    <p>
-                                        Your initiative:
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="media-heading centered">
-                                        {{message.messageTitle}}
-                                    </h4>
-                                    <p>
-                                        It was 
-                                        {{message.action}} 
-                                        because: 
-                                        {{message.reason}}
-                                    </p>
-                                    <p>
-                                        Your initiative resource:
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="media-heading centered">
-                                        {{message.messageTitle}}
-                                    </h4>
-                                    <p>
-                                        It was 
-                                        {{message.action}} 
-                                        because: 
-                                        {{message.reason}}
-                                    </p>
-                                    <p>
-                                        Your initiative update:
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % elif {{message.extraInfo}} in ['disabled', 'enabled', 'deleted', 'adopted']:
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="media-heading centered">
-                                        {{message.messageTitle}}
-                                    </h4>
-                                    <p>
-                                        It was 
-                                        {{message.action}} 
-                                        because: 
-                                        {{message.reason}}
-                                    </p>
-                                    <p>
-                                        You posted:
-                                        ${lib_6.itemLinker(link="{{message.itemLink}}", title="{{message.itemTitle}}")}
-                                    </p>
-                                    <p>
-                                        {{message.messageText}}
-                                    </p>
-                                    <p class="pull-right"><small>
-                                        {{message.messageDate}} 
-                                        (PST)
-                                    </small></p>
-                                </div>
-                            </div>
-                        % endif
+                        ${ng_helpers.profileMessages()}
+                        <!-- handles these cases
+                        ['listenerInvite', 'facilitationInvite']:
+                        ['listenerSuggestion']:
+                        ['authorInvite']:
+                        ['authorResponse']:
+                        ['commentResponse']:
+                        ['commentOnPhoto', 'commentOnInitiative']:
+                        ['commentOnResource']:
+                        ['commentOnUpdate']:
+                        ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
+                        ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
+                        ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
+                        ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
+                        ['disabled', 'enabled', 'deleted', 'adopted']: -->
                     </div>
                 </span>
                 

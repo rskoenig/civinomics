@@ -6,9 +6,8 @@
 <div class="row-fluid">
     <div class="span8">
         <span class="lead grey expl-phrase">Messages</span>
-            ${messages.listProfileMessages()}
         <div id="tab-messages">
-            ${messages.profileMessages()}
+            ${messages.listProfileMessages()}
         </div>
     </div>
 </div>

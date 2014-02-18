@@ -99,18 +99,21 @@
     % endif
 </%def>
 
-<%def name="profileMessages(extraInfo)">
+<%def name="profileMessages()">
     <%
         beforeMedia = ''
         afterMedia = ''
         beforeMediaBody = ''
+        mediaHeadingOpen = """<h5 class="media-heading">"""
         mediaHeading = ''
+        mediaHeadingClose = """</h5>"""
         userActionItem = ''
         messageText = ''
         userResponse = ''
         messageDate = ''
         afterMedia = ''
-        if extraInfo in ['listenerInvite', 'facilitationInvite']:
+        #  all cases for extraInfo begin here - - - - - - - - 
+        if '{{extraInfo}}' in ['listenerInvite', 'facilitationInvite']:
             if {{read}} == u'1':
                 userResponse = """
                     (You have already responded by 
@@ -128,10 +131,7 @@
                     </form>"""
             #  text for both read cases below here - - - - - - - - 
             beforeMediaBody = """<img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">"""
-            mediaHeading = """
-                <h5 class="media-heading">
-                    {{messageTitle}}
-                </h5>"""
+            mediaHeading = {{messageTitle}}
             userActionItem = """
                 <p>
                     <a href="{{userLink}}">{{userName}}</a>
@@ -143,7 +143,7 @@
                     {{messageText}}
                 </p>"""
         
-        elif extraInfo in ['listenerSuggestion']:
+        elif '{{extraInfo}}' in ['listenerSuggestion']:
             mediaHeading = {{messageTitle}}
             userActionItem = """
                 <p>
@@ -157,7 +157,7 @@
                     {{messageText}}
                 </p>"""
 
-        elif extraInfo in ['authorInvite']:
+        elif '{{extraInfo}}' in ['authorInvite']:
             if {{read}} == u'1':
                 userResponse = """
                     (You have already responded by 
@@ -174,6 +174,7 @@
                 afterMedia = """
                     </form>"""
             #  text for both read cases below here - - - - - - - - 
+            mediaHeading = {{messageTitle}}
             userActionItem = """
                 <p>
                     <a href="{{userLink}}">{{userName}}</a>
@@ -184,25 +185,160 @@
                 <p>
                     {{messageText}}
                 </p>"""
-        elif extraInfo in ['authorResponse']:
-            <div class="media">
-                <div class="media-body">
-                    <h5 class="media-heading">
-                        {{messageTitle}}
-                    </h5>
-                    <p>
-                        <a href="{{userLink}}">{{userName}}</a>
-                        {{messageText}} 
-                        <a href="{{itemLink}}">{{itemTitle}}</a>
-                    </p>
-                    <p class="pull-right"><small>
-                        {{messageDate}} 
-                        (PST)
-                    </small></p>
-                </div>
-            </div>
+        elif '{{extraInfo}}' in ['authorResponse']:
+            mediaHeading = {{messageTitle}}
+            userActionItem = """
+                <p>
+                    <a href="{{userLink}}">{{userName}}</a>
+                    {{messageText}} 
+                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                </p>"""
+        elif '{{extraInfo}}' in ['commentResponse']:
+            mediaHeading = """
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}"""
+            userActionItem = """
+                <p>
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['commentOnPhoto', 'commentOnInitiative']:
+            mediaHeading = """
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}"""
+            userActionItem = """
+                <p>
+                    <a href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['commentOnResource']:
+            mediaHeading = """
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}"""
+            userActionItem = """
+                <p>
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['commentOnUpdate']:
+            mediaHeading = """
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}"""
+            userActionItem = """
+                <p>
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
+            mediaHeadingOpen = """<h4 class="media-heading centered">"""
+            mediaHeading = """{{messageTitle}}"""
+            mediaHeadingClose = """</h4>"""
+            userActionItem = """     
+                <p>
+                    It was 
+                    {{eventAction}} 
+                    because: 
+                    {{eventReason}}
+                </p>
+                <p>
+                    Your photo:
+                     <img src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
+            
+            mediaHeadingOpen = """<h4 class="media-heading centered">"""
+            mediaHeading = """{{messageTitle}}"""
+            mediaHeadingClose = """</h4>"""
+            userActionItem = """
+                <p>
+                    It was 
+                    {{eventAction}} 
+                    because: 
+                    {{eventReason}}
+                </p>
+                <p>
+                    Your initiative:
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+                messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
+            mediaHeadingOpen = """<h4 class="media-heading centered">"""
+            mediaHeading = """{{messageTitle}}"""
+            mediaHeadingClose = """</h4>"""
+            userActionItem = """
+                <p>
+                    It was 
+                    {{eventAction}} 
+                    because: 
+                    {{eventReason}}
+                </p>
+                <p>
+                    Your initiative resource:
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
+            mediaHeadingOpen = """<h4 class="media-heading centered">"""
+            mediaHeading = """{{messageTitle}}"""
+            mediaHeadingClose = """</h4>"""
+            userActionItem = """
+                <p>
+                    It was 
+                    {{eventAction}} 
+                    because: 
+                    {{eventReason}}
+                </p>
+                <p>
+                    Your initiative update:
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        elif '{{extraInfo}}' in ['disabled', 'enabled', 'deleted', 'adopted']:
+            mediaHeadingOpen = """<h4 class="media-heading centered">"""
+            mediaHeading = """{{messageTitle}}"""
+            mediaHeadingClose = """</h4>"""
+            userActionItem = """
+                <p>
+                    It was 
+                    {{eventAction}} 
+                    because: 
+                    {{eventReason}}
+                </p>
+                <p>
+                    You posted:
+                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
 
-        #  text for all cases below here - - - - - - - - 
+        #  text for all extraInfo cases loaded below here - - - - - - - - 
         messageDate = """
             {{messageDate}}
             (PST)"""
@@ -212,9 +348,9 @@
         <div class="media">
             ${beforeMediaBody}
             <div class="media-body">
-                <h5 class="media-heading">
+                ${mediaHeadingOpen}
                     ${mediaHeading}
-                </h5>
+                ${mediaHeadingClose}
                 ${userActionItem}
                 ${messageText}
                 ${userResponse}
@@ -225,6 +361,28 @@
         </div>
     ${afterMedia}
 </%def>
+
+
+
+
+
+
+
+
+<!-- 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+-->
+
+
+
+
+
+
+
 
 <%def name="listenerFacilitationInvite()">
     % if {{read}} == u'1':
@@ -391,7 +549,206 @@
                 {{messageTitle}}
             </h5>
             <p>
-                <a href="{{itemLink}}">{{itemTitle}}</a>
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="commentOnPhotoInitiative()">
+    <div class="media">
+        <div class="media-body">
+            <h5 class="media-heading">
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}
+            </h5>
+            <p>
+                <a href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="commentOnResource()">
+    <div class="media">
+        <div class="media-body">
+            <h5 class="media-heading">
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}
+            </h5>
+            <p>
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="commentOnUpdate()">
+    <div class="media">
+        <div class="media-body">
+            <h5 class="media-heading">
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}
+            </h5>
+            <p>
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{message.messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{message.messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="disabledEnabledDeletedPhoto()">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading centered">
+                {{messageTitle}}
+            </h4>
+            <p>
+                It was 
+                {{eventAction}} 
+                because: 
+                {{eventReason}}
+            </p>
+            <p>
+                Your photo:
+                <!-- note: photo needs a link to the unpublished page, link to src of image and title -->
+                <img src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="disabledEnabledDeletedInitiative()">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading centered">
+                {{messageTitle}}
+            </h4>
+            <p>
+                It was 
+                {{eventAction}} 
+                because: 
+                {{eventReason}}
+            </p>
+            <p>
+                Your initiative:
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="disabledEnabledDeletedInitiativeResource()">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading centered">
+                {{messageTitle}}
+            </h4>
+            <p>
+                It was 
+                {{eventAction}} 
+                because: 
+                {{eventReason}}
+            </p>
+            <p>
+                Your initiative resource:
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="disabledIEnabledDeletedInitiativeUpdate()">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading centered">
+                {{messageTitle}}
+            </h4>
+            <p>
+                It was 
+                {{eventAction}} 
+                because: 
+                {{eventReason}}
+            </p>
+            <p>
+                Your initiative update:
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="disabledEnabledDeletedAdopted()">
+    <div class="media">
+        <div class="media-body">
+            <h4 class="media-heading centered">
+                {{messageTitle}}
+            </h4>
+            <p>
+                It was 
+                {{eventAction}} 
+                because: 
+                {{eventReason}}
+            </p>
+            <p>
+                You posted:
+                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}
