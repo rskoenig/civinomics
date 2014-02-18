@@ -184,24 +184,43 @@
                 <p>
                     {{messageText}}
                 </p>"""
+        elif extraInfo in ['authorResponse']:
+            <div class="media">
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        {{messageTitle}}
+                    </h5>
+                    <p>
+                        <a href="{{userLink}}">{{userName}}</a>
+                        {{messageText}} 
+                        <a href="{{itemLink}}">{{itemTitle}}</a>
+                    </p>
+                    <p class="pull-right"><small>
+                        {{messageDate}} 
+                        (PST)
+                    </small></p>
+                </div>
+            </div>
 
         #  text for all cases below here - - - - - - - - 
         messageDate = """
-            <p class="pull-right"><small>
-                {{messageDate}}
-                (PST)
-            </small></p>"""
+            {{messageDate}}
+            (PST)"""
 
     %>
     ${beforeMedia}
         <div class="media">
             ${beforeMediaBody}
             <div class="media-body">
-                ${mediaHeading}
+                <h5 class="media-heading">
+                    ${mediaHeading}
+                </h5>
                 ${userActionItem}
                 ${messageText}
                 ${userResponse}
-                ${messageDate}
+                <p class="pull-right"><small>
+                    ${messageDate}
+                </small></p>
             </div>
         </div>
     ${afterMedia}
