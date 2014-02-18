@@ -1379,6 +1379,7 @@ class WorkshopController(BaseController):
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             entry['urlCode'] = idea['urlCode']
+            entry['objType'] = 'idea'
             entry['url'] = idea['url']
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
@@ -1416,11 +1417,12 @@ class WorkshopController(BaseController):
                 entry['views'] = '0'
 
             entry['addedAs'] = idea['addedAs']
-            entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
             u = userLib.getUserByID(idea.owner)
             entry['authorHash'] = md5(u['email']).hexdigest()
             entry['authorCode'] = entry['userCode'] = idea['userCode']
             entry['authorURL'] = entry['user_url'] = idea['user_url']
+            author = userLib.getUserByID(idea.owner)
+            entry['authorPhoto'] = utils._userImageSource(author)
             entry['authorName'] = entry['user_name'] = idea['user_name']
             entry['workshopCode'] = workshopCode
             entry['workshopURL'] = workshopURL
