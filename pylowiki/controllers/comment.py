@@ -192,6 +192,7 @@ class CommentController(BaseController):
         for comment in comments:
             entry = {}
             entry['data'] = comment['data']
+            entry['html'] = m.html(entry['data'], render_flags=m.HTML_SKIP_HTML)
             entry['commentRole'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']

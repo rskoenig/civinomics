@@ -45,6 +45,13 @@
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div><!-- media-body -->
             <div class="row-fluid">
+                % if c.w:
+                    <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+                    <small>
+                      <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
+                      <span class="date">{{item.fuzzyTime}} ago</span>
+                    </small>
+                % endif
                 ${actions()}
             </div>
         </div><!-- search-listing -->
@@ -158,12 +165,12 @@
             <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
         </a>
     % else:
-        <a href="/login" class="upVote">
+        <a href="#signupLoginModal" data-toggle="modal" class="upVote">
             <i class="icon-chevron-sign-up icon-2x"></i>
         </a>
         <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
-        <a href="/login" class="downVote">
+        <a href="#signupLoginModal" data-toggle="modal" class="downVote">
             <i class="icon-chevron-sign-down icon-2x"></i>
         </a>
     % endif
@@ -171,7 +178,7 @@
 </%def>
 
 <%def name="moreLess()">
-    <a href="#a" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a href="#a" class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="metaData()">
@@ -208,7 +215,7 @@
                     <td style="padding: 10px;">
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
-                        {{comment.data}}                    
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLess()}</p>                   
                   </td>
                 </tr>
                 <tr ng-show="newCommentLoading" ng-cloak>
