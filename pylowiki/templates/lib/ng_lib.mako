@@ -171,7 +171,7 @@
 </%def>
 
 <%def name="moreLess()">
-    <a href="#a" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a href="#a" class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="metaData()">
@@ -208,7 +208,7 @@
                     <td style="padding: 10px;">
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
-                        {{comment.data}}                    
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLess()}</p>                   
                   </td>
                 </tr>
                 <tr ng-show="newCommentLoading" ng-cloak>
