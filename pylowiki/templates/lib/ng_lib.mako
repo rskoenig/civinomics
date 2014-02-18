@@ -99,8 +99,115 @@
     % endif
 </%def>
 
+<%def name="profileMessages(extraInfo)">
+    <%
+        beforeMedia = ''
+        afterMedia = ''
+        beforeMediaBody = ''
+        mediaHeading = ''
+        userActionItem = ''
+        messageText = ''
+        userResponse = ''
+        messageDate = ''
+        afterMedia = ''
+        if extraInfo in ['listenerInvite', 'facilitationInvite']:
+            if {{read}} == u'1':
+                userResponse = """
+                    (You have already responded by 
+                    {{responseAction}})"""
+            else:
+                beforeMedia = """
+                    {{formStr}}
+                        <input type="hidden" name="workshopCode" value="{{itemCode}}">
+                        <input type="hidden" name="workshopURL" value="{{itemUrl}}">
+                        <input type="hidden" name="messageCode" value="{{messageCode}}">"""
+                userResponse = """
+                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the workshop">Accept</button>
+                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the workshop">Decline</button>"""
+                afterMedia = """
+                    </form>"""
+            #  text for both read cases below here - - - - - - - - 
+            beforeMediaBody = """<img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">"""
+            mediaHeading = """
+                <h5 class="media-heading">
+                    {{messageTitle}}
+                </h5>"""
+            userActionItem = """
+                <p>
+                    <a href="{{userLink}}">{{userName}}</a>
+                    invites you to {{action}}
+                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+        
+        elif extraInfo in ['listenerSuggestion']:
+            mediaHeading = {{messageTitle}}
+            userActionItem = """
+                <p>
+                    Member 
+                    <a href="{{userLink}}">{{userName}}</a>
+                    has a listener suggestion for workshop 
+                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+
+        elif extraInfo in ['authorInvite']:
+            if {{read}} == u'1':
+                userResponse = """
+                    (You have already responded by 
+                    {{responseAction}})"""
+            else:
+                beforeMedia = """
+                    {{formStr}}
+                        <input type="hidden" name="initiativeCode" value="{{itemCode}}">
+                        <input type="hidden" name="initiativeURL" value="{{itemUrl}}">
+                        <input type="hidden" name="messageCode" value="{{messageCode}}">"""
+                userResponse = """
+                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the initiative">Accept</button>
+                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the initiative">Decline</button>"""
+                afterMedia = """
+                    </form>"""
+            #  text for both read cases below here - - - - - - - - 
+            userActionItem = """
+                <p>
+                    <a href="{{userLink}}">{{userName}}</a>
+                    invites you to {{action}}
+                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                </p>"""
+            messageText = """
+                <p>
+                    {{messageText}}
+                </p>"""
+
+        #  text for all cases below here - - - - - - - - 
+        messageDate = """
+            <p class="pull-right"><small>
+                {{messageDate}}
+                (PST)
+            </small></p>"""
+
+    %>
+    ${beforeMedia}
+        <div class="media">
+            ${beforeMediaBody}
+            <div class="media-body">
+                ${mediaHeading}
+                ${userActionItem}
+                ${messageText}
+                ${userResponse}
+                ${messageDate}
+            </div>
+        </div>
+    ${afterMedia}
+</%def>
+
 <%def name="listenerFacilitationInvite()">
-    
     % if {{read}} == u'1':
         <div class="media">
             <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
@@ -140,7 +247,7 @@
                     <p>
                         <a href="{{userLink}}">{{userName}}</a>
                         invites you to 
-                        {{action}} 
+                        {{action}}
                         <a href="{{itemLink}}">{{itemTitle}}</a>
                     </p>
                     <p>
@@ -156,5 +263,124 @@
             </div>
         </form>
     % endif
+</%def>
 
+<%def name="listenerSuggestion()">
+    <div class="media">
+        <div class="media-body">
+            <h5 class="media-heading">
+                {{messageTitle}}
+            </h5>
+            Member 
+            <a href="{{userLink}}">{{userName}}</a>
+            has a listener suggestion for workshop 
+            <a href="{{itemLink}}">{{itemTitle}}</a>
+            <br />
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}}
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="authorInvite()">
+    % if {{read}} == u'1':
+        <div class="media">
+            <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+            <div class="media-body">
+                <h5 class="media-heading">
+                    {{messageTitle}}
+                </h5>
+                <p>
+                    <a href="{{userLink}}">{{userName}}</a>
+                    invites you to facilitate 
+                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                </p>
+                <p>
+                    {{messageText}}
+                </p>
+                <p>
+                    (You have already responded by 
+                    {{responseAction}})
+                </p>
+                <p class="pull-right"><small>
+                    {{messageDate}} 
+                    (PST)
+                </small></p>
+            </div>
+        </div>
+    % else:
+        {{formStr}}
+            <input type="hidden" name="initiativeCode" value="{{itemCode}}">
+            <input type="hidden" name="initiativeURL" value="{{itemUrl}}">
+            <input type="hidden" name="messageCode" value="{{messageCode}}">
+            <div class="media">
+                <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+                <div class="media-body">
+                    <h5 class="media-heading">
+                        {{messageTitle}}
+                    </h5>
+                    <p>
+                        <a href="{{userLink}}">{{userName}}</a>
+                        invites you to 
+                        {{action}} 
+                        <a href="{{itemLink}}">{{itemTitle}}</a>
+                    </p>
+                    <p>
+                        {{messageText}}
+                    </p>
+                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the initiative">Accept</button>
+                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the initiative">Decline</button>
+                    <p class="pull-right"><small>
+                        {{messageDate}} 
+                        (PST)
+                    </small></p>
+                </div>
+            </div>
+        </form>
+    % endif
+</%def>
+
+<%def name="authorResponse()">
+    <div class="media">
+        <div class="media-body">
+            <h5 class="media-heading">
+                {{messageTitle}}
+            </h5>
+            <p>
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageText}} 
+                <a href="{{itemLink}}">{{itemTitle}}</a>
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
+</%def>
+
+<%def name="commentResponse()">
+    <div class="media">
+        <div class="media-body">
+            <h5 class="media-heading">
+                <a href="{{userLink}}">{{userName}}</a>
+                {{messageTitle}}
+            </h5>
+            <p>
+                <a href="{{itemLink}}">{{itemTitle}}</a>
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+            <p class="pull-right"><small>
+                {{messageDate}} 
+                (PST)
+            </small></p>
+        </div>
+    </div>
 </%def>

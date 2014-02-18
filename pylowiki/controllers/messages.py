@@ -67,9 +67,28 @@ class MessageController(BaseController):
                 continue
             
             entry = {}
-
             entry['rowClass'] = ''
             entry['read'] = message['read']
+            entry['userName'] = 'Civinomics'
+            entry['userLink'] = '#'
+            entry['userImage'] = utils.civinomicsAvatar()
+            entry['messageTitle'] = ''
+            entry['messageText'] = ''
+            entry['messageCode'] = ''
+            entry['messageDate'] = message.date
+            entry['responseAction'] = ''
+            entry['formStr'] = ''
+            entry['action'] = ''
+            entry['itemCode'] = ''
+            entry['itemImage'] = ''
+            entry['itemLink'] = ''
+            entry['itemTitle'] = ''
+            entry['itemUrl'] = ''
+            entry['commentData'] = ''
+            entry['extraInfo'] = message['extraInfo']
+            entry['eventAction'] = ''
+            entry['eventReason'] = ''
+
             if message['read'] == u'0':
                 entry['rowClass']= 'warning unread-message'
             # note: should we have an object for Civinomics just as we do for users with a code?
@@ -87,40 +106,14 @@ class MessageController(BaseController):
 
             # fields used in all if not most of the message types are loaded here
             if 'title' in message:    
-                entry['messageTitle'] = message['title']
-            else:
-                entry['messageTitle'] = ''
+                entry['messageTitle'] = message['title']            
             if 'messageText' in message:
                 entry['messageText'] = message['messageText']
-            else:
-                entry['messageText'] = ''
             if 'messageCode' in message:
                 entry['messageCode'] = message['urlCode']
-            else:
-                entry['messageCode'] = ''
             if 'read' in message:
                 entry['read'] = message['read']
-            else:
-                entry['read'] = ''
 
-            entry['messageDate'] = message.date
-            
-            entry['responseAction'] = ''
-
-            # all fields are initialized here
-            entry['formStr'] = ''
-            entry['action'] = ''
-            entry['responseAction'] = ''
-            
-            entry['itemCode'] = ''
-            entry['itemImage'] = ''
-            entry['itemLink'] = ''
-            entry['itemTitle'] = ''
-            entry['itemUrl'] = ''
-            
-            entry['commentData'] = ''
-
-            entry['extraInfo'] = message['extraInfo']
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                  
@@ -237,18 +230,10 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedPhoto']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                event['action'] = event[0]['action']
-                event['reason'] = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
                 entry['itemLink'] = lib_6.photoLinkRouter(c.user)
-                # note: make photo link
-                # ? are we linking to the photo page or an individual photo?
-                # It was action because: reason
-                #Your photo:
-                #href="/profile/
-                #c.user['urlCode']/
-                #c.user['url']
-                #/photo/show/photoCode" class="green green-hover">title
                 
             elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
                 
@@ -262,8 +247,8 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiative']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                event['action'] = event[0]['action']
-                event['reason'] = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
                 
                 entry['itemLink'] = lib_6.initiativeLink(thing)
@@ -280,8 +265,8 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiativeResource']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                event['action'] = event[0]['action']
-                event['reason'] = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
                 entry['itemLink'] = lib_6.initiativeResourceLink(thing)
                 #Your initiative resource:
@@ -303,8 +288,8 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiativeUpdate']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                event['action'] = event[0]['action']
-                event['reason'] = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
                 entry['itemLink'] = lib_6.initiativeUpdateLink(thing)
                 #Your initiative update:
@@ -332,8 +317,8 @@ class MessageController(BaseController):
                 elif 'resourceCode' in thing:
                     parent = generic.getThing(thing['resourceCode'])
                 
-                event['action'] = event[0]['action']
-                event['reason'] = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
                 #You posted:
                 if thing.objType == 'comment':

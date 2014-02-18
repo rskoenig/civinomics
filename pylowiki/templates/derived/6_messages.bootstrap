@@ -6,11 +6,7 @@
 <div class="row-fluid">
     <div class="span8">
         <span class="lead grey expl-phrase">Messages</span>
-        <div class="browse" ng-controller="profileMessagesCtrl">
-            <div class="row-fluid" ng-repeat="message in messages | orderBy:orderProp | filter:filterProp " ng-cloak>
-                ${messages.listProfileMessages()}
-            </div>
-        </div>
+            ${messages.listProfileMessages()}
         <div id="tab-messages">
             ${messages.profileMessages()}
         </div>
