@@ -45,6 +45,13 @@
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div><!-- media-body -->
             <div class="row-fluid">
+                % if c.w:
+                    <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+                    <small>
+                      <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
+                      <span class="date">{{item.fuzzyTime}} ago</span>
+                    </small>
+                % endif
                 ${actions()}
             </div>
         </div><!-- search-listing -->
