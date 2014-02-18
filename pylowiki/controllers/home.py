@@ -53,6 +53,9 @@ class HomeController(BaseController):
         userLib.setUserPrivs()
 
     def index(self):
+    	c.postalCode = '95060'
+    	if c.authuser:
+    		c.postalCode = c.authuser['postalCode']
         c.title = c.heading = c.workshopTitlebar = 'Home'
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
@@ -62,49 +65,53 @@ class HomeController(BaseController):
 		result = []
 		allActivity = []
 
-		if type == 'auto':
-			if c.privs['participant']:
-				# combine the list of interested workshops
-				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
+		if not c.authuser:
+			recentActivity = activityLib.getRecentActivity(12)
 
-				# combine the list of interested initiatives
-				interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
+		elif c.authuser:
+			if type == 'auto':
+				if c.privs['participant']:
+					# combine the list of interested workshops
+					interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
 
-				interestedObjects = interestedWorkshops + interestedInitiatives
-				#log.info("activity interestedObjects is %s"%interestedObjects)
+					# combine the list of interested initiatives
+					interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
 
-				# users being followed
-				interestedUsers = session['followingUsers']
-				#log.info("activity interestedUsers is %s"%interestedUsers)
+					interestedObjects = interestedWorkshops + interestedInitiatives
+					#log.info("activity interestedObjects is %s"%interestedObjects)
 
-				# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
-				allActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, 0)
+					# users being followed
+					interestedUsers = session['followingUsers']
+					#log.info("activity interestedUsers is %s"%interestedUsers)
 
-			if allActivity:
-				recentActivity = allActivity[offset:max]
-			else:
-				# try getting the activity of their area
-				userScope = getGeoScope( c.authuser['postalCode'], "United States" )
-				scopeList = userScope.split('|')
-				countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
-				#log.info("countyScope is %s"%countyScope)
-				# this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-				log.info("activity before geo")
-				recentActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, 0)
-				log.info("activity after geo recentActivity is %s"%recentActivity)
-				if not recentActivity:
-					log.info("activity try all recent")
-					# this is sorted by reverse date order by the SELECT in getRecentActivity
-					recentActivity = activityLib.getRecentActivity(max)
+					# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
+					allActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, 0)
 
-		elif type == 'geo':
-		    # try getting the activity of their area
-		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
-		    scopeList = userScope.split('|')
-		    countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
-		    #log.info("countyScope is %s"%countyScope)
-		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    recentActivity = activityLib.getRecentGeoActivity(max, countyScope)
+				if allActivity:
+					recentActivity = allActivity[offset:max]
+				else:
+					# try getting the activity of their area
+					userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+					scopeList = userScope.split('|')
+					countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
+					#log.info("countyScope is %s"%countyScope)
+					# this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+					log.info("activity before geo")
+					recentActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, 0)
+					log.info("activity after geo recentActivity is %s"%recentActivity)
+					if not recentActivity:
+						log.info("activity try all recent")
+						# this is sorted by reverse date order by the SELECT in getRecentActivity
+						recentActivity = activityLib.getRecentActivity(max)
+
+			elif type == 'geo':
+			    # try getting the activity of their area
+			    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+			    scopeList = userScope.split('|')
+			    countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
+			    #log.info("countyScope is %s"%countyScope)
+			    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+			    recentActivity = activityLib.getRecentGeoActivity(max, countyScope)
 		
 		myRatings = {}
 		if 'ratings' in session:

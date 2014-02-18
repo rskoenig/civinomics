@@ -2998,6 +2998,9 @@ a.no-highlight{
 a.no-highlight:hover{
     color: #D15D00;
 }
+a.no-highlight.no-hover:hover{
+    color: #333333;
+}
 
 .edit-initiative .span6 .alert.alert-info{
   margin-top: 25px;
@@ -3227,6 +3230,11 @@ hr.object-list-header{
   margin-top: 10px;
   margin-right: 10px;
 */
+}
+
+.comment-avatar-cell{
+  vertical-align: top;
+  width: 35px;
 }
 
 .activity-item .avatar{

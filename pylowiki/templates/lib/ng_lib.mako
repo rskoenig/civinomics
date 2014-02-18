@@ -1,3 +1,4 @@
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
@@ -20,10 +21,10 @@
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
                     </h4>
-                    <div>
-                        ${stats()}
-                    </div>
                 </div>
+            </div>
+            <div class="row-fluid">
+                ${actions()}
             </div>
         </div>
     </div>
@@ -31,7 +32,7 @@
 
 <%def name="idea_listing()">
         <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
-            <div class="media-body" ng-controller="yesNoVoteCtrl">
+            <div class="media-body row-fluid" ng-controller="yesNoVoteCtrl">
                 <div class="well yesNoWell" >
                     ${yesNoVoteBlock()}
                 </div>
@@ -42,52 +43,52 @@
                 <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                 <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                <div>
-                    ${stats()}
-                </div>
             </div><!-- media-body -->
+            <div class="row-fluid">
+                ${actions()}
+            </div>
         </div><!-- search-listing -->
 </%def>
 
 <%def name="resource_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
-        <div ng-controller="yesNoVoteCtrl">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p><a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a><p>
-                <div>
-                    ${stats()}
-                </div>
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
             </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
         </div>
     </div>
 </%def>
 
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
-        <div ng-controller="yesNoVoteCtrl">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                <div>
-                    ${stats()}
-                </div>
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
             </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
         </div>
     </div>
 </%def>
 
 <%def name="photo_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
-        <div ng-controller="yesNoVoteCtrl">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <div class="listed-photo">
                     <a href = '{{item.href}}'>
@@ -97,13 +98,13 @@
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                <div>
-                    ${stats()}
-                </div>
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
             </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
         </div>
     </div>
 </%def>
@@ -183,13 +184,13 @@
     </small>
 </%def>
 
-<%def name="stats()">
-    <div ng-init="discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; commentRole = 'yes'; submit = 'reply' ">
+<%def name="actions()">
+    <div ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
         <div ng-controller="commentsController">
             <ul class="horizontal-list iconListing">
                 <li>
-                    <span ng-show="item.numComments == '0'" class="no-highlight"><i class="icon-comments"></i> Comments ({{item.numComments}})</span>
-                    <a ng-show="!(item.numComments == '0')" class="no-highlight" href="#a" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{item.numComments}})</a>
+                    <a ng-show="item.numComments == '0'" class="no-highlight" href="#a" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                    <a ng-show="!(item.numComments == '0')" class="no-highlight" href="#a" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                 </li>
                 <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
             </ul>
@@ -201,7 +202,7 @@
             <table class="activity-comments" ng-class="{hidden : commentsHidden}" style = "background-color: whitesmoke;">
                 <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
 
-                    <td style="vertical-align: top; width: 35px;">
+                    <td class="comment-avatar-cell">
                         <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
                     </td>
                     <td style="padding: 10px;">
@@ -209,6 +210,59 @@
                         <br>
                         {{comment.data}}                    
                   </td>
+                </tr>
+                <tr ng-show="newCommentLoading" ng-cloak>
+                    <td></td>
+                    <td>
+                        <div class="centered">
+                            <i class="icon-spinner icon-spin icon-2x"></i>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    % if c.authuser:
+                        <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
+                        <td style="padding: 10px;">
+                            <form class="no-bottom" ng-submit="submitComment()">
+                                <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                <div ng-show="type == 'initiative' || type == 'idea'">
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
+                                    </label>
+                                </div>
+                            </form>
+                        </td>
+                    % else:
+                        <td class="comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar small-avatar"></td>
+                        <td style="padding: 10px;">
+                            <form class="no-bottom" ng-submit="submitComment()">
+                                <a href="#signupLoginModal" data-toggle='modal'>
+                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                </a>
+                                <div ng-show="type == 'initiative' || type == 'idea'">
+                                    <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
+                                        <label class="radio inline">
+                                            <input type="radio"> Pro
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio"> Neutral
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio"> Con
+                                        </label>
+                                    </a>
+                                </div>
+                            </form>
+                        </td>
+                    % endif
                 </tr>
             </table>
         </div>

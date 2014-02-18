@@ -6,7 +6,8 @@
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
-<div class="row" ng-init="zipValue = ${c.authuser['postalCode']}; photos = true;">
+
+<div class="row" ng-init="zipValue = ${c.postalCode} ; photos = true;">
   <div class="spacer"></div>
   <div class="span12" ng-controller="zipLookupCtrl">
     <div class="row-fluid">
@@ -96,6 +97,12 @@
 </%def>
 
 <%def name="extraScripts()">
+   <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+    </script>
    <script type="text/javascript">
    $(document).ready(function() {
        $('.viewport').mouseenter(function(e) {

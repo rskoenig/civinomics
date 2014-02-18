@@ -78,13 +78,13 @@
                 </div>
                 <div class="span11">
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="yes"> Argument in Favor
+                        <input type=radio name="commentRole" value="yes"> Pro
                     </label>
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="neutral" checked> Neutral Statement
+                        <input type=radio name="commentRole" value="neutral" checked> Neutral
                     </label>
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="no"> Argument Against
+                        <input type=radio name="commentRole" value="no"> Con
                     </label>
                     <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button></span>
                 </div><!- span11 -->
@@ -222,20 +222,20 @@
         try:
             if comment['commentRole']:
                 roleClass = 'commentRole '
-                roleLabel = 'Argument '
+                roleLabel = ''
                 if comment['commentRole'] == 'no':
                     roleClass += "red"
-                    roleLabel += 'Against'
+                    roleLabel += 'Con'
                     headerClass += " against"
 
                 elif comment['commentRole'] == 'yes':
                     roleClass += "green"
-                    roleLabel += "in Favor"
+                    roleLabel += "Pro"
                     headerClass += " favor"
 
                 else:
                     roleClass +="grey"
-                    roleLabel = "Neutral Statement"
+                    roleLabel = "Neutral"
                     headerClass += " neutral"
         except KeyError:
             roleClass = ""
