@@ -208,8 +208,8 @@ class CommentController(BaseController):
             result.append(entry)
 
         if len(result) == 0:
-            return json.dumps({'statusCode':1})
-        return json.dumps({'statusCode':0, 'result':result})
+            return json.dumps({'statusCode':0})
+        return json.dumps({'statusCode':1, 'result':result})
         
     ####################################################
     # 
