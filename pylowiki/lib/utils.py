@@ -184,9 +184,6 @@ def initiativeURL(thing):
         return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
-
-def initiativeURL(i):
-    return "/initiative/%s/%s" %(i['urlCode'], i['url'])
         
 def initiativeImageURL(i):
     if 'directoryNum_photos' in i and 'pictureHash_photos' in i:
@@ -223,7 +220,7 @@ def getPublicScope(item):
     href = '/workshops/geo/earth'
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
-    elif '||' in item:
+    elif '|' in item:
         scope = item.split('|')
     if scope:
         if scope[2] != '0':
@@ -279,6 +276,7 @@ def getPublicScope(item):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
+    scopeLevel = scopeLevel.title()
     return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
 
 ###################################

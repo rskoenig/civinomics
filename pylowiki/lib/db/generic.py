@@ -45,6 +45,9 @@ def linkChildToParent(child, parent):
         child['workshop_public_scope'] = parent['workshop_public_scope']
     if 'workshop_searchable' in parent:
         child['workshop_searchable'] = parent['workshop_searchable']
+        if 'discType' in child:
+            if child['discType'] != 'general' and child['discType'] != 'update':
+                child['workshop_searchable'] = '0' 
     if 'workshop_title' in parent:
         child['workshop_title'] = parent['workshop_title']
     if 'workshop_url' in parent:
@@ -123,6 +126,16 @@ def getThingsByEmail(email):
         return q.all()
     except Exception as e:
         return False
+ 
+def getThingsByCodeList(urlCodeList, disabled = "0", deleted = "0"):
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wkil('urlCode', urlCodeList)))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .all()
+    except Exception as e:
+        return False       
 
 def addedItemAs(thing, privs, role = None):
     """

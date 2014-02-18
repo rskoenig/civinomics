@@ -1374,9 +1374,8 @@ class WorkshopController(BaseController):
         for idea in ideas:
             entry = {}
             entry['title'] = idea['title']
-            entry['text'] = idea['text'][:200]
-            if len(entry['text']) >= 200:
-                entry['text'] += "..."
+            entry['text'] = idea['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             entry['urlCode'] = idea['urlCode']
@@ -1402,6 +1401,20 @@ class WorkshopController(BaseController):
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
 
+            # comments
+            entry['numComments'] = 0
+            if 'numComments' in idea:
+                entry['numComments'] = idea['numComments']
+            discussion = discussionLib.getDiscussionForThing(idea)
+            if discussion:
+                entry['discussion'] = discussion['urlCode']
+            else:
+                entry['discussion'] = 0
+            if 'views' in idea:
+                entry['views'] = str(idea['views'])
+            else:
+                entry['views'] = '0'
+
             entry['addedAs'] = idea['addedAs']
             entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
             u = userLib.getUserByID(idea.owner)
@@ -1413,7 +1426,7 @@ class WorkshopController(BaseController):
             entry['workshopURL'] = workshopURL
             entry['views'] = '0'
             if 'views' in idea:
-                entry['views'] = numViews = str(idea['views'])
+                entry['views'] = str(idea['views'])
 
             result.append(entry)
         numIdeas = len(ideas) - disabled

@@ -16,11 +16,12 @@
       <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
       <link href='//fonts.googleapis.com/css?family=Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.js"></script>
       <script src="/js/geoSearch.js"></script>
       <script src="/js/ng/signup_login.js" type="text/javascript"></script>
       <script>
-        var dummyApp = angular.module('civ', []);
+        var dummyApp = angular.module('civ', ['ngSanitize']);
       </script>
       <script src="/js/extauth.js" type="text/javascript"></script>
       ${self.extraStyles()}

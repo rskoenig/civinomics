@@ -89,9 +89,11 @@
                 </div>
                 <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                     <table class="table plain">
-                        <tr ng-repeat = "initiative in initiatives | filter:votedornot | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain">
+                        <tr ng-repeat = "item in initiatives | filter:votedornot | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain">
 
-                            ${ng_helpers.initiative_listing()}
+                            <td>
+                                ${ng_helpers.initiative_listing()}
+                            </td>
                             
                         </tr>
                     </table>
@@ -125,7 +127,7 @@
             </div>
             <table ng-show="!loading">
                 <tr ng-repeat="geo in geos">
-                    <td><a href="{{geo.href}}"><img class="thumbnail small-flag border" src="{{geo.flag}}"></a></td>
+                    <td><a href="{{geo.href}}"><img class="thumbnail flag small-flag border" src="{{geo.flag}}"></a></td>
                     <td><a href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
                 </tr>
             </table>
@@ -143,6 +145,7 @@
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">

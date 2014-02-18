@@ -477,7 +477,7 @@
           flagSize = 'small-flag'
 
     %>
-    <a href="${href}"><img class="thumbnail ${flagSize}" src="${workshopFlag}"></a>
+    <a href="${href}"><img class="thumbnail flag ${flagSize}" src="${workshopFlag}"></a>
     % if 'workshopFor' in args and w['public_private'] == 'public':
         Workshop for
         % if name == 'Earth':

@@ -52,7 +52,7 @@
                         <li class="${homeSelected}">
                             <a href="/">Home</a>
                         </li>
-                        <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
+                        <!--<li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>-->
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>

@@ -110,7 +110,7 @@
             <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                 <table class="table">
 
-                    <tr ng-repeat = "initiative in initiatives | orderBy:orderProp | limitTo:10">
+                    <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:10">
                         <td>
                             ${ng_helpers.initiative_listing()}
                         </td>
@@ -145,6 +145,7 @@
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">

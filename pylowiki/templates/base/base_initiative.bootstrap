@@ -26,7 +26,7 @@
                 <div class="${titleSpan}" style="position:relative;">
                     <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-init="initiativeTitle = '${c.initiative['title']}'" ng-cloak>{{initiativeTitle}}</a></h2>
                     <h4> 
-                        <a href="${c.scopeHref}"><img class="thumbnail span small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
+                        <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
                         ${lib_6.showTags(c.initiative)}
                     % if c.iPrivs:
                         <span>

@@ -64,7 +64,7 @@
                 </div>
                 <table ng-show="!loading">
                     <tr ng-repeat="geo in geos">
-                        <td><a href="{{geo.href}}"><img class="thumbnail med-flag border" src="{{geo.flag}}"></a></td>
+                        <td><a href="{{geo.href}}"><img class="thumbnail flag med-flag border tight" src="{{geo.flag}}"></a></td>
                         <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
                     </tr>
                 </table>
@@ -109,11 +109,14 @@
             </div>
             <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                 <table class="table">
-                    <tr ng-repeat = "initiative in initiatives | orderBy:orderProp | limitTo:10">
 
-                        ${ng_helpers.initiative_listing()}
+                    <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:10">
+                        <td>
+                            ${ng_helpers.initiative_listing()}
+                        </td>
 
                     </tr>
+
                 </table>
                 <div class="centered" ng-show="initiative.length>pageSize">
                     <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">

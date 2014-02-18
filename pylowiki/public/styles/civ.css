@@ -29,6 +29,20 @@ html,body{
   }
 }
 
+/* a */
+
+h4.listed-item-title{
+  margin-top: 0px;
+}
+.listed-item-title a{
+  color: #333333;
+  margin-bottom: 10px;
+}
+.listed-item-title a:hover{
+  color: #005d28;
+}
+
+
 /* h */
 
 h1,h2,h3,h4,h5{
@@ -39,6 +53,10 @@ h5.h45, h4.h45{
   font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.listed-item-title{
+  color: #333333;
 }
 
 /* Wrapper for page content to push down footer; */
@@ -521,7 +539,7 @@ padding: 0;
   padding-top: 0;
 }
 
-.well-splash-content .media.well.searchListing{
+.well-splash-content .media.well.search-listing{
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -556,9 +574,10 @@ padding: 0;
 
 .horizontal-list.iconListing{
   margin-left: 0px;
+  margin-top:15px;
   margin-bottom: 0px;
   font-size: .85em;
-  margin-top:15px;
+  font-weight: 500;
 }
 
 img.workshop-listing{
@@ -687,7 +706,7 @@ form.addGoal{
   border: 1px solid #ddd;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  margin-top:10px;
+  margin-top:8px;
   overflow:hidden;
   padding-bottom:10px;
 }
@@ -1212,21 +1231,10 @@ td.scope-icon{
   background-image:url(/images/no_selected.png);
 }
 
-.voteBlock{
-  padding:2px;
-}
-
-.voteBlock.ideaListing{
-  padding:10px;
-  min-height: 95px;
-  background-color: whitesmoke !important;
-}
-
 .chevron-score{
   margin-top: 9px;
   margin-bottom: -2px;
-  font-size: 0.85em;
-  color: grey;
+  font-weight: bold;
 }
 
 .ynScoreWrapper{
@@ -1263,6 +1271,18 @@ a.yesVote, a.noVote{
   padding-left: 40px;
   width: 165px;
   background-color:whitesmoke;
+}
+
+.search-listing .well.yesNoWell{
+  width: 130px;
+  margin-left: 10px;
+  margin-bottom: 0;
+  padding:10px;
+  min-height: 95px;
+}
+
+.voteBlock{
+  padding:2px;
 }
 
 .initiative-well-wrapper{
@@ -1334,8 +1354,13 @@ voting ribbon triangle
    text-align: center;
 }
 
-.summary a{
+h3.summary a{
   color: #333333;
+}
+
+h4.summary{
+  min-height: 30px;
+  padding-bottom: 0;
 }
 
 .well{
@@ -1578,9 +1603,6 @@ a.btn.nav-login:hover, .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-ci
     display: block;
 }
 
-.listed-item-title{
-   color: #333333;
-}
 
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
@@ -2056,8 +2078,18 @@ li.thumbnail-gallery{
   font-size: 20px;
 }
 
-.well.searchListing{
+.listing-body{
+  margin-bottom:20px;
+}
+/*
+.listing-footer{
+  padding-bottom: 8px;
+}
+*/
+
+.well.search-listing{
   opacity: 0.9;
+  margin-bottom: 8px;
 }
 
 .table.plain{
@@ -2100,16 +2132,20 @@ text-align: right;
   padding-top: 5px;
 }
 
-.thumbnail.flag, .thumbnail.large-flag{
-  width: 164px;
+.thumbnail.flag{
+  padding: 0px;
+  display: inline;
+  border: none;
+}
+
+.thumbnail.large-flag{
+  width: 175px;
   margin: 0 auto 10px;
 }
 
 .thumbnail.med-flag{
-  padding: 0px; 
   width: 64px; 
   margin-right: 10px;
-  border: none;
 }
 
 .thumbnail.med-flag:hover{
@@ -2119,12 +2155,14 @@ text-align: right;
 .small-flag{
   width:40px !important; 
   height: 27px;
-  padding: 0px;
-  display: inline;
-  border: none;
 }
 
-.small-flag.border, .med-flag.border{
+.flag.mini-flag{
+  width:30px !important; 
+  height: 20px;
+}
+
+.flag.border{
   border: 1px solid #ddd;
 }
 
@@ -2438,7 +2476,7 @@ h1 .label.workshop-tag{
   color: #FFFFFF;
 }
 
-.searchListing.bookmarks{
+.search-listing.bookmarks{
   padding: 5px; 
   border: none;
   opacity: 1;
@@ -2960,6 +2998,9 @@ a.no-highlight{
 a.no-highlight:hover{
     color: #D15D00;
 }
+a.no-highlight.no-hover:hover{
+    color: #333333;
+}
 
 .edit-initiative .span6 .alert.alert-info{
   margin-top: 25px;
@@ -3089,10 +3130,10 @@ input::-webkit-inner-spin-button {
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 
-.object-in-listing.adopted{
+.search-listing.adopted{
   background-color: rgba(0,93,40,0.2);
 }
-.object-in-listing.disabled{
+.search-listing.disabled{
   background-color: rgba(144, 0, 10,0.2);
   border-radius: 0;
 }
@@ -3127,12 +3168,23 @@ hr.object-list-header{
   padding: 8px 0 8px 0 !important;
 }
 
-.i-thumb{
-  height:80px;
+.i-photo{
+  height:300px;
   width:100%;
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;
+}
+.main-photo{
+  width:100%;
+  height:400px;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+}
+
+.listed-photo{
+  margin-bottom: 10px;
 }
 
 @media (min-width: 768px){
@@ -3166,10 +3218,27 @@ hr.object-list-header{
   border-radius: 0 !important;
 }
 
+.activity-item{
+  width: 100%;
+  margin-bottom: 16px;
+}
 
-.activity-item .avatar{
+.activity-item .avatar-cell{
+  vertical-align: top;
+  width: 70px;
+/*
   margin-top: 10px;
   margin-right: 10px;
+*/
+}
+
+.comment-avatar-cell{
+  vertical-align: top;
+  width: 35px;
+}
+
+.activity-item .avatar{
+  display: inline;
 }
 
 .activity-item h4{

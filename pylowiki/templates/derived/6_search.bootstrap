@@ -488,13 +488,15 @@
                 </div>
                 <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show">
                     <table class="table plain">
-                        <tr ng-repeat = "initiative in initiativeArray = (initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
+                        <tr ng-repeat = "item in initiativeArray = (initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize)" class="plain">
 
                             <div class="alert" ng-show="initiativeArray.length == 0">
                                 There are no initiatives in <strong>{{query}}</strong> for this region. Be the first to start one!
                             </div>
-
-                            ${ng_helpers.initiative_listing()}
+                            
+                            <td>
+                                ${ng_helpers.initiative_listing()}
+                            </td>
 
                         </tr>
                     </table>
@@ -590,6 +592,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">
