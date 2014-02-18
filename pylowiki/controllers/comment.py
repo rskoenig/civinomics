@@ -204,7 +204,6 @@ class CommentController(BaseController):
             entry['authorName'] = author['name']
             entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
             entry['authorPhoto'] = utils._userImageSource(author)
-
             result.append(entry)
 
         if len(result) == 0:
