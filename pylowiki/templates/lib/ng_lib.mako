@@ -158,12 +158,12 @@
             <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
         </a>
     % else:
-        <a href="/login" class="upVote">
+        <a href="#signupLoginModal" data-toggle="modal" class="upVote">
             <i class="icon-chevron-sign-up icon-2x"></i>
         </a>
         <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
-        <a href="/login" class="downVote">
+        <a href="#signupLoginModal" data-toggle="modal" class="downVote">
             <i class="icon-chevron-sign-down icon-2x"></i>
         </a>
     % endif
