@@ -8,6 +8,13 @@ from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.listener     as listenerLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.generic      as generic
 
 log = logging.getLogger(__name__)
 
@@ -96,7 +103,7 @@ class MessageController(BaseController):
                 sender = userLib.getUserByCode(message['sender'])
                 entry['userName'] = utils.userName(sender)
                 entry['userLink'] = utils.userLink(sender)
-                entry['userImage'] = utils.userImage(sender)
+                entry['userImage'] = utils._userImageSource(sender)
 
             # fields used in all if not most of the message types are loaded here
             if 'title' in message:    
@@ -153,8 +160,8 @@ class MessageController(BaseController):
                 # note: commenting out this next line because it appears to not be used or needed anymore
                 # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                 entry['itemCode'] = initiative['urlCode']
-                entry['itemImage'] = utils.initiativeImage(initiative)
-                entry['itemLink'] = utils.initiativeLink(initiative)
+                entry['itemImage'] = utils.initiativeImageURL(initiative)
+                entry['itemLink'] = utils.initiativeURL(initiative)
                 entry['itemTitle'] = initiative['title']
                 entry['itemUrl'] = initiative['url']
 
@@ -181,13 +188,13 @@ class MessageController(BaseController):
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
                         
-                entry['itemLink'] = lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode'])
+                entry['itemLink'] = utils.commentLink(comment, workshop)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
-                entry['itemLink'] = lib_6.thingLinkRouter(comment, c.user, embed=True, commentCode=comment['urlCode'])
+                entry['itemLink'] = utils.commentLink(comment, c.user)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnResource']:
@@ -196,8 +203,7 @@ class MessageController(BaseController):
                 resource = generic.getThing(comment['resourceCode'])
                 
                 # note: gonna need to decide how best to give these links their titles
-                entry['itemLink'], entry['itemTitle'] = lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode'])
-
+                entry['itemLink'] = utils.commentLink(comment, resource)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnUpdate']:
@@ -205,7 +211,7 @@ class MessageController(BaseController):
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 update = generic.getThing(comment['discussionCode'])
                 
-                entry['itemLink'] = lib_6.thingLinkRouter(comment, update, embed=True, commentCode=comment['urlCode'])
+                entry['itemLink'] = utils.commentLink(comment, update)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
@@ -223,7 +229,7 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                entry['itemLink'] = lib_6.photoLinkRouter(c.user)
+                entry['itemLink'] = utils.photoLink(c.user, photoCode)
                 
             elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
                 
@@ -241,7 +247,7 @@ class MessageController(BaseController):
                 entry['eventReason'] = event[0]['reason']
                 
                 
-                entry['itemLink'] = lib_6.initiativeLink(thing)
+                entry['itemLink'] = utils.initiativeLink(thing)
                 
             elif message['extraInfo'] in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
                 
@@ -258,7 +264,7 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                entry['itemLink'] = lib_6.initiativeResourceLink(thing)
+                entry['itemLink'] = utils.initiativeResourceLink(thing)
                 #Your initiative resource:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/resource/thing['urlCode']/thing['url']" class="green green-hover">title
 
@@ -281,7 +287,7 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                entry['itemLink'] = lib_6.initiativeUpdateLink(thing)
+                entry['itemLink'] = utils.initiativeUpdateLink(thing)
                 #Your initiative update:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/updateShow/thing['urlCode']" class="green green-hover">title
 
@@ -312,10 +318,10 @@ class MessageController(BaseController):
                 
                 #You posted:
                 if thing.objType == 'comment':
-                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n class="green green-hover">
+                    entry['itemLink'] = utils.thingLinkRouter(thing, parent, commentCode=thing['urlCode'])
                     entry['itemTitle'] = thing['data']
                 else:
-                    entry['itemLink'] = lib_6.thingLinkRouter(thing, parent, embed=True) | n class="green green-hover">
+                    entry['itemLink'] = utils.thingLinkRouter(thing, parent)
                     entry['itemTitle'] = thing['title']
 
                                 

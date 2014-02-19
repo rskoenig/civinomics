@@ -803,6 +803,7 @@
             elif 'format' in mainImage.keys():
                 return "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
+               # note: due to a recent slideshow thumbnail bugfix, Todd believes this .jpg should be .png
                return "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
                
       imgStr = '<a href="'

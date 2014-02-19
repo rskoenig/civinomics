@@ -7,6 +7,7 @@ from hashlib import md5
 from pylons import tmpl_context as c, config, session
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.mainImage    as mainImageLib
 import urllib2
 
 import misaka as m
@@ -30,6 +31,22 @@ def cap(s, l):
 ##################################################
 def civinomicsAvatar():
     return "/images/handdove_medium.png"
+
+##################################################
+# create a link to a comment
+##################################################
+def commentLink(comment, parent):
+    if parent.objType.replace("Unpublished", "") == 'workshop':
+        parentBase = 'workshop'
+        commentSuffix = "/comment/%s"%comment['urlCode']
+    elif parent.objType.replace("Unpublished", "") == 'user':
+        parentBase = 'profile'
+    elif parent.objType.replace("Unpublished", "") == 'initiative':
+        parentBase = 'initiative'
+        
+    
+    linkStr = "/%s/%s/%s/comment/%s" %(parentBase, parent["urlCode"], parent["url"], comment["urlCode"])
+    return linkStr
 
 ##################################################
 # simple email checker
@@ -377,58 +394,22 @@ def _userImageSource(user, **kwargs):
         source += '&s=200'
     return source
 
+# return a link to this user's profile page
+def userLink(user):
+    return "/profile/%s/%s/" %(user['urlCode'], user['url'])
 
-workshopInfo = \
-"""
-The following is a suggested list of sections to include. This background wiki uses Markdown for styling. See the Formatting Guide above for help.
+# return this user's name
+def userName(user):
+    return user['name']
 
+def workshopLink(workshop):
+    return "/workshop/%s/%s" %(w['urlCode'], w['url'])
 
-Overview
------
-_A summary of the key ideas associated with your workshop topic._
-
-
-Stats and Trends
------
-_What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?
-
-
-Existing Taxes and/or Revenues
------
-_Are there any public taxes associated with your workshop topic? Are there other current funding sources?_
-
-
-Current Spending
------
-_What money is currently spent on your workshop topic? What might it look like in the future?_
-
-
-Current Legislation
------
-_What publicly funded programs related to your workshop topic currently exist?_
-
-
-Case Studies
------
-_How have other groups or regions tackled this workshop topic already?_
-
-
-"""
-
-initiativeFields = \
-"""
-Background
------
-
-_incl. reference to Current Legislation_
-
-
-Proposal
------
-
-
-Fiscal Effects
------
-
-
-"""
+def workshopImage(workshop):
+    mainImage = mainImageLib.getMainImage(workshop)
+    imageLink = "/images/slide/thumbnail/supDawg.thumbnail"
+    if 'format' in mainImage.keys():
+        imageLink = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+    else:
+        imageLink = "/images/mainImage/%s/thumbnail/%s.png" %(mainImage['directoryNum'], mainImage['pictureHash'])
+    return imageLink
