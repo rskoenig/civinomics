@@ -222,6 +222,7 @@
                         <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
                   </td>
                 </tr>
+                <!--
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
                     <td>
@@ -274,7 +275,8 @@
                             </form>
                         </td>
                     % endif
-                </tr>
+                </tr> 
+                -->
             </table>
         </div>
     </div>
