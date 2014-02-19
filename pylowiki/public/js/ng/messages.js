@@ -1,6 +1,6 @@
 function profileMessagesCtrl($scope, $http) {
 	// '/workshop/' + $scope.code + '/' + $scope.url + '/ideas/get'
-	$scope.messagesURL = '/messages/' + $scope.code + '/' + $scope.url
+	$scope.messagesURL = '/messages/get/' + $scope.code + '/' + $scope.url
 	$scope.orderProp = '-date';
 	$scope.filterProp = '!disabled';
 	$scope.numAdopted = '0';

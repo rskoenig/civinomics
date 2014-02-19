@@ -5,9 +5,19 @@ from pylons.controllers.util import abort, redirect_to, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.db.message      as messageLib
+import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.listener     as listenerLib
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.workshop     as workshopLib
+
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -46,7 +56,7 @@ class MessageController(BaseController):
         return "OK"
 
     def showUserMessages(self, id1, id2, id3 = ''):
-        return render("/derived/6_messages_old.bootstrap")
+        return render("/derived/6_messages.bootstrap")
 
     def getUserMessages(self, id1, id2, id3 = ''):
         if not c.messages:
@@ -68,36 +78,48 @@ class MessageController(BaseController):
             
             entry = {}
             entry['rowClass'] = ''
-            if message['read'] == u'0':
-                entry['rowClass']= 'warning unread-message'
-            
-            if message['sender'] == u'0':
-                sender = 'Civinomics'
-                entry['userLink'] = '#'
-                entry['userImage'] = utils.civinomicsAvatar()
-            else:
-                sender = userLib.getUserByCode(message['sender'])
-                entry['userLink'] = lib_6.userLink(sender)
-                entry['userImage'] = lib_6.userImage(sender, className="avatar")
-            
-            # fields used in all if not most of the message types are loaded here
-            if 'title' in message:    
-                entry['messageTitle'] = message['title']
-            else:
-                entry['messageTitle'] = ''
-
-            # all fields are initialized here
+            entry['read'] = message['read']
+            entry['userName'] = 'Civinomics'
+            entry['userLink'] = '#'
+            entry['userImage'] = utils.civinomicsAvatar()
+            entry['messageTitle'] = ''
+            entry['messageText'] = ''
+            entry['messageCode'] = ''
+            entry['messageDate'] = message.date
+            entry['responseAction'] = ''
             entry['formStr'] = ''
             entry['action'] = ''
-            entry['responseAction'] = ''
+            entry['itemCode'] = ''
             entry['itemImage'] = ''
             entry['itemLink'] = ''
             entry['itemTitle'] = ''
-            entry['messageText'] = ''
+            entry['itemUrl'] = ''
+            entry['commentData'] = ''
+            entry['extraInfo'] = message['extraInfo']
+            entry['eventAction'] = ''
+            entry['eventReason'] = ''
+
+            if message['read'] == u'0':
+                entry['rowClass']= 'warning unread-message'
+            # note: should we have an object for Civinomics just as we do for users with a code?
+            if message['sender'] != u'0':
+                sender = userLib.getUserByCode(message['sender'])
+                entry['userName'] = utils.userName(sender)
+                entry['userLink'] = utils.userLink(sender)
+                entry['userImage'] = utils._userImageSource(sender)
+
+            # fields used in all if not most of the message types are loaded here
+            if 'title' in message:    
+                entry['messageTitle'] = message['title']            
+            if 'messageText' in message:
+                entry['messageText'] = message['messageText']
+            if 'messageCode' in message:
+                entry['messageCode'] = message['urlCode']
+            if 'read' in message:
+                entry['read'] = message['read']
 
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
-                 
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 if message['extraInfo'] == 'listenerInvite':
                     entry['formStr'] = """<form method="post" name="inviteListener" id="inviteListener" action="/profile/%s/%s/listener/response/handler/">""" %(c.user['urlCode'], c.user['url'])
@@ -109,9 +131,13 @@ class MessageController(BaseController):
                     entry['action'] = 'facilitate'
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
-                
+                entry['itemCode'] = workshop['urlCode']
+                entry['itemUrl'] = workshop['url']
+                entry['itemTitle'] = workshop['Title'] 
+                entry['itemLink'] = utils.workshopURL(workshop)
+                mainImage = mainImageLib.getMainImage(workshop)
+                entry['itemImage'] = utils.workshopImageURL(workshop, mainImage, thumbnail=True)
                 if message['read'] == u'1':
-                
                     # Since this is tied to the individual message, we will only have one action
                     # The query here should be rewritten to make use of map/reduce for a single query
                     # note: marking this with "note:" so the above statement is noticed more easily
@@ -120,155 +146,81 @@ class MessageController(BaseController):
                         entry['responseAction'] = 'declining'
                     else:
                         entry['responseAction'] = 'accepting'
-
-                    entry['itemImage'] = lib_6.workshopImage(workshop, linkClass="pull-left message-workshop-image")
-                    entry['itemLink'] = lib_6.workshopLink(workshop)
-                    entry['itemTitle'] = workshop['title']
-                    entry['messageText'] = message['text']
-                    entry['messageDate'] = message.date
-                else:
-                    #
-                    formStr
-                    workshop['urlCode']
-                    workshop['url']
-                    message['urlCode']
-                    entry['itemImage'] = lib_6.workshopImage(workshop, linkClass="pull-left")
-                    message['title']
-                    lib_6.userLink(sender) 
-                    #invites you to 
-                    action
-                    lib_6.workshopLink(workshop)
-                    workshop['title']
-                    message['text']
-                    #<button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to 
-                    action 
-                    #the workshop">Accept</button> name="declineInvite" 
-                    #action
-                    message.date
                 
             elif message['extraInfo'] in ['listenerSuggestion']:
+                
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
-                message['title']
-                lib_6.userLink(sender)
-                # has a listener suggestion for workshop
-                lib_6.workshopLink(workshop)
-                workshop['title']
-                message['text']
-                message.date
+                entry['itemTitle'] = workshop['title']
+                entry['itemLink'] = utils.workshopURL(workshop)
+                entry['messageTitle'] = message['title']
+                entry['messageText'] = message['text']
+                entry['messageDate'] = message.date
+                
             elif message['extraInfo'] in ['authorInvite']:
+
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                #inviteFacilitate" id="inviteFacilitate" 
-                #action="/profile/%s/%s/facilitate/response/handler/
-                c.user['urlCode']
-                c.user['url']
-                #action = 'coauthor'
+                entry['formStr'] = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                entry['action'] = 'coauthor'
                 # note: commenting out this next line because it appears to not be used or needed anymore
                 # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
-                
-                if message['read'] == u'1':
-                    
-                        # Since this is tied to the individual message, we will only have one action
-                        # The query here should be rewritten to make use of map/reduce for a single query
-                        event = eventLib.getEventsWithAction(message, 'accepted')
-                        if not event:
-                            responseAction = 'declining'
-                        else:
-                            responseAction = 'accepting'
-                    
-                    <div class="media">
-                        lib_6.initiativeImage(initiative)
-                        <div class="media-body">
-                            <h5 class="media-heading">message['title']
-                            lib_6.userLink(sender) invites you to facilitate lib_6.initiativeLink(initiative)>initiative['title']
-                            message['text']
-                            (You have already responded by responseAction)
-                            message.date
-                        
-                    
-                else:
-                    formStr
-                        
-                        initiative['urlCode']
-                        initiative['url']
-                        message['urlCode']
-                        
-                        lib_6.initiativeImage(initiative)
-                        
-                        
-                        message['title']
-                        lib_6.userLink(sender)
-                        # invites you to action 
-                        lib_6.initiativeLink(initiative)
-                        initiative['title']
-                        message['text']
-                        #acceptInvite" class="btn btn-mini btn-civ"
-                        #declineInvite" class="btn btn-mini btn-danger"
-                        message.date
-                
+                entry['itemCode'] = initiative['urlCode']
+                entry['itemImage'] = utils.initiativeImageURL(initiative)
+                entry['itemLink'] = utils.initiativeURL(initiative)
+                entry['itemTitle'] = initiative['title']
+                entry['itemUrl'] = initiative['url']
 
+                entry['messageDate'] = message.date
+                entry['messageText'] = message['text']
+                entry['messageTitle'] = message['title']
+
+                if message['read'] == u'1':                    
+                    # Since this is tied to the individual message, we will only have one action
+                    # The query here should be rewritten to make use of map/reduce for a single query
+                    event = eventLib.getEventsWithAction(message, 'accepted')
+                    if not event:
+                        entry['responseAction'] = 'declining'
+                    else:
+                        entry['responseAction'] = 'accepting'
+                #else:                                    
+                    # note: ?what to do?
+                                                            
             elif message['extraInfo'] in ['authorResponse']:
-                
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                
-                message['title']
-                lib_6.userLink(sender)
-                message['text'] 
-                lib_6.initiativeLink(initiative)
-                initiative['title']
-                message.date
+                entry['itemTitle'] = initiative['title']
 
             elif message['extraInfo'] in ['commentResponse']:
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
-                
-                lib_6.userLink(sender) 
-                message['title']
                         
-                lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']
-                    
+                entry['itemLink'] = utils.commentLink(comment, workshop)
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
-                
-                lib_6.userLink(sender) 
-                message['title']
-                lib_6.thingLinkRouter(comment, c.user, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']                                
+                entry['itemLink'] = utils.commentLink(comment, c.user)
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnResource']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 resource = generic.getThing(comment['resourceCode'])
                 
-                lib_6.userLink(sender) 
-                message['title']
-                lib_6.thingLinkRouter(comment, resource, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']
-                message.date
+                # note: gonna need to decide how best to give these links their titles
+                entry['itemLink'] = utils.commentLink(comment, resource)
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnUpdate']:
                 
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 update = generic.getThing(comment['discussionCode'])
                 
-                
-                lib_6.userLink(sender) 
-                message['title']
-                lib_6.thingLinkRouter(comment, update, embed=True, commentCode=comment['urlCode'])
-                comment['data']
-                message['text']
-                message.date
-                    
+                entry['itemLink'] = utils.commentLink(comment, update)
+                entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
                 
                 photoCode = message['photoCode']
-                thing = generic.getThing(photoCode)
                 title = thing['title']
                 if message['extraInfo'] in ['disabledPhoto']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
@@ -277,25 +229,18 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedPhoto']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
-                message['title']
-                # It was action because: reason
-                #Your photo:
-                #href="/profile/
-                #c.user['urlCode']/
-                #c.user['url']
-                #/photo/show/photoCode" class="green green-hover">title
-                        
-                if 'text' in message:
-                    message['text']                                
+                # note: assuming this message is about the logged in user's own photo
+                entry['itemLink'] = utils.photoLink(photoCode, c.user)
+                entry['itemTitle'] = title
                 
             elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
                 
                 initiativeCode = message['initiativeCode']
                 thing = generic.getThing(initiativeCode)
-                title = thing['title']
+                entry['itemTitle'] = thing['title']
                 if message['extraInfo'] in ['disabledInitiative']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
                 elif message['extraInfo'] in ['enabledInitiative']:
@@ -303,25 +248,16 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiative']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
-                
-                message['title']
-                #It was action because: 
-                reason
-                #Your initiative:
-                #href="/initiative/thing['urlCode']/thing['url']/show
-                #title
-                        
-                if 'text' in message:
-                    message['text']
+                entry['itemLink'] = utils.initiativeLink(thing)
                 
             elif message['extraInfo'] in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
                 
                 resourceCode = message['resourceCode']
                 thing = generic.getThing(resourceCode)
-                title = thing['title']
+                entry['itemTitle'] = thing['title']
                 if message['extraInfo'] in ['disabledInitiativeResource']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
                 elif message['extraInfo'] in ['enabledInitiativeResource']:
@@ -329,17 +265,13 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiativeResource']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
-                message['title']</h4>
-                #It was action because: reason
+                entry['itemLink'] = utils.initiativeURL(thing)
                 #Your initiative resource:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/resource/thing['urlCode']/thing['url']" class="green green-hover">title
-                        
-                if 'text' in message:
-                    message['text']
-                
+
             elif message['extraInfo'] in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
                 
                 if 'updateCode' in message:
@@ -347,7 +279,8 @@ class MessageController(BaseController):
                 else:
                     updateCode = message['discussionCode']
                 thing = generic.getThing(updateCode)
-                title = thing['title']
+                entry['itemTitle'] = thing['title']
+
                 if message['extraInfo'] in ['disabledInitiativeUpdate']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
                 elif message['extraInfo'] in ['enabledInitiativeUpdate']:
@@ -355,24 +288,18 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['deletedInitiativeUpdate']:
                     event = eventLib.getEventsWithAction(message, 'deleted')
                     
-                action = event[0]['action']
-                reason = event[0]['reason']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
-                message['title']
-                #It was action because: reason
+                entry['itemLink'] = utils.initiativeURL(thing)
                 #Your initiative update:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/updateShow/thing['urlCode']" class="green green-hover">title
-                        
-                if 'text' in message:
-                    message['text']
-                    
-                
+
             elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                 
                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
                 if not event:
                     continue
-                event = event[0]
                     
                 # Mako was bugging out on me when I tried to do this with sets
                 codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode', 'initiativeCode']
@@ -390,18 +317,16 @@ class MessageController(BaseController):
                 elif 'resourceCode' in thing:
                     parent = generic.getThing(thing['resourceCode'])
                 
-                message['title']
-                event['action'] 
-                #because: 
-                event['reason']
-                #You posted:
-                if thing.objType == 'comment':
-                    lib_6.thingLinkRouter(thing, parent, embed=True, commentCode=thing['urlCode']) | n class="green green-hover">thing['data']
-                else:
-                    lib_6.thingLinkRouter(thing, parent, embed=True) | n class="green green-hover">thing['title']
-                        
-                        
-                message['text']
+                entry['eventAction'] = event[0]['action']
+                entry['eventReason'] = event[0]['reason']
                 
-                                
-        return render("/derived/6_messages.bootstrap")
+                entry['itemLink'] = utils.thingURL(parent, thing)
+                if thing.objType == 'comment':
+                    entry['itemTitle'] = thing['data']
+                else:
+                    entry['itemTitle'] = thing['title']
+
+            result.append(entry)
+        
+        return json.dumps({'statusCode': 0, 'result': result})
+        
