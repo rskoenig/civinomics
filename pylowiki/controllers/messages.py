@@ -92,17 +92,11 @@ class MessageController(BaseController):
             if message['read'] == u'0':
                 entry['rowClass']= 'warning unread-message'
             # note: should we have an object for Civinomics just as we do for users with a code?
-            if message['sender'] == u'0':
-                sender = 'Civinomics'
-                entry['userName'] = 'Civinomics'
-                entry['userLink'] = '#'
-                entry['userImage'] = utils.civinomicsAvatar()
-            else:
+            if message['sender'] != u'0':
                 sender = userLib.getUserByCode(message['sender'])
-                entry['userName'] = lib_6.userName(sender)
-                entry['userLink'] = lib_6.userLink(sender)
-                entry['userImage'] = lib_6.userImage(sender, className="avatar")
-            
+                entry['userName'] = utils.userName(sender)
+                entry['userLink'] = utils.userLink(sender)
+                entry['userImage'] = utils.userImage(sender)
 
             # fields used in all if not most of the message types are loaded here
             if 'title' in message:    
@@ -116,7 +110,6 @@ class MessageController(BaseController):
 
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
-                 
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 if message['extraInfo'] == 'listenerInvite':
                     entry['formStr'] = """<form method="post" name="inviteListener" id="inviteListener" action="/profile/%s/%s/listener/response/handler/">""" %(c.user['urlCode'], c.user['url'])
@@ -130,10 +123,9 @@ class MessageController(BaseController):
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                 entry['itemCode'] = workshop['urlCode']
                 entry['itemUrl'] = workshop['url']
+                entry['itemTitle'] = workshop['Title'] 
+                entry['itemLink'] = utils.workshopLink(workshop)
                 entry['itemImage'] = utils.workshopImage(workshop)
-                entry['itemLink'] = lib_6.workshopLink(workshop)
-                entry['itemTitle'] = workshop['title']
-                
                 if message['read'] == u'1':
                     # Since this is tied to the individual message, we will only have one action
                     # The query here should be rewritten to make use of map/reduce for a single query
@@ -143,30 +135,26 @@ class MessageController(BaseController):
                         entry['responseAction'] = 'declining'
                     else:
                         entry['responseAction'] = 'accepting'
-                    # note: I should be doing this in the template
-                    #entry['itemImageClass'] = utils.whatDoICallThis("pull-left message-workshop-image")
-                #else:
-                    # note: I should be doing this in the template
-                    #entry['itemImageClass'] = utils.whatDoICallThis("pull-left")
-                    #...
-                    #entry['button2Text'] = "Decline"
                 
             elif message['extraInfo'] in ['listenerSuggestion']:
                 
+                workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 entry['itemTitle'] = workshop['title']
+                entry['itemLink'] = utils.workshopLink(workshop)
                 entry['messageTitle'] = message['title']
                 entry['messageText'] = message['text']
                 entry['messageDate'] = message.date
                 
             elif message['extraInfo'] in ['authorInvite']:
+
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                 entry['formStr'] = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
                 entry['action'] = 'coauthor'
                 # note: commenting out this next line because it appears to not be used or needed anymore
                 # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                 entry['itemCode'] = initiative['urlCode']
-                entry['itemImage'] = lib_6.initiativeImage(initiative)
-                entry['itemLink'] = lib_6.initiativeLink(initiative)
+                entry['itemImage'] = utils.initiativeImage(initiative)
+                entry['itemLink'] = utils.initiativeLink(initiative)
                 entry['itemTitle'] = initiative['title']
                 entry['itemUrl'] = initiative['url']
 

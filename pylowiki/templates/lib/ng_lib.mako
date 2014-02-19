@@ -107,6 +107,7 @@
         mediaHeadingOpen = """<h5 class="media-heading">"""
         mediaHeading = ''
         mediaHeadingClose = """</h5>"""
+        actionReason = ''
         userActionItem = ''
         messageText = ''
         userResponse = ''
@@ -131,30 +132,22 @@
                     </form>"""
             #  text for both read cases below here - - - - - - - - 
             beforeMediaBody = """<img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">"""
-            mediaHeading = {{messageTitle}}
+            mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
                     <a href="{{userLink}}">{{userName}}</a>
                     invites you to {{action}}
                     <a href="{{itemLink}}">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
         
         elif '{{extraInfo}}' in ['listenerSuggestion']:
-            mediaHeading = {{messageTitle}}
+            mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
                     Member 
                     <a href="{{userLink}}">{{userName}}</a>
                     has a listener suggestion for workshop 
                     <a href="{{itemLink}}">{{itemTitle}}</a>
-                </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
                 </p>"""
 
         elif '{{extraInfo}}' in ['authorInvite']:
@@ -174,19 +167,16 @@
                 afterMedia = """
                     </form>"""
             #  text for both read cases below here - - - - - - - - 
-            mediaHeading = {{messageTitle}}
+            mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
                     <a href="{{userLink}}">{{userName}}</a>
                     invites you to {{action}}
                     <a href="{{itemLink}}">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['authorResponse']:
-            mediaHeading = {{messageTitle}}
+            mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
                     <a href="{{userLink}}">{{userName}}</a>
@@ -201,10 +191,7 @@
                 <p>
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['commentOnPhoto', 'commentOnInitiative']:
             mediaHeading = """
                 <a href="{{userLink}}">{{userName}}</a>
@@ -213,10 +200,7 @@
                 <p>
                     <a href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['commentOnResource']:
             mediaHeading = """
                 <a href="{{userLink}}">{{userName}}</a>
@@ -225,10 +209,7 @@
                 <p>
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['commentOnUpdate']:
             mediaHeading = """
                 <a href="{{userLink}}">{{userName}}</a>
@@ -237,108 +218,98 @@
                 <p>
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
             mediaHeadingOpen = """<h4 class="media-heading centered">"""
             mediaHeading = """{{messageTitle}}"""
             mediaHeadingClose = """</h4>"""
-            userActionItem = """     
+            actionReason = """
                 <p>
                     It was 
                     {{eventAction}} 
                     because: 
                     {{eventReason}}
-                </p>
+                </p>"""
+            userActionItem = """
                 <p>
                     Your photo:
                      <img src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
             
             mediaHeadingOpen = """<h4 class="media-heading centered">"""
             mediaHeading = """{{messageTitle}}"""
             mediaHeadingClose = """</h4>"""
-            userActionItem = """
+            actionReason = """
                 <p>
                     It was 
                     {{eventAction}} 
                     because: 
                     {{eventReason}}
-                </p>
+                </p>"""
+            userActionItem = """
                 <p>
                     Your initiative:
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-                messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+                
         elif '{{extraInfo}}' in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
             mediaHeadingOpen = """<h4 class="media-heading centered">"""
             mediaHeading = """{{messageTitle}}"""
             mediaHeadingClose = """</h4>"""
-            userActionItem = """
+            actionReason = """
                 <p>
                     It was 
                     {{eventAction}} 
                     because: 
                     {{eventReason}}
-                </p>
+                </p>"""
+            userActionItem = """
                 <p>
                     Your initiative resource:
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
             mediaHeadingOpen = """<h4 class="media-heading centered">"""
             mediaHeading = """{{messageTitle}}"""
             mediaHeadingClose = """</h4>"""
-            userActionItem = """
+            actionReason = """
                 <p>
                     It was 
                     {{eventAction}} 
                     because: 
                     {{eventReason}}
-                </p>
+                </p>"""
+            userActionItem = """
                 <p>
                     Your initiative update:
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
+            
         elif '{{extraInfo}}' in ['disabled', 'enabled', 'deleted', 'adopted']:
             mediaHeadingOpen = """<h4 class="media-heading centered">"""
             mediaHeading = """{{messageTitle}}"""
             mediaHeadingClose = """</h4>"""
-            userActionItem = """
+            actionReason = """
                 <p>
                     It was 
                     {{eventAction}} 
                     because: 
                     {{eventReason}}
-                </p>
+                </p>"""
+            userActionItem = """
                 <p>
                     You posted:
                     <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
-            messageText = """
-                <p>
-                    {{messageText}}
-                </p>"""
 
         #  text for all extraInfo cases loaded below here - - - - - - - - 
+        messageText = """
+            <p>
+                {{messageText}}
+            </p>"""
         messageDate = """
             {{messageDate}}
             (PST)"""
@@ -351,6 +322,7 @@
                 ${mediaHeadingOpen}
                     ${mediaHeading}
                 ${mediaHeadingClose}
+                ${actionReason}
                 ${userActionItem}
                 ${messageText}
                 ${userResponse}
