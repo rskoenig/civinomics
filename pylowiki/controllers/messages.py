@@ -5,16 +5,17 @@ from pylons.controllers.util import abort, redirect_to, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.db.message      as messageLib
-import pylowiki.lib.db.dbHelpers    as dbHelpers
-import pylowiki.lib.db.user         as userLib
-import pylowiki.lib.db.listener     as listenerLib
-import pylowiki.lib.db.facilitator  as facilitatorLib
-import pylowiki.lib.db.workshop     as workshopLib
-import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.listener     as listenerLib
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.message      as messageLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.workshop     as workshopLib
 
 log = logging.getLogger(__name__)
 
@@ -131,8 +132,9 @@ class MessageController(BaseController):
                 entry['itemCode'] = workshop['urlCode']
                 entry['itemUrl'] = workshop['url']
                 entry['itemTitle'] = workshop['Title'] 
-                entry['itemLink'] = utils.workshopLink(workshop)
-                entry['itemImage'] = utils.workshopImage(workshop)
+                entry['itemLink'] = utils.workshopURL(workshop)
+                mainImage = mainImageLib.getMainImage(workshop)
+                entry['itemImage'] = utils.workshopImageURL(workshop, mainImage, thumbnail=True)
                 if message['read'] == u'1':
                     # Since this is tied to the individual message, we will only have one action
                     # The query here should be rewritten to make use of map/reduce for a single query
@@ -147,7 +149,7 @@ class MessageController(BaseController):
                 
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 entry['itemTitle'] = workshop['title']
-                entry['itemLink'] = utils.workshopLink(workshop)
+                entry['itemLink'] = utils.workshopURL(workshop)
                 entry['messageTitle'] = message['title']
                 entry['messageText'] = message['text']
                 entry['messageDate'] = message.date
@@ -217,7 +219,6 @@ class MessageController(BaseController):
             elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
                 
                 photoCode = message['photoCode']
-                thing = generic.getThing(photoCode)
                 title = thing['title']
                 if message['extraInfo'] in ['disabledPhoto']:
                     event = eventLib.getEventsWithAction(message, 'disabled')
@@ -229,7 +230,9 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                entry['itemLink'] = utils.photoLink(c.user, photoCode)
+                # note: assuming this message is about the logged in user's own photo
+                entry['itemLink'] = utils.photoLink(photoCode, c.user)
+                entry['itemTitle'] = title
                 
             elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
                 
@@ -245,7 +248,6 @@ class MessageController(BaseController):
                     
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
-                
                 
                 entry['itemLink'] = utils.initiativeLink(thing)
                 
@@ -264,7 +266,7 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                entry['itemLink'] = utils.initiativeResourceLink(thing)
+                entry['itemLink'] = utils.initiativeURL(thing)
                 #Your initiative resource:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/resource/thing['urlCode']/thing['url']" class="green green-hover">title
 
@@ -287,7 +289,7 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                entry['itemLink'] = utils.initiativeUpdateLink(thing)
+                entry['itemLink'] = utils.initiativeURL(thing)
                 #Your initiative update:
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/updateShow/thing['urlCode']" class="green green-hover">title
 
@@ -316,12 +318,10 @@ class MessageController(BaseController):
                 entry['eventAction'] = event[0]['action']
                 entry['eventReason'] = event[0]['reason']
                 
-                #You posted:
+                entry['itemLink'] = utils.thingURL(parent, thing)
                 if thing.objType == 'comment':
-                    entry['itemLink'] = utils.thingLinkRouter(thing, parent, commentCode=thing['urlCode'])
                     entry['itemTitle'] = thing['data']
                 else:
-                    entry['itemLink'] = utils.thingLinkRouter(thing, parent)
                     entry['itemTitle'] = thing['title']
 
                                 
