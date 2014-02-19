@@ -1379,8 +1379,11 @@ class WorkshopController(BaseController):
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             entry['urlCode'] = idea['urlCode']
-            entry['objType'] = 'idea'
             entry['url'] = idea['url']
+            entry['parentHref'] = '/workshop/' + idea['workshopCode'] + '/' + idea['workshop_url']
+            href = '/' + idea.objType + '/' + idea['urlCode'] + '/' + idea['url']
+            entry['href'] = entry['parentHref'] + href
+            entry['objType'] = 'idea'
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
                 adopted += 1
