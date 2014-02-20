@@ -5,13 +5,13 @@
             <div class="media-body" ng-controller="yesNoVoteCtrl">
                 <div class="span9">
                     <div class="span3">
-                        <a href = '{{initiative.initiativeLink}}'>
+                        <a ng-href = '{{initiative.initiativeLink}}'>
                             <div class="i-thumb" style="background-image:url('{{initiative.thumbnail}}');"/></div>
                         </a>
                     </div>
                     <div class="span9">
                         <h4 class="media-heading">
-                            <a class="listed-item-title initiative-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
+                            <a class="listed-item-title initiative-title" ng-href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
                         </h4>
                         <p>{{initiative.description}}</p>
                         <hr class="no-bottom no-top">
@@ -21,9 +21,9 @@
                         </h5>
                         <small>
                             % if c.searchType and c.searchType != 'region':
-                                <a class="no-highlight" href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" src="{{initiative.flag}}"> {{initiative.scopeLevel}} of {{initiative.scopeName}}</a><br>
+                                <a class="no-highlight" ng-href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" ng-src="{{initiative.flag}}"> {{initiative.scopeLevel}} of {{initiative.scopeName}}</a><br>
                             % endif
-                            Authors: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                            Authors: <a ng-href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
                         </small>
                     </div>
                 </div>
@@ -39,7 +39,7 @@
         <div ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
             <div class="media-body object-in-listing {{idea.status}} border-bottom" ng-controller="yesNoVoteCtrl">
                 <div class="span9">
-                    <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
+                    <p class="ideaListingTitle"><a class="listed-item-title" ng-href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
                         {{idea.title}}
                     </a></p>
                     <strong ng-show="idea.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
@@ -47,7 +47,7 @@
                     <p>{{idea.text}}</p>
                     <ul class="horizontal-list iconListing">
                         <li>
-                            <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a>Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a> <span class="grey">{{idea.fuzzyTime}} ago</span>
+                            <a ng-href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a>Posted by <a class="green green-hover" ng-href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a> <span class="grey">{{idea.fuzzyTime}} ago</span>
                         </li>
                         <!-- <li><i class="icon-file-text"></i> Read full text</li> -->
                         <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
@@ -115,7 +115,7 @@
         afterMedia = ''
         #  all cases for extraInfo begin here - - - - - - - - 
         if '{{extraInfo}}' in ['listenerInvite', 'facilitationInvite']:
-            if {{read}} == u'1':
+            if '{{read}}' == u'1':
                 userResponse = """
                     (You have already responded by 
                     {{responseAction}})"""
@@ -131,13 +131,13 @@
                 afterMedia = """
                     </form>"""
             #  text for both read cases below here - - - - - - - - 
-            beforeMediaBody = """<img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">"""
+            beforeMediaBody = """<img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">"""
             mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{userLink}}">{{userName}}</a>
+                    <a ng-href="{{userLink}}">{{userName}}</a>
                     invites you to {{action}}
-                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                 </p>"""
         
         elif '{{extraInfo}}' in ['listenerSuggestion']:
@@ -145,9 +145,9 @@
             userActionItem = """
                 <p>
                     Member 
-                    <a href="{{userLink}}">{{userName}}</a>
+                    <a ng-href="{{userLink}}">{{userName}}</a>
                     has a listener suggestion for workshop 
-                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                 </p>"""
 
         elif '{{extraInfo}}' in ['authorInvite']:
@@ -170,53 +170,53 @@
             mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{userLink}}">{{userName}}</a>
+                    <a ng-href="{{userLink}}">{{userName}}</a>
                     invites you to {{action}}
-                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['authorResponse']:
             mediaHeading = """{{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{userLink}}">{{userName}}</a>
+                    <a ng-href="{{userLink}}">{{userName}}</a>
                     {{messageText}} 
-                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                 </p>"""
         elif '{{extraInfo}}' in ['commentResponse']:
             mediaHeading = """
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['commentOnPhoto', 'commentOnInitiative']:
             mediaHeading = """
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['commentOnResource']:
             mediaHeading = """
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['commentOnUpdate']:
             mediaHeading = """
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}"""
             userActionItem = """
                 <p>
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
@@ -233,7 +233,7 @@
             userActionItem = """
                 <p>
                     Your photo:
-                     <img src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
+                     <img ng-src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
                 </p>"""
             
         elif '{{extraInfo}}' in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
@@ -251,7 +251,7 @@
             userActionItem = """
                 <p>
                     Your initiative:
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
                 
         elif '{{extraInfo}}' in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
@@ -268,7 +268,7 @@
             userActionItem = """
                 <p>
                     Your initiative resource:
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
@@ -285,7 +285,7 @@
             userActionItem = """
                 <p>
                     Your initiative update:
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
             
         elif '{{extraInfo}}' in ['disabled', 'enabled', 'deleted', 'adopted']:
@@ -302,7 +302,7 @@
             userActionItem = """
                 <p>
                     You posted:
-                    <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                    <a ng-ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
                 </p>"""
 
         #  text for all extraInfo cases loaded below here - - - - - - - - 
@@ -359,15 +359,15 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
 <%def name="listenerFacilitationInvite()">
     % if {{read}} == u'1':
         <div class="media">
-            <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+            <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
             <div class="media-body">
                 <h5 class="media-heading">
                     {{messageTitle}}
                 </h5>
                 <p>
-                    <a href="{{userLink}}">{{userName}}</a>
+                    <a ng-href="{{userLink}}">{{userName}}</a>
                     invites you to facilitate 
-                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                 </p>
                 <p>
                     {{messageText}}
@@ -388,16 +388,16 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             <input type="hidden" name="workshopURL" value="{{itemUrl}}">
             <input type="hidden" name="messageCode" value="{{messageCode}}">
             <div class="media">
-                <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+                <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
                 <div class="media-body">
                     <h5 class="media-heading">
                         {{messageTitle}}
                     </h5>
                     <p>
-                        <a href="{{userLink}}">{{userName}}</a>
+                        <a ng-href="{{userLink}}">{{userName}}</a>
                         invites you to 
                         {{action}}
-                        <a href="{{itemLink}}">{{itemTitle}}</a>
+                        <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                     </p>
                     <p>
                         {{messageText}}
@@ -421,9 +421,9 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
                 {{messageTitle}}
             </h5>
             Member 
-            <a href="{{userLink}}">{{userName}}</a>
+            <a ng-href="{{userLink}}">{{userName}}</a>
             has a listener suggestion for workshop 
-            <a href="{{itemLink}}">{{itemTitle}}</a>
+            <a ng-href="{{itemLink}}">{{itemTitle}}</a>
             <br />
             <p>
                 {{messageText}}
@@ -439,15 +439,15 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
 <%def name="authorInvite()">
     % if {{read}} == u'1':
         <div class="media">
-            <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+            <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
             <div class="media-body">
                 <h5 class="media-heading">
                     {{messageTitle}}
                 </h5>
                 <p>
-                    <a href="{{userLink}}">{{userName}}</a>
+                    <a ng-href="{{userLink}}">{{userName}}</a>
                     invites you to facilitate 
-                    <a href="{{itemLink}}">{{itemTitle}}</a>
+                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                 </p>
                 <p>
                     {{messageText}}
@@ -468,16 +468,16 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             <input type="hidden" name="initiativeURL" value="{{itemUrl}}">
             <input type="hidden" name="messageCode" value="{{messageCode}}">
             <div class="media">
-                <img src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
+                <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
                 <div class="media-body">
                     <h5 class="media-heading">
                         {{messageTitle}}
                     </h5>
                     <p>
-                        <a href="{{userLink}}">{{userName}}</a>
+                        <a ng-href="{{userLink}}">{{userName}}</a>
                         invites you to 
                         {{action}} 
-                        <a href="{{itemLink}}">{{itemTitle}}</a>
+                        <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                     </p>
                     <p>
                         {{messageText}}
@@ -501,9 +501,9 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
                 {{messageTitle}}
             </h5>
             <p>
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageText}} 
-                <a href="{{itemLink}}">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}">{{itemTitle}}</a>
             </p>
             <p class="pull-right"><small>
                 {{messageDate}} 
@@ -517,11 +517,11 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
     <div class="media">
         <div class="media-body">
             <h5 class="media-heading">
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}
             </h5>
             <p>
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}
@@ -538,11 +538,11 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
     <div class="media">
         <div class="media-body">
             <h5 class="media-heading">
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}
             </h5>
             <p>
-                <a href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
             </p>
             <p>
                 {{messageText}}
@@ -559,11 +559,11 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
     <div class="media">
         <div class="media-body">
             <h5 class="media-heading">
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}
             </h5>
             <p>
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}
@@ -580,11 +580,11 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
     <div class="media">
         <div class="media-body">
             <h5 class="media-heading">
-                <a href="{{userLink}}">{{userName}}</a>
+                <a ng-href="{{userLink}}">{{userName}}</a>
                 {{messageTitle}}
             </h5>
             <p>
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{message.messageText}}
@@ -612,7 +612,7 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             <p>
                 Your photo:
                 <!-- note: photo needs a link to the unpublished page, link to src of image and title -->
-                <img src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
+                <img ng-src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
             </p>
             <p>
                 {{messageText}}
@@ -639,7 +639,7 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             </p>
             <p>
                 Your initiative:
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}
@@ -666,7 +666,7 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             </p>
             <p>
                 Your initiative resource:
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}
@@ -693,7 +693,7 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             </p>
             <p>
                 Your initiative update:
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}
@@ -720,7 +720,7 @@ DELETE ALL FUNCTIONS BELOW HERE.. AND THIS MESSAGE
             </p>
             <p>
                 You posted:
-                <a href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
             </p>
             <p>
                 {{messageText}}

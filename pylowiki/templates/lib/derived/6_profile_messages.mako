@@ -29,21 +29,39 @@
                 </div>
                 <div class="span8 message-content">
                     <!-- this init clause covers all varaiables that can possibly be used in the following cases -->
-                    <div ng-init="rowClass=message.rowClass; read=message.read; userName=message.userName; userLink=message.userLink; userImage=message.userImage; messageTitle=message.messageTitle; messageText=message.messageText; messageCode=message.messageCode; messageDate=message.messageDate; responseAction=message.responseAction; formStr=message.formStr; action=message.action; itemCode=message.itemCode; itemImage=message.itemImage; itemLink=message.itemLink; itemTitle=message.itemTitle; itemUrl=message.itemUrl; commentData=message.commentData; extraInfo=message.extraInfo; eventAction=message.eventAction; eventReason=message.eventReason;">
-                        ${ng_helpers.profileMessages()}
-                        <!-- handles these cases
+                    <div ng-init="rowClass=message.rowClass; read=message.read; userName=message.userName; userLink=message.userLink; userImage=message.userImage; messageTitle=message.messageTitle; messageText=message.messageText; messageCode=message.messageCode; messageDate=message.messageDate; responseAction=message.responseAction; formStr=message.formStr; action=message.action; itemCode=message.itemCode; itemImage=message.itemImage; itemLink=message.itemLink; itemTitle=message.itemTitle; itemUrl=message.itemUrl; commentData=message.commentData; extraInfo=message.extraInfo; combinedInfo=message.combinedInfo; eventAction=message.eventAction; eventReason=message.eventReason;">
+                        <div ng-switch on="combinedInfo">
+                        <!-- handles these cases, not ng_helpers.profileMessages() -->
+                            <div class="animate-switch" ng-switch-when="listenerFacilitationInvite">
+                                ${ng_helpers.listenerFacilitationInvite()}
+                            </div>
+                        </div>
+                        <!-- 
+                        'listenerFacilitationInvite'
                         ['listenerInvite', 'facilitationInvite']:
+                        'listenerSuggestion'
                         ['listenerSuggestion']:
+                        'authorInvite'
                         ['authorInvite']:
+                        'authorResponse'
                         ['authorResponse']:
+                        'commentResponse'
                         ['commentResponse']:
+                        'commentOnPhotoOnInitiative'
                         ['commentOnPhoto', 'commentOnInitiative']:
+                        'commentOnResource'
                         ['commentOnResource']:
+                        'commentOnUpdate'
                         ['commentOnUpdate']:
+                        'disabledEnabledDeletedPhoto'
                         ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
+                        'disabledEnabledDeletedInitiative'
                         ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
+                        'disabledEnabledDeletedInitiativeResource'
                         ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
+                        'disabledEnabledDeletedInitiativeUpdate'
                         ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
+                        'disabledEnabledDeletedAdopted'
                         ['disabled', 'enabled', 'deleted', 'adopted']: -->
                     </div>
                 </span>

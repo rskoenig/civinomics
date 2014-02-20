@@ -96,6 +96,9 @@ class MessageController(BaseController):
             entry['itemUrl'] = ''
             entry['commentData'] = ''
             entry['extraInfo'] = message['extraInfo']
+            # this next field is a hack that will allow us to use ng-switch in order
+            # to choose what template function to call in ng_lib.mako from 6_profile_messages.mako
+            entry['combinedInfo'] = ''
             entry['eventAction'] = ''
             entry['eventReason'] = ''
 
@@ -120,6 +123,7 @@ class MessageController(BaseController):
 
 
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
+                entry['combinedInfo'] = 'listenerFacilitationInvite'
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 if message['extraInfo'] == 'listenerInvite':
                     entry['formStr'] = """<form method="post" name="inviteListener" id="inviteListener" action="/profile/%s/%s/listener/response/handler/">""" %(c.user['urlCode'], c.user['url'])
@@ -148,7 +152,7 @@ class MessageController(BaseController):
                         entry['responseAction'] = 'accepting'
                 
             elif message['extraInfo'] in ['listenerSuggestion']:
-                
+                entry['combinedInfo'] = 'listenerSuggestion'
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 entry['itemTitle'] = workshop['title']
                 entry['itemLink'] = utils.workshopURL(workshop)
@@ -157,7 +161,7 @@ class MessageController(BaseController):
                 entry['messageDate'] = message.date
                 
             elif message['extraInfo'] in ['authorInvite']:
-
+                entry['combinedInfo'] = 'authorInvite'
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                 entry['formStr'] = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
                 entry['action'] = 'coauthor'
@@ -185,10 +189,12 @@ class MessageController(BaseController):
                     # note: ?what to do?
                                                             
             elif message['extraInfo'] in ['authorResponse']:
+                entry['combinedInfo'] = 'authorResponse'
                 initiative = initiativeLib.getInitiative(message['initiativeCode'])
                 entry['itemTitle'] = initiative['title']
 
             elif message['extraInfo'] in ['commentResponse']:
+                entry['combinedInfo'] = 'commentResponse'
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
                         
@@ -196,13 +202,13 @@ class MessageController(BaseController):
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
-                
+                entry['combinedInfo'] = 'commentOnPhotoOnInitiative'
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 entry['itemLink'] = utils.commentLink(comment, c.user)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnResource']:
-                
+                entry['combinedInfo'] = 'commentOnResource'
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 resource = generic.getThing(comment['resourceCode'])
                 
@@ -211,7 +217,7 @@ class MessageController(BaseController):
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnUpdate']:
-                
+                entry['combinedInfo'] = 'commentOnUpdate'
                 comment = commentLib.getCommentByCode(message['commentCode'])
                 update = generic.getThing(comment['discussionCode'])
                 
@@ -219,7 +225,7 @@ class MessageController(BaseController):
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
-                
+                entry['combinedInfo'] = 'disabledEnabledDeletedPhoto'
                 photoCode = message['photoCode']
                 title = thing['title']
                 if message['extraInfo'] in ['disabledPhoto']:
@@ -237,7 +243,7 @@ class MessageController(BaseController):
                 entry['itemTitle'] = title
                 
             elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
-                
+                entry['combinedInfo'] = 'disabledEnabledDeletedInitiative'
                 initiativeCode = message['initiativeCode']
                 thing = generic.getThing(initiativeCode)
                 entry['itemTitle'] = thing['title']
@@ -254,7 +260,7 @@ class MessageController(BaseController):
                 entry['itemLink'] = utils.initiativeLink(thing)
                 
             elif message['extraInfo'] in ['disabledInitiativeResource', 'enabledInitiativeResource', 'deletedInitiativeResource']:
-                
+                entry['combinedInfo'] = 'disabledEnabledDeletedInitiativeResource'
                 resourceCode = message['resourceCode']
                 thing = generic.getThing(resourceCode)
                 entry['itemTitle'] = thing['title']
@@ -273,7 +279,7 @@ class MessageController(BaseController):
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/resource/thing['urlCode']/thing['url']" class="green green-hover">title
 
             elif message['extraInfo'] in ['disabledInitiativeUpdate', 'enabledInitiativeUpdate', 'deletedInitiativeUpdate']:
-                
+                entry['combinedInfo'] = 'disabledEnabledDeletedInitiativeUpdate'
                 if 'updateCode' in message:
                     updateCode = message['updateCode']
                 else:
@@ -296,7 +302,7 @@ class MessageController(BaseController):
                 #href="/initiative/thing['initiativeCode']/thing['initiative_url']/updateShow/thing['urlCode']" class="green green-hover">title
 
             elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
-                
+                entry['combinedInfo'] = 'disabledEnabledDeletedAdopted'
                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
                 if not event:
                     continue
