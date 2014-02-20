@@ -191,8 +191,8 @@ class CommentController(BaseController):
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
         for comment in comments:
             entry = {}
-            entry['data'] = comment['data']
-            entry['html'] = m.html(entry['data'], render_flags=m.HTML_SKIP_HTML)
+            entry['text'] = comment['data']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['commentRole'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
@@ -204,7 +204,6 @@ class CommentController(BaseController):
             entry['authorName'] = author['name']
             entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
             entry['authorPhoto'] = utils._userImageSource(author)
-
             result.append(entry)
 
         if len(result) == 0:
