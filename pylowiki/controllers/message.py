@@ -75,32 +75,33 @@ class MessageController(BaseController):
             # now that we've asserted this fact, we can check one more thing that takes a bit more time
             if 'commentCode' in message and not commentLib.getCommentByCode(message['commentCode']):
                 continue
-            
+        
             entry = {}
-            entry['rowClass'] = ''
-            entry['read'] = message['read']
-            entry['userName'] = 'Civinomics'
-            entry['userLink'] = '#'
-            entry['userImage'] = utils.civinomicsAvatar()
-            entry['messageTitle'] = ''
-            entry['messageText'] = ''
-            entry['messageCode'] = ''
-            entry['messageDate'] = message.date
-            entry['responseAction'] = ''
-            entry['formStr'] = ''
             entry['action'] = ''
+            # this next field is a hack that will allow us to use ng-switch in order
+            # to choose what template function to call in ng_lib.mako from 6_profile_messages.mako
+            entry['combinedInfo'] = ''
+            entry['commentData'] = ''
+            entry['eventAction'] = ''
+            entry['eventReason'] = ''
+            entry['extraInfo'] = message['extraInfo']
+            entry['formLink'] = ''
             entry['itemCode'] = ''
             entry['itemImage'] = ''
             entry['itemLink'] = ''
             entry['itemTitle'] = ''
             entry['itemUrl'] = ''
-            entry['commentData'] = ''
-            entry['extraInfo'] = message['extraInfo']
-            # this next field is a hack that will allow us to use ng-switch in order
-            # to choose what template function to call in ng_lib.mako from 6_profile_messages.mako
-            entry['combinedInfo'] = ''
-            entry['eventAction'] = ''
-            entry['eventReason'] = ''
+            entry['messageCode'] = ''
+            entry['messageDate'] = message.date
+            entry['messageText'] = ''
+            entry['messageTitle'] = ''
+            entry['read'] = message['read']
+            entry['responseAction'] = ''
+            entry['rowClass'] = ''
+            entry['userLink'] = '#'
+            entry['userImage'] = utils.civinomicsAvatar()
+            entry['userName'] = 'Civinomics'
+            
 
             if message['read'] == u'0':
                 entry['rowClass']= 'warning unread-message'
@@ -126,7 +127,7 @@ class MessageController(BaseController):
                 entry['combinedInfo'] = 'listenerFacilitationInvite'
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
                 if message['extraInfo'] == 'listenerInvite':
-                    entry['formStr'] = """<form method="post" name="inviteListener" id="inviteListener" action="/profile/%s/%s/listener/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                    entry['formLink'] = "/profile/%s/%s/listener/response/handler/" %(c.user['urlCode'], c.user['url'])
                     entry['action'] = 'be a listener for'
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = listenerLib.getListenerByCode(message['listenerCode'])

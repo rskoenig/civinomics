@@ -16,6 +16,22 @@ function profileMessagesCtrl($scope, $http) {
 		}
 	}
 
+	$scope.isRead= function(read) {
+        if (read == '1') {
+        	return true;
+        } else {
+        	return false;
+        }
+    }
+
+    $scope.notRead = function(read) {
+    	if (read != '1') {
+        	return true;
+        } else {
+        	return false;
+        }
+    }
+
 	$http.get($scope.messagesURL).success(function(data){
 		$scope.messagesLoading = true;
 		if (data.statusCode === 1){
