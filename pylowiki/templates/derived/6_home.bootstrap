@@ -15,52 +15,57 @@
   ###
 
   <div class="span8">
+    <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='1'>
 
-    <div class="centered" ng-show="activityLoading" ng-cloak>
-        <i class="icon-spinner icon-spin icon-4x"></i>
-    </div>
-    <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
-        {{alertMsg}}
-    </div>
+      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+          {{alertMsg}}
+      </div>
 
-    <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
-      <tr>
-        <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>
-          <div class="activity-item-content-header">
-            <small>
-              <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
-              <span class="date">{{item.fuzzyTime}} ago</span>
-            </small>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td ng-if="item.objType == 'initiative'">
-          ${ng_helpers.initiative_listing()}
-        </td>
+      <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+        <tr>
+          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="activity-item-content-header">
+              <small>
+                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                <span class="date">{{item.fuzzyTime}} ago</span>
+              </small>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td ng-if="item.objType == 'initiative'">
+            ${ng_helpers.initiative_listing()}
+          </td>
 
-        <td ng-if="item.objType == 'idea'">
-          ${ng_helpers.idea_listing()}
-        </td>
+          <td ng-if="item.objType == 'idea'">
+            ${ng_helpers.idea_listing()}
+          </td>
 
-        <td ng-if="item.objType == 'resource'">
-          ${ng_helpers.resource_listing()}
-        </td>
+          <td ng-if="item.objType == 'resource'">
+            ${ng_helpers.resource_listing()}
+          </td>
 
-        <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
-          ${ng_helpers.discussion_listing()}
-        </td>
+          <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+            ${ng_helpers.discussion_listing()}
+          </td>
 
-        <td ng-if="item.objType == 'photo'">
-          ${ng_helpers.photo_listing()}
-        </td>
+          <td ng-if="item.objType == 'photo'">
+            ${ng_helpers.photo_listing()}
+          </td>
 
-      </tr>
-    </table>
+        </tr>
+      </table>
+
+      <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
+
+    </div><!-- infinite-scroll -->
+
   </div><!-- /span8 -->
   <div class="span4">
 

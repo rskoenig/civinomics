@@ -2,6 +2,9 @@ function activityController($scope, $http) {
 	$scope.listingType = 'activity';
 	$scope.activityType = '/all'
 	$scope.activityLoading = true
+	$scope.activitySliceLoading = false;
+	$scope.busy = false;
+	$scope.offset = 10;
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
@@ -37,6 +40,30 @@ function activityController($scope, $http) {
 	$scope.getGeoActivity = function(){
 		$scope.activityType = '/geo'
 		$scope.getActivity()
+	};
+
+	$scope.getActivitySlice = function() {
+		if ($scope.busy) return;
+		$scope.busy = true;
+		$scope.alertMsg = ''
+		$scope.activitySliceLoading = true;
+		// '/getActivitySlice/{comments}/{sliceType}/{sliceOffset}{end:/?}' 
+		$http.get('/getActivitySlice/0/following/' + $scope.offset).success(function(data){
+			if (data.statusCode == 1){
+				$scope.activityNoResult = true;
+			} 
+			else if (data.statusCode === 0){
+				$scope.activityNoResult = false;
+				activitySlice = data.result;
+				for (var i = 0; i < activitySlice.length; i++) {
+				    $scope.activity.push(activitySlice[i]);
+				}
+				//$scope.activity.push(data.result);
+			}
+			$scope.activitySliceLoading = false;
+			$scope.busy = false;
+			$scope.offset += $scope.offset
+		})
 	};
 
 }

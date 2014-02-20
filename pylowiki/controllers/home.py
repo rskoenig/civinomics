@@ -60,13 +60,17 @@ class HomeController(BaseController):
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
 
-    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 30):
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 10):
 		# get recent activity and return it into json format
 		result = []
 		allActivity = []
 
+		offset = int(offset)
+		commments = int(comments)
+
 		if type == 'all':
-			recentActivity = activityLib.getRecentActivity(12)
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
+				
 
 		elif type == 'following' and c.authuser:
 			if c.privs['participant']:
@@ -84,10 +88,10 @@ class HomeController(BaseController):
 				#log.info("activity interestedUsers is %s"%interestedUsers)
 
 				# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
-				followingActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, 0)
+				followingActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, offset)
 
 			if followingActivity:
-				recentActivity = followingActivity[offset:max]
+				recentActivity = followingActivity
 			else:
 				alertMsg = "You are not following any people, workshops or initiatives yet!"
 				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
@@ -99,15 +103,15 @@ class HomeController(BaseController):
 		    countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope)
+		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
 		    if countyActivity:
-		    	recentActivity = countyActivity[offset:max]
+		    	recentActivity = countyActivity
 		    else:
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
 		else:
-			recentActivity = activityLib.getRecentActivity(12)
+			recentActivity = activityLib.getRecentActivity(max)
 		
 		myRatings = {}
 		if 'ratings' in session:
