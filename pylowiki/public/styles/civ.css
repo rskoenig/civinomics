@@ -544,10 +544,10 @@ padding: 0;
     max-width:650px;
 }
 
-div.warning {
+div.unread-message {
   background-color: #fcf8e3;
 }
-div.warning:hover {
+div.unread-message:hover {
   background-color: #faf2cc;
 }
 

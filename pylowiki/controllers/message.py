@@ -351,10 +351,8 @@ class MessageController(BaseController):
                 else:
                     entry['itemTitle'] = thing['title']
 
-            
+            log.info('combinedInfo: %s, extraInfo: %s' %(entry['combinedInfo'], message['extraInfo']))
             result.append(entry)
-
-        log.info(json.dumps({'statusCode': 0, 'result': result}))
             
         return json.dumps({'statusCode': 0, 'result': result})
         

@@ -20,7 +20,7 @@
     <div ng-init="code = '${c.userCode}'; url = '${c.userUrl}'">
         <div class="browse" ng-controller="profileMessagesCtrl">
 
-            <div class="row-fluid" ng-repeat="message in messages">
+            <div class="row-fluid" ng-repeat="message in messages" ng-cloak>
 
                 <div class="media-body object-in-listing {{message.rowClass}} border-bottom" data-code="{{message.messageCode}}">
                     
@@ -30,6 +30,8 @@
                     <div class="span8 message-content">
                         <!-- this init clause covers all varaiables that can possibly be used in the following cases -->
                         <div ng-init="action=message.action; combinedInfo=message.combinedInfo; commentData=message.commentData; eventAction=message.eventAction; eventReason=message.eventReason; extraInfo=message.extraInfo; formLink=message.formLink; fuzzyTime=message.fuzzyTime; itemCode=message.itemCode; itemImage=message.itemImage; itemLink=message.itemLink; itemTitle=message.itemTitle; itemUrl=message.itemUrl; messageCode=message.messageCode; messageDate=message.messageDate; messageText=message.messageText; messageTitle=message.messageTitle; read=message.read; rowClass=message.rowClass; responseAction=message.responseAction; userImage=message.userImage; userName=message.userName; userLink=message.userLink;">
+                            <p>{{message.combinedInfo}}</p>
+                            <p>{{message.extraInfo}}</p>
                             <div ng-switch on="combinedInfo">
                             <!-- handles these cases, not ng_messages.profileMessages() -->
                                 <div ng-switch-when="listenerFacilitationInvite">
