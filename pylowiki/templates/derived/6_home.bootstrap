@@ -64,11 +64,12 @@
 
         % if c.authuser['activated'] == '0':
           <div class="alert alert-success">
-            <strong>Welcome!</strong> To complete signup, click on the link in the activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.
+            <strong>Welcome!</strong> To complete signup, click the link in the activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.
             <p>
             <p>You can't comment or add ideas until you've activated. If you do not activate in 2 weeks your vote history will be discarded.</p>
 
-            <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button> <span id="resendMessage">
+            <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+            <div class="top-space" id="resendMessage"></div>
           </div>
         % endif
 
