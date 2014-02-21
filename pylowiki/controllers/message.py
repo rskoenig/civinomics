@@ -9,6 +9,7 @@ import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.listener     as listenerLib
@@ -110,8 +111,8 @@ class MessageController(BaseController):
             entry['itemTitle'] = ''
             entry['itemUrl'] = ''
             entry['messageCode'] = ''
-            entry['messageDate'] = 'April 6, 1979'
-            #message.date
+            entry['messageDate'] = message.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(message.date)
             entry['messageText'] = ''
             entry['messageTitle'] = ''
             entry['read'] = message['read']

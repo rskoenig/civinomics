@@ -33,7 +33,6 @@ function profileMessagesCtrl($scope, $http) {
     }
 
 	$http.get($scope.messagesURL).success(function(data){
-		console.log('got messages');
 		$scope.messagesLoading = true;
 		if (data.statusCode === 1){
 			$scope.noResult = true;
@@ -44,8 +43,6 @@ function profileMessagesCtrl($scope, $http) {
 			$scope.messagesLoading = false;
 		}
 		else if (data.statusCode === 0){
-			console.log('there are results');
-			console.log(data.result);
 			$scope.noResult = false;
 			$scope.messages = data.result;
 			$scope.numAdopted = data.adopted;

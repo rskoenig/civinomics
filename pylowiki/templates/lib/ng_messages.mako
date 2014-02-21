@@ -19,8 +19,7 @@
                     {{responseAction}})
                 </p>
                 <p class="pull-right"><small>
-                    {{messageDate}}
-                    (PST)
+                    {{fuzzyTime}} ago
                 </small></p>
             </div>
         </div>
@@ -48,8 +47,7 @@
                     <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the workshop">Accept</button>
                     <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the workshop">Decline</button>
                     <p class="pull-right"><small>
-                        {{messageDate}} 
-                        (PST)
+                        {{fuzzyTime}} ago
                     </small></p>
                 </div>
             </div>
@@ -73,8 +71,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}}
-                (PST)
+                {{fuzzyTime}} ago
+                
             </small></p>
         </div>
     </div>
@@ -101,8 +99,8 @@
                     {{responseAction}})
                 </p>
                 <p class="pull-right"><small>
-                    {{messageDate}} 
-                    (PST)
+                    {{fuzzyTime}} ago 
+                    
                 </small></p>
             </div>
         </div>
@@ -130,8 +128,7 @@
                     <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the initiative">Accept</button>
                     <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the initiative">Decline</button>
                     <p class="pull-right"><small>
-                        {{messageDate}} 
-                        (PST)
+                        {{fuzzyTime}} ago
                     </small></p>
                 </div>
             </div>
@@ -151,8 +148,8 @@
                 <a ng-href="{{itemLink}}">{{itemTitle}}</a>
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -172,8 +169,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -193,8 +190,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -214,8 +211,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -235,8 +232,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -263,8 +260,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -290,8 +287,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -317,8 +314,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -344,8 +341,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
@@ -371,8 +368,8 @@
                 {{messageText}}
             </p>
             <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
+                {{fuzzyTime}} ago 
+                
             </small></p>
         </div>
     </div>
