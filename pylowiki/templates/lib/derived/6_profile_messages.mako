@@ -17,10 +17,10 @@
 <%namespace name="ng_messages" file="/lib/ng_messages.mako" />
 
 <%def name="listProfileMessages()">
-    <div ng-init="code = '${c.user['urlCode']}'; url = '${c.user['url']}'">
+    <div ng-init="code = '${c.userCode}'; url = '${c.userUrl}'">
         <div class="browse" ng-controller="profileMessagesCtrl">
 
-            <div class="row-fluid" ng-repeat="message in messages | orderBy:orderProp | filter:filterProp " ng-cloak>
+            <div class="row-fluid" ng-repeat="message in messages">
 
                 <div class="media-body object-in-listing {{message.rowClass}} border-bottom" data-code="{{message.messageCode}}">
                     

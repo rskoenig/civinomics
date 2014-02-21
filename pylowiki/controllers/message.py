@@ -17,6 +17,8 @@ import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 
+import pylowiki.lib.utils           as utils
+
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -31,10 +33,6 @@ class MessageController(BaseController):
             if 'user' in session:
                 if userLib.isAdmin(c.authuser.id):
                     c.isAdmin = True
-                if c.user.id == c.authuser.id or c.isAdmin:
-                    c.messages = messageLib.getMessages(c.user)
-                    c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-                    
             else:
                 log.info('user not in session')
                 session['afterLoginURL'] = session._environ['PATH_INFO']
@@ -56,9 +54,29 @@ class MessageController(BaseController):
         return "OK"
 
     def showUserMessages(self, id1, id2, id3 = ''):
+        c.userCode = id1
+        c.userUrl = id2
         return render("/derived/6_messages.bootstrap")
 
     def getUserMessages(self, id1, id2, id3 = ''):
+        if id1 is not None and id2 is not None:
+            c.user = userLib.getUserByCode(id1)
+            if not c.user:
+                abort(404)
+            if 'user' in session:
+                if userLib.isAdmin(c.authuser.id):
+                    c.isAdmin = True
+                if c.user.id == c.authuser.id or c.isAdmin:
+                    log.info('getting messages in controller')
+                    c.messages = messageLib.getMessages(c.user)
+                    c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
+                    
+            else:
+                log.info('user not in session')
+                session['afterLoginURL'] = session._environ['PATH_INFO']
+                log.info('message ctrl %s' % session['afterLoginURL'])
+                session.save()
+                return redirect('/login')
         if not c.messages:
             log.info("getUserMessages return NOT messages")
             return json.dumps({'statusCode':2})
@@ -70,7 +88,7 @@ class MessageController(BaseController):
 
         for message in c.messages:
             # if this field isn't in the message then nothing happens for this entry
-            if 'extraInfo' in message.keys():
+            if 'extraInfo' not in message.keys():
                 continue
             # now that we've asserted this fact, we can check one more thing that takes a bit more time
             if 'commentCode' in message and not commentLib.getCommentByCode(message['commentCode']):
@@ -92,7 +110,8 @@ class MessageController(BaseController):
             entry['itemTitle'] = ''
             entry['itemUrl'] = ''
             entry['messageCode'] = ''
-            entry['messageDate'] = message.date
+            entry['messageDate'] = 'April 6, 1979'
+            #message.date
             entry['messageText'] = ''
             entry['messageTitle'] = ''
             entry['read'] = message['read']
@@ -102,7 +121,6 @@ class MessageController(BaseController):
             entry['userImage'] = utils.civinomicsAvatar()
             entry['userName'] = 'Civinomics'
             
-
             if message['read'] == u'0':
                 entry['rowClass']= 'warning unread-message'
             # note: should we have an object for Civinomics just as we do for users with a code?
@@ -122,7 +140,6 @@ class MessageController(BaseController):
             if 'read' in message:
                 entry['read'] = message['read']
 
-
             if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                 entry['combinedInfo'] = 'listenerFacilitationInvite'
                 workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
@@ -138,7 +155,7 @@ class MessageController(BaseController):
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                 entry['itemCode'] = workshop['urlCode']
                 entry['itemUrl'] = workshop['url']
-                entry['itemTitle'] = workshop['Title'] 
+                entry['itemTitle'] = workshop['title'] 
                 entry['itemLink'] = utils.workshopURL(workshop)
                 mainImage = mainImageLib.getMainImage(workshop)
                 entry['itemImage'] = utils.workshopImageURL(workshop, mainImage, thumbnail=True)
@@ -333,7 +350,10 @@ class MessageController(BaseController):
                 else:
                     entry['itemTitle'] = thing['title']
 
+            
             result.append(entry)
-        
+
+        log.info(json.dumps({'statusCode': 0, 'result': result}))
+            
         return json.dumps({'statusCode': 0, 'result': result})
         
