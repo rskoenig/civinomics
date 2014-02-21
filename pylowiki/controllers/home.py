@@ -60,7 +60,7 @@ class HomeController(BaseController):
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
 
-    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 10):
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
 		# get recent activity and return it into json format
 		result = []
 		allActivity = []
@@ -100,7 +100,7 @@ class HomeController(BaseController):
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
-		    countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
+		    countyScope = scopeList[6]
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
