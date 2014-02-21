@@ -134,8 +134,8 @@ class MessageController(BaseController):
             # fields used in all if not most of the message types are loaded here
             if 'title' in message:    
                 entry['messageTitle'] = message['title']            
-            if 'messageText' in message:
-                entry['messageText'] = message['messageText']
+            if 'text' in message:
+                entry['messageText'] = message['text']
             if 'messageCode' in message:
                 entry['messageCode'] = message['urlCode']
             if 'read' in message:

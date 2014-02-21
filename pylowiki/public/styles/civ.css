@@ -543,6 +543,14 @@ padding: 0;
 .message-content{
     max-width:650px;
 }
+
+div.warning {
+  background-color: #fcf8e3;
+}
+div.warning:hover {
+  background-color: #faf2cc;
+}
+
 .fullWidth{ width:100%; }
 
 .horizontal-list{

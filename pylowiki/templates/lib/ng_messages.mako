@@ -163,7 +163,7 @@
                 {{messageTitle}}
             </h5>
             <p>
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
             </p>
             <p>
                 {{messageText}}
