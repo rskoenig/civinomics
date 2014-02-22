@@ -561,6 +561,14 @@ padding: 0;
 .message-content{
     max-width:650px;
 }
+
+div.unread-message {
+  background-color: #fcf8e3;
+}
+div.unread-message:hover {
+  background-color: #faf2cc;
+}
+
 .fullWidth{ width:100%; }
 
 .horizontal-list{

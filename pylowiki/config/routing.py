@@ -395,6 +395,7 @@ def make_map():
     # Messaging    #
     ################
     map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
+    map.connect('/messages/get/{id1}/{id2}{end:/?}', controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
     map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
     
     ################
