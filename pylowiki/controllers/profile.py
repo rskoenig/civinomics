@@ -49,6 +49,8 @@ class ProfileController(BaseController):
                 c.user = userLib.getUserByCode(id1)
                 if not c.user:
                     abort(404)
+                c.memberUrl = c.user['url']
+                c.memberCode = c.user['urlCode']
             else:
                 abort(404)
 
@@ -1229,5 +1231,36 @@ class ProfileController(BaseController):
             session.save()
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+
+
+    def jsonMemberPosts(self):
+        memberPosts = activityLib.getMemberPosts(c.user)
+        if not memberPosts:
+            memberPosts = []
+
+        result = []
+        for post in memberPosts:
+            entry = {}
+            entry['verb'] = ''
+            entry['objType'] = post.objType
+            #entry['url'] = post['url']
+            entry['urlCode'] = post['urlCode']
+            entry['href'] = ''
+            entry['parentObjType'] = ''
+            entry['title'] = ''
+            if 'title' in post:
+                entry['title'] = post['title']
+            entry['text'] = ''
+            if 'text' in post:
+                entry['text'] = post['text']
+
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+
+            
+
 
 

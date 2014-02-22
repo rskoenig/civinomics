@@ -163,6 +163,8 @@ def make_map():
     map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
 
+    map.connect('/getMemberActivity/{id1}/{id2}', controller = 'profile', action = 'jsonMemberPosts', id1 = '{id1}', id2 = '{id2}' )
+
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
