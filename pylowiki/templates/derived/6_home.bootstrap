@@ -74,10 +74,12 @@
     ###
     <div>
       <ul class="nav nav-tabs nav-stacked" style="width: 100%; margin-top: 0;">
-        <li ng-class="{'active' : activityType == '/all'}"><a href="#a" ng-click="getAllActivity()"> All Activity </a></li>
+        <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
         % if c.authuser:
-          <li ng-class="{'active' : activityType == '/following'}"><a href="#a" ng-click="getFollowingActivity()"> Following </a></li>
-          <li ng-class="{'active' : activityType == '/geo'}"><a href="#a" ng-click="getGeoActivity()"> My County </a></li>
+          % if not c.privs['provisional']:
+          <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
+          % endif
+          <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
         % endif
       </ul>
     </div>
