@@ -3,7 +3,7 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
-<%namespace name="ngHelpers" file="/lib/ng_lib.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
 <%
   if c.mainImage['pictureHash'] == 'supDawg':
@@ -16,7 +16,7 @@
 
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid" ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
-   <div class="span9" ng-controller="workshopIdeasCtrl">
+   <div class="span9" ng-controller="activityWorkshopController">
       <!--<div class="darkened-workshop"></div>-->
       <div class="row-fluid" style="height: 300px; position:relative; background-image: url(${backgroundImage}); background-size: cover; background-position: center;">
         <div class="span10">
@@ -50,43 +50,56 @@
         <a href="#">read more</a>
       </p>
     
-      <!--
-      <div class="browse" id="vote">
-        <h4 class="summary"> Vote ${lib_6.createNew("ideas", 'small')}</h4>
-      </div>-->
+      <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
-      <div class="row-fluid helper-sort">
-        <div class="span9">
-          <form class="form-search inline">
-            Sort by: 
-            <select class="med-width" ng-model="orderProp" ng-cloak>
-              <option value="-date">Recent</option>
-              <option value="-voteRatio">Highest Rated</option>
-              <option value="-voteCount">Most Votes</option>
-              <option value="-numComments">Most Comments</option>
-            </select>
-            Filter:
-            <select class="med-width" ng-model="filterProp" ng-cloak>
-              <option value="!disabled">Show All</option>
-              <option value="proposed">Proposed</option>
-              <option value="adopted">Adopted</option>
-              <option value="disabled">Disabled</option>
-            </select>
-          </form> 
-        </div><!-- span9 -->
-      </div><!-- helper-sort -->
+      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+          {{alertMsg}}
+      </div>
 
-      <div class="centered" ng-show="ideasLoading" ng-cloak>
+      <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+        <tr>
+          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="activity-item-content-header">
+              <small>
+                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                <span class="date">{{item.fuzzyTime}} ago</span>
+              </small>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td ng-if="item.objType == 'initiative'">
+            ${ng_helpers.initiative_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'idea'">
+            ${ng_helpers.idea_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'resource'">
+            ${ng_helpers.resource_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+            ${ng_helpers.discussion_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'photo'">
+            ${ng_helpers.photo_listing()}
+          </td>
+
+        </tr>
+      </table>
+
+      <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
 
-      <div class="alert alert-info" ng-show="noResult" ng-cloak>
-          There are no ideas for this workshop. Be the first to add one!
-      </div>
-
-      <div class="row-fluid" ng-repeat="item in ideas | orderBy:orderProp | filter:filterProp " ng-cloak>
-          ${ngHelpers.idea_listing()}
-      </div>
+    </div><!-- infinite-scroll -->
 
    </div> <!-- /.span8 -->
 
@@ -127,27 +140,6 @@
             </h4>
             ${helpers.showGoals(c.goals)}
             ${helpers.whoListening()}
-         </div> <!--/.browse-->
-      </div> <!-- /.section-wrapper -->
-      <div class="section-wrapper overview">
-         <div class="browse">
-            <h4 class="section-header smaller"> 
-            Forum
-            <span class="pull-right" style="margin-left: -50px;">${lib_6.createNew('discussion', 'small')}</span>
-            </h4>
-            % if len(c.discussions) == 0:
-              <div class="alert alert-info no-bottom">There are no forum topics here yet. Be the first to add one!</div>
-            % else:
-              ${listingHelpers.showListing('discussion', 'condensed')}
-            % endif
-         </div> <!--/.browse-->
-      </div> <!-- /.section-wrapper -->
-      <div class="section-wrapper overview">
-         <div class="browse">
-            <h4 class="section-header smaller"> 
-            Recent Activity
-            </h4>
-            ${helpers.showActivity(c.activity[0:5])}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
