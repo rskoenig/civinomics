@@ -7,7 +7,7 @@
 
 <%
   if c.mainImage['pictureHash'] == 'supDawg':
-     backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+     backgroundImage = '"/images/slide/slichow/supDawg.slideshow"'
   elif 'format' in c.mainImage.keys():
      backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
   else:
@@ -19,6 +19,7 @@
    <div class="span9" ng-controller="activityWorkshopController">
       <!--<div class="darkened-workshop"></div>-->
       <div class="row-fluid" style="height: 300px; position:relative; background-image: url(${backgroundImage}); background-size: cover; background-position: center;">
+        <!-- <div class="darkened-workshop"></div>-->
         <div class="span10">
           
           <h1 class="workshop-title"> 
@@ -45,6 +46,7 @@
           </div>
         </div>  
       </div>
+      ${helpers.showGoals(c.goals)}
       <p class="description" style="color: #333333; padding-top: 15px;">
         ${lib_6.ellipsisIZE(c.w['description'], 285)}
         <a href="#">read more</a>
@@ -104,10 +106,9 @@
    </div> <!-- /.span8 -->
 
    <div class="span3" style="margin-left:0px; width: 25.61%">
-    <!--
       <div class="section-wrapper metrics" ng-controller="workshopIdeasCtrl" ng-cloak>
         <div class="row-fluid">
-          <div class="span3 offset3 centered">
+          <div class="span3 centered">
             <i class="icon-lightbulb icon-3x"></i><br>
             {{numIdeas}}<br>
             Ideas
@@ -132,16 +133,9 @@
           </div>
         </div>
       </div>
-          -->
-      <div class="section-wrapper overview">
          <div class="browse">
-            <h4 class="section-header smaller"> 
-            Goals
-            </h4>
-            ${helpers.showGoals(c.goals)}
             ${helpers.whoListening()}
          </div> <!--/.browse-->
-      </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
 </div> <!-- /.row -->
 
