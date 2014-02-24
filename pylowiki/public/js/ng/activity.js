@@ -102,12 +102,14 @@ function commentsController($scope, $http) {
 		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 			if (data.statusCode == 1){
 				$scope.commentsResult = true;
+				$scope.comments = data.result;
 			} 
 			else if (data.statusCode === 0){
 				$scope.commentsResult = false;
 				$scope.comments = data.result;
 			}
 			$scope.newCommentLoading = false
+			
 		})
 	};
 

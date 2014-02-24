@@ -181,6 +181,10 @@
     <a href="#a" class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
+<%def name="moreLessComment()">
+    <a href="#a" class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+</%def>
+
 <%def name="metaData()">
     <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
         <span style="text-transform: capitalize;">{{item.objType}}</span> for <a class="green green-hover" href="{{scope.href}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
@@ -215,9 +219,10 @@
                     <td style="padding: 10px;">
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
-                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLess()}</p>                   
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
                   </td>
                 </tr>
+                <!--
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
                     <td>
@@ -270,7 +275,8 @@
                             </form>
                         </td>
                     % endif
-                </tr>
+                </tr> 
+                -->
             </table>
         </div>
     </div>
