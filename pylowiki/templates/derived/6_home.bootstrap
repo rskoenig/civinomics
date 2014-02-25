@@ -7,100 +7,120 @@
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
 
-<div class="row" ng-init="zipValue = ${c.postalCode} ; photos = true;">
-  <div class="spacer"></div>
-  <div class="span12" ng-controller="zipLookupCtrl">
-    <div class="row-fluid">
+<div class="spacer"></div>
+<div class="row" ng-controller = "activityController">
 
-      ###
-      ### Activity Feed
-      ###
-      <div class="span8" ng-controller = "activityController">
+  ###
+  ### Activity Feed
+  ###
 
-        <div class="centered" ng-show="activityLoading" ng-cloak>
-            <i class="icon-spinner icon-spin icon-4x"></i>
-        </div>
+  <div class="span8">
+    <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
-        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-cloak>
-          <tr>
-            <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>
-              <div class="activity-item-content-header">
-                <small>
-                  <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
-                  <span class="date">{{item.fuzzyTime}} ago</span>
-                </small>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td ng-if="item.objType == 'initiative'">
-              ${ng_helpers.initiative_listing()}
-            </td>
+      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+          {{alertMsg}}
+      </div>
 
-            <td ng-if="item.objType == 'idea'">
-              ${ng_helpers.idea_listing()}
-            </td>
-
-            <td ng-if="item.objType == 'resource'">
-              ${ng_helpers.resource_listing()}
-            </td>
-
-            <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
-              ${ng_helpers.discussion_listing()}
-            </td>
-
-            <td ng-if="item.objType == 'photo'">
-              ${ng_helpers.photo_listing()}
-            </td>
-
-          </tr>
-        </table>
-      </div><!-- /span8 -->
-      <div class="span4">
-
-      % if c.authuser:
-        % if c.authuser['activated'] == '0':
-          <div class="alert alert-success">
-            <strong>Welcome!</strong> To complete signup, click the link in the activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.
-            <p>
-            <p>You can't comment or add ideas until you've activated. If you do not activate in 2 weeks your vote history will be discarded.</p>
-
-            <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
-            <div class="top-space" id="resendMessage"></div>
-          </div>
-        % endif
-      % endif
-
-        ###
-        ### Zip Lookup
-        ###
-        <div class="well well-splash-content" ng-controller="zipLookupCtrl" ng-cloak>
-            <h4>Zip Code Lookup</h4>
-            <form class="form-inline" name="zipForm">
-                <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                    <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                    <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-                    <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-                </div>
-            </form>
-            <div class="loading-civ" ng-show="loading" ng-cloak>
-                <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+      <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+        <tr>
+          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="activity-item-content-header">
+              <small>
+                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                <span class="date">{{item.fuzzyTime}} ago</span>
+              </small>
             </div>
-            <table ng-show="!loading">
-                <tr ng-repeat="geo in geos">
-                    <td><a href="{{geo.href}}"><img class="thumbnail flag small-flag border" src="{{geo.flag}}"></a></td>
-                    <td><a class="green green-hover left-space" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
-                </tr>
-            </table>
-        </div>
+          </td>
+        </tr>
+        <tr>
+          <td ng-if="item.objType == 'initiative'">
+            ${ng_helpers.initiative_listing()}
+          </td>
 
-      </div><!-- /span4 -->
-    </div> <!-- /row-fluid -->
-  </div><!-- /row -->
+          <td ng-if="item.objType == 'idea'">
+            ${ng_helpers.idea_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'resource'">
+            ${ng_helpers.resource_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+            ${ng_helpers.discussion_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'photo'">
+            ${ng_helpers.photo_listing()}
+          </td>
+
+        </tr>
+      </table>
+
+      <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
+
+    </div><!-- infinite-scroll -->
+
+  </div><!-- /span8 -->
+  <div class="span4">
+
+    % if c.authuser['activated'] == '0':
+      <div class="alert alert-success">
+        <h4>Welcome!</h4> 
+        Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder.
+        <p>You can't add comments or ideas until you complete setup.</p>
+
+        <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+        <div class="top-space" id="resendMessage"></div>
+      </div>
+    % endif
+
+    ###
+    ### Feed Filters
+    ###
+    <div>
+      <ul class="nav nav-tabs nav-stacked" style="width: 100%; margin-top: 0;">
+        <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
+        % if c.authuser:
+          <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
+          <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
+        % endif
+      </ul>
+    </div>
+
+
+    ###
+    ### Zip Lookup
+    ###
+    <div ng-init="zipValue = ${c.postalCode}">
+      <div class="well well-splash-content" ng-controller="zipLookupCtrl" ng-cloak>
+          <h4>Zip Code Lookup</h4>
+          <form class="form-inline" name="zipForm">
+              <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                  <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                  <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                  <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+              </div>
+          </form>
+          <div class="loading-civ" ng-show="loading" ng-cloak>
+              <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+          </div>
+          <table ng-show="!loading">
+              <tr ng-repeat="geo in geos">
+                  <td><a href="{{geo.href}}"><img class="thumbnail flag small-flag border" src="{{geo.flag}}"></a></td>
+                  <td><a class="green green-hover left-space" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
+              </tr>
+          </table>
+      </div>
+    </div>
+
+  </div><!-- /span4 -->
+</div><!-- /row -->
 
 
 <%def name="headScripts()">
