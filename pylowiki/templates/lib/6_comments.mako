@@ -241,6 +241,9 @@
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
 
+        roleClass = ''
+        roleLabel = ''
+
         try:
             if comment['commentRole']:
                 roleClass = 'commentRole '
@@ -259,9 +262,9 @@
                     roleClass +="grey"
                     roleLabel = "Neutral"
                     headerClass += " neutral"
-        except KeyError:
-            roleClass = ""
-            roleLabel = ""
+        except:
+            roleClass = ''
+            roleLabel = ''
 
     %>
     <div class="${headerClass}">

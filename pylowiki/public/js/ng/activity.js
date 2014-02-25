@@ -45,7 +45,6 @@ function commentsController($scope, $http) {
 	};
 
 	$scope.getUpdatedComments = function(){
-		$scope.newCommentLoading = true
 		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 			if (data.statusCode == 1){
 				$scope.commentsResult = true;
@@ -69,6 +68,7 @@ function commentsController($scope, $http) {
 	};
 
 	$scope.submitComment = function(){
+		$scope.newCommentLoading = true
 		var commentData = {'type':$scope.type, 'thingCode': $scope.thingCode, 'discussionCode': $scope.discussionCode, 'parentCode': $scope.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
 		$scope.newCommentURL = '/comment/add/handler';
 		$http.post($scope.newCommentURL, commentData).success(function(data){
