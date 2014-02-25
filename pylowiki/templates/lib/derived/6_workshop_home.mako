@@ -14,7 +14,6 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="whoListening()">
-    <h4 class="section-header smaller">Participants</h4>
     % if c.activeListeners:
         <ul class="media-list" id="workshopNotables">
         % for person in c.activeListeners:

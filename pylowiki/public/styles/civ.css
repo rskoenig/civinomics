@@ -71,6 +71,7 @@ h5.h45, h4.h45{
   height: 100%;
   /* Negative indent footer by it's height */
   margin: 1px auto -55px;
+  background-color: #30343d;
 }
 
 /* Set the fixed height of the footer here */
@@ -107,6 +108,9 @@ h5.h45, h4.h45{
 
 .container.main{
   margin-bottom: 60px;
+  background-color: #e9eaed;
+  padding-left: 19px;
+  padding-right: 19px;
 }
 
 @media(min-width: 767px){
@@ -2230,6 +2234,10 @@ text-align: right;
   );
 }
 
+.med-gradient{
+  background: rgba(0,0,0,0.2);
+}
+
 .dark-gradient{
   background: rgba(0,0,0,0.3);
 }
@@ -2479,6 +2487,13 @@ h1 .label.workshop-tag{
   font-size:24px;
   font-weight: 300;
   color: #FFFFFF;
+}
+
+.workshop-title-group{
+  padding-left: 19px;
+  position: absolute;
+  z-index: 2;
+  font-weight: 300;
 }
 
 .search-listing.bookmarks{
@@ -3167,6 +3182,17 @@ hr.object-list-header{
 .section-wrapper.metrics{
   background-color: whitesmoke;
   padding-top: 10px;
+}
+
+.workshop-metrics{
+  text-transform: uppercase;
+  color: grey;
+  font-size: .85em;
+}
+
+#metrics td{
+  padding-left: 19px;
+  vertical-align: top;
 }
 
 .splash-initiative{

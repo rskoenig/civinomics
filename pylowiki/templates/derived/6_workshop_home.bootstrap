@@ -16,41 +16,70 @@
 
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid" ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
-   <div class="span9" ng-controller="activityWorkshopController">
+    <div class="span9" ng-controller="activityWorkshopController">
       <!--<div class="darkened-workshop"></div>-->
-      <div class="row-fluid" style="height: 300px; position:relative; background-image: url(${backgroundImage}); background-size: cover; background-position: center;">
-        <!-- <div class="darkened-workshop"></div>-->
-        <div class="span10">
-          
-          <h1 class="workshop-title"> 
-            <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
-              {{workshopTitle}}
-            </a>
-          </h1>
-          <h4 style="color: #fff">${helpers.displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
-        </div>
-        <div class="span2">
-          % if 'user' in session:
-            <div class="span12">
-              ${helpers.watchButton(c.w)}
+      <div class="row-fluid well" style="height: 380px; margin-top: 12px; padding: 0; position:relative;">
+        <div style="height: 300px; background-image: url(${backgroundImage}); background-size: cover; background-position: center; border-top-left-radius: 4px; border-top-right-radius: 4px;">
+          <!--<div class="darkened-workshop"></div>-->
+          <div class="row-fluid">
+            <span class="link-span med-gradient" style="height: 300px;"></span><!-- used to make entire div a link -->
+            
+            <div class="workshop-title-group">
+              <h1 class="workshop-title"> 
+                <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
+                  {{workshopTitle}}
+                </a>
+              </h1>
+              <h4 style="color: #fff">${helpers.displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
             </div>
-          % endif
-          <div class="span12" style="margin-top:10px; margin-left: 0px">
-            <span class = "share-icons contrast pull-right">
-              ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
-              ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
-              % if c.w['public_private'] == 'public':
-                  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-             %endif
-            </span>
           </div>
-        </div>  
+        </div><!-- background-image -->
+        <div style="padding: 19px;" ng-controller="workshopIdeasCtrl">
+          % if 'user' in session:
+            <span class="pull-right">
+              ${helpers.watchButton(c.w)}
+            </span>
+          % endif
+          <span class = "share-icons pull-right">
+            ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
+            ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+            % if c.w['public_private'] == 'public':
+              <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+            %endif
+          </span>
+          <table id="metrics">
+            <tr>
+              <td>
+                <span class="workshop-metrics">Discussions</span><br>
+                  <strong ng-cloak>{{numDiscussions}}</strong>
+              </td>
+              <td>
+                <span class="workshop-metrics">Resources</span><br>
+                  <strong ng-cloak>{{numResources}}</strong>
+              </td>
+              <td>
+                <span class="workshop-metrics">Ideas</span><br>
+                  <strong ng-cloak>{{numIdeas}}</strong>
+              </td>
+              <td>
+                <span class="workshop-metrics">Adopted</span><br>
+                  <strong ng-cloak>{{numAdopted}}</strong>
+              </td>
+              <td>
+                <span class="workshop-metrics">Participants</span><br>
+                  <strong ng-cloak>{{numParticipants}}</strong>
+              </td>
+            </tr>
+          </table>
+        </div><!-- workshopIdeasCtrl -->
+      </div><!-- top well -->
+      <div class="well">
+        <p class="description" style="color: #333333; padding-top: 15px;">
+          ${lib_6.ellipsisIZE(c.w['description'], 285)}
+          <a href="#">read more</a>
+        </p>
+        ${helpers.showGoals(c.goals)}
       </div>
-      ${helpers.showGoals(c.goals)}
-      <p class="description" style="color: #333333; padding-top: 15px;">
-        ${lib_6.ellipsisIZE(c.w['description'], 285)}
-        <a href="#">read more</a>
-      </p>
     
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
@@ -106,34 +135,49 @@
    </div> <!-- /.span8 -->
 
    <div class="span3" style="margin-left:0px; width: 25.61%">
-      <div class="section-wrapper metrics" ng-controller="workshopIdeasCtrl" ng-cloak>
-        <div class="row-fluid">
-          <div class="span3 centered">
-            <i class="icon-lightbulb icon-3x"></i><br>
-            {{numIdeas}}<br>
-            Ideas
-          </div>
-          <div class="span3 centered">
-            <a class="no-highlight" ng-click="switchAdopted()">
-              <i class="icon-star icon-3x"></i><br>
-              {{numAdopted}}<br>
-              Adopted
-              {{filterProp}}
-            </a>
-          </div>
-          <div class="span3 centered">
-            <i class="icon-eye-open icon-3x"></i><br>
-            ${c.numViews}<br>
-            Views
-          </div>
-          <div class="span3 centered">
-            <i class="icon-share icon-3x"></i><br>
-            {{numAdopted}}<br>
-            Shares
-          </div>
-        </div>
-      </div>
-         <div class="browse">
+      <%
+        if c.listingType != '':
+          listingType = c.listingType
+        else:
+          listingType = None
+
+        linkHref = lib_6.workshopLink(c.w, embed = True, raw = True)
+        infoHref = linkHref + '/information'
+        forumHref = linkHref + '/discussion'
+        activityHref= linkHref + '/activity'
+        publicStatsHref= linkHref + '/publicStats'
+        adminHref= linkHref + '/preferences'
+
+
+        summaryActive = infoActive = activityActive = forumActive = publicStatsActive = adminActive = ''
+
+        if c.listingType == 'resources' or listingType == 'resource':
+          infoActive = 'active'
+        elif c.listingType == 'discussion':
+          forumActive = 'active'
+        elif c.listingType == 'ideas' or listingType == 'idea':
+          summaryActive = 'active'
+        elif c.listingType == 'activity':
+          activityActive = 'active'
+        elif c.listingType == 'publicStats':
+          publicStatsActive = 'active'
+        elif c.adminPanel == True:
+          adminActive = 'active'
+      %>
+      <ul class="nav nav-tabs nav-stacked" style="width: 100%; margin-top: 12; margin-left: 19px;">
+        <li class="${summaryActive}">
+          <a href="${linkHref | n}">Summary</a>
+        </li>
+        <li class="${infoActive}"><a href="${infoHref | n}">Info</a></li>
+        <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
+        % if c.privs['admin'] or c.privs['facilitator']: 
+          <li class="${adminActive}"><a href="${adminHref | n}">Admin</a></li>
+        % endif
+      </ul>
+
+         <div class="well" style="margin-left: 19px;">
+            <a href="#" class="green green-hover">Participants</a><br>
+            <hr>
             ${helpers.whoListening()}
          </div> <!--/.browse-->
    </div> <!-- /.span4 -->
