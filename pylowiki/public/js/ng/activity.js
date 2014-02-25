@@ -70,8 +70,7 @@ function commentsController($scope, $http) {
 	$scope.submitComment = function(){
 		$scope.newCommentLoading = true
 		var commentData = {'type':$scope.type, 'thingCode': $scope.thingCode, 'discussionCode': $scope.discussionCode, 'parentCode': $scope.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
-		$scope.newCommentURL = '/comment/add/handler';
-		$http.post($scope.newCommentURL, commentData).success(function(data){
+		$http.post('/comment/add/handler', commentData).success(function(data){
 			$scope.numComments = Number($scope.numComments) + 1;
             $scope.getUpdatedComments();
             $scope.commentRole = '';
