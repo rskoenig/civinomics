@@ -222,7 +222,7 @@
                         <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
                   </td>
                 </tr>
-                <!--
+                
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
                     <td>
@@ -235,21 +235,28 @@
                     % if c.authuser:
                         <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                         <td style="padding: 10px;">
-                            <form class="no-bottom" ng-submit="submitComment()">
-                                <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                <div ng-show="type == 'initiative' || type == 'idea'">
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
-                                    </label>
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
-                                    </label>
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
-                                    </label>
-                                </div>
-                            </form>
+                            % if not c.privs['provisional']:
+                                <form class="no-bottom" ng-submit="submitComment()">
+                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                    <div ng-show="type == 'initiative' || type == 'idea'">
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
+                                        </label>
+                                    </div>
+                                </form>
+                            % else:
+                                <a href="#activateAccountModal" data-toggle='modal'>
+                                    <textarea class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <a href="#activateAccountModal" data-toggle='modal' class="btn btn-success" style="vertical-align: top;">Submit</a>
+                                </a>
+                            % endif
                         </td>
                     % else:
                         <td class="comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar small-avatar"></td>
@@ -276,7 +283,6 @@
                         </td>
                     % endif
                 </tr> 
-                -->
             </table>
         </div>
     </div>
