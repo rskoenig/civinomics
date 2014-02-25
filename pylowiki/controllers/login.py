@@ -555,14 +555,15 @@ class LoginController(BaseController):
         
         # get their workshops and initiatives of interest
         #log.info("start session cache")
-        followLib.setWorkshopFollowsInSession()
-        followLib.setUserFollowsInSession()
-        pMemberLib.setPrivateMemberWorkshopsInSession()
-        listenerLib.setListenersForUserInSession()
-        facilitatorLib.setFacilitatorsByUserInSession()
-        initiativeLib.setInitiativesForUserInSession()
-        followLib.setInitiativeFollowsInSession()
-        #log.info("end session cache")
+        if c.authuser['activated'] == '1':
+            followLib.setWorkshopFollowsInSession()
+            followLib.setUserFollowsInSession()
+            pMemberLib.setPrivateMemberWorkshopsInSession()
+            listenerLib.setListenersForUserInSession()
+            facilitatorLib.setFacilitatorsByUserInSession()
+            initiativeLib.setInitiativesForUserInSession()
+            followLib.setInitiativeFollowsInSession()
+            #log.info("end session cache")
 
         #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
@@ -603,7 +604,7 @@ class LoginController(BaseController):
             session.pop('afterLoginURL')
             session.save()
         else:
-            loginURL = "/"
+            loginURL = "/home"
         
         #if 'fbLogin' in kwargs:
         #    if kwargs['fbLogin'] is True:
