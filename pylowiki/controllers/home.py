@@ -135,7 +135,7 @@ class HomeController(BaseController):
 				entry['views'] = '0'
 
 			# attributes that vary accross items
-			entry['text'] = '0'
+			entry['text'] = ''
 			if 'text' in item:
 				entry['text'] = item['text']
 			elif 'description' in item:
@@ -144,7 +144,7 @@ class HomeController(BaseController):
 			if 'link' in item:
 				entry['link'] = item['link']
 			else:
-				entry['link'] = '0'
+				entry['link'] = ''
 			if 'cost' in item:
 				entry['cost'] = item['cost']
 			else:
