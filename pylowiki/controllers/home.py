@@ -73,7 +73,7 @@ class HomeController(BaseController):
 				
 
 		elif type == 'following' and c.authuser:
-			if c.privs['participant']:
+			if c.privs['participant'] or c.privs['provisional']:
 				# combine the list of interested workshops
 				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
 
