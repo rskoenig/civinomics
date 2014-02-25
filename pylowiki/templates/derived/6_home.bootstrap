@@ -69,6 +69,17 @@
   </div><!-- /span8 -->
   <div class="span4">
 
+    % if c.authuser['activated'] == '0':
+      <div class="alert alert-success">
+        <h4>Welcome!</h4> 
+        Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder.
+        <p>You can't add comments or ideas until you complete setup.</p>
+
+        <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+        <div class="top-space" id="resendMessage"></div>
+      </div>
+    % endif
+
     ###
     ### Feed Filters
     ###
