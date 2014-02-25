@@ -42,6 +42,11 @@ h4.listed-item-title{
   color: #005d28;
 }
 
+.nav li a{
+  cursor:pointer;
+}
+
+
 
 /* h */
 

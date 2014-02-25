@@ -311,7 +311,7 @@
 <%def name="followButton(user)">
     % if c.conf['read_only.value'] == 'true':
           <% pass %>
-    % elif not c.privs['provisional']:
+    % else:
         <span class="button_container">
         % if c.isFollowing:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn pull-right followButton following">
