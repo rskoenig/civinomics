@@ -7,31 +7,6 @@ function profileMessagesCtrl($scope, $http) {
     $scope.numMessages = '0';
     $scope.messagesLoading = true;
 
-    $scope.switchAdopted = function(){
-        if ($scope.filterProp == 'adopted'){
-            $scope.filterProp = 'proposed'; 
-        }
-        else{
-            $scope.filterProp = 'adopted';
-        }
-    }
-
-    $scope.isRead= function(read) {
-        if (read == '1') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    $scope.notRead = function(read) {
-        if (read != '1') {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     $http.get($scope.messagesURL).success(function(data){
         $scope.messagesLoading = true;
         if (data.statusCode === 1){

@@ -136,7 +136,7 @@ class MessageController(BaseController):
                 entry['messageTitle'] = message['title']            
             if 'text' in message:
                 entry['messageText'] = message['text']
-            if 'messageCode' in message:
+            if 'urlCode' in message:
                 entry['messageCode'] = message['urlCode']
             if 'read' in message:
                 entry['read'] = message['read']
