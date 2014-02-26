@@ -35,23 +35,25 @@ class MessageController(BaseController):
                 if userLib.isAdmin(c.authuser.id):
                     c.isAdmin = True
             else:
-                log.info('user not in session')
+                #log.info('user not in session')
                 session['afterLoginURL'] = session._environ['PATH_INFO']
-                log.info('message ctrl %s' % session['afterLoginURL'])
+                #log.info('message ctrl %s' % session['afterLoginURL'])
                 session.save()
                 return redirect('/login')
         
 
     def markRead(self, urlCode):
         self.error = False
-        self.message = messageLib.getMessage(c.authuser, urlCode)
-        if not self.message:
+        message = messageLib.getMessage(c.authuser, urlCode)
+        #log.info('got urlcode %s'%urlCode)
+        if not message:
             self.error = True
 
         if self.error:
             return "Error"
-        self.message['read'] = u'1'
-        dbHelpers.commit(self.message)
+        message['read'] = u'1'
+        dbHelpers.commit(message)
+        #log.info('got here')
         return "OK"
 
     def showUserMessages(self, id1, id2, id3 = ''):
@@ -68,21 +70,21 @@ class MessageController(BaseController):
                 if userLib.isAdmin(c.authuser.id):
                     c.isAdmin = True
                 if c.user.id == c.authuser.id or c.isAdmin:
-                    log.info('getting messages in controller')
+                    #log.info('getting messages in controller')
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
                     
             else:
-                log.info('user not in session')
+                #log.info('user not in session')
                 session['afterLoginURL'] = session._environ['PATH_INFO']
-                log.info('message ctrl %s' % session['afterLoginURL'])
+                #log.info('message ctrl %s' % session['afterLoginURL'])
                 session.save()
                 return redirect('/login')
         if not c.messages:
-            log.info("getUserMessages return NOT messages")
+            #log.info("getUserMessages return NOT messages")
             return json.dumps({'statusCode':2})
         if len(c.messages) == 0:
-            log.info("getUserMessages return len messages == 0")
+            #log.info("getUserMessages return len messages == 0")
             return json.dumps({'statusCode':2})
 
         result = []
@@ -351,7 +353,7 @@ class MessageController(BaseController):
                 else:
                     entry['itemTitle'] = thing['title']
 
-            log.info('combinedInfo: %s, extraInfo: %s' %(entry['combinedInfo'], message['extraInfo']))
+            #log.info('combinedInfo: %s, extraInfo: %s' %(entry['combinedInfo'], message['extraInfo']))
             result.append(entry)
             
         return json.dumps({'statusCode': 0, 'result': result})

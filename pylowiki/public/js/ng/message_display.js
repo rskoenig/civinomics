@@ -7,11 +7,14 @@ function messageDisplayCtrl($scope, $http) {
     $scope.updateReadStatus = function() {
         if ($scope.classUnread == 'warning unread-message') {
             $scope.classUnread = '';
-            $.post('/message/' + $scope.messageCode + '/mark/read');
-        } else if ($scope.read == '1') {
-            $scope.classUnread = 'warning unread-message';
-        } else {
-            $scope.classUnread = '';
+            $.post('/message/' + $scope.messageCode + '/mark/read/').
+                success(function(data) {
+                    console.log(data);
+                }).
+                error(function(data) {
+                    //console.log(data);
+                    $scope.classUnread = 'warning unread-message';
+                });
         }
     }
 
