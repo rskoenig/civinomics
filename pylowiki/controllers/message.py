@@ -179,7 +179,6 @@ class MessageController(BaseController):
                 entry['itemLink'] = utils.workshopURL(workshop)
                 entry['messageTitle'] = message['title']
                 entry['messageText'] = message['text']
-                entry['messageDate'] = message.date
                 
             elif message['extraInfo'] in ['authorInvite']:
                 entry['combinedInfo'] = 'authorInvite'
@@ -194,7 +193,6 @@ class MessageController(BaseController):
                 entry['itemTitle'] = initiative['title']
                 entry['itemUrl'] = initiative['url']
 
-                entry['messageDate'] = message.date
                 entry['messageText'] = message['text']
                 entry['messageTitle'] = message['title']
 
