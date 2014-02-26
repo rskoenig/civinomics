@@ -15,7 +15,7 @@ function messageDisplayCtrl($scope, $http) {
                     //console.log(data);
                     $scope.classUnread = 'warning unread-message';
                 });
-        } else if ($scope.read == '1') {
+        } else if ($scope.read == '0') {
             $scope.classUnread = 'warning unread-message';
         } else {
             $scope.classUnread = '';
