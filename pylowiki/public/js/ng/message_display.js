@@ -1,6 +1,6 @@
 function messageDisplayCtrl($scope, $http) {
     // '/workshop/' + $scope.code + '/' + $scope.url + '/ideas/get'
-    console.log('test read '+$scope.read);
+    //console.log('test read '+$scope.read);
     $scope.classUnread = '';
 
     

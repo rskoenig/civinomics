@@ -44,15 +44,15 @@ class MessageController(BaseController):
 
     def markRead(self, urlCode):
         self.error = False
-        message = messageLib.getMessage(c.authuser, urlCode)
+        self.message = messageLib.getMessage(c.authuser, urlCode)
         #log.info('got urlcode %s'%urlCode)
-        if not message:
+        if not self.message:
             self.error = True
 
         if self.error:
             return "Error"
-        message['read'] = u'1'
-        dbHelpers.commit(message)
+        self.message['read'] = u'1'
+        dbHelpers.commit(self.message)
         #log.info('got here')
         return "OK"
 
