@@ -445,7 +445,7 @@
                         activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
                         activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
                 %>
-                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                % if item['deleted'] == '0' and ('initiative_public' in item and item['initiative_public'] == '1'):
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
             % elif objType == 'comment' and 'photoCode' in item:
