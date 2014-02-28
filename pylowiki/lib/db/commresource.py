@@ -148,6 +148,32 @@ def Commresource(owner, **kwargs):
     dbHelpers.commit(c)
     
     # get the optional fields here
+    if 'address' in kwargs:
+        c['address'] = kwargs['address']
+    if 'phone' in kwargs:
+        c['phone'] = kwargs['phone']
+    if 'email' in kwargs:
+        c['email'] = kwargs['email']
+    if 'longitude' in kwargs:
+        c['longitude'] = kwargs['longitude']
+    if 'latitude' in kwargs:
+        c['latitude'] = kwargs['latitude']
+    if 'site1title' in kwargs:
+        c['site1title'] = kwargs['site1title']
+    if 'site1url' in kwargs:
+        c['site1url'] = kwargs['site1url']
+    if 'site2title' in kwargs:
+        c['site2title'] = kwargs['site2title']
+    if 'site2url' in kwargs:
+        c['site2url'] = kwargs['site2url']
+    if 'feed1title' in kwargs:
+        c['feed1title'] = kwargs['feed11title']
+    if 'feed1url' in kwargs:
+        c['feed1url'] = kwargs['feed1url']
+    if 'feed2title' in kwargs:
+        c['feed2title'] = kwargs['feed12title']
+    if 'feed2url' in kwargs:
+        c['feed2url'] = kwargs['feed2url']
     
     c['urlCode'] = toBase62(c)
     dbHelpers.commit(c)
