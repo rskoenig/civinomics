@@ -375,7 +375,6 @@
 <%def name="signupForm()">
         <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
             <input type="hidden" name="country" value="United States">
-            <input type="hidden" name="memberType" value="professional">
 
             <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
                 <label class="control-label" for="name"> Full name: </label>
@@ -397,6 +396,20 @@
                     <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                 </div>
             </div>
+            <div class="control-group">
+                <label class="control-label" for="memberType">Membership Type</label>
+                <div class="controls">
+                    <label class="radio">
+                        <input type="radio" name="memberType" id="memberType1" ng-model= "memberType1" value="professional" checked>
+                        This membership is for an individual
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="memberType" id="memberType2" ng-model= "memberType2" value="organization">
+                        This membership is for an organization
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="memberType" value="professional">
             <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
                 <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
                 <div class="controls">
