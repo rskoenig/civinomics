@@ -994,8 +994,7 @@ class WorkshopController(BaseController):
         if not iPhoneApp:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         
-        # not used
-        #c.information = pageLib.getInformation(c.w)
+        c.information = pageLib.getInformation(c.w)
         
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])

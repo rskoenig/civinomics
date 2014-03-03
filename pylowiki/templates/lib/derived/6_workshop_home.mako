@@ -406,11 +406,7 @@
 
 <%def name="showInfo(workshop)">
     <div>
-    <p class="description" >
-      ${c.w['description']}
-    </p>
     % if c.information and 'data' in c.information: 
-        <hr class="list-header">
         ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>
