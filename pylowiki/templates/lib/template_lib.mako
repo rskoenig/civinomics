@@ -373,7 +373,7 @@
 </%def>
 
 <%def name="signupForm()">
-        <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+        <form id="sign_in" action="/signup/handler" class="form form-horizontal" name="signupForm" method="POST">
             <input type="hidden" name="country" value="United States">
 
             <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
@@ -400,22 +400,21 @@
                 <label class="control-label" for="memberType">Membership Type</label>
                 <div class="controls">
                     <label class="radio">
-                        <input type="radio" name="memberType" id="memberType1" ng-model= "memberType1" value="professional" checked>
+                        <input type="radio" name="memberType" id="memberType1" ng-model="memberType1" value="professional" checked>
                         This membership is for an individual
                     </label>
                     <label class="radio">
-                        <input type="radio" name="memberType" id="memberType2" ng-model= "memberType2" value="organization">
+                        <input type="radio" name="memberType" id="memberType2" ng-model="memberType2" value="organization">
                         This membership is for an organization
                     </label>
                 </div>
             </div>
-            <input type="hidden" name="memberType" value="professional">
             <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
                 <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
                 <div class="controls">
-                    <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" ng-blur="lookup()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
-                    <div id="postalCodeResult"></div>
+                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
                 </div>
             </div>
             <div class="control-group">

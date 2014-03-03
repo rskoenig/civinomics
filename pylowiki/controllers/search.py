@@ -1107,6 +1107,7 @@ class SearchController(BaseController):
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
+            entry['sep'] = ','
 
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')
