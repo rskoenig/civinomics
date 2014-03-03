@@ -622,7 +622,12 @@ h1.workshop-title{
     margin-top:15px;
     margin-bottom:20px;
 }
-.workshop-title{
+
+.workshop-title a{
+   color:#fff;
+}
+
+.workshop-title a:hover{
    color:#fff;
 }
 
