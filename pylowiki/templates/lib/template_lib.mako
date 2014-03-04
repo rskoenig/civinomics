@@ -285,23 +285,24 @@
                 <form action="/searchTags" class="form-search search-type" method="POST">
                     <i class="icon-tag icon-light"></i>
                     <select name="categoryTag" id="categoryTag" onChange="searchTags();">
-                    <option value="0">Search by Category</option>
-                    % for tag in tagCategories:
-                        <% tagValue = tag.replace(" ", "_") %>
-                        <option value="/searchTags/${tagValue}/">${tag.title()}</option>
-                    % endfor
+                        <option value="0">Search by Category</option>
+                        % for tag in tagCategories:
+                            <% tagValue = tag.replace(" ", "_") %>
+                            <option value="/searchTags/${tagValue}/">${tag.title()}</option>
+                        % endfor
                     </select>
                 </form>
             </div><!-- span4 -->
             <div class="span4">
                 <form  action="/searchGeo"  class="form-search search-type" method="POST">
-                    <div class="row-fluid"><span id="searchCountrySelect">
-                        <i class="icon-globe icon-light"></i>
-                        <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
-                        <option value="0" selected>Search by Region</option>
-                        <option value="United States">United States</option>
+                    <div class="row-fluid">
+                        <span id="searchCountrySelect">
+                            <i class="icon-globe icon-light"></i>
+                            <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
+                                <option value="0" selected>Search by Region</option>
+                                <option value="United States">United States</option>
+                            </select>
                         </span><!-- searchCountrySelect -->
-                        </select>
                         <span id="searchCountryButton"></span>
                     </div><!-- row-fluid -->
                     <div class="row-fluid">
@@ -318,7 +319,7 @@
                     </div>
                     <div class="row-fluid">
                         <span id="searchPostalSelect"></span>
-                        <span id="searchPostalButton">
+                        <span id="searchPostalButton"></span>
                     </div>
                 </form>
             </div><!-- span4 -->
@@ -345,16 +346,16 @@
                 <strong>${message['title']}</strong> ${message['content']}
             </div> 
         % endif
-      ${socialLogins()}
-      <div ng-show="showTitle == 'sTitle'" ng-cloak>
-        ${signupForm()}
-      </div>
-      <div ng-show="showTitle == 'lTitle'" ng-cloak>
-        ${loginForm()}
-      </div>
-      <div ng-show="showTitle == 'pTitle'" ng-cloak>
-        ${forgotPassword()}
-      </div>
+        ${socialLogins()}
+        <div ng-show="showTitle == 'sTitle'" ng-cloak>
+            ${signupForm()}
+        </div>
+        <div ng-show="showTitle == 'lTitle'" ng-cloak>
+            ${loginForm()}
+        </div>
+        <div ng-show="showTitle == 'pTitle'" ng-cloak>
+            ${forgotPassword()}
+        </div>
     % endif
 </%def>
 
@@ -500,7 +501,14 @@
       <div class="modal-footer">
         <div class="row-fluid centered tcs">
           <div class="span10 offset1">
-            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+            <p class="sc-font-light tcs">
+                By joining, or logging in via Facebook or Twitter, you agree to Civinomics' 
+                <a href="/corp/terms" target="_blank" class="green">
+                    terms of use</a> 
+                and 
+                <a href="/corp/privacy" target="_blank" class="green">
+                    privacy policy</a>
+            </p>
           </div>
         </div>
       </div>
