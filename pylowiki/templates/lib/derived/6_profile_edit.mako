@@ -66,6 +66,29 @@
                             <li class="${tab5active}"><a href="#tab5" data-toggle="tab">6. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
+                            % if c.user['memberType'] != 'organization' and not c.privs['provisional']:
+                                <a href="#upgradeOrg" role="button" class="btn btn-success" data-toggle="modal">Upgrade to Organization</a>
+                                <div id="upgradeOrg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upgradeOrgLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        <h3 id="myModalLabel">Upgrade to Organization</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Organizations are a special class of membership:</p>
+                                        <ul>
+                                        <li>Organizations can't vote, only individuals. Sorry.</li>
+                                        <li>Organizations can be voted up or down</li>
+                                        <li>Members can post topics or comments in Organization forums</li>
+                                        <li>Organization get easy to remember Civinomics addresses: civinomics.com/YourOrganization</li>
+                                        <li>Organizations are listed as a separate category in search results</li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/organization/upgrade/handler" class="btn btn-primary">Upgrade to Organization</a>
+                                    </div>
+                            </div>
+                            % endif
                             </ul>
                         </div><!-- browse -->
                     </div><!-- section-wrapper -->
@@ -111,6 +134,17 @@
 	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile">
     		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
+                <div class="control-group">
+				    <label for="member-name" class="control-label">Membership Type:</label>
+				    <% 
+				        memberType = 'Individual'
+				        if c.user['memberType'] == 'organization':
+				            memberType = 'Organization'
+				    %>
+				    <div class="controls">
+					    ${memberType}
+				    </div> <!-- /.controls -->
+			    </div> <!-- /.control-group -->
 			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
 				    <label for="member-name" class="control-label">Your Name:</label>
 				    <div class="controls">

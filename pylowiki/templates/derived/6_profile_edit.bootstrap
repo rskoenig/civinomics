@@ -52,7 +52,7 @@
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/load-image.min.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/canvas-to-blob.min.js')}"></script>
             ##<script src="${lib_6.fingerprintFile('/js/vendor/blueimp/bootstrap-image-gallery.min.js')}"></script>
-            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
+            ##<script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-process.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-resize.js')}"></script>

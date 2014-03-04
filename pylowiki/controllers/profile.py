@@ -67,6 +67,7 @@ class ProfileController(BaseController):
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
                     
         userLib.setUserPrivs()
+        
   
     def showUserPage(self, id1, id2, id3 = ''):
         # check to see if this is a request from the iphone app
@@ -321,6 +322,20 @@ class ProfileController(BaseController):
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:    
             return render("/derived/6_profile.bootstrap")
+
+    def orgUpgradeHandler(self, id1, id2):
+        if (userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id) and not c.privs['provisional']:
+            # set the memberType
+            c.user['memberType'] = 'organization'
+            
+            # initialize it for voting
+            c.user['ups'] = '0'
+            c.user['downs'] = '0'
+            dbHelpers.commit(c.user)
+
+            return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+        else:
+            abort(404)
 
         
     def showUserPhotos(self, id1, id2):
