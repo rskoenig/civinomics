@@ -631,7 +631,7 @@ class CorpController(BaseController):
         c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
-        manuK['title']='CEO & Founder'
+        manuK['title']='Founder & CEO'
         manuK['bio']="Manu makes sure Civinomics runs on time. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford."
         manuK['photo']='manu_585.jpg'
         manuK['photoHover']='manu_silly_585.jpg'
@@ -652,7 +652,7 @@ class CorpController(BaseController):
         c.team.append(derroldP)
         robertS={}
         robertS["name"]="Robert Singleton"
-        robertS['title']='Director of Public Outreach & Founder'
+        robertS['title']='Founder & CMO'
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
         robertS['photo']='robert_585.jpg'
         robertS['photoHover']='robert_silly_585.jpg'
