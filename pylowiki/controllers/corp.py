@@ -666,26 +666,34 @@ class CorpController(BaseController):
         c.team.append(russellSterten)
 
         c.advisors=[]
-        
-        lloydT={}
-        lloydT["name"]="Lloyd Tabb"
-        lloydT['title']='Advisor'
-        lloydT['bio']="Lloyd has been a technology revolutionary for 25 years, driving important trends in how the world uses the Internet. Originally a database and languages architect at Borland International, Lloyd left Borland to found Commerce Tools, where he wrote the first application server for the web. After Commerce Tools was acquired by Netscape in 1995, Lloyd was Principal Engineer on Netscape Navigator Gold, led several releases of Communicator, and helped define the creation of Mozilla.org. As CTO of LiveOps, the first commercial crowd-sourced company, he designed the crowd-sourced ecosystem. Lloyd was also a co-founder of Readyforce and advisor to Luminate. He is currently Founder, Chairman and CTO of Looker."
-        lloydT['photo']='lloyd_tabb.jpg'
-        lloydT['photoHover']='lloyd_tabb.jpg'
-        c.advisors.append(lloydT)
+
+        fredK={}
+        fredK["name"]="Fred Keeley"
+        fredK['title']='Political Strategy'
+        fredK['bio']= "Fred Keeley is treasurer of Santa Cruz County, a position he has held since January 2005. He served in the California State Assembly from 1996 to 2002 and served four years as the Speaker pro Tempore of the Assembly. During the California energy crisis in 2000 and 2001, Speaker Robert Hertzberg appointed Mr. Keeley chief operating officer for the Assembly on the energy crisis. In that capacity, Mr. Keeley authored California's solution to the energy crisis. He also helped in forging budget compromises between Democrats and Republicans in the Legislature."
+        fredK['photo']='fred_keeley_585.jpg'
+        fredK['photoHover']='fred_keeley_585.jpg'
+        c.advisors.append(fredK)
 
         edolfoG={}
         edolfoG["name"]="Edolfo Garza-Licudine"
-        edolfoG['title']='Advisor & Co-founder'
+        edolfoG['title']='Technichal Cofounder'
         edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
         edolfoG['photo']='edolfo_garzalicudine.jpg'
         edolfoG['photoHover']='edolfo_garzalicudine.jpg'
         c.advisors.append(edolfoG)
 
+        lloydT={}
+        lloydT["name"]="Lloyd Tabb"
+        lloydT['title']='Technology'
+        lloydT['bio']="Lloyd has been a technology revolutionary for 25 years, driving important trends in how the world uses the Internet. Originally a database and languages architect at Borland International, Lloyd left Borland to found Commerce Tools, where he wrote the first application server for the web. After Commerce Tools was acquired by Netscape in 1995, Lloyd was Principal Engineer on Netscape Navigator Gold, led several releases of Communicator, and helped define the creation of Mozilla.org. As CTO of LiveOps, the first commercial crowd-sourced company, he designed the crowd-sourced ecosystem. Lloyd was also a co-founder of Readyforce and advisor to Luminate. He is currently Founder, Chairman and CTO of Looker."
+        lloydT['photo']='lloyd_tabb.jpg'
+        lloydT['photoHover']='lloyd_tabb.jpg'
+        c.advisors.append(lloydT)
+
         tomY={}
         tomY["name"]="Tom Yoritaka"
-        tomY['title']='Strategy, Products and Technology'
+        tomY['title']='Products & Community Development'
         tomY['bio']= "Tom Yoritaka is a Senior Director & General Manager at Cisco Systems, Inc. He is also the Managing Director of Cisco Entrepreneurs in Residence - the company's innovation program for eary-stage start-ups. Prior to joining Cisco, he held various executive & leadershiop positions in Web techbology & product management at Yahoo! & Microsoft. He also worked as a strategy consultant at The Boston Consulting Group & McKenna Group. He holds a master's degree from Harvard University John F. Kennedy School of Government, an MBA from The University of Chicago Booth School of Business & an undergraduate degree from Northwestern University."
         tomY['photo']='tom_yoritaka.png'
         tomY['photoHover']='tom_yoritaka.png'

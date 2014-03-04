@@ -67,10 +67,14 @@
             .${memberClass}:hover{
                 background-image:url('/images/corp/team/${member['photoHover']}');
             }
+            .${memberClass}.hidden{
+                background-image:url('/images/corp/team/${member['photoHover']}');
+            }
         </style>
         <div class="row">   
             <div class="span3">
                 <div class="avatar avatar-team ${memberClass}"></div>
+                <div class="hidden ${memberClass}"></div>
             </div>
             <div class="span8">
                 <h4>Citizen ${member['name']} - ${member['title']} </h4>
