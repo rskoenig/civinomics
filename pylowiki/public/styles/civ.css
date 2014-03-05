@@ -1021,6 +1021,11 @@ img.avatar{
     width: 200px;
 }
 
+.avatar.avatar-team{
+    height: 200px;
+    width: 200px;
+}
+
 .thumbnails li.follow{
     margin:15px 10px;
 }
