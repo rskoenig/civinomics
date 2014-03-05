@@ -496,28 +496,36 @@ class CorpController(BaseController):
         if careername=="engfrontend":
             career["title"]="Software Engineer - Front End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
-            career["description"]="We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities."
+            career["description"]="Make this site beautiful. We need someone who is going to transform Civinomics into a clean, modern web app. Doing so will require more than a few photoshop mockups. Ideally you have already used bootstrap, angular JS and know some python. You can't make the front end fun unless you know the basics of passing data around. Show us that you know way more than us about composing clean, snappy CSS. If you have experience with iOS to boot, that rocks."
 
             requirements=[]
-            requirement = "CSS"
+            requirement = "Flat design expertise"
+            requirements.append(requirement)
+            requirement = "bootstrap"
+            requirements.append(requirement)
+            requirement = "angular JS or similar javascript MVC framework"
             requirements.append(requirement)
             requirement = "Javascript and jQuery"
+            requirements.append(requirement)
+            requirement = "CSS"
             requirements.append(requirement)
             requirement = "HTML"
             requirements.append(requirement)
             requirement = "Able to work with a small team and quickly adapt"
             requirements.append(requirement)
-            requirement = "An eye for UI design"
-            requirements.append(requirement)
             career["requirements"]=requirements
 
             recommendeds=[]
+            recommended = "python"
+            recommendeds.append(recommended)
+            recommended = "iOS"
+            recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
         if careername=="engbackend":
             career["title"]="Software Engineer - Back End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
-            career["description"]="We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities."
+            career["description"]="Make Civinomics faster, more secure and self-sustaining. We're looking for someone who can help us quickly materialize revenue opportunities on the platform, refine our architecture, internationalize and scale. Experience managing a team is a huge plus."
 
             requirements=[]
             requirement = "Comfortable in a *nix environment"
@@ -525,6 +533,16 @@ class CorpController(BaseController):
             requirement = "Python 2.X"
             requirements.append(requirement)
             requirement = "MySQL"
+            requirements.append(requirement)
+            requirement = "SQLAlchemy"
+            requirements.append(requirement)
+            requirement = "angular JS or similar javascript MVC framework"
+            requirements.append(requirement)
+            requirement = "Javascript and jQuery"
+            requirements.append(requirement)
+            requirement = "CSS"
+            requirements.append(requirement)
+            requirement = "HTML"
             requirements.append(requirement)
             requirement = "An eye for detail"
             requirements.append(requirement)
@@ -537,7 +555,9 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             recommended = "Experience with scaling applications and databases"
             recommendeds.append(recommended)
-            recommended = "Experience with the Pylons framework"
+            recommended = "Experience with the Pylons or Pyramid framework"
+            recommendeds.append(recommended)
+            recommended = "Proven ability to lead a development team"
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
@@ -562,14 +582,35 @@ class CorpController(BaseController):
         if careername=="prep":
             career["title"]="Public Outreach Representative"
             career["commitment location"]="Part time - Santa Cruz and San Francisco, CA"
-            career["description"]="Person-to-person interaction is still the most effective means of community engagement, that's why we decided to re-invent the practice for the 21st century. We conduct face-to-face interviews for public agencies and non-profits via iPad. We are looking to hire new field organizers for the purposes of conducting surveys both at community events and through door-to-door outreach. We do not fundraise - our campaigns are educational and research oriented. Previous experience is recommended, but not required. Community Representatives are paid $3.00 per interview, most complete between 5-8 interviews per hour. We are looking to fill these positions ASAP."
+            career["description"]="Person-to-person interaction is still the most effective means of community engagement, that's why we decided to re-invent the practice for the 21st century. We conduct face-to-face interviews for public agencies and non-profits via iPad. We are looking to hire new field organizers for the purposes of conducting surveys both at community events and through door-to-door outreach. We do not fundraise - our campaigns are educational and research oriented. Previous experience is recommended, but not required. Community Representatives are paid $3.00 - $7.00 per interview with an additional $2 for interviews conducted in a foreign language. Most representatives complete between 4-8 interviews per hour. We are looking to fill these positions ASAP."
 
             requirements=[]
-            requirement = "Effective Communication"
+            requirement = "Clear, effective communication skills"
             requirements.append(requirement)
-            requirement = "Cultural Competency"
+            requirement = "Cultural competency"
             requirements.append(requirement)
-            requirement = "The ability to be polite and respectful"
+            requirement = "The ability memorize facts and become an expert about issues"
+            requirements.append(requirement)
+            career["requirements"]=requirements
+
+            recommendeds=[]
+            career["recommendeds"]=recommendeds
+
+        if careername=="acctManager":
+            career["title"]="Account Manager"
+            career["commitment location"]="Full time - Santa Cruz and San Francisco, CA"
+            career["description"]="We need a meticulous go getter who can keep clients happy and grow business. Existing clients range from government, to non-profit organizations, to political candidates, to sponsors.  Demonstrated passion for social causes through previous work or serious personal projects is a must. Amazing talent with CRM and PowerPoint / Keynote required. Prove to us that you can listen to what a client needs and work with a team to over-deliver on tight deadlines."
+
+            requirements=[]
+            requirement = "Experience and comfort with responsibility"
+            requirements.append(requirement)
+            requirement = "PowerPoint / Keynote Mastery"
+            requirements.append(requirement)
+            requirement = "Proven ability to make lasting client relationships"
+            requirements.append(requirement)
+            requirement = "Experience in Hightech"
+            requirements.append(requirement)
+            requirement = "Passion for citizenship and social justice"
             requirements.append(requirement)
             career["requirements"]=requirements
 
@@ -595,9 +636,13 @@ class CorpController(BaseController):
         engbackend["url"]="engbackend"
         c.careers.append(engbackend)
         career={}
-        career["title"]="Program Manager"
-        career["department"]="Operations"
-        career["url"]="prgmManager"
+        #career["title"]="Program Manager"
+        #career["department"]="Operations"
+        #career["url"]="prgmManager"
+        #c.careers.append(career)
+        career["title"]="Account Manager"
+        career["department"]="Sales"
+        career["url"]="acctManager"
         c.careers.append(career)
         prep={}
         prep["title"]="Public Outreach Representative"
