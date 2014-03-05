@@ -114,6 +114,8 @@ def getPublicScope(item):
     # takes an item with scope attribute and returns scope level, name, flag and href
     flag = '/images/flags/'
     href = '/workshops/geo/earth'
+    scope = None
+    scopeString = ''
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
     elif '||' in item:

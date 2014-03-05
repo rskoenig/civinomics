@@ -37,7 +37,7 @@
                     </h5>
                     <p>
                         <a ng-href="{{userLink}}">{{userName}}</a>
-                        invites you to 
+                        invites you to ummm
                         {{action}}
                         <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                     </p>

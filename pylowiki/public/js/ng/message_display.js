@@ -22,7 +22,8 @@ function messageDisplayCtrl($scope, $http) {
         }
     }
 
-    $scope.updateReadStatus(true);
+    // note: turned this off while I test to see how facilitator invite works
+    //$scope.updateReadStatus(true);
 
     $scope.isRead= function(read) {
         if (read == '1') {
