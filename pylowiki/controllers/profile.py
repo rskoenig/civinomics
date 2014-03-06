@@ -1238,11 +1238,20 @@ class ProfileController(BaseController):
         if not memberPosts:
             memberPosts = []
 
+        verbMap = {
+            'idea' : 'posed',
+            'resource' : 'added',
+            'initiative' : 'launched',
+            'discussion' : 'started',
+            'comment' : 'commented',
+            'photo' : 'added'
+        }
         result = []
         for post in memberPosts:
             entry = {}
-            entry['verb'] = ''
             entry['objType'] = post.objType
+            entry['verb'] = verbMap[post.objType]
+                
             #entry['url'] = post['url']
             entry['urlCode'] = post['urlCode']
             entry['href'] = ''

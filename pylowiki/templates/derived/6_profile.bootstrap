@@ -37,11 +37,13 @@
                             </button>
                         % endif
                         ${c.memberCode}
-                        <div ng-init="memberCode = ${c.memberCode}; test = 'Test YEAH!'; memberID = ${c.authuser.id};">
+                        <div ng-init="memberCode = '${c.memberCode}'; memberURL = '${c.memberUrl}';">
                             <div ng-controller="profileController">
-                                {{memberID}}{{memberURL}}{{test}}
+                                {{memberCode}}{{memberURL}}{{test}}
                                 <div ng-repeat="post in memberActivity">
-                                    {{post.objType}}{{post.title}}{{post.urlCode}}
+                                    <span ng-if="post.objType == 'idea'">{{post.verb}} the {{post.objType}} <a href="#">{{post.title | limitTo: 20}}</a></span>
+
+                                    {{post.verb}} the {{post.objType}}{{post.title}}{{post.urlCode}}
                                 </div>
                             </div>
                         </div>
