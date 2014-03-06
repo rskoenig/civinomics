@@ -179,11 +179,11 @@
 </%def>
 
 <%def name="moreLess()">
-    <a href="#a" class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="moreLessComment()">
-    <a href="#a" class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="metaData()">
@@ -201,8 +201,8 @@
         <div ng-controller="commentsController">
             <ul class="horizontal-list iconListing">
                 <li>
-                    <a ng-show="item.numComments == '0'" class="no-highlight" href="#a" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                    <a ng-show="!(item.numComments == '0')" class="no-highlight" href="#a" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                    <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                    <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                 </li>
                 <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
             </ul>
@@ -236,7 +236,7 @@
                     % if c.authuser:
                         <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                         <td style="padding: 10px;">
-                            % if not c.privs['provisional']:
+                            % if c.privs and not c.privs['provisional']:
                                 <form class="no-bottom" ng-submit="submitComment()">
                                     <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
