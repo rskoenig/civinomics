@@ -33,6 +33,7 @@ import pylowiki.lib.db.initiative       as initiativeLib
 from pylowiki.lib.facebook              import FacebookShareObject
 import pylowiki.lib.images              as imageLib
 import pylowiki.lib.utils               as utils
+import pylowiki.lib.jsonify             as jsonify
 
 import time, datetime
 import simplejson as json
@@ -1238,32 +1239,7 @@ class ProfileController(BaseController):
         if not memberPosts:
             memberPosts = []
 
-        verbMap = {
-            'idea' : 'posed',
-            'resource' : 'added',
-            'initiative' : 'launched',
-            'discussion' : 'started',
-            'comment' : 'commented',
-            'photo' : 'added'
-        }
-        result = []
-        for post in memberPosts:
-            entry = {}
-            entry['objType'] = post.objType
-            entry['verb'] = verbMap[post.objType]
-                
-            #entry['url'] = post['url']
-            entry['urlCode'] = post['urlCode']
-            entry['href'] = ''
-            entry['parentObjType'] = ''
-            entry['title'] = ''
-            if 'title' in post:
-                entry['title'] = post['title']
-            entry['text'] = ''
-            if 'text' in post:
-                entry['text'] = post['text']
-
-            result.append(entry)
+        result = jsonify.jsonifyAnyObj(memberPosts)
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})

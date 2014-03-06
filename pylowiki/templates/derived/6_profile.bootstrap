@@ -41,9 +41,9 @@
                             <div ng-controller="profileController">
                                 {{memberCode}}{{memberURL}}{{test}}
                                 <div ng-repeat="post in memberActivity">
-                                    <span ng-if="post.objType == 'idea'">{{post.verb}} the {{post.objType}} <a href="#">{{post.title | limitTo: 20}}</a></span>
+                                    <span ng-if="post.objType == 'idea'">posed the {{post.objType}} <a ng-href="{{post.href}}">{{post.title | limitTo: 20}}</a></span>
 
-                                    {{post.verb}} the {{post.objType}}{{post.title}}{{post.urlCode}}
+                                    verb coming soon the {{post.objType}}{{post.title}}{{post.urlCode}}
                                 </div>
                             </div>
                         </div>
