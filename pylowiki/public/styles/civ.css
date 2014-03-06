@@ -1286,7 +1286,7 @@ a.yesVote, a.noVote{
 .search-listing .well.yesNoWell{
   width: 130px;
   margin-left: 10px;
-  margin-bottom: 0;
+  margin-bottom: 10px;
   padding:10px;
   min-height: 95px;
 }
@@ -3179,7 +3179,7 @@ hr.object-list-header{
 }
 
 .i-photo{
-  height:300px;
+  height:100px;
   width:100%;
   background-repeat:no-repeat;
   background-size:cover;

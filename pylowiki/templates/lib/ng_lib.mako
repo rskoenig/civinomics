@@ -2,21 +2,22 @@
 
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
-        <div class="listing-body" ng-controller="yesNoVoteCtrl"> 
+        <div ng-controller="yesNoVoteCtrl"> 
             <div class="row-fluid">
-                <div class="span12">
+                <div class="span3">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
+                </div>
+                <div class="span9">
                     <div class="well yesNoWell" >
                         ${yesNoVoteBlock()}
                     </div>
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    <hr class="no-bottom no-top">
                     <h4>
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
