@@ -396,7 +396,7 @@ class MessageController(BaseController):
         result = []
 
         c.unreadMessageCount = 0
-        for message in messages:
+        for message in c.messages:
             # if this field isn't in the message then nothing happens for this entry
             if 'extraInfo' not in message.keys():
                 continue

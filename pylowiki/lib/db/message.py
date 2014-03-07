@@ -40,7 +40,8 @@ def getMessages2(user, deleted = u'0', disabled = u'0', read = u'all', limit = N
 
         if limit:
             log.info('2')
-            postList = q.limit(limit)
+            postList = q.all()
+            #limit(limit)
         else:
             log.info('3')
             postList = q.all()
