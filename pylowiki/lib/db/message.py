@@ -37,9 +37,10 @@ def getMessages2(user, deleted = u'0', disabled = u'0', read = u'all', limit = N
                 log.info('this is a query that is not for all message types')
                 # Grab items that are read (1) or items that are unread (0).  Grab all by default.
                 q = q.filter(Thing.data.any(wc('read', read)))
-        log.info("q: %s"%q)
+        #log.info("q: %s"%q)
         if limit:
             log.info('call for limited query (not working right now)')
+            # note: slices aren't working here yet, so just asking for all results for now.
             postList = q.all()
             #postList = q.limit(limit)
         else:

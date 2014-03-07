@@ -363,7 +363,7 @@ class MessageController(BaseController):
         #
         return json.dumps({'statusCode': 0, 'result': result})
 
-    def getUserMessages2(self, id1, id2, type = 'auto', limit = 10, offset = 0):
+    def getUserMessages2(self, id1, id2, type = 'auto', limit = 2, offset = 0):
 
         offset = int(offset)
 
@@ -375,6 +375,7 @@ class MessageController(BaseController):
                 if userLib.isAdmin(c.authuser.id):
                     c.isAdmin = True
                 if c.user.id == c.authuser.id or c.isAdmin:
+                    log.info("in controller, asking for %s messages"%limit)
                     if type == 'all':
                         c.messages = messageLib.getMessages2(user=c.user, limit=limit, offset=offset)
                     elif type == 'auto':
@@ -387,11 +388,8 @@ class MessageController(BaseController):
                 #log.info('message ctrl %s' % session['afterLoginURL'])
                 session.save()
                 return redirect('/login')
-        if not c.messages:
+        if not c.messages or len(c.messages) == 0:
             #log.info("getUserMessages return NOT messages")
-            return json.dumps({'statusCode':2})
-        if len(c.messages) == 0:
-            #log.info("getUserMessages return len messages == 0")
             return json.dumps({'statusCode':2})
 
         result = []
