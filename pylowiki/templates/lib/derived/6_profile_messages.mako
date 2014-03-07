@@ -20,8 +20,10 @@
                     <div class="span8 message-content">
                         
                     
+                        <!-- debugging fields: 
                         <p>{{combinedInfo}}</p>
                         <p>{{extraInfo}}</p>
+                        -->
                         <div ng-switch on="combinedInfo">
                         <!-- handles these cases, not ng_messages.profileMessages() -->
                             <div ng-switch-when="listenerFacilitationInvite">

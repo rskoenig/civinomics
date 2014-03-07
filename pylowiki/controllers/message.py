@@ -403,7 +403,7 @@ class MessageController(BaseController):
             # now that we've asserted this fact, we can check one more thing that takes a bit more time
             if 'commentCode' in message and not commentLib.getCommentByCode(message['commentCode']):
                 continue
-            
+            #log.info('loading message type: %s'%(message['extraInfo']))
             try:
                 entry = {}
                 entry['action'] = ''
@@ -557,6 +557,7 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
                     entry['combinedInfo'] = 'disabledEnabledDeletedPhoto'
                     photoCode = message['photoCode']
+                    thing = generic.getThing(photoCode)
                     title = thing['title']
                     if message['extraInfo'] in ['disabledPhoto']:
                         event = eventLib.getEventsWithAction(message, 'disabled')
@@ -665,7 +666,7 @@ class MessageController(BaseController):
                 #log.info('combinedInfo: %s, extraInfo: %s' %(entry['combinedInfo'], message['extraInfo']))
                 result.append(entry)
             except:
-                log.info('key error')
+                log.info('error in message type: %s'%(message['extraInfo']))
                 pass
 
         #

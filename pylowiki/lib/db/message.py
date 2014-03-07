@@ -34,23 +34,23 @@ def getMessages2(user, deleted = u'0', disabled = u'0', read = u'all', limit = N
             .order_by('-date')\
             .offset(offset)
         if read != u'all':
-                log.info('1')
+                log.info('this is a query that is not for all message types')
                 # Grab items that are read (1) or items that are unread (0).  Grab all by default.
                 q = q.filter(Thing.data.any(wc('read', read)))
-
+        log.info("q: %s"%q)
         if limit:
-            log.info('2')
+            log.info('call for limited query (not working right now)')
             postList = q.all()
-            #limit(limit)
+            #postList = q.limit(limit)
         else:
-            log.info('3')
+            log.info('call for entire query result')
             postList = q.all()
 
         if postList:
-            log.info('4')
+            log.info('there is a list of results')
             return postList
         else:
-            log.info('5')
+            log.info('there is not a list of results')
             return []
     except:
         return False
