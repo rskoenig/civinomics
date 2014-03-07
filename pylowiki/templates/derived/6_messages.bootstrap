@@ -9,9 +9,11 @@
         <div id="tab-messages">
             <div ng-init="code = '${c.userCode}'; url = '${c.userUrl}'">
                 <div class="browse" ng-controller="profileMessagesCtrl">
-                    <div class="row-fluid" ng-repeat="message in messages" ng-cloak>
-                        ${messages.listProfileMessages()}
-                    </div>
+                    <div infinite-scroll='getMessagesSlice()' infinite-scroll-disabled='messagesLoading' infinite-scroll-distance='3'>
+                        <div class="row-fluid" ng-repeat="message in messages" ng-cloak>
+                            ${messages.listProfileMessages()}
+                        </div>
+                    </div> <!-- infinite scroll -->
                 </div>
             </div>
         </div>

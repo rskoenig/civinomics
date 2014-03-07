@@ -24,6 +24,36 @@ def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', count = Fa
     except:
         return False
 
+def getMessages2(user, deleted = u'0', disabled = u'0', read = u'all', limit = None, comments = 0, offset = 0):
+    
+    try:
+        q = meta.Session.query(Thing).filter_by(objType = 'message')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .order_by('-date')\
+            .offset(offset)
+        if read != u'all':
+                log.info('1')
+                # Grab items that are read (1) or items that are unread (0).  Grab all by default.
+                q = q.filter(Thing.data.any(wc('read', read)))
+
+        if limit:
+            log.info('2')
+            postList = q.limit(limit)
+        else:
+            log.info('3')
+            postList = q.all()
+
+        if postList:
+            log.info('4')
+            return postList
+        else:
+            log.info('5')
+            return []
+    except:
+        return False
+
 def getMessagesForThing(user, thing, deleted = u'0', disabled = u'0'):
     try:
         thingKey = '%sCode' % thing.objType
