@@ -106,7 +106,7 @@
         </div>
     </div> <!-- end if read -->
     <div ng-if="notRead(read)">
-        {{formStr}}
+        <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="{{formLink}}">
             <input type="hidden" name="initiativeCode" value="{{itemCode}}">
             <input type="hidden" name="initiativeURL" value="{{itemUrl}}">
             <input type="hidden" name="messageCode" value="{{messageCode}}">

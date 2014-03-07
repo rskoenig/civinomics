@@ -464,7 +464,7 @@ class MessageController(BaseController):
                         # note: commenting out this next line because it appears to not be used or needed anymore
                         # role = listenerLib.getListenerByCode(message['listenerCode'])
                     else:
-                        entry['formStr'] = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                        entry['formLink'] = """/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
                         entry['action'] = 'facilitate'
                         # note: commenting out this next line because it appears to not be used or needed anymore
                         # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
@@ -495,7 +495,7 @@ class MessageController(BaseController):
                 elif message['extraInfo'] in ['authorInvite']:
                     entry['combinedInfo'] = 'authorInvite'
                     initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                    entry['formStr'] = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                    entry['formLink'] = """/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
                     entry['action'] = 'coauthor'
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
