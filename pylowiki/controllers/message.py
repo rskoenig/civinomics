@@ -415,6 +415,7 @@ class MessageController(BaseController):
                 entry['eventReason'] = ''
                 entry['extraInfo'] = message['extraInfo']
                 entry['formLink'] = ''
+                entry['formStr'] = ''
                 entry['itemCode'] = ''
                 entry['itemImage'] = ''
                 entry['itemLink'] = ''
