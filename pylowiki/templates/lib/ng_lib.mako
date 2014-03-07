@@ -121,20 +121,27 @@
     % if 'user' in session:
         <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
             <div class="vote-icon yes-icon detail"></div>
-            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
         </a>
         <br>
         <br>
         <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
             <div class="vote-icon no-icon detail"></div>
-            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
         </a>
         <br>
-        <div class="totalVotesWrapper">
-            <span class="grey pull-left">Votes:</span>
-            <strong class="pull-right">
-                <span class="totalVotes">{{totalVotes}}</span>
-            </strong>
+        <br>
+        <div>
+            <small><span class="grey">Votes:</span><strong class="totalVotes pull-right">{{totalVotes}}</strong></small>
+        </div>
+        <div style="margin: 0 0;" class="progress progress-warning">
+          <div class="bar" style="width: 60%;"></div>
+        </div>
+        <div>
+            <small><span class="grey">Needed:</span><strong class="totalVotes pull-right">100</strong></small>
+        </div>
+        <br>
+        <div class="ynScoreWrapper">
+            <span class="yesScore green {{display}}">YES {{yesPercent | number:0 }}%</span>
+            <span class="noScore pull-right red {{display}}" style="margin-left: 0;">NO {{noPercent | number:0 }}%</span>
         </div>
     % else:
         <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">

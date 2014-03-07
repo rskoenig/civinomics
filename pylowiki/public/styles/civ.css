@@ -1208,9 +1208,9 @@ td.scope-icon{
 }
 
 .vote-icon{
-  background-size: auto 30px;
+  background-size: auto 39px;
   background-repeat: no-repeat;
-  height: 30px;
+  height: 39px;
   width: 100%;
   float: left;
 }
@@ -1219,29 +1219,29 @@ td.scope-icon{
 }
 
 .vote-icon.yes-icon{
-  background-image:url(/images/yes_blank.png);
+  background-image:url(/images/yes_unselected_3.png);
 }
 .vote-icon.yes-icon:hover{
-  background-image:url(/images/yes_hover.png);
+  background-image:url(/images/yes_hover_3.png);
 }
 .voted > .vote-icon.yes-icon{
-  background-image:url(/images/yes_selected.png);
+  background-image:url(/images/yes_selected_3.png);
 }
 .voted > .vote-icon.yes-icon:hover{
-  background-image:url(/images/yes_selected.png);
+  background-image:url(/images/yes_selected_3.png);
 }
 
 .vote-icon.no-icon{
-  background-image:url(/images/no_blank.png);
+  background-image:url(/images/no_unselected_3.png);
 }
 .vote-icon.no-icon:hover{
-  background-image:url(/images/no_hover.png);
+  background-image:url(/images/no_hover_3.png);
 }
 .voted > .vote-icon.no-icon{
-  background-image:url(/images/no_selected.png);
+  background-image:url(/images/no_selected_3.png);
 }
 .voted > .vote-icon.no-icon:hover{
-  background-image:url(/images/no_selected.png);
+  background-image:url(/images/no_selected_3.png);
 }
 
 .chevron-score{
@@ -1251,11 +1251,8 @@ td.scope-icon{
 }
 
 .ynScoreWrapper{
-  margin-left: 80px;
   padding-top: 5px;
-  font-size: 0.80em;
   color: grey;
-  width: 60%;
 }
 
 .totalVotesWrapper{
@@ -1274,7 +1271,7 @@ td.scope-icon{
 }
 
 a.yesVote, a.noVote{
-   width: 85px;
+   width: 130px;
    position: absolute;
 }
 
