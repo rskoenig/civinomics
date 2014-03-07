@@ -190,7 +190,8 @@ class MessageController(BaseController):
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                     entry['itemCode'] = initiative['urlCode']
-                    entry['itemImage'] = utils.initiativeImageURL(initiative)
+                    bgPhoto_url, photo_url, thumbnail_url  = utils.initiativeImageURL(initiative)
+                    entry['itemImage'] = thumbnail_url
                     entry['itemLink'] = utils.initiativeURL(initiative)
                     entry['itemTitle'] = initiative['title']
                     entry['itemUrl'] = initiative['url']
@@ -500,7 +501,8 @@ class MessageController(BaseController):
                     # note: commenting out this next line because it appears to not be used or needed anymore
                     # role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
                     entry['itemCode'] = initiative['urlCode']
-                    entry['itemImage'] = utils.initiativeImageURL(initiative)
+                    bgPhoto_url, photo_url, thumbnail_url  = utils.initiativeImageURL(initiative)
+                    entry['itemImage'] = thumbnail_url
                     entry['itemLink'] = utils.initiativeURL(initiative)
                     entry['itemTitle'] = initiative['title']
                     entry['itemUrl'] = initiative['url']
