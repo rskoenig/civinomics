@@ -151,11 +151,14 @@
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
     <script type="text/javascript">
+        $('.modal i[rel="tooltip"]')
+        .tooltip({placement: 'top'})
+        .data('tooltip')
+        .tip()
+        .css('z-index', 2080);
         $('.signup-tooltip').tooltip();
         $('.icon-question-sign').tooltip();
-        <script type="text/javascript">
         $('.upVote.nullvote').tooltip();
-    </script>
     </script>
 </%def>
 

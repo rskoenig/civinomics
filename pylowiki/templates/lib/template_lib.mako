@@ -410,7 +410,7 @@
                 </div>
             </div>
             <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
-                <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
+                <label class="control-label" for="postalCode"><i class="icon-question-sign" rel="tooltip" data-placement="top" data-title="To help you find relevant topics in your region. Never displayed or shared." title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
                 <div class="controls">
                     <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" ng-blur="lookup()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
