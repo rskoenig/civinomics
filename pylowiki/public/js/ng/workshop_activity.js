@@ -1,4 +1,10 @@
+var workshopApp = angular.module('workshopApp', ['ngSanitize', 'infinite-scroll']);
+workshopApp.factory( 'Data', function(){
+	return {message:"Im data from the workshopApp factory"}
+})
+
 function activityWorkshopController($scope, $http) {
+	$scope.showInfoPanel = 'true'
 	$scope.listingType = 'activity';
 	$scope.activityType = '/all';
 	$scope.activityLoading = true;
@@ -22,6 +28,11 @@ function activityWorkshopController($scope, $http) {
 				$scope.activityNoResult = false;
 				$scope.noMoreSlices = false;
 				$scope.activity = data.result;
+				$scope.numAdopted = data.numAdopted;
+				$scope.numIdeas = data.numIdeas;
+				$scope.numDiscussions = data.numDiscussions;
+				$scope.numResources = data.numResources;
+
 				
 			}
 			$scope.activityLoading = false;
@@ -130,3 +141,9 @@ function commentsController($scope, $http) {
         });
 	};
 }
+
+
+function workshopMenuController($scope, Data) {
+	$scope.data = Data
+}
+

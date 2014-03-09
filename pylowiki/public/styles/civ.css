@@ -46,7 +46,7 @@ h4.listed-item-title{
   cursor:pointer;
 }
 
-a{
+a, .clickable{
   cursor:pointer;
 }
 

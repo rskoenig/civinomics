@@ -15,7 +15,7 @@
 %>
 
 <% numIdeas = str(len(c.ideas)) %>
-<div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'">
+<div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'; numViews = '${c.w['views']}';">
 <div id="top" class="row-fluid" ng-controller="activityWorkshopController">
     <div class="span9">
       <!--<div class="darkened-workshop"></div>-->
@@ -35,7 +35,7 @@
             </div>
           </div>
         </div><!-- background-image -->
-        <div class="hero-bottom" ng-controller="workshopIdeasCtrl">
+        <div class="hero-bottom">
           % if 'user' in session:
             <span class="pull-right">
               ${helpers.watchButton(c.w)}
@@ -50,31 +50,40 @@
           </span>
           <table id="metrics">
             <tr>
-              <td>
+              <td class="clickable" ng-click="query = {objType:'discussion'}; showInfoPanel = false">
                 <span class="workshop-metrics">Discussions</span><br>
                   <strong ng-cloak>{{numDiscussions}}</strong>
               </td>
-              <td>
+              <td class="clickable" ng-click="query = {objType:'resource'}; showInfoPanel = false">
                 <span class="workshop-metrics">Resources</span><br>
                   <strong ng-cloak>{{numResources}}</strong>
               </td>
-              <td>
+              <td class="clickable" ng-click="query = {objType:'idea'}; showInfoPanel = false">
                 <span class="workshop-metrics">Ideas</span><br>
                   <strong ng-cloak>{{numIdeas}}</strong>
+                
               </td>
-              <td>
+              <td class="clickable" ng-click="query = {status:'adopted'}; showInfoPanel = false">
                 <span class="workshop-metrics">Adopted</span><br>
                   <strong ng-cloak>{{numAdopted}}</strong>
               </td>
+              <!--
+              <td>
+                <span class="workshop-metrics">Views</span><br>
+                  <strong ng-cloak>{{numViews}}</strong>
+              </td>
+              -->
+              <!--
               <td>
                 <span class="workshop-metrics">Participants</span><br>
                   <strong ng-cloak>{{numParticipants}}</strong>
               </td>
+              -->
             </tr>
           </table>
         </div><!-- workshopIdeasCtrl -->
       </div><!-- top well -->
-      <div class="well" ng-cloak>
+      <div class="well" ng-show="showInfoPanel" ng-cloak>
         <div ng-hide="showInfo">
           <p class="description">
             ${lib_6.ellipsisIZE(c.w['description'], 285)}
@@ -101,7 +110,7 @@
           {{alertMsg}}
       </div>
 
-      <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+      <table ng-repeat="item in activity | filter:query" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
         <tr>
           <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
           <td></td>
@@ -148,7 +157,7 @@
 
    </div> <!-- /.span8 -->
 
-   <div class="span3">
+   <div class="span3" >
       <%
         if c.listingType != '':
           listingType = c.listingType
@@ -182,11 +191,11 @@
         <li class="${summaryActive}">
           <a href="${linkHref | n}">Summary</a>
         </li>
-        <li ng-class="{infoActive : showInfo == true}"><a ng-click="showInfo = true">Info</a></li>
+        <li ng-class="{infoActive : showInfo == true}"><a ng-click="showInfo = !showInfo; showInfoPanel = true">Info</a></li>
         <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
-        <li class="${adminActive}"><a href="${adminHref | n}">Ideas</a></li>
-        <li class="${adminActive}"><a href="${adminHref | n}">Discussions</a></li>
-        <li class="${adminActive}"><a href="${adminHref | n}">Resources</a></li>
+        <li class="${adminActive}"><a ng-click="query = {objType:'idea'}; showInfoPanel = false">Ideas</a></li>
+        <li class="${adminActive}"><a ng-click="query = {objType:'discussion'}">Discussions</a></li>
+        <li class="${adminActive}"><a ng-click="query = {objType:'resource'}">Resources</a></li>
         <li class="${adminActive}"><a href="${adminHref | n}">Photos</a></li>
         % if c.privs['admin'] or c.privs['facilitator']: 
           <li class="${adminActive}"><a href="${adminHref | n}">Admin</a></li>

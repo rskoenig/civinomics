@@ -952,6 +952,16 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+
+        # broken currently incrementing by 2-3
+        if 'views' not in c.w:
+            c.w['views'] = u'0'
+        
+        if c.w.objType != 'revision':    
+            views = int(c.w['views']) + 1
+            c.w['views'] = str(views)
+            dbHelpers.commit(c.w)
+
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
@@ -1450,14 +1460,29 @@ class WorkshopController(BaseController):
         if 'ratings' in session:
             myRatings = session['ratings']
 
+        numAdopted = 0
+        numDiscussions = 0
+        numIdeas = 0
+        numResources = 0
         for item in workshopActivity:
             entry = {}
             # item attributes
             entry['title'] = item['title']
             entry['objType'] = item.objType
             if item.objType == 'discussion':
+                numDiscussions += 1
                 if item['discType'] == 'update':
                     entry['objType'] = 'update'
+            if item.objType == 'idea':
+                numIdeas += 1
+                if item['adopted'] == '1':
+                    entry['status'] = 'adopted'
+                    numAdopted += 1
+                elif item['disabled'] == '1':
+                    entry['status'] = 'disabled'
+                    numDisabled += 1
+            if item.objType == 'resource':
+                numResources += 1
             entry['urlCode'] = item['urlCode']
             entry['url'] = item['url']
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
@@ -1481,10 +1506,7 @@ class WorkshopController(BaseController):
             if 'cost' in item:
                 entry['cost'] = item['cost']
             else:
-                entry['cost'] = ''
-            entry['article'] = 'a'
-            if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
-                entry['article'] = 'an'
+                entry['cost'] = ''           
 
             # href
             # note: we should standardize the way object urls are constructed
@@ -1598,5 +1620,5 @@ class WorkshopController(BaseController):
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})
-        return json.dumps({'statusCode':0, 'result': result})
+        return json.dumps({'statusCode':0, 'result': result, 'numAdopted': numAdopted, 'numIdeas': numIdeas, 'numDiscussions': numDiscussions, 'numResources':numResources})
 
