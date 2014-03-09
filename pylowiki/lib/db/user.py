@@ -35,6 +35,16 @@ def getUserByCode(code):
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', code))).one()
     except sa.orm.exc.NoResultFound:
         return False
+        
+def getOrganizations(url):
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('memberType', 'organization')))\
+        .filter(Thing.data.any(wc('url', url)))\
+        .all()
+    except sa.orm.exc.NoResultFound:
+        return False
     
 def getActiveUsers(disabled = '0'):
     try:

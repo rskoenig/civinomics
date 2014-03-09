@@ -419,6 +419,7 @@ def make_map():
     map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
     map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
+    map.connect('/o/{id1}{end:/?}', controller='actionlist', action='searchOrganizations', id1 = '{id1}')
 
     ################
     # Search       #
