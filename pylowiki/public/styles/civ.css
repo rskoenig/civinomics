@@ -405,6 +405,10 @@ hr.narrow{
   margin: 10px 0 10px 0;
 }
 
+hr.subMenu{
+  margin: 8px -12px;
+}
+
 /* workshops */
 .workshop-hero{
   height: 345px;
@@ -584,6 +588,12 @@ padding: 0;
   padding-left: 0px;
   padding-right: 0px;
 }
+
+.well-subMenu{
+  padding: 8px 12px;
+}
+
+/* end well */
 
 
 .message-workshop-image{

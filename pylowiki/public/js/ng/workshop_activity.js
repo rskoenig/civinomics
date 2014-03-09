@@ -13,6 +13,10 @@ function activityWorkshopController($scope, $http) {
 	$scope.busy = false;
 	$scope.sliceSize = 7;
 	$scope.offset = $scope.sliceSize;
+	$scope.numAdopted = 0
+	$scope.numIdeas = 0
+	$scope.numDiscussions = 0
+	$scope.numResources = 0;
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''

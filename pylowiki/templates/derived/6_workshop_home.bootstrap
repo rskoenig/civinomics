@@ -38,7 +38,12 @@
         <div class="hero-bottom">
           % if 'user' in session:
             <span class="pull-right">
-              ${helpers.watchButton(c.w)}
+              % if c.privs['admin'] or c.privs['facilitator']: 
+                ${helpers.configButton(c.w)}
+              % endif
+              % if not c.privs['facilitator']:
+                ${helpers.watchButton(c.w)}
+              % endif
             </span>
           % endif
           <span class = "share-icons pull-right">
@@ -191,20 +196,22 @@
         <li class="${summaryActive}">
           <a href="${linkHref | n}">Summary</a>
         </li>
-        <li ng-class="{infoActive : showInfo == true}"><a ng-click="showInfo = !showInfo; showInfoPanel = true">Info</a></li>
         <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
+        <li ng-class="{infoActive : showInfo == true}"><a ng-click="showInfo = !showInfo; showInfoPanel = true">Info</a></li>
         <li class="${adminActive}"><a ng-click="query = {objType:'idea'}; showInfoPanel = false">Ideas</a></li>
         <li class="${adminActive}"><a ng-click="query = {objType:'discussion'}">Discussions</a></li>
         <li class="${adminActive}"><a ng-click="query = {objType:'resource'}">Resources</a></li>
-        <li class="${adminActive}"><a href="${adminHref | n}">Photos</a></li>
-        % if c.privs['admin'] or c.privs['facilitator']: 
-          <li class="${adminActive}"><a href="${adminHref | n}">Admin</a></li>
-        % endif
       </ul>
-
-         <div class="well" >
-            <a href="#" class="green green-hover">Participants</a><br>
-            <hr>
+        <div class="well well-subMenu">
+          <span class="green green-hover">Photos</span>
+          <hr class="subMenu">
+          <div class="photo-listing">
+              ${helpers.slideshow(c.w, 'listing')}
+          </div>
+        </div><!-- section-wrapper -->
+         <div class="well well-subMenu" >
+            <span class="green green-hover">Participants</span>
+            <hr class="subMenu">
             ${helpers.whoListening()}
          </div> <!--/.browse-->
    </div> <!-- /.span4 -->
