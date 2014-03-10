@@ -60,58 +60,58 @@ class HomeController(BaseController):
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
 
-    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 30):
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
 		# get recent activity and return it into json format
 		result = []
 		allActivity = []
 
-		if not c.authuser:
-			recentActivity = activityLib.getRecentActivity(12)
+		offset = int(offset)
+		commments = int(comments)
 
-		elif c.authuser:
-			if type == 'auto':
-				if c.privs['participant']:
-					# combine the list of interested workshops
-					interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
+		if type == 'all':
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
+				
 
-					# combine the list of interested initiatives
-					interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
+		elif type == 'following' and c.authuser:
+			if c.privs['participant'] or c.privs['provisional']:
+				# combine the list of interested workshops
+				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
 
-					interestedObjects = interestedWorkshops + interestedInitiatives
-					#log.info("activity interestedObjects is %s"%interestedObjects)
+				# combine the list of interested initiatives
+				interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
 
-					# users being followed
-					interestedUsers = session['followingUsers']
-					#log.info("activity interestedUsers is %s"%interestedUsers)
+				interestedObjects = interestedWorkshops + interestedInitiatives
+				#log.info("activity interestedObjects is %s"%interestedObjects)
 
-					# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
-					allActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, 0)
+				# users being followed
+				interestedUsers = session['followingUsers']
+				#log.info("activity interestedUsers is %s"%interestedUsers)
 
-				if allActivity:
-					recentActivity = allActivity[offset:max]
-				else:
-					# try getting the activity of their area
-					userScope = getGeoScope( c.authuser['postalCode'], "United States" )
-					scopeList = userScope.split('|')
-					countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
-					#log.info("countyScope is %s"%countyScope)
-					# this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-					log.info("activity before geo")
-					recentActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, 0)
-					log.info("activity after geo recentActivity is %s"%recentActivity)
-					if not recentActivity:
-						log.info("activity try all recent")
-						# this is sorted by reverse date order by the SELECT in getRecentActivity
-						recentActivity = activityLib.getRecentActivity(max)
+				# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
+				followingActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, offset)
 
-			elif type == 'geo':
-			    # try getting the activity of their area
-			    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
-			    scopeList = userScope.split('|')
-			    countyScope = '||united-states||' + scopeList[4] + '||' + scopeList[6]
-			    #log.info("countyScope is %s"%countyScope)
-			    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-			    recentActivity = activityLib.getRecentGeoActivity(max, countyScope)
+			if followingActivity:
+				recentActivity = followingActivity
+			else:
+				alertMsg = "You are not following any people, workshops or initiatives yet!"
+				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+
+		elif type == 'geo' and c.authuser:
+		    # try getting the activity of their area
+		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+		    scopeList = userScope.split('|')
+		    countyScope = scopeList[6]
+		    #log.info("countyScope is %s"%countyScope)
+		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
+		    if countyActivity:
+		    	recentActivity = countyActivity
+		    else:
+		    	alertMsg = "There is no activity in your county yet. Add something!"
+		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+
+		else:
+			recentActivity = activityLib.getRecentActivity(max)
 		
 		myRatings = {}
 		if 'ratings' in session:
@@ -135,7 +135,7 @@ class HomeController(BaseController):
 				entry['views'] = '0'
 
 			# attributes that vary accross items
-			entry['text'] = '0'
+			entry['text'] = ''
 			if 'text' in item:
 				entry['text'] = item['text']
 			elif 'description' in item:
@@ -144,7 +144,7 @@ class HomeController(BaseController):
 			if 'link' in item:
 				entry['link'] = item['link']
 			else:
-				entry['link'] = '0'
+				entry['link'] = ''
 			if 'cost' in item:
 				entry['cost'] = item['cost']
 			else:
@@ -184,6 +184,15 @@ class HomeController(BaseController):
 			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+			elif entry['parentObjType'] == 'workshop':
+				mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
+				if mainImage['pictureHash'] == 'supDawg':
+					entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
+				elif 'format' in mainImage.keys():
+					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+				else:
+					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+
 			else:
 				entry['mainPhoto'] = '0'
 				entry['thumbnail'] = '0'

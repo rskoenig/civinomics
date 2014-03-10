@@ -42,6 +42,14 @@ h4.listed-item-title{
   color: #005d28;
 }
 
+.nav li a{
+  cursor:pointer;
+}
+
+a{
+  cursor:pointer;
+}
+
 
 /* h */
 
@@ -572,6 +580,17 @@ padding: 0;
   margin-right: 8px; 
 }
 
+.actions{
+  background-color: whitesmoke;
+  margin: 8px -19px -19px;
+  border-top: 1px solid #ddd;
+}
+
+.actions-links{
+  margin: 8px 19px 0;
+  padding-bottom: 8px;
+}
+
 .horizontal-list.iconListing{
   margin-left: 0px;
   margin-top:15px;
@@ -1016,6 +1035,11 @@ img.avatar{
     width: 200px;
 }
 
+.avatar.avatar-team{
+    height: 200px;
+    width: 200px;
+}
+
 .thumbnails li.follow{
     margin:15px 10px;
 }
@@ -1276,7 +1300,7 @@ a.yesVote, a.noVote{
 .search-listing .well.yesNoWell{
   width: 130px;
   margin-left: 10px;
-  margin-bottom: 0;
+  margin-bottom: 10px;
   padding:10px;
   min-height: 95px;
 }
@@ -3169,7 +3193,7 @@ hr.object-list-header{
 }
 
 .i-photo{
-  height:300px;
+  height:100px;
   width:100%;
   background-repeat:no-repeat;
   background-size:cover;
@@ -3272,6 +3296,7 @@ hr.object-list-header{
 
 table.activity-comments{
   width: 100%;
+  background-color: whitesmoke;
 }
 
 .date{

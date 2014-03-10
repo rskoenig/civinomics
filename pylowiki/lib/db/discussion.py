@@ -155,6 +155,11 @@ class Discussion(object):
             d['text'] = kwargs['text']
         if 'attachedThing' in kwargs.keys():
             d = generic.linkChildToParent(d, kwargs['attachedThing'])
+        
+        if 'workshop_searchable' in d:   
+            if discType != 'update' and discType != 'general':
+                d['workshop_searchable'] = '0'
+
         commit(d)
         d['urlCode'] = toBase62(d)
         commit(d)

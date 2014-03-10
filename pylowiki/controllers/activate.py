@@ -10,6 +10,7 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.mail            as mailLib
+import simplejson as json
 
 import time
 
@@ -142,10 +143,14 @@ class ActivateController(BaseController):
         user = userLib.getUserByCode(userCode)
         if not user:
             abort(404)
+        # ugly hack to prevent this from being called twice by the javascript
+        if 'resendActivation' in session:
+            session.pop('resendActivation')
+            return json.dumps({'statusCode':1})
+        
+        session['resendActivation'] = '1'
+        session.save()
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
         mailLib.sendActivationMail(user['email'], url)
-        
-        
-        
-        
+        return json.dumps({'statusCode':1})

@@ -160,7 +160,8 @@ def make_map():
     # activity
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{activity:activity?/?}', controller = 'workshop', action = 'activity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/getSiteActivity{end:/?}' , controller = 'home', action = 'getActivity')
-    map.connect('/getSiteActivitySlice/{comments}/{sliceType}/{sliceOffset}/{sliceMax}{end:/?}' , controller = 'home', action = 'getActivity')
+    map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
+    map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
 
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')

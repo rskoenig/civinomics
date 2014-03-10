@@ -142,7 +142,7 @@
 </%def>
 
 <%def name="watchButton(w, **kwargs)">
-    % if 'user' in session and not c.privs['provisional']:
+    % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
@@ -465,7 +465,7 @@
         workshopFlag = '/images/flags/generalFlag.gif'
         href = '#'
         if w['public_private'] == 'public':
-            scope = workshopLib.getPublicScope(w)
+            scope = utils.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
             level = scope['level']
