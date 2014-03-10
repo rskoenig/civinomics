@@ -1316,6 +1316,7 @@ td.scope-icon{
 
 .voteWrapper{
    position:relative;
+   margin-bottom: 10px;
 }
 
 .voteWrapper a{
@@ -2426,7 +2427,7 @@ h1 .label.workshop-tag{
 
 .suggestListener{
   margin-top: 10px;
-  margin-bottom: 0;
+  margin-bottom: 10px;
 }
 .suggestListener input{
   width: 65%;

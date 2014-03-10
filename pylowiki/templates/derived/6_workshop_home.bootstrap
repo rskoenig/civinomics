@@ -196,8 +196,9 @@
           </div>
         </div><!-- section-wrapper -->
          <div class="well well-subMenu" >
-            <span class="green green-hover">Participants</span>
+            <span class="green green-hover">Notables</span>
             <hr class="subMenu">
+            ${helpers.showFacilitators()}
             ${helpers.whoListening()}
          </div> <!--/.browse-->
    </div> <!-- /.span4 -->
