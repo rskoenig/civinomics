@@ -160,6 +160,10 @@
                     <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
                     <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
                 </ul>
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingOrganizations.show" ng-cloak>
+                    <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
+                    <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
+                </ul>
             </div>
         </div>
         <div class="tabbable">
@@ -254,6 +258,35 @@
                         </button>
                         <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
                         <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= people.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="organizations" class="tab-pane" ng-class="showingOrganizations.class" ng-show="showingOrganizations.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "o in organizations | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
+                            <div class="media well searchListing">
+                                <div class="span2">
+                                    <a class="pull-left" href="/profile/{{o.urlCode}}/{{o.url}}">
+                                        <img class="media-object avatar" ng-src="{{o.photo}}" alt="{{o.name}}" title="{{o.name}}">
+                                    </a>
+                                </div>
+                                <div class="span10">
+                                    <h4 class="media-heading"><a class="green green-hover" href="/profile/{{o.urlCode}}/{{o.url}}">{{o.name}}</a></h4>
+                                    <p class="grey">{{p.greetingMsg}}</p>
+                                    <small><p>from <a href="{{o.cityURL}}" class="orange oreange-hover">{{o.cityTitle}}</a>, <a href="{{o.stateURL}}" class="orange orange-hover">{{o.stateTitle}}</a><br>
+                                        joined {{o.date}}</p></small>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="organizations.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= organizations.length/pageSize - 1" ng-click="currentPage=currentPage+1">
                             Next
                         </button>
                         <div class="spacer"></div>

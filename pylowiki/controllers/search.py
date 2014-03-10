@@ -151,7 +151,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return self._noSearch()
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
-        c.numOrganizations = userLib.searchOrganizations(self.query, count = True)
+        c.numOrganizations = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         iResources = resourceLib.searchInitiativeResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
@@ -440,7 +440,11 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
+        if self.searchType == "orgURL":
+            # This is a search for organizations
+            people = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query])
+        else:
+            people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
         if len(people) == 0:
             return json.dumps({'statusCode': 2})
         for p in people:
@@ -466,17 +470,18 @@ class SearchController(BaseController):
         
     def searchOrganizations( self ):
         orgURL = utils.urlify(self.query)
+        log.info("CCNsearchType is %s"%self.searchType)
         if self.searchType == 'orgURL':
-            orgs = userLib.searchOrganizations(orgURL)
+            orgs = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query])
             if orgs and len(orgs) == 1:
                 urlCode = orgs[0]['urlCode']
                 profileURL = '/profile/' + urlCode + '/' + orgURL
                 return redirect(profileURL)
             else:
-                searchURL = '/search?searchQuery=' + orgURL + '&searchCategory="organizations"'
+                searchURL = '/search?searchQuery=' + orgURL + '&searchType="organizations"'
                 return redirect(searchURL)
         else:
-            searchURL = '/search?searchQuery=' + orgURL + '&searchCategory="organizations"'
+            searchURL = '/search?searchQuery=' + orgURL + '&searchType="organizations"'
             return redirect(searchURL)
     
     def searchWorkshops(self):
