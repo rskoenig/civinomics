@@ -175,6 +175,11 @@ def updateWorkshopChildren(workshop, workshopKey):
             if workshopKey == "workshop_title":
                 item[workshopKey] = workshop["title"]
                 item['workshop_url'] = workshop['url']
+            elif workshopKey == "workshop_searchable":
+                if 'discType' in item and (item['discType'] != 'general' and item['discType'] != 'general'):
+                    item[workshopKey] = '0'
+                else:
+                    item[workshopKey] = workshop[workshopKey]
             else:
                 item[workshopKey] = workshop[workshopKey]
             commit(item)

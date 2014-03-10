@@ -73,7 +73,7 @@ class HomeController(BaseController):
 				
 
 		elif type == 'following' and c.authuser:
-			if c.privs['participant']:
+			if c.privs['participant'] or c.privs['provisional']:
 				# combine the list of interested workshops
 				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
 
@@ -135,7 +135,7 @@ class HomeController(BaseController):
 				entry['views'] = '0'
 
 			# attributes that vary accross items
-			entry['text'] = '0'
+			entry['text'] = ''
 			if 'text' in item:
 				entry['text'] = item['text']
 			elif 'description' in item:
@@ -144,7 +144,7 @@ class HomeController(BaseController):
 			if 'link' in item:
 				entry['link'] = item['link']
 			else:
-				entry['link'] = '0'
+				entry['link'] = ''
 			if 'cost' in item:
 				entry['cost'] = item['cost']
 			else:
@@ -184,6 +184,15 @@ class HomeController(BaseController):
 			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+			elif entry['parentObjType'] == 'workshop':
+				mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
+				if mainImage['pictureHash'] == 'supDawg':
+					entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
+				elif 'format' in mainImage.keys():
+					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+				else:
+					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+
 			else:
 				entry['mainPhoto'] = '0'
 				entry['thumbnail'] = '0'

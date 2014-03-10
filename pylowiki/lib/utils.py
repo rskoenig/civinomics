@@ -220,6 +220,8 @@ def getPublicScope(item):
     href = '/workshops/geo/earth'
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
+    elif 'workshop_public_scope' in item and item['workshop_public_scope'] != '':
+        scope = item['workshop_public_scope'].split('|')
     elif '|' in item:
         scope = item.split('|')
     if scope:
