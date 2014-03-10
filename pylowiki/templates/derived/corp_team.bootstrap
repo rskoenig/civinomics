@@ -1,12 +1,8 @@
 <%inherit file="/base/base_corp.bootstrap"/>
 <%namespace name="helpers" file="/lib/corp_lib.mako"/>
 
-<%def name="page_specific_css()">
-    <!-- None -->
-</%def>
 <%def name="display_body_right_content()">
     <div id="team" class="row-fluid">
-
         <h1>Team</h1>
         </br>
         
@@ -25,3 +21,5 @@
     
 </%def>
 
+<%def name="extraStyles()">
+</%def>

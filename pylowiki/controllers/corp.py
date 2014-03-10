@@ -496,28 +496,36 @@ class CorpController(BaseController):
         if careername=="engfrontend":
             career["title"]="Software Engineer - Front End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
-            career["description"]="We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities."
+            career["description"]="Make this site beautiful. We need someone who is going to transform Civinomics into a clean, modern web app. Doing so will require more than a few photoshop mockups. Ideally you have already used bootstrap, angular JS and know some python. You can't make the front end fun unless you know the basics of passing data around. Show us that you know way more than us about composing clean, snappy CSS. If you have experience with iOS to boot, that rocks."
 
             requirements=[]
-            requirement = "CSS"
+            requirement = "Flat design expertise"
+            requirements.append(requirement)
+            requirement = "bootstrap"
+            requirements.append(requirement)
+            requirement = "angular JS or similar javascript MVC framework"
             requirements.append(requirement)
             requirement = "Javascript and jQuery"
+            requirements.append(requirement)
+            requirement = "CSS"
             requirements.append(requirement)
             requirement = "HTML"
             requirements.append(requirement)
             requirement = "Able to work with a small team and quickly adapt"
             requirements.append(requirement)
-            requirement = "An eye for UI design"
-            requirements.append(requirement)
             career["requirements"]=requirements
 
             recommendeds=[]
+            recommended = "python"
+            recommendeds.append(recommended)
+            recommended = "iOS"
+            recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
         if careername=="engbackend":
             career["title"]="Software Engineer - Back End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
-            career["description"]="We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities."
+            career["description"]="Make Civinomics faster, more secure and self-sustaining. We're looking for someone who can help us quickly materialize revenue opportunities on the platform, refine our architecture, internationalize and scale. Experience managing a team is a huge plus."
 
             requirements=[]
             requirement = "Comfortable in a *nix environment"
@@ -525,6 +533,16 @@ class CorpController(BaseController):
             requirement = "Python 2.X"
             requirements.append(requirement)
             requirement = "MySQL"
+            requirements.append(requirement)
+            requirement = "SQLAlchemy"
+            requirements.append(requirement)
+            requirement = "angular JS or similar javascript MVC framework"
+            requirements.append(requirement)
+            requirement = "Javascript and jQuery"
+            requirements.append(requirement)
+            requirement = "CSS"
+            requirements.append(requirement)
+            requirement = "HTML"
             requirements.append(requirement)
             requirement = "An eye for detail"
             requirements.append(requirement)
@@ -537,7 +555,9 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             recommended = "Experience with scaling applications and databases"
             recommendeds.append(recommended)
-            recommended = "Experience with the Pylons framework"
+            recommended = "Experience with the Pylons or Pyramid framework"
+            recommendeds.append(recommended)
+            recommended = "Proven ability to lead a development team"
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
@@ -562,14 +582,35 @@ class CorpController(BaseController):
         if careername=="prep":
             career["title"]="Public Outreach Representative"
             career["commitment location"]="Part time - Santa Cruz and San Francisco, CA"
-            career["description"]="Person-to-person interaction is still the most effective means of community engagement, that's why we decided to re-invent the practice for the 21st century. We conduct face-to-face interviews for public agencies and non-profits via iPad. We are looking to hire new field organizers for the purposes of conducting surveys both at community events and through door-to-door outreach. We do not fundraise - our campaigns are educational and research oriented. Previous experience is recommended, but not required. Community Representatives are paid $3.00 per interview, most complete between 5-8 interviews per hour. We are looking to fill these positions ASAP."
+            career["description"]="Person-to-person interaction is still the most effective means of community engagement, that's why we decided to re-invent the practice for the 21st century. We conduct face-to-face interviews for public agencies and non-profits via iPad. We are looking to hire new field organizers for the purposes of conducting surveys both at community events and through door-to-door outreach. We do not fundraise - our campaigns are educational and research oriented. Previous experience is recommended, but not required. Community Representatives are paid $3.00 - $7.00 per interview with an additional $2 for interviews conducted in a foreign language. Most representatives complete between 4-8 interviews per hour. We are looking to fill these positions ASAP."
 
             requirements=[]
-            requirement = "Effective Communication"
+            requirement = "Clear, effective communication skills"
             requirements.append(requirement)
-            requirement = "Cultural Competency"
+            requirement = "Cultural competency"
             requirements.append(requirement)
-            requirement = "The ability to be polite and respectful"
+            requirement = "The ability memorize facts and become an expert about issues"
+            requirements.append(requirement)
+            career["requirements"]=requirements
+
+            recommendeds=[]
+            career["recommendeds"]=recommendeds
+
+        if careername=="acctManager":
+            career["title"]="Account Manager"
+            career["commitment location"]="Full time - Santa Cruz and San Francisco, CA"
+            career["description"]="We need a meticulous go getter who can keep clients happy and grow business. Existing clients range from government, to non-profit organizations, to political candidates, to sponsors.  Demonstrated passion for social causes through previous work or serious personal projects is a must. Amazing talent with CRM and PowerPoint / Keynote required. Prove to us that you can listen to what a client needs and work with a team to over-deliver on tight deadlines."
+
+            requirements=[]
+            requirement = "Experience and comfort with responsibility"
+            requirements.append(requirement)
+            requirement = "PowerPoint / Keynote Mastery"
+            requirements.append(requirement)
+            requirement = "Proven ability to make lasting client relationships"
+            requirements.append(requirement)
+            requirement = "Experience in Hightech"
+            requirements.append(requirement)
+            requirement = "Passion for citizenship and social justice"
             requirements.append(requirement)
             career["requirements"]=requirements
 
@@ -595,9 +636,13 @@ class CorpController(BaseController):
         engbackend["url"]="engbackend"
         c.careers.append(engbackend)
         career={}
-        career["title"]="Program Manager"
-        career["department"]="Operations"
-        career["url"]="prgmManager"
+        #career["title"]="Program Manager"
+        #career["department"]="Operations"
+        #career["url"]="prgmManager"
+        #c.careers.append(career)
+        career["title"]="Account Manager"
+        career["department"]="Sales"
+        career["url"]="acctManager"
         c.careers.append(career)
         prep={}
         prep["title"]="Public Outreach Representative"
@@ -619,66 +664,84 @@ class CorpController(BaseController):
         toddAnderson["name"]="Todd Anderson"
         toddAnderson['title']='Lead Mobile Engineer'
         toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
-        toddAnderson['photo']='todd_anderson.jpg'
+        toddAnderson['photo']='todd_585.jpg'
+        toddAnderson['photoHover']='todd_silly_585.jpg'
         c.team.append(toddAnderson)
         estherKim={}
         estherKim["name"]="Esther Kim"
         estherKim['title']='Marketing Manager'
         estherKim['bio']="My name is Esther Kim, I'm a recent graduate from UCSC in Business Management & Economics. I am an avid blogger, amateur videographer, and a work hard play hard advocate. I fell in love with Santa Cruz when I started surfing and mountain biking and I don't plan on leaving anytime soon. At Civinomics, I hope to bring in a specialized skillset of what I call 'grassroots' marketing to help set a structured brand goal of being a community leader."
-        estherKim['photo']='esther_kim.jpg'
+        estherKim['photo']='esther_585.jpg'
+        estherKim['photoHover']='esther_silly_585.jpg'
         c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
-        manuK['title']='CEO & Founder'
+        manuK['title']='Founder & CEO'
         manuK['bio']="Manu makes sure Civinomics runs on time. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford."
-        manuK['photo']='manu_koenig.jpg'
+        manuK['photo']='manu_585.jpg'
+        manuK['photoHover']='manu_silly_585.jpg'
         c.team.append(manuK)
         chrisN={}
         chrisN["name"]="Chris Neklason"
         chrisN['title']='Product Management'
         chrisN['bio']="Chris Neklason has been involved with community networking since 1984, before the Internet, and has decades of experience as a UNIX software engineer and as co-founder of Cruzio, one of the oldest ongoing independent ISPs in the United States."
-        chrisN['photo']='chris_neklason.jpg'
+        chrisN['photo']='chris_585.jpg'
+        chrisN['photoHover']='chris_silly_585.jpg'
         c.team.append(chrisN)
         derroldP={}
         derroldP["name"]="Derrold Purifoy"
         derroldP['title']='Public Outreach Manager'
         derroldP['bio']="Derrold was born in Orange, Texas and has lived his adult life in San Francisco. His business experience includes working in Customer Service, B2B Sales and Marketing Research. His hobbies include movies, literature and photography. He's excited to work on projects that have a positive impact on the community."
         derroldP['photo']='derrold_purifoy.jpg'
+        derroldP['photoHover']='derrold_purifoy.jpg'
         c.team.append(derroldP)
         robertS={}
         robertS["name"]="Robert Singleton"
-        robertS['title']='Director of Public Outreach & Founder'
+        robertS['title']='Founder & CMO'
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
-        robertS['photo']='robert_singleton.jpg'
+        robertS['photo']='robert_585.jpg'
+        robertS['photoHover']='robert_silly_585.jpg'
         c.team.append(robertS)
         russellSterten={}
         russellSterten["name"]="Russell Sterten"
         russellSterten['title']='Program Manager '
         russellSterten['bio']="Hi, my name is Russell and it's good to be on board with Civinomics.  I am excited about the prospect of leveraging cutting edge communications and Web 2.0 technologies to dramatically increase people's engagement on issues facing their community. Before joining Civinomics I worked as a grassroots campaign organizer - most recently on a San Rafael city councilman's successful bid for the State Assembly - and have also been a substitute teacher in the East Bay and Marin.  Now I am looking forward to working with Civinomics and empowering people to help change the world."
-        russellSterten['photo']='russell_sterten.jpg'
+        russellSterten['photo']='russell_585.jpg'
+        russellSterten['photoHover']='russell_silly_585.jpg'
         c.team.append(russellSterten)
 
         c.advisors=[]
-        
-        lloydT={}
-        lloydT["name"]="Lloyd Tabb"
-        lloydT['title']='Advisor'
-        lloydT['bio']="Lloyd has been a technology revolutionary for 25 years, driving important trends in how the world uses the Internet. Originally a database and languages architect at Borland International, Lloyd left Borland to found Commerce Tools, where he wrote the first application server for the web. After Commerce Tools was acquired by Netscape in 1995, Lloyd was Principal Engineer on Netscape Navigator Gold, led several releases of Communicator, and helped define the creation of Mozilla.org. As CTO of LiveOps, the first commercial crowd-sourced company, he designed the crowd-sourced ecosystem. Lloyd was also a co-founder of Readyforce and advisor to Luminate. He is currently Founder, Chairman and CTO of Looker."
-        lloydT['photo']='lloyd_tabb.jpg'
-        c.advisors.append(lloydT)
+
+        fredK={}
+        fredK["name"]="Fred Keeley"
+        fredK['title']='Political Strategy'
+        fredK['bio']= "Fred Keeley is treasurer of Santa Cruz County, a position he has held since January 2005. He served in the California State Assembly from 1996 to 2002 and served four years as the Speaker pro Tempore of the Assembly. During the California energy crisis in 2000 and 2001, Speaker Robert Hertzberg appointed Mr. Keeley chief operating officer for the Assembly on the energy crisis. In that capacity, Mr. Keeley authored California's solution to the energy crisis. He also helped in forging budget compromises between Democrats and Republicans in the Legislature."
+        fredK['photo']='fred_keeley_585.jpg'
+        fredK['photoHover']='fred_keeley_585.jpg'
+        c.advisors.append(fredK)
 
         edolfoG={}
         edolfoG["name"]="Edolfo Garza-Licudine"
-        edolfoG['title']='Advisor & Co-founder'
+        edolfoG['title']='Technichal Cofounder'
         edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
         edolfoG['photo']='edolfo_garzalicudine.jpg'
+        edolfoG['photoHover']='edolfo_garzalicudine.jpg'
         c.advisors.append(edolfoG)
+
+        lloydT={}
+        lloydT["name"]="Lloyd Tabb"
+        lloydT['title']='Technology'
+        lloydT['bio']="Lloyd has been a technology revolutionary for 25 years, driving important trends in how the world uses the Internet. Originally a database and languages architect at Borland International, Lloyd left Borland to found Commerce Tools, where he wrote the first application server for the web. After Commerce Tools was acquired by Netscape in 1995, Lloyd was Principal Engineer on Netscape Navigator Gold, led several releases of Communicator, and helped define the creation of Mozilla.org. As CTO of LiveOps, the first commercial crowd-sourced company, he designed the crowd-sourced ecosystem. Lloyd was also a co-founder of Readyforce and advisor to Luminate. He is currently Founder, Chairman and CTO of Looker."
+        lloydT['photo']='lloyd_tabb.jpg'
+        lloydT['photoHover']='lloyd_tabb.jpg'
+        c.advisors.append(lloydT)
 
         tomY={}
         tomY["name"]="Tom Yoritaka"
-        tomY['title']='Strategy, Products and Technology'
+        tomY['title']='Products & Community Development'
         tomY['bio']= "Tom Yoritaka is a Senior Director & General Manager at Cisco Systems, Inc. He is also the Managing Director of Cisco Entrepreneurs in Residence - the company's innovation program for eary-stage start-ups. Prior to joining Cisco, he held various executive & leadershiop positions in Web techbology & product management at Yahoo! & Microsoft. He also worked as a strategy consultant at The Boston Consulting Group & McKenna Group. He holds a master's degree from Harvard University John F. Kennedy School of Government, an MBA from The University of Chicago Booth School of Business & an undergraduate degree from Northwestern University."
         tomY['photo']='tom_yoritaka.png'
+        tomY['photoHover']='tom_yoritaka.png'
         c.advisors.append(tomY)
 
         return render('/derived/corp_team.bootstrap')

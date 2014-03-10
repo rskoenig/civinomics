@@ -118,7 +118,9 @@ def getPublicScope(item):
     scopeString = ''
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
-    elif '||' in item:
+    elif 'workshop_public_scope' in item and item['workshop_public_scope'] != '':
+        scope = item['workshop_public_scope'].split('|')
+    elif '|' in item:
         scope = item.split('|')
     if scope:
         if scope[2] != '0':

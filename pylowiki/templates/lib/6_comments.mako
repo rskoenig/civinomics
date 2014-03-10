@@ -27,6 +27,8 @@
                 addCommentToDiscussion(thing, discussion)
         elif 'user' not in session and discussion.objType != 'comment':
                 loginToAddComment(thing)
+        elif c.privs['provisional']:
+                activateToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
 </%def>
@@ -44,6 +46,26 @@
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
         <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+        <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
+    </fieldset>
+
+
+</%def>
+
+<%def name="activateToAddComment(thing)">
+    ########################################################################
+    ##
+    ## Display a button to activate account to add a comment
+    ##
+    ########################################################################
+
+    <fieldset>
+        <legend></legend>
+        <div class="span1">
+            ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+        </div>
+        <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
         <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
     </fieldset>
@@ -219,6 +241,9 @@
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
 
+        roleClass = ''
+        roleLabel = ''
+
         try:
             if comment['commentRole']:
                 roleClass = 'commentRole '
@@ -237,9 +262,9 @@
                     roleClass +="grey"
                     roleLabel = "Neutral"
                     headerClass += " neutral"
-        except KeyError:
-            roleClass = ""
-            roleLabel = ""
+        except:
+            roleClass = ''
+            roleLabel = ''
 
     %>
     <div class="${headerClass}">
