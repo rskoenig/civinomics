@@ -35,16 +35,6 @@ def getUserByCode(code):
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', code))).one()
     except sa.orm.exc.NoResultFound:
         return False
-        
-def getOrganizations(url):
-    try:
-        return meta.Session.query(Thing)\
-        .filter_by(objType = 'user')\
-        .filter(Thing.data.any(wc('memberType', 'organization')))\
-        .filter(Thing.data.any(wc('url', url)))\
-        .all()
-    except sa.orm.exc.NoResultFound:
-        return False
     
 def getActiveUsers(disabled = '0'):
     try:
@@ -116,11 +106,28 @@ def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
                 .filter(Thing.data.any(wc('activated', activated)))\
+                .filter(Thing.data.any(wc('memberType', 'professional')))\
                 .filter(Thing.data.any(reduce(or_, map_user)))
         if count:
             return query.count()
         return query.all()
     except:
+        return False
+        
+def searchOrganizations(orgName, deleted = u'0', disabled = u'0', activated = u'1', count = False):
+    url = urlify(orgName)
+    try:
+        query =  meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('memberType', 'organization')))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('activated', activated)))\
+            .filter(Thing.data.any(wc('url', url)))
+        if count:
+            return query.count()
+        return query.all()
+    except sa.orm.exc.NoResultFound:
         return False
         
 

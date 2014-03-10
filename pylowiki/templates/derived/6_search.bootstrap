@@ -62,6 +62,13 @@
                         </a>
                     </li>
                 % endif
+                % if c.numOrganization != 0 or c.searchType == "name":
+                    <li ng-class="showingPeople.class">
+                        <a href="#organizations" data-toggle="tab" ng-click="searchOrganizations()">
+                            Organizations (${c.numOrganizations})
+                        </a>
+                    </li>
+                % endif
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                         More <b class="caret"></b>

@@ -11,7 +11,7 @@ from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWor
 from pylowiki.lib.db.activity import getRecentActivity
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
-from pylowiki.lib.db.user import searchUsers, getUserByID, getUserByCode, getOrganizations
+from pylowiki.lib.db.user import searchUsers, getUserByID, getUserByCode, searchOrganizations
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 import pylowiki.lib.db.initiative as initiativeLib
@@ -169,18 +169,7 @@ class ActionlistController(BaseController):
         c.rssURL = "/activity/rss"
 
         return render('/derived/6_main_listing.bootstrap')
-        
-    def searchOrganizations( self, id1 ):
-        orgs = getOrganizations(id1)
-        if orgs:
-            if len(orgs) == 1:
-                urlCode = orgs[0]['urlCode']
-                profileURL = "/profile/" + urlCode + "/" + id1
-                return redirect(profileURL)
-        else:
-            id1 = id1.replace("-", "+")
-            searchURL = "/search?searchQuery=" + id1
-            return redirect(searchURL)
+
 
 
 

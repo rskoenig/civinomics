@@ -419,7 +419,6 @@ def make_map():
     map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
     map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
-    map.connect('/o/{id1}{end:/?}', controller='actionlist', action='searchOrganizations', id1 = '{id1}')
 
     ################
     # Search       #
@@ -428,6 +427,8 @@ def make_map():
     map.connect('/search{end:/?}', controller = 'search', action = 'search')
     map.connect('/search/workshops/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchWorkshops', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/search/people/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchPeople', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/organizations/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchPeople', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/o/{searchString}{end:/?}', controller='search', action='searchOrganizations', searchType = 'orgURL', searchString = '{searchString}')
     map.connect('/search/resources/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchResources', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/search/discussions/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchDiscussions', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/search/ideas/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchIdeas', searchType = '{searchType}', searchString = '{searchString}')
