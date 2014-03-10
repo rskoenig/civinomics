@@ -142,7 +142,7 @@
             </ul>
 
             <div id="sortOptions" class="row-fluid collapse">
-                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show || showingOrganizations.show" ng-cloak>
                     <li class="active" ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Recent</a></li>
                     <!-- <li ng-class="{active : orderProp == 'title'}"><a href="#" ng-click="orderProp = 'title'">Alphabetical</a></li> -->
                     <li ng-class="{active : orderProp == '-numComments'}"><a href="#" ng-click="orderProp = '-numComments'">Most Comments</a></li>
@@ -160,6 +160,7 @@
                     <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
                     <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
                 </ul>
+                
                 <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingOrganizations.show" ng-cloak>
                     <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
                     <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
