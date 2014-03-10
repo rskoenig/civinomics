@@ -81,7 +81,7 @@
                 </div>
             % endif
             % if not c.w:
-                <div class="span9">
+                <div class="span8">
             % else:
                 <div class="span11 media-body">
             % endif
@@ -113,7 +113,7 @@
                 </div>
             % endif
             % if not c.w:
-                <div class="span9">
+                <div class="span8">
             % else:
                 <div class="span11 media-body">
             % endif
@@ -146,7 +146,7 @@
                     </div>
                 % endif
                 % if not c.w:
-                    <div class="span9">
+                    <div class="span8">
                 % else:
                     <div class="span11">
                 % endif
