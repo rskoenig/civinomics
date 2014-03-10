@@ -7,7 +7,7 @@ function profileMessagesCtrl($scope, $http) {
     $scope.messageSliceLoading = false;
     $scope.noMoreSlices = false;
     $scope.busy = false;
-    $scope.sliceSize = 10;
+    $scope.sliceSize = 7;
     $scope.offset = $scope.sliceSize;
 
     $scope.getMessages = function() {
@@ -53,11 +53,11 @@ function profileMessagesCtrl($scope, $http) {
         $scope.alertMsg = ''
         $scope.messagesSliceLoading = true;
         $http.get('/getMessagesSlice/' + $scope.code + '/' + $scope.url + '/' + $scope.messagesType + '/' + $scope.offset).success(function(data){
-            if (data.statusCode == 1){
+            if (data.statusCode == 1 || data.statusCode == 2){
                 $scope.noMoreSlices = true;
             } 
             else if (data.statusCode === 0){
-                activitySlice = data.result;
+                messagesSlice = data.result;
                 for (var i = 0; i < messagesSlice.length; i++) {
                     $scope.messages.push(messagesSlice[i]);
                 }
