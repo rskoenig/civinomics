@@ -402,3 +402,58 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
             return '/images/mainImage/%s/listing/%s.%s' %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
         else:
             return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
+
+workshopInfo = \
+"""
+The following is a suggested list of sections to include. This background wiki uses Markdown for styling. See the Formatting Guide above for help.
+
+
+Overview
+-----
+_A summary of the key ideas associated with your workshop topic._
+
+
+Stats and Trends
+-----
+_What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?
+
+
+Existing Taxes and/or Revenues
+-----
+_Are there any public taxes associated with your workshop topic? Are there other current funding sources?_
+
+
+Current Spending
+-----
+_What money is currently spent on your workshop topic? What might it look like in the future?_
+
+
+Current Legislation
+-----
+_What publicly funded programs related to your workshop topic currently exist?_
+
+
+Case Studies
+-----
+_How have other groups or regions tackled this workshop topic already?_
+
+
+"""
+
+initiativeFields = \
+"""
+Background
+-----
+
+_incl. reference to Current Legislation_
+
+
+Proposal
+-----
+
+
+Fiscal Effects
+-----
+
+
+"""
