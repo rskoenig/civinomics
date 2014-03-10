@@ -1483,7 +1483,6 @@ class WorkshopController(BaseController):
                     numAdopted += 1
                 elif item['disabled'] == '1':
                     entry['status'] = 'disabled'
-                    numDisabled += 1
             if item.objType == 'resource':
                 numResources += 1
             entry['urlCode'] = item['urlCode']

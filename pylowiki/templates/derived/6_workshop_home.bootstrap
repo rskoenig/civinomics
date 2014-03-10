@@ -117,20 +117,6 @@
 
       <table ng-repeat="item in activity | filter:query" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
         <tr>
-          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="activity-item-content-header">
-              <small>
-                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
-                <span class="date">{{item.fuzzyTime}} ago</span>
-              </small>
-            </div>
-          </td>
-        </tr>
-        <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
           </td>

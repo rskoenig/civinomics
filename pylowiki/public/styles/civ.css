@@ -758,7 +758,6 @@ form.addGoal{
     background: #f2dede;
     border-radius:10px;
     margin-top:5px;
-    padding-top:5px;
     margin-bottom:5px;
 }
 
@@ -3214,7 +3213,6 @@ input::-webkit-inner-spin-button {
 }
 .search-listing.disabled{
   background-color: rgba(144, 0, 10,0.2);
-  border-radius: 0;
 }
 
 hr.narrow{
