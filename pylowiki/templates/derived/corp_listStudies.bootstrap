@@ -1,0 +1,31 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/lib/corp_lib.mako"/>
+
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <h1>Case Studies</h1> 
+        <div class="row-fluid">
+            ${helpers.list_clientLogos(c.clients)}
+        </div>
+        <hr>
+        <div class="row-fluid">
+            <blockquote class="pull-left">
+                <p> Civinomics assists in better understanding community stakeholder concerns with the most challenging and often controversial public projects. Their custom iPad tool and data reporting is first rate and incredibly helpful in planning next step outreach strategies.</p>  
+                <small>Mark Milan, Data Instincts</small>
+            </blockquote>
+            <blockquote class="pull-right">
+                </br>
+                <p> I was blown away by the response to our campaign.</p>  
+                <small>Melanie Schumacher, Soquel Creek Water District</small>
+            </blockquote>
+        </div>
+        <hr>
+        <div>
+            <h4>Studies</h4>
+			${helpers.list_studies(c.studies)}
+		</div>
+    </div> <!-- /.row-fluid -->
+</%def>
+
+
+

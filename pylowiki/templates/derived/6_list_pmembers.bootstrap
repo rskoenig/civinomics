@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+
+Private members in ${c.w['title']}<br /><br />
+
+% for p in c.privateMembers:
+	${p['email']}<br />
+% endfor
