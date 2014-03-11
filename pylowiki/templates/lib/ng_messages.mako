@@ -100,6 +100,7 @@
         <div class="media-body">
             <p>
                 <a ng-href="{{userLink}}">{{userName}}</a>
+                <span>{{messageText}}</span>
                 <a ng-href="{{itemLink}}">{{itemTitle}}</a>
             </p>
         </div>
