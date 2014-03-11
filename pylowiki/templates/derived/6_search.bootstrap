@@ -62,8 +62,8 @@
                         </a>
                     </li>
                 % endif
-                % if c.numOrganization != 0 or c.searchType == "name":
-                    <li ng-class="showingPeople.class">
+                % if c.numOrganizations != 0 or c.searchType == "name" or c.searchType == "orgURL":
+                    <li ng-class="showingOrganizations.class">
                         <a href="#organizations" data-toggle="tab" ng-click="searchOrganizations()">
                             Organizations (${c.numOrganizations})
                         </a>
@@ -156,12 +156,7 @@
                     <li ng-class="{active : orderProp == '-activity'}"><a href="#" ng-click="orderProp = '-activity'">Posts</a></li>
                 </ul>
 
-                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
-                    <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
-                    <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
-                </ul>
-                
-                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingOrganizations.show" ng-cloak>
+                <ul class="nav nav-pills civ-search-tools" ng-model="orderProp" ng-show="showingPeople.show || showingOrganizations.show" ng-cloak>
                     <li ng-class="{active : orderProp == '-date'}"><a href="#" ng-click="orderProp = '-date'">Join Date</a></li>
                     <li ng-class="{active : orderProp == 'name'}"><a href="#" ng-click="orderProp = 'name'">Alphabetical</a></li>
                 </ul>

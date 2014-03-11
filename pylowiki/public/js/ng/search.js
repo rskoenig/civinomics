@@ -68,6 +68,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.showingWorkshops = {'class': '', 'show': false, 'create': false};
     //$scope.showingWorkshops = {'class': 'active', 'show': false, 'create': false};
     $scope.showingPeople = {'class': '', 'show': false, 'create': false};
+    $scope.showingOrganizations = {'class': '', 'show': false, 'create': false};
     $scope.showingResources = {'class': '', 'show': false, 'create': false};
     $scope.showingDiscussions = {'class': '', 'show': false, 'create': false};
     $scope.showingIdeas = {'class': '', 'show': false, 'create': false};
@@ -223,13 +224,13 @@ app.controller('SearchCtrl', function($scope, $http){
                 $scope.noQuery = true;
                 $scope.noResult = true;
                 $scope.showingOrganizations = {'class': 'active', 'show': false};
-                $scope.people = null;
+                $scope.organizations = null;
             }
             else if (data.statusCode == 2)
             {
                 $scope.noResult = true;
                 $scope.showingOrganizations = {'class': 'active', 'show': false};
-                $scope.people = null;
+                $scope.organizations = null;
             }
             else if (data.statusCode === 0)
             {

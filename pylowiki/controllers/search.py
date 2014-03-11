@@ -160,7 +160,7 @@ class SearchController(BaseController):
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
         c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
-        c.searchType = "name"
+        c.searchType = self.searchType
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
         if self.query == 'civinomicon':            
@@ -432,6 +432,7 @@ class SearchController(BaseController):
             return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
+        log.info("CCNsearchType2 is %s"%self.searchType)
         #: this function returns json data so we set the headers appropriately
         response.headers['Content-type'] = 'application/json'
         if self.noQuery:
@@ -442,7 +443,7 @@ class SearchController(BaseController):
         result = []
         if self.searchType == "orgURL":
             # This is a search for organizations
-            people = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query])
+            people = userLib.searchOrganizations(['name', 'url'], [self.query, self.query])
         else:
             people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
         if len(people) == 0:
