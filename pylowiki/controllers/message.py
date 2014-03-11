@@ -526,48 +526,33 @@ class MessageController(BaseController):
                                                             
             elif message['extraInfo'] in ['authorResponse']:
                 entry['combinedInfo'] = 'authorResponse'
-                initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                entry['itemTitle'] = initiative['title']
+                if 'workshopCode' in message:
+                    container = workshopLib.getWorkshopByCode(message['workshopCode'])
+                elif 'initiativeCode' in message:
+                    container = initiativeLib.getInitiative(message['initiativeCode'])
+                entry['itemTitle'] = container['title']
                 
             elif message['extraInfo'] in ['commentResponse']:
                 entry['combinedInfo'] = 'commentResponse'
-                comment = commentLib.getCommentByCode(message['commentCode'])
-                workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
-                        
-                entry['itemLink'] = utils.commentLink(comment, workshop)
+                entry['itemLink'] = utils.commentLinker(comment)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
                 entry['combinedInfo'] = 'commentOnPhotoOnInitiative'
                 comment = commentLib.getCommentByCode(message['commentCode'])
-                # item.objType
-                # note: this situation is complicated. I need to create a link to this 
-                # comment, depending on what the comment is on.
-                # I could port the thingLinkRouter over from 6_lib.mako, or I could borrow
-                # from Manu's latest code, which is sitting in utils.thingLinker
-                if message['extraInfo'] == 'commentOnPhoto':
-                    entry['itemLink'] = utils.commentLink(comment, c.user)
-                elif message['extraInfo'] == 'commentOnInitiative':
-                    log.info('commentOnInitiative')
-                    initiative = initiativeLib.getInitiative(message['initiativeCode'])
-                    entry['itemLink'] = utils.commentLink(comment, initiative)
+                entry['itemLink'] = utils.commentLinker(comment)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnResource']:
                 entry['combinedInfo'] = 'commentOnResource'
                 comment = commentLib.getCommentByCode(message['commentCode'])
-                resource = generic.getThing(comment['resourceCode'])
-                
-                # note: gonna need to decide how best to give these links their titles
-                entry['itemLink'] = utils.commentLink(comment, resource)
+                entry['itemLink'] = utils.commentLinker(comment)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['commentOnUpdate']:
                 entry['combinedInfo'] = 'commentOnUpdate'
                 comment = commentLib.getCommentByCode(message['commentCode'])
-                update = generic.getThing(comment['discussionCode'])
-                
-                entry['itemLink'] = utils.commentLink(comment, update)
+                entry['itemLink'] = utils.commentLinker(comment)
                 entry['commentData'] = comment['data']
                 
             elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:

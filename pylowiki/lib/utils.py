@@ -73,41 +73,6 @@ def cap(s, l):
 def civinomicsAvatar():
     return "/images/handdove_medium.png"
 
-##################################################
-# create a link to a comment
-##################################################
-def commentLink(comment, parent):
-    if parent.objType.replace("Unpublished", "") == 'workshop':
-        parentBase = 'workshop'
-        linkStr = "/%s/%s/%s/comment/%s" %(parentBase, parent["urlCode"], parent["url"], comment["urlCode"])
-    elif parent.objType.replace("Unpublished", "") == 'user':
-        parentBase = 'profile'
-        # /profile/4IIB/todd-anderson/photo/show/4SoJ?comment=4SZu
-        linkStr = "/%s/%s/%s/comment/%s" %(parentBase, parent["urlCode"], parent["url"], comment["urlCode"])
-
-    elif parent.objType.replace("Unpublished", "") == 'initiative':
-        parentBase = 'initiative'
-        linkStr = "/%s/%s/%s/show?comment=%s" %(parentBase, parent["urlCode"], parent["url"], comment["urlCode"])
-    
-    return linkStr
-
-def thingLinker(entry, item):
-    # note: we should standardize the way object urls are constructed
-    if item.objType == 'photo':
-        entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
-    else:
-        entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
-
-    if 'workshopCode' in item:
-        entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-        entry['href'] = entry['parentHref'] + entry['href']
-    elif 'initiativeCode' in item:
-        entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
-        if entry['objType'] == 'update':
-            entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
-        else:
-            entry['href'] = entry['parentHref'] + entry['href']
-
 def commentLinker(comment):
     # this function will get the parent of the comment and depending on the type of parent, 
     # create a link to the object the comment resides within
@@ -123,8 +88,6 @@ def commentLinker(comment):
     I think the commentOnBlah is mostly used to tell you in the message what object type the comment is pointing to so you know
     what kind of link to construct, a link to the container of the discussion (photo, resource, idea) or the comment discussion parent (workshop discussion topic or initiative update)
     """
-    # get discussion. types: update, general, resource, idea, initiative, photo
-    discussion = generic.getThing(comment['discussionCode'])
 
     if 'workshopCode' in comment:
         if 'ideaCode' in comment:
@@ -147,11 +110,11 @@ def commentLinker(comment):
         elif comment['parent_url'] != comment['initiative_url']:
             # this is a comment on an initiative update
             itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/updateShow/' + comment['discussionCode']
-        
-    
-    
+    elif 'photoCode' in comment:
+        # this is a comment on a photo
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/photo/show/' + comment['photoCode']
+    return itemLink
 
-    # if == photo:
     
 ##################################################
 # returns the base url without an ending '/'
