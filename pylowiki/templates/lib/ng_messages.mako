@@ -25,7 +25,7 @@
                 <div class="media-body">
                     <p>
                         <a ng-href="{{userLink}}">{{userName}}</a>
-                        invites you to ummm
+                        invites you to
                         {{action}}
                         <a ng-href="{{itemLink}}">{{itemTitle}}</a>
                     </p>
