@@ -1,0 +1,47 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile_messages.mako" name="messages" />
+
+<div class="spacer"></div>
+<div class="row-fluid">
+    <div class="span8">
+        <span class="lead grey expl-phrase">Messages</span>
+        <div id="tab-messages">
+            <div ng-init="code = '${c.userCode}'; url = '${c.userUrl}'">
+                <div class="browse" ng-controller="profileMessagesCtrl">
+                    <div class="centered" ng-show="messagesLoading" ng-cloak>
+                        <i class="icon-spinner icon-spin icon-4x"></i>
+                    </div>
+
+                    <div class="alert alert-info" ng-show="messagesNoResult" ng-cloak>
+                        There are no messages to display.
+                    </div>
+
+                    <div infinite-scroll='getMessagesSlice()' infinite-scroll-disabled='messagesLoading' infinite-scroll-distance='3'>
+                        <div class="row-fluid" ng-repeat="message in messages" ng-cloak>
+                            ${messages.listProfileMessages()}
+                        </div>
+                    </div> <!-- infinite scroll -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%def name = 'extraScripts()'>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+            <!-- <script src="$-{-lib_6-.-fingerprintFile('-/js/profile-.-js')}" type="text/javascript"></script> -->
+            <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/ng/messages.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/ng/message_display.js')}" type="text/javascript"></script>
+        % endif
+    % endif
+</%def>
+
+
