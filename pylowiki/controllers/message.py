@@ -365,7 +365,8 @@ class MessageController(BaseController):
 
     def getUserMessages2(self, id1, id2, type = 'auto', limit = 7, offset = 0):
 
-        offset = int(offset)
+        if type == 'unread':
+            read = 0
 
         if id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
@@ -381,6 +382,9 @@ class MessageController(BaseController):
                     elif type == 'auto':
                         #log.info('getting messages in controller')
                         c.messages = messageLib.getMessages2(user=c.user, limit=limit, offset=offset)
+                    elif type == 'unread':
+                        log.info('looking for unread messages')
+                        c.messages = messageLib.getMessages2(user=c.user, limit=limit, offset=offset, read=read)
                     
             else:
                 #log.info('user not in session')

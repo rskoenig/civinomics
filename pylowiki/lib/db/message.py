@@ -27,24 +27,24 @@ def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', count = Fa
 def getMessages2(user, deleted = u'0', disabled = u'0', read = u'all', limit = None, comments = 0, offset = 0):
     
     try:
-        q = meta.Session.query(Thing).filter_by(objType = 'message')\
-            .filter_by(owner = user.id)\
-            .filter(Thing.data.any(wc('deleted', deleted)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
-            .order_by('-date')\
-            .offset(offset)
+        if read == u'all':
+            q = meta.Session.query(Thing).filter_by(objType = 'message')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .order_by('-date')\
+                .offset(offset)
         if read != u'all':
-                log.info('this is a query that is not for all message types')
-                # Grab items that are read (1) or items that are unread (0).  Grab all by default.
-                q = q.filter(Thing.data.any(wc('read', read)))
-        #log.info("q: %s"%q)
+            q = meta.Session.query(Thing).filter_by(objType = 'message')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('read', read)))\
+                .order_by('-date')\
+                .offset(offset)
         if limit:
-            log.info('call for limited query (not working right now)')
-            # note: slices aren't working here yet, so just asking for all results for now.
-            #postList = q.all()
             postList = q.limit(limit)
         else:
-            log.info('call for entire query result')
             postList = q.all()
 
         if postList:

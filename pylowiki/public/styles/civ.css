@@ -283,6 +283,20 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
   margin-top: 0px;
 }
 
+.nav-pills.civ-search-tools.messages > li{
+  margin-right: 8px;
+}
+
+.nav-pills.civ-search-tools.messages > li > a{
+  color: #005d28;
+  background-color: whitesmoke;
+}
+
+.nav-pills.civ-search-tools > li.active > a{
+  color: #fff;
+  background-color: #005d28;
+}
+
 #sortOptions{
   border-top: 1px solid whitesmoke;
 }

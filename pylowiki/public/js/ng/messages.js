@@ -42,7 +42,15 @@ function profileMessagesCtrl($scope, $http) {
 
 
     $scope.getAllMessages = function(){
+        $scope.messages = []
         $scope.messagesType = '/all';
+        $scope.getMessages();
+        $scope.offset = $scope.sliceSize;
+    };
+
+    $scope.getUnreadMessages = function(){
+        $scope.messages = []
+        $scope.messagesType = '/unread';
         $scope.getMessages();
         $scope.offset = $scope.sliceSize;
     };

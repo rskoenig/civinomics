@@ -13,7 +13,12 @@
                     <div class="alert alert-info" ng-show="messagesNoResult" ng-cloak>
                         There are no messages to display.
                     </div>
-
+                    <div class="row-fluid">
+                        <ul class="nav nav-pills civ-search-tools messages" ng-cloak>
+                            <li ng-class="{active : messagesType == '/all'}"><a ng-click="getAllMessages()">All</a></li>
+                            <li ng-class="{active : messagesType == '/unread'}"><a ng-click="getUnreadMessages()">Unread</a></li>
+                        </ul>
+                    </div>
                     <div infinite-scroll='getMessagesSlice()' infinite-scroll-disabled='messagesLoading' infinite-scroll-distance='3'>
                         
                         <div class="row-fluid" ng-repeat="message in messages" ng-cloak>

@@ -15,7 +15,7 @@
                     <div class="media-body object-in-listing border-bottom" data-code="{{messageCode}}">
                   
                         <div class="span2 message-avatar">
-                            <img src="{{userImage}}" title="{{userName}}" alt="{{userName}}">
+                            <img class="avatar" src="{{userImage}}" title="{{userName}}" alt="{{userName}}">
                         </div>
                         <div class="span8 message-content">
                             
