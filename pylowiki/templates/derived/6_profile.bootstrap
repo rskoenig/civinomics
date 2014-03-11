@@ -1,5 +1,6 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
@@ -7,18 +8,27 @@
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
+<%
+    lib.return_to()
+%>
 ##<div ng-app="ngUploadApp">
     <!-- inline style kludge to handle fixed nav bar -->
+    <% 
+        if c.user['memberType'] == 'organization':
+            who = "Our"
+        else:
+            who = "My"
+    %>
     <div class="spacer">
     <div class="row-fluid" ng-controller="ProfileEditController">
         <div class="span8">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
-                    <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
-                    <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
-                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
-                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
+                    <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">${who} Workshops</a></li>
+                    <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">${who} Initiatives</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">${who} Pictures</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">${who} Unpublished</a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
@@ -35,6 +45,16 @@
                             <button class="btn btn-civ activateButton notactivated" data-URL-list="user_${c.user['urlCode']}_${c.user['url']}" rel="tooltip" data-placement="bottom" data-original-title="Activate this user" id="userActivate"> 
                             <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
                             </button>
+                        % endif
+                        % if c.user['memberType'] == 'organization' and 'user' in session and c.userid != c.authuser.id:
+                            <div class="row-fluid">
+                                <div class="span2">
+                                    ${lib_6.upDownVote(c.user)}
+                                </div><!-- span2 -->
+                                <div class="span10">
+                                    <h3>Rate this organization</h3>
+                                </div><!-- span10 -->
+                            </div><!-- row-fluid -->
                         % endif
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->

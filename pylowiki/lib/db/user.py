@@ -256,6 +256,8 @@ class User(object):
         u['activated'] = '0'
         u['disabled'] = '0'
         u['deleted'] = '0'
+        u['ups'] = '0'
+        u['downs'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country

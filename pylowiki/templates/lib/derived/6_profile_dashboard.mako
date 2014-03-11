@@ -27,6 +27,7 @@
             %endif
             
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+            
             % if c.user['greetingMsg'] != '':
                 %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                     <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">
@@ -52,6 +53,7 @@
                     %endif
                 % endif
             % endif
+
             <hr>
             <div class="row-fluid">
                 <div class="span4">
