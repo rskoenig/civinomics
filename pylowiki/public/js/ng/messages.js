@@ -7,13 +7,13 @@ function profileMessagesCtrl($scope, $http) {
     $scope.messageSliceLoading = false;
     $scope.noMoreSlices = false;
     $scope.busy = false;
-    $scope.sliceSize = 10;
+    $scope.sliceSize = 7;
     $scope.offset = $scope.sliceSize;
 
     $scope.getMessages = function() {
         $scope.alertMsg = '';
         $scope.messagesLoading = true;
-        $http.get('/getMessages/' + $scope.code + '/' + $scope.url + '/' + $scope.messagesType).success(function(data){
+        $http.get('/getMessages/' + $scope.code + '/' + $scope.url + '/' + $scope.messagesType + '/' + $scope.sliceSize).success(function(data){
             if (data.statusCode == 1){
                 //console.log('data.statusCode == 1');
                 $scope.messagesNoResult = true;

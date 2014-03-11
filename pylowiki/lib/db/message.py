@@ -41,8 +41,8 @@ def getMessages2(user, deleted = u'0', disabled = u'0', read = u'all', limit = N
         if limit:
             log.info('call for limited query (not working right now)')
             # note: slices aren't working here yet, so just asking for all results for now.
-            postList = q.all()
-            #postList = q.limit(limit)
+            #postList = q.all()
+            postList = q.limit(limit)
         else:
             log.info('call for entire query result')
             postList = q.all()
