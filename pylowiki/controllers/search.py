@@ -151,7 +151,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return self._noSearch()
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
-        c.numOrganizations = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query], count = True)
+        c.numOrganizations = userLib.searchOrganizations(['name', 'url'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         iResources = resourceLib.searchInitiativeResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
@@ -432,7 +432,6 @@ class SearchController(BaseController):
             return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
-        log.info("CCNsearchType2 is %s"%self.searchType)
         #: this function returns json data so we set the headers appropriately
         response.headers['Content-type'] = 'application/json'
         if self.noQuery:
@@ -471,7 +470,6 @@ class SearchController(BaseController):
         
     def searchOrganizations( self ):
         orgURL = utils.urlify(self.query)
-        log.info("CCNsearchType is %s"%self.searchType)
         if self.searchType == 'orgURL':
             orgs = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query])
             if orgs and len(orgs) == 1:
@@ -479,10 +477,10 @@ class SearchController(BaseController):
                 profileURL = '/profile/' + urlCode + '/' + orgURL
                 return redirect(profileURL)
             else:
-                searchURL = '/search?searchQuery=' + orgURL + '&searchType="organizations"'
+                searchURL = '/search?searchQuery=' + orgURL
                 return redirect(searchURL)
         else:
-            searchURL = '/search?searchQuery=' + orgURL + '&searchType="organizations"'
+            searchURL = '/search?searchQuery=' + orgURL
             return redirect(searchURL)
     
     def searchWorkshops(self):
