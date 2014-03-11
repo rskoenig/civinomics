@@ -11,68 +11,67 @@
     <div ng-init="messageCode=message.messageCode; action=message.action; combinedInfo=message.combinedInfo; commentData=message.commentData; eventAction=message.eventAction; eventReason=message.eventReason; extraInfo=message.extraInfo; formLink=message.formLink;fuzzyTime=message.fuzzyTime; itemCode=message.itemCode; itemImage=message.itemImage; itemLink=message.itemLink; itemTitle=message.itemTitle; itemUrl=message.itemUrl; messageDate=message.messageDate; messageText=message.messageText; messageTitle=message.messageTitle; read=message.read; rowClass=message.rowClass; responseAction=message.responseAction; userImage=message.userImage; userName=message.userName; userLink=message.userLink;">
         <div ng-controller="messageDisplayCtrl">
             <div ng-click="updateReadStatus(false)" class="{{classUnread}}">
-                <div class="{{classUnread}}">
-                    <div class="media-body object-in-listing border-bottom" data-code="{{messageCode}}">
-                  
-                        <div class="span2 message-avatar">
-                            <img class="avatar" src="{{userImage}}" title="{{userName}}" alt="{{userName}}">
-                        </div>
-                        <div class="span8 message-content">
-                            
-                        
-                            <!-- debugging fields: 
-                            
-                            -->
-                            <p>{{combinedInfo}}</p>
-                            <p>{{extraInfo}}</p>
-                            <div ng-switch on="combinedInfo">
-                            <!-- handles these cases, not ng_messages.profileMessages() -->
-                                <div ng-switch-when="listenerFacilitationInvite">
-                                    ${ng_messages.listenerFacilitationInvite()}
-                                </div>
-                                <div ng-switch-when="listenerSuggestion">
-                                    ${ng_messages.listenerSuggestion()}
-                                </div>
-                                <div ng-switch-when="authorInvite">
-                                    ${ng_messages.authorInvite()}
-                                </div>
-                                <div ng-switch-when="authorResponse">
-                                    ${ng_messages.authorResponse()}
-                                </div>
-                                <div ng-switch-when="commentResponse">
-                                    ${ng_messages.commentResponse()}
-                                </div>
-                                <div ng-switch-when="commentOnPhotoOnInitiative">
-                                    ${ng_messages.commentOnPhotoOnInitiative()}
-                                </div>
-                                <div ng-switch-when="commentOnResource">
-                                    ${ng_messages.commentOnResource()}
-                                </div>
-                                <div ng-switch-when="commentOnUpdate">
-                                    ${ng_messages.commentOnUpdate()}
-                                </div>
-                                <div ng-switch-when="disabledEnabledDeletedPhoto">
-                                    ${ng_messages.disabledEnabledDeletedPhoto()}
-                                </div>
-                                <div ng-switch-when="disabledEnabledDeletedInitiative">
-                                    ${ng_messages.disabledEnabledDeletedInitiative()}
-                                </div>
-                                <div ng-switch-when="disabledEnabledDeletedInitiativeResource">
-                                    ${ng_messages.disabledEnabledDeletedInitiativeResource()}
-                                </div>
-                                <div ng-switch-when="disabledEnabledDeletedInitiativeUpdate">
-                                    ${ng_messages.disabledEnabledDeletedInitiativeUpdate()}
-                                </div>
-                                <div ng-switch-when="disabledEnabledDeletedAdopted">
-                                    ${ng_messages.disabledEnabledDeletedAdopted()}
-                                </div>
-                                <div ng-switch-default>
-                                    <p>Default Message</p>
-                                </div>
+                <div class="{{classUnread}} border-top" style="padding: 10px;">
+                    <table class="message-table " data-code="{{messageCode}}">
+                        <tr>
+                          <td class="avatar-cell" rowspan="3"><img class="avatar" src="{{userImage}}" title="{{userName}}" alt="{{userName}}"></td>
+                          <td></td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="activity-item-content-header">
+                                <a ng-href="{{userLink}}" class="green green-highlight"><strong>{{userName}}</strong></a>
+                                <strong>{{messageTitle}}</strong> 
+                                <span class="date pull-right">{{fuzzyTime}} ago</span>
                             </div>
-                        
-                        </div>
-                    </div>
+                          </td>
+                        </tr>
+                        <tr ng-switch on="combinedInfo">
+                            <td ng-switch-when="listenerFacilitationInvite">
+                                ${ng_messages.listenerFacilitationInvite()}
+                            </td>
+                            <td ng-switch-when="listenerSuggestion">
+                                ${ng_messages.listenerSuggestion()}
+                            </td>
+                            <td ng-switch-when="authorInvite">
+                                ${ng_messages.authorInvite()}
+                            </td>
+                            <td ng-switch-when="authorResponse">
+                                ${ng_messages.authorResponse()}
+                            </td>
+                            <td ng-switch-when="commentResponse">
+                                ${ng_messages.commentResponse()}
+                            </td>
+                            <td ng-switch-when="commentOnPhotoOnInitiative">
+                                ${ng_messages.commentOnPhotoOnInitiative()}
+                            </td>
+                            <td ng-switch-when="commentOnResource">
+                                ${ng_messages.commentOnResource()}
+                            </td>
+                            <td ng-switch-when="commentOnUpdate">
+                                ${ng_messages.commentOnUpdate()}
+                            </td>
+                            <td ng-switch-when="disabledEnabledDeletedPhoto">
+                                ${ng_messages.disabledEnabledDeletedPhoto()}
+                            </td>
+                            <td ng-switch-when="disabledEnabledDeletedInitiative">
+                                ${ng_messages.disabledEnabledDeletedInitiative()}
+                            </td>
+                            <td ng-switch-when="disabledEnabledDeletedInitiativeResource">
+                                ${ng_messages.disabledEnabledDeletedInitiativeResource()}
+                            </td>
+                            <td ng-switch-when="disabledEnabledDeletedInitiativeUpdate">
+                                ${ng_messages.disabledEnabledDeletedInitiativeUpdate()}
+                            </td>
+                            <td ng-switch-when="disabledEnabledDeletedAdopted">
+                                ${ng_messages.disabledEnabledDeletedAdopted()}
+                            </td>
+                            <td ng-switch-default>
+                                <p>Default Message</p>
+                            </td>
+
+                        </tr>
+                    </table>
                 </div>
             </div>
         </div>

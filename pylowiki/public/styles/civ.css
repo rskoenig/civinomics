@@ -573,10 +573,6 @@ padding: 0;
   padding-right: 0px;
 }
 
-
-.message-workshop-image{
-    margin-top:20px;
-}
 .message-avatar{
     min-width: 70px;
 }
@@ -2082,6 +2078,9 @@ li.thumbnail-gallery{
 .border-bottom{
   border-bottom: 1px solid #ddd;
 }
+.border-top{
+  border-top: 1px solid #ddd;
+}
 
 .hidden{
   display: none;
@@ -3253,12 +3252,15 @@ hr.object-list-header{
   border-radius: 0 !important;
 }
 
-.activity-item{
+.message-table{
   width: 100%;
-  margin-bottom: 16px;
 }
 
-.activity-item .avatar-cell{
+.activity-item, .message-table{
+  width: 100%;
+}
+
+.activity-item .avatar-cell, .avatar-cell{
   vertical-align: top;
   width: 70px;
 /*
