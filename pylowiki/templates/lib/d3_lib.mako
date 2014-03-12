@@ -11,6 +11,130 @@
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
 </%def>
 
+<%def name="dcCommuterSurvey()">
+  <style>
+
+    
+
+  </style>
+
+  <script src='/js/vendor/crossfilter.min.js' type='text/javascript'></script> 
+  <script src='/js/vendor/dc.min.js' type='text/javascript'></script>
+  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+
+  <div class='container'>
+      <div class='row'> 
+          <div class='span12'>
+              <table class='table table-hover' id='dc-table-graph'> 
+                  <thead>
+                      <tr class='header'> 
+                          <th>Commute Duration</th> 
+                          <th>Commute Type</th> 
+                          <th>Commute Activity</th> 
+                          <th>Employment Type</th> 
+                          <th>Years at Job</th> 
+                          <th>Seniority</th> 
+                          <th>Salary</th>
+                          <th>Why Commute</th>
+                          <th>Why Live Here</th>
+                          <th>College in Santa Cruz</th>
+                          <th>Residence Duration</th>
+                          <th>Worked in Santa Cruz</th>
+                          <th>Why not work in Santa Cruz</th>
+                          <th>Salary needed to work here</th>
+                          <th>Children</th>
+                          <th>Rent or own</th>
+                          <th>Age</th>
+                      </tr>
+                  </thead>
+              </table>
+          </div>
+      </div> 
+  </div>
+
+  <script>
+    // Create the dc.js chart objects & link to div
+    var dataTable = dc.dataTable("#dc-table-graph");
+
+    // load data from a csv file
+    d3.csv("/surveys/techCommuterSurvey6.csv", function (data) {
+      console.log(data);
+      /*
+        <th>Commute Duration</th>             commuteDuration 
+        <th>Commute Type</th>                 travelType
+        <th>Commute Activity</th>             commuteActivity 
+        <th>Employment Type</th>              employmentType  
+        <th>Years at Job</th>                 employmentDuration  
+        <th>Seniority</th>                    employmentLevel
+        <th>Salary</th>                       salary
+        <th>Why Commute</th>                  whyCommute
+        <th>Why Live Here</th>                whyLiveHere 
+        <th>College in Santa Cruz</th>        collegeInSantaCruz  
+        <th>Residence Duration</th>           residenceDuration 
+        <th>Worked in Santa Cruz</th>         workedInSantaCruz 
+        <th>Why not work in Santa Cruz</th>   whyNoWorkInSantaCruz  
+        <th>Salary needed to work here</th>   whatSalaryNeeded  
+        <th>Children</th>                     children  
+        <th>Rent or own</th>                  rentOrOwn 
+        <th>Age</th>                          age
+      */
+
+      data.forEach(function(d) {
+        d.commuteDuration = +d.commuteDuration;
+        d.employmentDuration = +d.employmentDuration;
+        d.salary = +d.salary;
+        d.residenceDuration = +d.residenceDuration;
+        d.age = +d.age;
+      });
+
+      // Run the data through crossfilter and load our 'facts'
+      var facts = crossfilter(data);
+
+      // Create dataTable dimension
+      var timeDimension = facts.dimension(function (d) { 
+        return d.commuteDuration;
+      });
+
+      // Setup the charts
+
+      // Table of commuter survey data
+      dataTable.width(960).height(800) 
+        .dimension(timeDimension)
+          .group(function(d) { return "Commuter Survey Table" 
+            })
+          .size(10) 
+        .columns([
+          function(d) { return d.commuteDuration; },
+          function(d) { return d.travelType; },
+          function(d) { return d.commuteActivity; },
+          function(d) { return d.employmentType; },
+          function(d) { return d.employmentDuration; },
+          function(d) { return d.employmentLevel; },
+          function(d) { return d.salary; },
+          function(d) { return d.whyCommute; },
+          function(d) { return d.whyLiveHere; },
+          function(d) { return d.collegeInSantaCruz; },
+          function(d) { return d.residenceDuration; },
+          function(d) { return d.workedInSantaCruz; },
+          function(d) { return d.whyNoWorkInSantaCruz; },
+          function(d) { return d.whatSalaryNeeded; },
+          function(d) { return d.children; },
+          function(d) { return d.rentOrOwn; },
+          function(d) { return d.age; }
+        ])
+        .sortBy(function(d){ return d.commuteDuration; })
+        .order(d3.ascending);
+
+        // Render the Charts
+        dc.renderAll();
+
+    });    
+    
+
+  </script>
+
+</%def>
+
 <%def name="constancyChart(constancyData, chart, typeName, barColor, barHover)">
 
 <style>
