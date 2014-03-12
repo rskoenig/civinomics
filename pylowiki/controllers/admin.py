@@ -269,7 +269,7 @@ class AdminController(BaseController):
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType.replace("Unpublished", ""), thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
-        title = 'Someone %s a post you made' %(action)
+        title = '%s a post you made' %(action)
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
@@ -309,7 +309,7 @@ class AdminController(BaseController):
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
-        title = 'Someone %s an idea you posted' %(action)
+        title = '%s an idea you posted' %(action)
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
