@@ -4,7 +4,6 @@ workshopApp.factory( 'Data', function(){
 })
 
 function activityWorkshopController($scope, $http) {
-	$scope.showInfoPanel = 'true'
 	$scope.listingType = 'activity';
 	$scope.activityType = '/all';
 	$scope.activityLoading = true;
@@ -86,6 +85,87 @@ function activityWorkshopController($scope, $http) {
 		})
 	};
 
+
+	// Menu Items
+	$scope.showSummary = true;
+	$scope.showInfoPreview = true;
+	$scope.showStats = false;
+
+	$scope.toggleSummary= function(){
+		$scope.showSummary = true;
+		$scope.showInfoPreview = true;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = false;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.query = '';
+	}
+
+	$scope.toggleInfo= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = true;
+		$scope.showInfo = true;
+		$scope.showStats = false;
+		$scope.showIdeas = false;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.query = '';
+	}
+
+	$scope.toggleStats= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = true;
+		$scope.showIdeas = false;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.query = '';
+	}
+
+	$scope.toggleIdeas= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = true;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.query = {objType:'idea'};
+	}
+	$scope.toggleAdopted= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = true;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.query = {status:'adopted', };
+	}
+
+	$scope.toggleDiscussions= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = false;
+		$scope.showDiscussions = true;
+		$scope.showResources = false;
+		$scope.query = {objType:'discussion'};
+	};
+
+	$scope.toggleResources= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = false;
+		$scope.showDiscussions = false;
+		$scope.showResources = true;
+		$scope.query = {objType:'resource'};
+	};
 }
 
 function commentsController($scope, $http) {

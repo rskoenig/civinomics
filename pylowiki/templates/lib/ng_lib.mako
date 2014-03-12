@@ -136,20 +136,11 @@
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
-                % if not c.w:
-                    <div class="span3">
-                        <div class="listed-photo">
-                            <a href = '{{item.href}}'>
-                                <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                            </a>
-                        </div>
-                    </div>
-                % endif
-                % if not c.w:
-                    <div class="span8">
-                % else:
-                    <div class="span11">
-                % endif
+                <div class="listed-photo">
+                    <a href = '{{item.href}}'>
+                        <div class="main-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                    </a>
+                </div>
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>

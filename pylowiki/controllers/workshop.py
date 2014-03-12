@@ -953,6 +953,9 @@ class WorkshopController(BaseController):
         
     def display(self, workshopCode, workshopURL):
 
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
+
         # broken currently incrementing by 2-3
         if 'views' not in c.w:
             c.w['views'] = u'0'

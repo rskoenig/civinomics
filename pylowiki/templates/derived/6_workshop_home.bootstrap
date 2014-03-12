@@ -4,6 +4,8 @@
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
+<% import pylowiki.lib.graphData       as graphData %>
 
 <%
   if c.mainImage['pictureHash'] == 'supDawg':
@@ -55,20 +57,20 @@
           </span>
           <table id="metrics">
             <tr>
-              <td class="clickable" ng-click="query = {objType:'discussion'}; showInfoPanel = false">
+              <td class="clickable" ng-click="toggleDiscussions()">
                 <span class="workshop-metrics">Discussions</span><br>
                   <strong ng-cloak>{{numDiscussions}}</strong>
               </td>
-              <td class="clickable" ng-click="query = {objType:'resource'}; showInfoPanel = false">
+              <td class="clickable" ng-click="toggleResources()">
                 <span class="workshop-metrics">Resources</span><br>
                   <strong ng-cloak>{{numResources}}</strong>
               </td>
-              <td class="clickable" ng-click="query = {objType:'idea'}; showInfoPanel = false">
+              <td class="clickable" ng-click="toggleIdeas()">
                 <span class="workshop-metrics">Ideas</span><br>
                   <strong ng-cloak>{{numIdeas}}</strong>
                 
               </td>
-              <td class="clickable" ng-click="query = {status:'adopted'}; showInfoPanel = false">
+              <td class="clickable" ng-click="toggleAdopted()">
                 <span class="workshop-metrics">Adopted</span><br>
                   <strong ng-cloak>{{numAdopted}}</strong>
               </td>
@@ -88,7 +90,26 @@
           </table>
         </div><!-- workshopIdeasCtrl -->
       </div><!-- top well -->
-      <div class="well" ng-show="showInfoPanel" ng-cloak>
+
+      <div class="well" ng-show="showStats" ng-cloak>
+        <h1>Stats</h1>
+        <% c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56) %>
+
+        ${d3Lib.includeD3()}
+        % if len(c.jsonConstancyDataIdeas) > 2:
+          ${d3Lib.constancyChart(c.jsonConstancyDataIdeas, "ideaChart", "Ideas", "ForestGreen", "DarkSlateGrey")}
+        % endif
+        % if len(c.jsonConstancyDataResources) > 2:
+          ${d3Lib.constancyChart(c.jsonConstancyDataResources, "resourceChart", "Resources", "MidnightBlue", "DarkSlateGrey")}
+        % endif
+        % if len(c.jsonConstancyDataDiscussions) > 2:
+          ${d3Lib.constancyChart(c.jsonConstancyDataDiscussions, "discussionChart", "Discussions", "DarkOrange", "DarkSlateGrey")}
+        % endif
+
+      </div>
+
+
+      <div class="well" ng-show="showInfoPreview" ng-cloak>
         <div ng-hide="showInfo">
           <p class="description">
             ${lib_6.ellipsisIZE(c.w['description'], 285)}
@@ -109,13 +130,15 @@
         </div>
       </div>
     
+
+
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}
       </div>
 
-      <table ng-repeat="item in activity | filter:query" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+      <table ng-repeat="item in activity | filter:query" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats && !showInfo" ng-cloak>
         <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
@@ -149,44 +172,15 @@
    </div> <!-- /.span8 -->
 
    <div class="span3" >
-      <%
-        if c.listingType != '':
-          listingType = c.listingType
-        else:
-          listingType = None
-
-        linkHref = lib_6.workshopLink(c.w, embed = True, raw = True)
-        infoHref = linkHref + '/information'
-        forumHref = linkHref + '/discussion'
-        activityHref= linkHref + '/activity'
-        publicStatsHref= linkHref + '/publicStats'
-        adminHref= linkHref + '/preferences'
-
-
-        summaryActive = infoActive = activityActive = forumActive = publicStatsActive = adminActive = ''
-
-        if c.listingType == 'resources' or listingType == 'resource':
-          infoActive = 'active'
-        elif c.listingType == 'discussion':
-          forumActive = 'active'
-        elif c.listingType == 'ideas' or listingType == 'idea':
-          summaryActive = 'active'
-        elif c.listingType == 'activity':
-          activityActive = 'active'
-        elif c.listingType == 'publicStats':
-          publicStatsActive = 'active'
-        elif c.adminPanel == True:
-          adminActive = 'active'
-      %>
       <ul class="nav nav-tabs nav-stacked" style="margin-top: 12px; margin-right:0; width: 100%">
-        <li class="${summaryActive}">
-          <a href="${linkHref | n}">Summary</a>
+        <li ng-class="{active: showSummary == true}">
+          <a ng-click="toggleSummary()">Summary</a>
         </li>
-        <li class="${publicStatsActive}"><a href="${publicStatsHref | n}">Stats</a></li>
-        <li ng-class="{infoActive : showInfo == true}"><a ng-click="showInfo = !showInfo; showInfoPanel = true">Info</a></li>
-        <li class="${adminActive}"><a ng-click="query = {objType:'idea'}; showInfoPanel = false">Ideas</a></li>
-        <li class="${adminActive}"><a ng-click="query = {objType:'discussion'}">Discussions</a></li>
-        <li class="${adminActive}"><a ng-click="query = {objType:'resource'}">Resources</a></li>
+        <li ng-class="{active: showStats == true}"><a ng-click="toggleStats()">Stats</a></li>
+        <li ng-class="{active : showInfo == true}"><a ng-click="toggleInfo()">Info</a></li>
+        <li ng-class="{active: showIdeas == true}"><a ng-click="toggleIdeas()">Ideas</a></li>
+        <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Discussions</a></li>
+        <li ng-class="{active: showResources == true}"><a ng-click="toggleResources()">Resources</a></li>
       </ul>
         <div class="well well-subMenu">
           <span class="green green-hover">Photos</span>
