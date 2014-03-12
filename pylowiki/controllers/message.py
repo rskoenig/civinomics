@@ -107,59 +107,64 @@ class MessageController(BaseController):
             if 'commentCode' in message and not commentLib.getCommentByCode(message['commentCode']):
                 continue
             #log.info('loading message type: %s'%(message['extraInfo']))
-            try:
-                entry = {}
-                entry['action'] = ''
-                # this next field is a hack that will allow us to use ng-switch in order
-                # to choose what template function to call in ng_lib.mako from 6_profile_messages.mako
-                entry['combinedInfo'] = ''
-                entry['commentData'] = ''
-                entry['eventAction'] = ''
-                entry['eventReason'] = ''
-                entry['extraInfo'] = message['extraInfo']
-                entry['formLink'] = ''
-                entry['formStr'] = ''
-                entry['itemCode'] = ''
-                entry['itemImage'] = ''
-                entry['itemLink'] = ''
-                entry['itemTitle'] = ''
-                entry['itemUrl'] = ''
-                entry['messageCode'] = ''
-                entry['messageDate'] = message.date.strftime('%Y-%m-%dT%H:%M:%S')
-                entry['fuzzyTime'] = fuzzyTime.timeSince(message.date)
-                entry['messageText'] = ''
-                entry['messageTitle'] = ''
+            
+            entry = {}
+            entry['action'] = ''
+            # this next field is a hack that will allow us to use ng-switch in order
+            # to choose what template function to call in ng_lib.mako from 6_profile_messages.mako
+            entry['combinedInfo'] = ''
+            entry['commentData'] = ''
+            entry['eventAction'] = ''
+            entry['eventReason'] = ''
+            entry['extraInfo'] = message['extraInfo']
+            entry['formLink'] = ''
+            entry['formStr'] = ''
+            entry['itemCode'] = ''
+            entry['itemImage'] = ''
+            entry['itemLink'] = ''
+            entry['itemTitle'] = ''
+            entry['itemUrl'] = ''
+            entry['messageCode'] = ''
+            entry['messageDate'] = message.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(message.date)
+            entry['messageText'] = ''
+            entry['messageTitle'] = ''
+            entry['read'] = message['read']
+            # instead of asking the db for a count of unread messages, we can count them as 
+            if entry['read'] == u'0':
+                c.unreadMessageCount = c.unreadMessageCount + 1
+            
+            entry['responseAction'] = ''
+            entry['rowClass'] = ''
+            entry['userLink'] = '#'
+            entry['userImage'] = utils.civinomicsAvatar()
+            entry['userName'] = 'Civinomics'
+            # Try to assemble a message entry.
+            # There is a key error in some cases, this is an easy fix.
+            if message['read'] == u'0':
+                entry['rowClass']= 'warning unread-message'
+            # note: should we have an object for Civinomics just as we do for users with a code?
+            if message['sender'] != u'0':
+                sender = userLib.getUserByCode(message['sender'])
+                entry['userName'] = utils.userName(sender)
+                entry['userLink'] = utils.userLink(sender)
+                entry['userImage'] = utils._userImageSource(sender)
+
+            # fields used in all if not most of the message types are loaded here
+            if 'title' in message:    
+                entry['messageTitle'] = message['title']            
+            if 'text' in message:
+                entry['messageText'] = message['text']
+            if 'urlCode' in message:
+                entry['messageCode'] = message['urlCode']
+            if 'read' in message:
                 entry['read'] = message['read']
-                # instead of asking the db for a count of unread messages, we can count them as 
-                if entry['read'] == u'0':
-                    c.unreadMessageCount = c.unreadMessageCount + 1
-                
-                entry['responseAction'] = ''
-                entry['rowClass'] = ''
-                entry['userLink'] = '#'
-                entry['userImage'] = utils.civinomicsAvatar()
-                entry['userName'] = 'Civinomics'
-                # Try to assemble a message entry.
-                # There is a key error in some cases, this is an easy fix.
-                if message['read'] == u'0':
-                    entry['rowClass']= 'warning unread-message'
-                # note: should we have an object for Civinomics just as we do for users with a code?
-                if message['sender'] != u'0':
-                    sender = userLib.getUserByCode(message['sender'])
-                    entry['userName'] = utils.userName(sender)
-                    entry['userLink'] = utils.userLink(sender)
-                    entry['userImage'] = utils._userImageSource(sender)
-
-                # fields used in all if not most of the message types are loaded here
-                if 'title' in message:    
-                    entry['messageTitle'] = message['title']            
-                if 'text' in message:
-                    entry['messageText'] = message['text']
-                if 'urlCode' in message:
-                    entry['messageCode'] = message['urlCode']
-                if 'read' in message:
-                    entry['read'] = message['read']
-
+            # there is one edge case we've found so far that makes authorResponse throw an error
+            # this code is set up to gather the basic info we expect every message to have, so
+            # at the least a message will be somewhat useful even if this part throws an error.
+            # entry['combinedInfo'] will not have any data, so the ng-switch in the template will
+            # display a default message for these cases
+            try:
                 if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                     entry['combinedInfo'] = 'listenerFacilitationInvite'
                     workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
@@ -376,11 +381,12 @@ class MessageController(BaseController):
                     else:
                         entry['itemTitle'] = thing['title']
 
-                #log.info('combinedInfo: %s, extraInfo: %s' %(entry['combinedInfo'], message['extraInfo']))
-                result.append(entry)
             except:
                 log.info('error in message type: %s'%(message['extraInfo']))
                 pass
+
+            #log.info('combinedInfo: %s, extraInfo: %s' %(entry['combinedInfo'], message['extraInfo']))
+            result.append(entry)
 
         # if there is a limit query, len(c.messages) no longer works. so, we look for it here instead
         if len(result) == 0:

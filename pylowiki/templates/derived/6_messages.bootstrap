@@ -81,9 +81,8 @@
                                                         ${ng_messages.disabledEnabledDeletedAdopted()}
                                                     </td>
                                                     <td ng-switch-default>
-                                                        <p>Default Message</p>
+                                                        ${ng_messages.defaultMessage()}
                                                     </td>
-
                                                 </tr>
                                             </table>
                                         </div>

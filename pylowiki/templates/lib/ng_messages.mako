@@ -232,3 +232,16 @@
         </div>
     </div>
 </%def>
+
+<%def name="defaultMessage()">
+    <div class="media">
+        <div class="media-body">
+            <p>
+                {{messageTitle}}
+            </p>
+            <p>
+                {{messageText}}
+            </p>
+        </div>
+    </div>
+</%def>
