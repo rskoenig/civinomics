@@ -2,21 +2,22 @@
 
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
-        <div class="listing-body" ng-controller="yesNoVoteCtrl"> 
+        <div ng-controller="yesNoVoteCtrl"> 
             <div class="row-fluid">
-                <div class="span12">
+                <div class="span3">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
+                </div>
+                <div class="span9">
                     <div class="well yesNoWell" >
                         ${yesNoVoteBlock()}
                     </div>
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    <hr class="no-bottom no-top">
                     <h4>
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
@@ -178,16 +179,16 @@
 </%def>
 
 <%def name="moreLess()">
-    <a href="#a" class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="moreLessComment()">
-    <a href="#a" class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="metaData()">
     <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
-        <span style="text-transform: capitalize;">{{item.objType}}</span> for <a class="green green-hover" href="{{scope.href}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
+        <span style="text-transform: capitalize;">{{item.objType}}</span> for <a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
         <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
         <span ng-if="item.parentObjType && !(item.parentObjType == '')">
             in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
@@ -200,8 +201,8 @@
         <div ng-controller="commentsController">
             <ul class="horizontal-list iconListing">
                 <li>
-                    <a ng-show="item.numComments == '0'" class="no-highlight" href="#a" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                    <a ng-show="!(item.numComments == '0')" class="no-highlight" href="#a" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                    <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                    <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                 </li>
                 <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
             </ul>
@@ -235,7 +236,7 @@
                     % if c.authuser:
                         <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                         <td style="padding: 10px;">
-                            % if not c.privs['provisional']:
+                            % if c.privs and not c.privs['provisional']:
                                 <form class="no-bottom" ng-submit="submitComment()">
                                     <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>

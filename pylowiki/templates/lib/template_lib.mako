@@ -87,7 +87,7 @@
                             <li class="${mSelected}">
                                 <%
                                     messageCount = ''
-                                    numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                    numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
                                     if numMessages:
                                         if numMessages > 0:
                                             messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages

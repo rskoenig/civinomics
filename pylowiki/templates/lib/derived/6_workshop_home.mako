@@ -465,7 +465,7 @@
         workshopFlag = '/images/flags/generalFlag.gif'
         href = '#'
         if w['public_private'] == 'public':
-            scope = workshopLib.getPublicScope(w)
+            scope = utils.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
             level = scope['level']
