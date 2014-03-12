@@ -56,9 +56,10 @@
     // Create the dc.js chart objects & link to div
     var dataTable = dc.dataTable("#dc-table-graph");
 
-    // load data from a csv file
-    d3.csv("/surveys/techCommuterSurvey6.csv", function (data) {
-      console.log(data);
+    var data = null;
+    
+    d3.csv("/surveys/techCommuterSurvey6.csv", function(data) {
+      console.log(data); // should be ready now
       /*
         <th>Commute Duration</th>             commuteDuration 
         <th>Commute Type</th>                 travelType
@@ -128,7 +129,7 @@
         // Render the Charts
         dc.renderAll();
 
-    });    
+    });
     
 
   </script>
