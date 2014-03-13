@@ -25,6 +25,9 @@
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
+                    % if c.user['memberType'] == 'organization':
+                        <li><a href="#tab-forum" data-toggle="tab" class="green green-hover">Forum</a></li>
+                    % endif
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">${who} Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">${who} Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">${who} Pictures</a></li>
@@ -58,6 +61,11 @@
                         % endif
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
+                    % if c.user['memberType'] == 'organization':
+                        <div class="tab-pane" id="tab-forum">
+                            ${helpers.showDiscussions()}
+                        </div><!-- tab-pane -->
+                    % endif
                     <div class="tab-pane" id="tab-workshops">
                         ${helpers.inviteCoFacilitate()}
                         <table class="table table-hover table-condensed">

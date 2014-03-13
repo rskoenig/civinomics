@@ -3,6 +3,7 @@
     import pylowiki.lib.db.initiative   as initiativeLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
+    import pylowiki.lib.db.discussion   as discussionLib
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
@@ -628,4 +629,11 @@
             </div><!-- row -->
         % endif
     %endif
+</%def>
+
+<%def name="showDiscussions()">
+Forum
+    <%
+        discussions = discussionLib.getDiscussionsForThing(c.user)
+    %>
 </%def>

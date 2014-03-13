@@ -50,6 +50,17 @@ def getDiscussionForThing(parent):
         .one()
     except:
         return False
+        
+def getDiscussionsForThing(parent, disabled = '0', deleted = '0'):
+    thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc(thisKey, parent['urlCode'])))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
+    except:
+        return False
 
 def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', deleted = '0'):
     try:
