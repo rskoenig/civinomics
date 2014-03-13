@@ -637,19 +637,22 @@
     %>
 </%def>
 
-<%def name="addDiscussion()">
-   <form action="/profile/${c.user['urlCode']}/${c.user['url']}/add/discussion/handler" id="addDiscussion" method="post">
-      <fieldset>
-         <label>Title</label>
-         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120" required>
-         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
-         
-        <label><strong>Additional information</strong><br>
-        <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-        <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
-        
-        <hr/>
-        <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-    </fieldset>
+<%def name="addTopic()">
+    <form ng-controller="topicController" ng-init="userCode = '${c.user['urlCode']}'; userURL = '${c.user['url']}'; topicCode = 'new'; addTopicTitleResponse=''; addUpdateTextResponse=''; addTopicResponse='';"  id="addTopicForm" name="addTopicForm" ng-submit="submitTopicForm(addTopicForm)">
+        <fieldset>
+            <label>Topic Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
+            <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+            <span ng-show="addTopicTitleShow"><div class="alert alert-danger" ng-cloak>{{addTopicTitleResponse}}</div></span>
+        </fieldset>
+        <fieldset>
+            <label><strong>Topic Description</strong>
+            <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+            <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
+            <span ng-show="addTopicTextShow"><div class="alert alert-danger" ng-cloak>{{addTopicTextResponse}}</div></span>
+            <span class="help-block"> (Describe the topic you wish to discuss in the forum.) </span>
+        </fieldset>
+        <fieldset>
+            <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+        </fieldset>
    </form>
 </%def>

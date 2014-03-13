@@ -66,7 +66,8 @@
                             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#demo"><i class="icon-plus icon-white"></i></button>
                              Add a discussion topic to the forum.
                             <div id="demo" class="collapse">
-                                ${helpers.addDiscussion()}
+                                <div class="spacer"></div>
+                                ${helpers.addTopic()}
                             </div>
                             ${helpers.showDiscussions()}
                         </div><!-- tab-pane -->
@@ -131,6 +132,9 @@
             });
         });
     </script>
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/ng/org_topic.js')}" type="text/javascript"></script>
+    % endif
 
 </%def>
 

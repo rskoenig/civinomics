@@ -13,7 +13,7 @@ function topicController($scope, $http, $location, $timeout) {
             $scope.addTopicTitleShow = false;
             $scope.addTopicTitleResponse =  "";  
         }
-        if(addUpdateForm.text.$invalid) {
+        if(addTopicForm.text.$invalid) {
             $scope.addTopicTextShow = true;
             $scope.addTopicTextResponse =  "Additional information is required.";
         } else {
@@ -22,9 +22,9 @@ function topicController($scope, $http, $location, $timeout) {
         }
 
         if(addTopicForm.$valid) {
-            $scope.addUpdateShow = true;
-            $scope.addUpdateResponse = "Submitting progress report...";
-            var addURL = '/profile/' + $scope.userCode + '/' + $scope.userURL + '/add/discussion/handler/' + $scope.updateCode;
+            $scope.addTopicShow = true;
+            $scope.addTopicResponse = "Submitting discussion topic...";
+            var addURL = '/profile/' + $scope.userCode + '/' + $scope.userURL + '/add/discussion/handler/';
 
             var postData = {'title':$scope.title, 'text': $scope.text};
             $http.post(addURL, postData).success(function(data){
