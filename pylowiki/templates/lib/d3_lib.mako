@@ -58,7 +58,8 @@
 
     var data = null;
     
-    d3.csv("/surveys/techCommuterSurvey6.csv", function(data) {
+    d3.csv("/surveys/techCommuterSurvey6.csv", function(error, data) {
+      console.log(error);
       console.log(data); // should be ready now
       /*
         <th>Commute Duration</th>             commuteDuration 
@@ -130,11 +131,11 @@
         dc.renderAll();
 
     });
-    
 
   </script>
 
 </%def>
+
 
 <%def name="constancyChart(constancyData, chart, typeName, barColor, barHover)">
 
