@@ -29,6 +29,7 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+import pylowiki.lib.fuzzyTime           as fuzzyTime
 
 from pylowiki.lib.facebook              import FacebookShareObject
 import pylowiki.lib.images              as imageLib
@@ -1250,18 +1251,53 @@ class ProfileController(BaseController):
     def getDiscussions(self, id1, id2):        
         discussions = discussionLib.getDiscussionsForThing(c.user)
         
-        entry = {}
+        result = []
         for d in discussions:
+            entry = {}
             entry['title'] = d['title']
             entry['text'] = m.html(d['text'], render_flags=m.HTML_SKIP_HTML)
-            entry['date'] = d.date
-            entry['author'] = d.owner
+            entry['date'] = d.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(d.date)
+            entry['voteCount'] = int(d['ups']) + int(d['downs'])
+            entry['ups'] = int(d['ups'])
+            entry['downs'] = int(d['downs'])
+            entry['netVotes'] = int(d['ups']) - int(d['downs'])
+            entry['numComments'] = 0
+            if 'numComments' in d:
+                entry['numComments'] = d['numComments']
+            author = userLib.getUserByID(item.owner)
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+            result.append(entry)
             
-        result = []
-        result.append(entry)
         statusCode = 0
         response.headers['Content-type'] = 'application/json'
         
         return json.dumps({'statusCode':statusCode, 'result':result})
+        
+    @h.login_required
+    def updateDiscussionHandler(self, id1, id2):
+        
+        payload = json.loads(request.body)
+        title = payload['title']
+        text = payload['text']
+
+        if 'code' in payload:
+            d = discussionLib.getDiscussion(payload['code'])  
+        else:
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.user, title = title, text = text)
+
+        d.d['title'] = title
+        d.d['text'] = payload['text']
+
+        dbHelpers.commit(d.d)
+        revisionLib.Revision(c.authuser, d.d)
+        
+        jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
+        return jsonReturn
 
 

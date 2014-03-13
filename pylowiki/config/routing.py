@@ -375,6 +375,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/organization/upgrade/handler', controller = 'profile', action = 'orgUpgradeHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/add/discussion/handler', controller = 'profile', action = 'updateDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
     
     ###############
     # Initiatives #
@@ -397,15 +398,9 @@ def make_map():
     ################
     # Messaging    #
     ################
-    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/messages/get/{id1}/{id2}{end:/?}', controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}')
-    #     map.connect('/getSiteActivitySlice/{comments}/{sliceType}/{sliceOffset}/{sliceMax}{end:/?}' , controller = 'home', action = 'getActivity')
+    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
     map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
     
-    map.connect('/getMessages/{id1}/{id2}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/getMessages/{id1}/{id2}/{type}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', type = '{type}')
-    map.connect('/getMessagesSlice/{id1}/{id2}/{type}/{offset}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', type = '{type}', offset = '{offset}')
-
     ################
     # Action Lists #
     ################
