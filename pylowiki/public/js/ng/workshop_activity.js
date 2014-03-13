@@ -86,6 +86,21 @@ function activityWorkshopController($scope, $http) {
 	};
 
 
+	// Add a new object
+	$scope.newObjType = 'idea'
+	$scope.submitNewObj = function(){
+		var newObjData = {'submit':'submit', 'title': $scope.newObjTitle, 'text': $scope.newObjText, 'link': $scope.newObjLink};
+		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.newObjType + '/handler';
+		$http.post($scope.newObjURL, newObjData).success(function(data){
+			//$scope.numComments = Number($scope.numComments) + 1;
+            $scope.getActivity();
+            $scope.newObjTitle = '';
+            $scope.newObjText = '';
+            $scope.newObjLink = '';
+        });
+	};
+
+
 	// Menu Items
 	$scope.showSummary = true;
 	$scope.showInfoPreview = true;

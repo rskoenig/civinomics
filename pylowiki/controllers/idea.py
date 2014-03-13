@@ -99,14 +99,28 @@ class IdeaController(BaseController):
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
 
-        if 'submit' not in request.params or 'title' not in request.params:
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
+        if 'submit' not in payload or 'title' not in payload:
             log.info("submit or title not in req params")
-            return redirect(session['return_to'])
-        title = request.params['title'].strip()
-        text = request.params['text']
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+        title = payload['title'].strip()
+        text = payload['text']
         if title == '':
             log.info("title is blank")
-            return redirect(session['return_to'])
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
         if len(title) > 120:
             title = title[:120]
         newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
@@ -124,9 +138,11 @@ class IdeaController(BaseController):
             statusCode = 0
             response.headers['Content-type'] = 'application/json'
             #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
-            return json.dumps({'statusCode':statusCode, 'result':result})
-        else:
+            return json.dumps({'statusCode':statusCode, 'result':result})   
+        elif request.params:
             return redirect(utils.thingURL(c.w, newIdea))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         # check to see if this is a request from the iphone app

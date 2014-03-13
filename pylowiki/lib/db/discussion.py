@@ -141,6 +141,7 @@ class Discussion(object):
         d['deleted'] = '0'
         d['ups'] = '0'
         d['downs'] = '0'
+        d['views'] = '0'
         d['title'] = title
         d['url'] = urlify(title)
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
