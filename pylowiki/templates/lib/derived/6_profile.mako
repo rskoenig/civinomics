@@ -632,8 +632,25 @@
 </%def>
 
 <%def name="showDiscussions()">
-Forum
     <%
         discussions = discussionLib.getDiscussionsForThing(c.user)
     %>
+</%def>
+
+<%def name="addDiscussion()">
+   <form action="/profile/${c.user['urlCode']}/${c.user['url']}/add/discussion/handler" id="addDiscussion" method="post">
+      <fieldset>
+         <label>Title</label>
+         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
+         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+         
+        <label><strong>Additional information</strong><br>
+        <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+        <textarea name="text" rows="3" class="input-block-level" ng-model="text"></textarea>
+        <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
+        
+        <hr/>
+        <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+    </fieldset>
+   </form>
 </%def>

@@ -63,6 +63,11 @@
                     </div><!-- tab-pane -->
                     % if c.user['memberType'] == 'organization':
                         <div class="tab-pane" id="tab-forum">
+                            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#demo"><i class="icon-plus icon-white"></i></button>
+                            Add a discussion topic to the forum.
+                            <div id="demo" class="collapse">
+                                ${helpers.addDiscussion()}
+                            </div>
                             ${helpers.showDiscussions()}
                         </div><!-- tab-pane -->
                     % endif

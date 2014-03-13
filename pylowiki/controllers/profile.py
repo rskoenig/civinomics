@@ -37,6 +37,7 @@ import pylowiki.lib.utils               as utils
 import time, datetime
 import simplejson as json
 import copy as copy
+import misaka as m
 
 
 log = logging.getLogger(__name__)
@@ -1244,5 +1245,23 @@ class ProfileController(BaseController):
             session.save()
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+
+    @h.login_required
+    def getDiscussions(self, id1, id2):        
+        discussions = discussionLib.getDiscussionsForThing(c.user)
+        
+        entry = {}
+        for d in discussions:
+            entry['title'] = d['title']
+            entry['text'] = m.html(d['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['date'] = d.date
+            entry['author'] = d.owner
+            
+        result = []
+        result.append(entry)
+        statusCode = 0
+        response.headers['Content-type'] = 'application/json'
+        
+        return json.dumps({'statusCode':statusCode, 'result':result})
 
 
