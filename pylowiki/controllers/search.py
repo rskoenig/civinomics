@@ -975,6 +975,15 @@ class SearchController(BaseController):
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
 
+            # author data
+            # CCN - need to find a way to optimize this lookup
+            author = userLib.getUserByID(i.owner)
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
             # comments
             entry['numComments'] = 0
             if 'numComments' in i:
