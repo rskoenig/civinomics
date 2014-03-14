@@ -390,7 +390,11 @@
                         parentObjType = 'initiative'
                         parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
-                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+                        # not a photo, must be an organization discussion
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/discussion/show/" + item['discussionCode']
+                        parentCode = item['discussionCode']
+                        parentObjType = 'discussion'
+                        parentURL = item['parent_url']
                     else:
                         log.info("no parentObjType item is %s"%item.keys())
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
@@ -453,6 +457,23 @@
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
+                    activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'discussion' and item['discType'] == 'organization_general':
+                <% 
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/discussion/show/" + item['urlCode']
+                    activityStr = "started the organization forum topic "
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'comment' and 'profileCode' in item:
+                <% 
+                    activityStr = "commented on an organization forum <a href=\"" + parentLink + "\">discussion</a>, saying"
                     activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
                 %>
                 % if item['deleted'] == '0':

@@ -99,6 +99,8 @@ class CommentController(BaseController):
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
+            elif thing.objType == 'discussion' and thing['discType'] == 'organization_general':
+                userLib.setUserPrivs()
             data = payload['comment-textarea']
             data = data.strip()
             if data == '':

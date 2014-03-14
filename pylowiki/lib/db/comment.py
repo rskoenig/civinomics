@@ -154,6 +154,7 @@ def editComment(comment, data, commentRole = 'neutral'):
 
 # Object
 def Comment(data, owner, discussion, privs, role = None, parent = 0):
+    profileTypes = ['photo', 'initiative', 'organization_general']
     attachedThing = None
     thisComment = Thing('comment', owner.id)
         
@@ -174,12 +175,16 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+    if discussion['discType'] == 'organization_general':
+        attachedThing = discussion
+        profileOwner = generic.getThingByID(attachedThing.owner)
             
     thisComment = generic.linkChildToParent(thisComment, owner)
             
     thisComment = generic.linkChildToParent(thisComment, discussion)
     if attachedThing is not None:
-        thisComment = generic.linkChildToParent(thisComment, attachedThing)
+        if attachedThing.id != discussion.id:
+            thisComment = generic.linkChildToParent(thisComment, attachedThing)
         nComments = 0
         if 'numComments' in attachedThing:
             nComments = int(attachedThing['numComments'])
@@ -189,7 +194,7 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         attachedThing['numComments'] = str(nComments)
         commit(attachedThing)
         
-        if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
+        if discussion['discType'] in profileTypes:
             thisComment['profileCode'] = profileOwner['urlCode']
             thisComment['profile_url'] = profileOwner['url']
     thisComment['disabled'] = '0'

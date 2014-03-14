@@ -31,7 +31,7 @@
                         % else:
                             ${helpers.profileModerationPanel(c.discussion)}
                             % if c.discussion.objType != 'discussionUnpublished':
-                                ${comments(c.discussion, c.discussion)}
+                                ${comments(c.user, c.discussion)}
                             % endif
                         % endif
                     % endif

@@ -12,6 +12,7 @@ def getMemberPosts(user, unpublished = '0'):
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished']
     else:
         activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
+    discussionTypes = ['general', 'update', 'organization_general']
     codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     keys = ['deleted']
     values = ['0']
@@ -23,7 +24,7 @@ def getMemberPosts(user, unpublished = '0'):
             .order_by('-date').all()
         # Messy
         for activity in initialActivityList:
-            if activity.objType == 'discussion' and activity['discType'] != 'general':
+            if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:
                 continue
             else:                
                 finalActivityList.append(activity)
