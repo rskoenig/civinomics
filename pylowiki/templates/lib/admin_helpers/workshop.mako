@@ -50,7 +50,7 @@
                 </form>
             </div><!-- browse -->
         </div><!-- section-wrapper -->
-    <div><!-- row-fluid -->
+    </div><!-- row-fluid -->
 </%def>
 
 <%def name="admin_facilitators()">

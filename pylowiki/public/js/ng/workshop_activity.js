@@ -114,6 +114,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
+		$scope.showAddNew = false;
 		$scope.query = '';
 	}
 
@@ -125,6 +126,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
+		$scope.showAddNew = false;
 		$scope.query = '';
 	}
 
@@ -136,6 +138,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
+		$scope.showAddNew = false;
 		$scope.query = '';
 	}
 
@@ -147,6 +150,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = true;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
+		$scope.showAddNew = false;
 		$scope.query = {objType:'idea'};
 	}
 	$scope.toggleAdopted= function(){
@@ -157,6 +161,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = true;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
+		$scope.showAddNew = false;
 		$scope.query = {status:'adopted', };
 	}
 
@@ -168,6 +173,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = false;
 		$scope.showDiscussions = true;
 		$scope.showResources = false;
+		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
 	};
 
@@ -179,6 +185,19 @@ function activityWorkshopController($scope, $http) {
 		$scope.showIdeas = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = true;
+		$scope.showAddNew = false;
+		$scope.query = {objType:'resource'};
+	};
+
+	$scope.toggleAddNew= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = false;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.showAddNew = true;
 		$scope.query = {objType:'resource'};
 	};
 }

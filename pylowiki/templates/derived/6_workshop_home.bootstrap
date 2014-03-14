@@ -57,23 +57,23 @@
           </span>
           <table id="metrics">
             <tr>
+              <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
+                <span class="workshop-metrics">Ideas</span><br>
+                  <strong ng-cloak>{{numIdeas}}</strong>
+              </td>
+              <td class="clickable" ng-click="toggleAdopted()">
+                <span class="workshop-metrics">Adopted</span><br>
+                  <strong ng-cloak>{{numAdopted}}</strong>
+              </td>
               <td class="clickable" ng-click="toggleDiscussions()">
-                <span class="workshop-metrics">Discussions</span><br>
+                <span class="workshop-metrics">Questions</span><br>
                   <strong ng-cloak>{{numDiscussions}}</strong>
               </td>
               <td class="clickable" ng-click="toggleResources()">
                 <span class="workshop-metrics">Resources</span><br>
                   <strong ng-cloak>{{numResources}}</strong>
               </td>
-              <td class="clickable" ng-click="toggleIdeas()">
-                <span class="workshop-metrics">Ideas</span><br>
-                  <strong ng-cloak>{{numIdeas}}</strong>
-                
-              </td>
-              <td class="clickable" ng-click="toggleAdopted()">
-                <span class="workshop-metrics">Adopted</span><br>
-                  <strong ng-cloak>{{numAdopted}}</strong>
-              </td>
+
               <!--
               <td>
                 <span class="workshop-metrics">Views</span><br>
@@ -113,7 +113,7 @@
         <div ng-hide="showInfo">
           <p class="description">
             ${lib_6.ellipsisIZE(c.w['description'], 285)}
-            <a class="green green-highlight" ng-click=" showInfo = true ">read more</a>
+            <a class="green green-highlight" ng-click=" toggleInfo() ">read more</a>
           </p>
         </div>
         <div ng-show="showInfo" ng-cloak>
@@ -130,7 +130,7 @@
         </div>
       </div>
 
-      <div class="well" ng-cloak>
+      <div class="well" ng-show="showAddNew" ng-cloak>
         <table>
           <tr>
             <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar med-avatar", linkClass="topbar-avatar-link")}</td>
@@ -194,15 +194,16 @@
    </div> <!-- /.span8 -->
 
    <div class="span3" >
-      <ul class="nav nav-tabs nav-stacked" style="margin-top: 12px; margin-right:0; width: 100%">
+      <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()">Add your idea...</button>
+      <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
         <li ng-class="{active: showSummary == true}">
           <a ng-click="toggleSummary()">Summary</a>
         </li>
-        <li ng-class="{active: showStats == true}"><a ng-click="toggleStats()">Stats</a></li>
         <li ng-class="{active : showInfo == true}"><a ng-click="toggleInfo()">Info</a></li>
         <li ng-class="{active: showIdeas == true}"><a ng-click="toggleIdeas()">Ideas</a></li>
-        <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Discussions</a></li>
+        <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Questions</a></li>
         <li ng-class="{active: showResources == true}"><a ng-click="toggleResources()">Resources</a></li>
+        <li ng-class="{active: showStats == true}"><a ng-click="toggleStats()">Stats</a></li>
       </ul>
         <div class="well well-subMenu">
           <span class="green green-hover">Photos</span>
@@ -212,7 +213,7 @@
           </div>
         </div><!-- section-wrapper -->
          <div class="well well-subMenu" >
-            <span class="green green-hover">Notables</span>
+            <span class="green green-hover">Officials</span>
             <hr class="subMenu">
             ${helpers.showFacilitators()}
             ${helpers.whoListening()}

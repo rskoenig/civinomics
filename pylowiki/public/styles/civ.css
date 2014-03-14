@@ -74,7 +74,7 @@ h5.h45, h4.h45{
   height: 100%;
   /* Negative indent footer by it's height */
   margin: 1px auto -55px;
-  background-color: #30343d;
+  background-color: #e9eaed;
 }
 
 /* Set the fixed height of the footer here */
@@ -574,6 +574,10 @@ padding: 0;
 
 
 /* well */
+
+.well{
+  margin-bottom: 10px;
+}
 
 .well.footer{
    background: white;
@@ -2396,6 +2400,7 @@ p.description:first-letter {
   border: 0;
   box-shadow: none;
   padding-top: 4px;
+  margin-left: 0px;
 }
 
 .well.initiative-panel{
@@ -3396,5 +3401,10 @@ table.activity-comments{
   font-size: 85%;
   margin-left: 5px;
   display:inline-block;
+}
+
+.edit-workshop-pane{
+  background-color: #fff;
+  -webkit-border-radius: 5px;
 }
 
