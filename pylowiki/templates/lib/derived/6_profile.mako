@@ -633,14 +633,19 @@
 </%def>
 
 <%def name="showDiscussions()">
-    <%
-        discussions = discussionLib.getDiscussionsForThing(c.user)
-    %>
+    <% discussions = discussionLib.getDiscussionsForOrganization(c.user) %>
+    % for d in discussions:
+        <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/discussion/show/" + d['urlCode'] %>
+        <div class="row-fluid">
+            <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
+            ${lib_6.userLink(d.owner)} from ${lib_6.userGeoLink(d.owner)}${lib_6.userImage(d.owner, className="avatar med-avatar")}
+        </div><!-- row-fluid -->
+    % endfor        
 </%def>
 
 <%def name="showDiscussion()">
     <%
-        url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/discussion/show/" + c.discussion['url']
+        url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/discussion/show/" + c.discussion['urlCode']
         role = ''
         if 'addedAs' in c.discussion.keys():
             roles = ['admin', 'facilitator', 'listener']

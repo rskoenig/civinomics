@@ -1247,7 +1247,6 @@ class ProfileController(BaseController):
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
 
-    @h.login_required
     def getDiscussions(self, id1, id2):        
         discussions = discussionLib.getDiscussionsForThing(c.user)
         
@@ -1305,7 +1304,7 @@ class ProfileController(BaseController):
         if 'code' in payload:
             d = discussionLib.getDiscussion(payload['code'])  
         else:
-            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.user, title = title, text = text)
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'organization_general', attachedThing = c.user, title = title, text = text)
 
         d.d['title'] = title
         d.d['text'] = payload['text']
