@@ -1281,6 +1281,15 @@ class ProfileController(BaseController):
         
     def showDiscussion(self, id1, id2, id3):
         c.discussion = discussionLib.getDiscussion(id3)
+        if 'views' in c.discussion:
+            views = int(c.discussion['views'])
+        else:
+            views = 0
+            
+        views += 1
+        c.discussion['views'] = str(views)
+        dbHelpers.commit(c.discussion)
+        
         # kludge for comments
         c.thing = c.discussion
         

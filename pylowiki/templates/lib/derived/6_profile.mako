@@ -647,15 +647,22 @@
             if c.discussion['addedAs'] in roles:
                 role = ' (%s)' % c.discussion['addedAs']
     %>
-    <a href="${url}" class="listed-item-title">${c.discussion['title']}</a>
-    ${lib_6.userLink(c.discussion.owner)}${role}<span class="grey">${lib_6.userGreetingMsg(c.discussion.owner)}</span> from ${lib_6.userGeoLink(c.discussion.owner)}${lib_6.userImage(c.discussion.owner, className="avatar med-avatar")}
-    <br />Originally posted  ${c.discussion.date}
-    % if 'views' in c.discussion:
-        <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
-    % endif
-    % if 'text' in c.discussion.keys():
-        ${misaka.html(c.discussion['text']) | n}
-    % endif
+    <div class="row-fluid">
+        <div class="span2">
+            ${lib_6.upDownVote(c.discussion)}
+        </div><!-- span2 -->
+        <div class="span10">
+            <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
+            % if 'text' in c.discussion.keys():
+                ${misaka.html(c.discussion['text']) | n}
+            % endif
+            ${lib_6.userLink(c.discussion.owner)}${role} from ${lib_6.userGeoLink(c.discussion.owner)}${lib_6.userImage(c.discussion.owner, className="avatar med-avatar")}
+            <br />Originally posted  ${c.discussion.date}
+            % if 'views' in c.discussion:
+                <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
+            % endif
+        </div><!-- span10 -->
+    </div><!-- row-fluid -->
 </%def>
 
 <%def name="addTopic()">
