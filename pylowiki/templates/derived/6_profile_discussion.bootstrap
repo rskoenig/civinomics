@@ -7,7 +7,7 @@
 <div class="spacer"></div>
 <div class="row-fluid">
     <div class="span8">
-        ${helpers.showTopic()}
+        ${helpers.showDiscussion()}
         <span class="share-icons right-space">
             ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
         </span>
@@ -22,13 +22,13 @@
             % if c.discussion.objType == 'revision':
                 This is a revision dated ${c.discussion.date}<br />
             % else:
-                ${disccusion.photoModerationPanel(c.discussion)}
+                ${helpers.profileModerationPanel(c.discussion)}
                 % if c.discussion.objType != 'discussionUnpublished':
                     ${comments(c.discussion, c.discussion)}
                 % endif
             % endif
         % endif
-    </div>
+    </div><!-- span8 -->
     <div class="span4" ng-controller="ProfileEditController">
         ${dashboard.profileDashboard()}
     </div><!--/.span4-->

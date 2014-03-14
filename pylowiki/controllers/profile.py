@@ -1279,6 +1279,13 @@ class ProfileController(BaseController):
         
         return json.dumps({'statusCode':statusCode, 'result':result})
         
+    def showDiscussion(self, id1, id2, id3):
+        c.discussion = discussionLib.getDiscussion(id3)
+        # kludge for comments
+        c.thing = c.discussion
+        
+        return render("/derived/6_profile_discussion.bootstrap")
+        
     @h.login_required
     def updateDiscussionHandler(self, id1, id2):
         
@@ -1297,7 +1304,7 @@ class ProfileController(BaseController):
         dbHelpers.commit(d.d)
         revisionLib.Revision(c.authuser, d.d)
         
-        jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
+        jsonReturn = '{"state":"Success", "topicCode":"' + d.d['urlCode'] + '","topicURL":"' + d.d['url'] + '"}'
         return jsonReturn
 
 

@@ -9,6 +9,7 @@
     import pylowiki.lib.db.pmember      as pmemberLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
+    import misaka as misaka
     
     import logging, os
     log = logging.getLogger(__name__)
@@ -637,6 +638,26 @@
     %>
 </%def>
 
+<%def name="showDiscussion()">
+    <%
+        url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/discussion/show/" + c.discussion['url']
+        role = ''
+        if 'addedAs' in c.discussion.keys():
+            roles = ['admin', 'facilitator', 'listener']
+            if c.discussion['addedAs'] in roles:
+                role = ' (%s)' % c.discussion['addedAs']
+    %>
+    <a href="${url}" class="listed-item-title">${c.discussion['title']}</a>
+    ${lib_6.userLink(c.discussion.owner)}${role}<span class="grey">${lib_6.userGreetingMsg(c.discussion.owner)}</span> from ${lib_6.userGeoLink(c.discussion.owner)}${lib_6.userImage(c.discussion.owner, className="avatar med-avatar")}
+    <br />Originally posted  ${c.discussion.date}
+    % if 'views' in c.discussion:
+        <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
+    % endif
+    % if 'text' in c.discussion.keys():
+        ${misaka.html(c.discussion['text']) | n}
+    % endif
+</%def>
+
 <%def name="addTopic()">
     <form ng-controller="topicController" ng-init="userCode = '${c.user['urlCode']}'; userURL = '${c.user['url']}'; topicCode = 'new'; addTopicTitleResponse=''; addUpdateTextResponse=''; addTopicResponse='';"  id="addTopicForm" name="addTopicForm" ng-submit="submitTopicForm(addTopicForm)">
         <fieldset>
@@ -656,3 +677,67 @@
         </fieldset>
    </form>
 </%def>
+
+<%def name="profileModerationPanel(thing)">
+    <%
+        if 'user' not in session or thing.objType == 'revision':
+            return
+        flagID = 'flag-%s' % thing['urlCode']
+        editID = 'edit-%s' % thing['urlCode']
+        adminID = 'admin-%s' % thing['urlCode']
+        publishID = 'publish-%s' % thing['urlCode']
+        unpublishID = 'unpublish-%s' % thing['urlCode']
+    %>
+    <div class="btn-group">
+        % if thing['disabled'] == '0':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+        % endif
+        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+        % endif
+        % if userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+
+    </div>
+    
+    % if thing['disabled'] == '0':
+        ${lib_6.flagThing(thing)}
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            <% editID = 'edit-%s'%thing['urlCode'] %>
+            <div class="row-fluid collapse" id="${editID}">
+                <div class="span11 offset1">
+                    <div class="spacer"></div>
+                    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/update/handler" method="post" class="form">
+                        Edit here
+                        <div class="row-fluid">
+                            <button class="btn btn-success" type="Submit">Save Changes</button>
+                        </div><!-- row-fluid -->
+                    </form>
+                </div><!-- span11 -->
+            </div><!-- row-fluid -->
+            % if userLib.isAdmin(c.authuser.id):
+                ${lib_6.adminThing(thing)}
+            % endif
+        % endif
+    % else:
+        % if userLib.isAdmin(c.authuser.id):
+            <% editID = 'edit-%s'%thing['urlCode'] %>
+            <div class="row-fluid collapse" id="${editID}">
+                <div class="span11 offset1">
+                    <div class="spacer"></div>
+                    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/update/handler" method="post" class="form">
+                        Edit here
+                        <div class="row-fluid">
+                            <button class="btn btn-success" type="Submit">Save Changes</button>
+                        </div><!-- row-fluid -->
+                    </form>
+                </div><!-- span11 -->
+            </div><!-- row-fluid -->
+        % endif
+        % if userLib.isAdmin(c.authuser.id):
+            ${lib_6.adminThing(thing)}
+        % endif
+    % endif
+</%def>
+
