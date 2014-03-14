@@ -13,26 +13,39 @@
 
 <%def name="dcCommuterSurvey()">
   <style>
-
-    
+      .dc-chart rect.bar {
+          fill: aquamarine;
+      }
+      .dc-chart path.line {
+          stroke-width: 3px;
+          stroke-opacity: 1;
+          stroke: aquamarine;
+      }
 
   </style>
 
-  <script src='/js/vendor/crossfilter.min.js' type='text/javascript'></script> 
-  <script src='/js/vendor/dc.min.js' type='text/javascript'></script>
+  <script src='/js/vendor/crossfilter.js' type='text/javascript'></script> 
+  <script src='/js/vendor/dc.js' type='text/javascript'></script>
   <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
   <div class='container'>
       <div class='row'>
-
           <div class='span5 offset1' id='dc-salary-chart'> 
               <h4>Salary distribution</h4>
           </div>
-
           <div class='span5' id='dc-commuteDuration-chart'>
               <h4>Commute Duration</h4> 
           </div>
-          
+      </div>
+      <div class='row'> 
+          <div class='span10 offset1' id='dc-age-chart'>
+              <h4>Age of commuters polled</h4> 
+          </div>
+      </div>
+      <div class='row'> 
+          <div class='span4 offset1' id='dc-college-chart'>
+              <h4>Attended college in area</h4> 
+          </div>
       </div>
 
       <div class='row'> 
@@ -63,19 +76,24 @@
           </div>
 
       </div> 
+
   </div>
 
   <script>
     // Create the dc.js chart objects & link to div
-    var dataTable = dc.dataTable("#dc-table-graph");
     var salaryChart = dc.barChart("#dc-salary-chart");
-    var commuteDurationChart = dc.barChart("#dc-commuteDuration-chart");
-    
+    var commuteDurationChart = dc.lineChart("#dc-commuteDuration-chart");
+    var ageChart = dc.barChart("#dc-age-chart");
+
+    var collegeChart = dc.rowChart("#dc-college-chart");
+
+    var dataTable = dc.dataTable("#dc-table-graph");
+
     var data = null;
     
     d3.csv("/surveys/techCommuterSurvey6.csv", function(error, data) {
-        console.log(error);
-        console.log(data); // should be ready now
+        //console.log(error);
+        //console.log(data);
         /*
             <th>Commute Duration</th>             commuteDuration 
             <th>Commute Type</th>                 travelType
@@ -122,9 +140,25 @@
         var commuteDurationValueGroupCount = commuteDurationValue.group() 
             .reduceCount(function(d) { return d.commuteDuration; }) // counts
 
+        // determine the spread of the commuters' ages
+        var ageValue = facts.dimension(function (d) { 
+            return d.age;
+        });
+        var ageValueGroupCount = ageValue.group()
+            .reduceCount(function(d) { return d.age; }) // counts
         
+        var collegeValue = facts.dimension(function (d) {
+            console.log("college: " + d.collegeWhere)
+            switch (d.collegeWhere) {
+                case 'UCSC': return "0.UCSC";
+                case 'Cabrillo': return "1.Cabrillo";
+                default: return "2.No answer";
+            } 
+        });
+        var collegeValueGroup = collegeValue.group();
+
         // Create dataTable dimension
-        var timeDimension = facts.dimension(function (d) { 
+        var commuteDurationDimension = facts.dimension(function (d) { 
             return d.commuteDuration;
         });
 
@@ -138,7 +172,7 @@
             .group(salaryValueGroup) 
             .transitionDuration(500) 
             .centerBar(true) 
-            .gap(1)
+            .gap(-8)
             .filter([90000, 200000]) 
             .x(d3.scale.linear().domain([0, 550000])) 
             .elasticY(true) 
@@ -150,16 +184,45 @@
             .margins({top: 10, right: 10, bottom: 20, left: 20}) 
             .dimension(commuteDurationValue) 
             .group(commuteDurationValueGroupCount) 
-            .transitionDuration(500) 
-            .centerBar(true) 
-            .gap(65)
-            .x(d3.scale.linear().domain([0, 350]))
+            .transitionDuration(500)
+            .brushOn(false) 
+            .title(function(d){
+                return d.key / 60
+                + " hrs \nNumber of Commuters: " + d.value; 
+                })
+            .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.commuteDuration; })))
             .elasticY(true) 
             .xAxis().tickFormat();
 
+        // age graph
+        ageChart.width(960) 
+            .height(150) 
+            .margins({top: 10, right: 10, bottom: 20, left: 40}) 
+            .dimension(ageValue) 
+            .group(ageValueGroupCount) 
+            .transitionDuration(500) 
+            .centerBar(true) 
+            .gap(-8)
+            .elasticY(true) 
+            .x(d3.scale.linear().domain((d3.extent(data, function(d) { return d.age; }))))
+            .xAxis();
+
+        // row chart attendance
+        collegeChart.width(300) 
+            .height(220) 
+            .margins({top: 25, left: 40, right: 40, bottom: 40}) 
+            .dimension(collegeValue) 
+            .group(collegeValueGroup) 
+            .colors(d3.scale.category10())
+            .label(function (d){
+                return d.key.split(".")[1];
+                }) 
+            .title(function(d){return d.value;}) 
+            .xAxis().ticks(4);
+
         // Table of commuter survey data
         dataTable.width(760).height(800) 
-            .dimension(timeDimension)
+            .dimension(commuteDurationDimension)
                 .group(function(d) { return "Commuter Survey Table" 
                     })
                 .size(10) 
