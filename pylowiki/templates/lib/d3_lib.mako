@@ -13,6 +13,14 @@
 
 <%def name="dcCommuterSurvey()">
   <style>
+      h2.surveyTitle { 
+          float: right;
+      } 
+      h2.surveyTitle span {
+          font-size:14px; 
+          font-weight:normal; 
+      }
+
       .dc-chart rect.bar {
           fill: aquamarine;
       }
@@ -30,6 +38,21 @@
 
   <div class='container'>
       <div class='row'>
+          <div class='span11 offset1'> 
+              <div class="dc-data-count" style="float: left;"> 
+                  <h2 class="surveyTitle">Commuter Survey Results
+                      <span> 
+                          <span class="filter-count"></span>
+                          selected out of
+                          <span class="total-count"></span> 
+                          records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+                      </span>
+                  </h2> 
+              </div>
+          </div>
+      </div>
+
+      <div class='row'>
           <div class='span5 offset1' id='dc-salary-chart'> 
               <h4>Salary distribution</h4>
           </div>
@@ -43,11 +66,14 @@
           </div>
       </div>
       <div class='row'> 
-          <div class='span4 offset1' id='dc-college-chart'>
+          <div class='span4' id='dc-college-chart'>
               <h4>Attended college in area</h4> 
           </div>
           <div class='span4' id='dc-employmentType-chart'>
               <h4>Employment Type</h4> 
+          </div>
+          <div class='span4' id='dc-commuteType-chart'>
+              <h4>CommuteType Type</h4> 
           </div>
       </div>
 
@@ -83,194 +109,216 @@
   </div>
 
   <script>
-    // Create the dc.js chart objects & link to div
-    var salaryChart = dc.barChart("#dc-salary-chart");
-    var commuteDurationChart = dc.lineChart("#dc-commuteDuration-chart");
-    var ageChart = dc.barChart("#dc-age-chart");
-    var collegeChart = dc.rowChart("#dc-college-chart");
-    var employmentTypeChart = dc.pieChart("#dc-employmentType-chart");
+      // Create the dc.js chart objects & link to div
+      var salaryChart = dc.barChart("#dc-salary-chart");
+      var commuteDurationChart = dc.lineChart("#dc-commuteDuration-chart");
+      var ageChart = dc.barChart("#dc-age-chart");
+      var collegeChart = dc.rowChart("#dc-college-chart");
+      var employmentTypeChart = dc.pieChart("#dc-employmentType-chart");
+      var commuteTypeChart = dc.pieChart("#dc-commuteType-chart");
 
-    var dataTable = dc.dataTable("#dc-table-graph");
+      var dataTable = dc.dataTable("#dc-table-graph");
 
-    var data = null;
-    
-    d3.csv("/surveys/techCommuterSurvey6.csv", function(error, data) {
-        //console.log(error);
-        //console.log(data);
-        /*
-            <th>Commute Duration</th>             commuteDuration 
-            <th>Commute Type</th>                 travelType
-            <th>Commute Activity</th>             commuteActivity 
-            <th>Employment Type</th>              employmentType  
-            <th>Years at Job</th>                 employmentDuration  
-            <th>Seniority</th>                    employmentLevel
-            <th>Salary</th>                       salary
-            <th>Why Commute</th>                  whyCommute
-            <th>Why Live Here</th>                whyLiveHere 
-            <th>College in Santa Cruz</th>        collegeInSantaCruz  
-            <th>Residence Duration</th>           residenceDuration 
-            <th>Worked in Santa Cruz</th>         workedInSantaCruz 
-            <th>Why not work in Santa Cruz</th>   whyNoWorkInSantaCruz  
-            <th>Salary needed to work here</th>   whatSalaryNeeded  
-            <th>Children</th>                     children  
-            <th>Rent or own</th>                  rentOrOwn 
-            <th>Age</th>                          age
-        */
+      var data = null;
+      
+      d3.csv("/surveys/techCommuterSurvey6.csv", function(error, data) {
+          //console.log(error);
+          //console.log(data);
+          /*
+              <th>Commute Duration</th>             commuteDuration 
+              <th>Commute Type</th>                 travelType
+              <th>Commute Activity</th>             commuteActivity 
+              <th>Employment Type</th>              employmentType  
+              <th>Years at Job</th>                 employmentDuration  
+              <th>Seniority</th>                    employmentLevel
+              <th>Salary</th>                       salary
+              <th>Why Commute</th>                  whyCommute
+              <th>Why Live Here</th>                whyLiveHere 
+              <th>College in Santa Cruz</th>        collegeInSantaCruz  
+              <th>Residence Duration</th>           residenceDuration 
+              <th>Worked in Santa Cruz</th>         workedInSantaCruz 
+              <th>Why not work in Santa Cruz</th>   whyNoWorkInSantaCruz  
+              <th>Salary needed to work here</th>   whatSalaryNeeded  
+              <th>Children</th>                     children  
+              <th>Rent or own</th>                  rentOrOwn 
+              <th>Age</th>                          age
+          */
 
-        data.forEach(function(d) {
-            d.commuteDuration = +d.commuteDuration;
-            d.employmentDuration = +d.employmentDuration;
-            d.salary = +d.salary;
-            d.residenceDuration = +d.residenceDuration;
-            d.age = +d.age;
-        });
+          data.forEach(function(d) {
+              d.commuteDuration = +d.commuteDuration;
+              d.employmentDuration = +d.employmentDuration;
+              d.salary = +d.salary;
+              d.residenceDuration = +d.residenceDuration;
+              d.age = +d.age;
+          });
 
-        // Run the data through crossfilter and load our 'facts'
-        var facts = crossfilter(data);
+          // Run the data through crossfilter and load our 'facts'
+          var facts = crossfilter(data);
 
-        // determine the spread of salaries
-        var salaryValue = facts.dimension(function (d) { 
-            return d.salary;
-        });
-        var salaryValueGroup = salaryValue.group();
+          // reset all button - this includes all facts
+          var all = facts.groupAll();
+
+          // reset all button - count all the facts
+          dc.dataCount(".dc-data-count") 
+              .dimension(facts) 
+              .group(all);
+
+          // determine the spread of salaries
+          var salaryValue = facts.dimension(function (d) { 
+              return d.salary;
+          });
+          var salaryValueGroup = salaryValue.group();
 
 
-        // determine the spread of commute times
-        var commuteDurationValue = facts.dimension(function (d) { 
-            return d.commuteDuration;
-        });
-        // calculate the spread of the sum for how many of each commute time there is
-        var commuteDurationValueGroupCount = commuteDurationValue.group() 
-            .reduceCount(function(d) { return d.commuteDuration; }) // counts
+          // determine the spread of commute times
+          var commuteDurationValue = facts.dimension(function (d) { 
+              return d.commuteDuration;
+          });
+          // calculate the spread of the sum for how many of each commute time there is
+          var commuteDurationValueGroupCount = commuteDurationValue.group() 
+              .reduceCount(function(d) { return d.commuteDuration; }) // counts
 
-        // determine the spread of the commuters' ages
-        var ageValue = facts.dimension(function (d) { 
-            return d.age;
-        });
-        var ageValueGroupCount = ageValue.group()
-            .reduceCount(function(d) { return d.age; }) // counts
-        
-        var collegeValue = facts.dimension(function (d) {
-            //console.log("college: " + d.collegeWhere)
-            switch (d.collegeWhere) {
-                case 'UCSC': return "0.UCSC";
-                case 'Cabrillo': return "1.Cabrillo";
-                default: return "2.No answer";
-            } 
-        });
-        var collegeValueGroup = collegeValue.group();
+          // determine the spread of the commuters' ages
+          var ageValue = facts.dimension(function (d) { 
+              return d.age;
+          });
+          var ageValueGroupCount = ageValue.group()
+              .reduceCount(function(d) { return d.age; }) // counts
+          
+          var collegeValue = facts.dimension(function (d) {
+              //console.log("college: " + d.collegeWhere)
+              switch (d.collegeWhere) {
+                  case 'UCSC': return "0.UCSC";
+                  case 'Cabrillo': return "1.Cabrillo";
+                  default: return "2.No answer";
+              } 
+          });
+          var collegeValueGroup = collegeValue.group();
 
-        // employmentType 
-        var employmentType = facts.dimension(function (d) { return d.employmentType; });
-        var employmentTypeGroup = employmentType.group();
+          // employmentType 
+          var employmentType = facts.dimension(function (d) { return d.employmentType; });
+          var employmentTypeGroup = employmentType.group();
 
-        // Create dataTable dimension
-        var commuteDurationDimension = facts.dimension(function (d) { 
-            return d.commuteDuration;
-        });
+          // employmentType 
+          var commuteType = facts.dimension(function (d) { return d.travelType; });
+          var commuteTypeGroup = commuteType.group();
 
-        // Setup the charts
+          // Create dataTable dimension
+          var commuteDurationDimension = facts.dimension(function (d) { 
+              return d.commuteDuration;
+          });
 
-        // bar chart of salaries and their sum of occurences
-        salaryChart.width(480) 
-            .height(150) 
-            .margins({top: 10, right: 10, bottom: 20, left: 20}) 
-            .dimension(salaryValue) 
-            .group(salaryValueGroup) 
-            .transitionDuration(500) 
-            .centerBar(true) 
-            .gap(-8)
-            .filter([40000, 400000]) 
-            .x(d3.scale.linear().domain([0, 550000])) 
-            .elasticY(true) 
-            .xAxis().tickFormat(function(v) {return v;});
+          // Setup the charts
 
-        // bar chart of commute duration and its sum of occurences
-        commuteDurationChart.width(480) 
-            .height(150) 
-            .margins({top: 10, right: 10, bottom: 20, left: 20}) 
-            .dimension(commuteDurationValue) 
-            .group(commuteDurationValueGroupCount) 
-            .transitionDuration(500)
-            .brushOn(false) 
-            .title(function(d){
-                return d.key / 60
-                + " hrs \nNumber of Commuters: " + d.value; 
-                })
-            .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.commuteDuration; })))
-            .elasticY(true) 
-            .xAxis().tickFormat();
+          // bar chart of salaries and their sum of occurences
+          salaryChart.width(480) 
+              .height(150) 
+              .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+              .dimension(salaryValue) 
+              .group(salaryValueGroup) 
+              .transitionDuration(500) 
+              .centerBar(true) 
+              .gap(-8)
+              .filter([0, 550000]) 
+              .x(d3.scale.linear().domain([0, 550000])) 
+              .elasticY(true) 
+              .xAxis().tickFormat(function(v) {return v;});
 
-        // age graph
-        ageChart.width(960) 
-            .height(150) 
-            .margins({top: 10, right: 10, bottom: 20, left: 40}) 
-            .dimension(ageValue) 
-            .group(ageValueGroupCount) 
-            .transitionDuration(500) 
-            .centerBar(true) 
-            .gap(-6)
-            .elasticY(true) 
-            .filter([20, 51]) 
-            .x(d3.scale.linear().domain((d3.extent(data, function(d) { return d.age; }))))
-            .xAxis();
+          // bar chart of commute duration and its sum of occurences
+          commuteDurationChart.width(480) 
+              .height(150) 
+              .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+              .dimension(commuteDurationValue) 
+              .group(commuteDurationValueGroupCount) 
+              .transitionDuration(500)
+              .brushOn(false) 
+              .title(function(d){
+                  return d.key / 60
+                  + " hrs \nNumber of Commuters: " + d.value; 
+                  })
+              .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.commuteDuration; })))
+              .elasticY(true) 
+              .xAxis().tickFormat();
 
-        // row chart for college attendance
-        collegeChart.width(300) 
-            .height(220) 
-            .margins({top: 25, left: 40, right: 40, bottom: 40}) 
-            .dimension(collegeValue) 
-            .group(collegeValueGroup) 
-            .colors(d3.scale.category10())
-            .label(function (d){
-                return d.key.split(".")[1];
-                }) 
-            .title(function(d){return d.value + " commuters";}) 
-            .xAxis().ticks(4);
+          // age graph
+          ageChart.width(960) 
+              .height(150) 
+              .margins({top: 10, right: 10, bottom: 20, left: 40}) 
+              .dimension(ageValue) 
+              .group(ageValueGroupCount) 
+              .transitionDuration(500) 
+              .centerBar(true) 
+              .gap(-6)
+              .elasticY(true) 
+              .filter([0, 71]) 
+              .x(d3.scale.linear().domain((d3.extent(data, function(d) { return d.age + 2; }))))
+              .xAxis();
 
-        // pie chart for distribution of employment types
-        employmentTypeChart.width(250) 
-            .height(220) 
-            .radius(100) 
-            .innerRadius(30) 
-            .dimension(employmentType) 
-            .group(employmentTypeGroup) 
-            .title(function(d){ return "Job: " + d.data.key + ". " + d.value + " commuters."; });
+          // row chart for college attendance
+          collegeChart.width(300) 
+              .height(220) 
+              .margins({top: 25, left: 40, right: 40, bottom: 40}) 
+              .dimension(collegeValue) 
+              .group(collegeValueGroup) 
+              .colors(d3.scale.category10())
+              .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+              .title(function(d){return d.value + " commuters";}) 
+              .xAxis().ticks(4);
 
-        // Table of commuter survey data
-        dataTable.width(760).height(800) 
-            .dimension(commuteDurationDimension)
-                .group(function(d) { return "Commuter Survey Table" 
-                    })
-                .size(10) 
-            .columns([
-                function(d) { return d.commuteDuration; },
-                function(d) { return d.travelType; },
-                function(d) { return d.commuteActivity; },
-                function(d) { return d.employmentType; },
-                function(d) { return d.employmentDuration; },
-                function(d) { return d.employmentLevel; },
-                function(d) { return d.salary; },
-                function(d) { return d.whyCommute; },
-                function(d) { return d.whyLiveHere; },
-                function(d) { return d.collegeInSantaCruz; },
-                function(d) { return d.residenceDuration; },
-                function(d) { return d.workedInSantaCruz; },
-                function(d) { return d.whyNoWorkInSantaCruz; },
-                function(d) { return d.whatSalaryNeeded; },
-                function(d) { return d.children; },
-                function(d) { return d.rentOrOwn; },
-                function(d) { return d.age; }
-            ])
-            .sortBy(function(d){ 
-                return d.commuteDuration; 
-            })
-            .order(d3.ascending);
+          // pie chart for distribution of employment types
+          employmentTypeChart.width(250) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(employmentType) 
+              .group(employmentTypeGroup) 
+              .title(function(d){ return "Job: " + d.data.key + ". " + d.value + " commuters."; });
 
-        // Render the Charts
-        dc.renderAll();
+          // pie chart for distribution of commute types
+          commuteTypeChart.width(250) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(commuteType) 
+              .group(commuteTypeGroup) 
+              .title(function(d){ return "Transportation: " + d.data.key + ". " + d.value + " commuters."; });
 
-    });
+          // Table of commuter survey data
+          dataTable.width(760).height(800) 
+              .dimension(commuteDurationDimension)
+                  .group(function(d) { return "Commuter Survey Table" 
+                      })
+                  .size(10) 
+              .columns([
+                  function(d) { return d.commuteDuration; },
+                  function(d) { return d.travelType; },
+                  function(d) { return d.commuteActivity; },
+                  function(d) { return d.employmentType; },
+                  function(d) { return d.employmentDuration; },
+                  function(d) { return d.employmentLevel; },
+                  function(d) { return d.salary; },
+                  function(d) { return d.whyCommute; },
+                  function(d) { return d.whyLiveHere; },
+                  function(d) { return d.collegeInSantaCruz; },
+                  function(d) { return d.residenceDuration; },
+                  function(d) { return d.workedInSantaCruz; },
+                  function(d) { return d.whyNoWorkInSantaCruz; },
+                  function(d) { return d.whatSalaryNeeded; },
+                  function(d) { return d.children; },
+                  function(d) { return d.rentOrOwn; },
+                  function(d) { return d.age; }
+              ])
+              .sortBy(function(d){ 
+                  return d.commuteDuration; 
+              })
+              .order(d3.ascending);
+
+          // Render the Charts
+          dc.renderAll();
+
+      });
 
   </script>
 
