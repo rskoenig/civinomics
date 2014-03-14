@@ -46,6 +46,9 @@
           <div class='span4 offset1' id='dc-college-chart'>
               <h4>Attended college in area</h4> 
           </div>
+          <div class='span4' id='dc-employmentType-chart'>
+              <h4>Employment Type</h4> 
+          </div>
       </div>
 
       <div class='row'> 
@@ -84,8 +87,8 @@
     var salaryChart = dc.barChart("#dc-salary-chart");
     var commuteDurationChart = dc.lineChart("#dc-commuteDuration-chart");
     var ageChart = dc.barChart("#dc-age-chart");
-
     var collegeChart = dc.rowChart("#dc-college-chart");
+    var employmentTypeChart = dc.pieChart("#dc-employmentType-chart");
 
     var dataTable = dc.dataTable("#dc-table-graph");
 
@@ -148,7 +151,7 @@
             .reduceCount(function(d) { return d.age; }) // counts
         
         var collegeValue = facts.dimension(function (d) {
-            console.log("college: " + d.collegeWhere)
+            //console.log("college: " + d.collegeWhere)
             switch (d.collegeWhere) {
                 case 'UCSC': return "0.UCSC";
                 case 'Cabrillo': return "1.Cabrillo";
@@ -156,6 +159,10 @@
             } 
         });
         var collegeValueGroup = collegeValue.group();
+
+        // employmentType 
+        var employmentType = facts.dimension(function (d) { return d.employmentType; });
+        var employmentTypeGroup = employmentType.group();
 
         // Create dataTable dimension
         var commuteDurationDimension = facts.dimension(function (d) { 
@@ -173,7 +180,7 @@
             .transitionDuration(500) 
             .centerBar(true) 
             .gap(-8)
-            .filter([90000, 200000]) 
+            .filter([40000, 400000]) 
             .x(d3.scale.linear().domain([0, 550000])) 
             .elasticY(true) 
             .xAxis().tickFormat(function(v) {return v;});
@@ -202,12 +209,13 @@
             .group(ageValueGroupCount) 
             .transitionDuration(500) 
             .centerBar(true) 
-            .gap(-8)
+            .gap(-6)
             .elasticY(true) 
+            .filter([20, 51]) 
             .x(d3.scale.linear().domain((d3.extent(data, function(d) { return d.age; }))))
             .xAxis();
 
-        // row chart attendance
+        // row chart for college attendance
         collegeChart.width(300) 
             .height(220) 
             .margins({top: 25, left: 40, right: 40, bottom: 40}) 
@@ -217,8 +225,17 @@
             .label(function (d){
                 return d.key.split(".")[1];
                 }) 
-            .title(function(d){return d.value;}) 
+            .title(function(d){return d.value + " commuters";}) 
             .xAxis().ticks(4);
+
+        // pie chart for distribution of employment types
+        employmentTypeChart.width(250) 
+            .height(220) 
+            .radius(100) 
+            .innerRadius(30) 
+            .dimension(employmentType) 
+            .group(employmentTypeGroup) 
+            .title(function(d){ return "Job: " + d.data.key + ". " + d.value + " commuters."; });
 
         // Table of commuter survey data
         dataTable.width(760).height(800) 
