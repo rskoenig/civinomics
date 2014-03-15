@@ -285,6 +285,7 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
 
           // Setup the charts
 
+          var commasFormatter = d3.format(",.0f");
           // bar chart of salaries and their sum of occurences
           salaryChart.width(400) 
               .height(150) 
@@ -297,8 +298,16 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
               .filter([0, 550000]) 
               .x(d3.scale.linear().domain([0, 550000])) 
               .elasticY(true) 
-              .xAxis().ticks(6);
+              .xAxis()
+              .tickFormat(function(d) { return "$" + commasFormatter(d); })
+              .ticks(6);
 
+          var hoursFormatter = function(d) {
+            if (d > 1)
+                return d + "hrs";
+            else
+                return d + " hour";
+          }
           // bar chart of commute duration and its sum of occurences
           commuteDurationChart.width(400) 
               .height(150) 
@@ -313,8 +322,13 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
                   })
               .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.commuteDuration; })))
               .elasticY(true) 
-              .xAxis().ticks(5);
+              .xAxis()
+              .tickFormat(function(d) { return hoursFormatter(d); })
+              .ticks(5);
 
+          var yearsFormatter = function(d) {
+              return d + " yrs old";
+          }
           // age graph
           ageChart.width(800) 
               .height(150) 
@@ -327,8 +341,17 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
               .elasticY(true) 
               .filter([0, 71]) 
               .x(d3.scale.linear().domain((d3.extent(data, function(d) { return d.age + 2; }))))
-              .xAxis();
+              .xAxis()
+              .tickFormat(function(d) { return yearsFormatter(d); });
 
+          var commutersFormatter = function(d) {
+            if (d > 1)
+                return d + " people";
+            else if (d == 1)
+                return d + " person";
+            else
+                return d;
+          }
           // row chart for college attendance
           collegeChart.width(400) 
               .height(220) 
@@ -340,7 +363,23 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
                   return d.key.split(".")[1];
                   })
               .title(function(d){return d.value + " commuters";}) 
-              .xAxis().ticks(4);
+              .xAxis()
+              .tickFormat(function(d) { return commutersFormatter(d); })
+              .ticks(4);
+
+          // pie chart for distribution of commute types
+          commuteTypeChart.width(400) 
+              .height(220) 
+              .dimension(commuteType) 
+              .group(commuteTypeGroup)
+              .colors(d3.scale.category20b())
+              .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+              .title(function(d){return d.value + " commuters";})
+              .xAxis()
+              .tickFormat(function(d) { return commutersFormatter(d); })
+              .ticks(4);
 
           // pie chart for distribution of employment types
           employmentTypeChart.width(220) 
@@ -353,20 +392,10 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
                   return d.key.split(".")[1];
                   }) 
               .title(function(d){return d.value + " commuters.";})
-              .xAxis().ticks(4);
+              .xAxis()
+              .ticks(4);
 
-          // pie chart for distribution of commute types
-          commuteTypeChart.width(400) 
-              .height(220) 
-              .dimension(commuteType) 
-              .group(commuteTypeGroup)
-              .colors(d3.scale.category20b())
-              .label(function (d){
-                  return d.key.split(".")[1];
-                  }) 
-              .title(function(d){return d.value + " commuters";})
-              .xAxis().ticks(4);
-
+              
           // Table of commuter survey data
           dataTable.width(760).height(800) 
               .dimension(commuteDurationDimension)
