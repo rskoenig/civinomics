@@ -114,7 +114,10 @@ class IdeaController(BaseController):
             elif json.loads(request.body):
                 return json.dumps({'statusCode':1})
         title = payload['title'].strip()
-        text = payload['text']
+        if 'text' in payload:
+            text = payload['text']
+        else:
+            text = ''
         if title == '':
             log.info("title is blank")
             if request.params:

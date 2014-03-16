@@ -5,7 +5,7 @@ workshopApp.factory( 'Data', function(){
 
 function activityWorkshopController($scope, $http) {
 	$scope.listingType = 'activity';
-	$scope.newObjType = 'idea'
+	$scope.objType = 'idea'
 	$scope.activityType = '/all';
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
@@ -88,10 +88,10 @@ function activityWorkshopController($scope, $http) {
 
 
 	// Add a new object
-	$scope.newObjType = 'idea'
+	$scope.objType = 'idea'
 	$scope.submitNewObj = function(){
 		var newObjData = {'submit':'submit', 'title': $scope.newObjTitle, 'text': $scope.newObjText, 'link': $scope.newObjLink};
-		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.newObjType + '/handler';
+		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.objType + '/handler';
 		$http.post($scope.newObjURL, newObjData).success(function(data){
 			//$scope.numComments = Number($scope.numComments) + 1;
             $scope.getActivity();
@@ -106,6 +106,7 @@ function activityWorkshopController($scope, $http) {
 	$scope.showSummary = true;
 	$scope.showInfoPreview = true;
 	$scope.showStats = false;
+	$scope.showAddNew = false;
 
 	$scope.toggleSummary= function(){
 		$scope.showSummary = true;
@@ -129,7 +130,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = '';
-		$scope.newObjType = 'resource'
+		$scope.objType = 'resource'
 	}
 
 	$scope.toggleStats= function(){
@@ -154,7 +155,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'idea'};
-		$scope.newObjType = 'idea'
+		$scope.objType = 'idea'
 	}
 	$scope.toggleAdopted= function(){
 		$scope.showSummary = false;
@@ -166,7 +167,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {status:'adopted', };
-		$scope.newObjType = 'idea'
+		$scope.objType = 'idea'
 	}
 
 	$scope.toggleDiscussions= function(){
@@ -179,7 +180,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
-		$scope.newObjType = 'discussion'
+		$scope.objType = 'discussion'
 	};
 
 	$scope.toggleResources= function(){
@@ -192,7 +193,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = true;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
-		$scope.newObjType = 'resource'
+		$scope.objType = 'resource'
 	};
 
 	$scope.toggleAddNew= function(){

@@ -22,7 +22,9 @@
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
                     </h4>
-                    ${authorPosting()}
+                    % if not c.w:
+                        ${authorPosting()}
+                    % endif
                 </div>
             </div>
             <div class="row-fluid">
@@ -59,7 +61,9 @@
                     <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    ${authorPosting()}
+                    % if not c.w:
+                        ${authorPosting()}
+                    % endif
                 </div>
             </div><!-- media-body -->
             <div class="row-fluid">
@@ -88,7 +92,9 @@
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p><a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a><p>
-                ${authorPosting()}
+                % if not c.w:
+                    ${authorPosting()}
+                % endif
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
@@ -120,7 +126,9 @@
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                ${authorPosting()}
+                % if not c.w:
+                    ${authorPosting()}
+                % endif
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
@@ -144,7 +152,9 @@
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                ${authorPosting()}
+                % if not c.w:
+                    ${authorPosting()}
+                % endif
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
