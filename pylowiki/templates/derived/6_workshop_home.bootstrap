@@ -7,89 +7,11 @@
 <%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
 <% import pylowiki.lib.graphData       as graphData %>
 
-<%
-  if c.mainImage['pictureHash'] == 'supDawg':
-     backgroundImage = '"/images/slide/slichow/supDawg.slideshow"'
-  elif 'format' in c.mainImage.keys():
-     backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-  else:
-     backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-%>
 
 <% numIdeas = str(len(c.ideas)) %>
-<div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'; numViews = '${c.w['views']}';">
-<div id="top" class="row-fluid" ng-controller="activityWorkshopController">
     <div class="span9">
       <!--<div class="darkened-workshop"></div>-->
-      <div class="row-fluid well workshop-hero">
-        <div class="workshop-hero-image" style="background-image: url(${backgroundImage})">
-          <!--<div class="darkened-workshop"></div>-->
-          <div class="row-fluid">
-            <span class="link-span med-gradient-workshop"></span><!-- used to make entire div a link -->
-            
-            <div class="workshop-title-group">
-              <h1 class="workshop-title"> 
-                <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
-                  {{workshopTitle}}
-                </a>
-              </h1>
-              <h4 style="color: #fff">${helpers.displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
-            </div>
-          </div>
-        </div><!-- background-image -->
-        <div class="hero-bottom">
-          % if 'user' in session:
-            <span class="pull-right">
-              % if c.privs['admin'] or c.privs['facilitator']: 
-                ${helpers.configButton(c.w)}
-              % endif
-              % if not c.privs['facilitator']:
-                ${helpers.watchButton(c.w)}
-              % endif
-            </span>
-          % endif
-          <span class = "share-icons pull-right">
-            ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
-            ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
-            % if c.w['public_private'] == 'public':
-              <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-            %endif
-          </span>
-          <table id="metrics">
-            <tr>
-              <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
-                <span class="workshop-metrics">Ideas</span><br>
-                  <strong ng-cloak>{{numIdeas}}</strong>
-              </td>
-              <td class="clickable" ng-click="toggleAdopted()">
-                <span class="workshop-metrics">Adopted</span><br>
-                  <strong ng-cloak>{{numAdopted}}</strong>
-              </td>
-              <td class="clickable" ng-click="toggleDiscussions()">
-                <span class="workshop-metrics">Questions</span><br>
-                  <strong ng-cloak>{{numDiscussions}}</strong>
-              </td>
-              <td class="clickable" ng-click="toggleResources()">
-                <span class="workshop-metrics">Resources</span><br>
-                  <strong ng-cloak>{{numResources}}</strong>
-              </td>
-
-              <!--
-              <td>
-                <span class="workshop-metrics">Views</span><br>
-                  <strong ng-cloak>{{numViews}}</strong>
-              </td>
-              -->
-              <!--
-              <td>
-                <span class="workshop-metrics">Participants</span><br>
-                  <strong ng-cloak>{{numParticipants}}</strong>
-              </td>
-              -->
-            </tr>
-          </table>
-        </div><!-- workshopIdeasCtrl -->
-      </div><!-- top well -->
+      ${helpers.workshopHero()}
 
       <div class="well" ng-show="showStats" ng-cloak>
         <h1>Stats</h1>
@@ -107,7 +29,6 @@
         % endif
 
       </div>
-
 
       <div class="well" ng-show="showInfoPreview" ng-cloak>
         <div ng-hide="showInfo">
@@ -130,23 +51,27 @@
         </div>
       </div>
 
-      <div class="well" ng-show="showAddNew" ng-cloak>
-        <table>
+      <div class="alert alert-info" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+          <span ng-show="query == ''">{{alertMsg}}</span>
+          <span ng-show="!(query == '') && len(activity | filter:query) == 0">There are no {{newObjType}}s. Be the first to add one!</span>
+      </div>
+
+      <div ng-show="showAddNew || len(activity | filter:query) == 0" ng-cloak>
+        <table class="addNewObj">
           <tr>
             <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar med-avatar", linkClass="topbar-avatar-link")}</td>
-            <td style="padding: 10px;">
+            <td class="well" style="padding: 10px;">
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
-                    <strong>Add your...</strong>
                     <select name="newObjType" ng-model="newObjType">
                       <option value="idea">Idea</option>
                       <option value="discussion">Discussion</option>
                       <option value="resource">Resource</option>
                     </select>
-                    <input type="text" class="span10" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
+                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
                     <input ng-show="newObjType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
-                    <textarea class="span10" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Text..."></textarea>
-                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
+                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
                 </form>
               % endif
             </td>
@@ -155,10 +80,6 @@
       </div>
     
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
-
-      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
-          {{alertMsg}}
-      </div>
 
       <table ng-repeat="item in activity | filter:query" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats && !showInfo" ng-cloak>
         <tr>
@@ -193,15 +114,24 @@
 
    </div> <!-- /.span8 -->
 
-   <div class="span3" >
-      <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()">Add your idea...</button>
+   <div class="span3">
+      % if c.authuser:
+        % if c.privs and not c.privs['provisional']:
+          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()">Add your {{newObjType}}...</button>
+        % else:
+          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal'>Add your {{newObjType}}...</button>
+        % endif
+      % else:
+        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal'>Add your {{newObjType}}...</button>
+      % endif
+
       <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
         <li ng-class="{active: showSummary == true}">
           <a ng-click="toggleSummary()">Summary</a>
         </li>
         <li ng-class="{active : showInfo == true}"><a ng-click="toggleInfo()">Info</a></li>
         <li ng-class="{active: showIdeas == true}"><a ng-click="toggleIdeas()">Ideas</a></li>
-        <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Questions</a></li>
+        <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Discussions</a></li>
         <li ng-class="{active: showResources == true}"><a ng-click="toggleResources()">Resources</a></li>
         <li ng-class="{active: showStats == true}"><a ng-click="toggleStats()">Stats</a></li>
       </ul>
@@ -218,9 +148,7 @@
             ${helpers.showFacilitators()}
             ${helpers.whoListening()}
          </div> <!--/.browse-->
-   </div> <!-- /.span4 -->
-</div> <!-- /.row -->
-</div> <!-- ng-init-->
+   </div> <!-- /.span3 -->
 
 
 <%def name="extraScripts2()">

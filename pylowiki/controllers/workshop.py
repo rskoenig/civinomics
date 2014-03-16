@@ -142,6 +142,15 @@ class WorkshopController(BaseController):
             abort(404)
         log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '"/images/slide/slichow/supDawg.slideshow"'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
+
+
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
         

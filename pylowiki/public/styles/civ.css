@@ -794,6 +794,7 @@ form.addGoal{
   margin-top:8px;
   overflow:hidden;
   padding-bottom:10px;
+  background-color: #fff;
 }
 .section-wrapper .section-header {
   background: whiteSmoke;
@@ -3340,7 +3341,7 @@ hr.object-list-header{
   width: 100%;
 }
 
-.activity-item, .message-table{
+.activity-item, .message-table, .addNewObj{
   width: 100%;
 }
 

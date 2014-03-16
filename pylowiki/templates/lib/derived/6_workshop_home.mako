@@ -49,7 +49,8 @@
         <hr style="margin:8px 0;">
      % endif
       
-     % if 'user' in session and c.authuser and not c.privs['provisional']:
+     <!-- 
+     #% if 'user' in session and c.authuser and not c.privs['provisional']:
         <em class="grey"><small>Which public officials should participate?</small></em><br />
         <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener" name="suggestListenerForm">
           <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
@@ -59,7 +60,8 @@
             {{suggestListenerResponse}}
           </div>
         </form>
-     %endif
+     #%endif
+     -->
 </%def>
 
 <%def name="whoListeningModals()">
@@ -174,7 +176,7 @@
 </%def>
 
 <%def name="viewButton()">
-  <a class="btn btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
+  <a class="btn pull-right left-space" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><strong>View</strong></a>
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">
@@ -491,4 +493,81 @@
           the <a href="${href}">${level} of ${name}</a>
         % endif
     % endif
+</%def>
+
+
+<%def name="workshopHero()">
+  <div class="row-fluid well workshop-hero">
+    <div class="workshop-hero-image" style="background-image: url(${c.backgroundImage})">
+      <!--<div class="darkened-workshop"></div>-->
+      <div class="row-fluid">
+        <span class="link-span med-gradient-workshop"></span><!-- used to make entire div a link -->
+        
+        <div class="workshop-title-group">
+          <h1 class="workshop-title"> 
+            <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
+              {{workshopTitle}}
+            </a>
+          </h1>
+          <h4 style="color: #fff">${displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
+        </div>
+      </div>
+    </div><!-- background-image -->
+    <div class="hero-bottom">
+      % if 'user' in session:
+        <span class="pull-right">
+          % if c.adminPanel:
+            ${viewButton()}
+          % else:
+            % if c.privs['admin'] or c.privs['facilitator']: 
+              ${configButton(c.w)}
+            % endif
+            % if not c.privs['facilitator']:
+              ${watchButton(c.w)}
+            % endif
+          % endif
+        </span>
+      % endif
+      <span class = "share-icons pull-right">
+        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
+        ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+        % if c.w['public_private'] == 'public':
+          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+        %endif
+      </span>
+      <table id="metrics">
+        <tr>
+          <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
+            <span class="workshop-metrics">Ideas</span><br>
+              <strong ng-cloak>{{numIdeas}}</strong>
+          </td>
+          <td class="clickable" ng-click="toggleAdopted()">
+            <span class="workshop-metrics">Adopted</span><br>
+              <strong ng-cloak>{{numAdopted}}</strong>
+          </td>
+          <td class="clickable" ng-click="toggleDiscussions()">
+            <span class="workshop-metrics">discussions</span><br>
+              <strong ng-cloak>{{numDiscussions}}</strong>
+          </td>
+          <td class="clickable" ng-click="toggleResources()">
+            <span class="workshop-metrics">Resources</span><br>
+              <strong ng-cloak>{{numResources}}</strong>
+          </td>
+
+          <!--
+          <td>
+            <span class="workshop-metrics">Views</span><br>
+              <strong ng-cloak>{{numViews}}</strong>
+          </td>
+          -->
+          <!--
+          <td>
+            <span class="workshop-metrics">Participants</span><br>
+              <strong ng-cloak>{{numParticipants}}</strong>
+          </td>
+          -->
+        </tr>
+      </table>
+    </div><!-- workshopIdeasCtrl -->
+  </div><!-- workshop-hero -->
 </%def>

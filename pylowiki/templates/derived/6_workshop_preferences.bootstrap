@@ -4,6 +4,7 @@
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
 <%namespace name="admin_helpers" file="/lib/admin_helpers/workshop.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
+<%namespace name="home_helpers" file="/lib/derived/6_workshop_home.mako" />
 
 <%
     lib.return_to()
@@ -41,7 +42,8 @@
             manageWs_active = "active"
 %>
 <div class="row-fluid">
-    <div class="span9" style="margin-top: 4px;">
+    <div class="span9">
+        ${home_helpers.workshopHero()}
         % if c.conf['read_only.value'] == 'true':
             <!-- read only -->
         % else:
@@ -84,53 +86,53 @@
         % endif
     </div><!-- span9 -->
     <div class="span3">
-        % if c.w['startTime'] != '0000-00-00':
-            <ul class="nav nav-tabs nav-stacked" style="margin-top: 12px; margin-right:0; width: 100%">
-            <% tabCount = 1 %>
-                <li class="${manageWs_active}"><a href="#manageWs" data-toggle="tab">${tabCount}. Manage Workshop
-                <% tabCount += 1 %>
-                </a></li>
-                <li class="${notables_active}"><a href="#notables" data-toggle="tab">${tabCount}. Facilitators, Listeners
-                <% tabCount += 1 %>
-                </a></li>
-                <li class="${eventLog_active}"><a href="#eventLog" data-toggle="tab">${tabCount}. Event Log
-                <% tabCount += 1 %>
-                </a></li>
-                % if c.w['type'] == 'professional' and c.accounts:
-                <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">4. Account Management</a></li>
-                % endif
-                % if c.privs['admin']:
-                <li><a href="#admin" data-toggle="tab">Civ admin</a></li>
-                % endif
-            </ul>
-        % endif       
         <ul class="nav nav-tabs nav-stacked" style="margin-top: 12px; margin-right:0; width: 100%">
-            <li class="${basicInfo_active}"><a href="#basicInfo" data-toggle="tab">1. Basic Info
+            <li class="${basicInfo_active}"><a href="#basicInfo" data-toggle="tab">Basic Info
             % if c.basicConfig:
                 <i class="icon-ok pull-right"></i>
             % endif
             </a></li>
-            <li class="${tags_active}"><a href="#tags" data-toggle="tab">2. Tags
+            <li class="${tags_active}"><a href="#tags" data-toggle="tab">Tags
             % if c.tagConfig:
                 <i class="icon-ok pull-right"></i>
             % endif
             </a></li>
-            <li class="${slideshow_active}"><a href="#slideshow" data-toggle="tab">3. Slideshow
+            <li class="${slideshow_active}"><a href="#slideshow" data-toggle="tab">Slideshow
             % if c.slideConfig:
                 <i class="icon-ok pull-right"></i>
             % endif
             </a></li>
-            <li class="${background_active}"><a href="#background" data-toggle="tab">4. Information
+            <li class="${background_active}"><a href="#background" data-toggle="tab">Information
             % if c.backConfig:
                 <i class="icon-ok pull-right"></i>
             % endif
             </a></li>
-            <li class="${participants_active}"><a href="#participants" data-toggle="tab">5. Participants
+            <li class="${participants_active}"><a href="#participants" data-toggle="tab">Participants
             % if c.participantsConfig:
                 <i class="icon-ok pull-right"></i>
             % endif
             </a></li>
         </ul>
+        % if c.w['startTime'] != '0000-00-00':
+            <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-right:0; width: 100%">
+            <% tabCount = 1 %>
+                <li class="${manageWs_active}"><a href="#manageWs" data-toggle="tab">Manage Workshop
+                <% tabCount += 1 %>
+                </a></li>
+                <li class="${notables_active}"><a href="#notables" data-toggle="tab">Facilitators, Officials
+                <% tabCount += 1 %>
+                </a></li>
+                <li class="${eventLog_active}"><a href="#eventLog" data-toggle="tab">Event Log
+                <% tabCount += 1 %>
+                </a></li>
+                % if c.w['type'] == 'professional' and c.accounts:
+                <!-- <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">Account Management</a></li> -->
+                % endif
+                % if c.privs['admin']:
+                    <li><a href="#admin" data-toggle="tab">Civ admin</a></li>
+                % endif
+            </ul>
+        % endif 
         ${helpers.publish()}
     </div><!-- span3 -->
 </div><!-- row-fluid -->

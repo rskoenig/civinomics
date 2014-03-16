@@ -5,6 +5,7 @@ workshopApp.factory( 'Data', function(){
 
 function activityWorkshopController($scope, $http) {
 	$scope.listingType = 'activity';
+	$scope.newObjType = 'idea'
 	$scope.activityType = '/all';
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
@@ -24,7 +25,7 @@ function activityWorkshopController($scope, $http) {
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
 				$scope.activity = []
-				$scope.alertMsg = data.alertMsg;
+				$scope.alertMsg = "There are no ideas, resources or discussions yet. Be the first to add one!"
 				$scope.alertType = data.alertType;
 			} 
 			else if (data.statusCode === 0){
@@ -128,6 +129,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = '';
+		$scope.newObjType = 'resource'
 	}
 
 	$scope.toggleStats= function(){
@@ -152,6 +154,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'idea'};
+		$scope.newObjType = 'idea'
 	}
 	$scope.toggleAdopted= function(){
 		$scope.showSummary = false;
@@ -163,6 +166,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {status:'adopted', };
+		$scope.newObjType = 'idea'
 	}
 
 	$scope.toggleDiscussions= function(){
@@ -175,6 +179,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
+		$scope.newObjType = 'discussion'
 	};
 
 	$scope.toggleResources= function(){
@@ -187,6 +192,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = true;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
+		$scope.newObjType = 'resource'
 	};
 
 	$scope.toggleAddNew= function(){
