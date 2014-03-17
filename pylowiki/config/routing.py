@@ -399,7 +399,11 @@ def make_map():
     ################
     # Messaging    #
     ################
-    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
+    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/messages/get/{id1}/{id2}{end:/?}', controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getMessages/{id1}/{id2}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getMessages/{id1}/{id2}/{type}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', type = '{type}')
+    map.connect('/getMessagesSlice/{id1}/{id2}/{type}/{offset}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', type = '{type}', offset = '{offset}')
     map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
     
     ################
