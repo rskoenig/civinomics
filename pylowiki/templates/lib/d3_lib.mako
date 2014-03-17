@@ -21,10 +21,19 @@
           font-weight: normal; 
       }
       h4 span {
-          font-size: 0.9em; 
+          font-size: 0.7em; 
           font-weight: normal; 
+          padding-left: 0.2em;
       }
 
+      .dc-data-count2 .filter-count {
+          color: #3182bd;
+          font-weight: bold;
+      }
+      .dc-data-count2 .total-count {
+          color: #3182bd;
+          font-weight: bold;
+      }
 
       .dc-chart rect.bar {
           fill: aquamarine;
@@ -36,7 +45,7 @@
       }
 
       .dc-chart g.row text {
-          font-size: 1em !important;
+          font-size: 0.7em !important;
           font: arial !important;
 
       }
@@ -75,7 +84,11 @@
           <div class='span9'> 
               <div class='row'>
                   <div class='span5 offset1' id='dc-salary-chart'> 
-                      <h4>Salary distribution</h4>
+                      <h4>Salary distribution
+                          <span>
+                              (drag sliders to filter results)
+                          </span>
+                      </h4>
                   </div>
                   <div class='span5 offset1' id='dc-commuteDuration-chart'>
                       <h4>Commute Duration</h4> 
@@ -83,13 +96,18 @@
               </div>
               <div class='row'>
                   <div class='span11 offset1' id='dc-age-chart'>
-                      <h4>Age of commuters polled</h4> 
+                      <h4>Age of commuters polled
+                          <span>
+                              (drag sliders to filter results)
+                          </span>
+                      </h4>
                   </div>
               </div>
               <div class='row'> 
                   <div class='span5 offset1' id='dc-college-chart'>
                       <h4>Attended college in area
                           <span>
+                              (click to filter results)
                               <a class="reset"
 href="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                           </span>
@@ -98,6 +116,7 @@ href="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;
                   <div class='span5 offset1' id='dc-commuteType-chart'>
                       <h4>Commute Method
                           <span>
+                              (click to filter results)
                               <a class="reset"
 href="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                           </span>
@@ -109,6 +128,7 @@ href="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: n
               <div class='span12' id='dc-employmentType-chart'>
                   <h4>Job Type
                       <span>
+                          (click to filter results)
                           <a class="reset"
 href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
                       </span>
@@ -119,6 +139,15 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
 
       <div class='row'> 
           <div class='span10 offset1'>
+              <div class='dc-data-count2'>
+                  <span> 
+                      Table listing
+                      <span class="filter-count"></span>
+                      records out of
+                      <span class="total-count"></span> 
+                      people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+                  </span>
+              </div>
               <table class='table table-hover' id='dc-table-graph'> 
                   <thead>
                       <tr class='header'> 
@@ -198,6 +227,10 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
 
           // reset all button - count all the facts
           dc.dataCount(".dc-data-count") 
+              .dimension(facts) 
+              .group(all);
+          // reset all button - count all the facts
+          dc.dataCount(".dc-data-count2") 
               .dimension(facts) 
               .group(all);
 
@@ -383,8 +416,8 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
 
           // pie chart for distribution of employment types
           employmentTypeChart.width(220) 
-              .height(620) 
-              .margins({top: 25, left: 5, right: 10, bottom: 40}) 
+              .height(720) 
+              .margins({top: 5, left: 5, right: 10, bottom: 40}) 
               .dimension(employmentType) 
               .group(employmentTypeGroup) 
               .colors(d3.scale.category20c())
@@ -395,13 +428,13 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
               .xAxis()
               .ticks(4);
 
-              
+
           // Table of commuter survey data
           dataTable.width(760).height(800) 
               .dimension(commuteDurationDimension)
                   .group(function(d) { return "Commuter Survey Table" 
                       })
-                  .size(10) 
+                  .size(200) 
               .columns([
                   function(d) { return d.commuteActivity; },
                   function(d) { return d.employmentDuration; },
