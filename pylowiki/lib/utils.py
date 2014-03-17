@@ -262,6 +262,12 @@ def profilePhotoURL(thing):
 
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
     
+
+def profileDiscussionURL(thing):
+    owner = generic.getThing(thing['userCode'])
+
+    return "/profile/%s/%s/discussion/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
+    
 ##################################################
 # generates a url for a thing
 # kwarg returnTitle gets the title out of the thing as well.

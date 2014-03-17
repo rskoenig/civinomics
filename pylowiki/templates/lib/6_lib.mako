@@ -938,13 +938,13 @@
    ${ideaStr | n}
 </%def>
 
-<%def name="discussionLink(d, w, **kwargs)">
+<%def name="discussionLink(d, p, **kwargs)">
     <%
         if 'workshopCode' in d:
             if 'noHref' in kwargs:
-                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
             else:
-                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
             discussionStr += commentLinkAppender(**kwargs)
             if 'noHref' in kwargs:
                 discussionStr += ''
@@ -955,6 +955,11 @@
                 discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
             else:
                 discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+        elif d['discType'] == 'organization_general':
+            if 'noHref' in kwargs:
+                discussionStr = '/profile/%s/%s/discussion/show/%s'%(d['userCode'], d['user_url'], d['urlCode'])
+            else:
+                discussionStr = 'href="/profile/%s/%s/discussion/show/%s"'%(d['userCode'], d['user_url'], d['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr

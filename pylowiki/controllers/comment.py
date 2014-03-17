@@ -113,7 +113,7 @@ class CommentController(BaseController):
                     return redirect(session['return_to'])
                 elif json.loads(request.body):
                     return json.dumps({'statusCode':1})
-                    
+            
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
@@ -131,6 +131,8 @@ class CommentController(BaseController):
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
                     dbHelpers.commit(comment)
+                    
+            log.info("commentCCN comment created")
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
@@ -151,12 +153,18 @@ class CommentController(BaseController):
                     title = ' commented on a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
                 elif thing.objType.replace("Unpublished", "") == 'discussion':
-                    title = ' commented on an initiative update you made'
-                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnUpdate")
+                    if thing['discType'] == 'update':
+                        title = ' commented on an initiative update you made'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnUpdate")
+                    elif thing['discType'] == 'organization_general':
+                        title = ' commented on a discussion you started'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgGeneral")
+                        
                 message = genericLib.linkChildToParent(message, comment)
                 dbHelpers.commit(message)
                 alertsLib.emailAlerts(comment)
 
+            log.info("commentCCN after message")
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
                 if 'workshopCode' in thing:
                     mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
@@ -166,18 +174,22 @@ class CommentController(BaseController):
                     mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
             
             if request.params:
+                log.info("commentCCN where oh where")
                 if 'workshopCode' in thing:   
                     return redirect(utils.thingURL(workshop, thing))
                 elif thing.objType == 'photo' or 'photoCode' in thing:
                     return redirect(utils.profilePhotoURL(thing))
                 elif thing.objType == 'initiative' or 'initiativeCode' in thing:
                     return redirect(utils.initiativeURL(thing))
+                elif thing.objType == 'discussion':
+                    return redirect(utils.profileDiscussionURL(thing))
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            log.info("commentCCN got error")
             if request.params:
-                return redirect(utils.thingURL(workshop, thing))
+                return redirect(session['return_to'])
             elif json.loads(request.body):
                 return json.dumps({'statusCode':1})
 
