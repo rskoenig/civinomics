@@ -1,3 +1,4 @@
+// custom crossfilter version 1.1.1
 (function(exports){
 crossfilter.version = "1.1.1";
 function crossfilter_identity(d) {
