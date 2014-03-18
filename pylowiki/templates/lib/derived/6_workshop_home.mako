@@ -18,7 +18,7 @@
         <ul class="media-list" id="workshopNotables">
         % for person in c.activeListeners:
             <li class="media notables-item">
-                ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
+                ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
                     ${lib_6.userLink(person, className="listener-name")}<br />
                     <small>${lib_6.userGreetingMsg(person)}</small>
@@ -46,7 +46,6 @@
             </li>
         % endfor
         </ul>
-        <hr style="margin:8px 0;">
      % endif
       
      <!-- 
@@ -107,7 +106,7 @@
     <ul class="media-list" id="workshopNotables">
       % for facilitator in c.facilitators:
           <li class="media notables-item">
-              ${lib_6.userImage(facilitator, className="avatar med-avatar media-object", linkClass="pull-left")}
+              ${lib_6.userImage(facilitator, className="avatar media-object", linkClass="pull-left")}
               <div class="media-body">
                   ${lib_6.userLink(facilitator, className="listener-name")}<br />
                   <small>${lib_6.userGreetingMsg(facilitator)} <strong class="grey">Facilitator</strong></small>

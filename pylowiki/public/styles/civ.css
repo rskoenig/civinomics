@@ -352,6 +352,11 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
   border-bottom-color: #fff;
 }
 
+.nav .dropdown-toggle .caret.green {
+  border-top-color: #005D28;
+  border-bottom-color: #005D28;
+}
+
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
    background-color:#005d28;
    color:white;
@@ -1112,9 +1117,9 @@ img.avatar{
 }
 
 .avatar{
-   height: 60px;
-   width:60px;
-   min-width: 60px;
+   height: 50px;
+   width:50px;
+   min-width: 50px;
    margin-bottom:5px;
 }
 
@@ -3349,13 +3354,17 @@ hr.object-list-header{
   width: 100%;
 }
 
+.activity-item{
+  margin-bottom: 20px;
+}
+
 .activity-item, .message-table, .addNewObj{
   width: 100%;
 }
 
 .activity-item .avatar-cell, .avatar-cell{
   vertical-align: top;
-  width: 70px;
+  width: 60px;
 /*
   margin-top: 10px;
   margin-right: 10px;

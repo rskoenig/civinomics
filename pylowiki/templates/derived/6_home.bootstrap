@@ -23,18 +23,18 @@
 
       <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
         <tr>
-          <td class="avatar-cell" rowspan="3"><img class="thumbnail flag med-flag border" src="{{item.flag}}"></td>
+          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
           <td></td>
         </tr>
         <tr>
           <td>
             <div class="activity-item-content-header">
               <small>
-                <strong style="text-transform: capitalize;">{{item.objType}}</strong> for <a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
-                  <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-                  <span ng-if="item.parentObjType && !(item.parentObjType == '')">
-                      in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
-                  </span>
+                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                <span class="date">{{item.fuzzyTime}} ago</span>
+                <span ng-if="item.parentObjType && !(item.parentObjType == '')">
+                    in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
+                </span>
               </small>
             </div>
           </td>

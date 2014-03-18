@@ -107,6 +107,8 @@ function activityWorkshopController($scope, $http) {
 	$scope.showInfoPreview = true;
 	$scope.showStats = false;
 	$scope.showAddNew = false;
+	$scope.orderProp = '';
+	$scope.query2 = '!disabled';
 
 	$scope.toggleSummary= function(){
 		$scope.showSummary = true;
@@ -118,6 +120,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = '';
+		$scope.query2 = '!disabled';
 		$scope.objType = 'idea'
 	}
 
@@ -131,6 +134,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = '';
+		$scope.query2 = '';
 		$scope.objType = 'resource'
 	}
 
@@ -156,6 +160,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'idea'};
+		$scope.query2 = '!disabled';
 		$scope.objType = 'idea'
 	}
 	$scope.toggleAdopted= function(){
@@ -167,7 +172,8 @@ function activityWorkshopController($scope, $http) {
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
-		$scope.query = {status:'adopted', };
+		$scope.query = {status:'adopted'};
+		$scope.query2 = {status:'adopted'};
 		$scope.objType = 'idea'
 	}
 
@@ -181,6 +187,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
+		$scope.query2 = '';
 		$scope.objType = 'discussion'
 	};
 
@@ -194,6 +201,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = true;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
+		$scope.query2 = '';
 		$scope.objType = 'resource'
 	};
 
@@ -206,7 +214,6 @@ function activityWorkshopController($scope, $http) {
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = true;
-		$scope.query = {objType:'resource'};
 	};
 }
 

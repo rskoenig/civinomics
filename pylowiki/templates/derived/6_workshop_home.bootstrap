@@ -58,7 +58,7 @@
       <div ng-show="showAddNew" ng-cloak>
         <table class="addNewObj">
           <tr>
-            <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar med-avatar", linkClass="topbar-avatar-link")}</td>
+            <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}</td>
             <td class="well" style="padding: 10px;">
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
@@ -80,7 +80,7 @@
     
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
-      <div class="row-fluid" ng-cloak>
+      <div class="row-fluid" ng-show="!showStats" ng-cloak>
         <div class="span12">
           <table>
             <tr>
@@ -89,11 +89,31 @@
               </td>
               <td>
                 <ul class="nav nav-pills civ-search-tools messages inline" ng-cloak>
-                  <li ng-class="{active : orderProp == '-date'}"><a ng-click="orderProp = '-date'">Recent</a></li>
+                  <li ng-class="{active : orderProp == ''}"><a ng-click="orderProp = ''">Recent</a></li>
                   <li ng-class="{active : orderProp == '-netVotes'}"><a ng-click="orderProp = '-netVotes'">Top Rated</a></li>
                   <li ng-class="{active : orderProp == '-voteCount'}"><a ng-click="orderProp = '-voteCount'">Most Votes</a></li>
                   <li ng-class="{active : orderProp == '-numComments'}"><a ng-click="orderProp = '-numComments'">Most Comments</a></li>
-
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Status <b class="caret green"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active : query2 = {status:'proposed'}">
+                            <a ng-click="query2 = {status:'proposed'}">Proposed</a>
+                        </li>
+                        <li ng-class="{active : query2 = {status:'adopted'}">
+                            <a ng-click="query2 = {status:'adopted'}">Adopted</a>
+                        </li>
+                        <li ng-class="{active : query2 = {status:'disabled'}">
+                            <a ng-click="query2 = {status:'disabled'}">Disabled</a>
+                        </li>
+                        <li class="search-right-column-link" ng-class="showingPhotos.class">
+                            <a href="#photos" data-toggle="tab" ng-click="searchPhotos()">
+                                Photos <span class="pull-right">(${c.numPhotos}) </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 </ul>
               </td>
             </tr>
@@ -101,9 +121,22 @@
         </div>
       </div>
 
-      <table ng-repeat="item in activity | filter:query | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats && !showInfo" ng-cloak>
+      <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats && !showInfo" ng-cloak>
         <tr>
-          <td class="comment-avatar-cell"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"</td>
+          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="activity-item-content-header">
+              <small>
+                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                <span class="date">{{item.fuzzyTime}} ago</span>
+              </small>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
           </td>

@@ -1490,6 +1490,7 @@ class WorkshopController(BaseController):
                     entry['objType'] = 'update'
             if item.objType == 'idea':
                 numIdeas += 1
+                entry['status'] = 'proposed'
                 if item['adopted'] == '1':
                     entry['status'] = 'adopted'
                     numAdopted += 1
