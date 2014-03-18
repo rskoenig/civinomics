@@ -225,7 +225,7 @@
 
 
 <%def name="edit_background()">
-    <div class="section-wrapper">
+    <div class="section-wrapper wiki-well">
         <div class="browse">
             <h4 class="section-header smaller">Background</h4>
             <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a>
