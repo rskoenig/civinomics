@@ -147,13 +147,60 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
       </div>
       <div class='row'>   <!-- spans entire width -->   
           <div class='span3 offset1' id='dc-workedInSc-chart'>
-              <h4>Ever worked in Santa Cruz?</h4>
+              <h4>Ever worked in Santa Cruz?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
           </div>
           <div class='span3' id='dc-whyLiveInSc-chart'>
-              <h4>Why live in Santa Cruz?</h4>
+              <h4>Why live here?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
           </div>
           <div class='span3' id='dc-residenceDuration-chart'>
-              <h4>How long have you lived in Santa Cruz?</h4>
+              <h4>Number of years in Santa Cruz?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+      </div>    <!-- END entire width column -->   
+      <div class='row'>   <!-- spans entire width -->   
+          <div class='span3 offset1' id='dc-rentOrOwn-chart'>
+              <h4>Do you rent or own a place here?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-whyNotWorkInSc-chart'>
+              <h4>Why not work in Santa Cruz?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-salaryNeeded-chart'>
+              <h4>Salary needed to work here?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
           </div>
       </div>    <!-- END entire width column -->   
 
@@ -202,6 +249,9 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
       var workedInScChart = dc.pieChart("#dc-workedInSc-chart");
       var whyLiveInScChart = dc.pieChart("#dc-whyLiveInSc-chart");
       var residenceDurationChart = dc.pieChart("#dc-residenceDuration-chart");
+      var rentOrOwnChart = dc.pieChart("#dc-rentOrOwn-chart");
+      var whyNotWorkInScChart = dc.pieChart("#dc-whyNotWorkInSc-chart");
+      var salaryNeededChart = dc.pieChart("#dc-salaryNeeded-chart");
 
       var dataTable = dc.dataTable("#dc-table-graph");
 
@@ -378,6 +428,35 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
           });
           var residenceDurationGroup = residenceDuration.group();
 
+          var rentOrOwn = facts.dimension(function (d) {
+              if (d.rentOrOwn == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.rentOrOwn;
+              }
+          });
+          var rentOrOwnGroup = rentOrOwn.group();
+
+          var whyNotWorkInSc = facts.dimension(function (d) {
+              if (d.whyNoWorkInSantaCruz == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.whyNoWorkInSantaCruz;
+              }
+          });
+          var whyNotWorkInScGroup = whyNotWorkInSc.group();
+
+          var salaryNeeded = facts.dimension(function (d) {
+              if (d.whatSalaryNeeded == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.whatSalaryNeeded;
+              }
+          });
+          var salaryNeededGroup = salaryNeeded.group();
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+
           // Create dataTable dimension
           var commuteDurationDimension = facts.dimension(function (d) { 
               return d.commuteDuration;
@@ -508,7 +587,10 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
               .xAxis()
               .ticks(4);
 
-          workedInScChart.width(250) 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          // pie chart section begins here
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          workedInScChart.width(300) 
               .height(220) 
               .radius(100) 
               .innerRadius(30) 
@@ -517,7 +599,7 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
               .title(function(d){return d.data.key + ", " + d.value;});
 
 
-          whyLiveInScChart.width(250) 
+          whyLiveInScChart.width(300) 
               .height(220) 
               .radius(100) 
               .innerRadius(30) 
@@ -528,7 +610,7 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
           //var residenceYearsFormatter = function (d) {
           //    if d.data.key
           //}
-          residenceDurationChart.width(250) 
+          residenceDurationChart.width(300) 
               .height(220) 
               .radius(100) 
               .innerRadius(30) 
@@ -536,6 +618,29 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
               .group(residenceDurationGroup) 
               .title(function(d){return d.data.key + ", " + d.value + " people";});
 
+          rentOrOwnChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(rentOrOwn) 
+              .group(rentOrOwnGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          whyNotWorkInScChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(whyNotWorkInSc) 
+              .group(whyNotWorkInScGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          salaryNeededChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(salaryNeeded) 
+              .group(salaryNeededGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
 
           // Table of commuter survey data
           dataTable.width(760).height(800) 
