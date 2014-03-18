@@ -169,7 +169,7 @@
         .attr("xlink:href", function(d) {
           return d.url
         })
-        .attr("class", "listed-item-title")
+        .attr("class", "listed-item-title data-label")
         .append("text")
         .attr("x", width + 5)
         .attr("y", ${chart}y.rangeBand() / 2)

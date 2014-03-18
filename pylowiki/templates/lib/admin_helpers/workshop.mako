@@ -156,7 +156,7 @@
         <div ng-controller="listenerController" ng-init="user='${c.authuser['urlCode']}'; code='${c.w['urlCode']}'; url='${c.w['url']}'; getList()">
         <table class="table table-bordered">
         <thead>
-        <tr><th>Listeners 
+        <tr><th>Officials 
         <button type="button" class="pull-right btn btn-small btn-success" data-toggle="collapse" data-target="#addlistener">
         + Listener
         </button>

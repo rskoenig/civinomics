@@ -14,7 +14,6 @@
       ${helpers.workshopHero()}
 
       <div class="well" ng-show="showStats" ng-cloak>
-        <h1>Stats</h1>
         <% c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56) %>
 
         ${d3Lib.includeD3()}

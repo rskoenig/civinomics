@@ -66,9 +66,13 @@
                         ${helpers.edit_background()}
                     </div><!-- tab-pane template background -->
                     <div class="tab-pane ${notables_active} edit-workshop-pane" id="notables">
-                        <h4 class="section-header smaller">Facilitators and Listeners</h4>
-                        ${admin_helpers.admin_facilitators()}
-                        ${admin_helpers.admin_listeners()}
+                        <div class="section-wrapper">
+                            <div class="browse">
+                                <h4 class="section-header smaller">Facilitators and Officials</h4>
+                                ${admin_helpers.admin_facilitators()}
+                                ${admin_helpers.admin_listeners()}
+                            </div>
+                        </div>
                     </div><!-- notables -->
                     <div class="tab-pane ${manageWs_active}" id="manageWs">
                         ${admin_helpers.marked_items()}
@@ -115,15 +119,11 @@
         </ul>
         % if c.w['startTime'] != '0000-00-00':
             <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-right:0; width: 100%">
-            <% tabCount = 1 %>
                 <li class="${manageWs_active}"><a href="#manageWs" data-toggle="tab">Manage Workshop
-                <% tabCount += 1 %>
                 </a></li>
-                <li class="${notables_active}"><a href="#notables" data-toggle="tab">Facilitators, Officials
-                <% tabCount += 1 %>
+                <li class="${notables_active}"><a href="#notables" data-toggle="tab">Facilitators and Officials
                 </a></li>
                 <li class="${eventLog_active}"><a href="#eventLog" data-toggle="tab">Event Log
-                <% tabCount += 1 %>
                 </a></li>
                 % if c.w['type'] == 'professional' and c.accounts:
                 <!-- <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">Account Management</a></li> -->

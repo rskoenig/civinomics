@@ -303,6 +303,7 @@
 <%def name="slideshow(w, *args)">
     <% 
         slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
+        slides = slides[:6]
         slideNum = 0
         spanX = ""
         if 'hero' in args:

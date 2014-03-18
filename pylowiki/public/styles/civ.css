@@ -3413,3 +3413,11 @@ table.activity-comments{
   -webkit-border-radius: 5px;
 }
 
+/* d3 */
+.data-label{
+  font-size: .8em !important;
+}
+svg{
+  width: 100% !important;
+}
+
