@@ -169,6 +169,8 @@ class HomeController(BaseController):
 			        entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
 			    else:
 			        entry['href'] = entry['parentHref'] + entry['href']
+			elif item.objType == 'discussion' and item['discType'] == 'organization_general':
+			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/discussion/show/" + item['urlCode']
 		    
 			# modifications for children of workshops and initiatives
 			entry['parentTitle'] = ''

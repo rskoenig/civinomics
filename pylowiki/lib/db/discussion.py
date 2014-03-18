@@ -171,6 +171,9 @@ class Discussion(object):
         if 'workshop_searchable' in d:   
             if discType != 'update' and discType != 'general':
                 d['workshop_searchable'] = '0'
+                
+        if d['discType'] == 'organization_general':
+            d['organization_searchable'] = '1'
 
         commit(d)
         d['urlCode'] = toBase62(d)
