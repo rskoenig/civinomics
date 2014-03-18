@@ -131,8 +131,6 @@ class CommentController(BaseController):
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
                     dbHelpers.commit(comment)
-                    
-            log.info("commentCCN comment created")
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
