@@ -5,7 +5,7 @@
 <!DOCTYPE HTML>
 <html lang="en-US" ng-app='civ'>
    <head>
-      <meta charset="UTF-8">
+      <meta charset="UTF8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
       <title>${c.title}</title>
       <!-- Third-party assets -->
