@@ -118,6 +118,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddNew = false;
 		$scope.query = '';
+		$scope.objType = 'idea'
 	}
 
 	$scope.toggleInfo= function(){

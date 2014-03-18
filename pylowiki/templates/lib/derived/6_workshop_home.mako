@@ -303,7 +303,6 @@
 <%def name="slideshow(w, *args)">
     <% 
         slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
-        slides = slides[:6]
         slideNum = 0
         spanX = ""
         if 'hero' in args:
@@ -362,21 +361,30 @@
           </a>
       % endif
       </li>
-    % else:
+    % elif not slideNum >= 6:
       <li class="span4 slideListing">
         % if showSlide['pictureHash'] == 'supDawg':
            <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
               <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${showSlide['title']}"/>
            </a>
         % else:
-            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
-              <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
-              <img class="noShow" src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
-              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+          <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+            <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+            <img class="noShow" src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+            <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
               <div class="slide-preview" style="background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}');" data-caption="${showSlide['title']}"/>
-              </div>
-            </a>
+            </div>
+          </a>
         % endif
+      </li>
+    % else:
+      <li class="noShow slideListing">
+        <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+          <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+          <img class="noShow" src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+          <div class="slide-preview" style="background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}');" data-caption="${showSlide['title']}"/>
+            </div>
+        </a>
       </li>
     % endif
 </%def>
