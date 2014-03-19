@@ -262,7 +262,7 @@ class AdminController(BaseController):
             return redirect(utils.thingURL(initiative, c.thing))
         elif 'profileCode' in c.thing:
             user = generic.getThing(c.thing['profileCode'])
-            return redirect(utils.thingURL(c.user, c.thing))
+            return redirect(utils.thingURL(user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType.replace("Unpublished", ""))

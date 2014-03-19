@@ -310,8 +310,11 @@ def thingURL(thingParent, thing, **kwargs):
             returnString = baseURL
             thingUrl = False
     if thingUrl:
-        returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
-
+        if thing.objType == 'discussion' and thing['discType'] == 'organization_general':
+            returnString = "/profile/%s/%s/discussion/show/%s"%(thing['userCode'], thing['user_url'], thing['urlCode'])
+        else:
+            returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+            
     if 'returnTitle' in kwargs:
         if kwargs['returnTitle'] == True:
             return thing['views'], thing['title'], returnString
