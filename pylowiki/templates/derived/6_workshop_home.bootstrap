@@ -58,7 +58,13 @@
       <div ng-show="showAddNew" ng-cloak>
         <table class="addNewObj">
           <tr>
-            <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}</td>
+            <td class="comment-avatar-cell">
+              % if c.authuser:
+                ${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}
+              % else:
+                <img src="/images/hamilton.png" class="avatar med-avatar">
+              % endif
+            </td>
             <td class="well" style="padding: 10px;">
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
@@ -173,10 +179,10 @@
         % if c.privs and not c.privs['provisional']:
           <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()">Add your {{objType}}...</button>
         % else:
-          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal'>Add your {{objType}}...</button>
+          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal'>Add your {{objType}}...</a>
         % endif
       % else:
-        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal'>Add your {{objType}}...</button>
+        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal'>Add your {{objType}}...</a>
       % endif
 
       <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">

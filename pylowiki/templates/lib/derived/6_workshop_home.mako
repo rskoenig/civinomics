@@ -48,8 +48,9 @@
         </ul>
      % endif
       
-     <!-- 
-     #% if 'user' in session and c.authuser and not c.privs['provisional']:
+     
+     % if 'user' in session and c.authuser and not c.privs['provisional']:
+      <!-- 
         <em class="grey"><small>Which public officials should participate?</small></em><br />
         <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener" name="suggestListenerForm">
           <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
@@ -59,8 +60,8 @@
             {{suggestListenerResponse}}
           </div>
         </form>
-     #%endif
-     -->
+      -->
+     %endif
 </%def>
 
 <%def name="whoListeningModals()">
