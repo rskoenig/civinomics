@@ -108,6 +108,7 @@ function activityWorkshopController($scope, $http) {
 	$scope.showStats = false;
 	$scope.showAddNew = false;
 	$scope.orderProp = '';
+	$scope.query = '';
 	$scope.query2 = '!disabled';
 
 	$scope.toggleSummary= function(){
@@ -133,7 +134,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
-		$scope.query = '';
+		$scope.query = {objType:'resource'};
 		$scope.query2 = '';
 		$scope.objType = 'resource'
 	}

@@ -10,10 +10,12 @@
 
 <% numIdeas = str(len(c.ideas)) %>
     <div class="span9">
-      <!--<div class="darkened-workshop"></div>-->
+
       ${helpers.workshopHero()}
 
       <div class="well" ng-show="showStats" ng-cloak>
+        <span class="grey" ng-if="activity.length == 0"> There are no stats yet...</span>
+
         <% c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56) %>
 
         ${d3Lib.includeD3()}
@@ -48,11 +50,6 @@
           ${helpers.showInfo(c.w)}
           <a href="#top" class="green green-highlight" ng-click=" showInfo = false ">less</a>
         </div>
-      </div>
-
-      <div class="alert alert-info" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
-          <span ng-show="query == ''">{{alertMsg}}</span>
-          <span ng-show="!(query == '') && len(activity | filter:query) == 0">There are no {{objType}}s. Be the first to add one!</span>
       </div>
 
       <div ng-show="showAddNew" ng-cloak>
@@ -127,6 +124,11 @@
         </div>
       </div>
 
+      <div class="alert alert-info" ng-class="alertType" ng-if="(alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0" ng-cloak>
+        <span ng-show="query == ''">{{alertMsg}}</span>
+        <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{objType}}s. Be the first to add one!</span>
+      </div>
+
       <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats && !showInfo" ng-cloak>
         <tr>
           <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
@@ -177,12 +179,12 @@
    <div class="span3">
       % if c.authuser:
         % if c.privs and not c.privs['provisional']:
-          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()">Add your {{objType}}...</button>
+          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{objType}}...</button>
         % else:
-          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal'>Add your {{objType}}...</a>
+          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
         % endif
       % else:
-        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal'>Add your {{objType}}...</a>
+        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
       % endif
 
       <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
