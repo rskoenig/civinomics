@@ -538,7 +538,6 @@ color: #999;
 .loading-civ{
     margin-top:10%;
     margin-left:45%;
-    color: #ffffff;
 }
 
 .accordion-heading .accordion-toggle {
@@ -2174,6 +2173,7 @@ li.thumbnail-gallery{
 
 .geoName{
   font-size: 30px;
+  margin-top: 0;
 }
 
 .searchName{

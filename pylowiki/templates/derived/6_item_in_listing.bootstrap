@@ -2,6 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_item_in_listing.mako"/>
+<%namespace name="workshop_helpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace file="/lib/6_comments.mako" import="comments" />
 
 <%
@@ -11,9 +12,10 @@
 
 <div class="row-fluid">
   <div class="span12">
-     <div class="section-wrapper">
-        <div class="browse">
-            <h4 class="section-header smaller"> ${d[c.listingType]} </h4>
+    <h5>
+        ${workshop_helpers.displayWorkshopFlag(c.w, size = 'small-flag' , workshopFor = true, objType = d[c.listingType] )} ${lib_6.showTags(c.w)} in <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>{{workshopTitle}}</a>
+    </h5>
+     <div class="well">
             % if 'alert' in session:
                 <% alert = session['alert'] %> 
                 <div class="alert alert-${alert['type']} workshop-admin">
@@ -109,8 +111,7 @@
                 </div>
             </div>
             % endif
-        </div><!--/.browse-->
-     </div><!--/.section-wrapper-->
+     </div><!--/.well-->
   </div><!--/.span12-->
 </div><!--/.row-fluid-->
 

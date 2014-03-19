@@ -476,7 +476,7 @@
     ${scopeString | n}
 </%def>
 
-<%def name="displayWorkshopFlag(w, *args)">
+<%def name="displayWorkshopFlag(w, **kwargs)">
     <%
         workshopFlag = '/images/flags/generalFlag.gif'
         href = '#'
@@ -489,13 +489,18 @@
         else:
             workshopFlag = '/images/flags/generalGroup.gif'
         flagSize = 'med-flag'
-        if 'small' in args:
-          flagSize = 'small-flag'
+        if 'size' in kwargs:
+          flagSize = kwargs['size']
+
+        if 'objType' in kwargs:
+          obj = kwargs['objType'].title()
+        else:
+          obj = 'Workshop'
 
     %>
     <a href="${href}"><img class="thumbnail flag ${flagSize}" src="${workshopFlag}"></a>
-    % if 'workshopFor' in args and w['public_private'] == 'public':
-        Workshop for
+    % if 'workshopFor' in kwargs and w['public_private'] == 'public':
+        ${obj} for
         % if name == 'Earth':
           <a href="${href}">${name}</a>
         % else:
@@ -518,7 +523,7 @@
               {{workshopTitle}}
             </a>
           </h1>
-          <h4 style="color: #fff">${displayWorkshopFlag(c.w, 'small', 'workshopFor')} ${lib_6.showTags(c.w)}</h4>
+          <h4 style="color: #fff">${displayWorkshopFlag(c.w, size='small-flag', workshopFor=True)} ${lib_6.showTags(c.w)}</h4>
         </div>
       </div>
     </div><!-- background-image -->
