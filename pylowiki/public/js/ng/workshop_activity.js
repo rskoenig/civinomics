@@ -95,6 +95,7 @@ function activityWorkshopController($scope, $http) {
 		$http.post($scope.newObjURL, newObjData).success(function(data){
 			//$scope.numComments = Number($scope.numComments) + 1;
             $scope.getActivity();
+            $scope.showAddNew = false;
             $scope.newObjTitle = '';
             $scope.newObjText = '';
             $scope.newObjLink = '';
@@ -215,6 +216,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = true;
+	};
+
+	$scope.cancelAddNew= function(){
+	    $scope.showAddNew = false;
+        $scope.newObjTitle = '';
+        $scope.newObjText = '';
+        $scope.newObjLink = '';
 	};
 }
 

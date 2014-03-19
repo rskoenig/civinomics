@@ -74,6 +74,7 @@
                     <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
                     <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
                     <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
                 </form>
               % endif
             </td>

@@ -513,7 +513,6 @@
 <%def name="workshopHero()">
   <div class="row-fluid well workshop-hero">
     <div class="workshop-hero-image" style="background-image: url(${c.backgroundImage})">
-      <!--<div class="darkened-workshop"></div>-->
       <div class="row-fluid">
         <span class="link-span med-gradient-workshop"></span><!-- used to make entire div a link -->
         
