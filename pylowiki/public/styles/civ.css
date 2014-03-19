@@ -283,16 +283,16 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
   margin-top: 0px;
 }
 
-.nav-pills.civ-search-tools.messages > li{
+.nav-pills.messages > li{
   margin-right: 8px;
 }
 
-.nav-pills.civ-search-tools.messages > li > a{
+.nav-pills.messages > li > a{
   color: #005d28;
   background-color: whitesmoke;
 }
 
-.nav-pills.civ-search-tools > li.active > a{
+.nav-pills.messages > li.active > a{
   color: #fff;
   background-color: #005d28;
 }
@@ -596,6 +596,17 @@ div.unread-message:hover {
 .horizontal-list> li {
   display: inline;
   margin-right: 8px; 
+}
+
+.actions{
+  background-color: whitesmoke;
+  margin: 8px -19px -19px;
+  border-top: 1px solid #ddd;
+}
+
+.actions-links{
+  margin: 8px 19px 0;
+  padding-bottom: 8px;
 }
 
 .horizontal-list.iconListing{
@@ -3258,6 +3269,7 @@ hr.object-list-header{
 
 .activity-item, .message-table{
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .activity-item .avatar-cell, .avatar-cell{
@@ -3309,6 +3321,7 @@ hr.object-list-header{
 
 table.activity-comments{
   width: 100%;
+  background-color: whitesmoke;
 }
 
 .date{
