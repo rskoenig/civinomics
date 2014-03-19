@@ -203,21 +203,28 @@ class HomeController(BaseController):
 			    if tag and tag != '':
 			        tags.append(tag)
 			entry['tags'] = tags
-
-			# scope attributes
-			if 'scope' in item:
-				entry['scope'] = item['scope']
-			elif 'initiative_scope' in item:
-				entry['scope'] = item['initiative_scope']
-			elif 'workshop_public_scope' in item:
-				entry['scope'] = item['workshop_public_scope']
+			
+			if item.objType == 'discussion' and item['discType'] == 'organization_general':
+			    org = userLib.getUserByCode(item['userCode'])
+			    entry['scopeName'] = org['name']
+			    entry['scopeLevel'] = 'organization forum'
+			    entry['scopeHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+			    entry['flag'] = utils._userImageSource(org)
 			else:
-				entry['scope'] = '0||united-states||0||0||0|0'
-			scopeInfo = utils.getPublicScope(entry['scope'])
-			entry['scopeName'] = scopeInfo['name']
-			entry['scopeLevel'] = scopeInfo['level']
-			entry['scopeHref'] = scopeInfo['href']
-			entry['flag'] = scopeInfo['flag']
+			    # scope attributes
+			    if 'scope' in item:
+				    entry['scope'] = item['scope']
+			    elif 'initiative_scope' in item:
+				    entry['scope'] = item['initiative_scope']
+			    elif 'workshop_public_scope' in item:
+				    entry['scope'] = item['workshop_public_scope']
+			    else:
+				    entry['scope'] = '0||united-states||0||0||0|0'
+			    scopeInfo = utils.getPublicScope(entry['scope'])
+			    entry['scopeName'] = scopeInfo['name']
+			    entry['scopeLevel'] = scopeInfo['level']
+			    entry['scopeHref'] = scopeInfo['href']
+			    entry['flag'] = scopeInfo['flag']
 
 			# user rating
 			if entry['urlCode'] in myRatings:
