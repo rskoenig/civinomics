@@ -944,7 +944,7 @@ class SearchController(BaseController):
             entry['text'] = i['description']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['cost'] = i['cost']
-            entry['objType'] = 'Initiative'
+            entry['objType'] = 'initiative'
             tags = []
             tagList = i['tags'].split('|')
             for tag in tagList:
