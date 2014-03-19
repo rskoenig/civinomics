@@ -192,6 +192,7 @@ def getPublicScope(item):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
+    scopeLevel = scopeLevel.title()
     return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
 
 def getTextFromMisaka(content):
