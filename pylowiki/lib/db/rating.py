@@ -116,8 +116,7 @@ def makeOrChangeRating(thing, user, amount, ratingType):
     else:
         myRatings = {}
     thingCode = thing['urlCode']
-    myRatings[thingCode] = str(amount)
+    myRatings[thingCode] = str(ratingObj['amount'])
     session["ratings"] = myRatings
     session.save()
-    log.info("ratings updated in session for thinCode %s to %s"%(thingCode, myRatings[thingCode]))
     return ratingObj
