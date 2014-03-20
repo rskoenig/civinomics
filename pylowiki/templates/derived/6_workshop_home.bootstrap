@@ -130,7 +130,7 @@
         <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{objType}}s. Be the first to add one!</span>
       </div>
 
-      <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats && !showInfo" ng-cloak>
+      <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
         <tr>
           <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
           <td></td>

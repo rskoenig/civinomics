@@ -12,10 +12,27 @@
 
 <div class="row-fluid">
   <div class="span12">
-    <h5>
-        ${workshop_helpers.displayWorkshopFlag(c.w, size = 'small-flag' , workshopFor = true, objType = d[c.listingType] )} ${lib_6.showTags(c.w)} in <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>{{workshopTitle}}</a>
-    </h5>
+    <table style="margin-top: 12px; margin-bottom: 20px;">
+        <tr>
+            % if c.w:
+                <td>
+                    ${lib_6.workshopImage(c.w)}
+                </td>
+            % endif
+            <td style="padding-left:10px;">
+                <h4>
+                    <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="no-highlight bottom-space" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>{{workshopTitle}}</a>
+                </h4>
+                <small>
+                    ${workshop_helpers.displayWorkshopFlag(c.w, size = 'small-flag' , workshopFor = true, objType = 'Workshop' )} ${lib_6.showTags(c.w)}
+                </small>
+            </td>
+        </tr>
+    </table>
      <div class="well">
+        <h4 class="section-header smaller">
+            ${d[c.listingType]}
+        </h4>
             % if 'alert' in session:
                 <% alert = session['alert'] %> 
                 <div class="alert alert-${alert['type']} workshop-admin">
