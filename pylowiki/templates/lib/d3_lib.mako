@@ -82,6 +82,8 @@
 
       <div class='row'>   <!-- wide left area, tall right column -->   
           <div class='span9'> 
+
+              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
               <div class='row'>
                   <div class='span5 offset1' id='dc-salary-chart'> 
                       <h4>Salary distribution
@@ -94,6 +96,8 @@
                       <h4>Commute Duration</h4> 
                   </div>
               </div>
+
+              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
               <div class='row'>
                   <div class='span5 offset1' id='dc-age-chart'>
                       <h4>Age of commuters polled
@@ -111,29 +115,40 @@ href="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none
                           </span>
                       </h4>
                   </div>
+
+
               </div>
               <div class='row'> 
-                  <div class='span5 offset1' id='dc-college-chart'>
+
+                  <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+                  <div class='span3 offset1' id='dc-college-chart'>
                       <h4>Attended college in area
                           <span>
-                              (click to filter results)
+                              <br />(click to filter results)
                               <a class="reset"
 href="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                           </span>
                       </h4> 
                   </div>
-                  <div class='span5 offset1' id='dc-commuteType-chart'>
+                  <div class='span3' id='dc-commuteType-chart'>
                       <h4>Commute Method
                           <span>
-                              (click to filter results)
+                              <br />(click to filter results)
                               <a class="reset"
 href="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                           </span>
                       </h4> 
                   </div>
+                  <div class='span3' id='dc-employmentDuration-chart'>
+                      <h4>Length of Employment</h4> 
+                  </div>
+
+
               </div>
           </div>   <!-- END wide left area -->   
           <div class='span3'>   <!-- tall right column -->   
+
+              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
               <div class='span12' id='dc-employmentType-chart'>
                   <h4>Job Type
                       <span>
@@ -143,9 +158,13 @@ href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display
                       </span>
                   </h4>
               </div>
+
+
           </div>   <!-- END tall right column -->   
       </div>
       <div class='row'>   <!-- spans entire width -->   
+
+          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
           <div class='span3 offset1' id='dc-workedInSc-chart'>
               <h4>Ever worked in Santa Cruz?
                   <span>
@@ -173,8 +192,12 @@ href="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="disp
                   </span>
               </h4>
           </div>
+
+
       </div>    <!-- END entire width column -->   
-      <div class='row'>   <!-- spans entire width -->   
+      <div class='row'>   <!-- spans entire width -->
+
+          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
           <div class='span3 offset1' id='dc-rentOrOwn-chart'>
               <h4>Do you rent or own a place here?
                   <span>
@@ -202,6 +225,42 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
                   </span>
               </h4>
           </div>
+
+
+      </div>    <!-- END entire width column -->   
+
+      <div class='row'>   <!-- spans entire width -->  
+
+          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+          <div class='span3 offset1' id='dc-children-chart'>
+              <h4>Do you have children?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-whyCommute-chart'>
+              <h4>Why do you commute?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-commuteActivity-chart'>
+              <h4>Commute Activities?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+
+
       </div>    <!-- END entire width column -->   
 
       <div class='row'> 
@@ -218,15 +277,7 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               <table class='table table-hover' id='dc-table-graph'> 
                   <thead>
                       <tr class='header'> 
-                          <th>Commute Activity</th> 
-                          <th>Years at Job</th>
-                          <th>Salary</th>
-                          <th>Why Commute</th>
-                          <th>Residence Duration</th>
-                          <th>Why not work in Santa Cruz</th>
-                          <th>Salary needed to work here</th>
-                          <th>Children</th>
-                          <th>Rent or own</th>
+                          <th>Comments or Suggestions</th> 
                       </tr>
                   </thead>
               </table>
@@ -240,18 +291,28 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
       // Create the dc.js chart objects & link to div
       var salaryChart = dc.barChart("#dc-salary-chart");
       var commuteDurationChart = dc.lineChart("#dc-commuteDuration-chart");
+
       var ageChart = dc.barChart("#dc-age-chart");
       var senorityChart = dc.rowChart("#dc-senority-chart");
+      
       var collegeChart = dc.rowChart("#dc-college-chart");
-      var employmentTypeChart = dc.rowChart("#dc-employmentType-chart");
       var commuteTypeChart = dc.rowChart("#dc-commuteType-chart");
+      var employmentDurationChart = dc.lineChart("#dc-employmentDuration-chart");
+
+      var employmentTypeChart = dc.rowChart("#dc-employmentType-chart");
+      
 
       var workedInScChart = dc.pieChart("#dc-workedInSc-chart");
       var whyLiveInScChart = dc.pieChart("#dc-whyLiveInSc-chart");
-      var residenceDurationChart = dc.pieChart("#dc-residenceDuration-chart");
+      var residenceDurationChart = dc.lineChart("#dc-residenceDuration-chart");
+      
       var rentOrOwnChart = dc.pieChart("#dc-rentOrOwn-chart");
       var whyNotWorkInScChart = dc.pieChart("#dc-whyNotWorkInSc-chart");
       var salaryNeededChart = dc.pieChart("#dc-salaryNeeded-chart");
+
+      var childrenChart = dc.pieChart("#dc-children-chart");
+      var whyCommuteChart = dc.pieChart("#dc-whyCommute-chart");
+      var commuteActivityChart = dc.pieChart("#dc-commuteActivity-chart");
 
       var dataTable = dc.dataTable("#dc-table-graph");
 
@@ -301,31 +362,28 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
           dc.dataCount(".dc-data-count") 
               .dimension(facts) 
               .group(all);
-          // reset all button - count all the facts
           dc.dataCount(".dc-data-count2") 
               .dimension(facts) 
               .group(all);
 
-          // determine the spread of salaries
+
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var salaryValue = facts.dimension(function (d) { 
               return d.salary;
           });
           var salaryValueGroup = salaryValue.group();
 
-
-          // determine the spread of commute times
           var commuteDurationValue = facts.dimension(function (d) { 
               return d.commuteDuration;
           });
-          // calculate the spread of the sum for how many of each commute time there is
-          var commuteDurationValueGroupCount = commuteDurationValue.group() 
+          var commuteDurationValueGroup = commuteDurationValue.group() 
               .reduceCount(function(d) { return d.commuteDuration; }) // counts
 
-          // determine the spread of the commuters' ages
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var ageValue = facts.dimension(function (d) { 
               return d.age;
           });
-          var ageValueGroupCount = ageValue.group()
+          var ageValueGroup = ageValue.group()
               .reduceCount(function(d) { return d.age; }) // counts
 
           var senorityValue = facts.dimension(function (d) {
@@ -344,6 +402,7 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
           });
           var senorityValueGroup = senorityValue.group();
 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var collegeValue = facts.dimension(function (d) {
               //console.log("college: " + d.collegeWhere)
               switch (d.collegeWhere) {
@@ -354,9 +413,24 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
           });
           var collegeValueGroup = collegeValue.group();
 
-          // employmentType 
-          //var employmentType = facts.dimension(function (d) { return d.employmentType; });
-          
+          var commuteType = facts.dimension(function (d) {
+              switch (d.travelType) {
+                  case 'Company bus': return "0.Company bus";
+                  case 'Car (solo)': return "1.Car (solo)";
+                  case 'Independent shuttle': return "2.Independent shuttle";
+                  case 'Carpool': return "3.Carpool";
+                  default: return "4.No answer";
+              } 
+          });
+          var commuteTypeGroup = commuteType.group();
+
+          var employmentDuration = facts.dimension(function (d) { 
+              return d.employmentDuration;
+          });
+          var employmentDurationGroup = employmentDuration.group()
+              .reduceCount(function(d) { return d.employmentDuration; }) // counts
+
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var employmentType = facts.dimension(function (d) {
               //console.log("college: " + d.collegeWhere)
               switch (d.employmentType) {
@@ -387,18 +461,7 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
           });
           var employmentTypeGroup = employmentType.group();
 
-          // commuteType 
-          var commuteType = facts.dimension(function (d) {
-              switch (d.travelType) {
-                  case 'Company bus': return "0.Company bus";
-                  case 'Car (solo)': return "1.Car (solo)";
-                  case 'Independent shuttle': return "2.Independent shuttle";
-                  case 'Carpool': return "3.Carpool";
-                  default: return "4.No answer";
-              } 
-          });
-          var commuteTypeGroup = commuteType.group();
-
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var workedInSc = facts.dimension(function (d) {
               if (d.workedInSantaCruz == "(blank)") {
                   return "No answer";
@@ -417,17 +480,17 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
           });
           var whyLiveInScGroup = whyLiveInSc.group();
 
-          var residenceDuration = facts.dimension(function (d) {
+          var residenceDuration = facts.dimension(function (d) { 
               if (d.residenceDuration == "(blank)") {
-                  return "No answer";
-              } else if (d.residenceDuration == 1) {
-                  return d.residenceDuration + " year";
+                  return 0;
               } else {
-                  return d.residenceDuration + " years";
+                  return d.residenceDuration;
               }
           });
-          var residenceDurationGroup = residenceDuration.group();
+          residenceDurationGroup = residenceDuration.group()
+              .reduceCount(function(d) { return d.residenceDuration; }) // counts
 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var rentOrOwn = facts.dimension(function (d) {
               if (d.rentOrOwn == "(blank)") {
                   return "No answer";
@@ -454,16 +517,46 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               }
           });
           var salaryNeededGroup = salaryNeeded.group();
-          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
-          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  */
+
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          var children = facts.dimension(function (d) {
+              if (d.children == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.children;
+              }
+          });
+          var childrenGroup = children.group();
+
+          var whyCommute = facts.dimension(function (d) {
+              if (d.whyCommute == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.whyCommute;
+              }
+          });
+          var whyCommuteGroup = whyCommute.group();
+
+          var commuteActivity = facts.dimension(function (d) {
+              if (d.commuteActivity == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.commuteActivity;
+              }
+          });
+          var commuteActivityGroup = commuteActivity.group();
+
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
           // Create dataTable dimension
           var commuteDurationDimension = facts.dimension(function (d) { 
               return d.commuteDuration;
           });
+
           // Setup the charts
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var commasFormatter = d3.format(",.0f");
-          // bar chart of salaries and their sum of occurences
           salaryChart.width(400) 
               .height(150) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
@@ -490,7 +583,7 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               .height(150) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(commuteDurationValue) 
-              .group(commuteDurationValueGroupCount) 
+              .group(commuteDurationValueGroup) 
               .transitionDuration(500)
               .brushOn(false) 
               .title(function(d){
@@ -503,6 +596,7 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               .tickFormat(function(d) { return hoursFormatter(d); })
               .ticks(5);
 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var yearsFormatter = function(d) {
               return d + " years";
           }
@@ -511,7 +605,7 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               .height(220) 
               .margins({top: 10, right: 10, bottom: 20, left: 40}) 
               .dimension(ageValue) 
-              .group(ageValueGroupCount) 
+              .group(ageValueGroup) 
               .transitionDuration(500) 
               .centerBar(true) 
               .gap(-6)
@@ -530,7 +624,6 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
                 return d;
           }
 
-          // row chart for distribution of employment levels
           senorityChart.width(400) 
               .height(220) 
               .dimension(senorityValue) 
@@ -544,10 +637,10 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               .tickFormat(function(d) { return commutersFormatter(d); })
               .ticks(4);
 
-          // row chart for college attendance
-          collegeChart.width(400) 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          collegeChart.width(200) 
               .height(220) 
-              .margins({top: 25, left: 40, right: 40, bottom: 40}) 
+              .margins({top: 15, left: 15, right: 15, bottom: 15}) 
               .dimension(collegeValue) 
               .group(collegeValueGroup) 
               .colors(d3.scale.category20c())
@@ -556,12 +649,12 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
                   })
               .title(function(d){return d.value + " commuters";}) 
               .xAxis()
-              .tickFormat(function(d) { return commutersFormatter(d); })
-              .ticks(4);
+              .tickFormat(function(d) { return d; })
+              .ticks(3);
 
-          // row chart for distribution of commute types
-          commuteTypeChart.width(400) 
+          commuteTypeChart.width(200) 
               .height(220) 
+              .margins({top: 15, left: 15, right: 15, bottom: 15}) 
               .dimension(commuteType) 
               .group(commuteTypeGroup)
               .colors(d3.scale.category20b())
@@ -570,10 +663,23 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
                   }) 
               .title(function(d){return d.value + " commuters";})
               .xAxis()
-              .tickFormat(function(d) { return commutersFormatter(d); })
-              .ticks(4);
+              .tickFormat(function(d) { return d; })
+              .ticks(3);
 
-          // pie chart for distribution of employment types
+          employmentDurationChart.width(300) 
+              .height(248) 
+              .margins({top: 40, right: 10, bottom: 20, left: 20}) 
+              .dimension(employmentDuration) 
+              .group(employmentDurationGroup) 
+              .transitionDuration(500)
+              .elasticY(true) 
+              .filter([0, 12.5]) 
+              .x(d3.scale.linear().domain([0,12.5]))
+              .xAxis()
+              .ticks(4)
+              .tickFormat(function(d) { return yearsFormatter(d); });
+
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           employmentTypeChart.width(220) 
               .height(720) 
               .margins({top: 5, left: 5, right: 10, bottom: 40}) 
@@ -607,17 +713,20 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               .group(whyLiveInScGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
-          //var residenceYearsFormatter = function (d) {
-          //    if d.data.key
-          //}
           residenceDurationChart.width(300) 
               .height(220) 
-              .radius(100) 
-              .innerRadius(30) 
+              .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(residenceDuration) 
               .group(residenceDurationGroup) 
-              .title(function(d){return d.data.key + ", " + d.value + " people";});
+              .transitionDuration(500)
+              .elasticY(true) 
+              .filter([0, 12.5]) 
+              .x(d3.scale.linear().domain([0,12.5]))
+              .xAxis()
+              .ticks(4)
+              .tickFormat(function(d) { return yearsFormatter(d); });
 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           rentOrOwnChart.width(300) 
               .height(220) 
               .radius(100) 
@@ -642,22 +751,37 @@ href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: 
               .group(salaryNeededGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          childrenChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(children) 
+              .group(childrenGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          whyCommuteChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(whyCommute) 
+              .group(whyCommuteGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          commuteActivityChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(commuteActivity) 
+              .group(commuteActivityGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
           // Table of commuter survey data
           dataTable.width(760).height(800) 
               .dimension(commuteDurationDimension)
-                  .group(function(d) { return "Commuter Survey Table" 
-                      })
-                  .size(200) 
+                  .group(function(d) { return ''})
               .columns([
-                  function(d) { return d.commuteActivity; },
-                  function(d) { return d.employmentDuration; },
-                  function(d) { return d.salary; },
-                  function(d) { return d.whyCommute; },
-                  function(d) { return d.residenceDuration; },
-                  function(d) { return d.whyNoWorkInSantaCruz; },
-                  function(d) { return d.whatSalaryNeeded; },
-                  function(d) { return d.children; },
-                  function(d) { return d.rentOrOwn; },
+                  function(d) { return d.commentsOrSuggestions; },
               ])
               .sortBy(function(d){ 
                   return d.commuteDuration; 
