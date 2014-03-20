@@ -162,6 +162,7 @@ def make_map():
     map.connect('/getSiteActivity{end:/?}' , controller = 'home', action = 'getActivity')
     map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
 
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')

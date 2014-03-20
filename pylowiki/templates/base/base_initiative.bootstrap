@@ -6,7 +6,6 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-<div class="darkened-workshop"></div>
 <div class="spacer"></div>
 <div class="row-fluid min-container" ng-app="civ">
     <div class="row-fluid" style="position: relative;">
@@ -206,9 +205,6 @@
     <script type="text/javascript"> 
         $('#initiative-dashboard').affix({offset: 0})
     </script> 
-    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
-
-    <script>$.backstretch(${c.bgPhoto_url | n}, {centeredX: true})</script>
     <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
     <script>
       $(document).ready(function(){

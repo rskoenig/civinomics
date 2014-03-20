@@ -144,7 +144,7 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         Activity inside a single workshop
         Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
     """
-    objTypes = ['resource', 'discussion', 'idea', 'comment']
+    objTypes = ['resource', 'discussion', 'idea']
     codes = ['resourceCode', 'ideaCode', 'discussionCode']
     keys = ['deleted', 'disabled']
     values = [deleted, disabled]

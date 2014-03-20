@@ -434,7 +434,7 @@ _A summary of the key ideas associated with your workshop topic._
 
 Stats and Trends
 -----
-_What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?
+_What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?_
 
 
 Existing Taxes and/or Revenues

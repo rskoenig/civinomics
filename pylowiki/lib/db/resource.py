@@ -262,6 +262,7 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     a['deleted'] = '0'
     a['ups'] = '0'
     a['downs'] = '0'
+    a['views'] = '0'
     a = generic.addedItemAs(a, privs, role)
     commit(a)
     a['urlCode'] = toBase62(a)

@@ -22,7 +22,6 @@
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
                     </h4>
-                    ${authorPosting()}
                 </div>
             </div>
             <div class="row-fluid">
@@ -38,7 +37,7 @@
                 % if not c.w:
                     <div class="span3">
                         <div class="listed-photo">
-                            <a href = '{{item.href}}'>
+                            <a href = '{{item.parentHref}}'>
                                 <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                             </a>
                         </div>
@@ -59,7 +58,6 @@
                     <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    ${authorPosting()}
                 </div>
             </div><!-- media-body -->
             <div class="row-fluid">
@@ -71,18 +69,25 @@
 <%def name="resource_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            <div class="span3">
-                <div class="listed-photo">
-                    <a href = '{{item.href}}'>
-                        <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                    </a>
+            % if not c.w:
+                <div class="span3">
+                    <div class="listed-photo">
+                        <a href = '{{item.parentHref}}'>
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="span8 media-body">
+            % endif
+            % if not c.w:
+                <div class="span8">
+            % else:
+                <div class="span11 media-body">
+            % endif
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                <p><small>${metaData()}</small></p>
+                % if not c.w:
+                    <p><small>${metaData()}</small></p>
+                % endif
                 <p><a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a><p>
-                ${authorPosting()}
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
@@ -97,18 +102,25 @@
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            <div class="span3">
-                <div class="listed-photo">
-                    <a href = '{{item.href}}'>
-                        <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                    </a>
+            % if not c.w:
+                <div class="span3">
+                    <div class="listed-photo">
+                        <a href = '{{item.parentHref}}'>
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="span8 media-body">
+            % endif
+            % if not c.w:
+                <div class="span8">
+            % else:
+                <div class="span11 media-body">
+            % endif
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                <p><small>${metaData()}</small></p>
+                % if not c.w:
+                    <p><small>${metaData()}</small></p>
+                % endif
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                ${authorPosting()}
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
@@ -132,7 +144,6 @@
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                ${authorPosting()}
             </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
@@ -214,7 +225,10 @@
 </%def>
 
 <%def name="metaData()">
-
+    <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
+        <span style="text-transform: capitalize;">{{item.objType}}</span> for <a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
+        <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+    </small>
 </%def>
 
 <%def name="authorPosting()">
@@ -239,7 +253,7 @@
             </div>
             ### Comments
             <div class="centered" ng-show="commentsLoading" ng-cloak>
-                <i class="icon-spinner icon-spin icon-2x"></i>
+                <i class="icon-spinner icon-spin icon-2x bottom-space-med"></i>
             </div>
 
             <table class="activity-comments" ng-class="{hidden : commentsHidden}">
