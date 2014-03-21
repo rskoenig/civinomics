@@ -46,7 +46,6 @@
           <h4>Goals</h4>
           ${helpers.showGoals(c.goals)}
           <hr class="list-header">
-          <h4> Background </h4>
           ${helpers.showInfo(c.w)}
           <a href="#top" class="green green-highlight" ng-click=" showInfo = false ">less</a>
         </div>
