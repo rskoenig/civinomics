@@ -5,7 +5,7 @@
 <!DOCTYPE HTML>
 <html lang="en-US" ng-app='civ'>
    <head>
-      <meta charset="UTF-8">
+      <meta charset="UTF8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
       <title>${c.title}</title>
       <!-- Third-party assets -->
@@ -38,6 +38,25 @@
     ${next.body()}
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
+   <script type="text/javascript">
+        function addLink() {
+            var body_element = document.getElementsByTagName('body')[0];
+            var selection;
+            selection = window.getSelection();
+            var pagelink = "<br /><br /> Read more at: <a href='"+document.location.href+"'>"+document.location.href+"</a>";
+            var copytext = selection + pagelink;
+            var newdiv = document.createElement('div');
+            newdiv.style.position='absolute';
+            newdiv.style.left='-99999px';
+            body_element.appendChild(newdiv);
+            newdiv.innerHTML = copytext;
+            selection.selectAllChildren(newdiv);
+            window.setTimeout(function() {
+                body_element.removeChild(newdiv);
+            },0);
+        }
+        document.oncopy = addLink;
+   </script>
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
