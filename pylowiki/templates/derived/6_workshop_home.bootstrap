@@ -1,0 +1,242 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+<%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
+<% import pylowiki.lib.graphData       as graphData %>
+
+
+<% numIdeas = str(len(c.ideas)) %>
+    <div class="span9">
+
+      ${helpers.workshopHero()}
+
+      <div class="well" ng-show="showStats" ng-cloak>
+        <span class="grey" ng-if="activity.length == 0"> There are no stats yet...</span>
+
+        <% c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56) %>
+
+        ${d3Lib.includeD3()}
+        % if len(c.jsonConstancyDataIdeas) > 2:
+          ${d3Lib.constancyChart(c.jsonConstancyDataIdeas, "ideaChart", "Ideas", "ForestGreen", "DarkSlateGrey")}
+        % endif
+        % if len(c.jsonConstancyDataResources) > 2:
+          ${d3Lib.constancyChart(c.jsonConstancyDataResources, "resourceChart", "Resources", "MidnightBlue", "DarkSlateGrey")}
+        % endif
+        % if len(c.jsonConstancyDataDiscussions) > 2:
+          ${d3Lib.constancyChart(c.jsonConstancyDataDiscussions, "discussionChart", "Discussions", "DarkOrange", "DarkSlateGrey")}
+        % endif
+
+      </div>
+
+      <div class="well wiki-well" ng-show="showInfoPreview" ng-cloak>
+        <div ng-hide="showInfo">
+          <p class="description">
+            ${lib_6.ellipsisIZE(c.w['description'], 285)}
+            <a class="green green-highlight" ng-click=" toggleInfo() ">read more</a>
+          </p>
+        </div>
+        <div ng-show="showInfo" ng-cloak>
+          <p class="description">
+            ${c.w['description']}
+          </p>
+          <hr class="list-header">
+          <h4>Goals</h4>
+          ${helpers.showGoals(c.goals)}
+          <hr class="list-header">
+          <h4> Background </h4>
+          ${helpers.showInfo(c.w)}
+          <a href="#top" class="green green-highlight" ng-click=" showInfo = false ">less</a>
+        </div>
+      </div>
+
+      <div ng-show="showAddNew" ng-cloak>
+        <table class="addNewObj">
+          <tr>
+            <td class="comment-avatar-cell">
+              % if c.authuser:
+                ${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}
+              % else:
+                <img src="/images/hamilton.png" class="avatar med-avatar">
+              % endif
+            </td>
+            <td class="well" style="padding: 10px;">
+              % if c.privs and not c.privs['provisional']:
+                <form class="no-bottom" ng-submit="submitNewObj()">
+                    <select name="objType" ng-model="objType">
+                      <option value="idea">Idea</option>
+                      <option value="discussion">Discussion</option>
+                      <option value="resource">Resource</option>
+                    </select>
+                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
+                    <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
+                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
+                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                </form>
+              % endif
+            </td>
+          </tr>
+        </table>
+      </div>
+    
+      <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+
+      <div class="row-fluid" ng-show="!showStats" ng-cloak>
+        <div class="span12">
+          <table>
+            <tr>
+              <td style="vertical-align: middle;">
+                <span class="lead grey expl-phrase right-indent" style="text-transform: capitalize;"><span ng-if="showSummary">All Activity</span><span ng-if="!showSummary">{{objType}}s</span></span>
+              </td>
+              <td>
+                <ul class="nav nav-pills civ-search-tools messages inline" ng-cloak>
+                  <li ng-class="{active : orderProp == ''}"><a ng-click="orderProp = ''">Recent</a></li>
+                  <li ng-class="{active : orderProp == '-netVotes'}"><a ng-click="orderProp = '-netVotes'">Top Rated</a></li>
+                  <li ng-class="{active : orderProp == '-voteCount'}"><a ng-click="orderProp = '-voteCount'">Most Votes</a></li>
+                  <li ng-class="{active : orderProp == '-numComments'}"><a ng-click="orderProp = '-numComments'">Most Comments</a></li>
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        Status <b class="caret green"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-class="{active : query2 = {status:'proposed'}">
+                            <a ng-click="query2 = {status:'proposed'}">Proposed</a>
+                        </li>
+                        <li ng-class="{active : query2 = {status:'adopted'}">
+                            <a ng-click="query2 = {status:'adopted'}">Adopted</a>
+                        </li>
+                        <li ng-class="{active : query2 = {status:'disabled'}">
+                            <a ng-click="query2 = {status:'disabled'}">Disabled</a>
+                        </li>
+                        <li class="search-right-column-link" ng-class="showingPhotos.class">
+                            <a href="#photos" data-toggle="tab" ng-click="searchPhotos()">
+                                Photos <span class="pull-right">(${c.numPhotos}) </span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="alert alert-info" ng-class="alertType" ng-if="(alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0" ng-cloak>
+        <span ng-show="query == ''">{{alertMsg}}</span>
+        <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{objType}}s. Be the first to add one!</span>
+      </div>
+
+      <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
+        <tr>
+          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="activity-item-content-header">
+              <small>
+                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
+                <span class="date">{{item.fuzzyTime}} ago</span>
+              </small>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td ng-if="item.objType == 'initiative'">
+            ${ng_helpers.initiative_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'idea'">
+            ${ng_helpers.idea_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'resource'">
+            ${ng_helpers.resource_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+            ${ng_helpers.discussion_listing()}
+          </td>
+
+          <td ng-if="item.objType == 'photo'">
+            ${ng_helpers.photo_listing()}
+          </td>
+
+        </tr>
+      </table>
+
+      <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
+
+    </div><!-- infinite-scroll -->
+
+   </div> <!-- /.span8 -->
+
+   <div class="span3">
+      % if c.authuser:
+        % if c.privs and not c.privs['provisional']:
+          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{objType}}...</button>
+        % else:
+          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
+        % endif
+      % else:
+        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
+      % endif
+
+      <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
+        <li ng-class="{active: showSummary == true}">
+          <a ng-click="toggleSummary()">Summary</a>
+        </li>
+        <li ng-class="{active : showInfo == true}"><a ng-click="toggleInfo()">Info</a></li>
+        <li ng-class="{active: showIdeas == true}"><a ng-click="toggleIdeas()">Ideas</a></li>
+        <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Discussions</a></li>
+        <li ng-class="{active: showResources == true}"><a ng-click="toggleResources()">Resources</a></li>
+        <li ng-class="{active: showStats == true}"><a ng-click="toggleStats()">Stats</a></li>
+      </ul>
+        <div class="well well-subMenu">
+          <span class="green green-hover">Photos</span>
+          <hr class="subMenu">
+          <div class="photo-listing">
+              ${helpers.slideshow(c.w, 'listing')}
+          </div>
+        </div><!-- section-wrapper -->
+         <div class="well well-subMenu" >
+            <span class="green green-hover">Officials</span>
+            <hr class="subMenu">
+            ${helpers.showFacilitators()}
+            ${helpers.whoListening()}
+         </div> <!--/.browse-->
+   </div> <!-- /.span3 -->
+
+
+<%def name="extraScripts2()">
+    % if c.demo:
+        <script type="text/javascript" src="/js/vendor/guiders-1.3.0.js"></script>
+        <script type="text/javascript" src="/js/guiders/workshop_home.js"></script>
+    % endif
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.nullvote').tooltip();
+    </script>
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
+      var $doc = $(document);
+      $(document).ready(function() {
+         $.fn.foundationClearing         ? $doc.foundationClearing() : null;
+      });
+    </script>
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
+</%def>
