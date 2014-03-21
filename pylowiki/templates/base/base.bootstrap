@@ -19,8 +19,9 @@
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.js"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/vendor/binaryMuse_ngInfiniteScroll.min.js')}"></script>
-      <script src="/js/geoSearch.js"></script>
-      <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+      <script type="text/javascript" src="${lib_6.fingerprintFile('/js/geoSearch.js')}"></script>
+      <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/signup_login.js')}"></script>
+      <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/comments.js')}"></script>
       <script>
         var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
       </script>

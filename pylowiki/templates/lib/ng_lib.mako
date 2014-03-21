@@ -277,7 +277,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr ng-hide="newCommentLoading">
                     % if c.authuser:
                         <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                         <td style="padding: 10px;">
