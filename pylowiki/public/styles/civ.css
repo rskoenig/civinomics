@@ -3121,10 +3121,10 @@ tr.neutral, .accordion-heading.neutral{
   background-color: #e0e0e0;
 }
 
-a.no-highlight{
+a.no-highlight, .no-highlight a{
   color:#333333;
 }
-a.no-highlight:hover{
+a.no-highlight:hover, .no-highlight a:hover{
     color: #D15D00;
 }
 a.no-highlight.no-hover:hover{

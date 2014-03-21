@@ -243,12 +243,21 @@
     <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
         <div ng-controller="commentsController">
             <div class="actions-links           ">
-                <ul class="horizontal-list iconListing">
+                <ul class="horizontal-list iconListing no-highlight">
                     <li>
-                        <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                        <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                        <a ng-show="item.numComments == '0'" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                        <a ng-show="!(item.numComments == '0')" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                     </li>
                     <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                    <li ng-if="!(item.authorCode == authuserCode)"><a ng-click="showFlagObj()"><i class="icon-flag"></i> Flag </a></li>
+                    % if c.privs and (c.privs['admin'] or c.privs['facilitator']):
+                        <li ng-if="item.objType == 'idea'"><a ng-click="showAdoptObj()"><i class="icon-star"></i> Adopt </a></li>
+                        <li><a ng-click="showDeleteObj()"><i class="icon-pencil"></i> Edit </a></li>
+                        <li><a ng-click="showDeleteObj()"><i class="icon-trash"></i> Delete </a></li>
+                    % else:
+                        <li ng-if="item.authorCode == authuserCode"><a ng-click="showEditObj()"><i class="icon-pencil"></i> Edit </a></li>
+                        <li ng-if="item.authorCode == authuserCode"><i class="icon-trash"></i> Delete </li>
+                    % endif
                 </ul>
             </div>
             ### Comments

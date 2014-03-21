@@ -8,7 +8,13 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 
   <div class="span12 workshop-panel" style="margin-left: 0px;">
-    <div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}';">
+    <% 
+      if c.authuser:
+        userCode = c.authuser['urlCode']
+      else:
+        userCode = ''
+    %>
+    <div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'; authuserCode = '${userCode}'">
       <div id="top" class="row-fluid" ng-controller="activityWorkshopController">
         ${next.body()}
       </div>
