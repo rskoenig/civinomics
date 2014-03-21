@@ -65,6 +65,7 @@ class CorpController(BaseController):
         SSIP["image"]="SSIP.001.jpg"
         SSIP["url"]="SSIP"
         SSIP['date']="3.4.13"
+        SSIP['stats']='dcCommuterSurvey'
         c.studies.append(SSIP)
         eastsideProject={}
         eastsideProject["title"]="Eastside Recycled Water Project"
@@ -144,7 +145,7 @@ class CorpController(BaseController):
             study["solution"]="Civinomics interviewed more than 1,500 residents using iPads to determine base-level awareness of the shortage and get feedback on potential solutions, including conservation and desalination."
             study["results"]="Respondents were enthusiastic about conservation, and 20% signed up for a free home water efficiency audit. Seventy-five percent said that they supported continued study of desalination, but indicated that they would need more information to be sure. Slightly less than 20% (283) of all respondents signed up for continued agency updates on the issue."
             study["nextSteps"]="Civinomics will host an online workshop enabling the community to suggest and refine potential solutions to the region's water shortage. Additional public outreach will take place after the Environmental Impact Report for a regional desalination plant is completed, at which point comprehensive discussion of all options will be possible."
-        
+
             partners=[]
             partner={}
             partner['name']="Santa Cruz Water District"
@@ -397,6 +398,7 @@ class CorpController(BaseController):
             study["solution"]="Civinomics created an iPad survey for use in street outreach that discusses the basic principles behind recycled water and its use in San Francisco. The survey then presents each of the potential facility sites, asking respondents to indicate which they prefer, which they oppose and what comments they wish to make. Respondents also supply feedback on whether they prefer a minimal facility or one that includes community space or recreational amenities."
             study["results"]="With Civinomics' help, the SFPUC has been able to collect substantially more public input than ever before. The iPad survey is particularly effective for reaching residents in affected neighborhoods where household access to personal computers or the internet is not a given. Results will be published upon completion of the outreach."
             study["nextSteps"]=""
+            study['stats']='eastsideStats'
 
             partners=[]
             partner={}
@@ -464,6 +466,7 @@ class CorpController(BaseController):
             study["solution"]="Civinomics created an iPad survey for use in street outreach that provides residents an overview of the SSIP and gauges their support for its different elements. Respondents report sewer related problems, indicate their priorities for the overall project (minimizing costs, reducing odors, creating jobs, etc.) and indicate what they believe to be a reasonable rate increase to cover the cost of the improvements. The surveys are being conducted in the eight watersheds throughout the city."
             study["results"]="Results will be published upon completion of the outreach."
             study["nextSteps"]=""
+            study['stats']='dcCommuterSurvey'
 
             partners=[]
             partner={}

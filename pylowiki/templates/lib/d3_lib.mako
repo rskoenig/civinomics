@@ -9,61 +9,106 @@
 
 <%def name="includeD3()">
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-</%def>
-
-<%def name="dcCommuterSurvey()">
-  <style>
-      h2.surveyTitle { 
-          float: right;
-      } 
-      h2.surveyTitle span {
-          font-size: 14px; 
-          font-weight: normal; 
-      }
-      h4 span {
-          font-size: 0.7em; 
-          font-weight: normal; 
-          padding-left: 0.2em;
-      }
-
-      .dc-data-count2 .filter-count {
-          color: #3182bd;
-          font-weight: bold;
-      }
-      .dc-data-count2 .total-count {
-          color: #3182bd;
-          font-weight: bold;
-      }
-
-      .dc-chart rect.bar {
-          fill: aquamarine;
-      }
-      .dc-chart path.line {
-          stroke-width: 3px;
-          stroke-opacity: 1;
-          stroke: aquamarine;
-      }
-
-      .dc-chart g.row text {
-          font-size: 0.7em !important;
-          font: arial !important;
-
-      }
-
-      .dc-chart .pie-slice {
-          fill: black !important;
-          font-size: 0.8em !important;
-      }
-
-      .table {
-          width: 60%;
-      }
-  </style>
-
   <script src='/js/vendor/crossfilter.js' type='text/javascript'></script> 
   <script src='/js/vendor/dc.js' type='text/javascript'></script>
   <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+  <link href='/styles/extraD3styles.css' rel='stylesheet' type='text/css'>
+</%def>
 
+<%def name="eastsideStats()">
+
+  <h1>stats from DMC</h1>
+
+  <div class='container'>
+      <div class='row'>
+          <div class='span11 offset1'> 
+              <div class="dc-data-count" style="float: left;"> 
+                  <h2 class="surveyTitle">Commuter Survey Results
+                      <span> 
+                          <span class="filter-count"></span>
+                          selected out of
+                          <span class="total-count"></span> 
+                          records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+                      </span>
+                  </h2> 
+              </div>
+          </div>
+      </div>
+
+      <div class='row'>   <!-- wide left area, tall right column -->   
+          <div class='span12'> 
+
+              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+              <div class='row'>
+                  <div class='span5 offset1' id='dc-salary-chart'> 
+                      <h4>Salary distribution
+                          <span>
+                              (drag sliders to filter results)
+                          </span>
+                      </h4>
+                  </div>
+                  <div class='span5 offset1' id='dc-commuteDuration-chart'>
+                      <h4>Commute Duration</h4> 
+                  </div>
+              </div>
+
+              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+              <div class='row'>
+                  <div class='span5 offset1' id='dc-age-chart'>
+                      <h4>Age of commuters polled
+                          <span>
+                              (drag sliders to filter results)
+                          </span>
+                      </h4>
+                  </div>
+                  <div class='span5 offset1' id='dc-senority-chart'>
+                      <h4>Senority
+                          <span>
+                              (click to filter results)
+                              <a class="reset"
+href="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                          </span>
+                      </h4>
+                  </div>
+
+
+              </div>
+            </div>
+        </div> <!--container -->
+
+  <script>
+      // Create the dc.js chart objects & link to div
+      var antisocialBehaviorChart = dc.barChart("#antisocialBehavior");
+
+
+
+
+        d3.csv("/surveys/dmc_survey.csv", function(error, data) {
+
+
+
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          // pie chart section begins here
+          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          workedInScChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(workedInSc) 
+              .group(workedInScGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+
+
+
+</%def>
+
+<%def name="dmcStats()">
+  <h1>This is a test of the stats system, foo</h1>
+
+</%def>
+
+<%def name="dcCommuterSurvey()">
   <div class='container'>
       <div class='row'>
           <div class='span11 offset1'> 
