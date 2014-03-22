@@ -509,6 +509,10 @@ class InitiativeController(BaseController):
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
 
+        c.numComments = 0
+        if 'numComments' in c.initiative:
+            c.numComments = c.initiative['numComments']
+
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
         for author in coAuthors:
