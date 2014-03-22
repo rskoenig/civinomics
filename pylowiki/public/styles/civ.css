@@ -3074,7 +3074,11 @@ margin-right: -13px;
   background-color: rgba(0,0,0,0);
 }
 
-.initiative-title, .wiki-well h1, .wiki-well h2, .wiki-well h3, .wiki-well h4{
+.initiative-title{
+  text-transform:uppercase;
+}
+
+.wiki-well h1, .wiki-well h2, .wiki-well h3, .wiki-well h4{
   text-transform:uppercase;
   font-size: 18px;
 }
