@@ -13,6 +13,7 @@
 
 
 <%def name="dcDmcSurvey()">
+  
   <style>
       h2.surveyTitle { 
           float: right;
@@ -61,8 +62,8 @@
       }
   </style>
 
-  <script src='/js/vendor/crossfilter.js' type='text/javascript'></script> 
-  <script src='/js/vendor/dc.js' type='text/javascript'></script>
+  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
   <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
   <div class='container'>
@@ -174,6 +175,7 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
               <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
               <div class='span12' id='dc--chart'>
                   <h4>
+                    hi
                   </h4>
               </div>
 
@@ -185,14 +187,17 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
           <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
           <div class='span3 offset1' id='dc--chart'>
               <h4>
+                1
               </h4>
           </div>
           <div class='span3' id='dc--chart'>
               <h4>
+                2
               </h4>
           </div>
           <div class='span3' id='dc--chart'>
               <h4>
+                3
               </h4>
           </div>
 
@@ -237,24 +242,31 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
       </div>    <!-- END entire width column -->   
 
       <div class='row'> 
-          <div class='span10 offset1'>
-              <div class='dc-data-count2'>
-                  <span> 
-                      Table listing
-                      <span class="filter-count"></span>
-                      records out of
-                      <span class="total-count"></span> 
-                      people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
-                  </span>
+          <div class='span11 offset1'>
+              <div class='row'>
+                  <div class='span12 dc-data-count2'>
+                      <span> 
+                          Table listing
+                          <span class="filter-count"></span>
+                          records out of
+                          <span class="total-count"></span> 
+                          people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+                      </span>
+                  </div>
               </div>
-              <table class='table table-hover' id='dc-table-graph'> 
-                  <thead>
-                      <tr class='header'> 
-                          <th>Comments on additional services the DMC could provide.</th>
-                          <th>Suggestions on additional services the DMC could provide.</th>
-                      </tr>
-                  </thead>
-              </table>
+              <div class='row'>
+                  <div class='span12'>
+                      <table class='table table-hover' id='dc-table-graph'> 
+                          <thead>
+                              <tr class='header'> 
+                                  <th>Comments on additional services the DMC could provide.</th>
+                                  <th>Suggestions on additional services the DMC could provide.</th>
+                                  <th>What additional services would you like the DMC to provide?</th>
+                              </tr>
+                          </thead>
+                      </table>
+                  </div>
+              </div>
           </div>
 
       </div> 
@@ -458,12 +470,13 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
               .title(function(d){return d.data.key + ", " + d.value;});
 
           // Table of commuter survey data
-          dataTable.width(760).height(800) 
+          dataTable.width(960).height(800) 
               .dimension(ageDimension)
                   .group(function(d) { return ''})
               .columns([
                   function(d) { return d.mostImportantAboutHosts1; },
                   function(d) { return d.mostImportantAboutHosts2; },
+                  function(d) { return d.additionalServicesSuggestions; },
               ])
               .sortBy(function(d){ 
                   return d.ageLower; 
