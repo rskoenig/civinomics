@@ -175,7 +175,7 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
               <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
               <div class='span12' id='dc--chart'>
                   <h4>
-                    hi
+                    hi I'm a tall right column
                   </h4>
               </div>
 
@@ -185,19 +185,31 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
       <div class='row'>   <!-- spans entire width -->   
 
           <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-          <div class='span3 offset1' id='dc--chart'>
-              <h4>
-                1
+          <div class='span3 offset1' id='dc-howOftenSeeHost-chart'>
+              <h4>How often do you see a downtown hospitality host?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
-          <div class='span3' id='dc--chart'>
-              <h4>
-                2
+          <div class='span3' id='dc-howOftenInteractWithPeople-chart'>
+              <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
-          <div class='span3' id='dc--chart'>
-              <h4>
-                3
+          <div class='span3' id='dc-mostImportantAboutHosts-chart'>
+              <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
 
@@ -206,16 +218,31 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
       <div class='row'>   <!-- spans entire width -->
 
           <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-          <div class='span3 offset1' id='dc--chart'>
-              <h4>
+          <div class='span3 offset1' id='dc-opinionFirstPriorityForServices-chart'>
+              <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
-          <div class='span3' id='dc--chart'>
-              <h4>
+          <div class='span3' id='dc-opinionFirstPriorityForServices1-chart'>
+              <h4>Anything to add about the previous question?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:opinionFirstPriorityForServices1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
-          <div class='span3' id='dc--chart'>
-              <h4>
+          <div class='span3' id='dc-improvementsForYourSafety-chart'>
+              <h4>What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
 
@@ -225,8 +252,81 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
       <div class='row'>   <!-- spans entire width -->  
 
           <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-          <div class='span3 offset1' id='dc--chart'>
-              <h4>
+          <div class='span3 offset1' id='dc-improvementsForYourSafety1-chart'>
+              <h4>Anything to add about the previous question?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:improvementsForYourSafety1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-whatDescribesYourBusiness-chart'>
+              <h4>Which of the following best describes your business or working environment?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-whatDescribesYourBusiness1-chart'>
+              <h4>Anything to add about the previous question?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:whatDescribesYourBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+
+
+      </div>    <!-- END entire width column --> 
+
+      <div class='row'>   <!-- spans entire width -->  
+
+          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+          <div class='span3 offset1' id='dc-yourRoleInBusiness-chart'>
+              <h4>What is your role in the business?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-yourRoleInBusiness1-chart'>
+              <h4>Anything to add about the previous question?
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:yourRoleInBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+          <div class='span3' id='dc-gender-chart'>
+              <h4>Gender
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
+              </h4>
+          </div>
+
+
+      </div>    <!-- END entire width column -->  
+
+      <div class='row'>   <!-- spans entire width -->  
+
+          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+          <div class='span3 offset1' id='dc-continuedInvolvement-chart'>
+              <h4>I would like to continue to be involved by receiving...
+                  <span>
+                      <br />(click to filter results)
+                      <a class="reset"
+href="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                  </span>
               </h4>
           </div>
           <div class='span3' id='dc--chart'>
@@ -285,6 +385,25 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
       var everWitnessedProgramHostChart = dc.pieChart("#dc-everWitnessedProgramHost-chart");
       var everWitnessedProgramHostDescriptionChart = dc.pieChart("#dc-everWitnessedProgramHostDescription-chart");
       var hostApproachableChart = dc.pieChart("#dc-hostApproachable-chart");
+
+      var howOftenSeeHostChart = dc.pieChart("#dc-howOftenSeeHost-chart");
+      var howOftenInteractWithPeopleChart = dc.pieChart("#dc-howOftenInteractWithPeople-chart");
+      var mostImportantAboutHostsChart = dc.pieChart("#dc-mostImportantAboutHosts-chart");
+
+
+      var opinionFirstPriorityForServicesChart = dc.pieChart("#dc-opinionFirstPriorityForServices-chart");
+      var opinionFirstPriorityForServices1Chart = dc.pieChart("#dc-opinionFirstPriorityForServices1-chart");
+      var improvementsForYourSafetyChart = dc.pieChart("#dc-improvementsForYourSafety-chart");
+
+      var improvementsForYourSafety1Chart = dc.pieChart("#dc-improvementsForYourSafety1-chart");
+      var whatDescribesYourBusinessChart = dc.pieChart("#dc-whatDescribesYourBusiness-chart");
+      var whatDescribesYourBusiness1Chart = dc.pieChart("#dc-whatDescribesYourBusiness1-chart");
+
+      var yourRoleInBusinessChart = dc.pieChart("#dc-yourRoleInBusiness-chart");
+      var yourRoleInBusiness1Chart = dc.pieChart("#dc-yourRoleInBusiness1-chart");
+      var genderChart = dc.pieChart("#dc-gender-chart");
+
+      var continuedInvolvementChart = dc.pieChart("#dc-continuedInvolvement-chart");
 
       var dataTable = dc.dataTable("#dc-table-graph");
 
@@ -385,6 +504,123 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
               }
           });
           var hostApproachableGroup = hostApproachable.group();
+
+          var howOftenSeeHost = facts.dimension(function (d) {
+              if (d.howOftenSeeHost == "") {
+                  return "No answer";
+              } else {
+                  return d.howOftenSeeHost;
+              }
+          });
+          var howOftenSeeHostGroup = howOftenSeeHost.group();
+
+          var howOftenInteractWithPeople = facts.dimension(function (d) {
+              if (d.howOftenInteractWithPeople == "") {
+                  return "No answer";
+              } else {
+                  return d.howOftenInteractWithPeople;
+              }
+          });
+          var howOftenInteractWithPeopleGroup = howOftenInteractWithPeople.group();
+
+          var mostImportantAboutHosts = facts.dimension(function (d) {
+              if (d.mostImportantAboutHosts == "") {
+                  return "No answer";
+              } else {
+                  return d.mostImportantAboutHosts;
+              }
+          });
+          var mostImportantAboutHostsGroup = mostImportantAboutHosts.group();
+
+          var opinionFirstPriorityForServices = facts.dimension(function (d) {
+              if (d.opinionFirstPriorityForServices == "") {
+                  return "No answer";
+              } else {
+                  return d.opinionFirstPriorityForServices;
+              }
+          });
+          var opinionFirstPriorityForServicesGroup = opinionFirstPriorityForServices.group();
+
+          var opinionFirstPriorityForServices1 = facts.dimension(function (d) {
+              if (d.opinionFirstPriorityForServices1 == "") {
+                  return "No answer";
+              } else {
+                  return d.opinionFirstPriorityForServices1;
+              }
+          });
+          var opinionFirstPriorityForServices1Group = opinionFirstPriorityForServices1.group();
+
+          var improvementsForYourSafety = facts.dimension(function (d) {
+              if (d.improvementsForYourSafety == "") {
+                  return "No answer";
+              } else {
+                  return d.improvementsForYourSafety;
+              }
+          });
+          var improvementsForYourSafetyGroup = improvementsForYourSafety.group();
+
+          var improvementsForYourSafety1 = facts.dimension(function (d) {
+              if (d.improvementsForYourSafety1 == "") {
+                  return "No answer";
+              } else {
+                  return d.improvementsForYourSafety1;
+              }
+          });
+          var improvementsForYourSafety1Group = improvementsForYourSafety1.group();
+
+          var whatDescribesYourBusiness = facts.dimension(function (d) {
+              if (d.whatDescribesYourBusiness == "") {
+                  return "No answer";
+              } else {
+                  return d.whatDescribesYourBusiness;
+              }
+          });
+          var whatDescribesYourBusinessGroup = whatDescribesYourBusiness.group();
+
+          var whatDescribesYourBusiness1 = facts.dimension(function (d) {
+              if (d.whatDescribesYourBusiness1 == "") {
+                  return "No answer";
+              } else {
+                  return d.whatDescribesYourBusiness1;
+              }
+          });
+          var whatDescribesYourBusiness1Group = whatDescribesYourBusiness1.group();
+
+          var yourRoleInBusiness = facts.dimension(function (d) {
+              if (d.yourRoleInBusiness == "") {
+                  return "No answer";
+              } else {
+                  return d.yourRoleInBusiness;
+              }
+          });
+          var yourRoleInBusinessGroup = yourRoleInBusiness.group();
+
+          var yourRoleInBusiness1 = facts.dimension(function (d) {
+              if (d.yourRoleInBusiness1 == "") {
+                  return "No answer";
+              } else {
+                  return d.yourRoleInBusiness1;
+              }
+          });
+          var yourRoleInBusiness1Group = yourRoleInBusiness1.group();
+
+          var gender = facts.dimension(function (d) {
+              if (d.gender == "") {
+                  return "No answer";
+              } else {
+                  return d.gender;
+              }
+          });
+          var genderGroup = gender.group();
+
+          var continuedInvolvement = facts.dimension(function (d) {
+              if (d.continuedInvolvement == "") {
+                  return "No answer";
+              } else {
+                  return d.continuedInvolvement;
+              }
+          });
+          var continuedInvolvementGroup = continuedInvolvement.group();
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -467,6 +703,110 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
               .innerRadius(30) 
               .dimension(hostApproachable) 
               .group(hostApproachableGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          howOftenSeeHostChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(howOftenSeeHost) 
+              .group(howOftenSeeHostGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+          
+          howOftenInteractWithPeopleChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(howOftenInteractWithPeople) 
+              .group(howOftenInteractWithPeopleGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          mostImportantAboutHostsChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(mostImportantAboutHosts) 
+              .group(mostImportantAboutHostsGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          opinionFirstPriorityForServicesChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(opinionFirstPriorityForServices) 
+              .group(opinionFirstPriorityForServicesGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          opinionFirstPriorityForServices1Chart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(opinionFirstPriorityForServices1) 
+              .group(opinionFirstPriorityForServices1Group) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          improvementsForYourSafetyChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(improvementsForYourSafety) 
+              .group(improvementsForYourSafetyGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          improvementsForYourSafety1Chart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(improvementsForYourSafety1) 
+              .group(improvementsForYourSafety1Group) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          whatDescribesYourBusinessChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(whatDescribesYourBusiness) 
+              .group(whatDescribesYourBusinessGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          whatDescribesYourBusiness1Chart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(whatDescribesYourBusiness1) 
+              .group(whatDescribesYourBusiness1Group) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          yourRoleInBusinessChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(yourRoleInBusiness) 
+              .group(yourRoleInBusinessGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          yourRoleInBusiness1Chart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(yourRoleInBusiness1) 
+              .group(yourRoleInBusiness1Group) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          genderChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(gender) 
+              .group(genderGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          continuedInvolvementChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(continuedInvolvement) 
+              .group(continuedInvolvementGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
           // Table of commuter survey data
