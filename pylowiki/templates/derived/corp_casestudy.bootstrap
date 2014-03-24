@@ -1,12 +1,22 @@
 <%inherit file="/base/base_corp.bootstrap"/>
-
 <%namespace name="helpers" file="/derived/casestudy/helpers.mako" />
-
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
 
 <%def name="page_specific_css()">
 </%def>
 <%def name="display_body_right_content()">
 <div class="row-fluid">
+
+  % if 'stats' in c.study:
+    ${d3Lib.includeD3()}
+    <!-- $ - { d3Lib.dcExample()} -->
+    % if c.study['stats'] == 'dcCommuterSurvey':
+      ${d3Lib.dcCommuterSurvey()}
+    % elif c.study['stats'] == 'eastsideStats':
+      ${d3Lib.eastsideStats()}
+    % endif
+  % endif
+
   <div class="span7">
       ${helpers.showSlide(c.study)}
   </div>
