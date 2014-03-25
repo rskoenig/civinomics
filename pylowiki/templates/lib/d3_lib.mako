@@ -66,7 +66,7 @@
   <hr>
   <div class="row-fluid">
     <div class='span4' id='dc-salary-chart'> 
-      <h4>Salary Rage
+      <h4>Salary Range
         <span>
             (drag sliders to filter results)
         </span>
@@ -314,8 +314,8 @@
           var commuteDurationValue = facts.dimension(function (d) { 
               return d.commuteDuration;
           });
-          var commuteDurationValueGroup = commuteDurationValue.group() 
-              .reduceCount(function(d) { return d.commuteDuration; }) // counts
+          var commuteDurationValueGroup = commuteDurationValue.group();
+              //.reduceCount(function(d) { return d.commuteDuration; }) // counts
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var ageValue = facts.dimension(function (d) { 
@@ -533,7 +533,7 @@
           // Setup the charts
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var commasFormatter = d3.format(",.0f");
-          salaryChart.width(400) 
+          salaryChart.width(280) 
               .height(150) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(salaryValue) 
@@ -541,8 +541,8 @@
               .transitionDuration(500) 
               .centerBar(true) 
               .gap(-8)
-              .filter([0, 550000]) 
-              .x(d3.scale.linear().domain([0, 550000])) 
+              .x(d3.scale.linear().domain([0, 510000])) 
+              .filter([0, 505000])
               .elasticY(true) 
               .xAxis()
               .tickFormat(function(d) { return "$" + commasFormatter(d); })
@@ -555,22 +555,22 @@
                 return d + " hour";
           }
           // bar chart of commute duration and its sum of occurences
-          commuteDurationChart.width(400) 
+          commuteDurationChart.width(370) 
               .height(150) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(commuteDurationValue) 
               .group(commuteDurationValueGroup) 
               .transitionDuration(500)
-              .brushOn(false) 
               .title(function(d){
                   return d.key
                   + " hrs \nNumber of Commuters: " + d.value; 
                   })
-              .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.commuteDuration; })))
+              .x(d3.scale.linear().domain([0.5,6.5]))
               .elasticY(true) 
+              .filter([0.6, 5.1])
               .xAxis()
               .tickFormat(function(d) { return hoursFormatter(d); })
-              .ticks(5);
+              .ticks(6);
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var yearsFormatter = function(d) {
@@ -642,15 +642,15 @@
               .tickFormat(function(d) { return d; })
               .ticks(3);
 
-          employmentDurationChart.width(300) 
+          employmentDurationChart.width(290) 
               .height(248) 
               .margins({top: 40, right: 10, bottom: 20, left: 20}) 
               .dimension(employmentDuration) 
               .group(employmentDurationGroup) 
               .transitionDuration(500)
-              .elasticY(true) 
-              .filter([0, 12.5]) 
+              .elasticY(true)
               .x(d3.scale.linear().domain([0,12.5]))
+              .filter([0, 12.1])
               .xAxis()
               .ticks(4)
               .tickFormat(function(d) { return yearsFormatter(d); });
@@ -689,15 +689,15 @@
               .group(whyLiveInScGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
-          residenceDurationChart.width(300) 
+          residenceDurationChart.width(280) 
               .height(220) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(residenceDuration) 
               .group(residenceDurationGroup) 
               .transitionDuration(500)
               .elasticY(true) 
-              .filter([0, 12.5]) 
-              .x(d3.scale.linear().domain([0,12.5]))
+              .x(d3.scale.linear().domain([0,12.3]))
+              .filter([0, 12.2]) 
               .xAxis()
               .ticks(4)
               .tickFormat(function(d) { return yearsFormatter(d); });
@@ -784,12 +784,18 @@
               .group(commuteActivityGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
+          var commentsOrSuggestionsFormatter = function(d) {
+            if (d == "(blank)")
+                return "";
+            else
+                return d;
+          }
           // Table of commuter survey data
           dataTable.width(760).height(800) 
               .dimension(commuteDurationDimension)
                   .group(function(d) { return ''})
               .columns([
-                  function(d) { return d.commentsOrSuggestions; },
+                  function(d) { return commentsOrSuggestionsFormatter(d.commentsOrSuggestions); },
               ])
               .sortBy(function(d){ 
                   return d.commuteDuration; 
