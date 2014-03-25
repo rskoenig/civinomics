@@ -198,8 +198,9 @@
       </h4>
     </div>
   </div><!-- row-fluid -->
+  <!-- removing table for now
   <hr>
-  <div class='row-fluid'> 
+   <div class='row-fluid'> 
     <div class='span12'>
       <div class='dc-data-count2'>
         <span> 
@@ -210,11 +211,11 @@
           people surveyed | <a href="#dc-data-count2" name="dc-data-count2" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
         </span>
       </div>
-    </div>
+    </div> 
     <h4>Comments or Suggestions for improving the Santa Cruz tech-ecosystem?</h4>
     <table class='table table-hover' style="width: 100%;" id='dc-table-graph'> 
     </table>
-  </div> 
+  </div> -->
 
   <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
   <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
@@ -252,7 +253,7 @@
       var whyCommuteChart = dc.pieChart("#dc-whyCommute-chart");
       var commuteActivityChart = dc.pieChart("#dc-commuteActivity-chart");
 
-      var dataTable = dc.dataTable("#dc-table-graph");
+      //var dataTable = dc.dataTable("#dc-table-graph");
 
       var data = null;
       
@@ -300,9 +301,10 @@
           dc.dataCount(".dc-data-count") 
               .dimension(facts) 
               .group(all);
-          dc.dataCount(".dc-data-count2") 
-              .dimension(facts) 
-              .group(all);
+          // note: code for table
+          //dc.dataCount(".dc-data-count2") 
+          //    .dimension(facts) 
+          //    .group(all);
 
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -791,16 +793,16 @@
                 return d;
           }
           // Table of commuter survey data
-          dataTable.width(760).height(800) 
-              .dimension(commuteDurationDimension)
-                  .group(function(d) { return ''})
-              .columns([
-                  function(d) { return commentsOrSuggestionsFormatter(d.commentsOrSuggestions); },
-              ])
-              .sortBy(function(d){ 
-                  return d.commuteDuration; 
-              })
-              .order(d3.ascending);
+          //dataTable.width(760).height(800) 
+          //    .dimension(commuteDurationDimension)
+          //        .group(function(d) { return ''})
+          //    .columns([
+          //        function(d) { return commentsOrSuggestionsFormatter(d.commentsOrSuggestions); },
+          //    ])
+          //    .sortBy(function(d){ 
+          //        return d.commuteDuration; 
+          //    })
+          //    .order(d3.ascending);
 
           // Render the Charts
           dc.renderAll();
