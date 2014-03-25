@@ -23,7 +23,7 @@
 
       <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
         <tr>
-          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
+          <td class="avatar-cell" rowspan="3"><!-- <img class="thumbnail flag med-flag border" src="{{item.flag}}"> --><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
           <td></td>
         </tr>
         <tr>

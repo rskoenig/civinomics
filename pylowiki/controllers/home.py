@@ -192,11 +192,11 @@ class HomeController(BaseController):
 					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
 				else:
 					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+
 			elif entry['parentObjType'] == 'initiative':
 				initiative = initiativeLib.getInitiative(item['initiativeCode'])
 				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
-
 			else:
 				entry['mainPhoto'] = '0'
 				entry['thumbnail'] = '0'
