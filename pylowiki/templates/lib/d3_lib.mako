@@ -15,322 +15,209 @@
   <link href='/styles/extraD3styles.css' rel='stylesheet' type='text/css'>
 </%def>
 
-<%def name="eastsideStats()">
-
-  <h1>stats from DMC</h1>
-
-  <div class='container'>
-      <div class='row'>
-          <div class='span11 offset1'> 
-              <div class="dc-data-count" style="float: left;"> 
-                  <h2 class="surveyTitle">Commuter Survey Results
-                      <span> 
-                          <span class="filter-count"></span>
-                          selected out of
-                          <span class="total-count"></span> 
-                          records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
-                      </span>
-                  </h2> 
-              </div>
-          </div>
-      </div>
-
-      <div class='row'>   <!-- wide left area, tall right column -->   
-          <div class='span12'> 
-
-              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-              <div class='row'>
-                  <div class='span5 offset1' id='dc-salary-chart'> 
-                      <h4>Salary distribution
-                          <span>
-                              (drag sliders to filter results)
-                          </span>
-                      </h4>
-                  </div>
-                  <div class='span5 offset1' id='dc-commuteDuration-chart'>
-                      <h4>Commute Duration</h4> 
-                  </div>
-              </div>
-
-              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-              <div class='row'>
-                  <div class='span5 offset1' id='dc-age-chart'>
-                      <h4>Age of commuters polled
-                          <span>
-                              (drag sliders to filter results)
-                          </span>
-                      </h4>
-                  </div>
-                  <div class='span5 offset1' id='dc-senority-chart'>
-                      <h4>Senority
-                          <span>
-                              (click to filter results)
-                              <a class="reset"
-href="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                          </span>
-                      </h4>
-                  </div>
-
-
-              </div>
-            </div>
-        </div> <!--container -->
-
-  <script>
-      // Create the dc.js chart objects & link to div
-      var antisocialBehaviorChart = dc.barChart("#antisocialBehavior");
-
-
-
-
-        d3.csv("/surveys/dmc_survey.csv", function(error, data) {
-
-
-
-          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-          // pie chart section begins here
-          /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-          workedInScChart.width(300) 
-              .height(220) 
-              .radius(100) 
-              .innerRadius(30) 
-              .dimension(workedInSc) 
-              .group(workedInScGroup) 
-              .title(function(d){return d.data.key + ", " + d.value;});
-
-
-
-
-</%def>
-
-<%def name="dmcStats()">
-  <h1>This is a test of the stats system, foo</h1>
-
-</%def>
-
 <%def name="dcCommuterSurvey()">
-  <div class='container'>
-      <div class='row'>
-          <div class='span11 offset1'> 
-              <div class="dc-data-count" style="float: left;"> 
-                  <h2 class="surveyTitle">Commuter Survey Results
-                      <span> 
-                          <span class="filter-count"></span>
-                          selected out of
-                          <span class="total-count"></span> 
-                          records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
-                      </span>
-                  </h2> 
-              </div>
-          </div>
-      </div>
-
-      <div class='row'>   <!-- wide left area, tall right column -->   
-          <div class='span9'> 
-
-              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-              <div class='row'>
-                  <div class='span5 offset1' id='dc-salary-chart'> 
-                      <h4>Salary distribution
-                          <span>
-                              (drag sliders to filter results)
-                          </span>
-                      </h4>
-                  </div>
-                  <div class='span5 offset1' id='dc-commuteDuration-chart'>
-                      <h4>Commute Duration</h4> 
-                  </div>
-              </div>
-
-              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-              <div class='row'>
-                  <div class='span5 offset1' id='dc-age-chart'>
-                      <h4>Age of commuters polled
-                          <span>
-                              (drag sliders to filter results)
-                          </span>
-                      </h4>
-                  </div>
-                  <div class='span5 offset1' id='dc-senority-chart'>
-                      <h4>Senority
-                          <span>
-                              (click to filter results)
-                              <a class="reset"
-href="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                          </span>
-                      </h4>
-                  </div>
-
-
-              </div>
-              <div class='row'> 
-
-                  <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-                  <div class='span3 offset1' id='dc-college-chart'>
-                      <h4>Attended college in area
-                          <span>
-                              <br />(click to filter results)
-                              <a class="reset"
-href="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                          </span>
-                      </h4> 
-                  </div>
-                  <div class='span3' id='dc-commuteType-chart'>
-                      <h4>Commute Method
-                          <span>
-                              <br />(click to filter results)
-                              <a class="reset"
-href="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                          </span>
-                      </h4> 
-                  </div>
-                  <div class='span3' id='dc-employmentDuration-chart'>
-                      <h4>Length of Employment</h4> 
-                  </div>
-
-
-              </div>
-          </div>   <!-- END wide left area -->   
-          <div class='span3'>   <!-- tall right column -->   
-
-              <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-              <div class='span12' id='dc-employmentType-chart'>
-                  <h4>Job Type
-                      <span>
-                          (click to filter results)
-                          <a class="reset"
-href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
-                      </span>
-                  </h4>
-              </div>
-
-
-          </div>   <!-- END tall right column -->   
-      </div>
-      <div class='row'>   <!-- spans entire width -->   
-
-          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-          <div class='span3 offset1' id='dc-workedInSc-chart'>
-              <h4>Ever worked in Santa Cruz?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-          <div class='span3' id='dc-whyLiveInSc-chart'>
-              <h4>Why live here?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-          <div class='span3' id='dc-residenceDuration-chart'>
-              <h4>Number of years in Santa Cruz?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-
-
-      </div>    <!-- END entire width column -->   
-      <div class='row'>   <!-- spans entire width -->
-
-          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-          <div class='span3 offset1' id='dc-rentOrOwn-chart'>
-              <h4>Do you rent or own a place here?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-          <div class='span3' id='dc-whyNotWorkInSc-chart'>
-              <h4>Why not work in Santa Cruz?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-          <div class='span3' id='dc-salaryNeeded-chart'>
-              <h4>Salary needed to work here?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-
-
-      </div>    <!-- END entire width column -->   
-
-      <div class='row'>   <!-- spans entire width -->  
-
-          <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-          <div class='span3 offset1' id='dc-children-chart'>
-              <h4>Do you have children?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-          <div class='span3' id='dc-whyCommute-chart'>
-              <h4>Why do you commute?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-          <div class='span3' id='dc-commuteActivity-chart'>
-              <h4>Commute Activities?
-                  <span>
-                      <br />(click to filter results)
-                      <a class="reset"
-href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                  </span>
-              </h4>
-          </div>
-
-
-      </div>    <!-- END entire width column -->   
-
-      <div class='row'> 
-          <div class='span10 offset1'>
-              <div class='dc-data-count2'>
-                  <span> 
-                      Table listing
-                      <span class="filter-count"></span>
-                      records out of
-                      <span class="total-count"></span> 
-                      people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
-                  </span>
-              </div>
-              <table class='table table-hover' id='dc-table-graph'> 
-                  <thead>
-                      <tr class='header'> 
-                          <th>Comments or Suggestions</th> 
-                      </tr>
-                  </thead>
-              </table>
-          </div>
-
-      </div> 
-
+  <div class='row-fluid' data-spy="affix" data-offset-top="1150" >
+    <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
+      <span> 
+          <span class="filter-count"></span>
+          selected out of
+          <span class="total-count"></span> 
+          records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+      </span>
+    </div>
   </div>
+  <div class='row-fluid'>   
+    <div class='span4' id='dc-commuteDuration-chart'>
+        <h4>How much time do you spend each day commuting over the hill and back?</h4> 
+    </div>
+    <div class='span4' id='dc-commuteType-chart'>
+      <h4>How do you get to work over the hill?
+        <span>
+          <a class="reset" href="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4> 
+    </div>
+    <div class='span4' id='dc-commuteActivity-chart'>
+      <h4>What do you primarily do on the bus during your commute?
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class="row-fluid">
+    <div class='span4' id='dc-employmentType-chart'>
+      <h4>What is your functional employment area at your current job?
+        <span>
+          <a class="reset" href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-employmentDuration-chart'>
+        <h4>How long have you been with your current employer?</h4> 
+    </div>
+    <div class='span4' id='dc-senority-chart'>
+      <h4>What is your position or level of seniority?
+        <span>
+          <a class="reset" href="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class="row-fluid">
+    <div class='span4' id='dc-salary-chart'> 
+      <h4>Salary Rage
+        <span>
+            (drag sliders to filter results)
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-whyCommute-chart'>
+      <h4>Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).
+        <span>
+            <br>
+            <a class="reset" href="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-whyLiveInSc-chart'>
+      <h4>Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).
+        <span>
+          <br>
+          <a class="reset" href="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class="row-fluid">
+    <div class='span4' id='dc-college-chart'>
+      <h4>Did you go to college in Santa Cruz?
+        <span>
+          <br>
+          <a class="reset" href="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4> 
+    </div>
+    <div class='span4' id='dc-residenceDuration-chart'>
+      <h4>How long have you lived in Santa Cruz?
+        <span>
+          <br />(drag to filter results)
+          <a class="reset" href="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-workedInSc-chart'>
+      <h4>Have you ever worked in Santa Cruz?
+        <span>
+            <br />(click to filter results)
+            <a class="reset" href="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class="row-fluid">
+    <div class='span4' id='dc-whyNotWorkInSc-chart'>
+      <h4>Why did you stop working in Santa Cruz?
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-salaryNeeded-chart'>
+      <h4>Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-heardOfStartupNewsHere-chart'>
+      <h4>How much have you heard about recent start-up activity in Santa Cruz?
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class="row-fluid">
+    <div class='span4' id='dc-consideredJobsInSantaCruz-chart'>
+      <h4>Have you considered exploring job openings with any Santa Cruz tech companies or startups?
+        <span>
+          <br>
+          <a class="reset" href="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <!--
+    <div class='span4' id='dc-techEventsInSantaCruz-chart'>
+      <h4>Which of the following Santa Cruz tech-community events have you attended?
+        <span>
+          <br>
+          <a class="reset" href="javascript:techEventsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    -->
+    <div class='span8' id='dc-age-chart'>
+      <h4>Age of Respondents
+        <span>
+            (drag sliders to filter results)
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class="row-fluid">
+    <div class='span4' id='dc-maritalStatus-chart'>
+      <h4>Marital status
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-children-chart'>
+      <h4>Do you have children 17 years of age or younger living in the household?
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+    <div class='span4' id='dc-rentOrOwn-chart'>
+      <h4>Do you rent or own your home?
+        <span>
+          <br />(click to filter results)
+          <a class="reset" href="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </span>
+      </h4>
+    </div>
+  </div><!-- row-fluid -->
+  <hr>
+  <div class='row-fluid'> 
+    <div class='span12'>
+      <div class='dc-data-count2'>
+        <span> 
+          Table listing
+          <span class="filter-count"></span>
+          records out of
+          <span class="total-count"></span> 
+          people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+        </span>
+      </div>
+    </div>
+    <h4>Comments or Suggestions for improving the Santa Cruz tech-ecosystem?</h4>
+    <table class='table table-hover' style="width: 100%;" id='dc-table-graph'> 
+    </table>
+  </div> 
 
   <script>
       // Create the dc.js chart objects & link to div
@@ -355,6 +242,11 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
       var whyNotWorkInScChart = dc.pieChart("#dc-whyNotWorkInSc-chart");
       var salaryNeededChart = dc.pieChart("#dc-salaryNeeded-chart");
 
+      var heardOfStartupNewsHereChart = dc.pieChart("#dc-heardOfStartupNewsHere-chart");
+      var consideredJobsInSantaCruzChart = dc.pieChart("#dc-consideredJobsInSantaCruz-chart");
+      var techEventsInSantaCruzChart = dc.pieChart("#dc-techEventsInSantaCruz-chart");
+
+      var maritalStatusChart = dc.pieChart("#dc-maritalStatus-chart");
       var childrenChart = dc.pieChart("#dc-children-chart");
       var whyCommuteChart = dc.pieChart("#dc-whyCommute-chart");
       var commuteActivityChart = dc.pieChart("#dc-commuteActivity-chart");
@@ -461,7 +353,7 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
           var commuteType = facts.dimension(function (d) {
               switch (d.travelType) {
                   case 'Company bus': return "0.Company bus";
-                  case 'Car (solo)': return "1.Car (solo)";
+                  case 'Car (single occupancy)': return "1.Car (single occupancy)";
                   case 'Independent shuttle': return "2.Independent shuttle";
                   case 'Carpool': return "3.Carpool";
                   default: return "4.No answer";
@@ -501,6 +393,8 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
                   case 'Support Engineer': return "19.Technical Support";
                   case 'Technical Support': return "19.Technical Support";
                   case 'Technical Writer': return "19.Technical Support";
+                  case 'Engineering (other)': return "19.Enginering (other)";
+                  case 'Other': return "19.Other";
                   default: return "0.No answer";
               } 
           });
@@ -563,6 +457,33 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
           });
           var salaryNeededGroup = salaryNeeded.group();
 
+          var heardOfStartupNewsHere = facts.dimension(function (d) {
+              if (d.heardOfStartupNewsHere == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.heardOfStartupNewsHere;
+              }
+          });
+          var heardOfStartupNewsHereGroup = heardOfStartupNewsHere.group();
+
+          var consideredJobsInSantaCruz = facts.dimension(function (d) {
+              if (d.consideredJobsInSantaCruz == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.consideredJobsInSantaCruz;
+              }
+          });
+          var consideredJobsInSantaCruzGroup = consideredJobsInSantaCruz.group();
+
+          var techEventsInSantaCruz = facts.dimension(function (d) {
+              if (d.techEventsInSantaCruz == "(blank)") {
+                  return "Have not attended an event";
+              } else {
+                  return d.techEventsInSantaCruz;
+              }
+          });
+          var techEventsInSantaCruzGroup = techEventsInSantaCruz.group();
+
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var children = facts.dimension(function (d) {
               if (d.children == "(blank)") {
@@ -572,6 +493,15 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
               }
           });
           var childrenGroup = children.group();
+
+          var maritalStatus = facts.dimension(function (d) {
+              if (d.maritalStatus == "(blank)") {
+                  return "No answer";
+              } else {
+                  return d.maritalStatus;
+              }
+          });
+          var maritalStatusGroup = maritalStatus.group();
 
           var whyCommute = facts.dimension(function (d) {
               if (d.whyCommute == "(blank)") {
@@ -584,7 +514,7 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
 
           var commuteActivity = facts.dimension(function (d) {
               if (d.commuteActivity == "(blank)") {
-                  return "No answer";
+                  return "Not a bus commuter";
               } else {
                   return d.commuteActivity;
               }
@@ -596,7 +526,7 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
 
           // Create dataTable dimension
           var commuteDurationDimension = facts.dimension(function (d) { 
-              return d.commuteDuration;
+            return d.commuteDuration;
           });
 
           // Setup the charts
@@ -670,7 +600,7 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
           }
 
           senorityChart.width(400) 
-              .height(220) 
+              .height(250) 
               .dimension(senorityValue) 
               .group(senorityValueGroup)
               .colors(d3.scale.category20b())
@@ -698,7 +628,7 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
               .ticks(3);
 
           commuteTypeChart.width(200) 
-              .height(220) 
+              .height(250) 
               .margins({top: 15, left: 15, right: 15, bottom: 15}) 
               .dimension(commuteType) 
               .group(commuteTypeGroup)
@@ -726,7 +656,7 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           employmentTypeChart.width(220) 
-              .height(720) 
+              .height(300) 
               .margins({top: 5, left: 5, right: 10, bottom: 40}) 
               .dimension(employmentType) 
               .group(employmentTypeGroup) 
@@ -796,7 +726,39 @@ href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="displa
               .group(salaryNeededGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
+          heardOfStartupNewsHereChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(heardOfStartupNewsHere) 
+              .group(heardOfStartupNewsHereGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          techEventsInSantaCruzChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(techEventsInSantaCruz) 
+              .group(techEventsInSantaCruzGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
+          consideredJobsInSantaCruzChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(consideredJobsInSantaCruz) 
+              .group(consideredJobsInSantaCruzGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});
+
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+          maritalStatusChart.width(300) 
+              .height(220) 
+              .radius(100) 
+              .innerRadius(30) 
+              .dimension(maritalStatus) 
+              .group(maritalStatusGroup) 
+              .title(function(d){return d.data.key + ", " + d.value;});  
+
           childrenChart.width(300) 
               .height(220) 
               .radius(100) 
