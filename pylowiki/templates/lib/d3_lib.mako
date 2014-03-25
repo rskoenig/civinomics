@@ -13,13 +13,13 @@
 </%def>
 
 <%def name="dcCommuterSurvey()">
-  <div class='row-fluid' data-spy="affix" data-offset-top="1150" >
+  <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
     <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
       <span> 
           <span class="filter-count"></span>
           selected out of
           <span class="total-count"></span> 
-          records | <a href="#dc-data-count" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+          records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
       </span>
     </div>
   </div>
@@ -30,7 +30,7 @@
     <div class='span4' id='dc-commuteType-chart'>
       <h4>How do you get to work over the hill?
         <span>
-          <a class="reset" href="#dc-commuteType-chart" name="dc-commuteType-chart" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-top" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4> 
     </div>
@@ -38,7 +38,7 @@
       <h4>What do you primarily do on the bus during your commute?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-commuteActivity-chart" name="dc-commuteActivity-chart" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -48,7 +48,7 @@
     <div class='span4' id='dc-employmentType-chart'>
       <h4>What is your functional employment area at your current job?
         <span>
-          <a class="reset" href="#dc-employmentType-chart" name="dc-employmentType-chart" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
+          <a class="reset" href="#dc-data-count" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
         </span>
       </h4>
     </div>
@@ -58,7 +58,7 @@
     <div class='span4' id='dc-senority-chart'>
       <h4>What is your position or level of seniority?
         <span>
-          <a class="reset" href="#dc-senority-chart" name="dc-senority-chart" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -76,7 +76,7 @@
       <h4>Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).
         <span>
             <br>
-            <a class="reset" href="#dc-whyCommute-chart" name="dc-whyCommute-chart" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            <a class="reset" href="#dc-data-count" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -84,7 +84,7 @@
       <h4>Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).
         <span>
           <br>
-          <a class="reset" href="#dc-whyLiveInSc-chart" name="dc-whyLiveInSc-chart" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -95,7 +95,7 @@
       <h4>Did you go to college in Santa Cruz?
         <span>
           <br>
-          <a class="reset" href="#dc-college-chart" name="dc-college-chart" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4> 
     </div>
@@ -103,7 +103,7 @@
       <h4>How long have you lived in Santa Cruz?
         <span>
           <br />(drag to filter results)
-          <a class="reset" href="#dc-residenceDuration-chart" name="dc-residenceDuration-chart" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -111,7 +111,7 @@
       <h4>Have you ever worked in Santa Cruz?
         <span>
             <br />(click to filter results)
-            <a class="reset" href="#dc-workedInSc-chart" name="dc-workedInSc-chart" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -122,7 +122,7 @@
       <h4>Why did you stop working in Santa Cruz?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-whyNotWorkInSc-chart" name="dc-whyNotWorkInSc-chart" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -130,7 +130,7 @@
       <h4>Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-salaryNeeded-chart" name="dc-salaryNeeded-chart" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -138,7 +138,7 @@
       <h4>How much have you heard about recent start-up activity in Santa Cruz?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-heardOfStartupNewsHere-chart" name="dc-heardOfStartupNewsHere-chart" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -149,7 +149,7 @@
       <h4>Have you considered exploring job openings with any Santa Cruz tech companies or startups?
         <span>
           <br>
-          <a class="reset" href="#dc-consideredJobsInSantaCruz-chart" name="dc-consideredJobsInSantaCruz-chart" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -158,7 +158,7 @@
       <h4>Which of the following Santa Cruz tech-community events have you attended?
         <span>
           <br>
-          <a class="reset" href="#dc-techEventsInSantaCruz-chart" name="dc-techEventsInSantaCruz-chart" onclick="javascript:techEventsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:techEventsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -177,7 +177,7 @@
       <h4>Marital status
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-maritalStatus-chart" name="dc-maritalStatus-chart" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -185,7 +185,7 @@
       <h4>Do you have children 17 years of age or younger living in the household?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-children-chart" name="dc-children-chart" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -193,7 +193,7 @@
       <h4>Do you rent or own your home?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="#dc-rentOrOwn-chart" name="dc-rentOrOwn-chart" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -208,7 +208,7 @@
           <span class="filter-count"></span>
           records out of
           <span class="total-count"></span> 
-          people surveyed | <a href="#dc-data-count2" name="dc-data-count2" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+          people surveyed | <a href="#dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
         </span>
       </div>
     </div> 
