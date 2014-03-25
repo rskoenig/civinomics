@@ -9,9 +9,6 @@
 
 <%def name="includeD3()">
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-  <script src='/js/vendor/crossfilter.js' type='text/javascript'></script> 
-  <script src='/js/vendor/dc.js' type='text/javascript'></script>
-  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
   <link href='/styles/extraD3styles.css' rel='stylesheet' type='text/css'>
 </%def>
 
@@ -219,6 +216,10 @@
     </table>
   </div> 
 
+  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+  
   <script>
       // Create the dc.js chart objects & link to div
       var salaryChart = dc.barChart("#dc-salary-chart");
