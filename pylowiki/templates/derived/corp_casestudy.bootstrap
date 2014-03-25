@@ -1,74 +1,81 @@
 <%inherit file="/base/base_corp.bootstrap"/>
-
 <%namespace name="helpers" file="/derived/casestudy/helpers.mako" />
-
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
+<%namespace name="corpLib" file="/lib/corp_lib.mako"/>
 
 <%def name="page_specific_css()">
 </%def>
 <%def name="display_body_right_content()">
-<div class="row-fluid">
-  <div class="span7">
-      ${helpers.showSlide(c.study)}
+  <div class="row-fluid">
+      <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('/images/corp/casestudies/${c.study['url']}/${c.study['image']}'); background-position: center center; background-size: cover;"></div>
   </div>
-  <div class="span5">
-      <table class="table table-bordered">
-          <tbody>
-               <tr>
-                  <td><h4>Status</h4></td>
-                  <td>${helpers.status(c.study)}</td>
-               </tr>
-                <tr>
-                  <td><h4>Dates</h4></td>
-                  <td>${helpers.dates(c.study)}</td>
-               </tr>
-               <tr>
-                  <td><h4>Respondents</h4></td>
-                  <td>${helpers.respondents(c.study)}</td>
-               </tr>
-               <tr>
-                  <td style="width:150px;"><h4>Partner Agencies</h4></td>
-                  <td>${helpers.listPartners(c.study)}</td>
-               </tr>
-               % if len(c.study['sponsors']) > 0:
-                 <tr>
-                    <td><h4>Sponsors</h4></td>
-                    <td>${helpers.sponsors(c.study)}</td>
-                 </tr>
-               % endif
-               % if len(c.study['publications']) > 0:
-                 <tr>
-                    <td><h4>Publications</h4></td>
-                    <td>${helpers.publications(c.study)}</td>
-                 </tr>
-               % endif
-          </tbody>
-      </table>
-  </div>
-</div>
-            
-        </br>
-            <h3><em>Problem</em></h3>
-                <div>${helpers.background(c.study)}</div>
-                % if c.video:
-                      </br>
-                      ${c.video | n}
-                % endif
-            </br>
-            <h3><em>Solution</em></h3>
-                <div>${helpers.solution(c.study)}</div>
-                <div>${helpers.slideShow(c.study)}</div>
+  <div class="row-fluid">
+    <div class="span12">
+        <h2>${c.study['title']}</h2>
+        <table id="metrics">
+          <tr>
+          % if 'respondents' in c.study:
+            <td style="padding-left: 0px;">
+              <span class="workshop-metrics">Respondents</span><br>
+                <strong ng-cloak>${c.study['respondents']}</strong>
+            </td>
+          % endif
+            <td>
+              <span class="workshop-metrics">Publication Date</span><br>
+                <strong ng-cloak>${c.study['date']}</strong>
+            </td>
+          % if 'clientLogo' in c.study:
+              <td>
+                  <span class="workshop-metrics">Client</span><br>
+                  <img style="width: 80px;" src="/images/corp/casestudies/${c.study['url']}/${c.study['clientLogo']}">
+              </td>
+          % endif
+          % if 'partnerLogo' in c.study:
+              <td>
+                  <span class="workshop-metrics">Partners</span><br>
+                  <img style="width: 80px;" src="/images/corp/casestudies/${c.study['url']}/${c.study['partnerLogo']}">
+              </td>
+          % endif
+          % if 'sponsorLogo' in c.study:
+              <td>
+                  <span class="workshop-metrics">Sponsors</span><br>
+                  <img style="width: 80px;" src="/images/corp/casestudies/${c.study['url']}/${c.study['sponsorLogo']}">
+              </td>
+          % endif
+          </tr>
+        </table>
+        % if 'pressRelease' in c.study:
+          % if c.study['pressRelease'] == 'techCommuters':
+            ${corpLib.pressRelease_techCommuters()}
+          % endif
+        % else:
+          <h3 class="initiative-title">Problem</h3>
+              <div>${helpers.background(c.study)}</div>
+              % if c.video:
+                    </br>
+                    ${c.video | n}
+              % endif
+          <h3 class="initiative-title">Solution</h3>
+              <div>${helpers.solution(c.study)}</div>
+              <div>${helpers.slideShow(c.study)}</div>
 
-            </br>
-            <h3><em>Results</em></h3>
-                <div>${helpers.results(c.study)}</div>
-            </br>
-            </br>
-            % if c.study['nextSteps'] != "":
-              <h3><em>Next Steps</em></h3>
-              <div>${helpers.nextSteps(c.study)}</div>
-            % endif
-         </div><!--/.hero-unit-->
-    </div><!--/.span8-->
-    
+          <h3 class="initiative-title">Results</h3>
+              <div>${helpers.results(c.study)}</div>
+          % if c.study['nextSteps'] != "":
+            <h3><em>Next Steps</em></h3>
+            <div>${helpers.nextSteps(c.study)}</div>
+          % endif
+        % endif
+        % if 'stats' in c.study:
+          ${d3Lib.includeD3()}
+          <!-- $ - { d3Lib.dcExample()} -->
+          % if c.study['stats'] == 'dcCommuterSurvey':
+            ${d3Lib.dcCommuterSurvey()}
+          % elif c.study['stats'] == 'eastsideStats':
+            ${d3Lib.eastsideStats()}
+          % endif
+        % endif
+    </div><!-- span12 -->
+  </div><!-- row-fluid -->
 </%def>
 
