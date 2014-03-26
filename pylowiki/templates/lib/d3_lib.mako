@@ -216,6 +216,14 @@
     <table class='table table-hover' style="width: 100%;" id='dc-table-graph'> 
     </table>
   </div> -->
+  <hr>
+  <div class='row-fluid'> 
+    <div class='span12' id='dc-commentsOrSuggestions-chart'>
+      <h4>Comments and Suggestions</h4>
+      <div id="commentsOrSuggestionsContainer">
+      </div>
+    </div>
+  </div>
 
   <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
   <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
@@ -289,6 +297,9 @@
               d.salary = +d.salary;
               d.residenceDuration = +d.residenceDuration;
               d.age = +d.age;
+              if (d.commentsOrSuggestions != "(blank)") {
+                  $('#commentsOrSuggestionsContainer').append('<p>* ' + d.commentsOrSuggestions + '</p>');
+              }
           });
 
           // Run the data through crossfilter and load our 'facts'
@@ -786,12 +797,6 @@
               .group(commuteActivityGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
-          var commentsOrSuggestionsFormatter = function(d) {
-            if (d == "(blank)")
-                return "";
-            else
-                return d;
-          }
           // Table of commuter survey data
           //dataTable.width(760).height(800) 
           //    .dimension(commuteDurationDimension)
