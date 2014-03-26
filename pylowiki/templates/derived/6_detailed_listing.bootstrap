@@ -63,15 +63,8 @@
                % elif listingType == 'publicStats':
                     <h4 class="section-header smaller">Statistics</h4>
                     ${d3Lib.includeD3()}
-                    % if len(c.jsonConstancyDataIdeas) > 2:
-                      ${d3Lib.constancyChart(c.jsonConstancyDataIdeas, "ideaChart", "Ideas", "ForestGreen", "DarkSlateGrey")}
-                    % endif
-                    % if len(c.jsonConstancyDataResources) > 2:
-                      ${d3Lib.constancyChart(c.jsonConstancyDataResources, "resourceChart", "Resources", "MidnightBlue", "DarkSlateGrey")}
-                    % endif
-                    % if len(c.jsonConstancyDataDiscussions) > 2:
-                      ${d3Lib.constancyChart(c.jsonConstancyDataDiscussions, "discussionChart", "Discussions", "DarkOrange", "DarkSlateGrey")}
-                    % endif
+                    <!-- $ - { d3Lib.dcExample()} -->
+                    ${d3Lib.dcCommuterSurvey()}
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                     % if listingType != 'activity':
