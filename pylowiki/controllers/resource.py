@@ -35,59 +35,58 @@ log = logging.getLogger(__name__)
 class ResourceController(BaseController):
     
     def __before__(self, action, parentCode = None, parentURL = None):
-        if parentCode is None:
-            abort(404)
-        parent = genericLib.getThing(parentCode)
-        if not parent:
-            abort(404)
-        if parent.objType == 'workshop':
-            c.w = parent
-            c.mainImage = mainImageLib.getMainImage(c.w)
-            workshopLib.setWorkshopPrivs(c.w)
-            if c.w['public_private'] == 'public':
-                c.scope = geoInfoLib.getPublicScope(c.w)
-            if c.w['public_private'] != 'public':
-                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    abort(404)
-            
-            # Demo workshop status
-            c.demo = workshopLib.isDemo(c.w)
+        if parentCode != None:
+            parent = genericLib.getThing(parentCode)
+            if not parent:
+                abort(404)
+            if parent.objType == 'workshop':
+                c.w = parent
+                c.mainImage = mainImageLib.getMainImage(c.w)
+                workshopLib.setWorkshopPrivs(c.w)
+                if c.w['public_private'] == 'public':
+                    c.scope = geoInfoLib.getPublicScope(c.w)
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+                
+                # Demo workshop status
+                c.demo = workshopLib.isDemo(c.w)
 
-            if 'user' in session:
-                utils.isWatching(c.authuser, c.w)
+                if 'user' in session:
+                    utils.isWatching(c.authuser, c.w)
 
-            shareType = 'workshop'
-            shareUrl = utils.workshopURL(c.w)
-            shareDescription = c.w['description'].replace("'", "\\'")
-            shareOk = workshopLib.isPublic(c.w)
-        elif parent.objType == 'initiative':
-            c.initiative = parent
-            userLib.setUserPrivs()
-            shareType = 'initiative'
-            shareUrl = utils.initiativeURL(c.initiative)
-            # note: why doesn't the workshop description use misaka? if this changes over we'll need to
-            #   catch this happening and mod the uses of c.w['description'] in places that can't handle html
-            shareDescription = utils.getTextFromMisaka(c.initiative['description'])
-            shareOk = initiativeLib.isPublic(c.initiative)
-        else:
-            abort(404)
+                shareType = 'workshop'
+                shareUrl = utils.workshopURL(c.w)
+                shareDescription = c.w['description'].replace("'", "\\'")
+                shareOk = workshopLib.isPublic(c.w)
+            elif parent.objType == 'initiative':
+                c.initiative = parent
+                userLib.setUserPrivs()
+                shareType = 'initiative'
+                shareUrl = utils.initiativeURL(c.initiative)
+                # note: why doesn't the workshop description use misaka? if this changes over we'll need to
+                #   catch this happening and mod the uses of c.w['description'] in places that can't handle html
+                shareDescription = utils.getTextFromMisaka(c.initiative['description'])
+                shareOk = initiativeLib.isPublic(c.initiative)
+            else:
+                abort(404)
 
-        c.title = parent['title']
+            c.title = parent['title']
         
-        ################## FB SHARE ###############################
-        # these values are needed for facebook sharing of a workshop
-        # - details for sharing a specific idea are modified in the view idea function
-        c.facebookShare = FacebookShareObject(
-            itemType=shareType,
-            url=shareUrl,
-            parentCode=parentCode,
-            title=c.title,
-            description=shareDescription,
-            shareOk = shareOk
-        )
-        # add this line to tabs in the workshop in order to link to them on a share:
-        # c.facebookShare.url = c.facebookShare.url + '/activity'
-        #################################################
+            ################## FB SHARE ###############################
+            # these values are needed for facebook sharing of a workshop
+            # - details for sharing a specific idea are modified in the view idea function
+            c.facebookShare = FacebookShareObject(
+                itemType=shareType,
+                url=shareUrl,
+                parentCode=parentCode,
+                title=c.title,
+                description=shareDescription,
+                shareOk = shareOk
+            )
+            # add this line to tabs in the workshop in order to link to them on a share:
+            # c.facebookShare.url = c.facebookShare.url + '/activity'
+            #################################################
 
     def listing(self, parentCode, parentURL):
         #get the scope to display jurisidction flag
@@ -210,13 +209,14 @@ class ResourceController(BaseController):
             return render('/derived/6_detailed_listing.bootstrap')
 
     @h.login_required
-    def addResourceHandler(self, parentCode, parentURL):
+    def addResourceHandler(self, parent = None, parentCode = None, parentURL = None):
         if c.w:
             parent = c.w
-        else:
+        elif c.initiative:
             parent = c.initiative
-            userLib.setUserPrivs()
-            c.w = None
+        
+        userLib.setUserPrivs()    
+
         payload = json.loads(request.body)
         if 'title' not in payload:
             return redirect(session['return_to'])
@@ -225,8 +225,12 @@ class ResourceController(BaseController):
             return redirect(session['return_to'])
         if 'link' not in payload:
             return redirect(session['return_to'])
-        if resourceLib.getResourceByLink(payload['link'], parent):
-            return redirect(session['return_to']) # Link already submitted
+        if parent:
+            if resourceLib.getResourceByLink(payload['link'], parent):
+                return redirect(session['return_to']) # Link already submitted
+        else:
+            # need to check in org or geo that link hasn't already been submitted
+            pass
         link = payload['link']
         text = ''
         if 'text' in payload:
@@ -234,13 +238,32 @@ class ResourceController(BaseController):
         if len(title) > 120:
             title = title[:120]
         if c.w:
-            newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
+            log.info('submited with c.w')
+            newResource = resourceLib.Resource(link, title, c.authuser, c.privs, workshop = c.w, text = text)
+        elif c.initiative:
+            log.info('submited with c.initiative')
+            newResource = resourceLib.Resource(link, title, c.authuser, c.privs, text = text, parent = parent)
+        # resource doens't have a parent - it needs its own scope and tag
         else:
-            newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text, parent = parent)
+            log.info('submited with no parent')
+            if 'scope' in payload:
+                scope = payload['scope']
+            else:
+                log.info('no resource scope')
+                return redirect(session['return_to'])
+            if 'tags' in payload:
+                tags = payload['tags']
+            else:
+                log.info('no resource tags')
+                return redirect(session['return_to'])
+            newResource = resourceLib.Resource(link, title, c.authuser, c.privs, text = text, scope = scope, tags = tags)
+
         if newResource:
             alertsLib.emailAlerts(newResource)
             jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
+            log.info('resource added successfully')
             return jsonReturn
         else:
+            log.info('resource not added')
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
 

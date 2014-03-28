@@ -23,6 +23,7 @@ import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
@@ -194,7 +195,7 @@ class SearchController(BaseController):
         
     def getWorkshopCategoryTags(self):
         """ return a list of the categories available for search """
-        categories = workshopLib.getWorkshopTagCategories()
+        categories = tagLib.getTagCategories()
         iPhoneApp = utils.iPhoneRequestTest(request)
         response.headers['Content-type'] = 'application/json'
         if categories:
@@ -495,7 +496,7 @@ class SearchController(BaseController):
         if len(workshops) == 0:
             log.info("return len workshops 0")
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
         for w in workshops:
             entry = {}
             entry['title'] = w['title']
@@ -578,7 +579,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -682,7 +683,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -768,7 +769,7 @@ class SearchController(BaseController):
         if len(ideas) == 0:
             log.info("searchIdeas return len ideas == 0")
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -853,7 +854,7 @@ class SearchController(BaseController):
         if len(photos) == 0:
             return json.dumps({'statusCode':2})
             
-        colors = workshopLib.getWorkshopTagColouring()
+        colors = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:

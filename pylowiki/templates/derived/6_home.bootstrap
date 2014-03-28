@@ -15,7 +15,10 @@
   ###
 
   <div class="span8">
+
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+
+      ${ng_helpers.addNewHome()}
 
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}

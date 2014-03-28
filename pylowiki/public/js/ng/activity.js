@@ -71,4 +71,21 @@ function activityController($scope, $http) {
 		})
 	};
 
+	// addNew object related //
+	$scope.showAddNew = true;
+	$scope.objType = 'idea';
+
+	$scope.submitNewObj = function(){
+		$scope.showAddNew = false;
+		var newObjData = {'submit':'submit', 'title': $scope.newObjTitle, 'text': $scope.newObjText, 'link': $scope.newObjLink, 'scope': $scope.newObjScope, 'tags': $scope.newObjTags};
+		$scope.newObjURL = '/add/' + $scope.objType + '/handler';
+		$http.post($scope.newObjURL, newObjData).success(function(data){
+			//$scope.numComments = Number($scope.numComments) + 1;
+            $scope.getActivity();
+            $scope.newObjTitle = '';
+	        $scope.newObjText = '';
+	        $scope.newObjLink = '';
+        });
+	};
+
 }

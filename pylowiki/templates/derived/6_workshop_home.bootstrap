@@ -51,35 +51,7 @@
         </div>
       </div>
 
-      <div ng-show="showAddNew" ng-cloak>
-        <table class="addNewObj">
-          <tr>
-            <td class="comment-avatar-cell">
-              % if c.authuser:
-                ${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}
-              % else:
-                <img src="/images/hamilton.png" class="avatar med-avatar">
-              % endif
-            </td>
-            <td class="well" style="padding: 10px;">
-              % if c.privs and not c.privs['provisional']:
-                <form class="no-bottom" ng-submit="submitNewObj()">
-                    <select name="objType" ng-model="objType">
-                      <option value="idea">Idea</option>
-                      <option value="discussion">Discussion</option>
-                      <option value="resource">Resource</option>
-                    </select>
-                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
-                    <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
-                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
-                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
-                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
-                </form>
-              % endif
-            </td>
-          </tr>
-        </table>
-      </div>
+      ${ng_helpers.addNew()}
     
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 

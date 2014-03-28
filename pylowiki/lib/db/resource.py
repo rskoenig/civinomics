@@ -237,29 +237,36 @@ def editResource(resource, title, text, link, owner):
         return False
 
 # Object
-def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
+def Resource(link, title, owner, privs, workshop = None, role = None, text = None, parent = None, scope = None, tags = None):
+    log.info('in create a new resource foo')
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
-    eObj = getEObj(link)
-    if not eObj:
-        return False
+    #eObj = getEObj(link)
+    #if not eObj:
+    #    log.info('false eObj')
+    #    return False
         
     a = Thing('resource', owner.id)
     a['link'] = link
-    setAttributes(a, eObj)
+    #setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
         a['text'] = ''
     else:
         a['text'] = text
+    a = generic.linkChildToParent(a, owner)
     if workshop is not None:
         a = generic.linkChildToParent(a, workshop)
-    a = generic.linkChildToParent(a, owner)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
+    if scope is not None:
+        a['scope'] = scope
+    if tags is not None:
+        a['tags'] = tags
     a['disabled'] = '0'
     a['deleted'] = '0'
+    a['searchable'] = '1'
     a['ups'] = '0'
     a['downs'] = '0'
     a['views'] = '0'

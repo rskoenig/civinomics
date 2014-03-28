@@ -1,4 +1,8 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%!
+   import pylowiki.lib.db.tag       as tagLib
+%>
+
 
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
@@ -331,5 +335,77 @@
                 </tr> 
             </table>
         </div>
+    </div>
+</%def>
+
+<%def name="addNew()">
+    <div ng-show="showAddNew" class="row-fluid" ng-cloak>
+        <table class="addNewObj">
+          <tr>
+            <td class="comment-avatar-cell">
+              % if c.authuser:
+                ${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}
+              % else:
+                <img src="/images/hamilton.png" class="avatar med-avatar">
+              % endif
+            </td>
+            <td class="well" style="padding: 10px;">
+              % if c.privs and not c.privs['provisional']:
+                <form class="no-bottom" ng-submit="submitNewObj()">
+                    <select name="objType" ng-model="objType">
+                      <option value="idea">Idea</option>
+                      <option value="discussion">Discussion</option>
+                      <option value="resource">Resource</option>
+                    </select>
+                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
+                    <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
+                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
+                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                </form>
+              % endif
+            </td>
+          </tr>
+        </table>
+    </div>
+</%def>
+
+<%def name="addNewHome()">
+    <div ng-show="showAddNew" class="row-fluid" ng-cloak>
+        <table class="addNewObj">
+          <tr>
+            <td class="comment-avatar-cell">
+              % if c.authuser:
+                ${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}
+              % else:
+                <img src="/images/hamilton.png" class="avatar med-avatar">
+              % endif
+            </td>
+            <td class="well" style="padding: 10px;">
+              % if c.privs and not c.privs['provisional']:
+                <form class="no-bottom" ng-submit="submitNewObj()">
+                    <select name="objType" ng-model="objType">
+                      <option value="idea">Idea</option>
+                      <option value="discussion">Discussion</option>
+                      <option value="resource">Resource</option>
+                    </select>
+                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
+                    <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
+                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
+                    <select name="newObjTags" ng-model="newObjTags">
+                        <% tagList = tagLib.getTagCategories() %>
+                        <option value="">Choose one</option>
+                        % for tag in tagList:
+                            <option value="${tag}"/> ${tag}</option>
+                        % endfor
+                    </select>
+                    <input type="text" name="newObjScope" ng-model="newObjScope">
+                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                </form>
+              % endif
+            </td>
+          </tr>
+        </table>
     </div>
 </%def>

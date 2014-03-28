@@ -7,6 +7,7 @@
     import pylowiki.lib.db.pmember      as pmemberLib
     import pylowiki.lib.db.photo        as photoLib
     import pylowiki.lib.db.event        as eventLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.utils           as utils
     import pylowiki.lib.db.geoInfo      as geoLib
 %>
@@ -151,7 +152,7 @@
         </fieldset>
         </div><!-- span8 -->
         <div class="span4">
-            <% tagList = workshopLib.getWorkshopTagCategories() %>
+            <% tagList = tagLib.getTagCategories() %>
             <fieldset>
             Category Tags
             % for tag in tagList:
