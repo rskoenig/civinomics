@@ -1,4 +1,4 @@
-<%inherit file="/base/base_workshop.bootstrap"/>
+<%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_item_in_listing.mako"/>
@@ -18,15 +18,19 @@
                 <td>
                     ${lib_6.workshopImage(c.w)}
                 </td>
+                <td style="padding-left:10px;">
+                    <h4>
+                        <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="no-highlight bottom-space">${c.w['title']}</a>
+                    </h4>
+                    <small>
+                        ${workshop_helpers.displayWorkshopFlag(c.w, size = 'small-flag' , workshopFor = true, objType = 'Workshop' )} ${lib_6.showTags(c.w)}
+                    </small>
+                </td>
+            % else:
+                <td>
+                    Flag here
+                </td>              
             % endif
-            <td style="padding-left:10px;">
-                <h4>
-                    <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="no-highlight bottom-space" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>{{workshopTitle}}</a>
-                </h4>
-                <small>
-                    ${workshop_helpers.displayWorkshopFlag(c.w, size = 'small-flag' , workshopFor = true, objType = 'Workshop' )} ${lib_6.showTags(c.w)}
-                </small>
-            </td>
         </tr>
     </table>
      <div class="well">
@@ -77,7 +81,11 @@
                         ${lib_6.upDownVote(c.thing)}
                     </div>
                     <div class="span11">
-                        ${helpers.showItemTitle(c.thing)}
+                        % if c.w:
+                            ${helpers.showItemTitle(c.thing)}
+                        % else:
+                            <h3><a>${c.thing['title']}</a></h3>
+                        % endif
                     </div>
                 </div><!--/.row-fluid-->
                 <div class="row-fluid">

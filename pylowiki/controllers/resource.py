@@ -34,7 +34,20 @@ log = logging.getLogger(__name__)
 
 class ResourceController(BaseController):
     
-    def __before__(self, action, parentCode = None, parentURL = None):
+    def __before__(self, action, resourceCode, resourceURL, parentCode = None, parentURL = None):
+        c.resource = resourceLib.getResourceByCode(resourceCode)
+        if not c.resource:
+            log.info("no resource after basic lookup")
+            c.resource = resourceLib.getResourceByCode(resourceCode, disabled = '1')
+            if not c.resource:
+                c.resource = revisionLib.getRevisionByCode(resourceCode)
+                if not c.resource:
+                    abort(404)
+
+        c.thing = c.resource
+
+        userLib.setUserPrivs()  
+
         if parentCode != None:
             parent = genericLib.getThing(parentCode)
             if not parent:
@@ -73,20 +86,27 @@ class ResourceController(BaseController):
 
             c.title = parent['title']
         
-            ################## FB SHARE ###############################
-            # these values are needed for facebook sharing of a workshop
-            # - details for sharing a specific idea are modified in the view idea function
-            c.facebookShare = FacebookShareObject(
-                itemType=shareType,
-                url=shareUrl,
-                parentCode=parentCode,
-                title=c.title,
-                description=shareDescription,
-                shareOk = shareOk
-            )
-            # add this line to tabs in the workshop in order to link to them on a share:
-            # c.facebookShare.url = c.facebookShare.url + '/activity'
-            #################################################
+        else:
+            shareType = 'resource'
+            c.title = c.resource['title']
+            shareUrl = '/resource/%s/%s' % (c.resource['urlCode'], c.resource['url'])
+            shareDescription = c.resource['link']
+            shareOk = True
+
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        c.facebookShare = FacebookShareObject(
+            itemType=shareType,
+            url=shareUrl,
+            parentCode=parentCode,
+            title=c.title,
+            description=shareDescription,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
 
     def listing(self, parentCode, parentURL):
         #get the scope to display jurisidction flag
@@ -103,10 +123,10 @@ class ResourceController(BaseController):
         c.listingType = 'resources'
         return render('/derived/6_detailed_listing.bootstrap')
 
-    def showResource(self, parentCode, parentURL, resourceCode, resourceURL):
-        
-        c.thingCode = resourceCode
+    def showResource(self, resourceCode, resourceURL, parentCode = None, parentURL = None):
+        log.info('resourceCode is %s' % resourceCode)
         log.info("in showResource")
+
         if c.w:
             #get the scope to display jurisidction flag
             if c.w['public_private'] == 'public':
@@ -125,7 +145,7 @@ class ResourceController(BaseController):
             c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
             c.facebookShare.updateImageUrl(c.backgroundImage)
             thingParent = c.w
-        if c.initiative:
+        elif c.initiative:
             scopeProps = utils.getPublicScope(c.initiative)
             scopeName = scopeProps['name'].title()
             scopeLevel = scopeProps['level'].title()
@@ -147,35 +167,32 @@ class ResourceController(BaseController):
             c.bgPhoto_url, c.photo_url, c.thumbnail_url = utils.initiativeImageURL(c.initiative)
             c.facebookShare.updateImageUrl(c.photo_url)
             thingParent = c.initiative
+        else:
+            scopeProps = utils.getPublicScope(c.resource)
 
-        c.thing = resourceLib.getResourceByCode(resourceCode)
-        if not c.thing:
-            c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
-            if not c.thing:
-                c.thing = revisionLib.getRevisionByCode(resourceCode)
-                if not c.thing:
-                    abort(404)
-        c.resource = c.thing
+
 
         ################## FB SHARE ###############################
-        c.facebookShare.title = c.thing['title']
-        c.facebookShare.thingCode = c.thingCode
+        log.info('%s' % c.resource['title'])
+        # not sure why this isn't working
+        c.facebookShare.title = c.resource['title']
+        c.facebookShare.thingCode = c.resource['urlCode']
         # update url for this item
-        c.facebookShare.updateUrl(utils.thingURL(thingParent, c.thing))
+        c.facebookShare.updateUrl('/resource/%s/%s' % (c.resource['urlCode'], c.resource['url']))
         # set description to be that of the topic's description
-        c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        c.facebookShare.description = utils.getTextFromMisaka(c.resource['text'])
         #################################################
 
-        if 'views' not in c.thing:
-            c.thing['views'] = u'0'
+        if 'views' not in c.resource:
+            c.resource['views'] = u'0'
             
-        views = int(c.thing['views']) + 1
-        c.thing['views'] = str(views)
-        dbHelpers.commit(c.thing)
+        views = int(c.resource['views']) + 1
+        c.resource['views'] = str(views)
+        dbHelpers.commit(c.resource)
         log.info("before c.discussion")
-        c.discussion = discussionLib.getDiscussionForThing(c.thing)
+        c.discussion = discussionLib.getDiscussionForThing(c.resource)
         c.listingType = 'resource'
-        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        c.revisions = revisionLib.getRevisionsForThing(c.resource)
         
         if 'comment' in request.params:
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
@@ -186,6 +203,8 @@ class ResourceController(BaseController):
             return render('/derived/6_item_in_listing.bootstrap')
         elif c.initiative:
             return render('/derived/6_initiative_resource.bootstrap')
+        else:
+            return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, parentCode, parentURL, resourceCode, resourceURL, commentCode = ''):
         c.resource = resourceLib.getResourceByCode(resourceCode)

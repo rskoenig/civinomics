@@ -266,7 +266,7 @@ def Resource(link, title, owner, privs, workshop = None, role = None, text = Non
         a['tags'] = tags
     a['disabled'] = '0'
     a['deleted'] = '0'
-    a['searchable'] = '1'
+    a['public'] = '1'
     a['ups'] = '0'
     a['downs'] = '0'
     a['views'] = '0'
