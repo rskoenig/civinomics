@@ -13,13 +13,13 @@
 </%def>
 
 <%def name="dcCommuterSurvey()">
-  <div class='row-fluid' data-spy="affix" data-offset-top="1150" >
+  <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
     <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
       <span> 
           <span class="filter-count"></span>
           selected out of
           <span class="total-count"></span> 
-          records | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+          records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
       </span>
     </div>
   </div>
@@ -30,7 +30,7 @@
     <div class='span4' id='dc-commuteType-chart'>
       <h4>How do you get to work over the hill?
         <span>
-          <a class="reset" href="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-top" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4> 
     </div>
@@ -38,7 +38,7 @@
       <h4>What do you primarily do on the bus during your commute?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -48,7 +48,7 @@
     <div class='span4' id='dc-employmentType-chart'>
       <h4>What is your functional employment area at your current job?
         <span>
-          <a class="reset" href="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
+          <a class="reset" href="#dc-data-count" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
         </span>
       </h4>
     </div>
@@ -58,7 +58,7 @@
     <div class='span4' id='dc-senority-chart'>
       <h4>What is your position or level of seniority?
         <span>
-          <a class="reset" href="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -66,7 +66,7 @@
   <hr>
   <div class="row-fluid">
     <div class='span4' id='dc-salary-chart'> 
-      <h4>Salary Rage
+      <h4>Salary Range
         <span>
             (drag sliders to filter results)
         </span>
@@ -76,7 +76,7 @@
       <h4>Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).
         <span>
             <br>
-            <a class="reset" href="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            <a class="reset" href="#dc-data-count" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -84,7 +84,7 @@
       <h4>Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).
         <span>
           <br>
-          <a class="reset" href="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -95,7 +95,7 @@
       <h4>Did you go to college in Santa Cruz?
         <span>
           <br>
-          <a class="reset" href="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4> 
     </div>
@@ -103,7 +103,7 @@
       <h4>How long have you lived in Santa Cruz?
         <span>
           <br />(drag to filter results)
-          <a class="reset" href="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -111,7 +111,7 @@
       <h4>Have you ever worked in Santa Cruz?
         <span>
             <br />(click to filter results)
-            <a class="reset" href="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -122,7 +122,7 @@
       <h4>Why did you stop working in Santa Cruz?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -130,7 +130,7 @@
       <h4>Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -138,7 +138,7 @@
       <h4>How much have you heard about recent start-up activity in Santa Cruz?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -149,7 +149,7 @@
       <h4>Have you considered exploring job openings with any Santa Cruz tech companies or startups?
         <span>
           <br>
-          <a class="reset" href="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -158,7 +158,7 @@
       <h4>Which of the following Santa Cruz tech-community events have you attended?
         <span>
           <br>
-          <a class="reset" href="javascript:techEventsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:techEventsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -177,7 +177,7 @@
       <h4>Marital status
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -185,7 +185,7 @@
       <h4>Do you have children 17 years of age or younger living in the household?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
@@ -193,13 +193,14 @@
       <h4>Do you rent or own your home?
         <span>
           <br />(click to filter results)
-          <a class="reset" href="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+          <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
   </div><!-- row-fluid -->
+  <!-- removing table for now
   <hr>
-  <div class='row-fluid'> 
+   <div class='row-fluid'> 
     <div class='span12'>
       <div class='dc-data-count2'>
         <span> 
@@ -207,14 +208,22 @@
           <span class="filter-count"></span>
           records out of
           <span class="total-count"></span> 
-          people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
+          people surveyed | <a href="#dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
         </span>
       </div>
-    </div>
+    </div> 
     <h4>Comments or Suggestions for improving the Santa Cruz tech-ecosystem?</h4>
     <table class='table table-hover' style="width: 100%;" id='dc-table-graph'> 
     </table>
-  </div> 
+  </div> -->
+  <hr>
+  <div class='row-fluid'> 
+    <div class='span12' id='dc-commentsOrSuggestions-chart'>
+      <h4>Comments and Suggestions</h4>
+      <div id="commentsOrSuggestionsContainer">
+      </div>
+    </div>
+  </div>
 
   <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
   <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
@@ -252,7 +261,7 @@
       var whyCommuteChart = dc.pieChart("#dc-whyCommute-chart");
       var commuteActivityChart = dc.pieChart("#dc-commuteActivity-chart");
 
-      var dataTable = dc.dataTable("#dc-table-graph");
+      //var dataTable = dc.dataTable("#dc-table-graph");
 
       var data = null;
       
@@ -288,6 +297,9 @@
               d.salary = +d.salary;
               d.residenceDuration = +d.residenceDuration;
               d.age = +d.age;
+              if (d.commentsOrSuggestions != "(blank)") {
+                  $('#commentsOrSuggestionsContainer').append('<p>* ' + d.commentsOrSuggestions + '</p>');
+              }
           });
 
           // Run the data through crossfilter and load our 'facts'
@@ -300,9 +312,10 @@
           dc.dataCount(".dc-data-count") 
               .dimension(facts) 
               .group(all);
-          dc.dataCount(".dc-data-count2") 
-              .dimension(facts) 
-              .group(all);
+          // note: code for table
+          //dc.dataCount(".dc-data-count2") 
+          //    .dimension(facts) 
+          //    .group(all);
 
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -314,8 +327,8 @@
           var commuteDurationValue = facts.dimension(function (d) { 
               return d.commuteDuration;
           });
-          var commuteDurationValueGroup = commuteDurationValue.group() 
-              .reduceCount(function(d) { return d.commuteDuration; }) // counts
+          var commuteDurationValueGroup = commuteDurationValue.group();
+              //.reduceCount(function(d) { return d.commuteDuration; }) // counts
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var ageValue = facts.dimension(function (d) { 
@@ -533,7 +546,7 @@
           // Setup the charts
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var commasFormatter = d3.format(",.0f");
-          salaryChart.width(400) 
+          salaryChart.width(280) 
               .height(150) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(salaryValue) 
@@ -541,8 +554,8 @@
               .transitionDuration(500) 
               .centerBar(true) 
               .gap(-8)
-              .filter([0, 550000]) 
-              .x(d3.scale.linear().domain([0, 550000])) 
+              .x(d3.scale.linear().domain([0, 510000])) 
+              .filter([0, 505000])
               .elasticY(true) 
               .xAxis()
               .tickFormat(function(d) { return "$" + commasFormatter(d); })
@@ -555,22 +568,22 @@
                 return d + " hour";
           }
           // bar chart of commute duration and its sum of occurences
-          commuteDurationChart.width(400) 
+          commuteDurationChart.width(370) 
               .height(150) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(commuteDurationValue) 
               .group(commuteDurationValueGroup) 
               .transitionDuration(500)
-              .brushOn(false) 
               .title(function(d){
                   return d.key
                   + " hrs \nNumber of Commuters: " + d.value; 
                   })
-              .x(d3.scale.linear().domain(d3.extent(data, function(d) { return d.commuteDuration; })))
+              .x(d3.scale.linear().domain([0.5,6.5]))
               .elasticY(true) 
+              .filter([0.6, 5.1])
               .xAxis()
               .tickFormat(function(d) { return hoursFormatter(d); })
-              .ticks(5);
+              .ticks(6);
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
           var yearsFormatter = function(d) {
@@ -642,15 +655,15 @@
               .tickFormat(function(d) { return d; })
               .ticks(3);
 
-          employmentDurationChart.width(300) 
+          employmentDurationChart.width(290) 
               .height(248) 
               .margins({top: 40, right: 10, bottom: 20, left: 20}) 
               .dimension(employmentDuration) 
               .group(employmentDurationGroup) 
               .transitionDuration(500)
-              .elasticY(true) 
-              .filter([0, 12.5]) 
+              .elasticY(true)
               .x(d3.scale.linear().domain([0,12.5]))
+              .filter([0, 12.1])
               .xAxis()
               .ticks(4)
               .tickFormat(function(d) { return yearsFormatter(d); });
@@ -689,15 +702,15 @@
               .group(whyLiveInScGroup) 
               .title(function(d){return d.data.key + ", " + d.value;});
 
-          residenceDurationChart.width(300) 
+          residenceDurationChart.width(280) 
               .height(220) 
               .margins({top: 10, right: 10, bottom: 20, left: 20}) 
               .dimension(residenceDuration) 
               .group(residenceDurationGroup) 
               .transitionDuration(500)
               .elasticY(true) 
-              .filter([0, 12.5]) 
-              .x(d3.scale.linear().domain([0,12.5]))
+              .x(d3.scale.linear().domain([0,12.3]))
+              .filter([0, 12.2]) 
               .xAxis()
               .ticks(4)
               .tickFormat(function(d) { return yearsFormatter(d); });
@@ -785,16 +798,16 @@
               .title(function(d){return d.data.key + ", " + d.value;});
 
           // Table of commuter survey data
-          dataTable.width(760).height(800) 
-              .dimension(commuteDurationDimension)
-                  .group(function(d) { return ''})
-              .columns([
-                  function(d) { return d.commentsOrSuggestions; },
-              ])
-              .sortBy(function(d){ 
-                  return d.commuteDuration; 
-              })
-              .order(d3.ascending);
+          //dataTable.width(760).height(800) 
+          //    .dimension(commuteDurationDimension)
+          //        .group(function(d) { return ''})
+          //    .columns([
+          //        function(d) { return commentsOrSuggestionsFormatter(d.commentsOrSuggestions); },
+          //    ])
+          //    .sortBy(function(d){ 
+          //        return d.commuteDuration; 
+          //    })
+          //    .order(d3.ascending);
 
           // Render the Charts
           dc.renderAll();
