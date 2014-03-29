@@ -6,11 +6,11 @@
             <div class="span12 well" style="margin-left:0;">
                 <div class="span2">
                     <a href="/corp/caseStudies/${study['url']}">
-                        <div class="i-photo" style="background-image:url('/images/corp/casestudies/${study['url']}/${study['image']}');"/></div> 
+                        <div class="i-photo" style="background-image:url('/images/corp/surveys/${study['url']}/${study['image']}');"/></div> 
                     </a>
                 </div>
                 <div class="span10">
-                    <h4 class="no-top"><a class="no-highlight"href="/corp/caseStudies/${study['url']}">${study['title']}</a></h4>
+                    <h4 class="no-top"><a class="no-highlight"href="/corp/surveys/${study['url']}">${study['title']}</a></h4>
                     <p>
                         ${study['description']}
                     </p>

@@ -23,7 +23,7 @@ class CorpController(BaseController):
 
     def caseStudies(self):
         c.pagetype="caseStudies"  
-        c.title="Case Studies"
+        c.title="Surveys"
 
         c.clients=[]
         client={}
@@ -164,7 +164,7 @@ class CorpController(BaseController):
 
     def displayCaseStudy(self, id):
         c.pagetype="caseStudies"  
-        c.title="Case Studies"
+        c.title="Surveys"
 
         casestudyname=id
         study={}
