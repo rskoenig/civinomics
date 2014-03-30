@@ -127,6 +127,8 @@ class AdminController(BaseController):
                 abort(404)
             elif (c.thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
                 abort(404)
+            elif (c.thing.objType.replace("Unpublished", "") == 'discussion' and c.thing['discType'] == 'organization_general') and not userLib.isAdmin(c.authuser.id):
+                abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
                 
@@ -262,6 +264,9 @@ class AdminController(BaseController):
             return redirect(utils.thingURL(initiative, c.thing))
         elif 'profileCode' in c.thing:
             user = generic.getThing(c.thing['profileCode'])
+            return redirect(utils.thingURL(user, c.thing))
+        elif c.thing.objType == 'discussion' and c.thing['discType'] == 'organization_general':
+            user = generic.getThing(c.thing['userCode'])
             return redirect(utils.thingURL(user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):

@@ -1493,6 +1493,7 @@
 </%def>
 
 <%def name="editThing(thing, **kwargs)">
+
     <% editID = 'edit-%s' % thing['urlCode'] %>
     <% 
         text = ''

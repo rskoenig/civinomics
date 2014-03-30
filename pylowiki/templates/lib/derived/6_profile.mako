@@ -737,18 +737,7 @@
     % if thing['disabled'] == '0':
         ${lib_6.flagThing(thing)}
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
-            <% editID = 'edit-%s'%thing['urlCode'] %>
-            <div class="row-fluid collapse" id="${editID}">
-                <div class="span11 offset1">
-                    <div class="spacer"></div>
-                    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/update/handler" method="post" class="form">
-                        Edit here
-                        <div class="row-fluid">
-                            <button class="btn btn-success" type="Submit">Save Changes</button>
-                        </div><!-- row-fluid -->
-                    </form>
-                </div><!-- span11 -->
-            </div><!-- row-fluid -->
+            ${lib_6.editThing(thing)}
             % if userLib.isAdmin(c.authuser.id):
                 ${lib_6.adminThing(thing)}
             % endif
