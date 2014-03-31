@@ -1,5 +1,5 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace name="template_lib" file="/lib/template_lib.mako" />
+
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
