@@ -2988,7 +2988,7 @@ button.close{
   left:0; 
   right:0; 
   bottom:0; 
-  background-image: url('/images/splash/liberty.jpg');
+  background-image: url('/images/splash/liberty_blur.jpg');
   background-size:cover;
   margin-bottom: -40px;
 }
