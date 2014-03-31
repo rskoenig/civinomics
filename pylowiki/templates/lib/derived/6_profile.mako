@@ -683,8 +683,8 @@
                 ${misaka.html(c.discussion['text']) | n}
             % endif
             ${lib_6.userLink(c.discussion.owner)}${role} from ${lib_6.userGeoLink(c.discussion.owner)}${lib_6.userImage(c.discussion.owner, className="avatar med-avatar")}
-            <br />Originally posted  ${c.discussion.date}
-            % if 'views' in c.discussion:
+            % if c.discussion.objType == 'discussion':
+                <br />Originally posted  ${c.discussion.date}
                 <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
             % endif
         </div><!-- span10 -->
