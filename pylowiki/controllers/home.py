@@ -111,10 +111,10 @@ class HomeController(BaseController):
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
 		elif type == 'initiatives':
-			recentActivity = activityLib.getInitiativeActivity(max)
+			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
 		else:
-			recentActivity = activityLib.getRecentActivity(max)
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
 		myRatings = {}
 		if 'ratings' in session:
