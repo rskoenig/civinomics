@@ -62,7 +62,19 @@ def getDiscussionsForOrganization(parent, disabled = '0', deleted = '0'):
         .all()
     except:
         return False
-
+        
+def getPositionsForItem(parent, disabled = '0', deleted = '0'):
+    thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc(thisKey, parent['urlCode'])))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('discType', 'organization_position')))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
+    except:
+        return False
+        
 def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'discussion')\
@@ -172,8 +184,10 @@ class Discussion(object):
             if discType != 'update' and discType != 'general':
                 d['workshop_searchable'] = '0'
                 
-        if d['discType'] == 'organization_general':
+        if d['discType'] == 'organization_general' or d['discType'] == 'organization_position':
             d['organization_searchable'] = '1'
+            if 'position' in kwargs.keys():
+                d['position'] = kwargs['position']
 
         commit(d)
         d['urlCode'] = toBase62(d)

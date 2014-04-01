@@ -514,7 +514,19 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-        
+                
+        c.positions = discussionLib.getPositionsForItem(c.initiative)
+        c.organizations = []
+        c.supporting = []
+        c.opposing = []
+        for s in c.positions:
+            log.info("got %s"%s['userCode'])
+            c.organizations.append(s['userCode'])
+            if s['endorse'] == '1':
+                c.supporting.append(s)
+            else:
+                c.opposing.append(s)
+                
         c.initiativeHome = True
 
         return render('/derived/6_initiative_home.bootstrap')

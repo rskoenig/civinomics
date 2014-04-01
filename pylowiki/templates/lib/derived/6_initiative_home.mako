@@ -861,3 +861,16 @@
     %endif   
 </%def>
 
+<%def name="showPositions()">
+    <% pStr = "" %>
+    % if c.positions:
+        % for p in c.positions:
+            % if p['position'] == 'support':
+                <% pStr += p['user_name'] + ' supports this initiative.</br>' %>
+            % else:
+                <% pStr += p['user_name'] + ' opposess this initiative.</br>' %>
+            % endif
+        % endfor
+    % endif
+    ${pStr | n}                                
+</%def>

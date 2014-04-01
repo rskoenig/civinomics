@@ -584,6 +584,23 @@
    </div>
 </%def>
 
+<%def name="supportOppose(thing)">
+    <form action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST">
+        Does your organization:</br>
+        <label class="radio">
+        <input type="radio" name="position" id="positionSupport" value="support" checked>
+            Support this Initiative
+        </label>
+        <label class="radio">
+        <input type="radio" name="position" id="positionOppose" value="oppose">
+            Oppose this Initiative
+        </label>
+        Reason:
+        <textarea rows="3" name="text" required></textarea>
+        <button class="btn btn-success">Submit</button>
+    </form>
+</%def>
+
 <%def name="yesNoVote(thing, *args)">
    <div class="yesNoWrapper">
       % if thing['disabled'] == '1' or thing.objType == 'revision':

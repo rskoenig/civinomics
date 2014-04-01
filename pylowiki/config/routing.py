@@ -377,6 +377,8 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/organization/upgrade/handler', controller = 'profile', action = 'orgUpgradeHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/add/discussion/handler{end:/?}', controller = 'profile', action = 'updateDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/discussion/show/{id3}{end:/?}', controller = 'profile', action = 'showDiscussion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/add/position/handler/{id3}{end:/?}', controller = 'profile', action = 'updatePositionHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/position/show/{id3}{end:/?}', controller = 'profile', action = 'showPosition', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
     ###############
     # Initiatives #

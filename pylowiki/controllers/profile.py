@@ -1319,4 +1319,53 @@ class ProfileController(BaseController):
         jsonReturn = '{"state":"Success", "topicCode":"' + d.d['urlCode'] + '","topicURL":"' + d.d['url'] + '"}'
         return jsonReturn
 
+    def showPosition(self, id1, id2, id3):
+        c.discussion = discussionLib.getDiscussion(id3)
+        if c.discussion:
+            if 'views' in c.discussion:
+                views = int(c.discussion['views'])
+            else:
+                views = 0
+            views += 1
+            c.discussion['views'] = str(views)
+            dbHelpers.commit(c.discussion)
+        else:
+            c.discussion = revisionLib.getRevisionByCode(id3)
+            
+        c.revisions = revisionLib.getRevisionsForThing(c.discussion)
+        
+        # kludge for comments
+        c.thing = c.discussion
+        
+        return render("/derived/6_profile_position.bootstrap")
+        
+    @h.login_required
+    def updatePositionHandler(self, id1, id2, id3):
+        item = genericLib.getThing(id3)
+        payload = request.params
+        position = payload['position']
+        title = "We %s this %s"%(position, item.objType) 
+        text = payload['text']
+
+        if 'code' in payload:
+            d = discussionLib.getDiscussion(payload['code'])  
+        else:
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'organization_position', attachedThing = item, title = title, text = text, position = position)
+
+        d.d['title'] = title
+        d.d['position'] = position
+        d.d['text'] = payload['text']
+        d.d['views'] = '1'
+
+        dbHelpers.commit(d.d)
+        revisionLib.Revision(c.authuser, d.d)
+        
+        # kludge for comments
+        c.discussion = d.d
+        c.thing = d.d
+        
+        return render("/derived/6_profile_position.bootstrap")
+
+
+
 
