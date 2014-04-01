@@ -259,6 +259,9 @@ class AdminController(BaseController):
         session.save()
         if 'workshopCode' in c.thing:
             return redirect(utils.thingURL(c.w, c.thing))
+        elif c.thing.objType == 'discussion' and c.thing['discType'] == 'organization_position':
+            user = generic.getThing(c.thing['userCode'])
+            return redirect(utils.thingURL(user, c.thing))
         elif 'initiativeCode' in c.thing:
             initiative = generic.getThing(c.thing['initiativeCode'])
             return redirect(utils.thingURL(initiative, c.thing))

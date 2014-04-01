@@ -691,6 +691,17 @@
     </div><!-- row-fluid -->
 </%def>
 
+<%def name="showPositions()">
+    <% discussions = discussionLib.getPositionsForOrganization(c.user) %>
+    % for d in discussions:
+        <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + d['urlCode'] %>
+        <div class="row-fluid">
+            <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
+            ${lib_6.userLink(d.owner)} from ${lib_6.userGeoLink(d.owner)}${lib_6.userImage(d.owner, className="avatar med-avatar")}
+        </div><!-- row-fluid -->
+    % endfor        
+</%def>
+
 <%def name="showPosition()">
     <%
         url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + c.discussion['urlCode']

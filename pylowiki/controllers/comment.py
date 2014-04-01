@@ -99,7 +99,7 @@ class CommentController(BaseController):
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
-            elif thing.objType == 'discussion' and thing['discType'] == 'organization_general':
+            elif thing.objType == 'discussion' and (thing['discType'] == 'organization_general' or thing['discType'] == 'organization_position'):
                 userLib.setUserPrivs()
             data = payload['comment-textarea']
             data = data.strip()
@@ -157,12 +157,14 @@ class CommentController(BaseController):
                     elif thing['discType'] == 'organization_general':
                         title = ' commented on a discussion you started'
                         message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgGeneral")
+                    elif thing['discType'] == 'organization_position':
+                        title = ' commented on one of your organization positions'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgPosition")
                         
                 message = genericLib.linkChildToParent(message, comment)
                 dbHelpers.commit(message)
                 alertsLib.emailAlerts(comment)
 
-            log.info("commentCCN after message")
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
                 if 'workshopCode' in thing:
                     mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
@@ -177,7 +179,7 @@ class CommentController(BaseController):
                     return redirect(utils.thingURL(workshop, thing))
                 elif thing.objType == 'photo' or 'photoCode' in thing:
                     return redirect(utils.profilePhotoURL(thing))
-                elif thing.objType == 'initiative' or 'initiativeCode' in thing:
+                elif thing.objType == 'initiative' or 'initiativeCode' in thing and thing.objType != 'discussion':
                     return redirect(utils.initiativeURL(thing))
                 elif thing.objType == 'discussion':
                     return redirect(utils.profileDiscussionURL(thing))
