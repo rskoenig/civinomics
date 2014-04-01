@@ -1519,7 +1519,9 @@
             
         ctype = ""
         if thing.objType == 'comment':
-            if 'initiativeCode' in thing and 'resourceCode' not in thing:
+            if c.discussion and c.discussion['discType'] == 'organization_position':
+                ctype = "regular"
+            elif 'initiativeCode' in thing and 'resourceCode' not in thing:
                 ctype = "initiative"
             elif 'ideaCode' in thing:
                 ctype = "idea"

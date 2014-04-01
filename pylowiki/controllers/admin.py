@@ -257,9 +257,15 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
+
+        if c.thing.objType == 'comment':
+            discussion = generic.getThing(c.thing['discussionCode'])
+            if discussion['discType'] == 'organization_position' or discussion['discType'] == 'organization_general':
+                c.thing = discussion
+                
         if 'workshopCode' in c.thing:
             return redirect(utils.thingURL(c.w, c.thing))
-        elif c.thing.objType == 'discussion' and c.thing['discType'] == 'organization_position':
+        elif c.thing.objType == 'discussion' and (c.thing['discType'] == 'organization_position' or discussion['discType'] == 'organization_general'):
             user = generic.getThing(c.thing['userCode'])
             return redirect(utils.thingURL(user, c.thing))
         elif 'initiativeCode' in c.thing:

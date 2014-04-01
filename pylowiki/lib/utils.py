@@ -268,8 +268,12 @@ def profilePhotoURL(thing):
 
 def profileDiscussionURL(thing):
     owner = generic.getThing(thing['userCode'])
+    if thing['discType'] == 'organization_general':
+        dType = 'discussion'
+    else:
+        dType = 'position'
 
-    return "/profile/%s/%s/discussion/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
+    return "/profile/%s/%s/%s/show/%s" %(owner['urlCode'], owner['url'], dType, thing['urlCode'])
     
 ##################################################
 # generates a url for a thing

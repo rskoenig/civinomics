@@ -95,12 +95,13 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
+            elif thing.objType == 'discussion' and (thing['discType'] == 'organization_general' or thing['discType'] == 'organization_position'):
+                userLib.setUserPrivs()
             elif thing.objType == 'photo' or thing.objType == 'initiative' or 'initiativeCode' in thing:
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
-            elif thing.objType == 'discussion' and (thing['discType'] == 'organization_general' or thing['discType'] == 'organization_position'):
-                userLib.setUserPrivs()
+
             data = payload['comment-textarea']
             data = data.strip()
             if data == '':
