@@ -110,8 +110,11 @@ class HomeController(BaseController):
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
+		elif type == 'initiatives':
+			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+
 		else:
-			recentActivity = activityLib.getRecentActivity(max)
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
 		myRatings = {}
 		if 'ratings' in session:

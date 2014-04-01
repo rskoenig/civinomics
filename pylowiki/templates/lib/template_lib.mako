@@ -137,6 +137,7 @@
             </ul>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/corp/surveys" class="nav-item">Surveys</a></li>
                 <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="http://civinomics.wordpress.com" target="_blank" class="nav-item">Blog</a></li>
                 <!-- <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li> -->
