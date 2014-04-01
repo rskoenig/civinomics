@@ -522,7 +522,7 @@ class InitiativeController(BaseController):
         for s in c.positions:
             log.info("got %s"%s['userCode'])
             c.organizations.append(s['userCode'])
-            if s['endorse'] == '1':
+            if s['position'] == 'support':
                 c.supporting.append(s)
             else:
                 c.opposing.append(s)

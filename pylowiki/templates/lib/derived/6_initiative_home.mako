@@ -865,10 +865,12 @@
     <% pStr = "" %>
     % if c.positions:
         % for p in c.positions:
+            <% org = userLib.getUserByCode(p['userCode']) %>
+            ${lib_6.userImage(org, className="avatar small-avatar")}
             % if p['position'] == 'support':
-                <% pStr += p['user_name'] + ' supports this initiative.</br>' %>
+                <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> supports this initiative.</br>' %>
             % else:
-                <% pStr += p['user_name'] + ' opposess this initiative.</br>' %>
+                <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> opposes this initiative.</br>' %>
             % endif
         % endfor
     % endif
