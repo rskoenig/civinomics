@@ -9,6 +9,7 @@
     import pylowiki.lib.db.pmember      as pmemberLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
+    import pylowiki.lib.fuzzyTime       as fuzzyTime
     import misaka as misaka
     
     import logging, os
@@ -446,6 +447,19 @@
                 % if item['deleted'] == '0' and item['initiative_public'] == '1':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
+            % elif objType == 'comment' and 'discType' in item and item['discType'] == 'organization_position':
+                <% 
+                    if 'initiativeCode' in item:
+                        pItem = 'initiative'
+                    else:
+                        pItem = 'idea'
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['discussionCode']
+                    activityStr = "commented on an <a href=\"" + link + "\">organization position</a>, saying"
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
             % elif objType == 'comment' and 'initiativeCode' in item:
                 <% 
                         activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
@@ -708,9 +722,18 @@
     <% discussions = discussionLib.getPositionsForOrganization(c.user) %>
     % for d in discussions:
         <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + d['urlCode'] %>
+        <%
+            position = "We %s "%d['position']
+            if 'initiativeCode' in d:
+                position += " the initiative "
+                parentTitle = d['initiative_title']
+            else:
+                parentURL = "/foo"
+                parentTitle = "/foo"
+        %>
         <div class="row-fluid">
-            <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
-            ${lib_6.userLink(d.owner)} from ${lib_6.userGeoLink(d.owner)}${lib_6.userImage(d.owner, className="avatar med-avatar")}
+            <h3><a href="${url}" class="listed-item-title">${position} "${parentTitle}"</a></h3>
+            posted ${fuzzyTime.timeSince(d.date)} ago ${str(d['numComments'])} comments <i class="icon-eye-open"></i> ${str(d['views'])} views</br>
         </div><!-- row-fluid -->
     % endfor        
 </%def>
@@ -723,6 +746,13 @@
             roles = ['admin', 'facilitator', 'listener']
             if c.discussion['addedAs'] in roles:
                 role = ' (%s)' % c.discussion['addedAs']
+
+        if 'initiativeCode' in c.discussion:
+            parentURL = "/initiative/%s/%s/show"%(c.discussion['initiativeCode'], c.discussion['initiative_url'])
+            parentTitle = c.discussion['initiative_title']
+        else:
+            parentURL = "/foo"
+            parentTitle = "/foo"
     %>
     <div class="row-fluid">
         <div class="span2">
@@ -730,6 +760,8 @@
         </div><!-- span2 -->
         <div class="span10">
             <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
+            <a href="${parentURL}">${parentTitle}</a>
+            <div class="spacer"></div>
             % if 'text' in c.discussion.keys():
                 ${misaka.html(c.discussion['text']) | n}
             % endif

@@ -186,13 +186,14 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         if attachedThing.id != discussion.id:
             thisComment = generic.linkChildToParent(thisComment, attachedThing)
         nComments = 0
-        if 'numComments' in attachedThing:
-            nComments = int(attachedThing['numComments'])
+        if attachedThing.objType != 'discussion':
+            if 'numComments' in attachedThing:
+                nComments = int(attachedThing['numComments'])
             
-        nComments += 1
+            nComments += 1
         
-        attachedThing['numComments'] = str(nComments)
-        commit(attachedThing)
+            attachedThing['numComments'] = str(nComments)
+            commit(attachedThing)
         
         if discussion['discType'] in profileTypes:
             thisComment['profileCode'] = profileOwner['urlCode']
