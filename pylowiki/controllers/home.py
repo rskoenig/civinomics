@@ -163,6 +163,10 @@ class HomeController(BaseController):
 			if 'workshopCode' in item:
 			    entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
 			    entry['href'] = entry['parentHref'] + entry['href']
+			elif item.objType == 'discussion' and item['discType'] == 'organization_position':
+			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/position/show/" + item['urlCode']
+			    if 'initiativeCode' in item:
+			        entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']  
 			elif 'initiativeCode' in item:
 			    entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
 			    if entry['objType'] == 'update':
@@ -171,6 +175,7 @@ class HomeController(BaseController):
 			        entry['href'] = entry['parentHref'] + entry['href']
 			elif item.objType == 'discussion' and item['discType'] == 'organization_general':
 			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/discussion/show/" + item['urlCode']
+
 		    
 			# modifications for children of workshops and initiatives
 			entry['parentTitle'] = ''
