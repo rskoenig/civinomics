@@ -454,7 +454,7 @@
                     else:
                         pItem = 'idea'
                     link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['discussionCode']
-                    activityStr = "commented on an <a href=\"" + link + "\">organization position</a>, saying"
+                    activityStr = "commented on an organization <a href=\"" + link + "\">position</a>, saying"
                     activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
                 %>
                 % if item['deleted'] == '0':
@@ -489,11 +489,12 @@
                 <% 
                     if 'initiativeCode' in item:
                         pItem = 'initiative'
+                        pTitle = item['initiative_title']
                     else:
                         pItem = 'idea'
                     link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['urlCode']
-                    activityStr = "took a position on an %s "%pItem
-                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
+                    activityStr = "took a position to %s the %s "%(item['position'], pItem)
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + pTitle + "</a>"
                 %>
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n} </td></tr>

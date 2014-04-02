@@ -118,7 +118,12 @@
 </%def>
 
 <%def name="yesNoVoteBlock()">
-    % if 'user' in session:
+    % if 'user' in session and c.authuser['memberType'] == 'organization':
+        <p><a ng-href="{{item.href}}">State a Position</a></p>
+        Votes: <span class="totalVotes">{{totalVotes}}</span></br>
+        No:  {{noPercent | number:0 }}%</br>
+        Yes: {{yesPercent | number:0 }}%</br>
+    % elif 'user' in session:
         <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
             <div class="vote-icon yes-icon detail"></div>
             <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
@@ -136,7 +141,7 @@
                 <span class="totalVotes">{{totalVotes}}</span>
             </strong>
         </div>
-    % else:
+    % elif 'user' not in session:
         <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
             <div class="vote-icon yes-icon"></div>
         </a>
