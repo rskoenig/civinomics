@@ -12,7 +12,7 @@ def getMemberPosts(user, unpublished = '0'):
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished']
     else:
         activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
-    discussionTypes = ['general', 'update', 'organization_general']
+    discussionTypes = ['general', 'update', 'organization_general', 'organization_position']
     codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     keys = ['deleted']
     values = ['0']

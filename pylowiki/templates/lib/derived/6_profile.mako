@@ -471,6 +471,19 @@
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
+            % elif objType == 'discussion' and item['discType'] == 'organization_position':
+                <% 
+                    if 'initiativeCode' in item:
+                        pItem = 'initiative'
+                    else:
+                        pItem = 'idea'
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['urlCode']
+                    activityStr = "took a position on an %s "%pItem
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
             % elif objType == 'comment' and 'profileCode' in item:
                 <% 
                     activityStr = "commented on an organization forum <a href=\"" + parentLink + "\">discussion</a>, saying"

@@ -79,6 +79,8 @@ def linkChildToParent(child, parent):
     if child.objType == 'comment':
         if 'title' in parent:
             child['parent_title'] = parent['title']
+        if 'discType' in parent:
+            child['discType'] = parent['discType']
         child['parent_url'] = parent['url']
         
     child[key] = code
