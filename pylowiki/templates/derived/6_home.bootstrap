@@ -11,8 +11,45 @@
   ###
   ### Activity Feed
   ###
+  <div class="span1" style="background-color: #2a2a2a;">
+    ###
+    ### Zip Lookup
+    ###
+    <div class="spacer"></div>
+    <div ng-init="zipValue = ${c.postalCode}">
+      <div ng-controller="zipLookupCtrl" ng-cloak>
+              <i class="icon-spinner icon-spin icon-2x" style="color: #afb9c4;" ng-show="loading" ng-cloak></i><br>
+          <table ng-show="!loading">
+              <tr ng-repeat="geo in geos">
+                  <td><a class="flag-tooltip" href="{{geo.href}}" rel="tooltip" data-placement="bottom" data-original-title="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a></td>
+              </tr>
+          </table>
 
-  <div class="span8">
+
+          <div class="btn-group" ng-show="!loading">
+            <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="grey icon-search"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li style="padding: 9px 19px;">
+                <p>Look up a zip code</p>
+                <form class="form-inline" name="zipForm">
+                  <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                      <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                      <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                      <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                  </div>
+                </form>
+              </li>
+            </ul>
+          </div>
+
+          
+      </div>
+    </div>
+
+  </div>
+  <div class="span7">
     <div class="spacer"></div>
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
       ###
@@ -82,6 +119,7 @@
     </div><!-- infinite-scroll -->
 
   </div><!-- /span8 -->
+
   <div class="span4" style="background-color: #2a2a2a;">
     % if c.authuser and c.authuser['activated'] == '0':
       <div class="alert alert-success">
@@ -106,10 +144,33 @@
           <tr>
             <td rowspan="2" class="avatar-cell">
               <a href = '{{item.href}}'>
-                  <div class="i-photo" style="width: 50px; height: 50px; background-image:url('{{item.thumbnail}}');"/></div> 
+                  <div class="i-photo" style="margin-top: 5px; margin-left: 5px; width: 50px; height: 50px; background-image:url('{{item.thumbnail}}');"/></div> 
               </a>
             </td>
             <td><a style="color: #afb9c4; font-weight: 500;" href = '{{item.href}}'>{{item.title}}</a></td>
+            <td style="vertical-align: top;">
+              <div class="btn-group pull-right">
+                <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
+                  <i class="grey icon-gear"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a>Unfollow</a></li>
+                  <li ng-if="item.authorID == '${c.authuser.id}'"><a>Edit</a></li>
+                  <li ng-if="item.authorID == '${c.authuser.id}'"><a>Trash</a></li>
+                </ul>
+              </div>
+
+              
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #fff; max-width: 150px;" >
+              <small class="grey">{{item.voteCount}} votes</small>
+              <div class="progress" style="height: 8px; margin-bottom: 0;">
+                <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
+              </div>
+              <small class="grey pull-right">{{item.goal - item.voteCount}} NEEDED</small>
+            </td>
             <td>
               <span ng-if="item.ups > item.downs">
                 <span class="badge badge-success pull-right">{{100 * item.ups / item.voteCount | number:0}}%</span>
@@ -122,50 +183,12 @@
               </span>
             </td>
           </tr>
-          <tr>
-            <td style="color: #fff; max-width: 150px;" >
-              <small class="grey">{{item.voteCount}} votes</small>
-              <div class="progress" style="height: 8px; margin-bottom: 0;">
-                <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
-              </div>
-              <small class="grey pull-right">{{item.goal - item.voteCount}} NEEDED</small>
-            </td>
-            <td></td>
-          </tr>
         </table>
-        <div class="centered" ng-show="followLoading || followSliceLoading" ng-cloak>
+        <div class="centered" style="color: #afb9c4" ng-show="followLoading || followSliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
       </div><!-- infinite-scroll -->
     </div>
-
-
-    ###
-    ### Zip Lookup
-    ###
-    <!--
-    <div ng-init="zipValue = ${c.postalCode}">
-      <div class="well well-splash-content" ng-controller="zipLookupCtrl" ng-cloak>
-          <h4>Zip Code Lookup</h4>
-          <form class="form-inline" name="zipForm">
-              <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                  <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                  <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-                  <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-              </div>
-          </form>
-          <div class="loading-civ" ng-show="loading" ng-cloak>
-              <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
-          </div>
-          <table ng-show="!loading">
-              <tr ng-repeat="geo in geos">
-                  <td><a href="{{geo.href}}"><img class="thumbnail flag small-flag border" src="{{geo.flag}}"></a></td>
-                  <td><a class="green green-hover left-space" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
-              </tr>
-          </table>
-      </div>
-    </div>
-    -->
 
   </div><!-- /span4 -->
 </div><!-- /row -->
@@ -185,6 +208,9 @@
         $('textarea').autosize();   
       });
     </script>
+    <script type="text/javascript">
+      $(".flag-tooltip").tooltip();
+   </script>
    <script type="text/javascript">
    $(document).ready(function() {
        $('.viewport').mouseenter(function(e) {

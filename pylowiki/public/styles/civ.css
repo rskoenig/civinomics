@@ -119,8 +119,15 @@ h5.h45, h4.h45{
 .container.wide{
   margin-bottom: 60px;
   background-color: #e9eaed;
-  padding-left: 19px;
+  padding-left: 0px;
   padding-right: 0px;
+}
+
+@media(max-width: 1000px){
+  .container.wide{
+    min-width: 100%;
+    width: 100%;
+  }
 }
 
 @media(min-width: 767px){
@@ -3324,6 +3331,7 @@ hr.object-list-header{
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;
+  border-radius: 4px;
 }
 .main-photo{
   width:100%;

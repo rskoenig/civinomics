@@ -130,6 +130,8 @@ class HomeController(BaseController):
 				if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 					entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
 					entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				else:
+					entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
 
 				entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
 
@@ -143,6 +145,9 @@ class HomeController(BaseController):
 				entry['scopeLevel'] = scopeInfo['level']
 				entry['scopeHref'] = scopeInfo['href']
 				entry['flag'] = scopeInfo['flag']
+
+				entry['authorID'] = item.owner
+				
 				result.append(entry)
 
 			if len(result) == 0:
