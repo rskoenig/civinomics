@@ -15,7 +15,7 @@
     ###
     ### Zip Lookup
     ###
-    <div style="position: fixed; background-color: #2a2a2a; width: 50px; height : 100vh; overflow : auto; ">
+    <div style="position: fixed; z-index: 1000; background-color: #2a2a2a; width: 50px; height : 100vh; overflow: show; ">
       <div class="spacer"></div>
       <div ng-init="zipValue = ${c.postalCode}">
         <div ng-controller="zipLookupCtrl" ng-cloak>
@@ -31,7 +31,7 @@
               <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="grey icon-search"></i>
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu" >
                 <li style="padding: 9px 19px;">
                   <p>Look up a zip code</p>
                   <form class="form-inline" name="zipForm">
