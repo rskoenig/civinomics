@@ -103,7 +103,9 @@ def commentLinker(comment):
         # this is a comment on a photo
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/photo/show/' + comment['photoCode']
     elif 'discType' in comment and comment['discType'] == 'organization_general':
-        itemLink = '/profile/' + comment['userCode'] + '/' + comment['user_url']  + '/discussion/show/' + comment['discussionCode']
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
+    elif 'discType' in comment and comment['discType'] == 'organization_position':
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/position/show/' + comment['discussionCode']
     elif 'profileCode' in comment:
         # I don't like this because it is not explicit what kind of comment this is, this is an implicit fallthrough case, ugh
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']

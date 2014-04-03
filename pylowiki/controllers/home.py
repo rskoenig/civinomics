@@ -160,13 +160,15 @@ class HomeController(BaseController):
 			else:
 			    entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
 
-			if 'workshopCode' in item:
-			    entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-			    entry['href'] = entry['parentHref'] + entry['href']
-			elif item.objType == 'discussion' and item['discType'] == 'organization_position':
+			if item.objType == 'discussion' and item['discType'] == 'organization_position':
 			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/position/show/" + item['urlCode']
 			    if 'initiativeCode' in item:
-			        entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']  
+			        entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+			    elif 'ideaCode' in item:
+			        entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url'] + '/idea/' + item['ideaCode'] + '/' + item['idea_url']
+			elif 'workshopCode' in item:
+			    entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+			    entry['href'] = entry['parentHref'] + entry['href']
 			elif 'initiativeCode' in item:
 			    entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
 			    if entry['objType'] == 'update':

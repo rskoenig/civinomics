@@ -256,6 +256,12 @@ class MessageController(BaseController):
                     entry['itemLink'] = utils.commentLinker(comment)
                     entry['commentData'] = comment['data']
                     
+                elif message['extraInfo'] in ['commentOnOrgPosition']:
+                    entry['combinedInfo'] = 'commentOnOrgPosition'
+                    comment = commentLib.getCommentByCode(message['commentCode'])
+                    entry['itemLink'] = utils.commentLinker(comment)
+                    entry['commentData'] = comment['data']
+                    
                 elif message['extraInfo'] in ['commentOnResource']:
                     if 'workshopCode' in message:
                         container = workshopLib.getWorkshopByCode(message['workshopCode'])
