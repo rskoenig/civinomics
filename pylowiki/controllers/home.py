@@ -60,13 +60,15 @@ class HomeController(BaseController):
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
 
-    def getFollowingInitiatives(self):
+    def getFollowingInitiatives(self, offset=0, limit=0):
 		interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
-		#interestedInitiatives = followLib.getInitiativeFollows(c.authuser)
-		log.info('in get following controller')
-
 		# reverse list so most recent first
 		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+		offset = int(offset)
+		limit = int(limit)
+		interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
 		interestedInitiatives = []
 		for code in interestedInitiativeCodes:
 			log.info('%s' % code)

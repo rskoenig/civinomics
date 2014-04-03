@@ -97,40 +97,46 @@
     ###
     ### Following Initiatives
     ###
-    <div ng-controller="followingCtrl">
-      <div class="loading-civ" ng-show="followLoading" ng-cloak>
-        <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+    <div class="spacer"></div>
+    <div class="row-fluid" style="font-weight: 300; font-size: 16px; color: #afb9c4;">Following</div>
+
+    <div ng-controller="followCtrl">
+      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='3'>
+        <table ng-repeat="item in followInitiatives"  class="activity-item follow" ng-cloak>
+          <tr>
+            <td rowspan="2" class="avatar-cell">
+              <a href = '{{item.href}}'>
+                  <div class="i-photo" style="width: 50px; height: 50px; background-image:url('{{item.thumbnail}}');"/></div> 
+              </a>
+            </td>
+            <td><a style="color: #afb9c4; font-weight: 500;" href = '{{item.href}}'>{{item.title}}</a></td>
+            <td>
+              <span ng-if="item.ups > item.downs">
+                <span class="badge badge-success pull-right">{{100 * item.ups / item.voteCount | number:0}}%</span>
+              </span>
+              <span ng-if="item.downs > item.ups">
+                <span class="badge badge-important pull-right">{{100 * item.downs / item.voteCount | number:0}}%</span>
+              </span>
+              <span ng-if="item.downs == item.ups">
+                <span class="badge pull-right">50%</span>
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td style="color: #fff; max-width: 150px;" >
+              <small class="grey">{{item.voteCount}} votes</small>
+              <div class="progress" style="height: 8px; margin-bottom: 0;">
+                <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
+              </div>
+              <small class="grey pull-right">{{item.goal - item.voteCount}} NEEDED</small>
+            </td>
+            <td></td>
+          </tr>
+        </table>
+        <div class="centered" ng-show="followLoading || followSliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
-      <table ng-repeat="item in followingInitiatives"  class="activity-item following" ng-cloak>
-        <tr>
-          <td rowspan="2" class="avatar-cell">
-            <a href = '{{item.href}}'>
-                <div class="i-photo" style="width: 50px; height: 50px; background-image:url('{{item.thumbnail}}');"/></div> 
-            </a>
-          </td>
-          <td><a style="color: #fff;" href = '{{item.href}}'>{{item.title}}</a></td>
-          <td>
-            <span ng-if="item.ups > item.downs">
-              <span class="badge badge-success">{{100 * item.ups / item.voteCount | number:0}}%</span>
-            </span>
-            <span ng-if="item.downs > item.ups">
-              <span class="badge badge-important">{{100 * item.downs / item.voteCount | number:0}}%</span>
-            </span>
-            <span ng-if="item.downs == item.ups">
-              <span class="badge">50%</span>
-            </span>
-          </td>
-        </tr>
-        <tr>
-          <td style="color: #fff;" >
-            <small class="grey">{{item.voteCount}} votes</small>
-            <div class="progress" style="height: 8px; margin-bottom: 0;">
-              <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
-            </div>
-            <small class="grey pull-right">{{item.goal - item.voteCount}} NEEDED</small>
-          </td>
-        </tr>
-      </table>
+      </div><!-- infinite-scroll -->
     </div>
 
 

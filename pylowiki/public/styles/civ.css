@@ -3386,8 +3386,8 @@ hr.object-list-header{
   width: 60px;
 }
 
-.activity-item.following{
-  border-top: solid 1px #eee;
+.activity-item.follow{
+  border-top: solid 1px #5b5b5b;
   margin-bottom: 5px;
 }
 /*
