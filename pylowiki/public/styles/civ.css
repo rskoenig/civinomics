@@ -74,7 +74,7 @@ h5.h45, h4.h45{
   height: 100%;
   /* Negative indent footer by it's height */
   margin: 1px auto -55px;
-  background-color: #e9eaed;
+  background-color: #2a2a2a;
 }
 
 /* Set the fixed height of the footer here */
@@ -114,6 +114,13 @@ h5.h45, h4.h45{
   background-color: #e9eaed;
   padding-left: 19px;
   padding-right: 19px;
+}
+
+.container.wide{
+  margin-bottom: 60px;
+  background-color: #e9eaed;
+  padding-left: 19px;
+  padding-right: 0px;
 }
 
 @media(min-width: 767px){
@@ -3377,6 +3384,12 @@ hr.object-list-header{
 .activity-item .avatar-cell, .avatar-cell{
   vertical-align: top;
   width: 60px;
+}
+
+.activity-item.following{
+  border-top: solid 1px #eee;
+  margin-bottom: 5px;
+}
 /*
   margin-top: 10px;
   margin-right: 10px;

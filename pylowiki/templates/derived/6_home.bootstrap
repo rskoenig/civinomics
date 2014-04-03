@@ -1,4 +1,4 @@
-<%inherit file="/base/base_indented.bootstrap"/>
+<%inherit file="/base/base_wide.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
@@ -6,8 +6,6 @@
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
-
-<div class="spacer"></div>
 <div class="row" ng-controller = "activityController">
 
   ###
@@ -15,7 +13,21 @@
   ###
 
   <div class="span8">
+    <div class="spacer"></div>
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+      ###
+      ### Feed Filters
+      ###
+      <div>
+        <ul class="nav nav-pills civ-search-tools" style="margin-top: 0;">
+          <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
+          <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
+          % if c.authuser:
+            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
+            <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
+          % endif
+        </ul>
+      </div>
 
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}
@@ -70,8 +82,7 @@
     </div><!-- infinite-scroll -->
 
   </div><!-- /span8 -->
-  <div class="span4">
-
+  <div class="span4" style="background-color: #2a2a2a;">
     % if c.authuser and c.authuser['activated'] == '0':
       <div class="alert alert-success">
         <h4>Welcome!</h4> 
@@ -84,36 +95,40 @@
     % endif
 
     ###
-    ### Feed Filters
-    ###
-    <div>
-      <ul class="nav nav-tabs nav-stacked" style="width: 100%; margin-top: 0;">
-        <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
-        <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
-        % if c.authuser:
-          <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
-          <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
-        % endif
-      </ul>
-    </div>
-
-    ###
     ### Following Initiatives
     ###
     <div ng-controller="followingCtrl">
       <div class="loading-civ" ng-show="followLoading" ng-cloak>
         <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
       </div>
-      <table ng-repeat="item in followingInitiatives"  class="activity-item" ng-cloak>
+      <table ng-repeat="item in followingInitiatives"  class="activity-item following" ng-cloak>
         <tr>
-          <td>{{item.title}}</td>
+          <td rowspan="2" class="avatar-cell">
+            <a href = '{{item.href}}'>
+                <div class="i-photo" style="width: 50px; height: 50px; background-image:url('{{item.thumbnail}}');"/></div> 
+            </a>
+          </td>
+          <td><a style="color: #fff;" href = '{{item.href}}'>{{item.title}}</a></td>
           <td>
             <span ng-if="item.ups > item.downs">
-              <span class="green green-hover">Ups {{item.ups}}</span>
+              <span class="badge badge-success">{{100 * item.ups / item.voteCount | number:0}}%</span>
             </span>
             <span ng-if="item.downs > item.ups">
-              <span class="red red-hover">Downs {{item.downs}}</span>
+              <span class="badge badge-important">{{100 * item.downs / item.voteCount | number:0}}%</span>
             </span>
+            <span ng-if="item.downs == item.ups">
+              <span class="badge">50%</span>
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td style="color: #fff;" >
+            <small class="grey">{{item.voteCount}} votes</small>
+            <div class="progress" style="height: 8px; margin-bottom: 0;">
+              <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
+            </div>
+            <small class="grey pull-right">{{item.goal - item.voteCount}} NEEDED</small>
+          </td>
         </tr>
       </table>
     </div>

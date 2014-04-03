@@ -65,6 +65,8 @@ class HomeController(BaseController):
 		#interestedInitiatives = followLib.getInitiativeFollows(c.authuser)
 		log.info('in get following controller')
 
+		# reverse list so most recent first
+		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
 		interestedInitiatives = []
 		for code in interestedInitiativeCodes:
 			log.info('%s' % code)
@@ -101,6 +103,12 @@ class HomeController(BaseController):
 				entry['downs'] = int(item['downs'])
 				entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
+				#goal votes
+				if 'goal' in item:
+					entry['goal'] = item['goal']
+				else:
+					entry['goal'] = 100
+
 				# comments
 				entry['numComments'] = 0
 				if 'numComments' in item:
@@ -115,6 +123,13 @@ class HomeController(BaseController):
 				    if tag and tag != '':
 				        tags.append(tag)
 				entry['tags'] = tags
+
+				# photo
+				if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+					entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+					entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+
+				entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
 
 				# scope attributes
 				if 'scope' in item:
