@@ -1344,19 +1344,23 @@ class ProfileController(BaseController):
         item = genericLib.getThing(id3)
         payload = request.params
         position = payload['position']
-        title = item['title'] 
         text = payload['text']
+        
+        if 'title' in payload:
+            title = payload['title']
+        else:
+            title = 'We %s the %s "%s"'%(position, item.objType, item['title'])
 
         if 'code' in payload:
             d = discussionLib.getDiscussion(payload['code'])  
         else:
             d = discussionLib.Discussion(owner = c.authuser, discType = 'organization_position', attachedThing = item, title = title, text = text, position = position)
+            d.d['views'] = '1'
 
         d.d['title'] = title
         d.d['position'] = position
         d.d['text'] = payload['text']
-        d.d['views'] = '1'
-
+        
         dbHelpers.commit(d.d)
         revisionLib.Revision(c.authuser, d.d)
         

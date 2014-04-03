@@ -750,11 +750,13 @@
                 role = ' (%s)' % c.discussion['addedAs']
 
         if 'initiativeCode' in c.discussion:
+            parentType = 'initiative'
             parentURL = "/initiative/%s/%s/show"%(c.discussion['initiativeCode'], c.discussion['initiative_url'])
             parentTitle = c.discussion['initiative_title']
         else:
-            parentURL = "/foo"
-            parentTitle = "/foo"
+            parentType = 'idea'
+            parentURL = "/workshop/%s/%s/idea/%s/%s"%(c.discussion['workshopCode'], c.discussion['workshop_url'], c.discussion['ideaCode'], c.discussion['idea_url'])
+            parentTitle = c.discussion['idea_title']
     %>
     <div class="row-fluid">
         <div class="span2">
