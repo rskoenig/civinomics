@@ -76,6 +76,14 @@ h5.h45, h4.h45{
   margin: 1px auto -55px;
   background-color: #2a2a2a;
 }
+#wrap-wide {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by it's height */
+  margin:auto;
+  background-color: #2a2a2a;
+}
 
 /* Set the fixed height of the footer here */
 #baseTemplate_footer{
@@ -117,7 +125,6 @@ h5.h45, h4.h45{
 }
 
 .container.wide{
-  margin-bottom: 60px;
   background-color: #e9eaed;
   padding-left: 0px;
   padding-right: 0px;
