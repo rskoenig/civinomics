@@ -274,7 +274,7 @@
                 <p>In one of two ways: 1) use the search tool in the top navigation bar; or 2) click on the green Civinomics icon in the top navigation bar, then choose the appropriate geographic breadcrumb from the place names at the top. (For example, click on your city name to find a workshop about keeping city parks clean.) Once the page refreshes, you should be able to locate your workshop. (Note: This process only works for public workshops.)</p>
                 <strong>I was invited to a private workshop, but I can’t find it on the site. What do I do?</strong>
                 <p>Go back to the email inviting you to the workshop and click on the link. It will take you to the private workshop. Click “Follow” in the upper right hand corner. (If you are not already a Civinomics member, you’ll need to sign up to do this; if you are a Civinomics member, you’ll need to log in.) </p>
-                <p>From this point on your private workshop will be listed under the “My Workshops” tab on your Profile page.</p>
+                <p>From this point on your private workshop will be listed under the "Workshops" tab on your Profile page.</p>
                 <strong>How do I vote on an idea?</strong>
                 <p>Once you’re in the workshop you want, click on the “Vote” tab under the workshop name. You’ll see a list of ideas and, to the left of each one, a numeral with chevrons above and below it. Click the top chevron to vote for that idea; click the bottom chevron to vote against it. The numeral will change to register your vote (it shows the total number of up votes minus down votes).</p>
                 <strong>How do I submit an idea to vote on?</strong>
@@ -325,9 +325,9 @@
                 <strong>Why do I need to check my messages?</strong>
                 <p>Your messages may include invitations to be a workshop co-facilitator or listener. They may also include invitations to private workshops.</p>
                 <strong>Can I follow private workshops?</strong>
-                <p>Yes! Just click the “Bookmark” button in the top right hand corner of the workshop. The workshop will show up under the “My Workshops” tab on your Profile page.</p>
+                <p>Yes! Just click the “Bookmark” button in the top right hand corner of the workshop. The workshop will show up under the “Workshops” tab on your Profile page.</p>
                 <strong>Will people be able to see that I am in private workshops?</strong>
-                <p>No. The private workshops listed under your “My Workshops” tab will be visible to you alone. Other people coming to your profile page won’t be able to see them. Nor will they be able to see your contributions to private workshops on the “Activity” tab of your Profile page.</p>
+                <p>No. The private workshops listed under your “Workshops” tab will be visible to you alone. Other people coming to your profile page won’t be able to see them. Nor will they be able to see your contributions to private workshops on the “Activity” tab of your Profile page.</p>
             </div>
 
             <div id="moreWorkshops">
@@ -386,11 +386,11 @@
 
                 <strong>How do I follow workshops?</strong>
 
-                <p>Click on the “Bookmark” button located in the upper right hand corner of a given workshop’s home page. Doing this will automatically add the workshop to the “Activity” and “My Workshops” listings on your Profile page.</p>
+                <p>Click on the “Bookmark” button located in the upper right hand corner of a given workshop’s home page. Doing this will automatically add the workshop to the “Activity” and “Workshops” listings on your Profile page.</p>
 
                 <strong>How can I access the workshops that I have bookmarked?</strong>
 
-                <p>Go to your Profile page and click the “My Workshops” tab next to “Activity.” This will display all the workshops you are following and those you are facilitating.</p>
+                <p>Go to your Profile page and click the “Workshops” tab next to “Activity.” This will display all the workshops you are following and those you are facilitating.</p>
 
                 <strong>What is listed in the activity stream on the homepage?</strong>
 
@@ -445,7 +445,7 @@
 
                 <strong>How do I invite someone to be a co-facilitator or a listener?</strong>
 
-               <p>Go to the person’s Profile page and click on “My Workshops.” The invitation buttons are at the top. Currently Civinomics only supports facilitation or listening invitations for members, so if the person is not yet a Civinomics member, ask him or her to become one.</p>
+               <p>Go to the person’s Profile page and click on “Workshops.” The invitation buttons are at the top. Currently Civinomics only supports facilitation or listening invitations for members, so if the person is not yet a Civinomics member, ask him or her to become one.</p>
 
                 <strong>How do I upload multiple images at once?</strong>
 
@@ -465,9 +465,9 @@
 
                 <strong>How do I find workshops I have created?</strong>
 
-                <p>Two ways: If the workshop you created is public, you should be able to find it on the Civinomics homepage under the geographic area you selected for that workshop. It will also be on your Profile page under “My Workshops.”</p>
+                <p>Two ways: If the workshop you created is public, you should be able to find it on the Civinomics homepage under the geographic area you selected for that workshop. It will also be on your Profile page under “Workshops.”</p>
 
-                <p>If the workshop is private, you will only be able to find it on your Profile page under “My Workshops.” It will be marked to indicate that you are “Facilitating.”</p>
+                <p>If the workshop is private, you will only be able to find it on your Profile page under “Workshops.” It will be marked to indicate that you are “Facilitating.”</p>
 
                 <strong>Can I save my workshop after it ends so that others can see what happened?</strong>
 
@@ -522,7 +522,7 @@
 
                 <strong>How will I know if an item has been flagged?</strong>
 
-                <p>Facilitators automatically receive email updates every time an item is flagged and every time someone contributes to one of your workshops. You can disable these, or elect to receive a simple daily digest of activity, under the “My Workshops” tab of your Profile page.</p>
+                <p>Facilitators automatically receive email updates every time an item is flagged and every time someone contributes to one of your workshops. You can disable these, or elect to receive a simple daily digest of activity, under the “Workshops” tab of your Profile page.</p>
 
                 <strong>What if someone flags an object that is perfectly fine? Can I tell them why I chose not to disable something?</strong>
 

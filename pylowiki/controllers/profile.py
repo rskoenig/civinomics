@@ -69,6 +69,18 @@ class ProfileController(BaseController):
         userLib.setUserPrivs()
   
     def showUserPage(self, id1, id2, id3 = ''):
+        """ note: This function could use better design. 
+                These workshop lists are assembled in this function. 
+                They should instead be together in one list.
+            c.facilitatorWorkshops, 
+            c.listeningWorkshops, 
+            c.bookmarkedWorkshops,
+            c.privateWorkshops
+            The profile page currently has duplicate entries, this one way to avoid that problem.
+            - Todd
+        """
+
+        c.allWorkshops = []
         # check to see if this is a request from the iphone app
         # entry is used for packing a json object for the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -104,14 +116,21 @@ class ProfileController(BaseController):
         for workshop in watchList:
             if workshop['public_private'] == 'public' or (c.isUser or c.isAdmin):
                 c.watching.append(workshop)
+                workshop['relation'] = 'watching'
+                c.allWorkshops.append(workshop)
 
         c.bookmarkedWorkshops = []
         for workshop in c.watching:
             if workshop['public_private'] == 'public':
                 c.bookmarkedWorkshops.append(workshop)
+                workshop['relation'] = 'bookmarked'
+                c.allWorkshops.append(workshop)
             if workshop['public_private'] == 'private' and 'user' in session and c.authuser:
                 if c.isUser or c.isAdmin:
                     c.bookmarkedWorkshops.append(workshop)
+                    workshop['relation'] = 'bookmarked'
+                    c.allWorkshops.append(workshop)
+
         if iPhoneApp:
             if displayWorkshops:
                 i = 0
@@ -134,7 +153,7 @@ class ProfileController(BaseController):
                     entry[bookmarkedWorkshopEntry] = dict(bWorkshopCopy)
                     i = i + 1
 
-        # NOTE this looks unused:
+        # NOTE: this looks unused:
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
         
         c.privateWorkshops = []
@@ -143,6 +162,10 @@ class ProfileController(BaseController):
                 privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
                 if privateList:
                     c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                    for privateWorkshop in c.privateWorkshops:
+                        privateWorkshop['relation'] = 'private'
+                        c.allWorkshops.append(privateWorkshop)
+
         if iPhoneApp:
             if displayWorkshops:
                 i = 0
@@ -171,6 +194,9 @@ class ProfileController(BaseController):
         for l in listenerList:
             lw = workshopLib.getWorkshopByCode(l['workshopCode'])
             c.listeningWorkshops.append(lw)
+            lw['relation'] = 'private'
+            c.allWorkshops.append(lw)
+
         if iPhoneApp:
             if displayWorkshops:
                 i = 0
@@ -208,8 +234,12 @@ class ProfileController(BaseController):
                         if 'user' in session: 
                             if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
                                 c.facilitatorWorkshops.append(myW)
+                                myW['relation'] = 'facilitator'
+                                c.allWorkshops.append(myW)
                     else:
                         c.facilitatorWorkshops.append(myW)
+                        myW['relation'] = 'facilitator'
+                        c.allWorkshops.append(myW)
                 except:
                     myI = initiativeLib.getInitiative(f['initiativeCode'])
                     if myI['public'] == '0':
@@ -319,8 +349,35 @@ class ProfileController(BaseController):
             response.headers['Content-type'] = 'application/json'
             #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})
-        else:    
-            return render("/derived/6_profile.bootstrap")
+        
+        # c.allWorkshops has a rough list of all the workshops to display
+        #  now I'm going to comb it out into a clean json representation
+        workshopsClean = []
+        
+        for workshop in c.allWorkshops:
+            entry = {}
+            entry['title'] = workshop['title']
+            entry['relation'] = workshop['relation']
+            entry['public_private'] = workshop['public_private']
+            entry['published'] = workshop['published']
+            entry['deleted'] = workshop['deleted']
+            entry['disabled'] = workshop['disabled']
+            entry['allowDiscussions'] = workshop['allowDiscussions']
+            entry['allowIdeas'] = workshop['allowIdeas']
+            entry['allowResources'] = workshop['allowResources']
+            entry['allowSuggestions'] = workshop['allowSuggestions']
+            entry['facilitators'] = workshop['facilitators']
+            entry['workshop_category_tags'] = workshop['workshop_category_tags']
+            entry['numPosts'] = workshop['numPosts']
+            entry['numBookmarks'] = workshop['numBookmarks']
+            workshopsClean.append(entry)
+
+        if len(workshopsClean) == 0:
+            c.allWorkshopsJson = json.dumps({'statusCode':1})
+        else:
+            c.allWorkshopsJson = json.dumps({'statusCode': 0, 'result': workshopsClean})
+
+        return render("/derived/6_profile.bootstrap")
 
         
     def showUserPhotos(self, id1, id2):

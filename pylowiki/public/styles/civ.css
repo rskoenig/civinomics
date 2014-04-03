@@ -1333,6 +1333,15 @@ td.scope-icon{
   background-image:url(/images/no_selected.png);
 }
 
+.settings-icon.yes{
+  background-image:url(/images/yes_alone.png);
+  background-repeat: no-repeat;
+}
+.settings-icon.no{
+  background-image:url(/images/no_alone.png);
+  background-repeat: no-repeat;
+}
+
 .chevron-score{
   margin-top: 9px;
   margin-bottom: -2px;

@@ -19,7 +19,7 @@ Here are some tips to help you get your bearings:
 
 3. To vote on ideas in a workshop, click on the Ideas tab and use the up/down chevrons. Or add your own idea by clicking the green Add an Idea button.
 
-4. Use your Profile page.  This is where you can find a history of everything that you've ever done --comments made, brilliant suggestions proposed, great resources linked and workshops bookmarked (under the "My Workshops" tab). To get there, click on Profile in the top navigation bar.
+4. Use your Profile page.  This is where you can find a history of everything that you've ever done --comments made, brilliant suggestions proposed, great resources linked and workshops bookmarked (under the "Workshops" tab). To get there, click on Profile in the top navigation bar.
 
 5. To create a workshop, click on Workshops in the top navigation bar and select Create. To edit or manage a workshop you've created, go to that workshop and click on the gear symbol (visible to your eyes only).
 

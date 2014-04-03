@@ -130,6 +130,9 @@
                                 if 'digest' in l and l['digest'] == '1':
                                     digestChecked = 'checked'
                             %>
+                            <!-- note: the ng listenerController does not have these ng functions in it
+                                (emailOnAdded and emailDigest). Can a listener actually control their email settings? you'll find these functions in facilitatorController, which
+                                can be found in the ng file workshop_admin -->
                             <div class="row-fluid" ng-controller="listenerController">
                                 <div class="span3">Email when:</div>
                                 <div class="span3">

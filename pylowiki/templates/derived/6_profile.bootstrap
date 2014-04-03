@@ -4,6 +4,8 @@
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/graphs/profile_graphs.mako" name="profileGraphs" />
+
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
@@ -15,10 +17,17 @@
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
-                    <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
-                    <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
-                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
-                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
+                    <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
+                    <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">Initiatives</a></li>
+                    % if 'user' in session:
+                        % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
+                            % if len(c.listeningWorkshops) > 0:
+                                <li><a href="#tab-graphs" data-toggle="tab" class="green green-hover">Graphs</a></li>
+                            % endif
+                        % endif
+                    % endif
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">Pictures</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">Unpublished</a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
@@ -71,6 +80,11 @@
                         % endfor
                         </tbody>
                         </table>
+                    </div><!-- tab-pane -->
+                    <!-- show graphs for this person's workshops -->
+                    <div class="tab-pane" id="tab-graphs">
+                        ${profileGraphs.showWorkshops(c.allWorkshops)}
+                        <!-- $ { profileGraphs.showWorkshopsJson(c.allWorkshopsJson)} -->
                     </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
