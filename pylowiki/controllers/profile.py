@@ -1344,7 +1344,7 @@ class ProfileController(BaseController):
         item = genericLib.getThing(id3)
         payload = request.params
         position = payload['position']
-        title = "We %s this %s"%(position, item.objType) 
+        title = item['title'] 
         text = payload['text']
 
         if 'code' in payload:
