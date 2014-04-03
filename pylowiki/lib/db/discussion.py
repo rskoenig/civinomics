@@ -2,6 +2,7 @@
 import logging
 
 from pylowiki.model import Thing, Data, meta
+from pylons import session
 import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 from pylowiki.lib.utils import urlify, toBase62
@@ -64,14 +65,33 @@ def getDiscussionsForOrganization(parent, disabled = '0', deleted = '0'):
         return False
         
 def getPositionsForOrganization(parent, disabled = '0', deleted = '0'):
-    thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
     try:
         return meta.Session.query(Thing).filter_by(objType = 'discussion')\
-        .filter(Thing.data.any(wc(thisKey, parent['urlCode'])))\
+        .filter_by(owner = parent.id)\
         .filter(Thing.data.any(wc('disabled', disabled)))\
         .filter(Thing.data.any(wc('discType', 'organization_position')))\
         .filter(Thing.data.any(wc('deleted', deleted)))\
         .all()
+    except:
+        return False
+        
+def getPositionsForOrganizationCache(parent, disabled = '0', deleted = '0'):
+    try:
+        orgPositions = {}
+        positions = meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter_by(owner = parent.id)\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('discType', 'organization_position')))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
+        for p in positions:
+            if 'ideaCode' in p:
+                key = 'ideaCode'
+            else:
+                key = 'initiativeCode'
+            urlCode = p[key]
+            orgPositions[urlCode] = p['position']
+        return orgPositions
     except:
         return False
         
@@ -196,13 +216,24 @@ class Discussion(object):
             if discType != 'update' and discType != 'general':
                 d['workshop_searchable'] = '0'
                 
+        commit(d)
+        
+        d['urlCode'] = toBase62(d)
+        commit(d)
+                
         if d['discType'] == 'organization_general' or d['discType'] == 'organization_position':
             d['organization_searchable'] = '1'
             if 'position' in kwargs.keys():
                 d['position'] = kwargs['position']
+                if 'positions' in session:
+                    sPositions = session['positions']
+                else:
+                    sPositions = {}
+                urlCode = d['urlCode']
+                sPositions[urlCode] = d['position']
+                session['positions'] = sPositions
+                session.save()
+                
+            commit(d)
 
-        commit(d)
-        d['urlCode'] = toBase62(d)
-        commit(d)
-        
         self.d = d

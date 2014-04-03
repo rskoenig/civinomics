@@ -100,21 +100,14 @@
             % elif not c.editInitiative and c.initiative.objType == 'initiative':
                 <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                     % if c.initiative.objType != 'revision':
-                        % if 'user' in session and c.authuser['memberType'] == 'organization':
-                            <h4 class="section-header initiative smaller">Support or Oppose</h4>
-                            % if c.authuser['urlCode'] not in c.organizations:
-                                ${lib_6.supportOppose(c.initiative)}
-                            % endif
-                        % else:
-                            <h4 class="section-header initiative smaller">Vote</h4>
-                            <div class="row-fluid">
-                                <div class="span6 offset3">
-                                    ${lib_6.yesNoVote(c.initiative, 'detail')}
-                                </div><!-- span4 -->
-                                <div class="span3"></div>
-                            </div>
-                        % endif
-                        ${ihelpers.showPositions()}
+                        <h4 class="section-header initiative smaller">Vote</h4>
+                        <div class="row-fluid">
+                            <div class="span6 offset3">
+                                ${lib_6.yesNoVote(c.initiative, 'detail')}
+                            </div><!-- span4 -->
+                            <div class="span3"></div>
+                        </div>
+                        ${lib_6.showPositions(c.initiative)}
                         <h4 class="section-header initiative smaller section-header-inner">Share It</h4>
                         <div class="row-fluid centered">
                             <span>

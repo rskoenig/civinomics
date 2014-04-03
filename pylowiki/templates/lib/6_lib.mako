@@ -584,21 +584,40 @@
    </div>
 </%def>
 
-<%def name="supportOppose(thing)">
-    <form action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST">
-        Does your organization:</br>
-        <label class="radio">
-        <input type="radio" name="position" id="positionSupport" value="support" checked>
-            Support this Initiative
-        </label>
-        <label class="radio">
-        <input type="radio" name="position" id="positionOppose" value="oppose">
-            Oppose this Initiative
-        </label>
-        Reason:
-        <textarea rows="3" name="text" required></textarea>
-        <button class="btn btn-success">Submit</button>
-    </form>
+<%def name="showPositions(thing)">
+    <% 
+        pStr = ""
+        positions = discussionLib.getPositionsForItem(thing)
+    %>
+    % for p in positions:
+        <% org = userLib.getUserByID(p.owner) %>
+        ${userImage(org, className="avatar small-avatar")}
+        % if p['position'] == 'support':
+            <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> supports this initiative.</br>' %>
+        % else:
+            <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> opposes this initiative.</br>' %>
+        % endif
+    % endfor
+    ${pStr | n}                                
+</%def>
+
+<%def name="orgPosition(thing)">
+    % if 'positions' in session and thing['urlCode'] not in session['positions']:
+        <form action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST">
+            Does your organization:</br>
+            <label class="radio">
+            <input type="radio" name="position" id="positionSupport" value="support" checked>
+                Support this ${thing.objType}
+            </label>
+            <label class="radio">
+            <input type="radio" name="position" id="positionOppose" value="oppose">
+                Oppose this ${thing.objType}
+            </label>
+            Reason:
+            <textarea rows="3" name="text" required></textarea>
+            <button class="btn btn-success">Submit</button>
+        </form>
+    % endif
 </%def>
 
 <%def name="yesNoVote(thing, *args)">
@@ -621,7 +640,9 @@
         else:
             myRatings = {}
       %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['provisional']) and not self.isReadOnly() and c.authuser['memberType'] == 'organization':
+        ${orgPosition(thing)}
+      % elif 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             thingCode = thing['urlCode']
             #log.info("thingCode is %s"%thingCode)

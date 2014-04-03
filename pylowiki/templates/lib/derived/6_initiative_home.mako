@@ -860,19 +860,3 @@
         </div><!-- ng-init -->
     %endif   
 </%def>
-
-<%def name="showPositions()">
-    <% pStr = "" %>
-    % if c.positions:
-        % for p in c.positions:
-            <% org = userLib.getUserByCode(p['userCode']) %>
-            ${lib_6.userImage(org, className="avatar small-avatar")}
-            % if p['position'] == 'support':
-                <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> supports this initiative.</br>' %>
-            % else:
-                <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> opposes this initiative.</br>' %>
-            % endif
-        % endfor
-    % endif
-    ${pStr | n}                                
-</%def>

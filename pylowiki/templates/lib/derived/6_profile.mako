@@ -492,6 +492,7 @@
                         pTitle = item['initiative_title']
                     else:
                         pItem = 'idea'
+                        pTitle = "bad idea"
                     link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['urlCode']
                     activityStr = "took a position to %s the %s "%(item['position'], pItem)
                     activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + pTitle + "</a>"
