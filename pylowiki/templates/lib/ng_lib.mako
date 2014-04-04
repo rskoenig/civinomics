@@ -234,15 +234,20 @@
 <%def name="authorPosting()">
     <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <small>
-      <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
-      <span class="date">{{item.fuzzyTime}} ago</span>
+        <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
+        <span class="date">{{item.fuzzyTime}} ago</span>
+        % if not (c.w or c.initiative):
+            <span ng-if="item.parentObjType && !(item.parentObjType == '')">
+                in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
+            </span>
+        % endif
     </small>
 </%def>
 
 <%def name="actions()">
     <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
         <div ng-controller="commentsController">
-            <div class="actions-links           ">
+            <div class="actions-links">
                 <ul class="horizontal-list iconListing">
                     <li>
                         <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
