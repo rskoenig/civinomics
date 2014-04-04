@@ -62,7 +62,7 @@
           <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
           <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
           % if c.authuser:
-            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
+            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
             <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
           % endif
         </ul>
@@ -127,7 +127,7 @@
 
         <div style="position: fixed; background-color: #2a2a2a; width: 380px; height : 100vh; overflow-y:auto; overflow-x:hidden; padding-right: 15px">
           <div class="spacer"></div>
-          <p style="font-weight: 300; font-size: 16px; color: #afb9c4;">Following</p>
+          <p style="font-weight: 300; font-size: 16px; margin: 10px; color: #afb9c4;">Following</p>
           <table ng-repeat="item in followInitiatives"  class="activity-item follow" ng-cloak>
             <tr>
               <td rowspan="2" class="avatar-cell">
