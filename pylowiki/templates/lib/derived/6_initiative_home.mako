@@ -122,7 +122,7 @@
 </%def>
 
 <%def name="watchButton(i, **kwargs)">
-    % if 'user' in session and not c.privs['provisional']:
+    % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
