@@ -10,6 +10,8 @@ import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.user         as userLib
 
+import simplejson as json
+
 
 class TrashController(BaseController):
     

@@ -148,7 +148,7 @@
                               <ul class="dropdown-menu">
                                 <li  ng-if="!(item.authorID == '${c.authuser.id}')"><a ng-click="changeFollow()">Unfollow</a></li>
                                 <li ng-if="item.authorID == '${c.authuser.id}'"><a>Edit</a></li>
-                                <li ng-if="item.authorID == '${c.authuser.id}'"><a ng-click="trashThing()">Trash</a></li>
+                                <li ng-if="item.authorID == '${c.authuser.id}'"><a ng-click="trashThing()">Delete</a></li>
                               </ul>
                             </div>
             

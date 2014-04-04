@@ -11,7 +11,7 @@
     <div class="span8">
         <div class="tabbable">
             <ul class="nav nav-tabs" id="editTabs">
-            <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover">My Unpublished</a></li>
+            <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover"><i class="icon-trash"></i></i> Trash</a></li>
             <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
             </ul>
             <div class="tab-content">
