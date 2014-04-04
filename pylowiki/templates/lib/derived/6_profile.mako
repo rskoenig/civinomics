@@ -724,17 +724,8 @@
     <% discussions = discussionLib.getPositionsForOrganization(c.user) %>
     % for d in discussions:
         <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + d['urlCode'] %>
-        <%
-            position = "We %s "%d['position']
-            if 'initiativeCode' in d:
-                position += " the initiative "
-                parentTitle = d['initiative_title']
-            else:
-                parentURL = "/foo"
-                parentTitle = "/foo"
-        %>
         <div class="row-fluid">
-            <h3><a href="${url}" class="listed-item-title">${position} "${parentTitle}"</a></h3>
+            <h3><a href="${url}" class="listed-item-title">${d['title']}"</a></h3>
             posted ${fuzzyTime.timeSince(d.date)} ago ${str(d['numComments'])} comments <i class="icon-eye-open"></i> ${str(d['views'])} views</br>
         </div><!-- row-fluid -->
     % endfor        
