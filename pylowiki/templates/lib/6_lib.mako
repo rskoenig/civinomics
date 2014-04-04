@@ -1613,7 +1613,7 @@
                                 <input type=radio name="position" value="support" ${supportChecked}> We support this ${ctype}
                             </label>
                             <label class="radio inline">
-                                <input type=radio name="position" value="neutral" ${opposeChecked}> We oppose this ${ctype}
+                                <input type=radio name="position" value="oppose" ${opposeChecked}> We oppose this ${ctype}
                             </label>
                         </div><!-- row-fluid -->
                         <div class="spacer"></div>
