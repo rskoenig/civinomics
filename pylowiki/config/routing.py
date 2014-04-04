@@ -169,7 +169,9 @@ def make_map():
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
-
+    # trash
+    map.connect('/trash/{code}/{url}{end:/?}' , controller = 'trash', action = 'trashThingHandler', code = '{code}', url = '{url}')
+    
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     

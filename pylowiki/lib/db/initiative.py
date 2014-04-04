@@ -22,7 +22,7 @@ def getInitiative(initiativeCode):
 
 def getInitiativesForUser(user):
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
     except:
         return False
 
