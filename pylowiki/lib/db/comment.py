@@ -154,7 +154,7 @@ def editComment(comment, data, commentRole = 'neutral'):
 
 # Object
 def Comment(data, owner, discussion, privs, role = None, parent = 0):
-    profileTypes = ['photo', 'initiative', 'organization_general']
+    profileTypes = ['photo', 'initiative', 'organization_general', 'organization_position']
     attachedThing = None
     thisComment = Thing('comment', owner.id)
         

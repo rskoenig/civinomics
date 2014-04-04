@@ -157,7 +157,7 @@ class CommentController(BaseController):
                         title = ' commented on an initiative update you made'
                         message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnUpdate")
                     elif thing['discType'] == 'organization_general':
-                        title = ' commented on a discussion you started'
+                        title = ' commented on an organization forum discussion you started'
                         message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgGeneral")
                     elif thing['discType'] == 'organization_position':
                         title = ' commented on one of your organization positions'

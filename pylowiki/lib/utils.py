@@ -78,7 +78,11 @@ def civinomicsAvatar():
 ##################################################
 def commentLinker(comment):
     itemLink = ''
-    if 'workshopCode' in comment:
+    if 'discType' in comment and comment['discType'] == 'organization_general':
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
+    elif 'discType' in comment and comment['discType'] == 'organization_position':
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/position/show/' + comment['discussionCode']
+    elif 'workshopCode' in comment:
         if 'ideaCode' in comment:
             # /workshop/4OOt/civinomicon-transportation/idea/4PUI/explore-ferry-servic
             itemLink = '/workshop/' + comment['workshopCode'] + '/' +  comment['workshop_url'] + '/idea/' + comment['ideaCode'] + '/' + comment['parent_url']
@@ -102,10 +106,6 @@ def commentLinker(comment):
     elif 'photoCode' in comment:
         # this is a comment on a photo
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/photo/show/' + comment['photoCode']
-    elif 'discType' in comment and comment['discType'] == 'organization_general':
-        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
-    elif 'discType' in comment and comment['discType'] == 'organization_position':
-        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/position/show/' + comment['discussionCode']
     elif 'profileCode' in comment:
         # I don't like this because it is not explicit what kind of comment this is, this is an implicit fallthrough case, ugh
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
