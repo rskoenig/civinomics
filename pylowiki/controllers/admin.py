@@ -229,9 +229,13 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'discussion':
             title = request.params['title']
             text = request.params['text']
+            if 'position' in request.params:
+                position = request.params['position']
+            else:
+                position = False
             if title.strip() == '':
                 title = blankText
-            if discussionLib.editDiscussion(c.thing, title, text, c.authuser):
+            if discussionLib.editDiscussion(c.thing, title, text, c.authuser, position):
                 alert = {'type':'success'}
                 alert['title'] = 'Discussion edit.'
                 alert['content'] = 'Discussion edit successful.'

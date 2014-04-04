@@ -1563,6 +1563,18 @@
                         neutralChecked = 'checked'
                 else:
                     neutralChecked = 'checked'
+        if thing.objType == 'discussion' and 'position' in thing:
+            supportChecked = ""
+            opposeChecked = ""
+            if thing['position'] == 'support':
+                supportChecked = 'checked'
+            else:
+                opposeChecked = 'checked'
+            ctype = ""
+            if 'initiativeCode' in thing:
+                ctype = 'initiative'
+            elif 'ideaCode' in thing:
+                ctype = 'idea'
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
@@ -1595,6 +1607,17 @@
                 % elif thing.objType == 'discussion':
                     <label>Topic title</label>
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    % if 'position' in thing:
+                        <div class="row-fluid">
+                            <label class="radio inline">
+                                <input type=radio name="position" value="support" ${supportChecked}> We support this ${ctype}
+                            </label>
+                            <label class="radio inline">
+                                <input type=radio name="position" value="neutral" ${opposeChecked}> We oppose this ${ctype}
+                            </label>
+                        </div><!-- row-fluid -->
+                        <div class="spacer"></div>
+                    % endif
                     <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':

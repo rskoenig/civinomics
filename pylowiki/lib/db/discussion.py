@@ -4,7 +4,7 @@ import logging
 from pylowiki.model import Thing, Data, meta
 from pylons import session
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl, without_characteristic as woc, with_key_in_list as wkl
 from pylowiki.lib.utils import urlify, toBase62
 from time import time
 import pylowiki.lib.db.generic as generic
@@ -130,12 +130,14 @@ def getUpdatesForInitiative(code, disabled = '0', deleted = '0'):
     except:
         return False
 
-def editDiscussion(discussion, title, text, owner):
+def editDiscussion(discussion, title, text, owner, position = False):
     try:
         revisionLib.Revision(owner, discussion)
         discussion['title'] = title
         discussion['text'] = text
         discussion['url'] = urlify(title)
+        if position:
+            discussion['position'] = position
         commit(discussion)
         return True
     except:
@@ -143,6 +145,7 @@ def editDiscussion(discussion, title, text, owner):
         return False
 
 def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = False, rootDiscussions = True):
+    discussionTypes = ['general']
     try:
         if type(keys) != type([]):
             keys = [keys]
@@ -155,7 +158,7 @@ def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = Fal
                 .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
         if rootDiscussions:
-            q = q.filter(Thing.data.any(wc('discType', 'general')))
+            q = q.filter(Thing.data.any(wkl('discType', discussionTypes)))
         if count:
             return q.count()
         return q.all()

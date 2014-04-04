@@ -755,7 +755,7 @@
         </div><!-- span2 -->
         <div class="span10">
             <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
-            <a href="${parentURL}">${parentTitle}</a>
+            View ${parentType}: <a href="${parentURL}">${parentTitle}</a>
             <div class="spacer"></div>
             % if 'text' in c.discussion.keys():
                 ${misaka.html(c.discussion['text']) | n}
@@ -822,18 +822,7 @@
         % endif
     % else:
         % if userLib.isAdmin(c.authuser.id):
-            <% editID = 'edit-%s'%thing['urlCode'] %>
-            <div class="row-fluid collapse" id="${editID}">
-                <div class="span11 offset1">
-                    <div class="spacer"></div>
-                    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/update/handler" method="post" class="form">
-                        Edit here
-                        <div class="row-fluid">
-                            <button class="btn btn-success" type="Submit">Save Changes</button>
-                        </div><!-- row-fluid -->
-                    </form>
-                </div><!-- span11 -->
-            </div><!-- row-fluid -->
+            ${lib_6.editThing(thing)}
         % endif
         % if userLib.isAdmin(c.authuser.id):
             ${lib_6.adminThing(thing)}
