@@ -47,8 +47,7 @@ class TrashController(BaseController):
                 dbHelpers.commit(c.thing)
             log.info('trashed %s' % c.thing)
             
-            if c.authuser.id == c.thing.owner:
-                session['facilitatorInitiatives'].remove(code)
+            session['facilitatorInitiatives'].remove(code)
             session.save
         else:
             return json.dumps({'statusCode':1, 'errorMsg': 'no user'})
