@@ -19,9 +19,9 @@ class TrashController(BaseController):
         if code != None:
             c.thing = generic.getThing(code)
             if not c.thing:
-                return json.dumps({'statusCode':0, 'result': 'no thing with that code'})
+                return json.dumps({'statusCode':1, 'errorMsg': 'no thing with that code'})
         else:
-            return json.dumps({'statusCode':0, 'result': 'no code entered'})
+            return json.dumps({'statusCode':1, 'errorMsg': 'no code entered'})
     
     
     def trashThingHandler( self, code ):
@@ -47,7 +47,38 @@ class TrashController(BaseController):
                 dbHelpers.commit(c.thing)
             log.info('trashed %s' % c.thing)
             
-            session['facilitatorInitiatives'].remove(code)
+            if c.authuser.id == c.thing.owner:
+                session['facilitatorInitiatives'].remove(code)
             session.save
         else:
-            abort(404)
+            return json.dumps({'statusCode':1, 'errorMsg': 'no user'})
+            
+    def restoreThingHandler( self, code ):
+        # to 'restore' a thing we remove the string 'Unpublished'
+        if 'user' in session and (c.authuser.id == c.thing.owner or userLib.isAdmin(c.authuser.id)):
+            # the user is restoring something they deleted
+            if c.thing['unpublished_by'] == 'owner' and c.authuser.id == c.thing.owner:
+                c.thing.objType = c.thing.objType.replace('Unpublished', '')
+            # the admin is restoring something
+            elif userLib.isAdmin(c.authuser.id):
+                c.thing.objType = c.thing.objType.replace('Unpublished', '')
+            # user is trying to restore something admin deleted - this is not allowed    
+            else: 
+                return json.dumps({'statusCode':1, 'errorMsg': 'insufficient privs'})
+            
+            # restore the children
+            children = generic.getChildrenOfParent(c.thing)
+            for child in children:
+                child.objType = child.objType.replace('Unpublished', '')
+                dbHelpers.commit(child)
+            
+            # save the restored thing
+            dbHelpers.commit(c.thing)
+            log.info('restored %s' % c.thing)
+            
+            if c.authuser.id == c.thing.owner:
+                session['facilitatorInitiatives'].append(code)
+                session.save
+                
+        else:
+            return json.dumps({'statusCode':1, 'errorMsg': 'no user'})

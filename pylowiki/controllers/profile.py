@@ -360,17 +360,17 @@ class ProfileController(BaseController):
             entry['objType'] = item.objType.replace("Unpublished", "")
             if entry['objType'] != 'comment':
                 entry['url']= item['url']
-                entry['code']=item['urlCode']
+                entry['urlCode']=item['urlCode']
                 entry['title'] = item['title']
             else:
                 entry['url']= ''
-                entry['code']= ''
+                entry['urlCode']= ''
                 entry['title'] = item['data']
             if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
-            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['code']
-            
+            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
+            entry['unpublishedBy'] = item['unpublished_by']
             result.append(entry)
             
         if len(result) == 0:

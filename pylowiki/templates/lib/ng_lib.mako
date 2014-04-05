@@ -2,7 +2,7 @@
 
 <%def name="basic_listing()">
     <td class="avatar-cell"><div ng-if="item.thumbnail" class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div></td>
-    <td>{{item.objType}} | <a ng-href="item.href">{{item.title}}</a></td>
+    <td><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
 </%def>
 
 <%def name="initiative_listing()">
