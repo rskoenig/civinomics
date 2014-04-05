@@ -19,12 +19,13 @@
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.js"></script>
+      <script src="${lib_6.fingerprintFile('/js/vendor/ui-bootstrap-tpls-0.10.0.min.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/vendor/binaryMuse_ngInfiniteScroll.min.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/geoSearch.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/signup_login.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/comments.js')}"></script>
       <script>
-        var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
+        var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
       </script>
       <script src="/js/extauth.js" type="text/javascript"></script>
       ${self.extraStyles()}

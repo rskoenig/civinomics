@@ -22,7 +22,9 @@
                 <i class="icon-spinner icon-spin icon-2x" style="color: #afb9c4;" ng-show="loading" ng-cloak></i><br>
             <table ng-show="!loading">
                 <tr ng-repeat="geo in geos">
-                    <td><a class="flag-tooltip" href="{{geo.href}}" rel="tooltip" data-placement="bottom" data-original-title="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a></td>
+                    
+                    <td>
+                    <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a></td>
                 </tr>
             </table>
 
@@ -204,9 +206,6 @@
         $('textarea').autosize();   
       });
     </script>
-    <script type="text/javascript">
-      $(".flag-tooltip").tooltip();
-   </script>
    <script type="text/javascript">
    $(document).ready(function() {
        $('.viewport').mouseenter(function(e) {
