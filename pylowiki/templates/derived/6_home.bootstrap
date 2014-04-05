@@ -131,11 +131,12 @@
             <div ng-repeat="item in followInitiatives">
                 <div ng-init="url=item.url; code=item.urlCode">
                     <div ng-controller="follow_unfollowCtrl">
+                    
                       <table class="activity-item follow" ng-show="following" ng-hide="trashed" ng-cloak>
                         <tr>
                           <td rowspan="2" class="avatar-cell">
                             <a href = '{{item.href}}'>
-                                <div class="i-photo" style="margin-top: 5px; margin-left: 5px; width: 50px; height: 50px; background-image:url('{{item.thumbnail}}');"/></div> 
+                                <div class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                             </a>
                           </td>
                           <td><a style="color: #afb9c4; font-weight: 500;" href = '{{item.href}}'>
@@ -151,8 +152,6 @@
                                 <li ng-if="item.authorID == '${c.authuser.id}'"><a ng-click="trashThing()">Delete</a></li>
                               </ul>
                             </div>
-            
-                            
                           </td>
                         </tr>
                         <tr>

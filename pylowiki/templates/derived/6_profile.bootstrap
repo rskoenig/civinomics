@@ -10,7 +10,7 @@
 ##<div ng-app="ngUploadApp">
     <!-- inline style kludge to handle fixed nav bar -->
     <div class="spacer">
-    <div class="row-fluid" ng-controller="ProfileEditController">
+    <div class="row-fluid" ng-controller="profileController">
         <div class="span8">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">

@@ -1,5 +1,10 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="basic_listing()">
+    <td class="avatar-cell"><div ng-if="item.thumbnail" class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div></td>
+    <td>{{item.objType}} | <a ng-href="item.href">{{item.title}}</a></td>
+</%def>
+
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
