@@ -157,12 +157,15 @@
                           </td>
                         </tr>
                         <tr>
-                          <td style="color: #fff; max-width: 150px;" >
+                          <td style="width: 235px;">
                             <small class="grey">{{item.voteCount}} votes</small>
-                            <div class="progress" style="height: 8px; margin-bottom: 0;">
-                              <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
+                            <div>
+                                <div class="progress" style="height: 8px; width: 235px; margin-bottom: 0;">
+                                  <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
+                                </div>
+                                <small ng-if="item.goal == 100" class="grey pull-right" style="cursor: pointer;" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this idea to become an initiative.">{{item.goal - item.voteCount | number}} NEEDED</small>
+                                <small ng-if="!(item.goal == 100)" class="grey pull-right" style="cursor: pointer;" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
                             </div>
-                            <small class="grey pull-right">{{item.goal - item.voteCount}} NEEDED</small>
                           </td>
                           <td>
                             <span ng-if="item.ups > item.downs">
