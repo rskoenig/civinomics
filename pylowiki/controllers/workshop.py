@@ -1166,12 +1166,22 @@ class WorkshopController(BaseController):
    
     def publicStats(self, workshopCode, workshopURL):
 
+        # check to see if this is a request from the iphone app
+        jsonRequest = utils.iPhoneRequestTest(request)
+
         c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/publicStats')
         c.listingType = 'publicStats'
 
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         
         c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
+
+        log.info("hey")
+        if jsonRequest:
+            if len(c.jsonConstancyDataIdeas) == 0:
+                return json.dumps({'statusCode':1})
+            log.info(json.dumps({'statusCode': 0, 'result': c.jsonConstancyDataIdeas}))
+            return json.dumps({'statusCode': 0, 'result': c.jsonConstancyDataIdeas})
 
         return render('/derived/6_detailed_listing.bootstrap')
 

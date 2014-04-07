@@ -25,24 +25,15 @@
 
 <%def name="showWorkshops(workshops, **kwargs)">
     <link href='/styles/progress_bars.css' rel='stylesheet' type='text/css'>
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_workshops.js')}" type="text/javascript"></script>
     <table class="table table-hover table-condensed"><tbody>
         % for workshop in workshops:
             <tr><td>
-                <div class="media profile-workshop">
-                    <a class="pull-left" ${lib_6.workshopLink(workshop)}>
-                      <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${lib_6.workshopImage(workshop, raw=True) | n}); background-size: cover; background-position: center center;"></div>
-                    </a>
-                    <%
-                        if 'imageOnly' in kwargs:
-                            if kwargs['imageOnly'] == True:
-                                return
-                        if 'role' in kwargs:
-                            role = kwargs['role']
-                        else:
-                            role = ''
-                    %>
+                <div class="media profile-workshop" ng-controller="profileWorkshopsCtrl">
+                    no image
                     <div class="media-body">
                         <a ${lib_6.workshopLink(workshop)} class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
+                        <button ng-click="getWorkshopStats()" ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'">See Stats</button>
                         <span class="label label-inverse pull-right">${workshop['relation']}</span>
                         ${workshopGraphSimple(workshop)}
                     </div>
@@ -141,6 +132,16 @@
                     <div class="span6">
                         <div class="meter red nostripes">
                             <span id="bookmark${workshop['urlCode']}" style="width: 0%"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="span6">
+                        555 flags
+                    </div>
+                    <div class="span6">
+                        <div class="meter red">
+                            <span id="bookmark${workshop['urlCode']}" style="width: 55%"></span>
                         </div>
                     </div>
                 </div>

@@ -84,7 +84,7 @@
                     <!-- show graphs for this person's workshops -->
                     <div class="tab-pane" id="tab-graphs">
                         ${profileGraphs.showWorkshops(c.allWorkshops)}
-                        <!-- $ { profileGraphs.showWorkshopsJson(c.allWorkshopsJson)} -->
+                        <!-- $ { profileGraphs. showWorkshopsJson(c.allWorkshopsJson)} -->
                     </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
