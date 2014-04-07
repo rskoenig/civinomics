@@ -127,15 +127,15 @@ h5.h45, h4.h45{
 .container.wide{
   height: 100%;
   min-height: 100vh;
-  background-color: #e9eaed;
   padding-left: 0px;
   padding-right: 0px;
 }
 
-@media(max-width: 1000px){
+@media(max-width: 1200px){
   .container.wide{
     min-width: 100%;
     width: 100%;
+    margin: 0 10px;
   }
 }
 
@@ -3481,5 +3481,59 @@ table.activity-comments{
 }
 svg{
   width: 100% !important;
+}
+
+.slate{
+    background-color: #2a2a2a;
+}
+
+.light-grey{
+    background-color: #e9eaed;
+}
+
+.e-blue{
+    color: #afb9c4;
+}
+
+.narrow-panel{
+    position: fixed;
+    overflow: show;
+    width: 50px;
+    height : 100vh;
+    margin-left: 30px;
+}
+
+.wide-panel{
+    position: fixed;
+    z-index: 1001;
+    width: 350px;
+    height : 100%;
+    overflow-y:auto;
+    padding-right: 15px;
+    -webkit-overflow-scrolling: touch;
+}
+.wide-panel-spinner{
+    width: 350px;
+}
+
+.vote-progress{
+    width: 200px;   
+}
+.progress.vote-progress{
+    height: 8px;
+    margin-bottom: 0;
+}
+
+@media(max-width: 1200px){
+  .wide-panel{
+    width: 310px;
+  }
+  .wide-panel-spinner{
+    width: 310px;
+}
+  .vote-progress{
+    width: 175px;
+  }
+  
 }
 

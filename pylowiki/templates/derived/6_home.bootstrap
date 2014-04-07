@@ -8,52 +8,50 @@
 
 <div class="row" ng-controller = "activityController">
 
-  ###
-  ### Activity Feed
-  ###
-  <div class="span1">
+
     ###
     ### Zip Lookup
     ###
-    <div style="position: fixed; z-index: 1000; background-color: #2a2a2a; width: 50px; height : 100vh; overflow: show; ">
-      <div class="spacer"></div>
-      <div ng-init="zipValue = ${c.postalCode}">
-        <div ng-controller="zipLookupCtrl" ng-cloak>
-                <i class="icon-spinner icon-spin icon-2x" style="color: #afb9c4;" ng-show="loading" ng-cloak></i><br>
-            <table ng-show="!loading">
-                <tr ng-repeat="geo in geos">
-                    
-                    <td>
-                    <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a></td>
-                </tr>
-            </table>
-
-
-            <div class="btn-group" ng-show="!loading">
-              <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
-                <i class="grey icon-search"></i>
-              </a>
-              <ul class="dropdown-menu" >
-                <li style="padding: 9px 19px;">
-                  <p>Look up a zip code</p>
-                  <form class="form-inline" name="zipForm">
-                    <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                        <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                        <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-                        <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-                    </div>
-                  </form>
-                </li>
-              </ul>
-            </div>
-
+    <div class="narrow-panel centered">
+        <div class="spacer"></div>
+        <div ng-init="zipValue = ${c.postalCode}">
+            <div ng-controller="zipLookupCtrl" ng-cloak>
+                <i class="icon-spinner icon-spin icon-2x e-blue" ng-show="loading" ng-cloak></i><br>
             
-        </div>
-      </div>
-  </div>
+                <table ng-show="!loading" style="width: 100%;">
+                    <tr ng-repeat="geo in geos">
+                        <td>
+                            <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a>
+                        </td>
+                    </tr>
+                </table>
 
-  </div>
-  <div class="span7">
+                <div class="btn-group" ng-show="!loading">
+                  <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="grey icon-search"></i>
+                  </a>
+                  <ul class="dropdown-menu" >
+                    <li style="padding: 9px 19px;">
+                      <p>Look up a zip code</p>
+                      <form class="form-inline" name="zipForm">
+                        <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                            <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                            <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                            <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                        </div>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+                
+            </div><!-- ng-controller -->
+        </div>
+    </div>
+  
+  ###
+  ### Activity Feed
+  ###
+  <div class="span7 light-grey" style="margin-left: 80px; margin-right: 0; padding: 0 30px; min-height: 100vh;">
     <div class="spacer"></div>
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
       ###
@@ -108,7 +106,7 @@
 
   </div><!-- /span8 -->
 
-  <div class="span4">
+  <div class="span4" style="margin-left:0;">
     % if c.authuser and c.authuser['activated'] == '0':
       <div class="alert alert-success">
         <h4>Welcome!</h4> 
@@ -124,12 +122,12 @@
     ### Following Initiatives
     ###
     <div ng-controller="followCtrl">
-      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='3'>
+      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='10'>
 
 
-        <div style="position: fixed; background-color: #2a2a2a; width: 380px; height : 100vh; overflow-y:auto; overflow-x:hidden; padding-right: 15px">
+        <div class="slate wide-panel">
             <div class="spacer"></div>
-            <p style="font-weight: 300; font-size: 16px; margin: 10px; color: #afb9c4;">Following</p>
+            <p class="e-blue" style="font-weight: 300; font-size: 16px; margin: 10px;">Following</p>
             <div ng-repeat="item in followInitiatives">
                 <div ng-init="url=item.url; code=item.urlCode">
                     <div ng-controller="follow_unfollowCtrl">
@@ -141,8 +139,8 @@
                                 <div class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                             </a>
                           </td>
-                          <td><a style="color: #afb9c4; font-weight: 500;" href = '{{item.href}}'>
-                            {{item.title}}</a></td>
+                          <td><a class="e-blue" href = '{{item.href}}'><strong>
+                            {{item.title}}</strong></a></td>
                           <td style="vertical-align: top;">
                             <div class="btn-group pull-right">
                               <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
@@ -157,10 +155,10 @@
                           </td>
                         </tr>
                         <tr>
-                          <td style="width: 235px;">
+                          <td class="vote-progress">
                             <small class="grey">{{item.voteCount}} votes</small>
                             <div>
-                                <div class="progress" style="height: 8px; width: 235px; margin-bottom: 0;">
+                                <div class="progress vote-progress">
                                   <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
                                 </div>
                                 <small ng-if="item.goal == 100" class="grey pull-right" style="cursor: pointer;" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this idea to become an initiative.">{{item.goal - item.voteCount | number}} NEEDED</small>
@@ -183,11 +181,14 @@
                 </div><!-- follow_unfollowCtrl -->
               </div><!-- ng-init -->
             </div><!-- ng-repeat -->
-          <div class="centered" style="height: 100px; color: #afb9c4" ng-show="followLoading || followSliceLoading" ng-cloak>
+          <div class="centered e-blue" style="height: 100px; padding-bottom: 100px;" ng-show="followLoading" ng-cloak>
             <i class="icon-spinner icon-spin icon-4x"></i>
           </div>
         </div>
       </div><!-- infinite-scroll -->
+      <div class="centered e-blue slate centered wide-panel-spinner" style="position: fixed; bottom: 0; z-index: 1002" ng-if="followSliceLoading" ng-cloak>
+        <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
     </div>
 
   </div><!-- /span4 -->

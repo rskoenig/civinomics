@@ -3,7 +3,7 @@
 
 <div id="wrap-wide">
    ${helpers.mainNavbar()}
-   <div class="container wide">
+   <div class="container wide slate">
       ${next.body()}
    </div>
 </div><!-- close wrap -->
