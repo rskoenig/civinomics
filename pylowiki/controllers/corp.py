@@ -632,6 +632,45 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
+        elif casestudyname =="plasticBagBan":
+            study["url"]="plasticBagBan"
+            study["title"]="PlasticBagBan YO"
+            study["image"]="techCommuter.png"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-8-2014"
+            study["background"]="Plastic Bags are bad."
+            study["solution"]="Plastic Bag Fees ain't so bad."
+            study["results"]=""
+            study["pressRelease"]='plasticBagBan'
+            study["nextSteps"]=""
+            study['stats']='plasticBagBan'
+
+            study['respondents'] = 183
+            study['partnerLogo']='ssvLogo.png'
+            study['partnerName']='RUN plasticBagBan'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss plasticBagBan"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
 
         return render("/derived/corp_casestudy.bootstrap")
 

@@ -12,6 +12,122 @@
   <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 </%def>
 
+<%def name="dcPlasticBagSurvey()">
+
+    <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+
+    <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+        <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
+            <span> 
+                <span class="filter-count"></span>
+                selected out of
+                <span class="total-count"></span> 
+                records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
+            </span>
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'>   
+        <div class='span4' id='dc--chart'> 
+            <h4>A
+                <span>
+                    (drag sliders to filter results)
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc--chart'>
+            <h4>B
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    href="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc--chart'>
+            <h4>C
+            </h4> 
+        </div>
+    </div>
+
+    <script>
+        // Create the dc.js chart objects & link to div
+        var Chart = dc.barChart("#dc--chart");
+        var Chart = dc.pieChart("#dc--chart");
+
+        d3.csv("/surveys/plastic_bag1.csv", function(error, data) {
+            //console.log(error);
+            //console.log(data);
+            data.forEach(function(d) {
+                d.ageUpper = +d.ageUpper;
+                d.ageLower = +d.ageLower;              
+            });
+
+            // Run the data through crossfilter and load our 'facts'
+            var facts = crossfilter(data);
+
+            // reset all button - this includes all facts
+            var all = facts.groupAll();
+
+            // reset all button - count all the facts
+            dc.dataCount(".dc-data-count") 
+                .dimension(facts) 
+                .group(all);
+            dc.dataCount(".dc-data-count2") 
+                .dimension(facts) 
+                .group(all);
+
+
+            /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+            var ageLowerValue = facts.dimension(function (d) { 
+                return d.ageLower;
+            });
+            var ageLowerValueGroup = ageLowerValue.group();
+
+            var familiarDtProgram = facts.dimension(function (d) {
+                if (d.familiarDtProgram == "") {
+                    return "No answer";
+                } else {
+                    return d.familiarDtProgram;
+                }
+            });
+            var familiarDtProgramGroup = familiarDtProgram.group();
+
+            ageLowerChart.width(400) 
+                .height(150) 
+                .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+                .dimension(ageLowerValue) 
+                .group(ageLowerValueGroup) 
+                .transitionDuration(500) 
+                .centerBar(true) 
+                .gap(-8)
+                .filter([0, 76]) 
+                .x(d3.scale.linear().domain([0, 77])) 
+                .elasticY(true) 
+                .xAxis()
+                .tickFormat(function(d) { return yearsFormatter(d); })
+                .ticks(6);
+
+            familiarDtProgramChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(familiarDtProgram) 
+                .group(familiarDtProgramGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            // Render the Charts
+            dc.renderAll();
+
+        });
+
+    </script>
+
+</%def>
+
+
 <%def name="dcDmcSurvey()">
   
     <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>

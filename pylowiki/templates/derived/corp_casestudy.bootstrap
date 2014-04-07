@@ -69,7 +69,9 @@
         % if 'stats' in c.study:
           ${d3Lib.includeD3()}
           <!-- $ - { d3Lib.dcExample()} -->
-          % if c.study['stats'] == 'dcDmcSurvey':
+          % if c.study['stats'] == 'plasticBagBan':
+              ${d3Lib.dcPlasticBagSurvey()}
+          % elif c.study['stats'] == 'dcDmcSurvey':
               ${d3Lib.dcDmcSurvey()}
           % elif c.study['stats'] == 'dcCommuterSurvey':
               ${d3Lib.dcCommuterSurvey()}
