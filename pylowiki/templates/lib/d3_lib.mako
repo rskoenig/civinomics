@@ -129,15 +129,6 @@
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc-commentsOrSuggestions-chart'>
-            <h4>Do you have any other comments or suggestions?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:commentsOrSuggestionsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
         <div class='span4' id='dc-howLongInSC-chart'>
             <h4>For about how long have you lived in Santa Cruz County?
                 <span>
@@ -146,6 +137,9 @@
     onclick="javascript:howLongInSCChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
+        </div>
+        <div class='span4' id='dc--chart'>
+
         </div>
     </div>
     <hr>
@@ -162,22 +156,75 @@
         var heardOfBagBansChart = dc.pieChart("#dc-heardOfBagBans-chart");
         var impressionOfBagBansChart = dc.rowChart("#dc-impressionOfBagBans-chart");
         var proposedBagBanChart = dc.pieChart("#dc-proposedBagBan-chart");
-        var voteInFavorChart = dc.pieChart("#dc-voteInFavor-chart");
-        var includeFeeVoteYesChart = dc.pieChart("#dc-includeFeeVoteYes-chart");
+        var voteInFavorChart = dc.rowChart("#dc-voteInFavor-chart");
+        var includeFeeVoteYesChart = dc.rowChart("#dc-includeFeeVoteYes-chart");
         var bagsFoundDecreasedChart = dc.pieChart("#dc-bagsFoundDecreased-chart");
-        var trenchHasBagsChart = dc.pieChart("#dc-trenchHasBags-chart");
-        var carmelDoesntFeeChart = dc.pieChart("#dc-carmelDoesntFee-chart");
-        var highCostsPlasticBagsChart = dc.pieChart("#dc-highCostsPlasticBags-chart");
-        var everyOtherCityFeesChart = dc.pieChart("#dc-everyOtherCityFees-chart");
-        var commentsOrSuggestionsChart = dc.pieChart("#dc-commentsOrSuggestions-chart");
-        var howLongInSCChart = dc.pieChart("#dc-howLongInSC-chart");
+        var trenchHasBagsChart = dc.rowChart("#dc-trenchHasBags-chart");
+        var carmelDoesntFeeChart = dc.rowChart("#dc-carmelDoesntFee-chart");
+        var highCostsPlasticBagsChart = dc.rowChart("#dc-highCostsPlasticBags-chart");
+        var everyOtherCityFeesChart = dc.rowChart("#dc-everyOtherCityFees-chart");
+        var howLongInSCChart = dc.rowChart("#dc-howLongInSC-chart");
 
 
         d3.csv("/surveys/plastic_bag1.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
+            var impressionOfBagBansValues = {};
+            var voteInFavorValues = {};
+            var includeFeeVoteYesValues = {};
+            var trenchHasBagsValues = {};
+            var carmelDoesntFeeValues = {};
+            var highCostsPlasticBagsValues = {};
+            var everyOtherCityFeesValues = {};
+            var howLongInSCValues = {};
+            i = 0;
             data.forEach(function(d) {
+                i++;
                 d.ageLower = +d.ageLower;
+                if (d.impressionOfBagBans == "") {
+                    impressionOfBagBansValues[d.impressionOfBagBans] = i + '.' + 'No answer';
+                } else {
+                    impressionOfBagBansValues[d.impressionOfBagBans] = i + '.' + d.impressionOfBagBans;
+                }
+                if (d.voteInFavor == "") {
+                    voteInFavorValues[d.voteInFavor] = i + '.' + 'No answer';
+                } else {
+                    voteInFavorValues[d.voteInFavor] = i + '.' + d.voteInFavor;    
+                }
+                if (d.includeFeeVoteYes == "") {
+                    includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '.' + 'No answer';
+                } else {
+                    includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '.' + d.includeFeeVoteYes;
+                }
+                if (d.trenchHasBags == "") {
+                    trenchHasBagsValues[d.trenchHasBags] = i + '.' + 'No answer';
+                } else {
+                    trenchHasBagsValues[d.trenchHasBags] = i + '.' + d.trenchHasBags;
+                }
+                if (d.carmelDoesntFee == "") {
+                    carmelDoesntFeeValues[d.carmelDoesntFee] = i + '.' + 'No answer';
+                } else {
+                    carmelDoesntFeeValues[d.carmelDoesntFee] = i + '.' + d.carmelDoesntFee;
+                }
+
+                if (d.highCostsPlasticBags == "") {
+                    highCostsPlasticBagsValues[d.highCostsPlasticBags] = i + '.' + 'No answer';
+                } else {
+                    highCostsPlasticBagsValues[d.highCostsPlasticBags] = i + '.' + d.highCostsPlasticBags;
+                }
+
+                if (d.everyOtherCityFees == "") {
+                    everyOtherCityFeesValues[d.everyOtherCityFees] = i + '.' + 'No answer';
+                } else {
+                    everyOtherCityFeesValues[d.everyOtherCityFees] = i + '.' + d.everyOtherCityFees;
+                }
+
+                if (d.howLongInSC == "") {
+                    howLongInSCValues[d.howLongInSC] = i + '.' + 'No answer';
+                } else {
+                    howLongInSCValues[d.howLongInSC] = i + '.' + d.howLongInSC;
+                }
+
                 if (d.commentsOrSuggestions != "") {
                     $('#commentsOrSuggestionsContainer').append('<p>* ' + d.commentsOrSuggestions + '</p>');
                 }
@@ -207,13 +254,10 @@
                 }
             });
             var heardOfBagBansGroup = heardOfBagBans.group();
-
+ 
             var impressionOfBagBans = facts.dimension(function (d) {
-                if (d.impressionOfBagBans == "") {
-                    return "No answer";
-                } else {
-                    return d.impressionOfBagBans;
-                }
+                // for row charts, we return a predefined string: "#.string"
+                return impressionOfBagBansValues[d.impressionOfBagBans]
             });
             var impressionOfBagBansGroup = impressionOfBagBans.group();
 
@@ -227,20 +271,12 @@
             var proposedBagBanGroup = proposedBagBan.group();
 
             var voteInFavor = facts.dimension(function (d) {
-                if (d.voteInFavor == "") {
-                    return "No answer";
-                } else {
-                    return d.voteInFavor;
-                }
+                return voteInFavorValues[d.voteInFavor]
             });
             var voteInFavorGroup = voteInFavor.group();
 
             var includeFeeVoteYes = facts.dimension(function (d) {
-                if (d.includeFeeVoteYes == "") {
-                    return "No answer";
-                } else {
-                    return d.includeFeeVoteYes;
-                }
+                return includeFeeVoteYesValues[d.includeFeeVoteYes];
             });
             var includeFeeVoteYesGroup = includeFeeVoteYes.group();
 
@@ -254,56 +290,27 @@
             var bagsFoundDecreasedGroup = bagsFoundDecreased.group();
 
             var trenchHasBags = facts.dimension(function (d) {
-                if (d.trenchHasBags == "") {
-                    return "No answer";
-                } else {
-                    return d.trenchHasBags;
-                }
+                return trenchHasBagsValues[d.trenchHasBags];
             });
             var trenchHasBagsGroup = trenchHasBags.group();
 
             var carmelDoesntFee = facts.dimension(function (d) {
-                if (d.carmelDoesntFee == "") {
-                    return "No answer";
-                } else {
-                    return d.carmelDoesntFee;
-                }
+                return carmelDoesntFeeValues[d.carmelDoesntFee];
             });
             var carmelDoesntFeeGroup = carmelDoesntFee.group();
 
             var highCostsPlasticBags = facts.dimension(function (d) {
-                if (d.highCostsPlasticBags == "") {
-                    return "No answer";
-                } else {
-                    return d.highCostsPlasticBags;
-                }
+                return highCostsPlasticBagsValues[d.highCostsPlasticBags];
             });
             var highCostsPlasticBagsGroup = highCostsPlasticBags.group();
 
             var everyOtherCityFees = facts.dimension(function (d) {
-                if (d.everyOtherCityFees == "") {
-                    return "No answer";
-                } else {
-                    return d.everyOtherCityFees;
-                }
+                return everyOtherCityFeesValues[d.everyOtherCityFees];
             });
             var everyOtherCityFeesGroup = everyOtherCityFees.group();
 
-            var commentsOrSuggestions = facts.dimension(function (d) {
-                if (d.commentsOrSuggestions == "") {
-                    return "No answer";
-                } else {
-                    return d.commentsOrSuggestions;
-                }
-            });
-            var commentsOrSuggestionsGroup = commentsOrSuggestions.group();
-
             var howLongInSC = facts.dimension(function (d) {
-                if (d.howLongInSC == "") {
-                    return "No answer";
-                } else {
-                    return d.howLongInSC;
-                }
+                return howLongInSCValues[d.howLongInSC];
             });
             var howLongInSCGroup = howLongInSC.group();
 
@@ -325,17 +332,18 @@
                 .title(function(d){return d.data.key + ", " + d.value;});
 
             impressionOfBagBansChart.width(300) 
-              .height(220) 
-              .dimension(impressionOfBagBans) 
-              .group(impressionOfBagBansGroup)
-              .colors(d3.scale.category20b())
-              .label(function (d){
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(impressionOfBagBans) 
+                .group(impressionOfBagBansGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-              .title(function(d){return d.value + " commuters";})
-              .xAxis()
-              .tickFormat(function(d) { return peopleFormatter(d); })
-              .ticks(4);
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             proposedBagBanChart.width(300) 
                 .height(220) 
@@ -347,19 +355,31 @@
 
             voteInFavorChart.width(300) 
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(voteInFavor) 
-                .group(voteInFavorGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(voteInFavorGroup)
+                .colors(d3.scale.category20())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
-            includeFeeVoteYesChart.width(300) 
+            includeFeeVoteYesChart.width(300)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(includeFeeVoteYes) 
-                .group(includeFeeVoteYesGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(includeFeeVoteYesGroup)
+                .colors(d3.scale.category20c())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             bagsFoundDecreasedChart.width(300) 
                 .height(220) 
@@ -369,53 +389,75 @@
                 .group(bagsFoundDecreasedGroup) 
                 .title(function(d){return d.data.key + ", " + d.value;});
 
-            trenchHasBagsChart.width(300) 
+            trenchHasBagsChart.width(300)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(trenchHasBags) 
-                .group(trenchHasBagsGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(trenchHasBagsGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
-            carmelDoesntFeeChart.width(300) 
+            carmelDoesntFeeChart.width(300)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(carmelDoesntFee) 
-                .group(carmelDoesntFeeGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(carmelDoesntFeeGroup)
+                .colors(d3.scale.category10())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
-            highCostsPlasticBagsChart.width(300) 
+            highCostsPlasticBagsChart.width(300)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(highCostsPlasticBags) 
-                .group(highCostsPlasticBagsGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(highCostsPlasticBagsGroup)
+                .colors(d3.scale.category20())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
-            everyOtherCityFeesChart.width(300) 
+            everyOtherCityFeesChart.width(300)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(everyOtherCityFees) 
-                .group(everyOtherCityFeesGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            commentsOrSuggestionsChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(commentsOrSuggestions) 
-                .group(commentsOrSuggestionsGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(everyOtherCityFeesGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
                 
-            howLongInSCChart.width(300) 
+            howLongInSCChart.width(270)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(howLongInSC) 
-                .group(howLongInSCGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .group(howLongInSCGroup)
+                .colors(d3.scale.category20c())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return peopleFormatter(d.value);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             // Render the Charts
             dc.renderAll();
@@ -955,7 +997,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             }
             ageLowerChart.width(400) 
                 .height(150) 
-                .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+                .margins({top: 10, right: 10, bottom: 20, left: 60}) 
                 .dimension(ageLowerValue) 
                 .group(ageLowerValueGroup) 
                 .transitionDuration(500) 
@@ -1687,7 +1729,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
           var commasFormatter = d3.format(",.0f");
           salaryChart.width(280) 
               .height(150) 
-              .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+              .margins({top: 10, right: 10, bottom: 20, left: 60}) 
               .dimension(salaryValue) 
               .group(salaryValueGroup) 
               .transitionDuration(500) 
@@ -1709,7 +1751,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
           // bar chart of commute duration and its sum of occurences
           commuteDurationChart.width(370) 
               .height(150) 
-              .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+              .margins({top: 10, right: 10, bottom: 20, left: 60}) 
               .dimension(commuteDurationValue) 
               .group(commuteDurationValueGroup) 
               .transitionDuration(500)
@@ -1796,7 +1838,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
 
           employmentDurationChart.width(290) 
               .height(248) 
-              .margins({top: 40, right: 10, bottom: 20, left: 20}) 
+              .margins({top: 40, right: 10, bottom: 20, left: 60}) 
               .dimension(employmentDuration) 
               .group(employmentDurationGroup) 
               .transitionDuration(500)
@@ -1843,7 +1885,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
 
           residenceDurationChart.width(280) 
               .height(220) 
-              .margins({top: 10, right: 10, bottom: 20, left: 20}) 
+              .margins({top: 10, right: 10, bottom: 20, left: 60}) 
               .dimension(residenceDuration) 
               .group(residenceDurationGroup) 
               .transitionDuration(500)

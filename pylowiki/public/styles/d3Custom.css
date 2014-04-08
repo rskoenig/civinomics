@@ -34,10 +34,11 @@ h4 span {
 .dc-chart g.row text {
     font-size: 0.7em !important;
     font: arial !important;
-
+    text-shadow: 0 0 5px #fff;
 }
 
 .dc-chart .pie-slice {
     fill: black !important;
     font-size: 0.8em !important;
+    text-shadow: 0 0 5px #fff;
 }
