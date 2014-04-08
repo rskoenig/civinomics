@@ -1194,6 +1194,10 @@ img.avatar{
     padding-top:15px;
 }
 
+.large-spacer{
+    height: 100px;
+}
+
 textarea.comment-reply{
     width:85%;
     rows:4;
@@ -3411,12 +3415,10 @@ hr.object-list-header{
 }
 
 .activity-item.follow{
-  border-top: solid 1px #5b5b5b;
-  margin-bottom: 5px;
-/*
-  margin-top: 10px;
-  margin-right: 10px;
-*/
+    border-top: solid 1px #5b5b5b;
+    margin-bottom: 5px;
+    margin-left: -10px;
+    position: relative;
 }
 
 .comment-avatar-cell{
@@ -3494,7 +3496,7 @@ svg{
     color: #afb9c4;
 }
 
-.narrow-panel{
+.home-left-panel{
     position: fixed;
     overflow: show;
     width: 50px;
@@ -3503,18 +3505,29 @@ svg{
     z-index: 1001;
 }
 
-.wide-panel{
+.home-center-panel{
+    margin-left: 80px;
+    margin-right: 0;
+    padding: 0 30px;
+    min-height: 100vh;
+}
+
+@media(max-width: 800px){
+  .home-center-panel{
+    margin-left: -10px;
+  }
+}
+
+.home-right-panel{
     position: fixed;
     z-index: 1001;
     width: 350px;
     height : 100%;
+    padding-right: 15px;
+    padding-bottom: 100px;
+    padding-left:10px;
     overflow-y:auto;
-    padding-right: 15px;
     -webkit-overflow-scrolling: touch;
-}
-.wide-panel-spinner{
-    width: 350px;
-    padding-right: 15px;
 }
 
 .vote-progress{
@@ -3526,15 +3539,31 @@ svg{
 }
 
 @media(max-width: 1200px){
-  .wide-panel{
+  .home-right-panel{
     width: 310px;
   }
-  .wide-panel-spinner{
-    width: 310px;
-}
   .vote-progress{
     width: 140px;
   }
   
+}
+
+.filter-font{
+    font-weight: 300;
+    font-size: 16px;
+}
+
+.follow-actions{
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.dropdown-form{
+    padding: 9px 19px;
+}
+
+.following-spinner{
+    height: 100px;
 }
 

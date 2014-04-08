@@ -12,13 +12,13 @@
     ###
     ### Zip Lookup
     ###
-    <div class="narrow-panel centered">
+    <div class="home-left-panel centered small-hidden">
         <div class="spacer"></div>
         <div ng-init="zipValue = ${c.postalCode}">
             <div ng-controller="zipLookupCtrl" ng-cloak>
                 <i class="icon-spinner icon-spin icon-2x e-blue" ng-show="loading" ng-cloak></i><br>
             
-                <table ng-show="!loading" style="width: 100%;">
+                <table ng-show="!loading" class="full-width">
                     <tr ng-repeat="geo in geos">
                         <td>
                             <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a>
@@ -31,7 +31,7 @@
                     <i class="grey icon-search"></i>
                   </a>
                   <ul class="dropdown-menu" >
-                    <li style="padding: 9px 19px;">
+                    <li class="dropdown-form">
                       <p>Look up a zip code</p>
                       <form class="form-inline" name="zipForm">
                         <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
@@ -51,14 +51,14 @@
   ###
   ### Activity Feed
   ###
-  <div class="span7 light-grey" style="margin-left: 80px; margin-right: 0; padding: 0 30px; min-height: 100vh;">
+  <div class="span7 light-grey home-center-panel">
     <div class="spacer"></div>
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
       ###
       ### Feed Filters
       ###
       <div>
-        <ul class="nav nav-pills civ-search-tools" style="margin-top: 0;">
+        <ul class="nav nav-pills civ-search-tools no-top">
           <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
           <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
           % if c.authuser:
@@ -106,18 +106,18 @@
 
   </div><!-- /span8 -->
 
-  <div class="span4" style="margin-left:0;">
+  <div class="span4 no-left">
     ###
     ### Following Initiatives
     ###
     <div ng-controller="followCtrl">
-      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5' style="padding-bottom: 100px;">
+      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
 
         % if c.authuser:
-            <div class="slate wide-panel">
+            <div class="slate home-right-panel">
                 <div class="spacer"></div>
                 % if c.authuser and c.authuser['activated'] == '0':
-                  <div class="alert alert-success" style="margin-left: 10px;">
+                  <div class="alert alert-success">
                     <h4>Welcome!</h4> 
                     Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder.
                     <p>You can't add comments or ideas until you complete setup.</p>
@@ -126,12 +126,12 @@
                     <div class="top-space" id="resendMessage"></div>
                   </div>
                 % endif
-                <p class="e-blue" style="font-weight: 300; font-size: 16px; margin: 10px;">Following</p>
+                <p class="e-blue filter-font">Following</p>
                 <div ng-repeat="item in followInitiatives">
                     <div ng-init="url=item.url; code=item.urlCode">
                         <div ng-controller="follow_unfollowCtrl">
                         
-                          <table class="activity-item follow" style="position: relative;" ng-show="following" ng-hide="trashed" ng-cloak>
+                          <table class="activity-item follow" ng-show="following" ng-hide="trashed" ng-cloak>
                             <tr>
                               <td rowspan="2" class="avatar-cell">
                                 <a href = '{{item.href}}'>
@@ -140,7 +140,7 @@
                               </td>
                               <td colspan="2">
                                 <a class="e-blue" href = '{{item.href}}'><strong>{{item.title}}</strong></a>
-                                <div class="btn-group pull-right" style="position: absolute; top: 0; right: 0;">
+                                <div class="btn-group pull-right follow-actions">
                                   <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
                                     <i class="grey icon-gear"></i>
                                   </a>
@@ -159,8 +159,8 @@
                                     <div class="progress vote-progress">
                                       <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
                                     </div>
-                                    <small ng-if="item.goal == 100" class="grey pull-right" style="cursor: pointer;" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this idea to become an initiative.">{{item.goal - item.voteCount | number}} NEEDED</small>
-                                    <small ng-if="!(item.goal == 100)" class="grey pull-right" style="cursor: pointer;" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
+                                    <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this idea to become an initiative.">{{item.goal - item.voteCount | number}} NEEDED</small>
+                                    <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
                                 </div>
                               </td>
                               <td>
@@ -179,13 +179,13 @@
                     </div><!-- follow_unfollowCtrl -->
                   </div><!-- ng-init -->
                 </div><!-- ng-repeat -->
-                <div ng-if="noFollowingResult" class="alert alert-info" style="margin-left: 10px;" ng-cloak>
+                <div ng-if="noFollowingResult" class="alert alert-info" ng-cloak>
                     You have not follwed or started any initiatives yet.
                  </div>
-                <div class="centered e-blue" style="height: 100px;" ng-show="followLoading || followSliceLoading" ng-cloak>
+                <div class="centered e-blue following-spinner" ng-show="followLoading || followSliceLoading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x"></i>
                 </div>
-                <div style="height: 100px;"></div>
+                <div class="large-spacer"></div>
             </div>
         % endif
       </div><!-- infinite-scroll -->
