@@ -3501,6 +3501,7 @@ svg{
     width: 50px;
     height : 100vh;
     margin-left: 30px;
+    z-index: 1001;
 }
 
 .wide-panel{
@@ -3514,10 +3515,11 @@ svg{
 }
 .wide-panel-spinner{
     width: 350px;
+    padding-right: 15px;
 }
 
 .vote-progress{
-    width: 200px;   
+    width: 175px;   
 }
 .progress.vote-progress{
     height: 8px;
@@ -3532,7 +3534,7 @@ svg{
     width: 310px;
 }
   .vote-progress{
-    width: 175px;
+    width: 140px;
   }
   
 }

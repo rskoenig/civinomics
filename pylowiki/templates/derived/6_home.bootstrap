@@ -122,7 +122,7 @@
     ### Following Initiatives
     ###
     <div ng-controller="followCtrl">
-      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='10'>
+      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
 
 
         <div class="slate wide-panel">
@@ -139,10 +139,9 @@
                                 <div class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                             </a>
                           </td>
-                          <td><a class="e-blue" href = '{{item.href}}'><strong>
-                            {{item.title}}</strong></a></td>
-                          <td style="vertical-align: top;">
-                            <div class="btn-group pull-right">
+                          <td colspan="2" style="position: relative;">
+                            <a class="e-blue" href = '{{item.href}}'><strong>{{item.title}}</strong></a>
+                            <div class="btn-group pull-right" style="position: absolute; top: 0; right: 0;">
                               <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class="grey icon-gear"></i>
                               </a>
@@ -167,13 +166,13 @@
                           </td>
                           <td>
                             <span ng-if="item.ups > item.downs">
-                              <span class="badge badge-success pull-right">{{100 * item.ups / item.voteCount | number:0}}%</span>
+                              <span class="badge badge-success pull-right">YES {{100 * item.ups / item.voteCount | number:0}}%</span>
                             </span>
                             <span ng-if="item.downs > item.ups">
-                              <span class="badge badge-important pull-right">{{100 * item.downs / item.voteCount | number:0}}%</span>
+                              <span class="badge badge-important pull-right">NO {{100 * item.downs / item.voteCount | number:0}}%</span>
                             </span>
                             <span ng-if="item.downs == item.ups">
-                              <span class="badge pull-right">50%</span>
+                              <span class="badge pull-right">NEUTRAL 50%</span>
                             </span>
                           </td>
                         </tr>
@@ -181,14 +180,11 @@
                 </div><!-- follow_unfollowCtrl -->
               </div><!-- ng-init -->
             </div><!-- ng-repeat -->
-          <div class="centered e-blue" style="height: 100px; padding-bottom: 100px;" ng-show="followLoading" ng-cloak>
+          <div class="centered e-blue" style="height: 100px; padding-bottom: 100px;" ng-show="followLoading || followSliceLoading" ng-cloak>
             <i class="icon-spinner icon-spin icon-4x"></i>
           </div>
         </div>
       </div><!-- infinite-scroll -->
-      <div class="centered e-blue slate centered wide-panel-spinner" style="position: fixed; bottom: 0; z-index: 1002" ng-if="followSliceLoading" ng-cloak>
-        <i class="icon-spinner icon-spin icon-4x"></i>
-      </div>
     </div>
 
   </div><!-- /span4 -->
