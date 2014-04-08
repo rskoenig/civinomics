@@ -16,6 +16,7 @@
 
     <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
@@ -142,6 +143,26 @@
 
         </div>
     </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-localMerchant-chart'>
+            <h4>Are you a local merchant?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:localMerchantChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc-childrenInHome-chart'> 
+            <h4>
+            </h4>
+        </div>
+        <div class='span4' id='dc-contactMeFor-chart'>
+            <h4>
+            </h4> 
+        </div>
+    </div>
     <hr>
     <div class='row-fluid'> 
         <div class='span12' id='dc-commentsOrSuggestions-chart'>
@@ -158,20 +179,23 @@
         var proposedBagBanChart = dc.pieChart("#dc-proposedBagBan-chart");
         var voteInFavorChart = dc.rowChart("#dc-voteInFavor-chart");
         var includeFeeVoteYesChart = dc.rowChart("#dc-includeFeeVoteYes-chart");
-        var bagsFoundDecreasedChart = dc.pieChart("#dc-bagsFoundDecreased-chart");
+        var bagsFoundDecreasedChart = dc.rowChart("#dc-bagsFoundDecreased-chart");
         var trenchHasBagsChart = dc.rowChart("#dc-trenchHasBags-chart");
         var carmelDoesntFeeChart = dc.rowChart("#dc-carmelDoesntFee-chart");
         var highCostsPlasticBagsChart = dc.rowChart("#dc-highCostsPlasticBags-chart");
         var everyOtherCityFeesChart = dc.rowChart("#dc-everyOtherCityFees-chart");
         var howLongInSCChart = dc.rowChart("#dc-howLongInSC-chart");
+        var localMerchantChart = dc.pieChart("#dc-localMerchant-chart");
+        //childrenInHome   contactMeFor
 
 
-        d3.csv("/surveys/plastic_bag1.csv", function(error, data) {
+        d3.csv("/surveys/plastic_bag3.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
             var impressionOfBagBansValues = {};
             var voteInFavorValues = {};
             var includeFeeVoteYesValues = {};
+            var bagsFoundDecreasedValues = {};
             var trenchHasBagsValues = {};
             var carmelDoesntFeeValues = {};
             var highCostsPlasticBagsValues = {};
@@ -195,6 +219,11 @@
                     includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '.' + 'No answer';
                 } else {
                     includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '.' + d.includeFeeVoteYes;
+                }
+                if (bagsFoundDecreasedValues == "") {
+                    bagsFoundDecreasedValues[d.bagsFoundDecreased] = i + '.' + 'No answer';
+                } else {
+                    bagsFoundDecreasedValues[d.bagsFoundDecreased] = i + '.' + d.bagsFoundDecreased;   
                 }
                 if (d.trenchHasBags == "") {
                     trenchHasBagsValues[d.trenchHasBags] = i + '.' + 'No answer';
@@ -281,11 +310,8 @@
             var includeFeeVoteYesGroup = includeFeeVoteYes.group();
 
             var bagsFoundDecreased = facts.dimension(function (d) {
-                if (d.bagsFoundDecreased == "") {
-                    return "No answer";
-                } else {
-                    return d.bagsFoundDecreased;
-                }
+                return bagsFoundDecreasedValues[d.bagsFoundDecreased];
+                
             });
             var bagsFoundDecreasedGroup = bagsFoundDecreased.group();
 
@@ -314,6 +340,16 @@
             });
             var howLongInSCGroup = howLongInSC.group();
 
+            var localMerchant = facts.dimension(function (d) {
+                if (d.localMerchant == "") {
+                    return "No answer";
+                } else {
+                    return d.localMerchant;
+                }
+            });
+            var localMerchantGroup = localMerchant.group();
+
+
             var peopleFormatter = function(d) {
                 if (d > 1)
                     return d + " people";
@@ -323,14 +359,28 @@
                     return d;
             }
 
+            var piePercentage = function(d, sumgroup) {
+                //var percent = d.data.key;
+                var fraction = d.value / _.reduce(sumgroup.all(), function(memo, d){ return memo + d.value; }, 0);
+                var percent = Math.round(fraction * 100);
+                var phrase = "";
+                if (d.data) {
+                    phrase = d.data.key + "  " + percent + "%";    
+                } else {
+                    phrase = percent + "%";    
+                }
+                return phrase;
+            }
+            //piePercentage(d.key.split(".")[1], impressionOfBagBansGroup);
             heardOfBagBansChart.width(300) 
                 .height(220) 
                 .radius(100) 
                 .innerRadius(30) 
                 .dimension(heardOfBagBans) 
-                .group(heardOfBagBansGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
+                .group(heardOfBagBansGroup)
+                .label(function(d){return piePercentage(d, heardOfBagBansGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+            
             impressionOfBagBansChart.width(300) 
                 .height(220)
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
@@ -339,8 +389,8 @@
                 .colors(d3.scale.category20b())
                 .label(function (d){
                   return d.key.split(".")[1];
-                  }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                  })
+                .title(function(d){return piePercentage(d, impressionOfBagBansGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -351,7 +401,8 @@
                 .innerRadius(30) 
                 .dimension(proposedBagBan) 
                 .group(proposedBagBanGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .label(function(d){return piePercentage(d, proposedBagBanGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
 
             voteInFavorChart.width(300) 
                 .height(220) 
@@ -362,7 +413,7 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, voteInFavorGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -376,18 +427,24 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, includeFeeVoteYesGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
 
-            bagsFoundDecreasedChart.width(300) 
+            bagsFoundDecreasedChart.width(300)
                 .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(bagsFoundDecreased) 
-                .group(bagsFoundDecreasedGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(includeFeeVoteYes) 
+                .group(includeFeeVoteYesGroup)
+                .colors(d3.scale.category20c())
+                .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+                .title(function(d){return piePercentage(d, includeFeeVoteYesGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             trenchHasBagsChart.width(300)
                 .height(220) 
@@ -398,7 +455,7 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, trenchHasBagsGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -412,7 +469,7 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, carmelDoesntFeeGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -426,7 +483,7 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, highCostsPlasticBagsGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -440,7 +497,7 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, everyOtherCityFeesGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -454,10 +511,20 @@
                 .label(function (d){
                   return d.key.split(".")[1];
                   }) 
-                .title(function(d){return peopleFormatter(d.value);})
+                .title(function(d){return piePercentage(d, howLongInSCGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
+
+            localMerchantChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(localMerchant) 
+                .group(localMerchantGroup)
+                .label(function(d){return piePercentage(d, localMerchantGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+                
 
             // Render the Charts
             dc.renderAll();
