@@ -35,7 +35,7 @@
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    href="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -44,26 +44,143 @@
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    href="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>C
+        <div class='span4' id='dc-proposedBagBan-chart'>
+            <h4>Have you heard about the proposed Plastic Bag Ban for Scotts Valley?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
             </h4> 
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-voteInFavor-chart'> 
+            <h4>If the vote were held today on the Plastic Bag Ban, would you vote "yes" in favor of it or "no" to oppose it?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:voteInFavorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-includeFeeVoteYes-chart'>
+            <h4>How about if the Plastic Bag Ban included a fee of $0.10 on paper bags? Would you vote "yes" or "no" on this measure?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:includeFeeVoteYesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc-bagsFoundDecreased-chart'>
+            <h4>Save Our Shores reports that the number of plastic bags collected during beach cleanups has decreased 80% since the passage of the Santa Cruz bans. Does this make you...
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:bagsFoundDecreasedChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-trenchHasBags-chart'> 
+            <h4>The Monterey Bay Aquarium Research Institute has observed thousands of pieces of trash in our marine sanctuary's deep sea trench with plastic bags being the most common type of trash. Does this make you...
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:trenchHasBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-carmelDoesntFee-chart'>
+            <h4>The only region that didn't include a fee along with their plastic bag ban (Carmel) saw NO increase in reusable bag usage. (Compared to a 28% increase in regions that did include a fee). Does this make you..
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc-highCostsPlasticBags-chart'>
+            <h4>The high environmental and energy costs of producing paper bags is well documented by the scientific community. For this reason, proponents of reusable bags say we cannot simply substitute paper for plastic. Does this make you...
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:highCostsPlasticBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-everyOtherCityFees-chart'> 
+            <h4>Every other City in the County of Santa Cruz has implemented a plastic bag ban and accompanying fee. Does this make you...
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:everyOtherCityFeesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-commentsOrSuggestions-chart'>
+            <h4>Do you have any other comments or suggestions?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:commentsOrSuggestionsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc-howLongInSC-chart'>
+            <h4>For about how long have you lived in Santa Cruz County?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:howLongInSCChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12' id='dc-commentsOrSuggestions-chart'>
+              <h4>Comments and Suggestions</h4>
+              <div id="commentsOrSuggestionsContainer">
+              </div>
         </div>
     </div>
 
     <script>
         // Create the dc.js chart objects & link to div
         var heardOfBagBansChart = dc.pieChart("#dc-heardOfBagBans-chart");
-        var impressionOfBagBansChart = dc.pieChart("#dc-impressionOfBagBans-chart");
+        var impressionOfBagBansChart = dc.rowChart("#dc-impressionOfBagBans-chart");
+        var proposedBagBanChart = dc.pieChart("#dc-proposedBagBan-chart");
+        var voteInFavorChart = dc.pieChart("#dc-voteInFavor-chart");
+        var includeFeeVoteYesChart = dc.pieChart("#dc-includeFeeVoteYes-chart");
+        var bagsFoundDecreasedChart = dc.pieChart("#dc-bagsFoundDecreased-chart");
+        var trenchHasBagsChart = dc.pieChart("#dc-trenchHasBags-chart");
+        var carmelDoesntFeeChart = dc.pieChart("#dc-carmelDoesntFee-chart");
+        var highCostsPlasticBagsChart = dc.pieChart("#dc-highCostsPlasticBags-chart");
+        var everyOtherCityFeesChart = dc.pieChart("#dc-everyOtherCityFees-chart");
+        var commentsOrSuggestionsChart = dc.pieChart("#dc-commentsOrSuggestions-chart");
+        var howLongInSCChart = dc.pieChart("#dc-howLongInSC-chart");
+
 
         d3.csv("/surveys/plastic_bag1.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
             data.forEach(function(d) {
-                d.ageLower = +d.ageLower;              
+                d.ageLower = +d.ageLower;
+                if (d.commentsOrSuggestions != "") {
+                    $('#commentsOrSuggestionsContainer').append('<p>* ' + d.commentsOrSuggestions + '</p>');
+                }
             });
 
             // Run the data through crossfilter and load our 'facts'
@@ -100,6 +217,105 @@
             });
             var impressionOfBagBansGroup = impressionOfBagBans.group();
 
+            var proposedBagBan = facts.dimension(function (d) {
+                if (d.proposedBagBan == "") {
+                    return "No answer";
+                } else {
+                    return d.proposedBagBan;
+                }
+            });
+            var proposedBagBanGroup = proposedBagBan.group();
+
+            var voteInFavor = facts.dimension(function (d) {
+                if (d.voteInFavor == "") {
+                    return "No answer";
+                } else {
+                    return d.voteInFavor;
+                }
+            });
+            var voteInFavorGroup = voteInFavor.group();
+
+            var includeFeeVoteYes = facts.dimension(function (d) {
+                if (d.includeFeeVoteYes == "") {
+                    return "No answer";
+                } else {
+                    return d.includeFeeVoteYes;
+                }
+            });
+            var includeFeeVoteYesGroup = includeFeeVoteYes.group();
+
+            var bagsFoundDecreased = facts.dimension(function (d) {
+                if (d.bagsFoundDecreased == "") {
+                    return "No answer";
+                } else {
+                    return d.bagsFoundDecreased;
+                }
+            });
+            var bagsFoundDecreasedGroup = bagsFoundDecreased.group();
+
+            var trenchHasBags = facts.dimension(function (d) {
+                if (d.trenchHasBags == "") {
+                    return "No answer";
+                } else {
+                    return d.trenchHasBags;
+                }
+            });
+            var trenchHasBagsGroup = trenchHasBags.group();
+
+            var carmelDoesntFee = facts.dimension(function (d) {
+                if (d.carmelDoesntFee == "") {
+                    return "No answer";
+                } else {
+                    return d.carmelDoesntFee;
+                }
+            });
+            var carmelDoesntFeeGroup = carmelDoesntFee.group();
+
+            var highCostsPlasticBags = facts.dimension(function (d) {
+                if (d.highCostsPlasticBags == "") {
+                    return "No answer";
+                } else {
+                    return d.highCostsPlasticBags;
+                }
+            });
+            var highCostsPlasticBagsGroup = highCostsPlasticBags.group();
+
+            var everyOtherCityFees = facts.dimension(function (d) {
+                if (d.everyOtherCityFees == "") {
+                    return "No answer";
+                } else {
+                    return d.everyOtherCityFees;
+                }
+            });
+            var everyOtherCityFeesGroup = everyOtherCityFees.group();
+
+            var commentsOrSuggestions = facts.dimension(function (d) {
+                if (d.commentsOrSuggestions == "") {
+                    return "No answer";
+                } else {
+                    return d.commentsOrSuggestions;
+                }
+            });
+            var commentsOrSuggestionsGroup = commentsOrSuggestions.group();
+
+            var howLongInSC = facts.dimension(function (d) {
+                if (d.howLongInSC == "") {
+                    return "No answer";
+                } else {
+                    return d.howLongInSC;
+                }
+            });
+            var howLongInSCGroup = howLongInSC.group();
+
+            var peopleFormatter = function(d) {
+                if (d > 1)
+                    return d + " people";
+                else if (d == 1)
+                    return d + " person";
+                else
+                    return d;
+            }
+
             heardOfBagBansChart.width(300) 
                 .height(220) 
                 .radius(100) 
@@ -109,11 +325,96 @@
                 .title(function(d){return d.data.key + ", " + d.value;});
 
             impressionOfBagBansChart.width(300) 
+              .height(220) 
+              .dimension(impressionOfBagBans) 
+              .group(impressionOfBagBansGroup)
+              .colors(d3.scale.category20b())
+              .label(function (d){
+                  return d.key.split(".")[1];
+                  }) 
+              .title(function(d){return d.value + " commuters";})
+              .xAxis()
+              .tickFormat(function(d) { return peopleFormatter(d); })
+              .ticks(4);
+
+            proposedBagBanChart.width(300) 
                 .height(220) 
                 .radius(100) 
                 .innerRadius(30) 
-                .dimension(impressionOfBagBans) 
-                .group(impressionOfBagBansGroup) 
+                .dimension(proposedBagBan) 
+                .group(proposedBagBanGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            voteInFavorChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(voteInFavor) 
+                .group(voteInFavorGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            includeFeeVoteYesChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(includeFeeVoteYes) 
+                .group(includeFeeVoteYesGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            bagsFoundDecreasedChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(bagsFoundDecreased) 
+                .group(bagsFoundDecreasedGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            trenchHasBagsChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(trenchHasBags) 
+                .group(trenchHasBagsGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            carmelDoesntFeeChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(carmelDoesntFee) 
+                .group(carmelDoesntFeeGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            highCostsPlasticBagsChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(highCostsPlasticBags) 
+                .group(highCostsPlasticBagsGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            everyOtherCityFeesChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(everyOtherCityFees) 
+                .group(everyOtherCityFeesGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            commentsOrSuggestionsChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(commentsOrSuggestions) 
+                .group(commentsOrSuggestionsGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+                
+            howLongInSCChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(howLongInSC) 
+                .group(howLongInSCGroup) 
                 .title(function(d){return d.data.key + ", " + d.value;});
 
             // Render the Charts
@@ -156,7 +457,7 @@
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    href="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -172,7 +473,7 @@
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -181,7 +482,7 @@ href="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="disp
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -190,7 +491,7 @@ href="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" st
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -202,7 +503,7 @@ href="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" s
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -211,7 +512,7 @@ href="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" styl
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:everWitnessedProgramHostDescriptionChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:everWitnessedProgramHostDescriptionChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -220,7 +521,7 @@ href="javascript:everWitnessedProgramHostDescriptionChart.filterAll();dc.redrawA
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -232,7 +533,7 @@ href="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="displ
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -241,7 +542,7 @@ href="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="displa
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -250,7 +551,7 @@ href="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" st
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -262,7 +563,7 @@ href="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -271,7 +572,7 @@ href="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll()
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:opinionFirstPriorityForServices1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:opinionFirstPriorityForServices1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -280,7 +581,7 @@ href="javascript:opinionFirstPriorityForServices1Chart.filterAll();dc.redrawAll(
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -292,7 +593,7 @@ href="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" sty
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:improvementsForYourSafety1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:improvementsForYourSafety1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -301,7 +602,7 @@ href="javascript:improvementsForYourSafety1Chart.filterAll();dc.redrawAll();" st
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -310,7 +611,7 @@ href="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" sty
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:whatDescribesYourBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:whatDescribesYourBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -322,7 +623,7 @@ href="javascript:whatDescribesYourBusiness1Chart.filterAll();dc.redrawAll();" st
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -331,7 +632,7 @@ href="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="dis
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:yourRoleInBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:yourRoleInBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -340,7 +641,7 @@ href="javascript:yourRoleInBusiness1Chart.filterAll();dc.redrawAll();" style="di
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -352,7 +653,7 @@ href="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"
                 <span>
                     <br />(click to filter results)
                     <a class="reset"
-href="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
@@ -1442,7 +1743,7 @@ href="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style="d
               .xAxis()
               .tickFormat(function(d) { return yearsFormatter(d); });
 
-          var commutersFormatter = function(d) {
+          var peopleFormatter = function(d) {
             if (d > 1)
                 return d + " people";
             else if (d == 1)
