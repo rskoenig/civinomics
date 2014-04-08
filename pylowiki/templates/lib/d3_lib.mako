@@ -30,19 +30,21 @@
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <div class='row-fluid'>   
-        <div class='span4' id='dc--chart'> 
-            <h4>A
-                <span>
-                    (drag sliders to filter results)
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc--chart'>
-            <h4>B
+        <div class='span4' id='dc-heardOfBagBans-chart'> 
+            <h4>Have you heard about the plastic bag bans in Santa Cruz County?
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    href="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    href="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-impressionOfBagBans-chart'>
+            <h4>What is your impression of the Santa Cruz plastic bag bans?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    href="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -54,14 +56,13 @@
 
     <script>
         // Create the dc.js chart objects & link to div
-        var Chart = dc.barChart("#dc--chart");
-        var Chart = dc.pieChart("#dc--chart");
+        var heardOfBagBansChart = dc.pieChart("#dc-heardOfBagBans-chart");
+        var impressionOfBagBansChart = dc.pieChart("#dc-impressionOfBagBans-chart");
 
         d3.csv("/surveys/plastic_bag1.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
             data.forEach(function(d) {
-                d.ageUpper = +d.ageUpper;
                 d.ageLower = +d.ageLower;              
             });
 
@@ -81,41 +82,38 @@
 
 
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-            var ageLowerValue = facts.dimension(function (d) { 
-                return d.ageLower;
-            });
-            var ageLowerValueGroup = ageLowerValue.group();
-
-            var familiarDtProgram = facts.dimension(function (d) {
-                if (d.familiarDtProgram == "") {
+            var heardOfBagBans = facts.dimension(function (d) { 
+                if (d.heardOfBagBans == "") {
                     return "No answer";
                 } else {
-                    return d.familiarDtProgram;
+                    return d.heardOfBagBans;
                 }
             });
-            var familiarDtProgramGroup = familiarDtProgram.group();
+            var heardOfBagBansGroup = heardOfBagBans.group();
 
-            ageLowerChart.width(400) 
-                .height(150) 
-                .margins({top: 10, right: 10, bottom: 20, left: 20}) 
-                .dimension(ageLowerValue) 
-                .group(ageLowerValueGroup) 
-                .transitionDuration(500) 
-                .centerBar(true) 
-                .gap(-8)
-                .filter([0, 76]) 
-                .x(d3.scale.linear().domain([0, 77])) 
-                .elasticY(true) 
-                .xAxis()
-                .tickFormat(function(d) { return yearsFormatter(d); })
-                .ticks(6);
+            var impressionOfBagBans = facts.dimension(function (d) {
+                if (d.impressionOfBagBans == "") {
+                    return "No answer";
+                } else {
+                    return d.impressionOfBagBans;
+                }
+            });
+            var impressionOfBagBansGroup = impressionOfBagBans.group();
 
-            familiarDtProgramChart.width(300) 
+            heardOfBagBansChart.width(300) 
                 .height(220) 
                 .radius(100) 
                 .innerRadius(30) 
-                .dimension(familiarDtProgram) 
-                .group(familiarDtProgramGroup) 
+                .dimension(heardOfBagBans) 
+                .group(heardOfBagBansGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            impressionOfBagBansChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(impressionOfBagBans) 
+                .group(impressionOfBagBansGroup) 
                 .title(function(d){return d.data.key + ", " + d.value;});
 
             // Render the Charts

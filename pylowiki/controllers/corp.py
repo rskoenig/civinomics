@@ -61,6 +61,20 @@ class CorpController(BaseController):
         c.studies=[]
 
         study={}
+        study["title"]="Plastic Bag Ban Survey"
+        study["description"]="Plastic bags,  more like plastic bugs."
+        study["image"]="techCommuter.png"
+        study["url"]="plasticBagBan"
+        study['date']="4.8.14"
+        study['stats']='plasticBagBan'
+        study['respondents'] = 15
+        study['partnerLogo']='ssvLogo.png'
+        study['partnerName']='Plastic Bag Ban Man'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
         study["title"]="DMC Survey"
         study["description"]="Downtown hosts are cool."
         study["image"]="techCommuter.png"
