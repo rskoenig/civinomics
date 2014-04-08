@@ -154,11 +154,11 @@
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
+            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
             </button>
         % else:
             <button class="btn pull-right followButton" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-             <span><i class="icon-bookmark med-green"></i><strong> Bookmark </strong></span>
+             <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
     % endif
@@ -529,14 +529,12 @@
     <div class="hero-bottom">
       % if 'user' in session:
         <span class="pull-right">
+          ${watchButton(c.w)}
           % if c.adminPanel:
             ${viewButton()}
           % else:
             % if c.privs['admin'] or c.privs['facilitator']: 
               ${configButton(c.w)}
-            % endif
-            % if not c.privs['facilitator']:
-              ${watchButton(c.w)}
             % endif
           % endif
         </span>

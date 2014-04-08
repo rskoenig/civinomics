@@ -347,6 +347,7 @@
         
         % for item in activity:
             <% 
+                origObjType = item.objType
                 objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
                 
@@ -420,7 +421,7 @@
                     activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
-                % if item['deleted'] == '0' and item['public'] == '1':
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
                     <tr><td>${activityStr | n}</td></tr>
                 % endif
             % elif objType == 'resource' and 'initiativeCode' in item:
