@@ -8,14 +8,14 @@ function followCtrl($scope, $http) {
 	$scope.limit = $scope.offset + $scope.sliceSize
 	$scope.followLookupURL = '/getFollowInitiatives/' + $scope.offset + '/' + $scope.limit
 
-	$scope.getFollow = function() {
+	$scope.getFollowing = function() {
 		$scope.followLoading = true;
 		$http.get($scope.followLookupURL).success(function(data){
 			if (data.statusCode == 1){
-				$scope.noResult = true;
+				$scope.noFollowingResult = true;
 			}
 			else if (data.statusCode === 0){
-				$scope.noResult = false;
+				$scope.noFollowingResult = false;
 				$scope.followInitiatives = data.result;
 			}
 			$scope.followLoading = false;
@@ -24,10 +24,10 @@ function followCtrl($scope, $http) {
 		});
 	}
 
-	$scope.getFollow()
+	$scope.getFollowing()
 
 	$scope.getFollowSlice = function() {
-		if ($scope.followBusy || $scope.noMoreFollowSlices) return;
+		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult) return;
 		$scope.followBusy = true;
 		$scope.followAlertMsg = ''
 		$scope.followSliceLoading = true;

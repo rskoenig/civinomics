@@ -74,7 +74,7 @@ h5.h45, h4.h45{
   height: 100%;
   /* Negative indent footer by it's height */
   margin: 1px auto -55px;
-  background-color: #2a2a2a;
+  background-color: #e9eaed;
 }
 #wrap-wide {
   min-height: 100%;
@@ -3413,7 +3413,6 @@ hr.object-list-header{
 .activity-item.follow{
   border-top: solid 1px #5b5b5b;
   margin-bottom: 5px;
-}
 /*
   margin-top: 10px;
   margin-right: 10px;
