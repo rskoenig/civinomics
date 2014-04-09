@@ -31,6 +31,14 @@ html, body{
     margin-left: 5%;
 }
 
+.lead {
+  margin-bottom: 18px;
+  font-size: 20px;
+  font-weight: 200;
+  line-height: 27px;
+  color: #999999;
+}
+
 .well {
   min-height: 20px;
   padding: 19px;

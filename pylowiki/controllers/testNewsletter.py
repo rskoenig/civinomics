@@ -40,6 +40,8 @@ log = logging.getLogger(__name__)
 class TestnewsletterController(BaseController):
 
     def displayNewsletter(self):
+        c.recentActivity = activityLib.getInitiativeActivity(10, 0, 0)
+        
         return render('/email/testNewsletter.html')
         
         
