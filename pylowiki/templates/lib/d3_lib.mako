@@ -139,12 +139,6 @@
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc--chart'>
-
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>   
         <div class='span4' id='dc-localMerchant-chart'>
             <h4>Are you a local merchant?
                 <span>
@@ -154,12 +148,32 @@
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-childrenInHome-chart'> 
-            <h4>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-ageLower-chart'> 
+            <h4>Age
+                <span>
+                    <br />(drag sliders to filter results)
+                </span>
             </h4>
         </div>
-        <div class='span4' id='dc-contactMeFor-chart'>
-            <h4>
+        <div class='span4' id='dc-gender-chart'>
+            <h4>Gender
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc-childrenInHome-chart'>
+            <h4>Are there any children, 17 years of age or younger, living in your household?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:childrenInHomeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
+                </span>
             </h4> 
         </div>
     </div>
@@ -186,7 +200,9 @@
         var everyOtherCityFeesChart = dc.rowChart("#dc-everyOtherCityFees-chart");
         var howLongInSCChart = dc.rowChart("#dc-howLongInSC-chart");
         var localMerchantChart = dc.pieChart("#dc-localMerchant-chart");
-        //childrenInHome   contactMeFor
+        var ageLowerChart = dc.barChart("#dc-ageLower-chart");
+        var genderChart = dc.pieChart("#dc-gender-chart");
+        var childrenInHomeChart = dc.pieChart("#dc-childrenInHome-chart");
 
 
         d3.csv("/surveys/plastic_bag3.csv", function(error, data) {
@@ -206,52 +222,52 @@
                 i++;
                 d.ageLower = +d.ageLower;
                 if (d.impressionOfBagBans == "") {
-                    impressionOfBagBansValues[d.impressionOfBagBans] = i + '.' + 'No answer';
+                    impressionOfBagBansValues[d.impressionOfBagBans] = i + '^' + 'No answer';
                 } else {
-                    impressionOfBagBansValues[d.impressionOfBagBans] = i + '.' + d.impressionOfBagBans;
+                    impressionOfBagBansValues[d.impressionOfBagBans] = i + '^' + d.impressionOfBagBans;
                 }
                 if (d.voteInFavor == "") {
-                    voteInFavorValues[d.voteInFavor] = i + '.' + 'No answer';
+                    voteInFavorValues[d.voteInFavor] = i + '^' + 'No answer';
                 } else {
-                    voteInFavorValues[d.voteInFavor] = i + '.' + d.voteInFavor;    
+                    voteInFavorValues[d.voteInFavor] = i + '^' + d.voteInFavor;    
                 }
                 if (d.includeFeeVoteYes == "") {
-                    includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '.' + 'No answer';
+                    includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '^' + 'No answer';
                 } else {
-                    includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '.' + d.includeFeeVoteYes;
+                    includeFeeVoteYesValues[d.includeFeeVoteYes] = i + '^' + d.includeFeeVoteYes;
                 }
                 if (bagsFoundDecreasedValues == "") {
-                    bagsFoundDecreasedValues[d.bagsFoundDecreased] = i + '.' + 'No answer';
+                    bagsFoundDecreasedValues[d.bagsFoundDecreased] = i + '^' + 'No answer';
                 } else {
-                    bagsFoundDecreasedValues[d.bagsFoundDecreased] = i + '.' + d.bagsFoundDecreased;   
+                    bagsFoundDecreasedValues[d.bagsFoundDecreased] = i + '^' + d.bagsFoundDecreased;   
                 }
                 if (d.trenchHasBags == "") {
-                    trenchHasBagsValues[d.trenchHasBags] = i + '.' + 'No answer';
+                    trenchHasBagsValues[d.trenchHasBags] = i + '^' + 'No answer';
                 } else {
-                    trenchHasBagsValues[d.trenchHasBags] = i + '.' + d.trenchHasBags;
+                    trenchHasBagsValues[d.trenchHasBags] = i + '^' + d.trenchHasBags;
                 }
                 if (d.carmelDoesntFee == "") {
-                    carmelDoesntFeeValues[d.carmelDoesntFee] = i + '.' + 'No answer';
+                    carmelDoesntFeeValues[d.carmelDoesntFee] = i + '^' + 'No answer';
                 } else {
-                    carmelDoesntFeeValues[d.carmelDoesntFee] = i + '.' + d.carmelDoesntFee;
+                    carmelDoesntFeeValues[d.carmelDoesntFee] = i + '^' + d.carmelDoesntFee;
                 }
 
                 if (d.highCostsPlasticBags == "") {
-                    highCostsPlasticBagsValues[d.highCostsPlasticBags] = i + '.' + 'No answer';
+                    highCostsPlasticBagsValues[d.highCostsPlasticBags] = i + '^' + 'No answer';
                 } else {
-                    highCostsPlasticBagsValues[d.highCostsPlasticBags] = i + '.' + d.highCostsPlasticBags;
+                    highCostsPlasticBagsValues[d.highCostsPlasticBags] = i + '^' + d.highCostsPlasticBags;
                 }
 
                 if (d.everyOtherCityFees == "") {
-                    everyOtherCityFeesValues[d.everyOtherCityFees] = i + '.' + 'No answer';
+                    everyOtherCityFeesValues[d.everyOtherCityFees] = i + '^' + 'No answer';
                 } else {
-                    everyOtherCityFeesValues[d.everyOtherCityFees] = i + '.' + d.everyOtherCityFees;
+                    everyOtherCityFeesValues[d.everyOtherCityFees] = i + '^' + d.everyOtherCityFees;
                 }
 
                 if (d.howLongInSC == "") {
-                    howLongInSCValues[d.howLongInSC] = i + '.' + 'No answer';
+                    howLongInSCValues[d.howLongInSC] = i + '^' + 'No answer';
                 } else {
-                    howLongInSCValues[d.howLongInSC] = i + '.' + d.howLongInSC;
+                    howLongInSCValues[d.howLongInSC] = i + '^' + d.howLongInSC;
                 }
 
                 if (d.commentsOrSuggestions != "") {
@@ -349,6 +365,28 @@
             });
             var localMerchantGroup = localMerchant.group();
 
+            var ageLower = facts.dimension(function (d) {
+                return d.ageLower;
+            });
+            var ageLowerGroup = ageLower.group();
+
+            var gender = facts.dimension(function (d) {
+                if (d.gender == "") {
+                    return "No answer";
+                } else {
+                    return d.gender;
+                }
+            });
+            var genderGroup = gender.group();
+
+            var childrenInHome = facts.dimension(function (d) {
+                if (d.childrenInHome == "") {
+                    return "No answer";
+                } else {
+                    return d.childrenInHome;
+                }
+            });
+            var childrenInHomeGroup = childrenInHome.group();
 
             var peopleFormatter = function(d) {
                 if (d > 1)
@@ -371,7 +409,10 @@
                 }
                 return phrase;
             }
-            //piePercentage(d.key.split(".")[1], impressionOfBagBansGroup);
+            var yearsFormatter = function(d) {
+                var yearText = (d == 0 ? d : d + " years");
+                return yearText;
+            }
             heardOfBagBansChart.width(300) 
                 .height(220) 
                 .radius(100) 
@@ -388,7 +429,7 @@
                 .group(impressionOfBagBansGroup)
                 .colors(d3.scale.category20b())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   })
                 .title(function(d){return piePercentage(d, impressionOfBagBansGroup);})
                 .xAxis()
@@ -411,7 +452,7 @@
                 .group(voteInFavorGroup)
                 .colors(d3.scale.category20())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, voteInFavorGroup);})
                 .xAxis()
@@ -423,9 +464,9 @@
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(includeFeeVoteYes) 
                 .group(includeFeeVoteYesGroup)
-                .colors(d3.scale.category20c())
+                .colors(d3.scale.category20())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, includeFeeVoteYesGroup);})
                 .xAxis()
@@ -439,7 +480,7 @@
                 .group(includeFeeVoteYesGroup)
                 .colors(d3.scale.category20c())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, includeFeeVoteYesGroup);})
                 .xAxis()
@@ -453,7 +494,7 @@
                 .group(trenchHasBagsGroup)
                 .colors(d3.scale.category20b())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, trenchHasBagsGroup);})
                 .xAxis()
@@ -467,7 +508,7 @@
                 .group(carmelDoesntFeeGroup)
                 .colors(d3.scale.category10())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, carmelDoesntFeeGroup);})
                 .xAxis()
@@ -481,7 +522,7 @@
                 .group(highCostsPlasticBagsGroup)
                 .colors(d3.scale.category20())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, highCostsPlasticBagsGroup);})
                 .xAxis()
@@ -495,7 +536,7 @@
                 .group(everyOtherCityFeesGroup)
                 .colors(d3.scale.category20b())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, everyOtherCityFeesGroup);})
                 .xAxis()
@@ -509,7 +550,7 @@
                 .group(howLongInSCGroup)
                 .colors(d3.scale.category20c())
                 .label(function (d){
-                  return d.key.split(".")[1];
+                  return d.key.split('^')[1];
                   }) 
                 .title(function(d){return piePercentage(d, howLongInSCGroup);})
                 .xAxis()
@@ -524,7 +565,39 @@
                 .group(localMerchantGroup)
                 .label(function(d){return piePercentage(d, localMerchantGroup);})
                 .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
-                
+            
+            ageLowerChart.width(264) 
+                .height(220) 
+                .margins({top: 5, right: 1, bottom: 20, left: 30})
+                .dimension(ageLower) 
+                .group(ageLowerGroup) 
+                .transitionDuration(500) 
+                .centerBar(true) 
+                .gap(-8)
+                .filter([0, 79]) 
+                .x(d3.scale.linear().domain([0, 80])) 
+                .elasticY(true)
+                .xAxis()
+                .tickFormat(function(d) { return yearsFormatter(d); })
+                .ticks(6);
+
+            genderChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(gender) 
+                .group(genderGroup)
+                .label(function(d){return piePercentage(d, genderGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            childrenInHomeChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(childrenInHome) 
+                .group(childrenInHomeGroup)
+                .label(function(d){return piePercentage(d, childrenInHomeGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
 
             // Render the Charts
             dc.renderAll();
