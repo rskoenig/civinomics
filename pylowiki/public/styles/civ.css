@@ -580,7 +580,7 @@ padding: 0;
     margin-left:5px;
 }
 
-.green-tag, .Outdoors, .Land, .Environment, .Animals, .Parks_and_Rec{
+.green-tag, .Outdoors, .Land, .Environment, .Animals{
     background-color: #075D00;
 }
 .orange-tag, .Arts, .Entertainment, .Sports, .Community, .Other{
@@ -719,11 +719,6 @@ h1.workshop-title{
   background-repeat: none;
 }
 
-@media (max-width: 1201px){
-  .logo{
-    width: 40px;
-  }
-}
 
 @media (max-width: 800px){
   .logo.logo-lg{
@@ -3329,6 +3324,10 @@ hr.object-list-header{
   font-size: .85em;
 }
 
+.metrics-large{
+  font-size: 24px !important;
+}
+
 #metrics td{
   padding-left: 19px;
   vertical-align: top;
@@ -3565,5 +3564,9 @@ svg{
 
 .following-spinner{
     height: 100px;
+}
+
+.title-cell{
+    padding-right: 10px;
 }
 

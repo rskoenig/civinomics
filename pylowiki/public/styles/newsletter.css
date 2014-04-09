@@ -12,15 +12,30 @@ html, body{
     max-width: 850px;
 }
 
-h1{
- color: #afb9c4;
+.page-header{
+    width: 110%;
+    height: 60px;
+    background-color: rgba(0, 93, 40, 0.952941);
+    margin: -8px -8px 20 -8px;
+}
+
+.logo.logo-lg{
+  background-image: url('/images/logo_white_myriad_medlg.png');
+  height: 40px;
+  width: 210px;
+  background-repeat: none;
+}
+
+.logo-div{
+    padding-top: 9px;
+    margin-left: 5%;
 }
 
 .well {
   min-height: 20px;
   padding: 19px;
   margin-bottom: 8px;
-  background-color: #f5f5f5;
+  background-color: #fff;
   border: 1px solid #eee;
   border: 1px solid rgba(0, 0, 0, 0.05);
   -webkit-border-radius: 4px;
@@ -271,4 +286,25 @@ a.no-highlight{
 }
 a.no-highlight:hover{
     color: #D15D00;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  *margin-right: .3em;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("../images/glyphicons-halflings.png");
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+}
+
+.icon-comment {
+  background-position: -240px -120px;
+}
+
+.icon-eye-open {
+  background-position: -96px -120px;
 }
