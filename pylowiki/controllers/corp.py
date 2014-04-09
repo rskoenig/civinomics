@@ -76,7 +76,7 @@ class CorpController(BaseController):
 
         study={}
         study["title"]="DMC Survey"
-        study["description"]="Downtown hosts are cool."
+        study["description"]="Much happy, super rad, very downtown!"
         study["image"]="techCommuter.png"
         study["url"]="dmc"
         study['date']="4.9.14"

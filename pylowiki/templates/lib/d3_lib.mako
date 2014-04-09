@@ -643,9 +643,15 @@
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>Open spot
-            </h4> 
+        <div class='span4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
+            <h4>What is your role in the business?
+                <a href="#yourRoleInBusiness1"><br />see further comments</a>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
@@ -800,22 +806,12 @@ onclick="javascript:whatDescribesYourBusiness1Chart.filterAll();dc.redrawAll();"
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <div class='row-fluid'>
-        <div class='span4' id='dc-yourRoleInBusiness-chart'>
-            <h4>What is your role in the business?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
+        <div class='span4' id='dc--chart'>
+            <h4>
             </h4>
         </div>
-        <div class='span4' id='dc-yourRoleInBusiness1-chart'>
-            <h4>Anything to add about the previous question?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:yourRoleInBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
+        <div class='span4' id='dc--chart'>
+            <h4>
             </h4>
         </div>
         <div class='span4' id='dc-gender-chart'>
@@ -860,7 +856,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             </span>
         </div>
     </div>
-    <div class='row-fluid'>
+    <!-- <div class='row-fluid'>
         <div class='span12'>
             <table class='table table-hover' id='dc-table-graph'> 
                 <thead>
@@ -872,12 +868,23 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 </thead>
             </table>
         </div>
+    </div> -->
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12' name='yourRoleInBusiness1'>
+            <h4>Further comments for the question,
+                <a href="#dc-yourRoleInBusiness-chart">"What is your role in the business?"</a>
+            </h4>
+              <div id="yourRoleInBusiness1">
+              </div>
+        </div>
     </div>
 
     <script>
         // Create the dc.js chart objects & link to div
         var ageLowerChart = dc.barChart("#dc-ageLower-chart");
         var familiarDtProgramChart = dc.pieChart("#dc-familiarDtProgram-chart");
+        var yourRoleInBusinessChart = dc.pieChart("#dc-yourRoleInBusiness-chart");
 
         var feelSafeWorkingDtChart = dc.pieChart("#dc-feelSafeWorkingDt-chart");
         var believeDtProgramMakesSaferChart = dc.pieChart("#dc-believeDtProgramMakesSafer-chart");
@@ -900,8 +907,8 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
         var whatDescribesYourBusinessChart = dc.pieChart("#dc-whatDescribesYourBusiness-chart");
         var whatDescribesYourBusiness1Chart = dc.pieChart("#dc-whatDescribesYourBusiness1-chart");
 
-        var yourRoleInBusinessChart = dc.pieChart("#dc-yourRoleInBusiness-chart");
-        var yourRoleInBusiness1Chart = dc.pieChart("#dc-yourRoleInBusiness1-chart");
+        
+        
         var genderChart = dc.pieChart("#dc-gender-chart");
 
         var continuedInvolvementChart = dc.pieChart("#dc-continuedInvolvement-chart");
@@ -918,7 +925,10 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             //console.log(data);
             data.forEach(function(d) {
                 d.ageUpper = +d.ageUpper;
-                d.ageLower = +d.ageLower;              
+                d.ageLower = +d.ageLower;
+                if (d.yourRoleInBusiness1 != "") {
+                    $('#yourRoleInBusiness1').append('<p>* ' + d.yourRoleInBusiness1 + '</p>');
+                }       
             });
 
             // Run the data through crossfilter and load our 'facts'
@@ -950,6 +960,15 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 }
             });
             var familiarDtProgramGroup = familiarDtProgram.group();
+
+            var yourRoleInBusiness = facts.dimension(function (d) {
+                if (d.yourRoleInBusiness == "") {
+                    return "No answer";
+                } else {
+                    return d.yourRoleInBusiness;
+                }
+            });
+            var yourRoleInBusinessGroup = yourRoleInBusiness.group();
 
             var feelSafeWorkingDt = facts.dimension(function (d) {
                 if (d.feelSafeWorkingDt == "") {
@@ -1087,24 +1106,6 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             });
             var whatDescribesYourBusiness1Group = whatDescribesYourBusiness1.group();
 
-            var yourRoleInBusiness = facts.dimension(function (d) {
-                if (d.yourRoleInBusiness == "") {
-                    return "No answer";
-                } else {
-                    return d.yourRoleInBusiness;
-                }
-            });
-            var yourRoleInBusinessGroup = yourRoleInBusiness.group();
-
-            var yourRoleInBusiness1 = facts.dimension(function (d) {
-                if (d.yourRoleInBusiness1 == "") {
-                    return "No answer";
-                } else {
-                    return d.yourRoleInBusiness1;
-                }
-            });
-            var yourRoleInBusiness1Group = yourRoleInBusiness1.group();
-
             var gender = facts.dimension(function (d) {
                 if (d.gender == "") {
                     return "No answer";
@@ -1156,6 +1157,14 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 .innerRadius(30) 
                 .dimension(familiarDtProgram) 
                 .group(familiarDtProgramGroup) 
+                .title(function(d){return d.data.key + ", " + d.value;});
+
+            yourRoleInBusinessChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(yourRoleInBusiness) 
+                .group(yourRoleInBusinessGroup) 
                 .title(function(d){return d.data.key + ", " + d.value;});
 
             feelSafeWorkingDtChart.width(300) 
@@ -1278,21 +1287,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 .group(whatDescribesYourBusiness1Group) 
                 .title(function(d){return d.data.key + ", " + d.value;});
 
-            yourRoleInBusinessChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(yourRoleInBusiness) 
-                .group(yourRoleInBusinessGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            yourRoleInBusiness1Chart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(yourRoleInBusiness1) 
-                .group(yourRoleInBusiness1Group) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+            
 
             genderChart.width(300) 
                 .height(220) 
