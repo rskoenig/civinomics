@@ -505,8 +505,8 @@
             bagsFoundDecreasedChart.width(300)
                 .height(220) 
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
-                .dimension(includeFeeVoteYes) 
-                .group(includeFeeVoteYesGroup)
+                .dimension(bagsFoundDecreased) 
+                .group(bagsFoundDecreasedGroup)
                 .colors(d3.scale.category20c())
                 .label(function (d){
                   return d.key.split('^')[1];
