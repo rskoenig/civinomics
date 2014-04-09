@@ -42,12 +42,23 @@
                   <img style="width: 80px;" src="/images/corp/casestudies/${c.study['url']}/${c.study['sponsorLogo']}">
               </td>
           % endif
+          % if 'link' in c.study:
+            <td>
+                <span class="workshop-metrics">Permalink</span><br>
+                <a href="${c.study['link']}">${c.study['link']}</a>
+            </td>
+            % endif
           </tr>
         </table>
         % if 'pressRelease' in c.study:
           % if c.study['pressRelease'] == 'techCommuters':
             ${corpLib.pressRelease_techCommuters()}
           % endif
+        % elif 'text' in c.study:
+            <hr>
+            % if c.study['text'] == 'svBagBan':
+                ${corpLib.text_svBagBan()}
+            % endif
         % else:
           <h3 class="initiative-title">Problem</h3>
               <div>${helpers.background(c.study)}</div>

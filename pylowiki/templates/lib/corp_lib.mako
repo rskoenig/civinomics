@@ -137,3 +137,9 @@
     <div class="alert alert-info"><strong>To filter data</strong> click on a graph. You can apply multiple filters at once. To remove a filter, click the graph again or click the reset button at the top of each graph. The 102 respondent sample ensures statistical accuracy with a 95% confidence level and 10% margin of error. Filtering the results below may be helpful to discover correlations, but it will also lead to a smaller sample pool and <strong><em>decreasing levels of accuracy.</em></strong></div>
 </%def>
 
+<%def name="text_svBagBan()">
+    <p class="lead">
+        This opinion poll was conducted via door-door interviews by Civinomics staff and volunteers over a two week period. Respondents were randomly selected from the list of registered voters in the City of Scotts Valley. Data was tabulated via iPad. The results are statistically accurate with a 95% confidence level and 5% margin of error.
+    </p>
+</%def>
+

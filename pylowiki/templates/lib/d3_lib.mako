@@ -21,7 +21,10 @@
 
     <hr>
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
-        <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: left; margin-top: 0;"> 
+        <div class="pull-left workshop-metrics metrics-large">
+            Results
+        </div>
+        <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
             <span> 
                 <span class="filter-count"></span>
                 selected out of
@@ -84,9 +87,9 @@
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <p class="lead">
-        Next, you will read a few of the reasons that some people and organizations may give for being in favor of the measure to implement a Plastic Bag Ban and an accompanying Fee for Paper Bags. Please indicate if each one makes you much more likely to favor the measure, somewhat more likely to favor it, or if the statement makes no difference to you one way or the other.
-    </p>
+    <p class="lead"><em>
+        "Next, you will read a few of the reasons that some people and organizations may give for being in favor of the measure to implement a Plastic Bag Ban and an accompanying Fee for Paper Bags. Please indicate if each one makes you much more likely to favor the measure, somewhat more likely to favor it, or if the statement makes no difference to you one way or the other."
+    </em></p>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
     <div class='row-fluid'>   
@@ -146,7 +149,9 @@
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <p class="lead">Demographics / Population Segments</p>
+    <div class="workshop-metrics metrics-large">
+        Demographics / Population Segments
+    </div>
     <hr>
     <div class="row-fluid">
         <div class='span4' id='dc-howLongInSC-chart'>
@@ -183,11 +188,14 @@
         </div>
     </div>
     <hr>
+    <div class="workshop-metrics metrics-large">
+        Comments and Suggestions
+    </div>
+    <hr>
     <div class='row-fluid'> 
         <div class='span12' id='dc-commentsOrSuggestions-chart'>
-              <h4>Comments and Suggestions</h4>
-              <div id="commentsOrSuggestionsContainer">
-              </div>
+          <div id="commentsOrSuggestionsContainer">
+          </div>
         </div>
     </div>
 

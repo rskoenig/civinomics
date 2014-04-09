@@ -656,9 +656,10 @@ class CorpController(BaseController):
             study["background"]="Plastic Bags are bad."
             study["solution"]="Plastic Bag Fees ain't so bad."
             study["results"]=""
-            study["pressRelease"]='plasticBagBan'
+            study["text"]='svBagBan'
             study["nextSteps"]=""
             study['stats']='plasticBagBan'
+            study['link']= 'http://surveys.civinomics.com/svbagban'
 
             study['respondents'] = 397
             study['partnerLogo']='sosLogo.jpg'
