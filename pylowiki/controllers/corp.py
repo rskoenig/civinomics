@@ -62,28 +62,28 @@ class CorpController(BaseController):
 
         study={}
         study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
-        study["description"]="Plastic bags,  more like plastic bugs."
-        study["image"]="bagStork.png"
+        study["description"]="Conducted via door-to-door interviews of registered voters."
+        study["image"]="bagCreek.jpg"
         study["url"]="svbagban"
         study['date']="4.8.14"
         study['stats']='plasticBagBan'
-        study['respondents'] = 15
+        study['respondents'] = 397
         study['partnerLogo']='sosLogo.jpg'
-        study['partnerName']='Plastic Bag Ban Man'
+        study['partnerName']='Save Our shores'
         study['scope'] = ''
         study['tag'] = ''
         c.studies.append(study)
 
         study={}
-        study["title"]="DMC Survey"
-        study["description"]="Downtown hosts are cool."
-        study["image"]="techCommuter.png"
+        study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+        study["description"]="A survey of Pacific Ave. business owners regarding the efficacy of the Host Program at creating a safe environment downtown."
+        study["image"]="hostPic.png"
         study["url"]="dmc"
         study['date']="4.9.14"
         study['stats']='dcDmcSurvey'
         study['respondents'] = 183
-        study['partnerLogo']='ssvLogo.png'
-        study['partnerName']='DMC FOOL'
+        study['clientLogo']='dmcLogo.png'
+        study['cientName']='Downtown Management Corporation of Santa Cruz'
         study['scope'] = ''
         study['tag'] = ''
         c.studies.append(study)
@@ -609,8 +609,8 @@ class CorpController(BaseController):
 
         elif casestudyname =="dmc":
             study["url"]="dmc"
-            study["title"]="DMC YO"
-            study["image"]="techCommuter.png"
+            study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+            study["image"]="hostPic.png"
             study["statusType"]="danger"
             study["statusMessage"]="Closed"
             study["date"]=" 4-9-2014"
@@ -622,8 +622,8 @@ class CorpController(BaseController):
             study['stats']='dcDmcSurvey'
 
             study['respondents'] = 183
-            study['partnerLogo']='ssvLogo.png'
-            study['partnerName']='RUN DMC'
+            study['clientLogo']='dmcLogo.png'
+            study['clientName']='RUN DMC'
             study['scope'] = ''
             study['tag'] = ''
 
@@ -649,7 +649,7 @@ class CorpController(BaseController):
         elif casestudyname =="svbagban":
             study["url"]="svbagban"
             study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
-            study["image"]="bagStork.png"
+            study["image"]="bagCreek.jpg"
             study["statusType"]="danger"
             study["statusMessage"]="Closed"
             study["date"]=" 4-8-2014"
