@@ -167,7 +167,15 @@ def make_map():
     map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
     map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
+    
+    # following
+    map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
+    # trash
+    map.connect('/trash/{code}/{url}{end:/?}' , controller = 'trash', action = 'trashThingHandler', code = '{code}', url = '{url}')
+    # restore
+    map.connect('/restore/{code}/{url}{end:/?}' , controller = 'trash', action = 'restoreThingHandler', code = '{code}', url = '{url}')
+    
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
@@ -378,6 +386,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
     
     ###############
     # Initiatives #

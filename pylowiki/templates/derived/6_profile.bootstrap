@@ -10,7 +10,7 @@
 ##<div ng-app="ngUploadApp">
     <!-- inline style kludge to handle fixed nav bar -->
     <div class="spacer">
-    <div class="row-fluid" ng-controller="ProfileEditController">
+    <div class="row-fluid" ng-controller="profileController">
         <div class="span8">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">
@@ -18,7 +18,7 @@
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
-                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives"><i class="icon-trash"></i> Trash</i></a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
