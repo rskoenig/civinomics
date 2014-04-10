@@ -301,7 +301,7 @@
 
                 if (d.commentsOrSuggestions != "") {
                     $('#commentsOrSuggestionsContainer').append('<p>* ' + d.commentsOrSuggestions + '</p>');
-                }
+                }                
             });
 
             // Run the data through crossfilter and load our 'facts'
@@ -460,7 +460,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   })
-                .title(function(d){return piePercentage(d, impressionOfBagBansGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, impressionOfBagBansGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -483,7 +483,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, voteInFavorGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, voteInFavorGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -497,7 +497,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, includeFeeVoteYesGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, includeFeeVoteYesGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -511,7 +511,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, includeFeeVoteYesGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, includeFeeVoteYesGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -525,7 +525,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, trenchHasBagsGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, trenchHasBagsGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -539,7 +539,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, carmelDoesntFeeGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, carmelDoesntFeeGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -553,7 +553,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, highCostsPlasticBagsGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, highCostsPlasticBagsGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -567,7 +567,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, everyOtherCityFeesGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, everyOtherCityFeesGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -581,7 +581,7 @@
                 .label(function (d){
                   return d.key.split('^')[1];
                   }) 
-                .title(function(d){return piePercentage(d, howLongInSCGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howLongInSCGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
@@ -642,6 +642,7 @@
   
     <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
@@ -672,9 +673,15 @@
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>Open spot
-            </h4> 
+        <div class='span4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
+            <h4>What is your role in the business?
+                <br /><a href="#yourRoleInBusiness1">see further comments</a>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
@@ -711,6 +718,7 @@ onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();
     <div class='row-fluid'>
         <div class='span4' id='dc-everWitnessedProgramHost-chart'>
             <h4>Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
+                <br /><a href="#everWitnessedProgramHostDescription">see descriptions</a>
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
@@ -718,14 +726,15 @@ onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" s
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-everWitnessedProgramHostDescription-chart'>
-            <h4>Can you please briefly describe your experience? Was it positive?
+        <div class='span4' id='dc-opinionFirstPriorityForServices-chart'>
+            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
+                <br /><a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-onclick="javascript:everWitnessedProgramHostDescriptionChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4> 
+            </h4>
         </div>
         <div class='span4' id='dc-hostApproachable-chart'>
             <h4>In your opinion, how approachable are the downtown hospitality hosts?
@@ -739,203 +748,165 @@ onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="di
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <div class='row-fluid'>
-        <div class='span4' id='dc-howOftenSeeHost-chart'>
-            <h4>How often do you see a downtown hospitality host?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
+        <div class='span8'>
+            <div class='row-fluid'>
+                <div class='span6' id='dc-howOftenSeeHost-chart'>
+                    <h4>How often do you see a downtown hospitality host?
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+        onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4>
+                </div>
+                <div class='span6' id='dc-howOftenInteractWithPeople-chart'>
+                    <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
+                        <br /><a href="#additionalServicesSuggestions">see service suggestions</a>
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+        onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4>
+                </div>
+            </div>
+            <div class='row-fluid'>
+                <div class='span6' id='dc-mostImportantAboutHosts-chart'>
+                    <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
+                        <br /><a href="#mostImportantAboutHosts1">see further input</a>
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+        onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4>
+                </div>
+                <div class='span6' id='dc-whatDescribesYourBusiness-chart'>
+                    <h4>Which of the following best describes your business or working environment?
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+        onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4>
+                </div>
+            </div>
+            <div class='row-fluid'>
+                <div class='span6' id='dc-gender-chart'>
+                    <h4>Gender
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+        onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4>
+                </div>
+                <div class='span6'>
+                    <h4>
+                    </h4>
+                </div>
+            </div>
         </div>
-        <div class='span4' id='dc-howOftenInteractWithPeople-chart'>
-            <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-mostImportantAboutHosts-chart'>
-            <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
+        <div class='span4'> <!-- extra tall column here -->
+            <div id='dc-improvementsForYourSafety-chart'>
+                <h4>What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)
+                    <br /><a href="#improvementsForYourSafety1">see additional suggestions</a>
+                    <span>
+                        <br />(click to filter results)
+                        <a href="#dc-data-top" class="reset"
+    onclick="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                    </span>
+                </h4>
+            </div>
+        </div>  <!-- end of extra tall column -->
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>
-        <div class='span4' id='dc-opinionFirstPriorityForServices-chart'>
-            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-opinionFirstPriorityForServices1-chart'>
-            <h4>Anything to add about the previous question?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:opinionFirstPriorityForServices1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-improvementsForYourSafety-chart'>
-            <h4>What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>
-        <div class='span4' id='dc-improvementsForYourSafety1-chart'>
-            <h4>Anything to add about the previous question?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:improvementsForYourSafety1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-whatDescribesYourBusiness-chart'>
-            <h4>Which of the following best describes your business or working environment?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-whatDescribesYourBusiness1-chart'>
-            <h4>Anything to add about the previous question?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:whatDescribesYourBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>
-        <div class='span4' id='dc-yourRoleInBusiness-chart'>
-            <h4>What is your role in the business?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-yourRoleInBusiness1-chart'>
-            <h4>Anything to add about the previous question?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:yourRoleInBusiness1Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-gender-chart'>
-            <h4>Gender
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>
-        <div class='span4' id='dc-continuedInvolvement-chart'>
-            <h4>I would like to continue to be involved by receiving...
-                <span>
-                    <br />(click to filter results)
-                    <a class="reset"
-onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span3' id='dc--chart'>
-            <h4>
-            </h4>
-        </div>
-        <div class='span3' id='dc--chart'>
-            <h4>
-            </h4>
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>
-        <div class='span12 dc-data-count2'>
-            <span> 
-                Table listing
-                <span class="filter-count"></span>
-                records out of
-                <span class="total-count"></span> 
-                people surveyed | <a href="javascript:dc.filterAll(); dc.renderAll();">Reset</a> 
-            </span>
-        </div>
-    </div>
-    <div class='row-fluid'>
+    <hr>
+    <div class='row-fluid'> 
         <div class='span12'>
-            <table class='table table-hover' id='dc-table-graph'> 
-                <thead>
-                    <tr class='header'> 
-                        <th>Comments on additional services the DMC could provide.</th>
-                        <th>Suggestions on additional services the DMC could provide.</th>
-                        <th>What additional services would you like the DMC to provide?</th>
-                    </tr>
-                </thead>
-            </table>
+            <h4 name='yourRoleInBusiness1'>Further comments for the question,
+                <a href="#dc-yourRoleInBusiness-chart">"What is your role in the business?"</a>
+            </h4>
+            <div id="yourRoleInBusiness1"></div>
         </div>
     </div>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='everWitnessedProgramHostDescription'>Can you please briefly describe your experience? Was it positive?
+                <a href="#dc-everWitnessedProgramHost-chart"><br />Responses to question: "Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?"</a>
+            </h4>
+            <div id="everWitnessedProgramHostDescription"></div>
+        </div>
+    </div>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='howOftenInteractWithPeople'>Additional services suggested for:
+                <a href="#dc-everWitnessedProgramHost-chart"><br />"When you see a hospitality host, how often are they interacting with visitors and shoppers?"</a>
+            </h4>
+            <div id="additionalServicesSuggestions"></div>
+        </div>
+    </div>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='mostImportantAboutHosts1'>Further input on question: 
+                <a href="#dc-mostImportantAboutHosts-chart"><br />"Out of the following additional services the DMC could provide, which would be the most important to you?"</a>
+            </h4>
+            <div id="mostImportantAboutHosts1"></div>
+            <div id="mostImportantAboutHosts2"></div>
+        </div>
+    </div>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='opinionFirstPriorityForServices1'>Additional suggestions for:
+                <a href="#dc-opinionFirstPriorityForServices-chart"><br />"In your opinion, what should be the DMC's first priority in terms of downtown programing and services?"</a>
+            </h4>
+            <div id="opinionFirstPriorityForServices1"></div>
+        </div>
+    </div>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='improvementsForYourSafety1'>Additional suggestions for:
+                <a href="#dc-improvementsForYourSafety-chart"><br />"What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)"</a>
+            </h4>
+            <div id="improvementsForYourSafety1"></div>
+        </div>
+    </div>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='whatDescribesYourBusiness1'>Additional input from:
+                <a href="#dc-whatDescribesYourBusiness-chart"><br />"Which of the following best describes your business or working environment?"</a>
+            </h4>
+            <div id="whatDescribesYourBusiness1"></div>
+        </div>
+    </div>
+    
+    
 
     <script>
         // Create the dc.js chart objects & link to div
         var ageLowerChart = dc.barChart("#dc-ageLower-chart");
         var familiarDtProgramChart = dc.pieChart("#dc-familiarDtProgram-chart");
+        var yourRoleInBusinessChart = dc.pieChart("#dc-yourRoleInBusiness-chart");
 
         var feelSafeWorkingDtChart = dc.pieChart("#dc-feelSafeWorkingDt-chart");
         var believeDtProgramMakesSaferChart = dc.pieChart("#dc-believeDtProgramMakesSafer-chart");
         var howEffectiveResolveBehaviorChart = dc.pieChart("#dc-howEffectiveResolveBehavior-chart");
 
         var everWitnessedProgramHostChart = dc.pieChart("#dc-everWitnessedProgramHost-chart");
-        var everWitnessedProgramHostDescriptionChart = dc.pieChart("#dc-everWitnessedProgramHostDescription-chart");
+        
         var hostApproachableChart = dc.pieChart("#dc-hostApproachable-chart");
 
         var howOftenSeeHostChart = dc.pieChart("#dc-howOftenSeeHost-chart");
         var howOftenInteractWithPeopleChart = dc.pieChart("#dc-howOftenInteractWithPeople-chart");
-        var mostImportantAboutHostsChart = dc.pieChart("#dc-mostImportantAboutHosts-chart");
+        var mostImportantAboutHostsChart = dc.rowChart("#dc-mostImportantAboutHosts-chart");
 
 
         var opinionFirstPriorityForServicesChart = dc.pieChart("#dc-opinionFirstPriorityForServices-chart");
-        var opinionFirstPriorityForServices1Chart = dc.pieChart("#dc-opinionFirstPriorityForServices1-chart");
-        var improvementsForYourSafetyChart = dc.pieChart("#dc-improvementsForYourSafety-chart");
+        
+        var improvementsForYourSafetyChart = dc.rowChart("#dc-improvementsForYourSafety-chart");
 
-        var improvementsForYourSafety1Chart = dc.pieChart("#dc-improvementsForYourSafety1-chart");
-        var whatDescribesYourBusinessChart = dc.pieChart("#dc-whatDescribesYourBusiness-chart");
-        var whatDescribesYourBusiness1Chart = dc.pieChart("#dc-whatDescribesYourBusiness1-chart");
+        var whatDescribesYourBusinessChart = dc.rowChart("#dc-whatDescribesYourBusiness-chart");
 
-        var yourRoleInBusinessChart = dc.pieChart("#dc-yourRoleInBusiness-chart");
-        var yourRoleInBusiness1Chart = dc.pieChart("#dc-yourRoleInBusiness1-chart");
         var genderChart = dc.pieChart("#dc-gender-chart");
-
-        var continuedInvolvementChart = dc.pieChart("#dc-continuedInvolvement-chart");
-
-        var dataTable = dc.dataTable("#dc-table-graph");
 
         var data = null;
         
@@ -945,9 +916,53 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
         d3.csv("/surveys/dmc_survey2.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
+            var mostImportantAboutHostsValues = {};
+            var improvementsForYourSafetyValues = {};
+            var whatDescribesYourBusinessValues = {};
+            i = 0;
             data.forEach(function(d) {
+                i++;
                 d.ageUpper = +d.ageUpper;
-                d.ageLower = +d.ageLower;              
+                d.ageLower = +d.ageLower;
+                if (d.yourRoleInBusiness1 != "") {
+                    $('#yourRoleInBusiness1').append('<p>* ' + d.yourRoleInBusiness1 + '</p>');
+                }       
+                if (d.everWitnessedProgramHostDescription != "") {
+                    $('#everWitnessedProgramHostDescription').append('<p>* ' + d.everWitnessedProgramHostDescription + '</p>');
+                }
+                if (d.additionalServicesSuggestions != "") {
+                    $('#additionalServicesSuggestions').append('<p>* ' + d.additionalServicesSuggestions + '</p>');
+                }
+                if (d.opinionFirstPriorityForServices1 != "") {
+                    $('#opinionFirstPriorityForServices1').append('<p>* ' + d.opinionFirstPriorityForServices1 + '</p>');
+                }
+                if (d.mostImportantAboutHosts == "") {
+                    mostImportantAboutHostsValues[d.mostImportantAboutHosts] = i + '^' + 'No answer';
+                } else {
+                    mostImportantAboutHostsValues[d.mostImportantAboutHosts] = i + '^' + d.mostImportantAboutHosts;   
+                }
+                if (d.mostImportantAboutHosts1 != "") {
+                    $('#mostImportantAboutHosts1').append('<p>* ' + d.mostImportantAboutHosts1 + '</p>');
+                }
+                if (d.mostImportantAboutHosts2 != "") {
+                    $('#mostImportantAboutHosts2').append('<p>* ' + d.mostImportantAboutHosts2 + '</p>');
+                }
+                if (d.improvementsForYourSafety == "") {
+                    improvementsForYourSafetyValues[d.improvementsForYourSafety] = i + '^' + 'No answer';
+                } else {
+                    improvementsForYourSafetyValues[d.improvementsForYourSafety] = i + '^' + d.improvementsForYourSafety;   
+                }
+                if (d.improvementsForYourSafety1 != "") {
+                    $('#improvementsForYourSafety1').append('<p>* ' + d.improvementsForYourSafety1 + '</p>');
+                }
+                if (d.whatDescribesYourBusiness == "") {
+                    whatDescribesYourBusinessValues[d.whatDescribesYourBusiness] = i + '^' + 'No answer';
+                } else {
+                    whatDescribesYourBusinessValues[d.whatDescribesYourBusiness] = i + '^' + d.whatDescribesYourBusiness;   
+                }
+                if (d.whatDescribesYourBusiness1 != "") {
+                    $('#whatDescribesYourBusiness1').append('<p>* ' + d.whatDescribesYourBusiness1 + '</p>');
+                }
             });
 
             // Run the data through crossfilter and load our 'facts'
@@ -979,6 +994,15 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 }
             });
             var familiarDtProgramGroup = familiarDtProgram.group();
+
+            var yourRoleInBusiness = facts.dimension(function (d) {
+                if (d.yourRoleInBusiness == "") {
+                    return "No answer";
+                } else {
+                    return d.yourRoleInBusiness;
+                }
+            });
+            var yourRoleInBusinessGroup = yourRoleInBusiness.group();
 
             var feelSafeWorkingDt = facts.dimension(function (d) {
                 if (d.feelSafeWorkingDt == "") {
@@ -1017,15 +1041,6 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             });
             var everWitnessedProgramHostGroup = everWitnessedProgramHost.group();
 
-            var everWitnessedProgramHostDescription = facts.dimension(function (d) {
-                if (d.everWitnessedProgramHostDescription == "") {
-                    return "No answer";
-                } else {
-                    return d.everWitnessedProgramHostDescription;
-                }
-            });
-            var everWitnessedProgramHostDescriptionGroup = everWitnessedProgramHostDescription.group();
-
             var hostApproachable = facts.dimension(function (d) {
                 if (d.hostApproachable == "") {
                     return "No answer";
@@ -1054,11 +1069,7 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             var howOftenInteractWithPeopleGroup = howOftenInteractWithPeople.group();
 
             var mostImportantAboutHosts = facts.dimension(function (d) {
-                if (d.mostImportantAboutHosts == "") {
-                    return "No answer";
-                } else {
-                    return d.mostImportantAboutHosts;
-                }
+                return mostImportantAboutHostsValues[d.mostImportantAboutHosts];
             });
             var mostImportantAboutHostsGroup = mostImportantAboutHosts.group();
 
@@ -1071,68 +1082,15 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             });
             var opinionFirstPriorityForServicesGroup = opinionFirstPriorityForServices.group();
 
-            var opinionFirstPriorityForServices1 = facts.dimension(function (d) {
-                if (d.opinionFirstPriorityForServices1 == "") {
-                    return "No answer";
-                } else {
-                    return d.opinionFirstPriorityForServices1;
-                }
-            });
-            var opinionFirstPriorityForServices1Group = opinionFirstPriorityForServices1.group();
-
             var improvementsForYourSafety = facts.dimension(function (d) {
-                if (d.improvementsForYourSafety == "") {
-                    return "No answer";
-                } else {
-                    return d.improvementsForYourSafety;
-                }
+                return improvementsForYourSafetyValues[d.improvementsForYourSafety];
             });
             var improvementsForYourSafetyGroup = improvementsForYourSafety.group();
 
-            var improvementsForYourSafety1 = facts.dimension(function (d) {
-                if (d.improvementsForYourSafety1 == "") {
-                    return "No answer";
-                } else {
-                    return d.improvementsForYourSafety1;
-                }
-            });
-            var improvementsForYourSafety1Group = improvementsForYourSafety1.group();
-
             var whatDescribesYourBusiness = facts.dimension(function (d) {
-                if (d.whatDescribesYourBusiness == "") {
-                    return "No answer";
-                } else {
-                    return d.whatDescribesYourBusiness;
-                }
+                return whatDescribesYourBusinessValues[d.whatDescribesYourBusiness];
             });
             var whatDescribesYourBusinessGroup = whatDescribesYourBusiness.group();
-
-            var whatDescribesYourBusiness1 = facts.dimension(function (d) {
-                if (d.whatDescribesYourBusiness1 == "") {
-                    return "No answer";
-                } else {
-                    return d.whatDescribesYourBusiness1;
-                }
-            });
-            var whatDescribesYourBusiness1Group = whatDescribesYourBusiness1.group();
-
-            var yourRoleInBusiness = facts.dimension(function (d) {
-                if (d.yourRoleInBusiness == "") {
-                    return "No answer";
-                } else {
-                    return d.yourRoleInBusiness;
-                }
-            });
-            var yourRoleInBusinessGroup = yourRoleInBusiness.group();
-
-            var yourRoleInBusiness1 = facts.dimension(function (d) {
-                if (d.yourRoleInBusiness1 == "") {
-                    return "No answer";
-                } else {
-                    return d.yourRoleInBusiness1;
-                }
-            });
-            var yourRoleInBusiness1Group = yourRoleInBusiness1.group();
 
             var gender = facts.dimension(function (d) {
                 if (d.gender == "") {
@@ -1143,14 +1101,6 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
             });
             var genderGroup = gender.group();
 
-            var continuedInvolvement = facts.dimension(function (d) {
-                if (d.continuedInvolvement == "") {
-                    return "No answer";
-                } else {
-                    return d.continuedInvolvement;
-                }
-            });
-            var continuedInvolvementGroup = continuedInvolvement.group();
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -1161,151 +1111,53 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
 
             // Setup the charts
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-            var yearsFormatter = function(d) {
-                return d + " years";
+            var piePercentage = function(d, sumgroup) {
+                //var percent = d.data.key;
+                var fraction = d.value / _.reduce(sumgroup.all(), function(memo, d){ return memo + d.value; }, 0);
+                var percent = Math.round(fraction * 100);
+                var phrase = "";
+                if (d.data) {
+                    phrase = d.data.key + "  " + percent + "%";    
+                } else {
+                    phrase = percent + "%";    
+                }
+                return phrase;
             }
-            ageLowerChart.width(400) 
-                .height(150) 
-                .margins({top: 10, right: 10, bottom: 20, left: 60}) 
+            var yearsFormatter = function(d) {
+                var yearText = (d == 0 ? d : d + " years");
+                return yearText;
+            }
+            var peopleFormatter = function(d) {
+                if (d > 1)
+                    return d + " people";
+                else if (d == 1)
+                    return d + " person";
+                else
+                    return d;
+            }
+            ageLowerChart.width(264) 
+                .height(220) 
+                .margins({top: 5, right: 1, bottom: 20, left: 30})
                 .dimension(ageLowerValue) 
                 .group(ageLowerValueGroup) 
                 .transitionDuration(500) 
                 .centerBar(true) 
                 .gap(-8)
-                .filter([0, 76]) 
-                .x(d3.scale.linear().domain([0, 77])) 
+                .x(d3.scale.linear().domain([0, 80])) 
+                .filter([0, 79]) 
                 .elasticY(true) 
                 .xAxis()
                 .tickFormat(function(d) { return yearsFormatter(d); })
-                .ticks(6);
+                .ticks(3);
 
-            familiarDtProgramChart.width(300) 
-                .height(220) 
+            familiarDtProgramChart.width(280) 
+                .height(200) 
                 .radius(100) 
                 .innerRadius(30) 
                 .dimension(familiarDtProgram) 
                 .group(familiarDtProgramGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            feelSafeWorkingDtChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(feelSafeWorkingDt) 
-                .group(feelSafeWorkingDtGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            believeDtProgramMakesSaferChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(believeDtProgramMakesSafer) 
-                .group(believeDtProgramMakesSaferGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            howEffectiveResolveBehaviorChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(howEffectiveResolveBehavior) 
-                .group(howEffectiveResolveBehaviorGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            everWitnessedProgramHostChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(everWitnessedProgramHost) 
-                .group(everWitnessedProgramHostGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            everWitnessedProgramHostDescriptionChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(everWitnessedProgramHostDescription) 
-                .group(everWitnessedProgramHostDescriptionGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            hostApproachableChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(hostApproachable) 
-                .group(hostApproachableGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            howOftenSeeHostChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(howOftenSeeHost) 
-                .group(howOftenSeeHostGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-            
-            howOftenInteractWithPeopleChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(howOftenInteractWithPeople) 
-                .group(howOftenInteractWithPeopleGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            mostImportantAboutHostsChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(mostImportantAboutHosts) 
-                .group(mostImportantAboutHostsGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            opinionFirstPriorityForServicesChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(opinionFirstPriorityForServices) 
-                .group(opinionFirstPriorityForServicesGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            opinionFirstPriorityForServices1Chart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(opinionFirstPriorityForServices1) 
-                .group(opinionFirstPriorityForServices1Group) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            improvementsForYourSafetyChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(improvementsForYourSafety) 
-                .group(improvementsForYourSafetyGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            improvementsForYourSafety1Chart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(improvementsForYourSafety1) 
-                .group(improvementsForYourSafety1Group) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            whatDescribesYourBusinessChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(whatDescribesYourBusiness) 
-                .group(whatDescribesYourBusinessGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            whatDescribesYourBusiness1Chart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(whatDescribesYourBusiness1) 
-                .group(whatDescribesYourBusiness1Group) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .label(function(d){return piePercentage(d, familiarDtProgramGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
 
             yourRoleInBusinessChart.width(300) 
                 .height(220) 
@@ -1313,15 +1165,122 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 .innerRadius(30) 
                 .dimension(yourRoleInBusiness) 
                 .group(yourRoleInBusinessGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .label(function(d){return piePercentage(d, yourRoleInBusinessGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
 
-            yourRoleInBusiness1Chart.width(300) 
+            feelSafeWorkingDtChart.width(300) 
                 .height(220) 
                 .radius(100) 
                 .innerRadius(30) 
-                .dimension(yourRoleInBusiness1) 
-                .group(yourRoleInBusiness1Group) 
-                .title(function(d){return d.data.key + ", " + d.value;});
+                .dimension(feelSafeWorkingDt) 
+                .group(feelSafeWorkingDtGroup) 
+                .label(function(d){return piePercentage(d, feelSafeWorkingDtGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            believeDtProgramMakesSaferChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(believeDtProgramMakesSafer) 
+                .group(believeDtProgramMakesSaferGroup) 
+                .label(function(d){return piePercentage(d, believeDtProgramMakesSaferGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            howEffectiveResolveBehaviorChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(howEffectiveResolveBehavior) 
+                .group(howEffectiveResolveBehaviorGroup) 
+                .label(function(d){return piePercentage(d, howEffectiveResolveBehaviorGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            everWitnessedProgramHostChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(everWitnessedProgramHost) 
+                .group(everWitnessedProgramHostGroup) 
+                .label(function(d){return piePercentage(d, everWitnessedProgramHostGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            hostApproachableChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(hostApproachable) 
+                .group(hostApproachableGroup) 
+                .label(function(d){return piePercentage(d, hostApproachableGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            howOftenSeeHostChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(howOftenSeeHost) 
+                .group(howOftenSeeHostGroup) 
+                .label(function(d){return piePercentage(d, howOftenSeeHostGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+            
+            howOftenInteractWithPeopleChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(howOftenInteractWithPeople) 
+                .group(howOftenInteractWithPeopleGroup) 
+                .label(function(d){return piePercentage(d, howOftenInteractWithPeopleGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            mostImportantAboutHostsChart.width(270)
+                .height(220) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(mostImportantAboutHosts) 
+                .group(mostImportantAboutHostsGroup)
+                .colors(d3.scale.category20())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  }) 
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, mostImportantAboutHostsGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            opinionFirstPriorityForServicesChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(opinionFirstPriorityForServices) 
+                .group(opinionFirstPriorityForServicesGroup) 
+                .label(function(d){return piePercentage(d, opinionFirstPriorityForServicesGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            improvementsForYourSafetyChart.width(270)
+                .height(860) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(improvementsForYourSafety) 
+                .group(improvementsForYourSafetyGroup)
+                .colors(d3.scale.category20())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  }) 
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, improvementsForYourSafetyGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            whatDescribesYourBusinessChart.width(270)
+                .height(220) 
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(whatDescribesYourBusiness) 
+                .group(whatDescribesYourBusinessGroup)
+                .colors(d3.scale.category20())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  }) 
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, whatDescribesYourBusinessGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             genderChart.width(300) 
                 .height(220) 
@@ -1329,29 +1288,8 @@ onclick="javascript:continuedInvolvementChart.filterAll();dc.redrawAll();" style
                 .innerRadius(30) 
                 .dimension(gender) 
                 .group(genderGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            continuedInvolvementChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
-                .dimension(continuedInvolvement) 
-                .group(continuedInvolvementGroup) 
-                .title(function(d){return d.data.key + ", " + d.value;});
-
-            // Table of commuter survey data
-            dataTable.width(960).height(800) 
-                .dimension(ageDimension)
-                    .group(function(d) { return ''})
-                .columns([
-                    function(d) { return d.mostImportantAboutHosts1; },
-                    function(d) { return d.mostImportantAboutHosts2; },
-                    function(d) { return d.additionalServicesSuggestions; },
-                ])
-                .sortBy(function(d){ 
-                    return d.ageLower; 
-                })
-                .order(d3.ascending);
+                .label(function(d){return piePercentage(d, genderGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
 
             // Render the Charts
             dc.renderAll();
