@@ -620,10 +620,12 @@ class CorpController(BaseController):
             study["pressRelease"]='dmc'
             study["nextSteps"]=""
             study['stats']='dcDmcSurvey'
+            study['link']= 'http://surveys.civinomics.com/dmc'
+            study["text"]='dmc'
 
             study['respondents'] = 183
             study['clientLogo']='dmcLogo.png'
-            study['clientName']='RUN DMC'
+            study['clientName']='Downtown Management Corporation'
             study['scope'] = ''
             study['tag'] = ''
 

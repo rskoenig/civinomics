@@ -645,8 +645,11 @@
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
-    <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
-        <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
+    <div class='row-fluid' name="dc-data-top">
+        <div class="pull-left workshop-metrics metrics-large">
+            Results
+        </div>
+        <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
             <span> 
                 <span class="filter-count"></span>
                 selected out of
@@ -655,15 +658,9 @@
             </span>
         </div>
     </div>
+
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <div class='row-fluid'>   
-        <div class='span4' id='dc-ageLower-chart'> 
-            <h4>Age of respondents
-                <span>
-                    (drag sliders to filter results)
-                </span>
-            </h4>
-        </div>
         <div class='span4' id='dc-familiarDtProgram-chart'>
             <h4>How familiar are you with the Downtown Hospitality Program?
                 <span>
@@ -673,19 +670,13 @@
                 </span>
             </h4> 
         </div>
-        <div class='span4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
-            <h4>What is your role in the business?
-                <br /><a href="#yourRoleInBusiness1">see further comments</a>
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
+        <div class="span8">
+            <p class="lead"><em>"The Downtown Hospitality Program was created and paid for by downtown business and property owners to maintain a safe and friendly environment. "Hosts" can be contacted as an alternative to police to help with aggressive panhandling and other forms of anti-social behavior. They also serve as an additional resource for visitors and downtown shoppers, and provide a visible presence in downtown to observe, report and prevent street disorder. The program is overseen by the Downtown Management Corporation (DMC), which also contributes funding for the downtown trolley."</em></p> 
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>
+    <hr>
+    <div class="row-fluid">
         <div class='span4' id='dc-feelSafeWorkingDt-chart'>
             <h4>In general, do you feel safe working downtown?
                 <span>
@@ -715,6 +706,7 @@ onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
     <div class='row-fluid'>
         <div class='span4' id='dc-everWitnessedProgramHost-chart'>
             <h4>Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
@@ -726,16 +718,6 @@ onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" s
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-opinionFirstPriorityForServices-chart'>
-            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
-                <br /><a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
         <div class='span4' id='dc-hostApproachable-chart'>
             <h4>In your opinion, how approachable are the downtown hospitality hosts?
                 <span>
@@ -745,90 +727,100 @@ onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="di
                 </span>
             </h4> 
         </div>
+        <div class='span4' id='dc-howOftenSeeHost-chart'>
+            <h4>How often do you see a downtown hospitality host?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
     <div class='row-fluid'>
-        <div class='span8'>
-            <div class='row-fluid'>
-                <div class='span6' id='dc-howOftenSeeHost-chart'>
-                    <h4>How often do you see a downtown hospitality host?
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-        onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4>
-                </div>
-                <div class='span6' id='dc-howOftenInteractWithPeople-chart'>
-                    <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
-                        <br /><a href="#additionalServicesSuggestions">see service suggestions</a>
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-        onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4>
-                </div>
-            </div>
-            <div class='row-fluid'>
-                <div class='span6' id='dc-mostImportantAboutHosts-chart'>
-                    <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
-                        <br /><a href="#mostImportantAboutHosts1">see further input</a>
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-        onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4>
-                </div>
-                <div class='span6' id='dc-whatDescribesYourBusiness-chart'>
-                    <h4>Which of the following best describes your business or working environment?
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-        onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4>
-                </div>
-            </div>
-            <div class='row-fluid'>
-                <div class='span6' id='dc-gender-chart'>
-                    <h4>Gender
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-        onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4>
-                </div>
-                <div class='span6'>
-                    <h4>
-                    </h4>
-                </div>
-            </div>
+        <div class='span4' id='dc-howOftenInteractWithPeople-chart'>
+            <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
+                <br /><a href="#additionalServicesSuggestions">see service suggestions</a>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
         </div>
-        <div class='span4'> <!-- extra tall column here -->
-            <div id='dc-improvementsForYourSafety-chart'>
-                <h4>What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)
-                    <br /><a href="#improvementsForYourSafety1">see additional suggestions</a>
-                    <span>
-                        <br />(click to filter results)
-                        <a href="#dc-data-top" class="reset"
-    onclick="javascript:improvementsForYourSafetyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                    </span>
-                </h4>
-            </div>
-        </div>  <!-- end of extra tall column -->
+    </div><!-- row-fluid -->
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
+    <div class="row-fluid">
+        <div class='span6' id='dc-opinionFirstPriorityForServices-chart'>
+            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
+                <br /><a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span6' id='dc-mostImportantAboutHosts-chart'>
+            <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
+                <br /><a href="#mostImportantAboutHosts1">see further input</a>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
     </div>
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12'>
-            <h4 name='yourRoleInBusiness1'>Further comments for the question,
-                <a href="#dc-yourRoleInBusiness-chart">"What is your role in the business?"</a>
+    <div class="workshop-metrics metrics-large">
+        Demographics / Business Type
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span4' id='dc-whatDescribesYourBusiness-chart'>
+            <h4>Which of the following best describes your business or working environment?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
             </h4>
-            <div id="yourRoleInBusiness1"></div>
+        </div>
+        <div class='span4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
+            <h4>What is your role in the business?
+                <br /><a href="#yourRoleInBusiness1">see further comments</a>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-gender-chart'>
+            <h4>Gender
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
         </div>
     </div>
+    <hr>
+    <div class='row-fluid'>
+        <div class='span4' id='dc-ageLower-chart'> 
+            <h4>Age of respondents
+                <span>
+                    (drag sliders to filter results)
+                </span>
+            </h4>
+        </div>
+    </div>
+    <hr>
     <div class='row-fluid'> 
         <div class='span12'>
             <h4 name='everWitnessedProgramHostDescription'>Can you please briefly describe your experience? Was it positive?

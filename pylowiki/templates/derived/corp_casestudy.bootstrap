@@ -50,6 +50,10 @@
             % endif
           </tr>
         </table>
+        % if c.study['url'] == 'dmc':
+            ${corpLib.text_dmcSurvey()}
+            <hr>
+        % endif
         % if 'pressRelease' in c.study:
           % if c.study['pressRelease'] == 'techCommuters':
             ${corpLib.pressRelease_techCommuters()}

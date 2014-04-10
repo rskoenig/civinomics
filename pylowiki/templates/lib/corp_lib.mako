@@ -143,3 +143,9 @@
     </p>
 </%def>
 
+<%def name="text_dmcSurvey()">
+    <p class="lead" style="margin-top:25px;">
+        This survey was conducted Civinomics staff going buisiness-to-business over the course of a week and a half. Interviewers sought out respondents who were either managers or owners and left a handout so buisness owners could participate online.
+    </p>
+</%def>
+
