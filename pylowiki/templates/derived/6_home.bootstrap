@@ -138,7 +138,7 @@
                                     <div class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                                 </a>
                               </td>
-                              <td colspan="2">
+                              <td colspan="2" class="title-cell">
                                 <a class="e-blue" href = '{{item.href}}'><strong>{{item.title}}</strong></a>
                                 <div class="btn-group pull-right follow-actions">
                                   <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
@@ -146,7 +146,7 @@
                                   </a>
                                   <ul class="dropdown-menu">
                                     <li  ng-if="!(item.authorID == '${c.authuser.id}')"><a ng-click="changeFollow()">Unfollow</a></li>
-                                    <li ng-if="item.authorID == '${c.authuser.id}'"><a>Edit</a></li>
+                                    <li ng-if="item.authorID == '${c.authuser.id}'"><a href = '{{item.href}}/edit'>Edit</a></li>
                                     <li ng-if="item.authorID == '${c.authuser.id}'"><a ng-click="trashThing()">Delete</a></li>
                                   </ul>
                                 </div>

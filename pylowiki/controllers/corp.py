@@ -65,7 +65,7 @@ class CorpController(BaseController):
         study["description"]="Conducted via door-to-door interviews of registered voters."
         study["image"]="bagCreek.jpg"
         study["url"]="svbagban"
-        study['date']="4.8.14"
+        study['date']="4.9.14"
         study['stats']='plasticBagBan'
         study['respondents'] = 397
         study['partnerLogo']='sosLogo.jpg'
@@ -79,7 +79,7 @@ class CorpController(BaseController):
         study["description"]="A survey of Pacific Ave. business owners regarding the efficacy of the Host Program at creating a safe environment downtown."
         study["image"]="hostPic.png"
         study["url"]="dmc"
-        study['date']="4.9.14"
+        study['date']="4.8.14"
         study['stats']='dcDmcSurvey'
         study['respondents'] = 183
         study['clientLogo']='dmcLogo.png'

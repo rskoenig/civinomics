@@ -1903,7 +1903,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
                   }) 
               .title(function(d){return d.value + " commuters";})
               .xAxis()
-              .tickFormat(function(d) { return commutersFormatter(d); })
+              .tickFormat(function(d) { return peopleFormatter(d); })
               .ticks(4);
 
           /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
