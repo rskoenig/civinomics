@@ -61,6 +61,34 @@ class CorpController(BaseController):
         c.studies=[]
 
         study={}
+        study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+        study["description"]="Conducted via door-to-door interviews of registered voters."
+        study["image"]="bagCreek.jpg"
+        study["url"]="svbagban"
+        study['date']="4.8.14"
+        study['stats']='plasticBagBan'
+        study['respondents'] = 397
+        study['partnerLogo']='sosLogo.jpg'
+        study['partnerName']='Save Our shores'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+        study["description"]="A survey of Pacific Ave. business owners regarding the efficacy of the Host Program at creating a safe environment downtown."
+        study["image"]="hostPic.png"
+        study["url"]="dmc"
+        study['date']="4.9.14"
+        study['stats']='dcDmcSurvey'
+        study['respondents'] = 183
+        study['clientLogo']='dmcLogo.png'
+        study['cientName']='Downtown Management Corporation of Santa Cruz'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
         study["title"]="Santa Cruz Tech Commuters"
         study["description"]="Measuring Santa Cruz County's daily tech worker brain drain and awareness, opportunity and feedback on the emerging Santa Cruz tech ecosystem."
         study["image"]="techCommuter.png"
@@ -579,10 +607,92 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
+        elif casestudyname =="dmc":
+            study["url"]="dmc"
+            study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+            study["image"]="hostPic.png"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-9-2014"
+            study["background"]="Downtown SC is gnarly, we asked how the help's doing."
+            study["solution"]="Civinomics created an iPad survey for use in street outreach that.."
+            study["results"]=""
+            study["pressRelease"]='dmc'
+            study["nextSteps"]=""
+            study['stats']='dcDmcSurvey'
+            study['link']= 'http://surveys.civinomics.com/dmc'
+            study["text"]='dmc'
+
+            study['respondents'] = 183
+            study['clientLogo']='dmcLogo.png'
+            study['clientName']='Downtown Management Corporation'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss DMC"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
+        elif casestudyname =="svbagban":
+            study["url"]="svbagban"
+            study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+            study["image"]="bagCreek.jpg"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-8-2014"
+            study["background"]="Plastic Bags are bad."
+            study["solution"]="Plastic Bag Fees ain't so bad."
+            study["results"]=""
+            study["text"]='svBagBan'
+            study["nextSteps"]=""
+            study['stats']='plasticBagBan'
+            study['link']= 'http://surveys.civinomics.com/svbagban'
+
+            study['respondents'] = 397
+            study['partnerLogo']='sosLogo.jpg'
+            study['partnerName']='Save Our Shores'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss plasticBagBan"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+            
+            
+            
+
 
         return render("/derived/corp_casestudy.bootstrap")
-
-
 
 
     def displayCareer(self, id):
