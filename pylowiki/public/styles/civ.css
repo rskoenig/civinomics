@@ -3329,6 +3329,10 @@ hr.object-list-header{
   font-size: .85em;
 }
 
+.metrics-large{
+  font-size: 24px !important;
+}
+
 #metrics td{
   padding-left: 19px;
   vertical-align: top;
