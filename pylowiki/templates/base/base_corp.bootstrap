@@ -57,8 +57,8 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/caseStudies" class="green green-hover">
-                      Case Studies
+                  <a href="/corp/surveys" class="green green-hover">
+                      Surveys
                   </a>
               </li>
               <li

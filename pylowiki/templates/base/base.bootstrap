@@ -1,5 +1,6 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="template_lib" file="/lib/template_lib.mako" />
+
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
@@ -18,12 +19,13 @@
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.js"></script>
+      <script src="${lib_6.fingerprintFile('/js/vendor/ui-bootstrap-tpls-0.10.0.min.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/vendor/binaryMuse_ngInfiniteScroll.min.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/geoSearch.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/signup_login.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/comments.js')}"></script>
       <script>
-        var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
+        var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
       </script>
       <script src="/js/extauth.js" type="text/javascript"></script>
       ${self.extraStyles()}
@@ -38,26 +40,7 @@
    <body ${self.bodyTag_extras()}>
     ${next.body()}
 
-   <!-- scripts go at the bottom so they don't keep the user waiting -->
-   <script type="text/javascript">
-        function addLink() {
-            var body_element = document.getElementsByTagName('body')[0];
-            var selection;
-            selection = window.getSelection();
-            var pagelink = "<br /><br /> Read more at: <a href='"+document.location.href+"'>"+document.location.href+"</a>";
-            var copytext = selection + pagelink;
-            var newdiv = document.createElement('div');
-            newdiv.style.position='absolute';
-            newdiv.style.left='-99999px';
-            body_element.appendChild(newdiv);
-            newdiv.innerHTML = copytext;
-            selection.selectAllChildren(newdiv);
-            window.setTimeout(function() {
-                body_element.removeChild(newdiv);
-            },0);
-        }
-        document.oncopy = addLink;
-   </script>
+   
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>

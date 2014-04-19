@@ -319,6 +319,7 @@
         if c.initiative:
             if c.initiative['public'] == '1':
                 shareOk = True
+        log.info("link: "+link)
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -805,6 +806,7 @@
             elif 'format' in mainImage.keys():
                 return "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
+               # note: due to a recent slideshow thumbnail bugfix, Todd believes this .jpg should be .png
                return "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
                
       imgStr = '<a href="'
@@ -1897,7 +1899,6 @@
 
 <%def name="showTags(item)">
     <% 
-        colors = workshopLib.getWorkshopTagColouring()
         try:
           tagList = item['tags'].split('|')
         except KeyError:
@@ -1907,10 +1908,9 @@
       % for tag in tagList:
           % if tag and tag != '':
               <% 
-                tagClass = colors[tag] 
                 tagValue = tag.replace(" ", "_")
               %>
-              <a class="label workshop-tag ${tagClass}" href="/searchTags/${tagValue}/" >${tag}</a>
+              <a class="label workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>

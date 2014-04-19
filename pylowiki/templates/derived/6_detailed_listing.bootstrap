@@ -63,8 +63,8 @@
                % elif listingType == 'publicStats':
                     <h4 class="section-header smaller">Statistics</h4>
                     ${d3Lib.includeD3()}
-                    <!-- $-{-d3Lib.dcCommuterSurvey()} -->
                     ${d3Lib.dcDmcSurvey()}
+                    <!-- $ - {d3Lib.dcCommuterSurvey()} -->
                % else:
                     <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                     % if listingType != 'activity':

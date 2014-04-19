@@ -49,6 +49,12 @@ function activityController($scope, $http) {
 		$scope.offset = $scope.sliceSize;
 	};
 
+	$scope.browseInitiatives = function(){
+		$scope.activityType = '/initiatives';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+
 	$scope.getActivitySlice = function() {
 		if ($scope.busy || $scope.noMoreSlices) return;
 		$scope.busy = true;
