@@ -10,7 +10,6 @@
         locale.setlocale(locale.LC_ALL, 'eng_US')
 %>
 <% lib.return_to() %>
-<div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid one-up" ng-controller="SearchCtrl">
     % if c.searchType == 'region':
@@ -596,12 +595,6 @@
 </%def>
 
 <%def name="extraScripts()">
-    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
-   <%
-        backgroundImage = '"' + c.backgroundPhoto + '"'
-
-   %>
-   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
 </%def>
 
 <%def name="extraScripts2()">

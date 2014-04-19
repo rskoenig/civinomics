@@ -56,15 +56,14 @@
         <div class="browse">
             <h4 class="section-header smaller">Basic Info</h4>
             <div class="row-fluid">
-                <div class="span6 offset1">
+                <div class="span12" style="padding: 19px;">
                     <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" ng-cloak>
                         <fieldset>
-                            <legend>Settings</legend>
-                            <label>Workshop Name</label>
-                            <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
-                            <label>Introduction</label>
-                            <span class="muted">A one paragraph description why this matters.
-                            <textarea rows="8" id = "inputDescription" name="description" size="50" class="editWorkshopDescription">${c.w['description']}</textarea>
+                            <h4>Workshop Name</h4>
+                            <input id = "inputTitle" type="text" name="title" size="50" maxlength="100" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="input-xxlarge editWorkshopName"/>
+                            <h4>Introduction</h4>
+                            <span class="muted">A one paragraph description why this matters.</span>
+                            <textarea rows="8" id = "inputDescription" name="description" size="50" class="span12 editWorkshopDescription">${c.w['description']}</textarea>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
                                     yesChecked = 'checked'
@@ -76,7 +75,7 @@
                                     yesChecked = 'checked'
                                     noChecked = ''
                             %>
-                            <label>Participants can add ideas</label>
+                            <h4>Can participants add ideas?</h4>
                             <label class="radio">
                                 <input type="radio" id="allowIdeas" name="allowIdeas" value="1" ${yesChecked}> Yes
                             </label>
@@ -95,7 +94,7 @@
                                     yesChecked = 'checked'
                                     noChecked = ''
                             %>
-                            <label>Participants can add information resource links</label>
+                            <h4>Can participants add information resource links?</h4>
                             <label class="radio">
                                 <input type="radio" id="allowResources" name="allowResources" value="1" ${yesChecked}> Yes
                             </label>
@@ -105,7 +104,7 @@
                             </label>
                             <br>
 
-                        <legend>Goals <span class="label label-important">Required</span></span></legend>
+                        <h4>Goals</h4>
                         ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
                         <p class="muted">Double-click on an existing goal to edit.</p>
                         <div ng-controller="GoalsCtrl">
@@ -116,18 +115,18 @@
                                     <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
                                     <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
                                     <form ng-submit="goalEditDone(goal)" class="inline">
-                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
+                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="100" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
                                     </form>
                                     <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
                                 </li>
                             </ul>
                             <form ng-submit="addGoal()" class="addGoal">
                                 <div class="input-append">
-                                    <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal" id="addGoal">
+                                    <input type="text" ng-model="goalTitle" size="100" maxlength = "100" placeholder="New goal here" class="addGoal" id="addGoal">
                                     <button class="btn btn-primary" type="submit" value="add">add</button>
                                 </div>
                             </form>
-                            <p class = "green">{{60 - goalTitle.length}}</p>
+                            <p class = "green">{{100 - goalTitle.length}}</p>
                         </div>
 
                         % if not c.published:
@@ -226,7 +225,7 @@
 
 
 <%def name="edit_background()">
-    <div class="section-wrapper">
+    <div class="section-wrapper wiki-well">
         <div class="browse">
             <h4 class="section-header smaller">Background</h4>
             <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a>

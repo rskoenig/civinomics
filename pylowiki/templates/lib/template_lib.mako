@@ -137,6 +137,7 @@
             </ul>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/corp/surveys" class="nav-item">Surveys</a></li>
                 <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="http://civinomics.wordpress.com" target="_blank" class="nav-item">Blog</a></li>
                 <!-- <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li> -->
@@ -361,7 +362,7 @@
 <%def name="socialLogins()">
     <div class="row-fluid social-login centered">
         <div id="fbLoginButton2">
-            <a onclick="facebookLogin()"><img src="/images/f-login.png"></a>
+            <a href="/fbLogin"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>

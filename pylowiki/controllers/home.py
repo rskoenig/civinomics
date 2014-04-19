@@ -60,6 +60,104 @@ class HomeController(BaseController):
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
 
+    def getFollowingInitiatives(self, offset=0, limit=0):
+		interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
+		# reverse list so most recent first
+		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+		offset = int(offset)
+		limit = int(limit)
+		interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+		interestedInitiatives = []
+		for code in interestedInitiativeCodes:
+			log.info('%s' % code)
+			i = initiativeLib.getInitiative(code)
+			interestedInitiatives.append(i)
+
+		if len(interestedInitiatives) == 0:
+			return json.dumps({'statusCode':1})
+		else:
+			result = []
+
+			myRatings = {}
+			if 'ratings' in session:
+				myRatings = session['ratings']
+
+			for item in interestedInitiatives:
+				entry = {}
+				#entry['urlCode'] = item
+				entry['title'] = item['title']
+				entry['urlCode'] = item['urlCode']
+				entry['url'] = item['url']
+
+				# user rating
+				if entry['urlCode'] in myRatings:
+					entry['rated'] = myRatings[entry['urlCode']]
+					entry['vote'] = 'voted'
+				else:
+					entry['rated'] = 0
+					entry['vote'] = 'nvote'
+
+				# votes
+				entry['voteCount'] = int(item['ups']) + int(item['downs'])
+				entry['ups'] = int(item['ups'])
+				entry['downs'] = int(item['downs'])
+				entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+				#goal votes
+				if entry['voteCount'] < 100:
+				    entry['goal'] = 100
+				elif 'goal' in item:
+					entry['goal'] = item['goal']
+				else:
+					entry['goal'] = 100
+
+				# comments
+				entry['numComments'] = 0
+				if 'numComments' in item:
+					entry['numComments'] = item['numComments']
+
+				#tags
+				tags = []
+				tagList = []
+				if 'tags' in item:
+				    tagList = item['tags'].split('|')
+				for tag in tagList:
+				    if tag and tag != '':
+				        tags.append(tag)
+				entry['tags'] = tags
+
+				# photo
+				if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+					entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+					entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				else:
+					entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
+
+				entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
+
+				# scope attributes
+				if 'scope' in item:
+					entry['scope'] = item['scope']
+				else:
+					entry['scope'] = '0||united-states||0||0||0|0'
+				scopeInfo = utils.getPublicScope(entry['scope'])
+				entry['scopeName'] = scopeInfo['name']
+				entry['scopeLevel'] = scopeInfo['level']
+				entry['scopeHref'] = scopeInfo['href']
+				entry['flag'] = scopeInfo['flag']
+
+				entry['authorID'] = item.owner
+				
+				result.append(entry)
+
+			if len(result) == 0:
+				return json.dumps({'statusCode':1})
+			return json.dumps({'statusCode':0, 'result': result})
+
+
+
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
 		# get recent activity and return it into json format
 		result = []
@@ -110,8 +208,11 @@ class HomeController(BaseController):
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
+		elif type == 'initiatives':
+			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+
 		else:
-			recentActivity = activityLib.getRecentActivity(max)
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
 		myRatings = {}
 		if 'ratings' in session:
@@ -193,6 +294,10 @@ class HomeController(BaseController):
 				else:
 					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
 
+			elif entry['parentObjType'] == 'initiative':
+				initiative = initiativeLib.getInitiative(item['initiativeCode'])
+				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
 			else:
 				entry['mainPhoto'] = '0'
 				entry['thumbnail'] = '0'
@@ -275,5 +380,6 @@ class HomeController(BaseController):
 		if len(result) == 0:
 			return json.dumps({'statusCode':1})
 		return json.dumps({'statusCode':0, 'result': result})
+
 
 

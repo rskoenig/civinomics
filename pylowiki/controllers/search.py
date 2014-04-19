@@ -944,7 +944,7 @@ class SearchController(BaseController):
             entry['text'] = i['description']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['cost'] = i['cost']
-            entry['objType'] = 'Initiative'
+            entry['objType'] = 'initiative'
             tags = []
             tagList = i['tags'].split('|')
             for tag in tagList:
@@ -974,6 +974,15 @@ class SearchController(BaseController):
             else:
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
+
+            # author data
+            # CCN - need to find a way to optimize this lookup
+            author = userLib.getUserByID(i.owner)
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
             # comments
             entry['numComments'] = 0
@@ -1107,6 +1116,7 @@ class SearchController(BaseController):
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
+            entry['fullName'] = entry['level'] + ' of ' + entry['name']
 
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')
