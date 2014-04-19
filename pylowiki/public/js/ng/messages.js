@@ -13,7 +13,7 @@ function profileMessagesCtrl($scope, $http) {
     $scope.getMessages = function() {
         $scope.alertMsg = '';
         $scope.messagesLoading = true;
-        $http.get('/getMessagesSlice/' + $scope.code + '/' + $scope.url + '/' + $scope.messagesType + '/' + $scope.sliceSize).success(function(data){
+        $http.get('/getMessages/' + $scope.code + '/' + $scope.url + '/' + $scope.messagesType).success(function(data){
             if (data.statusCode == 1){
                 //console.log('data.statusCode == 1');
                 $scope.messagesNoResult = true;
