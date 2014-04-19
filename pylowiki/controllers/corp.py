@@ -61,29 +61,29 @@ class CorpController(BaseController):
         c.studies=[]
 
         study={}
-        study["title"]="Plastic Bag Ban Survey"
-        study["description"]="Plastic bags,  more like plastic bugs."
-        study["image"]="techCommuter.png"
-        study["url"]="plasticBagBan"
-        study['date']="4.8.14"
+        study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+        study["description"]="Conducted via door-to-door interviews of registered voters."
+        study["image"]="bagCreek.jpg"
+        study["url"]="svbagban"
+        study['date']="4.9.14"
         study['stats']='plasticBagBan'
-        study['respondents'] = 15
-        study['partnerLogo']='ssvLogo.png'
-        study['partnerName']='Plastic Bag Ban Man'
+        study['respondents'] = 397
+        study['partnerLogo']='sosLogo.jpg'
+        study['partnerName']='Save Our shores'
         study['scope'] = ''
         study['tag'] = ''
         c.studies.append(study)
 
         study={}
-        study["title"]="DMC Survey"
-        study["description"]="Much happy, super rad, very downtown!"
-        study["image"]="techCommuter.png"
+        study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+        study["description"]="A survey of Pacific Ave. business owners regarding the efficacy of the Host Program at creating a safe environment downtown."
+        study["image"]="hostPic.png"
         study["url"]="dmc"
-        study['date']="4.9.14"
+        study['date']="4.8.14"
         study['stats']='dcDmcSurvey'
         study['respondents'] = 183
-        study['partnerLogo']='ssvLogo.png'
-        study['partnerName']='DMC FOOL'
+        study['clientLogo']='dmcLogo.png'
+        study['cientName']='Downtown Management Corporation of Santa Cruz'
         study['scope'] = ''
         study['tag'] = ''
         c.studies.append(study)
@@ -609,8 +609,8 @@ class CorpController(BaseController):
 
         elif casestudyname =="dmc":
             study["url"]="dmc"
-            study["title"]="DMC YO"
-            study["image"]="techCommuter.png"
+            study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+            study["image"]="hostPic.png"
             study["statusType"]="danger"
             study["statusMessage"]="Closed"
             study["date"]=" 4-9-2014"
@@ -620,10 +620,12 @@ class CorpController(BaseController):
             study["pressRelease"]='dmc'
             study["nextSteps"]=""
             study['stats']='dcDmcSurvey'
+            study['link']= 'http://surveys.civinomics.com/dmc'
+            study["text"]='dmc'
 
             study['respondents'] = 183
-            study['partnerLogo']='ssvLogo.png'
-            study['partnerName']='RUN DMC'
+            study['clientLogo']='dmcLogo.png'
+            study['clientName']='Downtown Management Corporation'
             study['scope'] = ''
             study['tag'] = ''
 
@@ -646,23 +648,24 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="plasticBagBan":
-            study["url"]="plasticBagBan"
-            study["title"]="PlasticBagBan YO"
-            study["image"]="techCommuter.png"
+        elif casestudyname =="svbagban":
+            study["url"]="svbagban"
+            study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+            study["image"]="bagCreek.jpg"
             study["statusType"]="danger"
             study["statusMessage"]="Closed"
             study["date"]=" 4-8-2014"
             study["background"]="Plastic Bags are bad."
             study["solution"]="Plastic Bag Fees ain't so bad."
             study["results"]=""
-            study["pressRelease"]='plasticBagBan'
+            study["text"]='svBagBan'
             study["nextSteps"]=""
             study['stats']='plasticBagBan'
+            study['link']= 'http://surveys.civinomics.com/svbagban'
 
-            study['respondents'] = 183
-            study['partnerLogo']='ssvLogo.png'
-            study['partnerName']='RUN plasticBagBan'
+            study['respondents'] = 397
+            study['partnerLogo']='sosLogo.jpg'
+            study['partnerName']='Save Our Shores'
             study['scope'] = ''
             study['tag'] = ''
 
@@ -684,6 +687,9 @@ class CorpController(BaseController):
 
             questions=[]
             study["questions"]=questions
+            
+            
+            
 
 
         return render("/derived/corp_casestudy.bootstrap")

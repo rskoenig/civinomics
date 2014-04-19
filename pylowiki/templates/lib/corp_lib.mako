@@ -6,7 +6,7 @@
             <div class="span12 well" style="margin-left:0;">
                 <div class="span2">
                     <a href="/corp/caseStudies/${study['url']}">
-                        <div class="i-photo" style="background-image:url('/images/corp/surveys/${study['url']}/${study['image']}');"/></div> 
+                        <div class="i-photo" style="background-image:url('/images/corp/casestudies/${study['url']}/${study['image']}');"/></div> 
                     </a>
                 </div>
                 <div class="span10">
@@ -135,5 +135,17 @@
     <h3>Results</h3>
 
     <div class="alert alert-info"><strong>To filter data</strong> click on a graph. You can apply multiple filters at once. To remove a filter, click the graph again or click the reset button at the top of each graph. The 102 respondent sample ensures statistical accuracy with a 95% confidence level and 10% margin of error. Filtering the results below may be helpful to discover correlations, but it will also lead to a smaller sample pool and <strong><em>decreasing levels of accuracy.</em></strong></div>
+</%def>
+
+<%def name="text_svBagBan()">
+    <p class="lead">
+        This opinion poll was conducted via door-door interviews by Civinomics staff and volunteers over a two week period. Respondents were randomly selected from the list of registered voters in the City of Scotts Valley. Data was tabulated via iPad. The results are statistically accurate with a 95% confidence level and 5% margin of error.
+    </p>
+</%def>
+
+<%def name="text_dmcSurvey()">
+    <p class="lead" style="margin-top:25px;">
+        This survey was conducted Civinomics staff going buisiness-to-business over the course of a week and a half. Interviewers sought out respondents who were either managers or owners and left a handout so buisness owners could participate online.
+    </p>
 </%def>
 
