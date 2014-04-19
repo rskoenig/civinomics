@@ -2,6 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_item_in_listing.mako"/>
+<%namespace name="workshop_helpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace file="/lib/6_comments.mako" import="comments" />
 
 <%
@@ -11,16 +12,34 @@
 
 <div class="row-fluid">
   <div class="span12">
-     <div class="section-wrapper">
-        <div class="browse">
-            <h4 class="section-header smaller"> ${d[c.listingType]} </h4>
+    <table style="margin-top: 12px; margin-bottom: 20px;">
+        <tr>
+            % if c.w:
+                <td>
+                    ${lib_6.workshopImage(c.w)}
+                </td>
+            % endif
+            <td style="padding-left:10px;">
+                <h4>
+                    <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="no-highlight bottom-space" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>{{workshopTitle}}</a>
+                </h4>
+                <small>
+                    ${workshop_helpers.displayWorkshopFlag(c.w, size = 'small-flag' , workshopFor = true, objType = 'Workshop' )} ${lib_6.showTags(c.w)}
+                </small>
+            </td>
+        </tr>
+    </table>
+     <div class="well">
+        <h4 class="section-header smaller">
+            ${d[c.listingType]}
+        </h4>
             % if 'alert' in session:
                 <% alert = session['alert'] %> 
                 <div class="alert alert-${alert['type']} workshop-admin">
                     <button data-dismiss="alert" class="close">x</button>
                     <strong>${alert['title']}</strong>
                     % if 'content' in alert:
-                        <br /><strong>${alert['content']}</strong>
+                        ${alert['content']}
                     % endif
                 </div>
                 <% 
@@ -85,8 +104,7 @@
             <div class="row-fluid">
                 <div class="span11 offset1">
                     <span class="share-icons right-space">
-                        ${lib_6.facebookDialogShare("%s%s"%(c.baseUrl, lib_6.thingLinkRouter(c.thing, c.w, embed=True, noHref=True)), "%s%s"%(c.baseUrl, c.backgroundImage), shareOnWall=True, sendMessage=True, description=c.description)} 
-
+                        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
                         ${lib_6.emailShare(c.objectUrl, c.thing['urlCode'])}
                     </span>
                     ${helpers.moderationPanel(c.thing)}
@@ -110,8 +128,7 @@
                 </div>
             </div>
             % endif
-        </div><!--/.browse-->
-     </div><!--/.section-wrapper-->
+     </div><!--/.well-->
   </div><!--/.span12-->
 </div><!--/.row-fluid-->
 

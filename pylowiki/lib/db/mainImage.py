@@ -23,6 +23,15 @@ def getMainImage(workshop):
     except:
         return False
 
+def getMainImageByCode(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'mainImage')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .one()
+    except:
+        return False
+
 def setMainImage(user, workshop, slide):
     """
         user        ->  The user Thing creating the mainImage

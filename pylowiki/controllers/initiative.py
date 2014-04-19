@@ -5,40 +5,26 @@ from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.discussion   as discussionLib
-import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
-import pylowiki.lib.images          as imageLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 
+from pylowiki.lib.facebook          import FacebookShareObject
+import pylowiki.lib.helpers         as h
+import pylowiki.lib.images          as imageLib
+import pylowiki.lib.utils           as utils
+
 import simplejson as json
-import misaka as m
-import copy as copy
-from HTMLParser import HTMLParser
 
 log = logging.getLogger(__name__)
-
-###################################
-# MLStripper is part of the process of 
-# stripping html from misaka's markdown output
-###################################
-class MLStripper(HTMLParser):
-    def __init__(self):
-        self.reset()
-        self.fed = []
-    def handle_data(self, d):
-        self.fed.append(d)
-    def get_data(self):
-        return ''.join(self.fed)
 
 class InitiativeController(BaseController):
     
@@ -143,6 +129,25 @@ class InitiativeController(BaseController):
             c.authorGeo['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
             c.authorGeo['stateTitle'] = userGeo['stateTitle']
 
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        if c.initiative:
+            shareOk = initiativeLib.isPublic(c.initiative)
+            bgPhoto_url, photo_url, thumbnail_url = utils.initiativeImageURL(c.initiative)
+            c.description_nohtml = utils.getTextFromMisaka(c.initiative['description'])
+            c.facebookShare = FacebookShareObject(
+                itemType='initiative',
+                url=utils.initiativeURL(c.initiative),
+                parentCode=c.initiative['urlCode'],
+                title=c.initiative['title'],
+                description=c.description_nohtml,
+                image=photo_url,
+                shareOk = shareOk
+            )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
 
         userLib.setUserPrivs()
 
@@ -161,8 +166,11 @@ class InitiativeController(BaseController):
         # the scope if initiative is created from a geoSearch page
         if 'initiativeRegionScope' in request.params:
             scope = request.params['initiativeRegionScope']
+            
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
+            
+        goal = self.getInitiativeGoal(scope)
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
@@ -189,7 +197,11 @@ class InitiativeController(BaseController):
         
             
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
+        
+        session['facilitatorInitiatives'].append(c.initiative['urlCode'])
+        
         c.level = scope
 
         # now that the initiative edits have been commited, update the scopeProps for the template to use:
@@ -339,6 +351,11 @@ class InitiativeController(BaseController):
                 c.initiative['scope'] = geoTagString
                 # need to come back and add 'updateInitiativeChildren' when it is written
                 #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
+                
+                # update the goal vote number based on new scope
+                c.initiative['goal'] = self.getInitiativeGoal(geoTagString)
+                log.info('%s' % c.initiative['goal'])
+                
                 wchanges = 1
                 
         for key in iKeys:
@@ -489,10 +506,6 @@ class InitiativeController(BaseController):
             
  
     def initiativeShowHandler(self):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
-        c.thingCode = c.initiative['urlCode']
 
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
         c.isFollowing = False
@@ -508,24 +521,18 @@ class InitiativeController(BaseController):
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
 
+        c.numComments = 0
+        if 'numComments' in c.initiative:
+            c.numComments = c.initiative['numComments']
+
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-
+        
         c.initiativeHome = True
 
-        # create html-free description for sharing on facebook
-        formatDescription = copy.copy(c.initiative['description'])
-        descriptionHtml = m.html(formatDescription, render_flags=m.HTML_SKIP_HTML)
-        s = MLStripper()
-        s.feed(descriptionHtml)
-        descriptionWithLineBreaks = s.get_data()
-        descriptionNoLineBreaks = descriptionWithLineBreaks.replace('\n', ' ').replace('\r', '')
-        c.description_nohtml = utils.cap(descriptionNoLineBreaks, 400)
-
-            
         return render('/derived/6_initiative_home.bootstrap')
 
 
@@ -608,4 +615,58 @@ class InitiativeController(BaseController):
         
         jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
         return jsonReturn
+       
+        
+    def getInitiativeGoal(self, scope):
+        geoScope = scope.split('|') 
+        if geoScope[2] == '0':
+            #earth
+            population = 7172450000
+            
+        elif geoScope[4] == '0':
+            # country
+            geoInfo = geoInfoLib.getCountryInfo(geoScope[2]) 
+            if geoInfo:
+                population = geoInfo['Country_population']
+            
+        elif geoScope[6] == '0':
+            #state
+            geoInfo = geoInfoLib.getStateInfo(geoScope[4], geoScope[2]) 
+            if geoInfo:
+                population = geoInfo['Population']
+            
+        elif geoScope[8] == '0':
+            #county
+            county = geoInfoLib.geoDeurlify(geoScope[6])
+            geoInfo = geoInfoLib.getCountyInfo(county, geoScope[4], geoScope[2])
+            if geoInfo:
+                population = geoInfo['Population']
+
+        elif geoScope[9] == '0':
+            #city
+            city = geoInfoLib.geoDeurlify(geoScope[8])
+            geoInfo = geoInfoLib.getCityInfo(city, geoScope[4], geoScope[2]) 
+            if geoInfo:
+                population = geoInfo['Population']
+
+        else:
+            #zip
+            geoInfo = geoInfoLib.getPostalInfo(geoScope[9]) 
+            if geoInfo:
+                population = geoInfo['Population']
+        
+        percentVoters = 0.35
+        percentSigsNeeded = 0.10
+        goalPercent = percentVoters * percentSigsNeeded
+        
+        if population:
+            population = int(population)
+            goal = int(population * goalPercent)
+        else:
+            population = 0
+            log.info('no population data found')
+            goal = 1000
+            
+        return goal
+        
             

@@ -23,7 +23,7 @@ def getRatingForThing(user, thing):
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
     except:
         return False
-        
+     
 def getRatingsForUser():
     userRatings = {}
     itemTypes = {"commentCode" : "1", "ideaCode" : "1", "resourceCode" : "1", "photoCode" : "1", "initiativeCode" : "1"}
@@ -31,6 +31,7 @@ def getRatingsForUser():
         ratings = meta.Session.query(Thing)\
             .filter_by(objType = 'rating')\
             .filter_by(owner = c.authuser.id).all()
+
         for rating in ratings:
             for k in rating.keys():
                 if k in itemTypes:
@@ -101,9 +102,13 @@ def makeOrChangeRating(thing, user, amount, ratingType):
             thing['ups'] = int(thing['ups']) + 1
         else:
             thing['downs'] = int(thing['downs']) + 1
+            
+        if user['activated'] == '0':
+            ratingObj['provisional'] = '1'
+            
         generic.linkChildToParent(ratingObj, thing)
         ratingObj['ratingType'] = ratingType
-        
+      
     commit(ratingObj)
     commit(thing)
     if 'ratings' in session:
@@ -111,7 +116,7 @@ def makeOrChangeRating(thing, user, amount, ratingType):
     else:
         myRatings = {}
     thingCode = thing['urlCode']
-    myRatings[thingCode] = str(amount)
+    myRatings[thingCode] = str(ratingObj['amount'])
     session["ratings"] = myRatings
     session.save()
     return ratingObj

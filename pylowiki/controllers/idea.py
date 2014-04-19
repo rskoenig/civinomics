@@ -20,7 +20,8 @@ import pylowiki.lib.helpers as h
 import simplejson as json
 import misaka as m
 
-from pylowiki.lib.base import BaseController, render
+from pylowiki.lib.facebook          import FacebookShareObject
+from pylowiki.lib.base              import BaseController, render
 
 log = logging.getLogger(__name__)
 
@@ -37,26 +38,6 @@ class IdeaController(BaseController):
         
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
-
-        #################################################
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = utils.getBaseUrl()
-        # c.requestUrl is for lib_6.emailShare
-        c.objectUrl = c.requestUrl = request.url
-        c.thingCode = workshopCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-        # name for facebook share posts
-        c.name = c.title = c.w['title']
-        c.description = c.w['description']
-        #################################################
         
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] != 'public':
@@ -66,6 +47,24 @@ class IdeaController(BaseController):
             c.scope = geoInfoLib.getPublicScope(c.w)
         if 'user' in session:
             utils.isWatching(c.authuser, c.w)
+
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+        shareOk = workshopLib.isPublic(c.w)
+        c.facebookShare = FacebookShareObject(
+            itemType='workshop',
+            url=utils.workshopURL(c.w),
+            parentCode=workshopCode, 
+            image=c.backgroundImage,
+            title=c.w['title'],
+            description=c.w['description'].replace("'", "\\'"),
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
 
     def listing(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -100,14 +99,31 @@ class IdeaController(BaseController):
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
 
-        if 'submit' not in request.params or 'title' not in request.params:
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
+        if 'submit' not in payload or 'title' not in payload:
             log.info("submit or title not in req params")
-            return redirect(session['return_to'])
-        title = request.params['title'].strip()
-        text = request.params['text']
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+        title = payload['title'].strip()
+        if 'text' in payload:
+            text = payload['text']
+        else:
+            text = ''
         if title == '':
             log.info("title is blank")
-            return redirect(session['return_to'])
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
         if len(title) > 120:
             title = title[:120]
         newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
@@ -125,9 +141,11 @@ class IdeaController(BaseController):
             statusCode = 0
             response.headers['Content-type'] = 'application/json'
             #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
-            return json.dumps({'statusCode':statusCode, 'result':result})
-        else:
+            return json.dumps({'statusCode':statusCode, 'result':result})   
+        elif request.params:
             return redirect(utils.thingURL(c.w, newIdea))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         # check to see if this is a request from the iphone app
@@ -140,8 +158,16 @@ class IdeaController(BaseController):
             c.thing = revisionLib.getRevisionByCode(ideaCode)
             if not c.thing:
                 abort(404)
-        # name/title for facebook sharing
-        c.name = c.thing['title']
+        
+        ################## FB SHARE ###############################
+        c.facebookShare.title = c.thing['title']
+        c.facebookShare.thingCode = c.thingCode
+        # update url for this item
+        c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
+        # set description to be that of the topic's description
+        c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
+
         if 'views' not in c.thing:
             c.thing['views'] = u'0'
         
