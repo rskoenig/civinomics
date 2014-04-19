@@ -125,10 +125,11 @@
                                 l = listenerLib.getListener(c.user['email'], workshop)
                                 itemsChecked = ''
                                 digestChecked = ''
-                                if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                                    itemsChecked = 'checked'
-                                if 'digest' in l and l['digest'] == '1':
-                                    digestChecked = 'checked'
+                                if l:
+                                    if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                                    if 'digest' in l and l['digest'] == '1':
+                                        digestChecked = 'checked'
                             %>
                             <div class="row-fluid" ng-controller="listenerController">
                                 <div class="span3">Email when:</div>
@@ -311,7 +312,7 @@
 <%def name="followButton(user)">
     % if c.conf['read_only.value'] == 'true':
           <% pass %>
-    % elif not c.privs['provisional']:
+    % else:
         <span class="button_container">
         % if c.isFollowing:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn pull-right followButton following">
@@ -347,6 +348,7 @@
         
         % for item in activity:
             <% 
+                origObjType = item.objType
                 objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
                 
@@ -420,7 +422,7 @@
                     activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
-                % if item['deleted'] == '0' and item['public'] == '1':
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
                     <tr><td>${activityStr | n}</td></tr>
                 % endif
             % elif objType == 'resource' and 'initiativeCode' in item:
@@ -445,7 +447,7 @@
                         activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
                         activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
                 %>
-                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                % if item['deleted'] == '0' and ('initiative_public' in item and item['initiative_public'] == '1'):
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
             % elif objType == 'comment' and 'photoCode' in item:

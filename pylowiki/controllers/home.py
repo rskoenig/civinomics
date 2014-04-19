@@ -11,7 +11,7 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.page import get_all_pages
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
-from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
+from pylowiki.lib.db.geoInfo import getGeoInfo, getGeoScope, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.workshop import getActiveWorkshops
 
 import pylowiki.lib.db.user         	as userLib
@@ -30,6 +30,7 @@ import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.fuzzyTime			as fuzzyTime	
+import misaka as m
 
 import simplejson as json
 
@@ -38,187 +39,184 @@ log = logging.getLogger(__name__)
 
 class HomeController(BaseController):
 
-	def __before__(self):
-	    if c.conf['public.sitemap'] != "true": 
-	        h.check_if_login_required()
-	    if 'user' in session:
-	        if userLib.isAdmin(c.authuser.id):
-	            c.isAdmin = True
-	        if c.authuser:
-	            c.messages = messageLib.getMessages(c.authuser)
-	            c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
-		c.user = c.authuser
-		#log.info("in home.py")
-		userLib.setUserPrivs()
+    def __before__(self):
+        if c.conf['public.sitemap'] != "true": 
+            h.check_if_login_required()
+        if 'user' in session:
+            if userLib.isAdmin(c.authuser.id):
+                c.isAdmin = True
+            if c.authuser:
+                c.messages = messageLib.getMessages(c.authuser)
+                c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
+        c.user = c.authuser
+        #log.info("in home.py")
+        userLib.setUserPrivs()
 
+    def index(self):
+    	c.postalCode = '95060'
+    	if c.authuser:
+    		c.postalCode = c.authuser['postalCode']
+        c.title = c.heading = c.workshopTitlebar = 'Home'
+        c.rssURL = "/activity/rss"
+        return render('/derived/6_home.bootstrap')
 
-	def index(self):
-		if not 'user' in session:
-			return redirect('/')
+    def getFollowingInitiatives(self, offset=0, limit=0):
+		interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
+		# reverse list so most recent first
+		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+		offset = int(offset)
+		limit = int(limit)
+		interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+		interestedInitiatives = []
+		for code in interestedInitiativeCodes:
+			log.info('%s' % code)
+			i = initiativeLib.getInitiative(code)
+			interestedInitiatives.append(i)
+
+		if len(interestedInitiatives) == 0:
+			return json.dumps({'statusCode':1})
 		else:
-			c.title = c.heading = c.workshopTitlebar = 'Home'
-			c.rssURL = "/activity/rss"
+			result = []
 
-			# Civinomicon
-			c.conTitle = "Civinomicon"			
-			c.conPhoto = '/images/civinomicon/final_sticker.png'
-			c.conLink = '/search?searchQuery=civinomicon'
+			myRatings = {}
+			if 'ratings' in session:
+				myRatings = session['ratings']
 
-			# most recent workshops
-			newWorkshops = []
-			workshops = getActiveWorkshops()
-			if len(workshops) == 0 :
-				pass#c.newWorkshops = 0
-			else:
-				workshops = workshops[:3]
-				if workshops >= 1:
-					for w in workshops:
-						title = w['title']
-						mainImage = mainImageLib.getMainImage(w)
-						if mainImage['pictureHash'] == 'supDawg':
-							imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
-						elif 'format' in mainImage.keys():
-							imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
-						else:
-							imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
-						photo = imgSrc
-						link = "/workshops/" + w['urlCode'] + "/" + w['url']
-						item = w
-						scope = workshopLib.getPublicScope(w)
-						level = scope['level'].title()
-						if level == 'Postalcode':
-							level = 'Zip Code'
-						fix = scope['name'].replace('-',' ')
-						name = fix.title()
-						if level == 'Earth':
-							scopeTitle = 'Planet ' + name
-						else:
-							scopeTitle = level + ' of ' + name
-						newWorkshops.append({ 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle})
-					c.newWorkshops = newWorkshops
+			for item in interestedInitiatives:
+				entry = {}
+				#entry['urlCode'] = item
+				entry['title'] = item['title']
+				entry['urlCode'] = item['urlCode']
+				entry['url'] = item['url']
 
+				# user rating
+				if entry['urlCode'] in myRatings:
+					entry['rated'] = myRatings[entry['urlCode']]
+					entry['vote'] = 'voted'
+				else:
+					entry['rated'] = 0
+					entry['vote'] = 'nvote'
 
-			# get user's bookmarks, listening and facilitating
-			bookmarked = followLib.getWorkshopFollows(c.authuser)
-			watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in bookmarked ]
-			c.bookmarks = []
-			c.followingWorkshopCodes = []
-			for workshop in watchList:
-				c.bookmarks.append(workshop)
-				c.followingWorkshopCodes.append(workshop['urlCode'])
-			c.numB = len(c.bookmarks)
+				# votes
+				entry['voteCount'] = int(item['ups']) + int(item['downs'])
+				entry['ups'] = int(item['ups'])
+				entry['downs'] = int(item['downs'])
+				entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
-			privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
-			if privateList:
-				pmemberWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
-				c.privateWorkshops = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+				#goal votes
+				if entry['voteCount'] < 100:
+				    entry['goal'] = 100
+				elif 'goal' in item:
+					entry['goal'] = item['goal']
+				else:
+					entry['goal'] = 100
+
+				# comments
+				entry['numComments'] = 0
+				if 'numComments' in item:
+					entry['numComments'] = item['numComments']
+
+				#tags
+				tags = []
+				tagList = []
+				if 'tags' in item:
+				    tagList = item['tags'].split('|')
+				for tag in tagList:
+				    if tag and tag != '':
+				        tags.append(tag)
+				entry['tags'] = tags
+
+				# photo
+				if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+					entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+					entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				else:
+					entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
+
+				entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
+
+				# scope attributes
+				if 'scope' in item:
+					entry['scope'] = item['scope']
+				else:
+					entry['scope'] = '0||united-states||0||0||0|0'
+				scopeInfo = utils.getPublicScope(entry['scope'])
+				entry['scopeName'] = scopeInfo['name']
+				entry['scopeLevel'] = scopeInfo['level']
+				entry['scopeHref'] = scopeInfo['href']
+				entry['flag'] = scopeInfo['flag']
+
+				entry['authorID'] = item.owner
 				
-				c.followingWorkshopCodes += [w['urlCode'] for w in pmemberWorkshops if w['public_private'] != 'public' and w['urlCode'] not in c.followingWorkshopCodes]
-			c.numPW = len(c.privateWorkshops)
+				result.append(entry)
+
+			if len(result) == 0:
+				return json.dumps({'statusCode':1})
+			return json.dumps({'statusCode':0, 'result': result})
 
 
-			listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-	        c.pendingListeners = []
-	        c.listeningWorkshops = []
-	        for l in listenerList:
-	            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-	            c.listeningWorkshops.append(lw)
-	            #if lw['urlCode'] not in c.followingWorkshopCodes:
-	                #c.followingWorkshopCodes.append(lw['urlCode'])
-	       
-	        #lwactivity = len(c.followingWorkshopCodes)
-	        #log.info("followingWorkshopCodes has %s items"%str(lwactivity))
-	                
-	        c.numLW = len(c.listeningWorkshops)
 
-	        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
-	        log.info('The facilitator objects: %s' % facilitatorList)
-	        c.facilitatorWorkshops = []
-	        #declare initiatives here for facilitated initiatives
-	        c.initiatives = []
-	        c.pendingFacilitators = []
-	        for f in facilitatorList:
-	        	if 'pending' in f and f['pending'] == '1':
-	        		c.pendingFacilitators.append(f)
-	        		log.info('pending invitation!')
-	        	elif f['disabled'] == '0':
-					if 'workshopCode' in f:
-						myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-						c.followingWorkshopCodes.append(myW['urlCode'])
-						c.facilitatorWorkshops.append(myW)
-						log.info('workshop added!')
-					elif 'initiativeCode' in f:
-						myI = initiativeLib.getInitiative(f['initiativeCode'])
-						c.initiatives.append(myI)
-						log.info('initiative added!')
-
-			log.info("Here be ze f items: %s" %c.facilitatorItems)
-	        c.numA = len(c.facilitatorItems)
-	        
-	        log.info("c.followingWorkshopCodes is %s"%c.followingWorkshopCodes)
-	        #if c.followingWorkshopCodes:
-	            #c.workshopsActivity = activityLib.getActivityForWorkshopList(30, c.followingWorkshopCodes)
-
-	        #if c.workshopsActivity:
-	            #lactivity = len(c.workshopsActivity)
-	            #log.info("c.workshopsActivity has %s items"%lactivity)
-	            
-	        #if c.usersActivity and c.workshopsActivity:
-	            #log.info("combining the lists")
-	            #c.interestedActivity = set(c.usersActivity + c.workshopsActivity)
-	            #c.interestedActivity = list(c.interestedActivity)
-	            #c.interestedActivity.sort(key=lambda x: x.date, reverse=True)
-	        #elif c.usersActivity:
-	            #log.info("user list")
-	            #c.interestedActivity = c.usersActivity
-	        #elif c.workshopsActivity:
-	            #c.interestedActivity = c.workshopsActivity
-	        #else:
-			    #countyScope = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL']
-			    ##log.info("countyScope is %s"%countyScope)
-			    #c.interestedActivity = activityLib.getRecentGeoActivity(30, countyScope)
-
-
-	        # initiatives
-	        initiativeList = initiativeLib.getInitiativesForUser(c.user)
-	        for i in initiativeList:
-	            if i.objType == 'initiative':
-	                #log.info("initiaitve 1")
-	                if i['public'] == '1':
-	                    if i['deleted'] != '1':
-	                        c.initiatives.append(i)
-	                else:
-	                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
-	                        c.initiatives.append(i)
-	        c.numA += len(c.initiatives)
-	                        
-	        c.initiativeBookmarks = []
-	        iwatching = followLib.getInitiativeFollows(c.user)
-	        initiativeList = [ initiativeLib.getInitiative(followObj['initiativeCode']) for followObj in iwatching ]
-	        for i in initiativeList:
-	            if i.objType == 'initiative':
-	                #log.info("initiative 2")
-	                if i['public'] == '1':
-	                    if i['deleted'] != '1':
-	                        c.initiativeBookmarks.append(i)
-	                else:
-	                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
-	                        c.initiativeBookmarks.append(i)
-	        c.numB += len(c.initiativeBookmarks)
-	        
-	        #c.activity = c.interestedActivity
-		
-
-		return render('/derived/6_home.bootstrap')
-
-
-	def getActivity(self):
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
 		# get recent activity and return it into json format
 		result = []
-		recentActivity = activityLib.getRecentActivity(12)
+		allActivity = []
+
+		offset = int(offset)
+		commments = int(comments)
+
+		if type == 'all':
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
+				
+
+		elif type == 'following' and c.authuser:
+			if c.privs['participant'] or c.privs['provisional']:
+				# combine the list of interested workshops
+				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
+
+				# combine the list of interested initiatives
+				interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
+
+				interestedObjects = interestedWorkshops + interestedInitiatives
+				#log.info("activity interestedObjects is %s"%interestedObjects)
+
+				# users being followed
+				interestedUsers = session['followingUsers']
+				#log.info("activity interestedUsers is %s"%interestedUsers)
+
+				# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
+				followingActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, offset)
+
+			if followingActivity:
+				recentActivity = followingActivity
+			else:
+				alertMsg = "You are not following any people, workshops or initiatives yet!"
+				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+
+		elif type == 'geo' and c.authuser:
+		    # try getting the activity of their area
+		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+		    scopeList = userScope.split('|')
+		    countyScope = scopeList[6]
+		    #log.info("countyScope is %s"%countyScope)
+		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
+		    if countyActivity:
+		    	recentActivity = countyActivity
+		    else:
+		    	alertMsg = "There is no activity in your county yet. Add something!"
+		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+
+		elif type == 'initiatives':
+			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+
+		else:
+			recentActivity = activityLib.getRecentActivity(max, 0, offset)
+		
 		myRatings = {}
 		if 'ratings' in session:
-		   myRatings = session['ratings']
+			myRatings = session['ratings']
 
 		for item in recentActivity:
 			entry = {}
@@ -230,45 +228,138 @@ class HomeController(BaseController):
 					entry['objType'] = 'update'
 			entry['urlCode'] = item['urlCode']
 			entry['url'] = item['url']
+			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+			if 'views' in item:
+				entry['views'] = str(item['views'])
+			else:
+				entry['views'] = '0'
+
+			# attributes that vary accross items
+			entry['text'] = ''
+			if 'text' in item:
+				entry['text'] = item['text']
+			elif 'description' in item:
+				entry['text'] = item['description']
+			entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+			if 'link' in item:
+				entry['link'] = item['link']
+			else:
+				entry['link'] = ''
+			if 'cost' in item:
+				entry['cost'] = item['cost']
+			else:
+				entry['cost'] = ''
+			entry['article'] = 'a'
+			if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
+				entry['article'] = 'an'
+
+			# href
+			# note: we should standardize the way object urls are constructed
+			if item.objType == 'photo':
+			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
+			else:
+			    entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+
+			if 'workshopCode' in item:
+			    entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+			    entry['href'] = entry['parentHref'] + entry['href']
+			elif 'initiativeCode' in item:
+			    entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+			    if entry['objType'] == 'update':
+			        entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
+			    else:
+			        entry['href'] = entry['parentHref'] + entry['href']
+		    
+			# modifications for children of workshops and initiatives
+			entry['parentTitle'] = ''
+			entry['parentObjType'] = ''
+			if 'workshopCode' in item:
+			    entry['parentTitle'] = item['workshop_title']
+			    entry['parentObjType'] = 'workshop'
+			elif 'initiativeCode' in item:
+			    entry['parentTitle'] = item['initiative_title']
+			    entry['parentObjType'] = 'initiative'
+
+			# photo
+			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+			elif entry['parentObjType'] == 'workshop':
+				mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
+				if mainImage['pictureHash'] == 'supDawg':
+					entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
+				elif 'format' in mainImage.keys():
+					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+				else:
+					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+
+			elif entry['parentObjType'] == 'initiative':
+				initiative = initiativeLib.getInitiative(item['initiativeCode'])
+				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+			else:
+				entry['mainPhoto'] = '0'
+				entry['thumbnail'] = '0'
 
 			#tags
 			tags = []
 			tagList = []
 			if 'tags' in item:
-				tagList = item['tags'].split('|')
+			    tagList = item['tags'].split('|')
 			elif 'initiative_tags' in item:
-				tagList = item['initiative_tags'].split('|')
+			    tagList = item['initiative_tags'].split('|')
 			elif 'workshop_category_tags' in item:
-				tagList = item['workshop_category_tags'].split('|')
+			    tagList = item['workshop_category_tags'].split('|')
 			for tag in tagList:
-				if tag and tag != '':
-					tags.append(tag)
+			    if tag and tag != '':
+			        tags.append(tag)
 			entry['tags'] = tags
 
+			# scope attributes
+			if 'scope' in item:
+				entry['scope'] = item['scope']
+			elif 'initiative_scope' in item:
+				entry['scope'] = item['initiative_scope']
+			elif 'workshop_public_scope' in item:
+				entry['scope'] = item['workshop_public_scope']
+			else:
+				entry['scope'] = '0||united-states||0||0||0|0'
+			scopeInfo = utils.getPublicScope(entry['scope'])
+			entry['scopeName'] = scopeInfo['name']
+			entry['scopeLevel'] = scopeInfo['level']
+			entry['scopeHref'] = scopeInfo['href']
+			entry['flag'] = scopeInfo['flag']
 
+			# user rating
+			if entry['urlCode'] in myRatings:
+				entry['rated'] = myRatings[entry['urlCode']]
+				entry['vote'] = 'voted'
+			else:
+				entry['rated'] = 0
+				entry['vote'] = 'nvote'
+
+			# votes
+			entry['voteCount'] = int(item['ups']) + int(item['downs'])
+			entry['ups'] = int(item['ups'])
+			entry['downs'] = int(item['downs'])
+			entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+			# comments
+			discussion = discussionLib.getDiscussionForThing(item)
+			entry['discussion'] = discussion['urlCode']
 			entry['numComments'] = 0
-			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
-			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
-			
 
-			# href
-			# note: we should standardize the way object urls are constructed
-			if item.objType == 'photo':
-				entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
-			else:
-				entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
-
-			if 'workshopCode' in item:
-				entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-				entry['href'] = entry['parentHref'] + entry['href']
-			elif 'initiativeCode' in item:
-				entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
-				if entry['objType'] == 'update':
-					entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
-				else:
-					entry['href'] = entry['parentHref'] + entry['href']
+			# author data
+			# CCN - need to find a way to optimize this lookup
+			author = userLib.getUserByID(item.owner)
+			entry['authorName'] = author['name']
+			entry['authorPhoto'] = utils._userImageSource(author)
+			entry['authorCode'] = author['urlCode']
+			entry['authorURL'] = author['url']
+			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
 			entry['parentTitle'] = ''
 			entry['parentObjType'] = ''
@@ -284,98 +375,11 @@ class HomeController(BaseController):
 				entry['parentTitle'] = item['initiative_title']
 				entry['parentObjType'] = 'initiative'
 
-			# author data
-			author = userLib.getUserByID(item.owner)
-			entry['authorName'] = author['name']
-			entry['authorPhoto'] = utils._userImageSource(author)
-			# can pick one or the other way to do href
-			#either include two atributes in entry and construct in html or construct here in one attribute
-			entry['authorCode'] = author['urlCode']
-			entry['authorURL'] = author['url']
-			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-
-			# photos
-			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-			else:
-				entry['mainPhoto'] = '0'
-				entry['thumbnail'] = '0'
-
-			# user ratings
-			if entry['urlCode'] in myRatings:
-			    entry['rated'] = myRatings[entry['urlCode']]
-			    entry['vote'] = 'voted'
-			else:
-				entry['rated'] = 0
-				entry['vote'] = 'nvote'
-			# votes
-			entry['voteCount'] = int(item['ups']) + int(item['downs'])
-			entry['ups'] = int(item['ups'])
-			entry['downs'] = int(item['downs'])
-
-			# comments
-			discussion = discussionLib.getDiscussionForThing(item)
-			entry['discussion'] = discussion['urlCode']
-
-			# attributes that vary accross objects
-			entry['text'] = '0'
-			if 'text' in item:
-				entry['text'] = item['text'][:200]
-			elif 'description' in item:
-				entry['text'] = item['description'][:200]
-			if len(entry['text']) >= 200:
-				entry['text'] += "..."
-
-			if 'link' in item:
-				entry['link'] = item['link']
-			else:
-				entry['link'] = '0'
-
-			if 'cost' in item:
-				entry['cost'] = item['cost']
-			else:
-				entry['cost'] = ''
-
 			result.append(entry)
 
 		if len(result) == 0:
 			return json.dumps({'statusCode':1})
 		return json.dumps({'statusCode':0, 'result': result})
-
-
-
-	def jsonCommentsForItem(self, urlCode):
-		result = []
-		comments = commentLib.getCommentsInDiscussionByCode(urlCode)
-		for comment in comments:
-			entry = {}
-			entry['data'] = comment['data']
-			entry['commentRole'] = ''
-			if 'commentRole' in comment:
-				entry['commentRole'] = comment['commentRole']
-
-			entry['date'] = fuzzyTime.timeSince(comment.date)
-
-			# comment author
-			author = userLib.getUserByID(comment.owner)
-			entry['authorName'] = author['name']
-			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-			entry['authorPhoto'] = utils._userImageSource(author)
-
-			result.append(entry)
-
-		if len(result) == 0:
-			return json.dumps({'statusCode':1})
-		return json.dumps({'statusCode':0, 'result':result})
-
-
-
-
-
-
-
-
 
 
 

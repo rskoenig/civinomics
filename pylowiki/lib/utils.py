@@ -76,18 +76,34 @@ def civinomicsAvatar():
 ##################################################
 # create a link to a comment
 ##################################################
-def commentLink(comment, parent):
-    if parent.objType.replace("Unpublished", "") == 'workshop':
-        parentBase = 'workshop'
-        commentSuffix = "/comment/%s"%comment['urlCode']
-    elif parent.objType.replace("Unpublished", "") == 'user':
-        parentBase = 'profile'
-    elif parent.objType.replace("Unpublished", "") == 'initiative':
-        parentBase = 'initiative'
-        
-    
-    linkStr = "/%s/%s/%s/comment/%s" %(parentBase, parent["urlCode"], parent["url"], comment["urlCode"])
-    return linkStr
+def commentLinker(comment):
+    itemLink = ''
+    if 'workshopCode' in comment:
+        if 'ideaCode' in comment:
+            # /workshop/4OOt/civinomicon-transportation/idea/4PUI/explore-ferry-servic
+            itemLink = '/workshop/' + comment['workshopCode'] + '/' +  comment['workshop_url'] + '/idea/' + comment['ideaCode'] + '/' + comment['parent_url']
+        elif 'resourceCode' in comment:
+            # this is a comment on a resource in a workshop
+            itemLink = '/workshop/' + comment['workshopCode'] + '/' +  comment['workshop_url'] + '/resource/' + comment['resourceCode'] + '/' + comment['parent_url']
+        else:
+            # this is a discussion in a workshop
+            # /workshop/4OOt/civinomicon-transportation/discussion/4SKj/no-fin
+            itemLink = '/workshop/' + comment['workshopCode'] + '/' +  comment['workshop_url'] + '/discussion/' + comment['discussionCode'] + '/' + comment['parent_url']
+    elif 'initiativeCode' in comment:
+        if 'resourceCode' in comment:
+            # this is a comment on a resource in an initiative
+            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/resource/' + comment['resourceCode'] + '/' + comment['parent_url']
+        elif comment['parent_url'] == comment['initiative_url']:
+            # this is an initiative
+            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/show'
+        elif comment['parent_url'] != comment['initiative_url']:
+            # this is a comment on an initiative update
+            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/updateShow/' + comment['discussionCode']
+    elif 'photoCode' in comment:
+        # this is a comment on a photo
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/photo/show/' + comment['photoCode']
+
+    return itemLink
 
 ##################################################
 # returns the base url without an ending '/'
@@ -114,9 +130,13 @@ def getPublicScope(item):
     # takes an item with scope attribute and returns scope level, name, flag and href
     flag = '/images/flags/'
     href = '/workshops/geo/earth'
+    scope = None
+    scopeString = ''
     if 'scope' in item and item['scope'] != '':
         scope = item['scope'].split('|')
-    elif '||' in item:
+    elif 'workshop_public_scope' in item and item['workshop_public_scope'] != '':
+        scope = item['workshop_public_scope'].split('|')
+    elif '|' in item:
         scope = item.split('|')
     if scope:
         if scope[2] != '0':
@@ -172,6 +192,7 @@ def getPublicScope(item):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
+    scopeLevel = scopeLevel.title()
     return {'level':scopeLevel, 'name':scopeName, 'scopeString':scopeString, 'flag':flag, 'href':href}
 
 def getTextFromMisaka(content):
@@ -285,7 +306,17 @@ def thingURL(thingParent, thing, **kwargs):
 
     if 'returnTitle' in kwargs:
         if kwargs['returnTitle'] == True:
-            return thing['views'], thing['title'], returnString
+            try:
+                views = thing['views']
+            except:
+                views = 0
+                pass
+            try:
+                title = thing['title']
+            except:
+                title = ''
+                pass
+            return views, title, returnString
         else:
             return returnString
     else:
@@ -400,3 +431,58 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
             return '/images/mainImage/%s/listing/%s.%s' %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
         else:
             return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
+
+workshopInfo = \
+"""
+The following is a suggested list of sections to include. This background wiki uses Markdown for styling. See the Formatting Guide above for help.
+
+
+Overview
+-----
+_A summary of the key ideas associated with your workshop topic._
+
+
+Stats and Trends
+-----
+_What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?_
+
+
+Existing Taxes and/or Revenues
+-----
+_Are there any public taxes associated with your workshop topic? Are there other current funding sources?_
+
+
+Current Spending
+-----
+_What money is currently spent on your workshop topic? What might it look like in the future?_
+
+
+Current Legislation
+-----
+_What publicly funded programs related to your workshop topic currently exist?_
+
+
+Case Studies
+-----
+_How have other groups or regions tackled this workshop topic already?_
+
+
+"""
+
+initiativeFields = \
+"""
+Background
+-----
+
+_incl. reference to Current Legislation_
+
+
+Proposal
+-----
+
+
+Fiscal Effects
+-----
+
+
+"""

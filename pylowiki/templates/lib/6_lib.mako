@@ -319,6 +319,7 @@
         if c.initiative:
             if c.initiative['public'] == '1':
                 shareOk = True
+        log.info("link: "+link)
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -687,8 +688,6 @@
         if isReadOnly():
             readOnlyMessage(thing)
             return
-        if c.privs['provisional']:
-            return
         if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
             return
         if c.w['allowIdeas'] == '0' and thing == 'ideas' and not (c.privs['admin'] or c.privs['facilitator']):
@@ -698,9 +697,13 @@
         btnX = "large"
         if 'small' in args or 'tiny' in args:
             btnX = "small"
+
+        if c.privs['provisional']:
+            printStr = '<a href="#activateAccountModal" data-toggle="modal"'
       
-        if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
+        elif c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
             printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
+
         else:
             printStr = '<a href="#signupLoginModal" data-toggle="modal"'
             
@@ -1896,7 +1899,6 @@
 
 <%def name="showTags(item)">
     <% 
-        colors = workshopLib.getWorkshopTagColouring()
         try:
           tagList = item['tags'].split('|')
         except KeyError:
@@ -1906,10 +1908,9 @@
       % for tag in tagList:
           % if tag and tag != '':
               <% 
-                tagClass = colors[tag] 
                 tagValue = tag.replace(" ", "_")
               %>
-              <a class="label workshop-tag ${tagClass}" href="/searchTags/${tagValue}/" >${tag}</a>
+              <a class="label workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>

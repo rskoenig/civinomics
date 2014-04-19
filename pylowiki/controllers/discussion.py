@@ -154,25 +154,35 @@ class DiscussionController(BaseController):
 
     @h.login_required
     def addDiscussionHandler(self, workshopCode, workshopURL):
+
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
-            return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
        
-        if 'title' in request.params:
-            title = request.params['title']
+        if 'title' in payload:
+            title = payload['title']
         else: 
             title = False
-        if 'text' in request.params:
-            text = request.params['text']
+        if 'text' in payload:
+            text = payload['text']
         else:
             text = ''
 
         if not title or title=='':
-            alert = {'type':'error'}
-            alert['title'] = 'Title Field Required'
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-            return redirect(session['return_to'])
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
 
         else:
             if len(title) > 120:
@@ -182,4 +192,8 @@ class DiscussionController(BaseController):
             alertsLib.emailAlerts(d.d)
             commit(c.w)
         
-        return redirect(utils.thingURL(c.w, d.d))
+        if request.params:
+            return redirect(utils.thingURL(c.w, d.d))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
+        

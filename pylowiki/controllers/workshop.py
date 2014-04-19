@@ -142,6 +142,15 @@ class WorkshopController(BaseController):
             abort(404)
         log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '"/images/slide/slichow/supDawg.slideshow"'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
+
+
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
         
@@ -952,6 +961,19 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
+
+        # broken currently incrementing by 2-3
+        if 'views' not in c.w:
+            c.w['views'] = u'0'
+        
+        if c.w.objType != 'revision':    
+            views = int(c.w['views']) + 1
+            c.w['views'] = str(views)
+            dbHelpers.commit(c.w)
+
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
@@ -994,8 +1016,7 @@ class WorkshopController(BaseController):
         if not iPhoneApp:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         
-        # not used
-        #c.information = pageLib.getInformation(c.w)
+        c.information = pageLib.getInformation(c.w)
         
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
@@ -1374,13 +1395,16 @@ class WorkshopController(BaseController):
         for idea in ideas:
             entry = {}
             entry['title'] = idea['title']
-            entry['text'] = idea['text'][:200]
-            if len(entry['text']) >= 200:
-                entry['text'] += "..."
+            entry['text'] = idea['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(idea.date)
             entry['urlCode'] = idea['urlCode']
             entry['url'] = idea['url']
+            entry['parentHref'] = '/workshop/' + idea['workshopCode'] + '/' + idea['workshop_url']
+            href = '/' + idea.objType + '/' + idea['urlCode'] + '/' + idea['url']
+            entry['href'] = entry['parentHref'] + href
+            entry['objType'] = 'idea'
             if idea['adopted'] == '1':
                 entry['status'] = 'adopted'
                 adopted += 1
@@ -1402,18 +1426,33 @@ class WorkshopController(BaseController):
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
 
+            # comments
+            entry['numComments'] = 0
+            if 'numComments' in idea:
+                entry['numComments'] = idea['numComments']
+            discussion = discussionLib.getDiscussionForThing(idea)
+            if discussion:
+                entry['discussion'] = discussion['urlCode']
+            else:
+                entry['discussion'] = 0
+            if 'views' in idea:
+                entry['views'] = str(idea['views'])
+            else:
+                entry['views'] = '0'
+
             entry['addedAs'] = idea['addedAs']
-            entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
             u = userLib.getUserByID(idea.owner)
             entry['authorHash'] = md5(u['email']).hexdigest()
             entry['authorCode'] = entry['userCode'] = idea['userCode']
             entry['authorURL'] = entry['user_url'] = idea['user_url']
+            author = userLib.getUserByID(idea.owner)
+            entry['authorPhoto'] = utils._userImageSource(author)
             entry['authorName'] = entry['user_name'] = idea['user_name']
             entry['workshopCode'] = workshopCode
             entry['workshopURL'] = workshopURL
             entry['views'] = '0'
             if 'views' in idea:
-                entry['views'] = numViews = str(idea['views'])
+                entry['views'] = str(idea['views'])
 
             result.append(entry)
         numIdeas = len(ideas) - disabled
@@ -1421,4 +1460,180 @@ class WorkshopController(BaseController):
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
 
+
+    def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
+        # get recent activity and return it into json format
+        result = []
+
+        offset = int(offset)
+        commments = int(comments)
+
+        #recentActivity = activityLib.getRecentActivity(max)
+        workshopActivity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        
+        myRatings = {}
+        if 'ratings' in session:
+            myRatings = session['ratings']
+
+        numAdopted = 0
+        numDiscussions = 0
+        numIdeas = 0
+        numResources = 0
+        for item in workshopActivity:
+            entry = {}
+            # item attributes
+            entry['title'] = item['title']
+            entry['objType'] = item.objType
+            if item.objType == 'discussion':
+                numDiscussions += 1
+                if item['discType'] == 'update':
+                    entry['objType'] = 'update'
+            if item.objType == 'idea':
+                numIdeas += 1
+                entry['status'] = 'proposed'
+                if item['adopted'] == '1':
+                    entry['status'] = 'adopted'
+                    numAdopted += 1
+                elif item['disabled'] == '1':
+                    entry['status'] = 'disabled'
+            if item.objType == 'resource':
+                numResources += 1
+            entry['urlCode'] = item['urlCode']
+            entry['url'] = item['url']
+            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+            if 'views' in item:
+                entry['views'] = str(item['views'])
+            else:
+                entry['views'] = '0'
+
+            # attributes that vary accross items
+            entry['text'] = '0'
+            if 'text' in item:
+                entry['text'] = item['text']
+            elif 'description' in item:
+                entry['text'] = item['description']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            if 'link' in item:
+                entry['link'] = item['link']
+            else:
+                entry['link'] = '0'
+            if 'cost' in item:
+                entry['cost'] = item['cost']
+            else:
+                entry['cost'] = ''           
+
+            # href
+            # note: we should standardize the way object urls are constructed
+            if item.objType == 'photo':
+                entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
+            else:
+                entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+
+            if 'workshopCode' in item:
+                entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+                entry['href'] = entry['parentHref'] + entry['href']
+            elif 'initiativeCode' in item:
+                entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+                if entry['objType'] == 'update':
+                    entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
+                else:
+                    entry['href'] = entry['parentHref'] + entry['href']
+            
+            # modifications for children of workshops and initiatives
+            entry['parentTitle'] = ''
+            entry['parentObjType'] = ''
+            if 'workshopCode' in item:
+                entry['parentTitle'] = item['workshop_title']
+                entry['parentObjType'] = 'workshop'
+            elif 'initiativeCode' in item:
+                entry['parentTitle'] = item['initiative_title']
+                entry['parentObjType'] = 'initiative'
+
+            # photo
+            if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+                entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+            else:
+                entry['mainPhoto'] = '0'
+                entry['thumbnail'] = '0'
+
+            #tags
+            tags = []
+            tagList = []
+            if 'tags' in item:
+                tagList = item['tags'].split('|')
+            elif 'initiative_tags' in item:
+                tagList = item['initiative_tags'].split('|')
+            elif 'workshop_category_tags' in item:
+                tagList = item['workshop_category_tags'].split('|')
+            for tag in tagList:
+                if tag and tag != '':
+                    tags.append(tag)
+            entry['tags'] = tags
+
+            # scope attributes
+            if 'scope' in item:
+                entry['scope'] = item['scope']
+            elif 'initiative_scope' in item:
+                entry['scope'] = item['initiative_scope']
+            elif 'workshop_public_scope' in item:
+                entry['scope'] = item['workshop_public_scope']
+            else:
+                entry['scope'] = '0||united-states||0||0||0|0'
+            scopeInfo = utils.getPublicScope(entry['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
+
+            # user rating
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
+            else:
+                entry['rated'] = 0
+                entry['vote'] = 'nvote'
+
+            # votes
+            entry['voteCount'] = int(item['ups']) + int(item['downs'])
+            entry['ups'] = int(item['ups'])
+            entry['downs'] = int(item['downs'])
+            entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+            # comments
+            discussion = discussionLib.getDiscussionForThing(item)
+            entry['discussion'] = discussion['urlCode']
+            entry['numComments'] = 0
+            if 'numComments' in item:
+                entry['numComments'] = item['numComments']
+
+            # author data
+            # CCN - need to find a way to optimize this lookup
+            author = userLib.getUserByID(item.owner)
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+            entry['parentTitle'] = ''
+            entry['parentObjType'] = ''
+            entry['article'] = 'a'
+            if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
+                entry['article'] = 'an'
+
+            # modifications for children of workshops and initiatives
+            if 'workshopCode' in item:
+                entry['parentTitle'] = item['workshop_title']
+                entry['parentObjType'] = 'workshop'
+            elif 'initiativeCode' in item:
+                entry['parentTitle'] = item['initiative_title']
+                entry['parentObjType'] = 'initiative'
+
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result, 'numAdopted': numAdopted, 'numIdeas': numIdeas, 'numDiscussions': numDiscussions, 'numResources':numResources})
 

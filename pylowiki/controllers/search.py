@@ -10,6 +10,7 @@ from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, get
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime    
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
@@ -19,13 +20,13 @@ import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
-import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
+import misaka                       as m
 
 import simplejson as json
 from hashlib import md5
@@ -940,12 +941,18 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = i['title']
-            entry['description'] = i['description'][:200]
-            if len(entry['description']) >= 200:
-                entry['description'] += "..."
+            entry['text'] = i['description']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['cost'] = i['cost']
-            entry['tag'] = i['tags']
+            entry['objType'] = 'initiative'
+            tags = []
+            tagList = i['tags'].split('|')
+            for tag in tagList:
+                if tag and tag != '':
+                    tags.append(tag)
+            entry['tags'] = tags
             entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(i.date)
             entry['urlCode'] = i['urlCode']
             entry['url'] = i['url']
 
@@ -968,8 +975,32 @@ class SearchController(BaseController):
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
 
+            # author data
+            # CCN - need to find a way to optimize this lookup
+            author = userLib.getUserByID(i.owner)
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+            # comments
+            entry['numComments'] = 0
+            if 'numComments' in i:
+                entry['numComments'] = i['numComments']
+            discussion = discussionLib.getDiscussionForThing(i)
+            if discussion:
+                entry['discussion'] = discussion['urlCode']
+            else:
+                entry['discussion'] = 0
+            if 'views' in i:
+                entry['views'] = str(i['views'])
+            else:
+                entry['views'] = '0'
+
             entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
-            entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
+            entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(i['directoryNum_photos'], i['pictureHash_photos'])
+            entry['href'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
             try:
                 entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
             except:
@@ -1085,6 +1116,7 @@ class SearchController(BaseController):
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
+            entry['fullName'] = entry['level'] + ' of ' + entry['name']
 
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')

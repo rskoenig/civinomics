@@ -52,7 +52,7 @@
                         <li class="${homeSelected}">
                             <a href="/">Home</a>
                         </li>
-                        <li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>
+                        <!--<li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>-->
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
@@ -87,7 +87,7 @@
                             <li class="${mSelected}">
                                 <%
                                     messageCount = ''
-                                    numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                    numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
                                     if numMessages:
                                         if numMessages > 0:
                                             messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
@@ -137,6 +137,7 @@
             </ul>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/corp/surveys" class="nav-item">Surveys</a></li>
                 <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="http://civinomics.wordpress.com" target="_blank" class="nav-item">Blog</a></li>
                 <!-- <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li> -->
@@ -361,7 +362,7 @@
 <%def name="socialLogins()">
     <div class="row-fluid social-login centered">
         <div id="fbLoginButton2">
-            <a onclick="facebookLogin()"><img src="/images/f-login.png"></a>
+            <a href="/fbLogin"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
@@ -505,5 +506,26 @@
         </div>
       </div>
     </div>
+</%def>
+
+
+<%def name="activateAccountModal()">
+    <div id="activateAccountModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="activateAccountModal" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Activate Your Account</h3>
+      </div>
+      <div class="modal-body">
+        <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
+
+        <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
+        <div class="top-space green" id="resendMessage"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+      </div>
+    </div>
+    <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
 </%def>
 

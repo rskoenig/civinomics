@@ -48,7 +48,7 @@
 </%def>
 
 <%def name="showItemTitle(thing)">
-    <h4>
+    <h3>
         <% 
             link = ""
             title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
@@ -70,7 +70,7 @@
         ${title | n}<br>
         <div class="spacer"></div>
         ${link | n}
-    </h4>
+    </h3>
 </%def>
 
 <%def name="showItemOwner(thing)">

@@ -341,15 +341,41 @@ class ProfileController(BaseController):
         if photos:
             c.photos = photos
             c.photos.reverse()
-
+            
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
+        return render("/derived/6_profile_archives.bootstrap")
+        
+            
+    def getUserTrash(self, id1, id2):
         c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
-
-        return render("/derived/6_profile_archives.bootstrap")
+            
+        result = []
+        for item in c.unpublishedActivity:
+            entry = {}
+            entry['objType'] = item.objType.replace("Unpublished", "")
+            entry['objType'] = item.objType.replace("Unpublished", "")
+            if entry['objType'] != 'comment':
+                entry['url']= item['url']
+                entry['urlCode']=item['urlCode']
+                entry['title'] = item['title']
+            else:
+                entry['url']= ''
+                entry['urlCode']= ''
+                entry['title'] = item['data']
+            if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                
+            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
+            entry['unpublishedBy'] = item['unpublished_by']
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
         
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':

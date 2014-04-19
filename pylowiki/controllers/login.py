@@ -17,6 +17,13 @@ from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
+import pylowiki.lib.db.follow       	as followLib
+import pylowiki.lib.db.workshop     	as workshopLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.pmember      	as pMemberLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.initiative   	as initiativeLib
 
 # twython imports
 from twython import Twython
@@ -537,7 +544,7 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        log.info("login:logUserIn session save")
+        #log.info("login:logUserIn session save")
 
         c.authuser = user
         
@@ -545,8 +552,19 @@ class LoginController(BaseController):
         ratings = ratingLib.getRatingsForUser()
         session["ratings"] = ratings
         session.save()
+        
+        # get their workshops and initiatives of interest
+        #log.info("start session cache")
+        followLib.setWorkshopFollowsInSession()
+        followLib.setUserFollowsInSession()
+        pMemberLib.setPrivateMemberWorkshopsInSession()
+        listenerLib.setListenersForUserInSession()
+        facilitatorLib.setFacilitatorsByUserInSession()
+        initiativeLib.setInitiativesForUserInSession()
+        followLib.setInitiativeFollowsInSession()
+        #log.info("end session cache")
 
-        log.info("login:logUserIn")
+        #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
             if kwargs['iPhoneApp'] != True:
                 if 'externalAuthType' in user.keys():

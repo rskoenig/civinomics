@@ -10,12 +10,23 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.mail            as mailLib
+import simplejson as json
 
 import time
 
 log = logging.getLogger(__name__)
 
 class ActivateController(BaseController):
+    
+    def setSession(self):
+        session['listenerWorkshops'] = []
+        session['bookmarkedWorkshops'] = [] 
+        session['privateWorkshops'] = []
+        session['facilitatorWorkshops'] = []
+        session['facilitatorInitiatives'] = [] 
+        session['bookmarkedInitiatives'] = []
+        session['followingUsers'] = []
+        session.save()
 
     def index(self, id):
         hash, sep, email = id.partition('__')
@@ -36,6 +47,7 @@ class ActivateController(BaseController):
                         session["userURL"] = user['url']
                         session.save()
                         c.authuser = user
+                        self.setSession()
                         mailLib.sendWelcomeMail(user)
                         if 'afterLoginURL' in session:
                             returnURL = session['afterLoginURL']
@@ -72,6 +84,8 @@ class ActivateController(BaseController):
                             session["userURL"] = user['url']
                             session.save()
                             c.authuser = user
+                            self.setSession()
+
                             mailLib.sendWelcomeMail(user)
                             if 'afterLoginURL' in session:
                                 #log.info('after login url')
@@ -129,10 +143,14 @@ class ActivateController(BaseController):
         user = userLib.getUserByCode(userCode)
         if not user:
             abort(404)
+        # ugly hack to prevent this from being called twice by the javascript
+        if 'resendActivation' in session:
+            session.pop('resendActivation')
+            return json.dumps({'statusCode':1})
+        
+        session['resendActivation'] = '1'
+        session.save()
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
         mailLib.sendActivationMail(user['email'], url)
-        
-        
-        
-        
+        return json.dumps({'statusCode':1})

@@ -26,22 +26,24 @@
                             showNum = 3
                             remaining = len(c.authors) - showNum
                         %>
-                        % for author in c.authors[:showNum]:
-                            <td>
-                                ${lib_6.userImage(author, className="avatar small-avatar")}
-                            </td>
-                        % endfor
                         <td>
-                            <span class="grey">Authored by
+                            <span class="grey">Authors: </span>
+                            % for author in c.authors[:showNum]:
+                                ${lib_6.userImage(author, className="avatar small-avatar")}
+                            % endfor
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="grey">
                             % for author in c.authors[:showNum]:
                                 % if author != c.authors[0] and len(c.authors) >= 3:
                                     ,
                                 % endif
-                                % if author == c.authors[-1]:
+                                % if author == c.authors[-1] and len(c.authors) > 1:
                                     and
                                 % endif
                                 ${lib_6.userLink(author)}
-                                ${lib_6.userGreetingMsg(author)}
                             % endfor
                             % if remaining >= 1:
                                 , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
@@ -76,13 +78,10 @@
             </div><!-- tab-pane -->
         </div><!-- tabcontent -->
     </div><!-- tabbable -->
-    <%
-        if 'views' in item:
-            numViews = str(item['views'])
-        else:
-            numViews = "0"
-    %>
-    Published on ${item.date} <i class="icon-eye-open"></i> Views ${numViews}
+    <br>
+    <span class="grey">
+        Published: ${item.date}
+    </span>
 </%def>
 
 <%def name="showUpdateList()">
@@ -123,14 +122,14 @@
 </%def>
 
 <%def name="watchButton(i, **kwargs)">
-    % if 'user' in session and not c.privs['provisional']:
+    % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
+            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
             </button>
         % else:
             <button class="btn pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-             <span><i class="icon-bookmark med-green"></i><strong> Bookmark </strong></span>
+             <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
     % endif
@@ -788,7 +787,7 @@
                           <button type="submit" class="btn"><i class="icon-search"></i></button>
                         </div>
                     </form>
-                        <table class="table-striped full-width" ng-if="!(users = '')" ng-cloak>
+                        <table class="table-striped full-width" ng-cloak>
                             <tr ng-repeat="user in users | limitTo:10">
                                 <td>
                                     <a href="/profile/{{user.urlCode}}/{{user.url}}">
@@ -802,7 +801,7 @@
                             </tr>
                         </table>
                 </div><!-- row-fluid -->
-                <div ng-show="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}">
+                <div ng-if="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}" ng-cloak>
                     <button type="button" class="close" ng-click="hideShowAlert()">&times;</button>
                     {{alertMsg}}
                 </div>
@@ -813,7 +812,7 @@
                     <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
                 </div>
                 <div class="row-fluid" ng-show="!loading"> -->
-                    <table class="table-striped full-width">
+                    <table class="table-striped full-width" ng-cloak>
                         <tr>
                             <td>
                                 ${lib_6.userImage(c.user, className="avatar med-avatar")}
@@ -839,15 +838,15 @@
                                 <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
                             </td>
                             <td>
-                                <span ng-show="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
+                                <span ng-if="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
                             </td>
                             <td>
-                                <button type="button" ng-show="a.pending == '1'" ng-click="resendInvite(a.urlCode)" class="btn btn-primary pull-right">Resend Invite</button>
+                                <button type="button" ng-if="a.pending == '1'" ng-click="resendInvite(a.urlCode)" class="btn btn-primary pull-right">Resend Invite</button>
                             </td>
-                            <td ng-show="a.urlCode != authuserCode">
+                            <td ng-if="a.urlCode != authuserCode">
                                 <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove</button>
                             </td>
-                            <td ng-show="a.urlCode == authuserCode">
+                            <td ng-if="a.urlCode == authuserCode">
                                 <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler" ng-cloak>
                                     <input type="hidden" name="resign" value="resign">
                                     <button type="submit" class="btn btn-danger pull-right">Resign</button>

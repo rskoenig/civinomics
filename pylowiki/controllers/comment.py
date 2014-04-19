@@ -16,6 +16,9 @@ import pylowiki.lib.db.geoInfo      as  geoInfoLib
 import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
+import pylowiki.lib.fuzzyTime           as fuzzyTime    
+import misaka as m
+import simplejson as json
 
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.utils           as  utils
@@ -69,10 +72,18 @@ class CommentController(BaseController):
     
     @h.login_required
     def commentAddHandler(self):
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+        
         try:
-            request.params['submit']
-            parentCommentCode = request.params['parentCode']
-            thingCode = request.params['thingCode']
+            payload['submit']
+            parentCommentCode = payload['parentCode']
+            thingCode = payload['thingCode']
             thing = genericLib.getThing(thingCode)
             if not thing:
                 return False
@@ -88,7 +99,7 @@ class CommentController(BaseController):
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
-            data = request.params['comment-textarea']
+            data = payload['comment-textarea']
             data = data.strip()
             if data == '':
                 alert = {'type':'error'}
@@ -96,22 +107,26 @@ class CommentController(BaseController):
                 alert['content'] = 'No comment text entered.'
                 session['alert'] = alert
                 session.save()
-                return redirect(session['return_to'])
+                if request.params:
+                    return redirect(session['return_to'])
+                elif json.loads(request.body):
+                    return json.dumps({'statusCode':1})
+                    
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
                 parentAuthor = userLib.getUserByID(parentComment.owner)
-            elif 'discussionCode' in request.params:
+            elif 'discussionCode' in payload:
                 # Root level comment
-                discussion = discussionLib.getDiscussion(request.params['discussionCode'])
+                discussion = discussionLib.getDiscussion(payload['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             if thing.objType == 'idea' or thing.objType == 'initiative':
-                if 'commentRole' in request.params:
-                    commentRole = request.params['commentRole']
+                if 'commentRole' in payload:
+                    commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
                     dbHelpers.commit(comment)
 
@@ -148,16 +163,26 @@ class CommentController(BaseController):
                 elif thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in thing:
                     mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
             
-            if 'workshopCode' in thing:   
-                return redirect(utils.thingURL(workshop, thing))
-            elif thing.objType == 'photo' or 'photoCode' in thing:
-                return redirect(utils.profilePhotoURL(thing))
-            elif thing.objType == 'initiative' or 'initiativeCode' in thing:
-                return redirect(utils.initiativeURL(thing))
+            if request.params:
+                if 'workshopCode' in thing:   
+                    return redirect(utils.thingURL(workshop, thing))
+                elif thing.objType == 'photo' or 'photoCode' in thing:
+                    return redirect(utils.profilePhotoURL(thing))
+                elif thing.objType == 'initiative' or 'initiativeCode' in thing:
+                    return redirect(utils.initiativeURL(thing))
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':0})
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            if request.params:
+                return redirect(utils.thingURL(workshop, thing))
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+
+        if request.params:
             return redirect(utils.thingURL(workshop, thing))
-        return redirect(utils.thingURL(workshop, thing))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
     
     def permalink(self, workshopCode, workshopURL, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
@@ -177,6 +202,30 @@ class CommentController(BaseController):
         c.initiative = genericLib.getThing(urlCode)
         c.facebookShare.url = request.url
         return render('/derived/6_permaInitiativeComment.bootstrap')
+
+    def jsonCommentsForItem(self, urlCode):
+        result = []
+        comments = commentLib.getCommentsInDiscussionByCode(urlCode)
+        for comment in comments:
+            entry = {}
+            entry['text'] = comment['data']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['commentRole'] = ''
+            if 'commentRole' in comment:
+                entry['commentRole'] = comment['commentRole']
+
+            entry['date'] = fuzzyTime.timeSince(comment.date)
+
+            # comment author
+            author = userLib.getUserByID(comment.owner)
+            entry['authorName'] = author['name']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result':result})
         
     ####################################################
     # 

@@ -184,7 +184,7 @@
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
                                 % else:
-                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
+                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.png" class="image-thumbnail">
                                 % endif
                             </div><!-- portlet-image -->
                         </div><!-- portlet -->

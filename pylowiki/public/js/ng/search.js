@@ -1,4 +1,4 @@
-var app = angular.module('civ', ['$strap.directives']);
+var app = angular.module('civ', ['$strap.directives', 'ngSanitize']);
 
 app.controller('SearchCtrl', function($scope, $http){
 //function SearchCtrl($scope, $http) {

@@ -1,64 +1,163 @@
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="initiative_listing()">
-    <td class="initiative-listing">
-        <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount; yesVotes=initiative.ups; noVotes=initiative.downs; objType='initiative';">
-            <div class="media-body" ng-controller="yesNoVoteCtrl">
-                <div class="span9">
-                    <div class="span3">
-                        <a ng-href = '{{initiative.initiativeLink}}'>
-                            <div class="i-thumb" style="background-image:url('{{initiative.thumbnail}}');"/></div>
-                        </a>
-                    </div>
-                    <div class="span9">
-                        <h4 class="media-heading">
-                            <a class="listed-item-title initiative-title" ng-href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
-                        </h4>
-                        <p>{{initiative.description}}</p>
-                        <hr class="no-bottom no-top">
-                        <h5 class="h45">
-                            <small class="grey centered">Estimated Cost:</small>
-                            <span class="pull-right">{{initiative.cost | currency}}</span>
-                        </h5>
-                        <small>
-                            % if c.searchType and c.searchType != 'region':
-                                <a class="no-highlight" ng-href="{{initiative.geoHref}}"><img class="thumbnail small-flag border" ng-src="{{initiative.flag}}"> {{initiative.scopeLevel}} of {{initiative.scopeName}}</a><br>
-                            % endif
-                            Authors: <a ng-href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a> | Tags: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
-                        </small>
-                    </div>
-                </div>
-                <div class="span3 voteBlock ideaListing well" >
-                    ${yesNoVoteBlock()}
-                </div>
-            </div>
-        </div>
-    </td>
+<%def name="basic_listing()">
+    <td class="avatar-cell"><div ng-if="item.thumbnail" class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div></td>
+    <td><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
 </%def>
 
-<%def name="listIdeas()">
-        <div ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount; yesVotes=idea.ups; noVotes=idea.downs; objType='idea';">
-            <div class="media-body object-in-listing {{idea.status}} border-bottom" ng-controller="yesNoVoteCtrl">
-                <div class="span9">
-                    <p class="ideaListingTitle"><a class="listed-item-title" ng-href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
-                        {{idea.title}}
-                    </a></p>
-                    <strong ng-show="idea.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
-                    <strong ng-show="idea.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
-                    <p>{{idea.text}}</p>
-                    <ul class="horizontal-list iconListing">
-                        <li>
-                            <a ng-href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a>Posted by <a class="green green-hover" ng-href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a> <span class="grey">{{idea.fuzzyTime}} ago</span>
-                        </li>
-                        <!-- <li><i class="icon-file-text"></i> Read full text</li> -->
-                        <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
-                        <li><i class="icon-eye-open"></i> Views ({{idea.views}})</li>
-                    </ul>
+<%def name="initiative_listing()">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+        <div ng-controller="yesNoVoteCtrl"> 
+            <div class="row-fluid">
+                <div class="span3">
+                    <div class="listed-photo">
+                        <a href = '{{item.href}}'>
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                        </a>
+                    </div>
                 </div>
-                <div class="span3 voteBlock ideaListing well" >
-                    ${yesNoVoteBlock()}
-                </div><!-- voteBlock -->
+                <div class="span9">
+                    <div class="well yesNoWell" >
+                        ${yesNoVoteBlock()}
+                    </div>
+                    <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <p><small>${metaData()}</small></p>
+                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    <h4>
+                        <small class="grey centered">Estimated Cost:</small>
+                        <span class="pull-right">{{item.cost | currency}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div class="row-fluid">
+                ${actions()}
+            </div>
+        </div>
+    </div>
+</%def>
+
+<%def name="idea_listing()">
+        <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+            <div class="media-body row-fluid" ng-controller="yesNoVoteCtrl">
+                % if not c.w:
+                    <div class="span3">
+                        <div class="listed-photo">
+                            <a href = '{{item.parentHref}}'>
+                                <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                            </a>
+                        </div>
+                    </div>
+                % endif
+                % if not c.w:
+                    <div class="span9">
+                % else:
+                    <div class="span12">
+                % endif
+                    <div class="well yesNoWell" >
+                        ${yesNoVoteBlock()}
+                    </div>
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    % if not c.w:
+                        <p><small>${metaData()}</small></p>
+                    % endif
+                    <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
+                    <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
+                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                </div>
             </div><!-- media-body -->
+            <div class="row-fluid">
+                ${actions()}
+            </div>
         </div><!-- search-listing -->
+</%def>
+
+<%def name="resource_listing()">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+            % if not c.w:
+                <div class="span3">
+                    <div class="listed-photo">
+                        <a href = '{{item.parentHref}}'>
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                        </a>
+                    </div>
+                </div>
+            % endif
+            % if not c.w:
+                <div class="span8">
+            % else:
+                <div class="span11 media-body">
+            % endif
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                % if not c.w:
+                    <p><small>${metaData()}</small></p>
+                % endif
+                <p><a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a><p>
+            </div>
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
+            </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+
+<%def name="discussion_listing()">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+            % if not c.w:
+                <div class="span3">
+                    <div class="listed-photo">
+                        <a href = '{{item.parentHref}}'>
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                        </a>
+                    </div>
+                </div>
+            % endif
+            % if not c.w:
+                <div class="span8">
+            % else:
+                <div class="span11 media-body">
+            % endif
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                % if not c.w:
+                    <p><small>${metaData()}</small></p>
+                % endif
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+            </div>
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
+            </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+
+<%def name="photo_listing()">
+    <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+            <div class="span11 media-body">
+                <div class="listed-photo">
+                    <a href = '{{item.href}}'>
+                        <div class="main-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                    </a>
+                </div>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                <p><small>${metaData()}</small></p>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+            </div>
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
+            </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
 </%def>
 
 <%def name="yesNoVoteBlock()">
@@ -99,383 +198,148 @@
     % endif
 </%def>
 
+<%def name="upDownVoteBlock()">   
+    % if 'user' in session:
+        <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
+            <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+        </a>
+        <br>
+        <div class="centered chevron-score"> {{netVotes}}</div>
+        <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
+            <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+        </a>
+    % else:
+        <a href="#signupLoginModal" data-toggle="modal" class="upVote">
+            <i class="icon-chevron-sign-up icon-2x"></i>
+        </a>
+        <br>
+        <div class="centered chevron-score"> {{netVotes}}</div>
+        <a href="#signupLoginModal" data-toggle="modal" class="downVote">
+            <i class="icon-chevron-sign-down icon-2x"></i>
+        </a>
+    % endif
+    <br>
+</%def>
 
-<%def name="listenerFacilitationInvite()">
-    <div ng-if="isRead(read)">
-        <div class="media">
-            <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
-            <div class="media-body">
-                <h5 class="media-heading">
-                    {{messageTitle}}
-                </h5>
-                <p>
-                    <a ng-href="{{userLink}}">{{userName}}</a>
-                    invites you to facilitate 
-                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
-                </p>
-                <p>
-                    {{messageText}}
-                </p>
-                <p>
-                    (You have already responded by 
-                    {{responseAction}})
-                </p>
-                <p class="pull-right"><small>
-                    {{messageDate}}
-                    (PST)
-                </small></p>
+<%def name="moreLess()">
+    <a class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+</%def>
+
+<%def name="moreLessComment()">
+    <a class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+</%def>
+
+<%def name="metaData()">
+    <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
+        <span style="text-transform: capitalize;">{{item.objType}}</span> for <a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
+        <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+    </small>
+</%def>
+
+<%def name="authorPosting()">
+    <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+    <small>
+        <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
+        <span class="date">{{item.fuzzyTime}} ago</span>
+        % if not (c.w or c.initiative):
+            <span ng-if="item.parentObjType && !(item.parentObjType == '')">
+                in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
+            </span>
+        % endif
+    </small>
+</%def>
+
+<%def name="actions()">
+    <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
+        <div ng-controller="commentsController">
+            <div class="actions-links">
+                <ul class="horizontal-list iconListing">
+                    <li>
+                        <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                        <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                    </li>
+                    <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                </ul>
             </div>
-        </div>
-    </div> <!-- end if read -->
-    <div ng-if="notRead(read)">
-        <form method="post" name="inviteListener" id="inviteListener" action="{{formLink}}">
-            <input type="hidden" name="workshopCode" value="{{itemCode}}">
-            <input type="hidden" name="workshopURL" value="{{itemUrl}}">
-            <input type="hidden" name="messageCode" value="{{messageCode}}">
-            <div class="media">
-                <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
-                <div class="media-body">
-                    <h5 class="media-heading">
-                        {{messageTitle}}
-                    </h5>
-                    <p>
-                        <a ng-href="{{userLink}}">{{userName}}</a>
-                        invites you to 
-                        {{action}}
-                        <a ng-href="{{itemLink}}">{{itemTitle}}</a>
-                    </p>
-                    <p>
-                        {{messageText}}
-                    </p>
-                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the workshop">Accept</button>
-                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the workshop">Decline</button>
-                    <p class="pull-right"><small>
-                        {{messageDate}} 
-                        (PST)
-                    </small></p>
-                </div>
+            ### Comments
+            <div class="centered" ng-show="commentsLoading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-2x bottom-space-med"></i>
             </div>
-        </form>
-    </div> <!-- end if not read -->
-</%def>
 
-<%def name="listenerSuggestion()">
-    <div class="media">
-        <div class="media-body">
-            <h5 class="media-heading">
-                {{messageTitle}}
-            </h5>
-            <p>
-                Member 
-                <a ng-href="{{userLink}}">{{userName}}</a>
-                has a listener suggestion for workshop 
-                <a ng-href="{{itemLink}}">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}}
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
+            <table class="activity-comments" ng-class="{hidden : commentsHidden}">
+                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
 
-<%def name="authorInvite()">
-    <div ng-if="isRead(read)">
-        <div class="media">
-            <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
-            <div class="media-body">
-                <h5 class="media-heading">
-                    {{messageTitle}}
-                </h5>
-                <p>
-                    <a ng-href="{{userLink}}">{{userName}}</a>
-                    invites you to facilitate 
-                    <a ng-href="{{itemLink}}">{{itemTitle}}</a>
-                </p>
-                <p>
-                    {{messageText}}
-                </p>
-                <p>
-                    (You have already responded by 
-                    {{responseAction}})
-                </p>
-                <p class="pull-right"><small>
-                    {{messageDate}} 
-                    (PST)
-                </small></p>
-            </div>
-        </div>
-    </div> <!-- end if read -->
-    <div ng-if="notRead(read)">
-        {{formStr}}
-            <input type="hidden" name="initiativeCode" value="{{itemCode}}">
-            <input type="hidden" name="initiativeURL" value="{{itemUrl}}">
-            <input type="hidden" name="messageCode" value="{{messageCode}}">
-            <div class="media">
-                <img ng-src="{{itemImage}}" alt="{{itemTitle}}" title="{{itemTitle}}" class="pull-left message-workshop-image">
-                <div class="media-body">
-                    <h5 class="media-heading">
-                        {{messageTitle}}
-                    </h5>
-                    <p>
-                        <a ng-href="{{userLink}}">{{userName}}</a>
-                        invites you to 
-                        {{action}} 
-                        <a ng-href="{{itemLink}}">{{itemTitle}}</a>
-                    </p>
-                    <p>
-                        {{messageText}}
-                    </p>
-                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to {{action}} the initiative">Accept</button>
-                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to {{action}} the initiative">Decline</button>
-                    <p class="pull-right"><small>
-                        {{messageDate}} 
-                        (PST)
-                    </small></p>
-                </div>
-            </div>
-        </form>
-    </div> <!-- end if not read -->
-</%def>
-
-<%def name="authorResponse()">
-    <div class="media">
-        <div class="media-body">
-            <h5 class="media-heading">
-                {{messageTitle}}
-            </h5>
-            <p>
-                <a ng-href="{{userLink}}">{{userName}}</a>
-                {{messageText}} 
-                <a ng-href="{{itemLink}}">{{itemTitle}}</a>
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="commentResponse()">
-    <div class="media">
-        <div class="media-body">
-            <h5 class="media-heading">
-                <a ng-href="{{userLink}}">{{userName}}</a>
-                {{messageTitle}}
-            </h5>
-            <p>
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="commentOnPhotoInitiative()">
-    <div class="media">
-        <div class="media-body">
-            <h5 class="media-heading">
-                <a ng-href="{{userLink}}">{{userName}}</a>
-                {{messageTitle}}
-            </h5>
-            <p>
-                <a ng-href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="commentOnResource()">
-    <div class="media">
-        <div class="media-body">
-            <h5 class="media-heading">
-                <a ng-href="{{userLink}}">{{userName}}</a>
-                {{messageTitle}}
-            </h5>
-            <p>
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="commentOnUpdate()">
-    <div class="media">
-        <div class="media-body">
-            <h5 class="media-heading">
-                <a ng-href="{{userLink}}">{{userName}}</a>
-                {{messageTitle}}
-            </h5>
-            <p>
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="disabledEnabledDeletedPhoto()">
-    <div class="media">
-        <div class="media-body">
-            <h4 class="media-heading centered">
-                {{messageTitle}}
-            </h4>
-            <p>
-                It was 
-                {{eventAction}} 
-                because: 
-                {{eventReason}}
-            </p>
-            <p>
-                Your photo:
-                <!-- note: photo needs a link to the unpublished page, link to src of image and title -->
-                <img ng-src="{{itemLink}}" class="green green-hover" title="{{itemTitle}}" alt="{{itemTitle}}">
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="disabledEnabledDeletedInitiative()">
-    <div class="media">
-        <div class="media-body">
-            <h4 class="media-heading centered">
-                {{messageTitle}}
-            </h4>
-            <p>
-                It was 
-                {{eventAction}} 
-                because: 
-                {{eventReason}}
-            </p>
-            <p>
-                Your initiative:
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="disabledEnabledDeletedInitiativeResource()">
-    <div class="media">
-        <div class="media-body">
-            <h4 class="media-heading centered">
-                {{messageTitle}}
-            </h4>
-            <p>
-                It was 
-                {{eventAction}} 
-                because: 
-                {{eventReason}}
-            </p>
-            <p>
-                Your initiative resource:
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="disabledIEnabledDeletedInitiativeUpdate()">
-    <div class="media">
-        <div class="media-body">
-            <h4 class="media-heading centered">
-                {{messageTitle}}
-            </h4>
-            <p>
-                It was 
-                {{eventAction}} 
-                because: 
-                {{eventReason}}
-            </p>
-            <p>
-                Your initiative update:
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
-        </div>
-    </div>
-</%def>
-
-<%def name="disabledEnabledDeletedAdopted()">
-    <div class="media">
-        <div class="media-body">
-            <h4 class="media-heading centered">
-                {{messageTitle}}
-            </h4>
-            <p>
-                It was 
-                {{eventAction}} 
-                because: 
-                {{eventReason}}
-            </p>
-            <p>
-                You posted:
-                <a ng-href="{{itemLink}}" class="green green-hover">{{itemTitle}}</a>
-            </p>
-            <p>
-                {{messageText}}
-            </p>
-            <p class="pull-right"><small>
-                {{messageDate}} 
-                (PST)
-            </small></p>
+                    <td class="comment-avatar-cell">
+                        <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
+                    </td>
+                    <td style="padding: 10px;">
+                        <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
+                        <br>
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
+                  </td>
+                </tr>
+                
+                <tr ng-show="newCommentLoading" ng-cloak>
+                    <td></td>
+                    <td>
+                        <div class="centered">
+                            <i class="icon-spinner icon-spin icon-2x"></i>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-hide="newCommentLoading">
+                    % if c.authuser:
+                        <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
+                        <td style="padding: 10px;">
+                            % if c.privs and not c.privs['provisional']:
+                                <form class="no-bottom" ng-submit="submitComment()">
+                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                    <div ng-show="type == 'initiative' || type == 'idea'">
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
+                                        </label>
+                                    </div>
+                                </form>
+                            % else:
+                                <a href="#activateAccountModal" data-toggle='modal'>
+                                    <textarea class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <a href="#activateAccountModal" data-toggle='modal' class="btn btn-success" style="vertical-align: top;">Submit</a>
+                                </a>
+                            % endif
+                        </td>
+                    % else:
+                        <td class="comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar small-avatar"></td>
+                        <td style="padding: 10px;">
+                            <form class="no-bottom" ng-submit="submitComment()">
+                                <a href="#signupLoginModal" data-toggle='modal'>
+                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                </a>
+                                <div ng-show="type == 'initiative' || type == 'idea'">
+                                    <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
+                                        <label class="radio inline">
+                                            <input type="radio"> Pro
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio"> Neutral
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio"> Con
+                                        </label>
+                                    </a>
+                                </div>
+                            </form>
+                        </td>
+                    % endif
+                </tr> 
+            </table>
         </div>
     </div>
 </%def>

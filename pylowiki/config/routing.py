@@ -47,7 +47,11 @@ def make_map():
     map.connect('/corp/contact', controller = 'corp', action = 'contact')
     map.connect('/corp/caseStudies/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
     map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
+    map.connect('/corp/surveys/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
+    map.connect('/corp/surveys', controller = 'corp', action = 'caseStudies')
     map.connect('/corp/polling', controller = 'corp', action = 'polling')
+    map.connect('/surveys/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
+    map.connect('/results/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
 
 
     ########################################################################################################
@@ -160,7 +164,18 @@ def make_map():
     # activity
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{activity:activity?/?}', controller = 'workshop', action = 'activity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/getSiteActivity{end:/?}' , controller = 'home', action = 'getActivity')
+    map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
+    map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
+    
+    # following
+    map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
+    # trash
+    map.connect('/trash/{code}/{url}{end:/?}' , controller = 'trash', action = 'trashThingHandler', code = '{code}', url = '{url}')
+    # restore
+    map.connect('/restore/{code}/{url}{end:/?}' , controller = 'trash', action = 'restoreThingHandler', code = '{code}', url = '{url}')
+    
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
@@ -225,7 +240,7 @@ def make_map():
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
     map.connect('/profile/{urlCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto', urlCode = '{urlCode}')
-    map.connect('/getComments/{urlCode}{end:/?}', controller = 'home', action = 'jsonCommentsForItem', urlCode = '{urlCode}')
+    map.connect('/getComments/{urlCode}{end:/?}', controller = 'comment', action = 'jsonCommentsForItem', urlCode = '{urlCode}')
 
     # Ratings
     #map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
@@ -315,7 +330,7 @@ def make_map():
     # external authentication routes
     map.connect('/fbLinkAccountHandler{end:/?}', controller = 'login', action = 'fbLinkAccountHandler')
     map.connect('/twtLinkAccountHandler{end:/?}', controller = 'login', action = 'twtLinkAccountHandler')
-    map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
+    map.connect('/{fbLogin:fbLogin/?}', controller = 'login', action = 'fbLoginHandler')
     map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoginHandler')
     #map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
     map.connect('/fbNewAccount{end:/?}', controller = 'register', action = 'fbNewAccount')
@@ -371,6 +386,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
     
     ###############
     # Initiatives #
@@ -393,10 +409,15 @@ def make_map():
     ################
     # Messaging    #
     ################
-    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
-    map.connect('/messages/get/{id1}/{id2}{end:/?}', controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', id3 = '')
+    map.connect('/messages/{id1}/{id2}{end:/?}', controller = 'message', action = 'showUserMessages', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/messages/get/{id1}/{id2}{end:/?}', controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}')
+    #     map.connect('/getSiteActivitySlice/{comments}/{sliceType}/{sliceOffset}/{sliceMax}{end:/?}' , controller = 'home', action = 'getActivity')
     map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
     
+    map.connect('/getMessages/{id1}/{id2}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getMessages/{id1}/{id2}/{type}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', type = '{type}')
+    map.connect('/getMessagesSlice/{id1}/{id2}/{type}/{offset}{end:/?}' , controller = 'message', action = 'getUserMessages', id1 = '{id1}', id2 = '{id2}', type = '{type}', offset = '{offset}')
+
     ################
     # Action Lists #
     ################
