@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import datetime
 
 from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -278,10 +279,17 @@ class InitiativeController(BaseController):
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.initiative['public'] == '0':
                 c.initiative['public'] = '1'
+                startTime = datetime.datetime.now(None)
+                c.initiative['publishDate'] = startTime
+                c.initiative['unpublishDate'] = u'0000-00-00'
+                dbHelpers.commit(c.initiative)
                 c.saveMessage = "Your initiative is now live! It is publicly viewable."
         elif 'public' in request.params and request.params['public'] == 'unpublish':
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
+                endTime = datetime.datetime.now(None)
+                c.initiative['unpublishDate'] = endTime
+                dbHelpers.commit(c.initiative)
                 c.saveMessage = "Your initiative has been unpublished. It is no longer publicy viewable."
 
         c.editInitiative = True
@@ -516,7 +524,7 @@ class InitiativeController(BaseController):
         if c.initiative.objType == 'initiative' and 'views' not in c.initiative:
             c.initiative['views'] = u'0'
         
-        if c.initiative.objType != 'revision':    
+        if c.initiative.objType != 'revision' and 'views' in c.initiative:
             views = int(c.initiative['views']) + 1
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
