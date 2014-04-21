@@ -75,6 +75,6 @@ class TestnewsletterController(BaseController):
 			i['href'] = baseUrl + '/initiative/' + i['urlCode'] + '/' + i['url']
 
 
-        return render('/email/testNewsletter.html')
+        return render('/email/weeklyNewsletter.html')
         
         
