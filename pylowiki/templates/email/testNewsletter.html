@@ -18,36 +18,42 @@
         <div class="well obj-listing">
             <div class="row-fluid">
                 <div class="span3">
-                    <a href = '#i-href'>
+                    <a href = "${i['href']}">
                         <div class="i-photo" style="background-image:url('/images/photos/${i['directoryNum_photos']}/thumbnail/${i['pictureHash_photos']}.png');"></div> 
                     </a>
                 </div>
                 <div class="span9">
                     <div class="well yesNoWell" >
-                        <a href="#i-href">
+                        <a href="${i['href']}">
                             <div class="vote-icon yes-icon"></div>
                         </a>
                         <br>
                         <br>
-                        <a href="#i-href">
+                        <a href="${i['href']}">
                             <div class="vote-icon no-icon"></div>
                         </a>
                         <br>
                         <div class="totalVotesWrapper">
                             <small class="grey pull-left">Votes:</small>
                             <strong class="pull-right">
-                                <span>{{totalVotes}}</span>
+                                <span>${int(i['ups']) + int(i['downs'])}</span>
                             </strong>
                         </div>
                     </div>
-                    <h4 class="listed-item-title initiative-title"><a ng-href="#i-href">${i['title']}</a></h4>
-                    <p><small>
-                        <small><img class="thumbnail flag mini-flag border" src="/images/flags/earth.gif"> 
-                            <span style="text-transform: capitalize;">Initiative</span> for <a class="green green-hover" href="#scope-href">{{item.scopeName}}</span></a>
-                            <span class="label workshop-tag">{{tag}}</span>
-                        </small>
-                        
-                    </small></p>
+                    <h4 class="listed-item-title initiative-title"><a href="${i['href']}">${i['title']}</a></h4>
+                    <table>
+                        <tr style="vertical-align: middle;">
+                            <td>
+                                <img class="thumbnail flag mini-flag border" src="${i['flag']}">
+                            </td>
+                            <td>
+                                <small>
+                                    <span style="text-transform: capitalize;">Initiative</span> for <a class="green green-hover" href="${i['scopeHref']}">${i['scopeLevel']} of ${i['scopeName']}</span></a>
+                                    <span class="label workshop-tag ${i['tags']}">${i['tags']}</span>
+                                </small>
+                            </td>
+                        <tr>
+                    </table>
                     <p>${i['description']}</p>
                     <h4>
                         <small class="grey centered">Estimated Cost:</small>
@@ -66,7 +72,7 @@
                                     else: 
                                         numComments = 0
                                 %>
-                                <a class="no-highlight"><i class="icon-comment"></i> Comments (${numComments})</a>
+                                <a href="${i['href']}" class="no-highlight"><i class="icon-comment"></i> Comments (${numComments})</a>
                             </li>
                             <li><i class="icon-eye-open"></i> Views (${i['views']})</li>
                         </ul>

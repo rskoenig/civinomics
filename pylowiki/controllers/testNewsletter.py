@@ -40,7 +40,21 @@ log = logging.getLogger(__name__)
 class TestnewsletterController(BaseController):
 
     def displayNewsletter(self):
-        c.recentActivity = activityLib.getInitiativeActivity(10, 0, 0)
+        c.recentActivity = activityLib.getInitiativeActivity(3, 0, 0)
+        baseUrl = utils.getBaseUrl()
+        for i in c.recentActivity:
+        	# scope attributes
+			scopeInfo = utils.getPublicScope(i['scope'])
+			i['scopeName'] = scopeInfo['name']
+			i['scopeLevel'] = scopeInfo['level']
+			i['scopeHref'] = scopeInfo['href']
+			i['flag'] = scopeInfo['flag']
+
+			#href
+			i['href'] = baseUrl + '/initiative/' + i['urlCode'] + '/' + i['url']
+
+
+
         
         return render('/email/testNewsletter.html')
         
