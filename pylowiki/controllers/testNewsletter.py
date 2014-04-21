@@ -40,9 +40,30 @@ log = logging.getLogger(__name__)
 class TestnewsletterController(BaseController):
 
     def displayNewsletter(self):
-        c.recentActivity = activityLib.getInitiativeActivity(3, 0, 0)
+        c.recentInitiatives = activityLib.getInitiativeActivity(3, 0, 0)
         baseUrl = utils.getBaseUrl()
-        for i in c.recentActivity:
+
+        c.recentWorkshops = workshopLib.getActiveWorkshops()
+        for w in c.recentWorkshops:
+        	image = mainImageLib.getMainImage(w)
+	       	w['mainImage'] = '/images/mainImage/%s/orig/%s.png' %(image['directoryNum'], image['pictureHash'])
+	       	# scope attributes
+	       	w['scopeName'] = ''
+	       	w['scopeLevel'] = ''
+	       	w['scopeHref'] = ''
+	       	w['flag'] = ''
+	       	if 'workshop_public_scope' in w:
+		       	scopeInfo = utils.getPublicScope(w['workshop_public_scope'])
+		       	w['scopeName'] = scopeInfo['name']
+		       	w['scopeLevel'] = scopeInfo['level']
+		       	w['scopeHref'] = scopeInfo['href']
+		       	w['flag'] = scopeInfo['flag']
+
+	       	#href
+	       	w['href'] = baseUrl + '/workshop/' + w['urlCode'] + '/' + w['url']
+
+
+        for i in c.recentInitiatives:
         	# scope attributes
 			scopeInfo = utils.getPublicScope(i['scope'])
 			i['scopeName'] = scopeInfo['name']
@@ -54,8 +75,6 @@ class TestnewsletterController(BaseController):
 			i['href'] = baseUrl + '/initiative/' + i['urlCode'] + '/' + i['url']
 
 
-
-        
         return render('/email/testNewsletter.html')
         
         
