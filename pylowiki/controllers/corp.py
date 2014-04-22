@@ -872,6 +872,13 @@ class CorpController(BaseController):
         toddAnderson['photo']='todd_585.jpg'
         toddAnderson['photoHover']='todd_silly_585.jpg'
         c.team.append(toddAnderson)
+        juanPabloD={}
+        juanPabloD["name"]="Juan Pablo Duvanced"
+        juanPabloD['title']='Account Executive'
+        juanPabloD['bio']="Juan Pablo's strives to increase social awareness of individual responsibility as well as the need for effective collaboration that can alleviate suffering and promote quality of life. As an Account Executive at Civinomics he helps ensure quality service delivery to non-profit and educational clients. His past experience includes Consulting for Family Services & Advocacy Projects with San Francisco school districts and acting as Family Support Coordinator for the Mission Learning Center (also in San Francisco). Previously he was a Senior Research Assistant at the Public Research Institute at San Francisco Sate University."
+        juanPabloD['photo']='juanPablo_duvanced_285.jpg'
+        juanPabloD['photoHover']='juanPablo_duvanced_285.jpg'
+        c.team.append(juanPabloD)
         kelseyG={}
         kelseyG["name"]="Kelsey Grimsley"
         kelseyG['title']='Outreach Representative'
