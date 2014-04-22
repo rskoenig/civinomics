@@ -872,6 +872,13 @@ class CorpController(BaseController):
         toddAnderson['photo']='todd_585.jpg'
         toddAnderson['photoHover']='todd_silly_585.jpg'
         c.team.append(toddAnderson)
+        kelseyG={}
+        kelseyG["name"]="Kelsey Grimsley"
+        kelseyG['title']='Outreach Representative'
+        kelseyG['bio']="Kelsey gained valuable experience with diverse constituents as Congressman Henry Waxman's intern for his D.C. office (summer, 2012) and for Congressman Sam Farr in his local Santa Cruz office (spring, 2013). She campaigned in three states for Obama for America (2012), and helped coordinate successful regional environmental campaigns including Ban-the-Bag in Santa Cruz, CA. "
+        kelseyG['photo']='kelsey_grimsley_585.jpg'
+        kelseyG['photoHover']='kelsey_grimsley_585.jpg'
+        c.team.append(kelseyG)
         estherKim={}
         estherKim["name"]="Esther Kim"
         estherKim['title']='Marketing Manager'
