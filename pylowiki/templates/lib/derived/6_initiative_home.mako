@@ -98,7 +98,7 @@
 
 <%def name="showDescription()">
     <div class="initiative-info">
-        ${m.html(c.initiative['description'], render_flags=m.HTML_SKIP_HTML) | n}
+        {{initiative.initiativeDescription}}
     </div>
 </%def>
 
@@ -289,7 +289,7 @@
     % endif
     <div class="row-fluid edit-initiative" id="basics">
         <div class="span12">
-        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
+        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="editInitiativeController" ng-init="cost = '${c.initiative['cost']}'">
             <div class="row-fluid">
                 <h3 class="initiative-title edit no-top">1. Basics</h3>
             </div><!-- row-fluid -->

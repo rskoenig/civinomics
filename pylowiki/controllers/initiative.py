@@ -33,7 +33,8 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
+        angularPrepList = ['initiativeShowHandler']
+        existingList = ['initiativeEditHandler', 'initiativeGetHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -75,6 +76,9 @@ class InitiativeController(BaseController):
             else:
                 #log.info("abort 1")
                 abort(404)  
+        elif action in angularPrepList and id1 is not None and id2 is not None:
+            # we good
+            good = True
         else:
             #log.info("abort 2")
             abort(404)
@@ -513,7 +517,13 @@ class InitiativeController(BaseController):
             abort(404)
             
  
-    def initiativeShowHandler(self):
+    def initiativeShowHandler(self, id1, id2):
+        c.objectCode = id1
+        c.objectUrl = id2
+        return render('/derived/6_initiative_home.bootstrap')
+
+    def initiativeGetHandler(self):
+        log.info('initiativeGetHandler')
 
         c.revisions = revisionLib.getRevisionsForThing(c.initiative)
         c.isFollowing = False
@@ -541,7 +551,16 @@ class InitiativeController(BaseController):
         
         c.initiativeHome = True
 
-        return render('/derived/6_initiative_home.bootstrap')
+        result = []
+
+        entry = {}
+        entry['initiativeDescription'] = c.initiative['description']
+
+        result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode': 0, 'result': result})
 
 
     def getInitiativeAuthors(self):
