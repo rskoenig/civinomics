@@ -8,17 +8,50 @@
 
 <% lib.return_to() %>
 <div class="spacer"></div>
-<div class="row-fluid min-container">
-    <div class="row-fluid" style="position: relative;">
-        <div class="span9 well initiative-panel">
-            <p> main body </p>
-            ${next.body()}
-        </div>
-        <div class="span3" id="sidebar">
-            <p> sidebar </p>
-        </div><!-- span3 -->
-    </div><!-- row-fluid -->
-</div><!-- row-fluid -->
+<div ng-init="code = '${c.objectCode}'; url = '${c.objectUrl}'">
+    <div ng-controller="showInitiativeController">
+        <div class="row-fluid min-container">
+            <div class="row-fluid" style="position: relative;">
+                <div class="span9 well initiative-panel">
+                    <div class="row-fluid">
+                        <span ng-if="initiativeData.initiative.initiativeHome = 'True'">
+                            <div class="row-fluid">
+                                <div class="thumbnail i-main-photo" ng-style="height: 300px; color: #fff; background-image:url('{{initiativeData.initiative.photo_url}}'); background-position: center center; background-size: cover;"></div>
+                            </div>
+                            <% titleSpan = "row-fluid" %>
+                        </span>
+                        <span ng-if="initiativeData.initiative.initiativeHome != 'True'">
+                            <div class="span2">
+                                <img class="thumbnail tight initiative-thumb" src="{{initiativeData.initiative.thumbnail_url}}">
+                            </div>
+                            <% titleSpan = "span10" %>
+                        </span>
+
+
+                        <div class="${titleSpan}" style="position:relative;">
+                            <h2 class="initiative-title"><a class="no-highlight" ng-href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}" ng-cloak>{{initiativeData.initiative.title}}</a></h2>
+                            <h4> 
+                                <a ng-href="{{initiativeData.initiative.scopeHref}}"><img class="thumbnail span flag small-flag border right-space" ng-src="{{initiativeData.initiative.scopeFlag}}"></a> Initiative for the <a ng-href="{{initiativeData.initiative.scopeHref}}" class="green">{{initiativeData.initiative.scopeTitle}}</a>
+                                
+
+                                
+                            </h4>
+                        </div>
+
+                    </div>
+                    <hr class="narrow">
+                    <span ng-if="initiativeData.initiative.public = '0'">
+                        <div class="alert alert-warning">This initiative is unpublished. It does not show up in searches or on public listings.</div>
+                    </span>
+                    ${next.body()}
+                </div>
+                <div class="span3" id="sidebar">
+                    <p> sidebar </p>
+                </div><!-- span3 -->
+            </div><!-- row-fluid -->
+        </div><!-- row-fluid -->
+    </div>
+</div>
 
 <%def name="headScripts()">
     % if c.facebookShare:
@@ -48,6 +81,8 @@
     <!-- d3 is used in donutChart here -->
     <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/donutChart.js')}" type="text/javascript"></script>
+
+    <script src="${lib_6.fingerprintFile('/js/ng/initiative_show.js')}" type="text/javascript"></script>
 
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
     <script type="text/javascript">

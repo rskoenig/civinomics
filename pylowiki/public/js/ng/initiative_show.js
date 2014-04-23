@@ -15,9 +15,9 @@ function showInitiativeController($scope, $http) {
                 $scope.alertType = data.alertType;
             } 
             else if (data.statusCode === 0){
-                //console.log('data.statusCode == 0');
+                console.log(data.result);
                 $scope.initiativeNoResult = false;
-                $scope.initiative = data.result;
+                $scope.initiativeData = data.result;
                 
             } else if (data.statusCode === 2){
                 //console.log('data.statusCode == 2');

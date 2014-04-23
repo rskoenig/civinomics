@@ -551,12 +551,23 @@ class InitiativeController(BaseController):
         
         c.initiativeHome = True
 
-        result = []
+        result = {}
 
-        entry = {}
-        entry['initiativeDescription'] = c.initiative['description']
+        initiative = {}
+        initiative['description'] = "hello earth"
+        initiative['initiativeHome'] = c.initiativeHome
+        initiative['photo_url'] = c.photo_url
+        initiative['public'] = c.initiative['public']
+        initiative['scopeFlag'] = c.scopeFlag
+        initiative['scopeHref'] = c.scopeHref
+        initiative['scopeTitle'] = c.scopeTitle
+        initiative['thumbnail_url'] = c.thumbnail_url
+        initiative['title'] = c.initiative['title']
+        initiative['url'] = c.initiative['url']
+        initiative['urlCode'] = c.initiative['urlCode']
+        # c.initiative['description']
 
-        result.append(entry)
+        result['initiative'] = initiative
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})

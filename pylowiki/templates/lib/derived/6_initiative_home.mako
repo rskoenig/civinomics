@@ -98,7 +98,7 @@
 
 <%def name="showDescription()">
     <div class="initiative-info">
-        {{initiative.initiativeDescription}}
+        {{initiativeData.initiative.description}}
     </div>
 </%def>
 
