@@ -15,9 +15,14 @@ function showInitiativeController($scope, $http) {
                 $scope.alertType = data.alertType;
             } 
             else if (data.statusCode === 0){
-                console.log(data.result);
+                //console.log(data.result);
                 $scope.initiativeNoResult = false;
                 $scope.initiativeData = data.result;
+                if (initiativeData.initiative.iPrivs != 'True' && initiativeData.initiative.home == 'True' && initiativeData.initiative.objType != 'revision') {
+                    $scope.iPrivsNoiHomeYesiOnjTypeNo = true
+                } else {
+                    $scope.iPrivsNoiHomeYesiOnjTypeNo = false
+                }
                 
             } else if (data.statusCode === 2){
                 //console.log('data.statusCode == 2');

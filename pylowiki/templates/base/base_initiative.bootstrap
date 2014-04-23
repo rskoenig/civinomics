@@ -14,13 +14,13 @@
             <div class="row-fluid" style="position: relative;">
                 <div class="span9 well initiative-panel">
                     <div class="row-fluid">
-                        <span ng-if="initiativeData.initiative.initiativeHome = 'True'">
+                        <span ng-if="initiativeData.initiative.home = 'True'">
                             <div class="row-fluid">
                                 <div class="thumbnail i-main-photo" ng-style="height: 300px; color: #fff; background-image:url('{{initiativeData.initiative.photo_url}}'); background-position: center center; background-size: cover;"></div>
                             </div>
                             <% titleSpan = "row-fluid" %>
                         </span>
-                        <span ng-if="initiativeData.initiative.initiativeHome != 'True'">
+                        <span ng-if="initiativeData.initiative.home != 'True'">
                             <div class="span2">
                                 <img class="thumbnail tight initiative-thumb" src="{{initiativeData.initiative.thumbnail_url}}">
                             </div>
@@ -32,12 +32,24 @@
                             <h2 class="initiative-title"><a class="no-highlight" ng-href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}" ng-cloak>{{initiativeData.initiative.title}}</a></h2>
                             <h4> 
                                 <a ng-href="{{initiativeData.initiative.scopeHref}}"><img class="thumbnail span flag small-flag border right-space" ng-src="{{initiativeData.initiative.scopeFlag}}"></a> Initiative for the <a ng-href="{{initiativeData.initiative.scopeHref}}" class="green">{{initiativeData.initiative.scopeTitle}}</a>
-                                
-
-                                
+                                <div ng-repeat="tag in initiativeData.initiative.tags" ng-cloak>
+                                    <a class="label workshop-tag {{tag}}" ng-href="/searchTags/{{tag}}/" >{{tag}}</a>
+                                </div>
+                            
+                                <span ng-if="initiativeData.initiative.iPrivs = 'True'">
+                                    <span>
+                                        watch edit rev view
+                                    </span>
+                                </span>
+                                <span ng-if="iPrivsNoiHomeYesiOnjTypeNo">
+                                    {{iPrivsNoiHomeYesiOnjTypeNo}}
+                                    <span>
+                                        ihelpers watch button
+                                    </span>
+                                </span>
+                                {{iPrivsNoiHomeYesiOnjTypeNo}}
                             </h4>
                         </div>
-
                     </div>
                     <hr class="narrow">
                     <span ng-if="initiativeData.initiative.public = '0'">

@@ -554,8 +554,10 @@ class InitiativeController(BaseController):
         result = {}
 
         initiative = {}
-        initiative['description'] = "hello earth"
-        initiative['initiativeHome'] = c.initiativeHome
+        initiative['description'] = c.initiative['description']
+        initiative['home'] = c.initiativeHome
+        initiative['iPrivs'] = c.iPrivs
+        initiative['objType'] = c.initiative.objType
         initiative['photo_url'] = c.photo_url
         initiative['public'] = c.initiative['public']
         initiative['scopeFlag'] = c.scopeFlag
@@ -565,6 +567,7 @@ class InitiativeController(BaseController):
         initiative['title'] = c.initiative['title']
         initiative['url'] = c.initiative['url']
         initiative['urlCode'] = c.initiative['urlCode']
+        initiative['tags'] = utils.showTags(c.initiative)
         # c.initiative['description']
 
         result['initiative'] = initiative

@@ -264,6 +264,24 @@ def profilePhotoURL(thing):
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
     
 ##################################################
+# taken from 6_lib.mako
+# returns a list of the tag's objects
+##################################################
+def showTags(item):
+    tags = []
+    try:
+        tagList = item['tags'].split('|')
+    except KeyError:
+        tagList = item['workshop_category_tags'].split('|')
+    tagList = tagList[:3]
+    
+    for tag in tagList:
+        if tag and tag != '':
+            tagValue = tag.replace(" ", "_")
+            tags.append(tagValue)
+    return tags
+
+##################################################
 # generates a url for a thing
 # kwarg returnTitle gets the title out of the thing as well.
 ##################################################
