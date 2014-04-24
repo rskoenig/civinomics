@@ -16,13 +16,13 @@
                     <div class="row-fluid">
                         <span ng-if="initiativeData.initiative.home">
                             <div class="row-fluid">
-                                <div class="thumbnail i-main-photo" ng-style="height: 300px; color: #fff; background-image:url('{{initiativeData.initiative.photo_url}}'); background-position: center center; background-size: cover;"></div>
+                                <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-position: center center; background-size: cover;"></div>
                             </div>
                             <% titleSpan = "row-fluid" %>
                         </span>
                         <span ng-if="!initiativeData.initiative.home">
                             <div class="span2">
-                                <img class="thumbnail tight initiative-thumb" src="{{initiativeData.initiative.thumbnail_url}}">
+                                <img class="thumbnail tight initiative-thumb" ng-src="{{initiativeData.initiative.thumbnail_url}}">
                             </div>
                             <% titleSpan = "span10" %>
                         </span>
@@ -43,10 +43,9 @@
                                 </span>
                                 <span ng-if="iPrivsNoiHomeYesiOnjTypeNo">
                                     <span>
-                                        <my-watch-button userInSession="initiativeData.user.uSession" following="initiativeData.user.isFollowing" objCode="initiativeData.initiative.urlCode" objUrl="initiativeData.initiative.url"></my-watch-button>
+                                        <my-watch-button></my-watch-button>
                                     </span>
                                 </span>
-                                uSession: {{initiativeData.user.uSession}}
                             </h4>
                         </div>
                     </div>

@@ -47,21 +47,26 @@ app.directive("myWatchButton", function($compile, $parse) {
     return { 
         restrict: 'E', 
         compile: function(element, attrs) {
-            var inSessionGetter = $parse(attrs.userInSession);
-            var followingGetter = $parse(attrs.following);
-            var objCodeGetter = $parse(attrs.objCode);
-            var objUrlGetter = $parse(attrs.objUrl);
-
+            //var inSessionGetter = $parse(attrs.userInSession);
+            //console.log("inSessionGetter: " + inSessionGetter);
+            //var followingGetter = $parse(attrs.following);
+            //console.log("followingGetter: " + followingGetter);
+            //var objCodeGetter = $parse(attrs.objCode);
+            //console.log("objCodeGetter: " + objCodeGetter);
+            //var objUrlGetter = $parse(attrs.objUrl);
+            //console.log("objUrlGetter: " + objUrlGetter);
             return function (scope, element, attrs) {
-                var inSession = inSessionGetter(scope);
+                //var inSession = inSessionGetter(scope);
+                var inSession = scope.initiativeData.user.uSession;
                 console.log("inSession: " + inSession);
-                var following = followingGetter(scope);
-                console.log("following: " + following);
-                var objCode = objCodeGetter(scope);
+                //var objCode = objCodeGetter(scope);
+                var objCode = scope.initiativeData.initiative.urlCode;
                 console.log("objCode: " + objCode);
-                var objUrl = objUrlGetter(scope);
-                var isFollowingClass = (following) ? " following" : "";
-                var isFollowingText = (following) ? "Following" : "Follow";
+                //var objUrl = objUrlGetter(scope);
+                var objUrl = scope.initiativeData.initiative.url;
+                console.log("objUrl: " + objUrl);
+                var isFollowingClass = (scope.initiativeData.user.isFollowing) ? " following" : "";
+                var isFollowingText = (scope.initiativeData.user.isFollowing) ? "Following" : "Follow";
                 var template = (inSession) ? '<button class="btn btn-civ pull-right followButton' + isFollowingClass + '"' +
                         'data-URL-list="initiative_' + objCode + '_' + objUrl + '" rel="tooltip"' +
                         'data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">' +
