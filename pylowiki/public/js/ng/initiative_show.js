@@ -1,4 +1,7 @@
-function showInitiativeController($scope, $http) {
+var app = angular.module('civ', []);
+
+app.controller('showInitiativeController', function($scope, $http){
+//function showInitiativeController($scope, $http) {
     
     console.log('in showInitiativeController');
     $scope.initiativeLoading = true;
@@ -18,7 +21,7 @@ function showInitiativeController($scope, $http) {
                 //console.log(data.result);
                 $scope.initiativeNoResult = false;
                 $scope.initiativeData = data.result;
-                if ($scope.initiativeData.initiative.iPrivs != 'True' && $scope.initiativeData.initiative.home == 'True' && $scope.initiativeData.initiative.objType != 'revision') {
+                if (!$scope.initiativeData.initiative.iPrivs && $scope.initiativeData.initiative.home && $scope.initiativeData.initiative.objType != 'revision') {
                     $scope.iPrivsNoiHomeYesiOnjTypeNo = true
                 } else {
                     $scope.iPrivsNoiHomeYesiOnjTypeNo = false
@@ -37,4 +40,30 @@ function showInitiativeController($scope, $http) {
 
     $scope.getInitiative();
 
-}
+//}
+});
+
+app.directive("myWatchButton", function($compile, $parse) {
+    return { 
+        restrict: 'E', 
+        compile: function(element, attrs) {
+            var followingGetter = $parse(attrs.following);
+            var objCodeGetter = $parse(attrs.objCode);
+            var objUrlGetter = $parse(attrs.objUrl);
+
+            return function (scope, element, attrs) {
+                var following = followingGetter(scope);
+                var objCode = objCodeGetter(scope);
+                var objUrl = objUrlGetter(scope);
+                var isFollowingClass = (following == 'True') ? " following" : "";
+                var isFollowingText = (following == 'True') ? "Following" : "Follow";
+                var template = '<button class="btn btn-civ pull-right followButton' + isFollowingClass + '"' +
+                        'data-URL-list="initiative_' + objCode + '_' + objUrl + '" rel="tooltip"' +
+                        'data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">' +
+                        '<span><i class="icon-bookmark btn-height icon-light"></i><strong>' +
+                        isFollowingText + '</strong></span></button>';
+                element.replaceWith($compile(template)(scope));
+            }
+        }
+    }
+});
