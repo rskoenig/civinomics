@@ -18,7 +18,7 @@ app.controller('showInitiativeController', function($scope, $http){
                 $scope.alertType = data.alertType;
             } 
             else if (data.statusCode === 0){
-                //console.log(data.result);
+                console.log(data.result);
                 $scope.initiativeNoResult = false;
                 $scope.initiativeData = data.result;
                 if (!$scope.initiativeData.initiative.iPrivs && $scope.initiativeData.initiative.home && $scope.initiativeData.initiative.objType != 'revision') {
@@ -47,21 +47,26 @@ app.directive("myWatchButton", function($compile, $parse) {
     return { 
         restrict: 'E', 
         compile: function(element, attrs) {
+            var inSessionGetter = $parse(attrs.userInSession);
             var followingGetter = $parse(attrs.following);
             var objCodeGetter = $parse(attrs.objCode);
             var objUrlGetter = $parse(attrs.objUrl);
 
             return function (scope, element, attrs) {
+                var inSession = inSessionGetter(scope);
+                console.log("inSession: " + inSession);
                 var following = followingGetter(scope);
+                console.log("following: " + following);
                 var objCode = objCodeGetter(scope);
+                console.log("objCode: " + objCode);
                 var objUrl = objUrlGetter(scope);
-                var isFollowingClass = (following == 'True') ? " following" : "";
-                var isFollowingText = (following == 'True') ? "Following" : "Follow";
-                var template = '<button class="btn btn-civ pull-right followButton' + isFollowingClass + '"' +
+                var isFollowingClass = (following) ? " following" : "";
+                var isFollowingText = (following) ? "Following" : "Follow";
+                var template = (inSession) ? '<button class="btn btn-civ pull-right followButton' + isFollowingClass + '"' +
                         'data-URL-list="initiative_' + objCode + '_' + objUrl + '" rel="tooltip"' +
                         'data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">' +
                         '<span><i class="icon-bookmark btn-height icon-light"></i><strong>' +
-                        isFollowingText + '</strong></span></button>';
+                        isFollowingText + '</strong></span></button>' : '';
                 element.replaceWith($compile(template)(scope));
             }
         }

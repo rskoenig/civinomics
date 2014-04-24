@@ -46,6 +46,7 @@
                                         <my-watch-button userInSession="initiativeData.user.uSession" following="initiativeData.user.isFollowing" objCode="initiativeData.initiative.urlCode" objUrl="initiativeData.initiative.url"></my-watch-button>
                                     </span>
                                 </span>
+                                uSession: {{initiativeData.user.uSession}}
                             </h4>
                         </div>
                     </div>
