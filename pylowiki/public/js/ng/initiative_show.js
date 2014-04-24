@@ -18,7 +18,7 @@ function showInitiativeController($scope, $http) {
                 //console.log(data.result);
                 $scope.initiativeNoResult = false;
                 $scope.initiativeData = data.result;
-                if (initiativeData.initiative.iPrivs != 'True' && initiativeData.initiative.home == 'True' && initiativeData.initiative.objType != 'revision') {
+                if ($scope.initiativeData.initiative.iPrivs != 'True' && $scope.initiativeData.initiative.home == 'True' && $scope.initiativeData.initiative.objType != 'revision') {
                     $scope.iPrivsNoiHomeYesiOnjTypeNo = true
                 } else {
                     $scope.iPrivsNoiHomeYesiOnjTypeNo = false

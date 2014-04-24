@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 class InitiativeController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
-        log.info("inititive before action is %s"%action)
+        log.info("initiative before action is %s"%action)
         c.user = None
         c.initiative = None
         angularPrepList = ['initiativeShowHandler']
@@ -79,6 +79,7 @@ class InitiativeController(BaseController):
         elif action in angularPrepList and id1 is not None and id2 is not None:
             # we good
             good = True
+            return
         else:
             #log.info("abort 2")
             abort(404)
@@ -553,25 +554,32 @@ class InitiativeController(BaseController):
 
         result = {}
 
-        initiative = {}
-        initiative['description'] = c.initiative['description']
-        initiative['home'] = c.initiativeHome
-        initiative['iPrivs'] = c.iPrivs
-        initiative['objType'] = c.initiative.objType
-        initiative['photo_url'] = c.photo_url
-        initiative['public'] = c.initiative['public']
-        initiative['scopeFlag'] = c.scopeFlag
-        initiative['scopeHref'] = c.scopeHref
-        initiative['scopeTitle'] = c.scopeTitle
-        initiative['thumbnail_url'] = c.thumbnail_url
-        initiative['title'] = c.initiative['title']
-        initiative['url'] = c.initiative['url']
-        initiative['urlCode'] = c.initiative['urlCode']
-        initiative['tags'] = utils.showTags(c.initiative)
-        # c.initiative['description']
+        initiativeJson = {}
+        initiativeJson['description'] = c.initiative['description']
+        initiativeJson['home'] = c.initiativeHome
+        initiativeJson['iPrivs'] = c.iPrivs
+        initiativeJson['objType'] = c.initiative.objType
+        initiativeJson['photo_url'] = c.photo_url
+        initiativeJson['public'] = c.initiative['public']
+        initiativeJson['scopeFlag'] = c.scopeFlag
+        initiativeJson['scopeHref'] = c.scopeHref
+        initiativeJson['scopeTitle'] = c.scopeTitle
+        initiativeJson['thumbnail_url'] = c.thumbnail_url
+        initiativeJson['title'] = c.initiative['title']
+        initiativeJson['url'] = c.initiative['url']
+        initiativeJson['urlCode'] = c.initiative['urlCode']
+        initiativeJson['tags'] = utils.showTags(c.initiative)
+        
+        result['initiative'] = initiativeJson
+        
+        userJson = {}
+        userJson['isFollowing'] = c.isFollowing
+        userJson['uSession'] = False
+        if 'user' in session:
+            userJson['uSession'] = True
 
-        result['initiative'] = initiative
-
+        result['user'] = userJson
+        
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode': 0, 'result': result})

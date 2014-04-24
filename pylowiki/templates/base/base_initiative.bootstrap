@@ -14,7 +14,7 @@
             <div class="row-fluid" style="position: relative;">
                 <div class="span9 well initiative-panel">
                     <div class="row-fluid">
-                        <span ng-if="initiativeData.initiative.home = 'True'">
+                        <span ng-if="initiativeData.initiative.home == 'True'">
                             <div class="row-fluid">
                                 <div class="thumbnail i-main-photo" ng-style="height: 300px; color: #fff; background-image:url('{{initiativeData.initiative.photo_url}}'); background-position: center center; background-size: cover;"></div>
                             </div>
@@ -36,7 +36,7 @@
                                     <a class="label workshop-tag {{tag}}" ng-href="/searchTags/{{tag}}/" >{{tag}}</a>
                                 </div>
                             
-                                <span ng-if="initiativeData.initiative.iPrivs = 'True'">
+                                <span ng-if="initiativeData.initiative.iPrivs == 'True'">
                                     <span>
                                         watch edit rev view
                                     </span>
@@ -44,15 +44,20 @@
                                 <span ng-if="iPrivsNoiHomeYesiOnjTypeNo">
                                     {{iPrivsNoiHomeYesiOnjTypeNo}}
                                     <span>
-                                        ihelpers watch button
+                                        ihelpers watch button:
                                     </span>
                                 </span>
+                                % if 'user' in session:
+                                    user in session
+                                % else:
+                                    not in sess
+                                % endif
                                 {{iPrivsNoiHomeYesiOnjTypeNo}}
                             </h4>
                         </div>
                     </div>
                     <hr class="narrow">
-                    <span ng-if="initiativeData.initiative.public = '0'">
+                    <span ng-if="initiativeData.initiative.public == '0'">
                         <div class="alert alert-warning">This initiative is unpublished. It does not show up in searches or on public listings.</div>
                     </span>
                     ${next.body()}
