@@ -16,263 +16,59 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showAuthor(item)">
-    <div class="tabbable">
-        <div class="tab-content">
-            <div class="tab-pane active" id="abrv">
-                <table>
-                    <tr>
-                        <%
-                            showNum = 3
-                            remaining = len(c.authors) - showNum
-                        %>
-                        <td>
-                            <span class="grey">Authors: </span>
-                            % for author in c.authors[:showNum]:
-                                ${lib_6.userImage(author, className="avatar small-avatar")}
-                            % endfor
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="grey">
-                            % for author in c.authors[:showNum]:
-                                % if author != c.authors[0] and len(c.authors) >= 3:
-                                    ,
-                                % endif
-                                % if author == c.authors[-1] and len(c.authors) > 1:
-                                    and
-                                % endif
-                                ${lib_6.userLink(author)}
-                            % endfor
-                            % if remaining >= 1:
-                                , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
-                            % endif
-                            </span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="tab-pane" id="allAuthors">
-                <span class="pull-right">
-                    <a href="#abrv" data-toggle="tab">close</a>
-                </span>
-                <h4 class="initiative-title">
-                    Authors
-                </h4>
-                <table>
-                    % for author in c.authors:
-                        <tr>
-                            <td>
-                                ${lib_6.userImage(author, className="avatar small-avatar")}
-                            </td>
-                            <td>
-                                <span class="grey">
-                                    ${lib_6.userLink(author)}
-                                    ${lib_6.userGreetingMsg(author)}
-                                </span>
-                            </td>
-                        </tr>
-                    % endfor
-                </table>            
-            </div><!-- tab-pane -->
-        </div><!-- tabcontent -->
-    </div><!-- tabbable -->
-    <br>
-    <span class="grey">
-        Published: ${item.date}
-    </span>
-</%def>
-
-<%def name="showUpdateList()">
-    % if c.updates:
-        Progress Reports:<br />
+<%def name="showInfo()">
+    <div class="row-fluid">
+        <h3>${c.meeting['title']}</h3>
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
         <ul>
-        % for update in c.updates:
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update.date} ${update['title']}</a></li>
-        % endfor
+        <li>Who is meeting: ${c.meeting['group']}</li>
+        <li>Location: ${c.meeting['location']}</li>
+        <li>Meeting Date: ${c.meeting['meetingDate']}</li>
+        % if c.meeting['agendaPostDate'] != '0000-00-00':
+            <li>Date Agenda Is Posted: ${c.meeting['agendaPostDate']}</li>
+        % endif
         </ul>
-    % endif
-</%def>
-                        
-
-<%def name="showDescription()">
-    <div class="initiative-info">
-        ${m.html(c.initiative['description'], render_flags=m.HTML_SKIP_HTML) | n}
-    </div>
-</%def>
-
-<%def name="showFunding_Summary()">
-    <div class="initiative-info">
-        ${m.html(c.initiative['funding_summary'], render_flags=m.HTML_SKIP_HTML) | n}
-    </div>
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        ${m.html(c.meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        <span class="grey">Posted by: </span>
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+    </div><!-- row-fluid -->
 </%def>
 
-
-<%def name="showBackground()">
-    <div class="initiative-info">
-        ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
-    </div>
-</%def>
-
-<%def name="showProposal()">
-    <div class="initiative-info">
-        ${m.html(c.initiative['proposal'], render_flags=m.HTML_SKIP_HTML) | n}
-    </div>
-</%def>
-
-<%def name="watchButton(i, **kwargs)">
-    % if 'user' in session:
-        % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
-            </button>
-        % else:
-            <button class="btn pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-             <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
-            </button>
-        % endif
-    % endif
-</%def>
-
-<%def name="addResourceButton()">
-    <% 
-        printStr = ''
-        if c.initiative.objType == 'initiative':
-            if 'user' in session:
-                printStr = '<a id="addButton" href="/initiative/%s/%s/resourceEdit/new"' %(c.initiative['urlCode'], c.initiative['url'])
-            elif not c.privs['provisional']:
-                printStr = '<a href="#signupLoginModal" data-toggle="modal"'
-
-            printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
-            
-            if 'user' in session and c.privs['provisional']:
-                printStr = ''
-        
-    %>
-    ${printStr | n}
-</%def>
-
-<%def name="listResources()">
-    % if len(c.resources) <= 0:
-        <div class="alert alert-info">
-            There are no resources yet! Be the first to add one.
-        </div>
-    % else:
-        % for item in c.resources:
-            <% 
-                iconClass = ""
-                if item['type'] == 'link' or item['type'] == 'general':
-                    iconClass="icon-link"
-                elif item['type'] == 'photo':
-                    iconClass="icon-picture"
-                elif item['type'] == 'video':
-                    iconClass="icon-youtube-play"
-                elif item['type'] == 'rich':
-                    iconClass="icon-file"
-                endif
-                rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
-            %>
-            <div class="row-fluid bottom-space-med">
-                <div class="span1">
-                        <i class="${iconClass} icon-3x"></i>
-                </div><!-- span1 -->
-                <div class="span11">
-                    <h5 class="no-bottom no-top">
-                    <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
-                    ${itemTitle | n}
-                    </h5>
-                    <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
-                </div><!-- span10 -->
-            </div><!-- row-fluid -->
-        % endfor
-    % endif
-</%def>
-
-<%def name="showResource()">
-        <% 
-            link = ""
-            rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + c.thing['urlCode'] + "/" + c.thing['url']
-            title = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, c.thing['title'])
-            if c.thing.objType == 'resource':
-                    link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(c.thing['link'], lib_6.ellipsisIZE(c.thing['link'], 75))
-                    if c.thing['type'] == 'rich' or c.thing['type'] == 'video':
-                        link = link + '<div class="spacer"></div>' + c.thing['info']
-                    if c.thing['type'] == 'photo':
-                        link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
-        %>
-        <h4>${title | n}</h4>
-        ${link | n}
-        ${m.html(c.thing['text']) | n}
-                % if c.revisions:
-            <div class="spacer"></div>
-            <ul class="unstyled">
-            % for revision in c.revisions:
-                <li>Revision: <a href="/initiative/${revision['initiativeCode']}/${revision['initiative_url']}/resource/${revision['urlCode']}/${revision['url']}">${revision.date}</a></li>
-            % endfor
-            </ul>
-        % endif
-        % if c.thing.objType == 'revision':
-            This is a revision dated ${c.thing.date}<br />
-        % endif
-</%def>
-
-<%def name="listInitiative(item, ltitle)">
-    <div class="media profile-workshop">
-        <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
-        % if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-            <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos']) %>
-        % else:
-            <% thumbnail_url = "/images/icons/generalInitiative.jpg" %>
-        % endif
-        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
-        </a>
-        <div class="media-body">
-            <div class="span10">
-                <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
-                <br>
-                <span class="grey">Initiative for</span> ${lib_6.showScope(item) | n}
-                % if 'user' in session:
-                    % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-                        % if item['public'] == '0':
-                            <span class="badge badge-warning">Not yet public</span>
-                        % else:
-                            <span class="badge badge-success">Public</span>
-                        % endif
-                    % endif
-                % endif
-            </div>
-             % if ltitle == 'Bookmarked':
-                <span>
-                  ${watchButton(item, following = True)}
-                </span>
-            % else:
-                % if 'user' in session:
-                    % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-                        <div class="row-fluid" ng-controller="followerController">
-                            <div class="span9"></div>
-                            <div class="span3">
-                                <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                            </div><!-- span3 -->
-                        </div><!-- row-fluid -->
-                    % endif
-                % endif
-            % endif
-        </div><!-- media-body -->
-    </div><!-- media -->
-</%def>
-
-<%def name="editInitiative()">
+<%def name="editMeeting()">
     <% 
         tagList = workshopLib.getWorkshopTagCategories()
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
-        if c.initiative:
-            iScope = c.initiative['scope']
+        if c.meeting:
+            mScope = c.meeting['scope']
+            title = c.meeting['title']
+            group = c.meeting['group']
+            tag = c.meeting['tag']
+            text = c.meeting['text']
+            location = c.meeting['location']
+            meetingDate = c.meeting['meetingDate']
+            meetingTime = c.meeting['meetingTime']
+            agendaPostDate = c.meeting['agendaPostDate']
         else:
-            iScope = "0|0|0|0|0|0|0|0|0|0"
-        scopeList = iScope.split('|')
+            mScope = "0|0|0|0|0|0|0|0|0|0"
+            title = ""
+            group = ""
+            tag = ""
+            text = ""
+            location = ""
+            meetingDate = ""
+            meetingTime = ""
+            agendaPostDate = ""
+            
+        scopeList = mScope.split('|')
         if scopeList[9] == '0' and scopeList[8] == '0':
             countySelected = "selected"
         elif scopeList[9] == '0' and scopeList[8] != '0':
@@ -287,312 +83,137 @@
         ${c.saveMessage}
         </div>
     % endif
-    <div class="row-fluid edit-initiative" id="basics">
+    <div class="row-fluid>
         <div class="span12">
-        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
+            % if c.editMeeting:
+                <form method="POST" name="edit_meeting" id="edit_meeting" action="/meeting/${c.meeting['urlCode']}/${c.meeting['url']}/meetingEditHandler">
+            % else:
+                <form method="POST" name="edit_meeting" id="edit_meeting" action="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNewHandler">
+            % endif
             <div class="row-fluid">
-                <h3 class="initiative-title edit no-top">1. Basics</h3>
+                <h3>Meeting Information</h3>
             </div><!-- row-fluid -->
             <br>
+            
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="title" class="control-label" required><strong>Initiative Title:</strong></label>
-                    <input type="text" name="title" class="span12" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-click="clearTitle()" ng-cloak>
+                    <label for="title" class="control-label" required><strong>Meeting Title:</strong></label>
+                    <input type="text" name="meetingTitle" class="span12" value="${title}" required>
                 </div><!-- span6 -->
                 <div class="span6">
                     <div class="alert alert-info">
-                        Keep it short and descriptive. 10 words or less.
+                        Keep it short and descriptive.
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
+            
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="title" class="control-label" required><strong>Geographic Region:</strong></label>
+                    <label for="title" class="control-label" required><strong>Meeting Date:</strong></label>
+                    <input type="text" name="meetingDate" id="meetingDate" class="span6" value="${meetingDate}" required>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Date of meeting.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="meetingTime" class="control-label" required><strong>Meeting Time:</strong></label>
+                    <input type="text" name="meetingTime" class="span6" value="${meetingTime}" required>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Time of meeting.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="title" class="control-label" required><strong>Name of group:</strong></label>
+                    <input type="text" name="meetingGroup" class="span12" value="${group}" required>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        The name of the group which is meeting.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="title" class="control-label" required><strong>Meeting location:</strong></label>
+                    <input type="text" name="meetingLocation" class="span12" value="${location}" required>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Where the meeting is to be held.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="title" class="control-label" required><strong>Public Jurisdiction:</strong></label>
                     ${geoSelect()}
                 </div><!-- span6 -->
                 <div class="span6">
                     <div class="alert alert-info">
-                        The region or legal jurisdiction associated with your initiative.
+                        The region or legal jurisdiction associated with the meeting.
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
+            
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="tag" class="control-label" required><strong>Initiative category:</strong></label>
+                    <label for="tag" class="control-label" required><strong>Meeting category:</strong></label>
                     <div class="span3"></div>
                     <div class="span8 no-left">
                         <select name="tag" id="tag">
-                        % if c.initiative['public'] == '0':
+                        % if (c.meeting and c.meeting['public'] == '0') or not c.meeting:
                             <option value="">Choose one</option>
                         % endif
-                        % for tag in tagList:
+                        % for mtag in tagList:
                             <% 
                                 selected = ""
-                                if c.initiative['tags'] == tag:
+                                if tag == mtag:
                                     selected = "selected"
                             %>
-                            <option value="${tag}" ${selected}/> ${tag}</option>
+                            <option value="${mtag}" ${selected}/> ${mtag}</option>
                         % endfor
                         </select>
                     </div><!-- span8 -->
                 </div><!-- span6 -->
                 <div class="span6">
                     <div class="alert alert-info">
-                        The topic area associated with your initiative.
+                        The topic area associated with the meeting.
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
-            <div class="row-fluid" id="summary">
-                <h3 class="initiative-title edit">2. Summary</h3>
-            </div><!-- row-fluid -->
-            <br>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="description" class="control-label" required><strong>Summary:</strong></label>
-                    <textarea rows="8" type="text" name="description" class="span12">${c.initiative['description']}</textarea>
-                </div>
-                <div class="span6">
-                    <div class="alert alert-info">
-                        Used in search listings and displayed at the top of your initiative.
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="funding_summary" class="control-label" required><strong>Estimate Net Fiscal Impact:</strong></label>
-                    <textarea rows="8" type="text" name="funding_summary" class="span12">${c.initiative['funding_summary']}</textarea>
-                </div>
-                <div class="span6">
-                    <label class="control-label"></label>
-                    <div class="alert alert-info">
-                        What are the costs and benefits of your intiative? What will you have to spend money on? What will the fiscal impacts be for the associated region? For example, if your intiative will lead to increased tax revenues for your City, mention that here.
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>
-                    <div class="input-prepend input-append">
-                      <span class="add-on">$</span>
-                      <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
-                      <span class="add-on">.00</span>
-                    </div>
-                    <span class="error help-text" ng-show="edit_initiative_summary.cost.$error.pattern" ng-cloak>Invalid cost value</span>
-                </div>
-                <div class="span6">
-                    <label class="control-label"></label>
-                    <div class="alert alert-info">
-                        Acceptable formats include: 500,000  or  500000.
-                    </div>
-                </div>
-            </div>
-            <div class="row-fluid" id="detail">
-                <h3 class="initiative-title edit">3. Detail</h3>
-            </div><!-- row-fluid -->
-
+            
             <div class="row-fluid">
                 <div class="span3">
-                    <label for="background" class="control-label" required><strong>Background:</strong></label>
+                    <label for="text" class="control-label" required><strong>Description:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
                 <div class="span9">
                     <div class="alert alert-info">
-                        What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
+                        A short description about the meeting.
                     </div>
-                </div>
-            </div>
-            <textarea rows="10" id="background" name="background" class="span12">${c.initiative['background']}</textarea>
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            <textarea rows="10" id="meetingText" name="meetingText" class="span12" required>${text}</textarea>
 
-            <div class="row-fluid">
-                <div class="span3">
-                    <label for="proposal" class="control-label" required><strong>Proposal:</strong></label>
-                    ${lib_6.formattingGuide()}
-                </div>
-                <div class="span9">
-                    <div class="alert alert-info">
-                        What are the details of your initiative? How will it work? What will it do? What won't it do? Address the financial impacts as well.
-                    </div>
-                </div>
-            </div>
-            <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
-        <div class="row-fluid" id="photo">
-            <h3 class="initiative-title edit">4. Photo</h3>
-        </div><!-- row-fluid -->
-        <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
-            <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                    <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos']) %>
-                    <span class="pull-left">Current Initiative Picture
-                    <div class="spacer"></div>
-                    <img src="${thumbnail_url}">
-                    </span>
-                % else:
-                    <span class="pull-left">Upload a Picture (Required)</span>
-                % endif
-                <span class="btn btn-success btn-large fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
-                <i class="icon-plus icon-white"></i>
-                <span>Picture</span>
-                <input type="file" name="files[]">
-                </span>
-                <!-- The loading indicator is shown during file processing -->
-                <div class="fileupload-loading"></div>
-                <!-- The global progress information -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
-                    <!-- The global progress bar -->
-                    <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
-                    <!-- The extended global progress information -->
-                    <div class="progress-extended">&nbsp;</div>
-                </div><!-- span10 -->
-            </div><!-- row-fluid -->
-            <!-- The table listing the files available for upload/download -->
-            <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
-                <tbody><tr data-ng-repeat="file in queue">
-                    <td data-ng-switch="" on="!!file.thumbnail_url">
-                        <div class="preview" data-ng-switch-when="true">
-                            <script type="text/javascript">
-                                function setAction(imageHash) {
-                                    actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
-                                    document.getElementById('fileupload').action = actionURL;
-                                }
-                            </script>
-                            <div class="row-fluid">
-                                <img src="{{file.thumbnail_url}}">
-                                New Picture Uploaded and Saved
-                                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</a>
-                            </div><!-- row-fluid -->
-                            </form>
-
-                        </div><!-- preview -->
-                        <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
-                            </td>
-                            <td>
-                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
-                                <i class="icon-upload icon-white"></i>
-                                <span>Save</span>
-                                </button>
-                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
-                                <i class="icon-ban-circle icon-white"></i>
-                                <span>Cancel</span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-
-        ${coAuthorInvite()}
-    </div><!-- span12 -->
-</div>
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
 </%def>
 
-<%def name="initiativeModerationPanel(thing)">
-    <%
-        if 'user' not in session or thing.objType == 'revision' or c.privs['provisional']:
-            return
-        flagID = 'flag-%s' % thing['urlCode']
-        adminID = 'admin-%s' % thing['urlCode']
-        publishID = 'publish-%s' % thing['urlCode']
-        unpublishID = 'unpublish-%s' % thing['urlCode']
-    %>
-    <div class="btn-group">
-        % if thing['disabled'] == '0' and thing.objType != 'initiativeUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-        % endif
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initiativeUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
-        % elif thing.objType == 'initiativeUnpublished' and thing['unpublished_by'] != 'parent':
-            % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
-            % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
-            % endif
-        % endif
-        % if c.revisions:
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
-        % endif
-
-        % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
-        % endif
-    </div>
-    
-    % if thing['disabled'] == '0':
-        % if thing.objType != 'initiativeUnpublished':
-            ${lib_6.flagThing(thing)}
-        % endif
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
-            % if thing.objType == 'initiativeUnpublished':
-                ${lib_6.publishThing(thing)}
-            % else:
-                ${lib_6.unpublishThing(thing)}
-            % endif
-            % if userLib.isAdmin(c.authuser.id):
-                ${lib_6.adminThing(thing)}
-            % endif
-        % endif
-    % else:
-        % if userLib.isAdmin(c.authuser.id):
-            ${lib_6.adminThing(thing)}
-        % endif
-    % endif
-    % if c.revisions:
-        <div id="revisions" class="collapse">
-            <ul class="unstyled">
-            % for revision in c.revisions:
-                <li>Revision: <a href="/initiative/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>
-            % endfor
-            </ul>
-        </div>
-    % endif
-</%def>
-
-<%def name="editResource()">
-    <%
-        if not c.resource:
-            resourceTitle = ""
-            resourceLink = ""
-            resourceText = ""
-        else:
-            resourceTitle = c.resource['title']
-            resourceLink = c.resource['link']
-            resourceText = c.resource['text']
-            
-    %>
-    % if not c.resource:
-        <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
-            <fieldset>
-                <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
-                <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label>Resource URL</label>
-                <input type="url" class="input-block-level" name="link" ng-model="link" placeholder="http://" required>
-                <span ng-show="addResourceURLShow"><div class="alert alert-danger" ng-cloak>{{addResourceURLResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Additional information</strong><br>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text"></textarea>
-                <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
-            </fieldset>
-            <span ng-show="addResourceShow">{{addResourceResponse}}</span>
-            <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
-        </form>
-    % endif
-</%def>
-
-<%def name="editUpdate()">
+<%def name="itemEdit()">
     <%
         if not c.update:
             updateTitle = ""
@@ -605,7 +226,7 @@
             
     %>
     % if not c.update:
-        <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
+        <form id="addUpdateForm" name="addUpdateForm">
             <fieldset>
                 <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
                 <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
@@ -636,7 +257,7 @@
         if c.country!= "0":
             countrySelected = "selected"
             states = c.states
-            countyMessage = "Leave 'State' blank if your initiative applies to the entire country."
+            countyMessage = "Leave 'State' blank if the meeting jurisdiction applies to the entire country."
         endif
     %>
     <div class="row-fluid"><span id="planetSelect">
@@ -676,13 +297,13 @@
             </select>
             </div><!-- span8 -->
         % else:
-            Leave 'Country' blank if your initiative applies to the entire planet.
+            Leave 'Country' blank if the meeting jurisdiction applies to the entire planet.
         % endif
     </span></div><!-- row-fluid -->
     <div class="row-fluid"><span id="countySelect">
         % if c.state != "0":
             <% counties = getCountyList("united-states", c.state) %>
-            <% cityMessage = "Leave blank 'County' blank if your initiative applies to the entire state." %>
+            <% cityMessage = "Leave blank 'County' blank if the meeting jurisdiction applies to the entire state." %>
             <div class="span3">County:</div><div class="span8">
             <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
                 <option value="0">Select a county</option>
@@ -704,7 +325,7 @@
     <div class="row-fluid"><span id="citySelect">
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
-            <% postalMessage = "Leave 'City' blank if your initiative applies to the entire county." %>
+            <% postalMessage = "Leave 'City' blank if the meeting jurisdiction applies to the entire county." %>
             <div class="span3">City:</div><div class="span8">
             <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
             <option value="0">Select a city</option>
@@ -726,7 +347,7 @@
     <div class="row-fluid"><span id="postalSelect">
         % if c.city != "0":
             <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
-            <% underPostalMessage = "or leave blank if your initiative is specific to the entire city." %>
+            <% underPostalMessage = "or leave blank if your the meeting jurisdiction is specific to the entire city." %>
             <div class="span3">Zip Code:</div><div class="span8">
             <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
             <option value="0">Select a zip code</option>
@@ -747,116 +368,5 @@
         </span></div><!-- row-fluid -->
     <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
     <br/>
-</%def>
-
-<%def name="showCost(item)">
-    <% 
-        currency = '$'
-        cost = int(item['cost']) 
-        if cost <= -1:
-            cost = cost * -1
-            currency = '- $'
-    %>
-    <h4 class="initiative-title">
-        <div class="span6 pull-left">
-            Cost Estimate
-        </div>
-        <div class="span6">
-            <table class="pull-right">
-                <tr>
-                    <td>${currency}</td>
-                    <td>${locale.format("%d", cost, grouping=True)}</td>
-                <tr>
-            </table>
-        </div>
-    </h4>
-</%def>
-
-<%def name="coAuthorInvite()">
-    <div class="row-fluid" id="coauthors">
-        <h3 class="initiative-title edit">5. Coauthors</h3>
-    </div><!-- row-fluid -->
-    <strong>Invite CoAuthors:</strong>
-    % if 'user' in session and c.authuser:
-        <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}'; authuserCode = '${c.authuser['urlCode']}'">
-            <div ng-controller="userLookupCtrl">
-                <div class="row-fluid">
-                    <form ng-submit="lookup()">
-                        <div class="input-append">
-                          <input type="text" ng-submit="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
-                          <button type="submit" class="btn"><i class="icon-search"></i></button>
-                        </div>
-                    </form>
-                        <table class="table-striped full-width" ng-cloak>
-                            <tr ng-repeat="user in users | limitTo:10">
-                                <td>
-                                    <a href="/profile/{{user.urlCode}}/{{user.url}}">
-                                        <img class="media-object avatar med-avatar" ng-src="{{user.photo}}" alt="{{user.name}}" title="{{user.name}}">
-                                    </a>
-                                </td>
-                                <td class="span8 grey"><a class="green green-hover" href="/profile/{{user.urlCode}}/{{user.url}}">{{user.name}}</a> from <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
-                                <td>
-                                    <button ng-click="submitInvite(user.urlCode)" class="btn btn-primary pull-right">Invite to Coauthor</button>
-                                </td>
-                            </tr>
-                        </table>
-                </div><!-- row-fluid -->
-                <div ng-if="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}" ng-cloak>
-                    <button type="button" class="close" ng-click="hideShowAlert()">&times;</button>
-                    {{alertMsg}}
-                </div>
-                <br>
-                <strong>Author and Coauthors:</strong>
-                <!-- 
-                <div class="centered" ng-show="loading" ng-cloak>
-                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
-                </div>
-                <div class="row-fluid" ng-show="!loading"> -->
-                    <table class="table-striped full-width" ng-cloak>
-                        <tr>
-                            <td>
-                                ${lib_6.userImage(c.user, className="avatar med-avatar")}
-                            </td>
-                            <td>
-                                <a class="green green-hover" href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.user['name']}</a>
-                                <span class="grey">from <a href="${c.authorGeo['cityURL']}" class="orange oreange-hover">${c.authorGeo['cityTitle']}</a>, <a href="${c.authorGeo['stateURL']}" class="orange orange-hover">${c.authorGeo['stateTitle']}</a></span>
-                            </td>
-                            <td>
-                                <span class="badge badge-inverse">Original Author</span>
-                            </td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr ng-repeat="a in authors">
-                            <td>
-                                <a class="pull-left" href="/profile/{{a.urlCode}}/{{a.url}}">
-                                    <img class="media-object avatar med-avatar" ng-src="{{a.photo}}" alt="{{a.name}}" title="{{a.name}}">
-                                </a>
-                            </td>
-                            <td>
-                                <a class="green green-hover" href="/profile/{{a.urlCode}}/{{a.url}}">{{a.name}}</a>
-                                <span class="grey">from <a href="{{a.cityURL}}" class="orange oreange-hover">{{a.cityTitle}}</a>, <a href="{{a.stateURL}}" class="orange orange-hover">{{a.stateTitle}}</a></span>
-                            </td>
-                            <td>
-                                <span ng-if="a.pending == '1'"  class="badge badge-info">Invitation Pending</span>
-                            </td>
-                            <td>
-                                <button type="button" ng-if="a.pending == '1'" ng-click="resendInvite(a.urlCode)" class="btn btn-primary pull-right">Resend Invite</button>
-                            </td>
-                            <td ng-if="a.urlCode != authuserCode">
-                                <button type="button" ng-click="removeCoA(a.urlCode)" class="btn btn-danger pull-right">Remove</button>
-                            </td>
-                            <td ng-if="a.urlCode == authuserCode">
-                                <form class="no-bottom" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/{{a.urlCode}}/facilitate/resign/handler" ng-cloak>
-                                    <input type="hidden" name="resign" value="resign">
-                                    <button type="submit" class="btn btn-danger pull-right">Resign</button>
-                                </form>
-                            </td>
-                        </tr>
-                    </table>
-                <!-- ng-loading </div> -->
-            </div><!-- ng-controller -->
-        </div><!-- ng-init -->
-    %endif   
 </%def>
 

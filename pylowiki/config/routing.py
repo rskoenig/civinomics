@@ -387,7 +387,13 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
-    
+ 
+    ###############
+    # Meetingss   #
+    ###############
+    map.connect('/meeting/{id1}/{id2}/meetingNew{end:/?}', controller = 'meeting', action = 'meetingNew', id1 = '{id1}', id2 = '{id2}')   
+
+
     ###############
     # Initiatives #
     ###############

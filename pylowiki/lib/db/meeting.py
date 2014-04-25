@@ -26,7 +26,7 @@ def getAgendaItems(code, deleted = u'0',):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'agendaitem')\
             .filter(Thing.data.any(wc('deleted', deleted)))\
-            .filter(Thing.data.any(wc('agendaCode', code)))\
+            .filter(Thing.data.any(wc('meetingCode', code)))\
             .all()
     except:
         return False
@@ -44,7 +44,7 @@ def searchMeetings( keys, values, deleted = u'0', public = '1', count = False):
                 .filter_by(objType = 'meeting')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('public', public)))\
-                .filter(Thing.data.any(reduce(or_, map_agendas)))
+                .filter(Thing.data.any(reduce(or_, map_meetingss)))
         if count:
             return q.count()
         return q.all()
@@ -54,32 +54,34 @@ def searchMeetings( keys, values, deleted = u'0', public = '1', count = False):
         
 
 # Meeting Object
-def Meeting(owner, title, text, scope, group, meetingDate, agendaPostDate, tag):
-    a = Thing('agenda', owner.id)
-    generic.linkChildToParent(a, owner)
-    commit(a)
-    a['urlCode'] = utils.toBase62(i)
-    a['title'] = title
-    a['url'] = utils.urlify(title[:20])
-    a['text'] = text
-    a['group'] = group
-    a['tag'] = tag
-    a['scope'] = scope
-    a['meetingDate'] = meetingDate
-    a['agendaPostDate'] = agendaPostDate
-    a['deleted'] = u'0'
-    a['disabled'] = u'0'
-    a['public'] = u'0'
-    a['archived'] = u'0'
-    a['views'] = '0'
-    commit(a)
-    return a
+def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime, agendaPostDate = '0000-00-00', tag):
+    m = Thing('meeting', owner.id)
+    generic.linkChildToParent(m, owner)
+    commit(m)
+    m['urlCode'] = utils.toBase62(m)
+    m['title'] = title
+    m['url'] = utils.urlify(title[:20])
+    m['text'] = text
+    m['group'] = group
+    m['location'] = group
+    m['tag'] = tag
+    m['scope'] = scope
+    m['meetingDate'] = meetingDate
+    m['meetingTime'] = meetingTime
+    m['agendaPostDate'] = agendaPostDate
+    m['deleted'] = u'0'
+    m['disabled'] = u'0'
+    m['public'] = u'0'
+    m['archived'] = u'0'
+    m['views'] = '0'
+    commit(m)
+    return m
 
 # Object
-def Agendaitem(owner, agenda, title, text):
+def Agendaitem(owner, meeting, title, text):
     a = Thing('agendaitem', owner.id)
     generic.linkChildToParent(a, owner)
-    generic.linkChildToParent(a, agenda)
+    generic.linkChildToParent(a, meeting)
     commit(a)
     a['urlCode'] = utils.toBase62(i)
     a['title'] = title

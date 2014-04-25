@@ -1,19 +1,8 @@
 <%inherit file="/base/base_indented.bootstrap"/>
-<%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace file="/lib/derived/6_agenda_home.mako" name="ahelpers" />
-<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace file="/lib/derived/6_meeting.mako" name="mhelpers" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
+${mhelpers.showInfo(c.meeting)}
 
-    <h4 class="agenda-title">${c.agenda['title']}</h4>
-    Who is meeting: ${c.agenda['group']}<br>
-    Meeting Date: ${c.agenda['meetingDate']}<br>
-    Agenda Post Date: ${c.agenda['agendaPostDate']}<br>
-    <hr>
-    % if c.agenda.objType == 'revision':
-        This is a revision dated ${c.agenda.date}<br />
-    % else:
-        ${ahelpers.agendaModerationPanel(c.agenda)}
-    % endif
-    ${ahelpers.showItems(c.agenda)}
+${mhelpers.showItems(c.meeting)}

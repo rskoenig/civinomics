@@ -6,7 +6,7 @@ from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.db.agenda       as agendaLib
+import pylowiki.lib.db.agenda       as meetingLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
@@ -23,15 +23,21 @@ import simplejson as json
 
 log = logging.getLogger(__name__)
 
-class AgendaController(BaseController):
+class MeetingController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
         c.user = None
-        c.agenda = None
+        c.meeting = None
         c.items = None
-        adminList = ['agendaNew', 'agendaNewHandler', 'agendaEdit', 'agendaEditHandler', 'itemEditHandler']
+        adminList = ['meetingNew', 'meetingNewHandler', 'meetingEdit', 'meetingEditHandler', 'itemEditHandler']
+        if action == 'meetingNew' and id1 is not None and id2 is not None:
+            action = 'meetingEdit'
+            c.user = userLib.getUserByCode(id1)
+            c.meetingEdit = False
+            if not c.user:
+                abort(404)
         if id1 is not None and id2 is not None:
-            c.agenda = agendaLib.getAgenda(id1)
+            c.meeting = meetingLib.getMeeting(id1)
         else:
             abort(404)
             
@@ -41,39 +47,61 @@ class AgendaController(BaseController):
             else:
                 abort(404)
     
-
-    def agendaNewHandler(self):
-        if 'agendaTitle' in request.params:
-            title = request.params['agendaTitle']
+    def meetingNew(self):
+        
+        # initialize the scope dropdown selector in the edit template
+        c.states = geoInfoLib.getStateList('United-States')
+        c.country = "0"
+        c.state = "0"
+        c.county = "0"
+        c.city = "0"
+        c.postal = "0"
+        
+        c.editMeeting = False
+       
+        return render('/derived/6_meeting_edit.bootstrap')
+        
+    def meetingNewHandler(self):
+        if 'meetingTitle' in request.params:
+            title = request.params['meetingTitle']
         else:
-            title = 'New Meeting Agenda'
+            title = 'New Meeting'
             
-        if 'agendaText' in request.params:
-            text = request.params['agendaText']
+        if 'meetingText' in request.params:
+            text = request.params['meetingText']
         else:
             text = ''
 
-        # the scope if initiative is created from a geoSearch page
-        if 'agendaRegionScope' in request.params:
-            scope = request.params['agendaRegionScope']
+        if 'meetingRegionScope' in request.params:
+            scope = request.params['meetingRegionScope']
             
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
             
-        if 'agendaTag' in request.params:
-            tag = request.params['agendaTag']
+        if 'meetingTag' in request.params:
+            tag = request.params['meetingTag']
         else:
             tag = ''
             
-        if 'agendaGroup' in request.params:
-            group = request.params['agendaGroup']
+        if 'meetingGroup' in request.params:
+            group = request.params['meetingGroup']
         else:
             group = ''
             
-        if 'agendaMeetingDate' in request.params:
-            meetingDate = request.params['agendaMeetingDate']
+        if 'meetingLocation' in request.params:
+            location = request.params['meetingLocation']
+        else:
+            location = ''
+            
+        if 'meetingDate' in request.params:
+            meetingDate = request.params['meetingDate']
         else:
             meetingDate = ''
+            
+        if 'meetingTime' in request.params:
+            meetingTime = request.params['meetingTime']
+        else:
+            meetingTime = ''
 
         if 'agendaPostDate' in request.params:
             agendaPostDate = request.params['agendaPostDate']
@@ -81,11 +109,11 @@ class AgendaController(BaseController):
             agendaPostDate = '' 
             
         #create the agenda
-        c.agenda = agendaLib.Agenda(c.user, title, text, scope, group, meetingDate, agendaPostDate, tag)
+        c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, agendaPostDate, tag)
 
         c.level = scope
 
-        # now that the initiative edits have been commited, update the scopeProps for the template to use:
+        # now that the edits have been commited, update the scopeProps for the template to use:
         scopeProps = utils.getPublicScope(c.initiative)
         scopeName = scopeProps['name'].title()
         scopeLevel = scopeProps['level'].title()
@@ -99,7 +127,7 @@ class AgendaController(BaseController):
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        if c.initiative['scope'] != '':
+        if c.meeting['scope'] != '':
             geoTags = c.initiative['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
@@ -113,17 +141,17 @@ class AgendaController(BaseController):
             c.city = "0"
             c.postal = "0"
 
-        c.editAgenda = True
+        c.editMeeting = True
        
-        return render('/derived/6_agenda.bootstrap')
+        return render('/derived/6_meeting.bootstrap')
     
 
-    def agendaEdit(self):
+    def meetingEdit(self):
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
         if c.initiative['scope'] != '':
-            geoTags = c.agenda['scope'].split('|')
+            geoTags = c.meeting['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
             c.county = utils.geoDeurlify(geoTags[6])
@@ -139,29 +167,29 @@ class AgendaController(BaseController):
         if 'public' in request.params:
             log.info("got %s"%request.params['public'])
         if 'public' in request.params and request.params['public'] == 'publish':
-            if c.complete and c.agenda['public'] == '0':
-                c.agenda['public'] = '1'
+            if c.complete and c.meeting['public'] == '0':
+                c.meeting['public'] = '1'
                 startTime = datetime.datetime.now(None)
-                c.agenda['publishDate'] = startTime
-                c.agenda['unpublishDate'] = u'0000-00-00'
-                dbHelpers.commit(c.agenda)
-                c.saveMessage = "Your meeting agenda is now live! It is publicly viewable."
+                c.meeting['publishDate'] = startTime
+                c.meeting['unpublishDate'] = u'0000-00-00'
+                dbHelpers.commit(c.meeting)
+                c.saveMessage = "Your meeting is now live! It is publicly viewable."
         elif 'public' in request.params and request.params['public'] == 'unpublish':
-            if c.agenda['public'] == '1':
-                c.agenda['public'] = '0'
+            if c.meeting['public'] == '1':
+                c.meeting['public'] = '0'
                 endTime = datetime.datetime.now(None)
-                c.agenda['unpublishDate'] = endTime
-                dbHelpers.commit(c.agenda)
-                c.saveMessage = "Your meeting agenda has been unpublished. It is no longer publicy viewable."
+                c.meeting['unpublishDate'] = endTime
+                dbHelpers.commit(c.meeting)
+                c.saveMessage = "Your meeting has been unpublished. It is no longer publicy viewable."
 
-        c.editAgenda = True
+        c.editMeeting = True
 
-        return render('/derived/6_agenda_edit.bootstrap')
+        return render('/derived/6_meeting_edit.bootstrap')
         
-    def agendaEditHandler(self):
+    def meetingEditHandler(self):
         if 'title' in request.params:
-            c.agenda['title'] = request.params['title']
-            c.agenda['url'] = utils.urlify(c.agenda['title'])
+            c.meeting['title'] = request.params['title']
+            c.meeting['url'] = utils.urlify(c.meeting['title'])
         if 'text' in request.params:
             c.initiative['text'] = request.params['text']
         if 'tag' in request.params:
@@ -198,16 +226,16 @@ class AgendaController(BaseController):
             # assemble the scope string 
             # ||country||state||county||city|zip
             geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-            if c.agenda['scope'] != geoTagString:
-                c.agenda['scope'] = geoTagString
+            if c.meeting['scope'] != geoTagString:
+                c.meeting['scope'] = geoTagString
 
                 wchanges = 1
 
-        dbHelpers.commit(c.agenda)
-        revisionLib.Revision(c.authuser, c.agenda)
+        dbHelpers.commit(c.meeting)
+        revisionLib.Revision(c.authuser, c.meeting)
 
         # now that the agenda edits have been commited, update the scopeProps for the template to use:
-        scopeProps = utils.getPublicScope(c.agenda)
+        scopeProps = utils.getPublicScope(c.meeting)
         scopeName = scopeProps['name'].title()
         scopeLevel = scopeProps['level'].title()
         if scopeLevel == 'Earth':
@@ -220,7 +248,7 @@ class AgendaController(BaseController):
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        if c.agenda['scope'] != '':
+        if c.meeting['scope'] != '':
             geoTags = c.initiative['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
@@ -240,19 +268,19 @@ class AgendaController(BaseController):
         else:
             c.saveMessage = "Changes saved."
 
-        c.editAgenda = True
+        c.editMeeting = True
         
-        return render('/derived/6_agenda_edit.bootstrap')
+        return render('/derived/6_meeting_edit.bootstrap')
         
-    def agendaShowHandler(self):
+    def meetingShowHandler(self):
 
-        c.revisions = revisionLib.getRevisionsForThing(c.agenda)
+        c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         
-        if c.agenda.objType != 'revision' and 'views' in c.agenda:
-            views = int(c.agenda['views']) + 1
-            c.agenda['views'] = str(views)
-            dbHelpers.commit(c.agenda)
+        if c.meeting.objType != 'revision' and 'views' in c.meeting:
+            views = int(c.meeting['views']) + 1
+            c.meeting['views'] = str(views)
+            dbHelpers.commit(c.meeting)
 
-        return render('/derived/6_agenda_home.bootstrap')
+        return render('/derived/6_meeting.bootstrap')
 
         
