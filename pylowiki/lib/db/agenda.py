@@ -21,6 +21,15 @@ def getAgenda(code):
     except:
         return False
         
+def getAgendaItems(code, deleted = u'0',):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'agendaitem')\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('agendaCode', code)))\
+            .all()
+    except:
+        return False
         
 def searchAgendas( keys, values, deleted = u'0', public = '1', count = False):
     try:
