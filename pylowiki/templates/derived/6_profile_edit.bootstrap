@@ -7,7 +7,7 @@
 %>
 ##<div ng-app="ngUploadApp">
     <div class="spacer"></div>
-    <div class="row-fluid" ng-controller="ProfileEditController">
+    <div class="row-fluid" ng-controller="profileController">
         <div class="span8">
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="editTabs">
