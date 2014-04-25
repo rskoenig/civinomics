@@ -6,7 +6,7 @@ from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.db.agenda       as meetingLib
+import pylowiki.lib.db.meeting      as meetingLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
@@ -71,10 +71,36 @@ class MeetingController(BaseController):
             text = request.params['meetingText']
         else:
             text = ''
-
-        if 'meetingRegionScope' in request.params:
-            scope = request.params['meetingRegionScope']
             
+        if 'geoTagCountry' in request.params:
+            if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+                geoTagCountry = request.params['geoTagCountry']
+            else:
+                geoTagCountry = "0"
+                
+            if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+                geoTagState = request.params['geoTagState']
+            else:
+                geoTagState = "0"
+                
+            if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+                geoTagCounty = request.params['geoTagCounty']
+            else:
+                geoTagCounty = "0"
+                
+            if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+                geoTagCity = request.params['geoTagCity']
+            else:
+                geoTagCity = "0"
+                
+            if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+                geoTagPostal = request.params['geoTagPostal']
+            else:
+                geoTagPostal = "0"
+
+            # assemble the scope string 
+            # ||country||state||county||city|zip
+            scope = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
             
@@ -108,13 +134,13 @@ class MeetingController(BaseController):
         else:
             agendaPostDate = '' 
             
-        #create the agenda
-        c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, agendaPostDate, tag)
+        #create the meeting
+        c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, tag, agendaPostDate)
 
         c.level = scope
 
         # now that the edits have been commited, update the scopeProps for the template to use:
-        scopeProps = utils.getPublicScope(c.initiative)
+        scopeProps = utils.getPublicScope(c.meeting)
         scopeName = scopeProps['name'].title()
         scopeLevel = scopeProps['level'].title()
         if scopeLevel == 'Earth':
@@ -128,7 +154,7 @@ class MeetingController(BaseController):
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
         if c.meeting['scope'] != '':
-            geoTags = c.initiative['scope'].split('|')
+            geoTags = c.meeting['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
             c.county = utils.geoDeurlify(geoTags[6])

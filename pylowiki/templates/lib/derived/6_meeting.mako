@@ -157,7 +157,7 @@
             
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="title" class="control-label" required><strong>Public Jurisdiction:</strong></label>
+                    <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label>
                     ${geoSelect()}
                 </div><!-- span6 -->
                 <div class="span6">

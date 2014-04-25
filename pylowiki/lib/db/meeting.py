@@ -21,6 +21,15 @@ def getMeeting(code):
     except:
         return False
         
+def getMeetingsForUser(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'meeting')\
+            .filter(Thing.data.any(wc('userCode', code)))\
+            .all()
+    except:
+        return False
+        
 def getAgendaItems(code, deleted = u'0',):
     try:
         return meta.Session.query(Thing)\
@@ -54,7 +63,7 @@ def searchMeetings( keys, values, deleted = u'0', public = '1', count = False):
         
 
 # Meeting Object
-def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime, agendaPostDate = '0000-00-00', tag):
+def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime, tag, agendaPostDate = '0000-00-00'):
     m = Thing('meeting', owner.id)
     generic.linkChildToParent(m, owner)
     commit(m)
