@@ -42,7 +42,16 @@
 </%def>
 
 <%def name="showItems(meeting)">
-
+    % for item in c.agendaItems:
+        <div class="row-fluid">
+            <h3>${item['title']}</h3>
+        </div><!-- row-fluid -->
+        <div class="row-fluid">
+            ${m.html(item['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        </div><!-- row-fluid -->
+        <div class="spacer"></div>
+            
+    % endfor
 </%def>
 
 <%def name="editMeeting()">
@@ -374,3 +383,27 @@
     <br/>
 </%def>
 
+<%def name="addAgendaItem(meeting)">
+    <div class="row-fluid">
+        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Agenda Item</button>
+        <div id="addItem" class="collapse">
+            <form action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
+                <fieldset>
+                    <label>Item Title</label>
+                    <input type="text" name="agendaItemTitle" class="span6">
+                    <label>Item Text</label>
+                    ${lib_6.formattingGuide()}<br>
+                    <textarea rows="3" name="agendaItemText" class="span6"></textarea>
+                    <label class="checkbox">
+                    <input type="checkbox" name="agendaItemVote" checked> People can vote on this
+                    </label>
+                    <label class="checkbox">
+                    <input type="checkbox" name="agendaItemComment" checked> People can comment on this
+                    </label>
+                    <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                </fieldset>
+            </form>
+        </div>
+    </div><!-- row-fluid -->
+
+</%def>

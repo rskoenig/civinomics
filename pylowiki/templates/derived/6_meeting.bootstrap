@@ -4,5 +4,5 @@
 
 <% lib.return_to() %>
 ${mhelpers.showInfo(c.meeting, c.author)}
-
+${mhelpers.addAgendaItem(c.meeting)}
 ${mhelpers.showItems(c.meeting)}

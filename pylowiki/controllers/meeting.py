@@ -308,6 +308,7 @@ class MeetingController(BaseController):
 
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         c.author = userLib.getUserByCode(c.meeting['userCode'])
+        c.agendaItems = meetingLib.getAgendaItems(c.meeting['urlCode'])
         
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1
@@ -315,5 +316,32 @@ class MeetingController(BaseController):
             dbHelpers.commit(c.meeting)
 
         return render('/derived/6_meeting.bootstrap')
+        
+    def meetingAgendaItemAddHandler(self):
+        if 'agendaItemTitle' in request.params:
+            title = request.params['agendaItemTitle']
+        else:
+            title = ''
+        
+        if 'agendaItemText' in request.params:
+            text = request.params['agendaItemText']
+        else:
+            text = ''
+
+        if 'agendaItemVote' in request.params:
+            canVote = request.params['agendaItemVote']
+        else:
+            canVote = ''
+
+        if 'agendaItemComment' in request.params:
+            canComment = request.params['agendaItemComment']
+        else:
+            canComment = ''
+            
+        meetingLib.Agendaitem(c.authuser, c.meeting, title, text, canVote, canComment)
+        
+        returnURL = '/meeting/%s/%s/show'%(c.meeting['urlCode'], c.meeting['url'])
+            
+        return redirect(returnURL)
 
         

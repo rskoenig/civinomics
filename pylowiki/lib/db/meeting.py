@@ -87,15 +87,17 @@ def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime
     return m
 
 # Object
-def Agendaitem(owner, meeting, title, text):
+def Agendaitem(owner, meeting, title, text, canVote, canComment):
     a = Thing('agendaitem', owner.id)
     generic.linkChildToParent(a, owner)
     generic.linkChildToParent(a, meeting)
     commit(a)
-    a['urlCode'] = utils.toBase62(i)
+    a['urlCode'] = utils.toBase62(a)
     a['title'] = title
     a['url'] = utils.urlify(title[:20])
-    a['text'] = title
+    a['text'] = text
+    a['canVote'] = canVote
+    a['canComment'] = canComment
     a['deleted'] = u'0'
     a['disabled'] = u'0'
     a['public'] = u'0'
