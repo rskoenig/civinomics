@@ -3,6 +3,6 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-${mhelpers.showInfo(c.meeting)}
+${mhelpers.showInfo(c.meeting, c.author)}
 
 ${mhelpers.showItems(c.meeting)}

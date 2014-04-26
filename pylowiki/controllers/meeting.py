@@ -304,9 +304,10 @@ class MeetingController(BaseController):
         
         return render('/derived/6_meeting_edit.bootstrap')
         
-    def meetingShowHandler(self):
+    def meetingShow(self):
 
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
+        c.author = userLib.getUserByCode(c.meeting['userCode'])
         
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1

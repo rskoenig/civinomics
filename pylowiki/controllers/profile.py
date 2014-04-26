@@ -395,19 +395,12 @@ class ProfileController(BaseController):
             entry['title'] = item['title']
             entry['meetingDate'] = item['meetingDate']
             entry['group'] = item['group']
-            sList = item['scope'].split('|')
-            if sList[4] == '0':
-                entry['scope'] = 'Country of the United States'
-            elif sList[6] == '0':
-                state = sList[4].replace('-', ' ')
-                entry['scope'] = 'State of ' + state.title()
-            elif sList[8] == '0':
-                county = sList[6].replace('-', ' ')
-                entry['scope'] = 'County of ' + county.title()
-            else:
-                city = sList[8].replace('-', ' ')
-                entry['scope'] = 'City of ' + city.title()
-                
+            
+            scopeInfo = utils.getPublicScope(item['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
             entry['href']= '/meeting/' + entry['urlCode'] + '/' + entry['url'] + '/show'
             result.append(entry)
             

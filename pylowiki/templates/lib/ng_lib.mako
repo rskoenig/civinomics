@@ -6,7 +6,7 @@
 </%def>
 
 <%def name="meeting_listing()">
-    <td><a href="{{item.href}}">{{item.title}}</a><p>Meeting of {{item.group}} on {{item.meetingDate}} {{item.scope}}</td>
+    <td><a href="{{item.href}}">{{item.title}}</a> {{item.meetingDate}}<p><img src="{{item.flag}}" width="60" height="60"> {{item.scopeLevel}} of {{item.scopeName}} Public Meeting of {{item.group}}</td>
 </%def>
 
 <%def name="initiative_listing()">
