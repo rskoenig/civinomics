@@ -102,7 +102,6 @@
                             </div>
                         </div>
                         ${lib_6.showPositions(c.initiative)}
-                        <h4 class="section-header initiative smaller section-header-inner">Share It</h4>
                         <!--
                         <hr class="narrow">
                         <div>

@@ -606,6 +606,10 @@ padding: 0;
   margin-bottom: 10px;
 }
 
+.well.slim-well{
+  padding: 5px;
+}
+
 .well.footer{
    background: white;
    border-color: transparent;
@@ -1132,8 +1136,8 @@ img.avatar{
    margin-right:5px;
 }
 .avatar.avatar-large{
-    height: 200px;
-    width: 200px;
+    height: 170px;
+    width: 170px;
 }
 
 .avatar.avatar-team{

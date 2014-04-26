@@ -21,11 +21,18 @@
     %>
     <div class="spacer">
     <div class="row-fluid" ng-controller="profileController">
-        <div class="span8">
-            <div class="tabbable"> <!-- Only required for left/right tabs -->
-                <ul class="nav nav-tabs" id="profileTabs">
+        <div class="span2">
+            % if c.user['memberType'] == 'organization':
+                ${lib_6.userImage(c.user, className="thumbnail tight flag pull-left")}
+            % else:
+                ${lib_6.userImage(c.user, className="avatar avatar-large")}
+            % endif
+            <div>
+                <ul class="nav nav-tabs nav-stacked" style="width: 100%" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                     % if c.user['memberType'] == 'organization':
+                        <li><a href="#tab-activity" data-toggle="tab" class="green green-hover">Members</a></li>
+                        <li><a href="#tab-activity" data-toggle="tab" class="green green-hover">Followers</a></li>
                         <li><a href="#tab-endorsements" data-toggle="tab" class="green green-hover">Endorsements</a></li>
                         <li><a href="#tab-forum" data-toggle="tab" class="green green-hover">Forum</a></li>
                     % endif
@@ -36,13 +43,49 @@
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
-                                <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
+                                <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                             % endif
-                        % else:
-                            ${helpers.followButton(c.user)}
                         % endif
                     % endif
                 </ul>
+            </div>
+        </div>
+        <div class="span10">
+            <div class="well slim-well">
+                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
+                    <h3 ng-cloak>{{fullName}}</h3>
+                    % if c.user['memberType'] == 'organization':
+                        <table id="metrics">
+                            <tr>
+                                <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
+                                    <span class="workshop-metrics">Followers</span><br>
+                                      <strong ng-cloak>100</strong>
+                                </td>
+                                <td class="clickable" ng-click="toggleAdopted()">
+                                    <span class="workshop-metrics">Members</span><br>
+                                      <strong ng-cloak>100</strong>
+                                </td>
+                                % if c.user['email'] != c.authuser['email']:
+                                    <td>
+                                        ${helpers.followButton(c.user)}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning">Become a member</button>
+                                    </td>
+                                % endif
+                            </tr>
+                        </table>
+                    % else:
+                        <p>${lib_6.userGeoLink(c.user)}</p>
+                    % endif
+                </div>
+            </div>
+            % if c.user['memberType'] == 'organization':
+                <div class="well slim-well">
+                    ${helpers.addTopic()}
+                </div>
+            % endif
+            <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-activity">
                         % if c.user['activated'] == "0" and isAdmin(c.authuser.id):
@@ -50,6 +93,7 @@
                             <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
                             </button>
                         % endif
+                        
                         % if c.user['memberType'] == 'organization' and 'user' in session and c.userid != c.authuser.id:
                             <div class="row-fluid">
                                 <div class="span2">
@@ -60,6 +104,7 @@
                                 </div><!-- span10 -->
                             </div><!-- row-fluid -->
                         % endif
+                        
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
                     % if c.user['memberType'] == 'organization':
@@ -112,10 +157,7 @@
                     </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
-        </div><!-- span8 -->
-        <div class="span4">
-            ${dashboard.profileDashboard()}
-        </div><!--/.span4-->
+        </div><!-- span10 -->
     </div>
 ##</div>
 

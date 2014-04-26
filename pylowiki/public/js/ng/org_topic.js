@@ -2,9 +2,10 @@
 function topicController($scope, $http, $location, $timeout) {
     $scope.addTopicTitleShow = false;
     $scope.addTopicTextShow = false;
+    $scope.title = '';
+    $scope.text = '';
     
     $scope.submitTopicForm = function(addTopicForm) {
-
 
         if(addTopicForm.title.$invalid) {
             $scope.addTopicTitleShow = true;
