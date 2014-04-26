@@ -39,19 +39,23 @@ class RegisterController(BaseController):
     def splashDisplay(self):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
-	c.title = config['custom.titlebar']
+        c.title = config['custom.titlebar']
 
-        c.photos = photoLib.getAllPhotos()
-        if c.photos and len(c.photos) != 0:
-            c.photos = sort.sortBinaryByTopPop(c.photos)
-            p = c.photos[0]
-            c.backgroundPhoto = p
-            c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
-            c.backgroundAuthor = userLib.getUserByID(p.owner)
-        else: 
-            c.backgroundPhoto = {'title': 'Santa Cruz Beach Boardwalk'}
-            c.backgroundPhotoURL = '/images/splash/sc_boardwalk.jpg'
-            c.backgroundAuthor = 'Ester Kim'
+        c.backgroundPhoto = {'title': 'City Council Meeting'}
+        c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
+        c.backgroundAuthor = 'unknown'
+
+        #c.photos = photoLib.getAllPhotos()
+        #if c.photos and len(c.photos) != 0:
+        #    c.photos = sort.sortBinaryByTopPop(c.photos)
+        #    p = c.photos[0]
+        #    c.backgroundPhoto = p
+        #    c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+        #    c.backgroundAuthor = userLib.getUserByID(p.owner)
+        #else: 
+        #    c.backgroundPhoto = {'title': 'Santa Cruz Beach Boardwalk'}
+        #    c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
+        #    c.backgroundAuthor = 'Ester Kim'
 
         self.noQuery = False
         c.searchType = "browse"

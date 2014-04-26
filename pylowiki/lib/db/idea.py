@@ -102,6 +102,7 @@ def Idea(user, title, text, workshop, privs, role = None):
     idea['allowComments'] = '1'
     idea['ups'] = '0'
     idea['downs'] = '0'
+    idea['views'] = '0'
     idea['url'] = urlify(title[:20])
     idea = generic.addedItemAs(idea, privs, role)
     commit(idea)

@@ -128,10 +128,11 @@
                                 l = listenerLib.getListener(c.user['email'], workshop)
                                 itemsChecked = ''
                                 digestChecked = ''
-                                if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                                    itemsChecked = 'checked'
-                                if 'digest' in l and l['digest'] == '1':
-                                    digestChecked = 'checked'
+                                if l:
+                                    if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                                    if 'digest' in l and l['digest'] == '1':
+                                        digestChecked = 'checked'
                             %>
                             <div class="row-fluid" ng-controller="listenerController">
                                 <div class="span3">Email when:</div>
@@ -350,6 +351,7 @@
         
         % for item in activity:
             <% 
+                origObjType = item.objType
                 objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
                 
@@ -427,7 +429,7 @@
                     activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
-                % if item['deleted'] == '0' and item['public'] == '1':
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
                     <tr><td>${activityStr | n}</td></tr>
                 % endif
             % elif objType == 'resource' and 'initiativeCode' in item:

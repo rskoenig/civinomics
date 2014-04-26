@@ -47,7 +47,11 @@ def make_map():
     map.connect('/corp/contact', controller = 'corp', action = 'contact')
     map.connect('/corp/caseStudies/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
     map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
+    map.connect('/corp/surveys/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
+    map.connect('/corp/surveys', controller = 'corp', action = 'caseStudies')
     map.connect('/corp/polling', controller = 'corp', action = 'polling')
+    map.connect('/surveys/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
+    map.connect('/results/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
 
 
     ########################################################################################################
@@ -162,7 +166,16 @@ def make_map():
     map.connect('/getSiteActivity{end:/?}' , controller = 'home', action = 'getActivity')
     map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
+    
+    # following
+    map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
+    # trash
+    map.connect('/trash/{code}/{url}{end:/?}' , controller = 'trash', action = 'trashThingHandler', code = '{code}', url = '{url}')
+    # restore
+    map.connect('/restore/{code}/{url}{end:/?}' , controller = 'trash', action = 'restoreThingHandler', code = '{code}', url = '{url}')
+    
     # workshop stats
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{publicStats:publicStats?/?}', controller = 'workshop', action = 'publicStats', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
@@ -318,7 +331,7 @@ def make_map():
     # external authentication routes
     map.connect('/fbLinkAccountHandler{end:/?}', controller = 'login', action = 'fbLinkAccountHandler')
     map.connect('/twtLinkAccountHandler{end:/?}', controller = 'login', action = 'twtLinkAccountHandler')
-    map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
+    map.connect('/{fbLogin:fbLogin/?}', controller = 'login', action = 'fbLoginHandler')
     map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoginHandler')
     #map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
     map.connect('/fbNewAccount{end:/?}', controller = 'register', action = 'fbNewAccount')
@@ -379,6 +392,8 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/discussion/show/{id3}{end:/?}', controller = 'profile', action = 'showDiscussion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/add/position/handler/{id3}{end:/?}', controller = 'profile', action = 'updatePositionHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/position/show/{id3}{end:/?}', controller = 'profile', action = 'showPosition', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
+
     
     ###############
     # Initiatives #

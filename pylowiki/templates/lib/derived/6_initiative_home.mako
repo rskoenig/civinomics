@@ -26,22 +26,24 @@
                             showNum = 3
                             remaining = len(c.authors) - showNum
                         %>
-                        % for author in c.authors[:showNum]:
-                            <td>
-                                ${lib_6.userImage(author, className="avatar small-avatar")}
-                            </td>
-                        % endfor
                         <td>
-                            <span class="grey">Authored by
+                            <span class="grey">Authors: </span>
+                            % for author in c.authors[:showNum]:
+                                ${lib_6.userImage(author, className="avatar small-avatar")}
+                            % endfor
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <span class="grey">
                             % for author in c.authors[:showNum]:
                                 % if author != c.authors[0] and len(c.authors) >= 3:
                                     ,
                                 % endif
-                                % if author == c.authors[-1]:
+                                % if author == c.authors[-1] and len(c.authors) > 1:
                                     and
                                 % endif
                                 ${lib_6.userLink(author)}
-                                ${lib_6.userGreetingMsg(author)}
                             % endfor
                             % if remaining >= 1:
                                 , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
@@ -76,13 +78,10 @@
             </div><!-- tab-pane -->
         </div><!-- tabcontent -->
     </div><!-- tabbable -->
-    <%
-        if 'views' in item:
-            numViews = str(item['views'])
-        else:
-            numViews = "0"
-    %>
-    Published on ${item.date} <i class="icon-eye-open"></i> Views ${numViews}
+    <br>
+    <span class="grey">
+        Published: ${item.date}
+    </span>
 </%def>
 
 <%def name="showUpdateList()">
@@ -123,14 +122,14 @@
 </%def>
 
 <%def name="watchButton(i, **kwargs)">
-    % if 'user' in session and not c.privs['provisional']:
+    % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
             <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Bookmarked </strong></span>
+            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
             </button>
         % else:
             <button class="btn pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-             <span><i class="icon-bookmark med-green"></i><strong> Bookmark </strong></span>
+             <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
     % endif
