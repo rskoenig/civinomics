@@ -5,6 +5,10 @@
     <td><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
 </%def>
 
+<%def name="meeting_listing()">
+    <td><a href="{{item.href}}">{{item.title}}</a><p>Meeting of {{item.group}} on {{item.meetingDate}} {{item.scope}}</td>
+</%def>
+
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 

@@ -7,13 +7,13 @@
 
 
 <div class="spacer"></div>
-<div ng-init="fullName = '${c.user['name']}'; url = '${c.user['url']}'; code = '${c.user['urlCode']}'; trash = true">
+<div ng-init="fullName = '${c.user['name']}'; url = '${c.user['url']}'; code = '${c.user['urlCode']}'; meetings = true">
     <div class="row-fluid" ng-controller="profileController">
             ##var thisForm = {member_name:$scope.fullName, $scope.email, $scope.postalCode, $scope.greetingMsg, $scope.websiteLink, $scope.websiteDesc
         <div class="span8">
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="editTabs">
-                <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover"><i class="icon-trash"></i></i> Trash</a></li>
+                <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover"><i class="icon-calendar"></i></i> Meetings</a></li>
                 <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
                 </ul>
                 <div class="tab-content">
@@ -28,8 +28,7 @@
                                 <div ng-controller="follow_unfollowCtrl">
                                     <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
                                         <tr>
-                                            ${ng_lib.basic_listing()}  
-                                            <td><a ng-click="restoreThing()" class="btn pull-right"><i class="icon-level-up"></i> Restore</a></td>
+                                            ${ng_lib.meeting_listing()}
                                         </tr>
                                     </table>
                                 </div>

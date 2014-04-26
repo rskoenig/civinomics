@@ -29,6 +29,7 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+import pylowiki.lib.db.meeting          as meetingLib
 
 from pylowiki.lib.facebook              import FacebookShareObject
 import pylowiki.lib.images              as imageLib
@@ -371,6 +372,43 @@ class ProfileController(BaseController):
                 
             entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
             entry['unpublishedBy'] = item['unpublished_by']
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
+    def showUserMeetings(self, id1, id2):
+        return render("/derived/6_profile_meetings.bootstrap")
+        
+    def getUserMeetings(self, id1, id2):
+        c.meetings = meetingLib.getMeetingsForUser(id1)
+        if not c.meetings:
+            c.meetings = []
+            
+        result = []
+        for item in c.meetings:
+            entry = {}
+            entry['objType'] = 'meeting'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['meetingDate'] = item['meetingDate']
+            entry['group'] = item['group']
+            sList = item['scope'].split('|')
+            if sList[4] == '0':
+                entry['scope'] = 'Country of the United States'
+            elif sList[6] == '0':
+                state = sList[4].replace('-', ' ')
+                entry['scope'] = 'State of ' + state.title()
+            elif sList[8] == '0':
+                county = sList[6].replace('-', ' ')
+                entry['scope'] = 'County of ' + county.title()
+            else:
+                city = sList[8].replace('-', ' ')
+                entry['scope'] = 'City of ' + city.title()
+                
+            entry['href']= '/meeting/' + entry['urlCode'] + '/' + entry['url'] + '/show'
             result.append(entry)
             
         if len(result) == 0:

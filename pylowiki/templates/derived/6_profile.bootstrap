@@ -22,6 +22,9 @@
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
+                                % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
+                                    <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/meetings">Meetings</a></li>
+                                % endif
                                 <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                             % endif
                         % else:

@@ -16,7 +16,32 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showInfo()">
+<%def name="showInfo(meeting, author)">
+    <div class="row-fluid">
+        <h3>${meeting['title']}</h3>
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
+        <ul>
+        <li>Who is meeting: ${meeting['group']}</li>
+        <li>Location: ${meeting['location']}</li>
+        <li>Meeting Date: ${meeting['meetingDate']}</li>
+        % if meeting['agendaPostDate'] != '0000-00-00':
+            <li>Date Agenda Is Posted: ${meeting['agendaPostDate']}</li>
+        % endif
+        </ul>
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        ${m.html(meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        <span class="grey">Posted by: </span>
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+    </div><!-- row-fluid -->
+</%def>
+
+<%def name="showItems()">
     <div class="row-fluid">
         <h3>${c.meeting['title']}</h3>
     </div><!-- row-fluid -->

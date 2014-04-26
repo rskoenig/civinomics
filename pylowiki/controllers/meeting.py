@@ -136,6 +136,12 @@ class MeetingController(BaseController):
             
         #create the meeting
         c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, tag, agendaPostDate)
+        if 'meeting_counter' in c.authuser:
+            meeting_counter = int(c.authuser['meeting_counter'])
+        else:
+            meeting_counter = 0
+        meeting_counter += 1
+        c.authuser['meeting_counter'] = str(meeting_counter)
 
         c.level = scope
 
