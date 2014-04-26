@@ -42,11 +42,11 @@ class MeetingController(BaseController):
             c.meeting = meetingLib.getMeeting(id1)
         else:
             abort(404)
-            
-        if action in adminList:
-            if 'user' in session and c.authuser:
-                userLib.setUserPrivs()
-            else:
+
+        if 'user' in session and c.authuser:
+            userLib.setUserPrivs()
+        else:
+            if action in adminList:
                 abort(404)
     
     def meetingNew(self):
@@ -383,7 +383,8 @@ class MeetingController(BaseController):
             # comments
             discussion = discussionLib.getDiscussionForThing(item)
             entry['discussion'] = discussion['urlCode']
-            entry['numComments'] = 0
+
+            entry['numComments'] = '0'
             if 'numComments' in item:
                 entry['numComments'] = item['numComments']
 			
@@ -392,7 +393,6 @@ class MeetingController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
             
-        log.info("got result %s"%result)
         return json.dumps({'statusCode':0, 'result': result})
         
 

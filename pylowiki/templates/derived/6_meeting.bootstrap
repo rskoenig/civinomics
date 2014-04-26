@@ -30,5 +30,6 @@ ${mhelpers.addAgendaItem(c.meeting, c.author)}
 
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/meetings.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
 </%def>

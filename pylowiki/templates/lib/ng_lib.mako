@@ -280,7 +280,9 @@
                         <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                         <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                     </li>
-                    <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                    <div ng-show="!(type == 'agendaitem')">
+                        <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                    </div>
                 </ul>
             </div>
             ### Comments
@@ -317,7 +319,7 @@
                                 <form class="no-bottom" ng-submit="submitComment()">
                                     <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                    <div ng-show="type == 'initiative' || type == 'idea'">
+                                    <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem'">
                                         <label class="radio inline">
                                             <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
                                         </label>
@@ -344,7 +346,7 @@
                                     <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                 </a>
-                                <div ng-show="type == 'initiative' || type == 'idea'">
+                                <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem' ">
                                     <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
                                         <label class="radio inline">
                                             <input type="radio"> Pro
