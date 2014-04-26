@@ -251,6 +251,7 @@ def make_map():
     map.connect('/rate/comment/{code}/{amount}{end:/?}', controller = 'rating', action = 'rateComment', code = '{code}', amount = '{amount}')
     map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/initiative/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateInitiative', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/agendaitem/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateAgendaItem', code = '{code}', url = '{url}', amount = '{amount}')
     
     # Disable/enable/delete/edit/flag Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
@@ -397,7 +398,8 @@ def make_map():
     map.connect('/meeting/{id1}/{id2}/meetingNewHandler{end:/?}', controller = 'meeting', action = 'meetingNewHandler', id1 = '{id1}', id2 = '{id2}')   
     map.connect('/meeting/{id1}/{id2}/show{end:/?}', controller = 'meeting', action = 'meetingShow', id1 = '{id1}', id2 = '{id2}')
     map.connect('/meeting/{id1}/{id2}/meetingAgendaItemAddHandler{end:/?}', controller = 'meeting', action = 'meetingAgendaItemAddHandler', id1 = '{id1}', id2 = '{id2}') 
-
+    map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')
+    
 
     ###############
     # Initiatives #

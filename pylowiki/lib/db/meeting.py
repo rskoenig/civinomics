@@ -21,6 +21,15 @@ def getMeeting(code):
     except:
         return False
         
+def getAgendaItem(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'agendaitem')\
+            .filter(Thing.data.any(wc('urlCode', code)))\
+            .one()
+    except:
+        return False
+        
 def getMeetingsForUser(code):
     try:
         return meta.Session.query(Thing)\
@@ -98,6 +107,7 @@ def Agendaitem(owner, meeting, title, text, canVote, canComment):
     a['text'] = text
     a['canVote'] = canVote
     a['canComment'] = canComment
+    a['numComments'] = '0'
     a['deleted'] = u'0'
     a['disabled'] = u'0'
     a['public'] = u'0'

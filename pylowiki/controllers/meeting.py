@@ -18,6 +18,8 @@ import pylowiki.lib.db.revision     as revisionLib
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.utils           as utils
+import pylowiki.lib.fuzzyTime		as fuzzyTime
+import misaka as m
 
 import simplejson as json
 
@@ -308,7 +310,6 @@ class MeetingController(BaseController):
 
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         c.author = userLib.getUserByCode(c.meeting['userCode'])
-        c.agendaItems = meetingLib.getAgendaItems(c.meeting['urlCode'])
         
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1
@@ -343,5 +344,56 @@ class MeetingController(BaseController):
         returnURL = '/meeting/%s/%s/show'%(c.meeting['urlCode'], c.meeting['url'])
             
         return redirect(returnURL)
+        
+    def getMeetingAgendaItems(self, id1, id2):
+        log.info("got %s and %s"%(id1, id2))
+        c.agendaItems = meetingLib.getAgendaItems(id1)
+        if not c.agendaItems:
+            c.agendaItems = []
+            
+        result = []
+        myRatings = {}
+        if 'ratings' in session:
+		    myRatings = session['ratings']
+        for item in c.agendaItems:
+            entry = {}
+            entry['objType'] = 'agendaitem'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+
+			# user rating
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
+            else:
+                entry['rated'] = 0
+                entry['vote'] = 'nvote'
+
+            entry['vote'] = 'nvote'
+            entry['voteCount'] = int(item['ups']) + int(item['downs'])
+            entry['ups'] = int(item['ups'])
+            entry['downs'] = int(item['downs'])
+            entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+            # comments
+            discussion = discussionLib.getDiscussionForThing(item)
+            entry['discussion'] = discussion['urlCode']
+            entry['numComments'] = 0
+            if 'numComments' in item:
+                entry['numComments'] = item['numComments']
+			
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+            
+        log.info("got result %s"%result)
+        return json.dumps({'statusCode':0, 'result': result})
+        
 
         

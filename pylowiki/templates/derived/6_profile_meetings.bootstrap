@@ -17,7 +17,7 @@
                 <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tab-archives">
+                    <div class="tab-pane active" id="tab-meetings">
                     
                         <div class="centered" ng-show="loading" ng-cloak>
                             <i class="icon-spinner icon-spin icon-4x"></i>
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         
-                    </div><!-- tab-archives -->
+                    </div><!-- tab-meetings -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
         </div><!-- span8 -->

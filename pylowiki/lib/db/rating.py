@@ -26,7 +26,7 @@ def getRatingForThing(user, thing):
      
 def getRatingsForUser():
     userRatings = {}
-    itemTypes = {"commentCode" : "1", "ideaCode" : "1", "resourceCode" : "1", "photoCode" : "1", "initiativeCode" : "1"}
+    itemTypes = {"commentCode" : "1", "ideaCode" : "1", "resourceCode" : "1", "photoCode" : "1", "initiativeCode" : "1", "agendaitemCode" : "1"}
     if c.authuser:
         ratings = meta.Session.query(Thing)\
             .filter_by(objType = 'rating')\
