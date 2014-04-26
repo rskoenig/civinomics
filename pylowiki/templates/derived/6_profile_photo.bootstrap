@@ -33,7 +33,7 @@
             % endif
         % endif
     </div>
-    <div class="span4" ng-controller="ProfileEditController">
+    <div class="span4" ng-controller="profileController">
         ${dashboard.profileDashboard()}
     </div><!--/.span4-->
 </div>
