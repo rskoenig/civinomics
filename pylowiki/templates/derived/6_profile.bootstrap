@@ -36,7 +36,9 @@
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
-                                <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
+                            	% if c.user['accessLevel'] > 200:
+                                	<li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
+                                % endif
                                 <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                             % endif
                         % else:

@@ -32,7 +32,7 @@ import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 
 from pylowiki.lib.facebook              import FacebookShareObject
-import pylowiki.lib.csv                 as csv
+import pylowiki.lib.csvHelper           as csv
 import pylowiki.lib.images              as imageLib
 import pylowiki.lib.utils               as utils
 
@@ -1008,76 +1008,28 @@ class ProfileController(BaseController):
             fileitem = file.file
             log.info(file.filename)
             csvFile = csv.saveCsv(file)
-            log.info("And it has been uploaded")
+            c.csv = csv.parseCsv(csvFile.fullpath)
+            log.info(c.csv)
             jsonResponse =  {'files': [
                                 {
                                     'name':filename,
+                                    'path':csvFile.fullpath
                                 }
                             ]}
-            return json.dumps(jsonResponse)
+            json.dumps(jsonResponse)
+            return render("/derived/6_profile_csv.bootstrap")
         else:
             abort(404)
             
-    @h.login_required
-    def csvUpdateHandler(self, id1, id2, id3):
-        log.info("I'm alive in Profile 2")
-        # if c.privs['provisional']:
-#             abort(404)
+#     @h.login_required
+#     def csvUpdateHandler(self, id1, id2, id3):        
+#         requestKeys = request.params.keys()
+#         if 'files[]' in requestKeys:
+#             file = request.params['files[]']
 #             
-#         photo = photoLib.getPhotoByHash(id3)
-#         if not photo:
-#             abort(404)
-#         
-#         if 'title' in request.params:
-#             title = request.params['title']
-#         else:
-#             log.info('no title')
-#             abort(404)
-#             
-#         if 'description' in request.params:
-#             description = request.params['description']
-#         else:
-#             log.info('no description')
-#             abort(404)
-#             
-#         newTagStr = '|'    
-#         if 'categoryTags' in request.params:
-#             categoryTags = request.params.getall('categoryTags')
-#             for tag in categoryTags:
-#                 newTagStr = newTagStr + tag + '|'
-# 
-#         if 'geoTagCountry' in request.params:
-#             country = request.params['geoTagCountry']
-#         else:
-#             country = '0'
-#             
-#         if 'geoTagState' in request.params:
-#             state = request.params['geoTagState']
-#         else:
-#             state = '0'
-#             
-#         if 'geoTagCounty' in request.params:
-#             county = request.params['geoTagCounty']
-#         else:
-#             county = '0'
-#             
-#         if 'geoTagCity' in request.params:
-#             city = request.params['geoTagCity']
-#         else:
-#             city = '0'
-# 
-#         if 'geoTagPostal' in request.params:
-#             postal = request.params['geoTagPostal']
-#         else:
-#             postal = '0'
-#             
-#         scope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' + urlify(postal)
-#             
-#         revisionLib.Revision(c.authuser, photo)
-        
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photos/show"
-                
-        return redirect(returnURL)
+# #         returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photos/show"
+#                 
+#         return
             
  ######################################## ########################################            
             

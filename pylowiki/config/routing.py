@@ -390,7 +390,7 @@ def make_map():
     # CSV Parsing 
     map.connect('/profile/{id1}/{id2}/{csv:csv/?}', controller = 'profile', action = 'edit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/csv/upload/{handler:handler/?}', controller = 'profile', action = 'csvUploadHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/csv/{id3}/update/{handler:handler/?}', controller = 'profile', action = 'csvUpdateHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/csv/update/{handler:handler/?}', controller = 'profile', action = 'csvUpdateHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
 
     
     ###############
