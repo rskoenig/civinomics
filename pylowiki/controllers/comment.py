@@ -72,7 +72,6 @@ class CommentController(BaseController):
     
     @h.login_required
     def commentAddHandler(self):
-        log.info("comment add handler")
         # check throughout function if add comment was submited via traditional form or json
         # if through json, it's coming from an activity feed and we do NOT want to return redirect
         # return redirect breaks the success function on https
@@ -96,7 +95,7 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
-            elif thing.objType == 'photo' or thing.objType == 'initiative' or 'initiativeCode' in thing:
+            elif thing.objType == 'photo' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or 'initiativeCode' in thing:
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
