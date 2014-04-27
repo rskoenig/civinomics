@@ -158,7 +158,7 @@ class HomeController(BaseController):
 
 
 
-    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7, code = None, url = None):
 		# get recent activity and return it into json format
 		result = []
 		allActivity = []
@@ -210,7 +210,10 @@ class HomeController(BaseController):
 
 		elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
-
+		elif type == 'member' and c.authuser:
+		    log.info('member activity search and limit is %s and offset is %s' % (max, offset))
+		    user = userLib.getUserByCode(code)
+		    recentActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
 		else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
@@ -221,13 +224,19 @@ class HomeController(BaseController):
 		for item in recentActivity:
 			entry = {}
 			# item attributes
-			entry['title'] = item['title']
+			if 'title' in item:
+			    entry['title'] = item['title']
+			else: 
+			    entry['title'] = ''
 			entry['objType'] = item.objType
 			if item.objType == 'discussion':
 				if item['discType'] == 'update':
 					entry['objType'] = 'update'
 			entry['urlCode'] = item['urlCode']
-			entry['url'] = item['url']
+			if 'url' in item:
+			    entry['url'] = item['url']
+			else:
+			    entry['url'] = ''
 			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
 			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 			if 'views' in item:
@@ -259,7 +268,7 @@ class HomeController(BaseController):
 			if item.objType == 'photo':
 			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
 			else:
-			    entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+			    entry['href'] = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
 
 			if item.objType == 'discussion' and item['discType'] == 'organization_position':
 			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/position/show/" + item['urlCode']
@@ -363,7 +372,10 @@ class HomeController(BaseController):
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)
-			entry['discussion'] = discussion['urlCode']
+			if discussion:
+			    entry['discussion'] = discussion['urlCode']
+			else:
+			    entry['discussion'] = ''
 			entry['numComments'] = 0
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']

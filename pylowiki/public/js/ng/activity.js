@@ -1,17 +1,17 @@
 function activityController($scope, $http) {
 	$scope.listingType = 'activity';
-	$scope.activityType = '/all';
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
 	$scope.busy = false;
 	$scope.sliceSize = 7;
 	$scope.offset = $scope.sliceSize;
+	$scope.activityUrl = '/getActivity/' + $scope.activityType
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
 		$scope.activityLoading = true;
-		$http.get('/getSiteActivity' + $scope.activityType).success(function(data){
+		$http.get($scope.activityUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
 				$scope.activity = []
@@ -28,29 +28,34 @@ function activityController($scope, $http) {
 		})
 	};
 
-	$scope.getActivity();
-
+    if ($scope.code){
+        $scope.activityUrl = '/getActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
+        $scope.getActivity();
+    }else{
+        $scope.getActivity();
+    }
+        
 
 	$scope.getAllActivity = function(){
-		$scope.activityType = '/all';
+		$scope.activityType = 'all';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.getFollowingActivity = function(){
-		$scope.activityType = '/following';
+		$scope.activityType = 'following';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.getGeoActivity = function(){
-		$scope.activityType = '/geo';
+		$scope.activityType = 'geo';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.browseInitiatives = function(){
-		$scope.activityType = '/initiatives';
+		$scope.activityType = 'initiatives';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
@@ -60,7 +65,12 @@ function activityController($scope, $http) {
 		$scope.busy = true;
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
-		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
+		if ($scope.code){
+		    $scope.sliceUrl = '/getActivitySlice/0/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url + '/' + $scope.offset;
+		}else{
+		    $scope.sliceUrl = '/getActivitySlice/0/' + $scope.activityType + '/' + $scope.offset;
+		}
+		$http.get($scope.sliceUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
 			} 

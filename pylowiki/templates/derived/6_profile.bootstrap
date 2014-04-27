@@ -86,6 +86,7 @@
                 </div>
             % endif
             <div class="tabbable"> <!-- Only required for left/right tabs -->
+                <h1>${c.user['urlCode']} ${c.user['url']}</h1>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-activity">
                         % if c.user['activated'] == "0" and isAdmin(c.authuser.id):
@@ -104,7 +105,24 @@
                                 </div><!-- span10 -->
                             </div><!-- row-fluid -->
                         % endif
+                        <em>Json list jsonified member posts</em>
                         
+                        <div ng-init="code = '${c.user['urlCode']}'; url = '${c.user['url']}'; activityType = 'member'">
+                            <div ng-controller="activityController">
+                                {{code}}{{url}}{{activityUrl}} sliceUrl: {{sliceUrl}}
+                                <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+                                    <div ng-repeat="post in activity">
+                                        {{post.objType}}{{post.title}}{{post.urlCode}}
+                                    </div>
+                                    <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+                                        <i class="icon-spinner icon-spin icon-4x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <em>Controller list c.memberPosts</em>
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
                     % if c.user['memberType'] == 'organization':
@@ -186,6 +204,7 @@
 
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/activity.js')}" type="text/javascript"></script>
     % if 'user' in session:
         % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
             <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>

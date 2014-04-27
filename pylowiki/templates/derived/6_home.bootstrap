@@ -6,6 +6,7 @@
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
 
+<div ng-init="activityType = 'all'">
 <div class="row" ng-controller = "activityController">
 
 
@@ -59,11 +60,11 @@
       ###
       <div>
         <ul class="nav nav-pills civ-search-tools no-top">
-          <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
-          <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
+          <li ng-class="{'active' : activityType == 'all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
+          <li ng-class="{'active' : activityType == 'initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
           % if c.authuser:
-            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
-            <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
+            <li ng-class="{'active' : activityType == 'following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
+            <li ng-class="{'active' : activityType == 'geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
           % endif
         </ul>
       </div>
@@ -193,6 +194,7 @@
 
   </div><!-- /span4 -->
 </div><!-- /row -->
+</div>
 
 
 <%def name="headScripts()">

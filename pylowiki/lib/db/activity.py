@@ -7,7 +7,7 @@ from pylowiki.lib.utils import urlify
 import logging
 log = logging.getLogger(__name__)
 
-def getMemberPosts(user, unpublished = '0'):
+def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
     if unpublished == '1':
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished']
     else:
@@ -18,10 +18,13 @@ def getMemberPosts(user, unpublished = '0'):
     values = ['0']
     finalActivityList = []
     try:
-        initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
+        q = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('deleted', '0')))\
-            .order_by('-date').all()
+            .order_by('-date').offset(offset)
+        if limit:
+            initialActivityList = q.limit(limit)
+        
         # Messy
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:

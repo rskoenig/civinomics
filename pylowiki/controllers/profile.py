@@ -280,7 +280,8 @@ class ProfileController(BaseController):
             #    i = i + 1
                 
         #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
-        c.memberPosts = activityLib.getMemberPosts(c.user)
+        #c.memberPosts = activityLib.getMemberPosts(c.user)
+        c.memberPosts = False
         if not c.memberPosts:
             c.memberPosts = []
         #if iPhoneApp:
