@@ -3580,3 +3580,27 @@ svg{
     padding-right: 10px;
 }
 
+/* crm-prototype */
+.org-top{
+    position: absolute;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 400px;
+    background-size: cover; 
+    background-position: center center;
+    z-index: 0;
+}
+.title-gradient{
+    background-image: -webkit-linear-gradient(bottom,rgba(25,25,25,0),rgba(25,25,25,.45),rgba(25,25,25,.85));
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 150px;
+}
+.org-title{
+    color: #fff;
+}
+
