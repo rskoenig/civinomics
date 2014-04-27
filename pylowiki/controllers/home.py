@@ -211,9 +211,14 @@ class HomeController(BaseController):
 		elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 		elif type == 'member' and c.authuser:
-		    log.info('member activity search and limit is %s and offset is %s' % (max, offset))
 		    user = userLib.getUserByCode(code)
-		    recentActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
+		    memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
+		    if memberActivity:
+		        recentActivity = memberActivity
+		    else:
+		        log.info('yup, no activity')
+		        alertMsg = "This is where your activity will show up, once you do something!"
+		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 		else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
@@ -250,6 +255,8 @@ class HomeController(BaseController):
 				entry['text'] = item['text']
 			elif 'description' in item:
 				entry['text'] = item['description']
+			elif 'data' in item:
+			    entry['text'] = item['data']
 			entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
 			if 'link' in item:
 				entry['link'] = item['link']
@@ -317,8 +324,8 @@ class HomeController(BaseController):
 				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
 			else:
-				entry['mainPhoto'] = '0'
-				entry['thumbnail'] = '0'
+				entry['mainPhoto'] = ''
+				entry['thumbnail'] = ''
 
 			#tags
 			tags = []

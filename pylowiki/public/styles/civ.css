@@ -607,7 +607,8 @@ padding: 0;
 }
 
 .well.slim-well{
-  padding: 5px;
+  padding: 5px 15px;
+  min-height: 104px;
 }
 
 .well.footer{

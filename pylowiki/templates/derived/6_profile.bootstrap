@@ -5,6 +5,7 @@
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/ng_lib.mako" name="ng_helpers" />
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
@@ -23,7 +24,8 @@
     <div class="row-fluid" ng-controller="profileController">
         <div class="span2">
             % if c.user['memberType'] == 'organization':
-                ${lib_6.userImage(c.user, className="thumbnail tight flag pull-left")}
+                <% userImage = lib_6._userImageSource(c.user, className="avatar-large") %>
+                <div style="width: 170px; height:114px; background-image:url(${userImage}); background-size: cover; background-position: center center; -webkit-border-radius: 4px;"></div>
             % else:
                 ${lib_6.userImage(c.user, className="avatar avatar-large")}
             % endif
@@ -42,9 +44,7 @@
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives"><i class="icon-trash"></i> Trash</i></a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
-                            % if not c.privs['provisional']:
-                                <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
-                            % endif
+                            <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                         % endif
                     % endif
                 </ul>
@@ -53,7 +53,7 @@
         <div class="span10">
             <div class="well slim-well">
                 <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
-                    <h3 ng-cloak>{{fullName}}</h3>
+                    <h3 style="margin: 0;" ng-cloak>{{fullName}}</h3>
                     % if c.user['memberType'] == 'organization':
                         <table id="metrics">
                             <tr>
@@ -86,7 +86,6 @@
                 </div>
             % endif
             <div class="tabbable"> <!-- Only required for left/right tabs -->
-                <h1>${c.user['urlCode']} ${c.user['url']}</h1>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-activity">
                         % if c.user['activated'] == "0" and isAdmin(c.authuser.id):
@@ -95,35 +94,50 @@
                             </button>
                         % endif
                         
-                        % if c.user['memberType'] == 'organization' and 'user' in session and c.userid != c.authuser.id:
-                            <div class="row-fluid">
-                                <div class="span2">
-                                    ${lib_6.upDownVote(c.user)}
-                                </div><!-- span2 -->
-                                <div class="span10">
-                                    <h3>Rate this organization</h3>
-                                </div><!-- span10 -->
-                            </div><!-- row-fluid -->
-                        % endif
-                        <em>Json list jsonified member posts</em>
+
                         
                         <div ng-init="code = '${c.user['urlCode']}'; url = '${c.user['url']}'; activityType = 'member'">
                             <div ng-controller="activityController">
-                                {{code}}{{url}}{{activityUrl}} sliceUrl: {{sliceUrl}}
                                 <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
-                                    <div ng-repeat="post in activity">
-                                        {{post.objType}}{{post.title}}{{post.urlCode}}
-                                    </div>
+                                    <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+                                        <tr><td>${ng_helpers.authorPosting()}</td></tr>
+                                        <tr>
+                                          <td ng-if="item.objType == 'initiative'">
+                                            ${ng_helpers.initiative_listing()}
+                                          </td>
+                                
+                                          <td ng-if="item.objType == 'idea'">
+                                            ${ng_helpers.idea_listing()}
+                                          </td>
+                                
+                                          <td ng-if="item.objType == 'resource'">
+                                            ${ng_helpers.resource_listing()}
+                                          </td>
+                                
+                                          <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+                                            ${ng_helpers.discussion_listing()}
+                                          </td>
+                                
+                                          <td ng-if="item.objType == 'photo'">
+                                            ${ng_helpers.photo_listing()}
+                                          </td>
+                                          
+                                          <td ng-if="item.objType == 'comment'">
+                                            {{item.objType}}{{item.text}}
+                                          </td>
+                                
+                                        </tr>
+                                     </table>
                                     <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
                                         <i class="icon-spinner icon-spin icon-4x"></i>
                                     </div>
+                                    <!-- this alert not working -->
+                                    <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+                                        {{alertMsg}}
+                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                        
-                        <em>Controller list c.memberPosts</em>
-                        ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
                     % if c.user['memberType'] == 'organization':
                         <div class="tab-pane" id="tab-endorsements">
@@ -205,6 +219,7 @@
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/activity.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
     % if 'user' in session:
         % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
             <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
