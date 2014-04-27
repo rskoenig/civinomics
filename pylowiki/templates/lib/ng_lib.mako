@@ -11,7 +11,7 @@
 
 <%def name="agenda_item_listing()">
     <div style="margin-top: 30px;"></div>
-    <div class="media well search-listing agenda-item-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="well yesNoWell" >
                 ${yesNoVoteBlock()}
@@ -278,9 +278,7 @@
                         <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                         <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                     </li>
-                    <div ng-show="!(type == 'agendaitem')">
-                        <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
-                    </div>
+                    <li ng-show="!(type == 'agendaitem')"><i class="icon-eye-open"></i> Views ({{item.views}})</li>
                 </ul>
             </div>
             ### Comments
@@ -315,7 +313,7 @@
                         <td style="padding: 10px;">
                             % if c.privs and not c.privs['provisional']:
                                 <form class="no-bottom" ng-submit="submitComment()">
-                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <textarea class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                     <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem'">
                                         <label class="radio inline">

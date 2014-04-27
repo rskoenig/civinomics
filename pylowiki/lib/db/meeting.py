@@ -25,7 +25,7 @@ def getAgendaItem(code):
     try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'agendaitem')\
-            .filter(Thing.data.any(wc('meetingCode', code)))\
+            .filter(Thing.data.any(wc('urlCode', code)))\
             .one()
     except:
         return False

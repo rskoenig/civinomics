@@ -41,18 +41,6 @@
     </div><!-- row-fluid -->
 </%def>
 
-<%def name="showItems(meeting)">
-    % for item in c.agendaItems:
-        <div class="row-fluid">
-            <h3>${item['title']}</h3>
-        </div><!-- row-fluid -->
-        <div class="row-fluid">
-            ${m.html(item['text'], render_flags=m.HTML_SKIP_HTML) | n}
-        </div><!-- row-fluid -->
-        <div class="spacer"></div>
-            
-    % endfor
-</%def>
 
 <%def name="editMeeting()">
     <% 
