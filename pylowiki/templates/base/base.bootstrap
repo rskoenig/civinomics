@@ -39,7 +39,6 @@
    </head>
    <body ${self.bodyTag_extras()}>
     ${next.body()}
-
    
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
@@ -67,6 +66,8 @@
         a && a.tab('show'); 
       });
     </script>
+    <!-- start Imprint -->
+    <script id="imprint-js" src="//getimprint.io/track.js" data-key="iKNLrCdvFL9WNdOydAvoQpOiyGl"></script>
 
 
    ${self.extraScripts()}
@@ -211,6 +212,8 @@
            });
          }
        </script>
+       
+       
    % endif  ## if 'user' in session
    </body>
 </html>
