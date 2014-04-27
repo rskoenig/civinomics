@@ -1396,6 +1396,9 @@ class ProfileController(BaseController):
         c.thing = d.d
         
         return render("/derived/6_profile_position.bootstrap")
+        
+    def crmPrototype(self):
+        return render("/derived/crm_prototype.bootstrap")
 
 
 
