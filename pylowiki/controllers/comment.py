@@ -124,7 +124,7 @@ class CommentController(BaseController):
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole

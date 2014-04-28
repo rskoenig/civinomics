@@ -106,8 +106,8 @@ class MeetingController(BaseController):
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
             
-        if 'meetingTag' in request.params:
-            tag = request.params['meetingTag']
+        if 'tag' in request.params:
+            tag = request.params['tag']
         else:
             tag = ''
             
@@ -184,7 +184,7 @@ class MeetingController(BaseController):
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        if c.initiative['scope'] != '':
+        if c.meeting['scope'] != '':
             geoTags = c.meeting['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
@@ -221,13 +221,23 @@ class MeetingController(BaseController):
         return render('/derived/6_meeting_edit.bootstrap')
         
     def meetingEditHandler(self):
-        if 'title' in request.params:
-            c.meeting['title'] = request.params['title']
+        if 'meetingTitle' in request.params:
+            c.meeting['title'] = request.params['meetingTitle']
             c.meeting['url'] = utils.urlify(c.meeting['title'])
-        if 'text' in request.params:
-            c.initiative['text'] = request.params['text']
+        if 'meetingText' in request.params:
+            c.meeting['text'] = request.params['meetingText']
+        if 'meetingDate' in request.params:
+            c.meeting['meetingDate'] = request.params['meetingDate']
+        if 'meetingTime' in request.params:
+            c.meeting['meetingTime'] = request.params['meetingTime']
+        if 'agendaPostDate' in request.params:
+            c.meeting['agendaPostDate'] = request.params['agendaPostDate']
         if 'tag' in request.params:
-            c.initiative['tags'] = request.params['tag']
+            c.meeting['tag'] = request.params['tag']
+        if 'meetingGroup' in request.params:
+            c.meeting['group'] = request.params['meetingGroup']
+        if 'meetingLocation' in request.params:
+            c.meeting['location'] = request.params['meetingLocation']
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form
@@ -283,7 +293,7 @@ class MeetingController(BaseController):
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
         if c.meeting['scope'] != '':
-            geoTags = c.initiative['scope'].split('|')
+            geoTags = c.meeting['scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
             c.county = utils.geoDeurlify(geoTags[6])
@@ -303,8 +313,9 @@ class MeetingController(BaseController):
             c.saveMessage = "Changes saved."
 
         c.editMeeting = True
+        returnURL = "/meeting/%s/%s/show"%(c.meeting['urlCode'], c.meeting['url'])
         
-        return render('/derived/6_meeting_edit.bootstrap')
+        return redirect(returnURL)
         
     def meetingShow(self):
 
@@ -387,7 +398,7 @@ class MeetingController(BaseController):
 
             entry['numComments'] = '0'
             if 'numComments' in item:
-                entry['numComments'] = item['numComments']
+                entry['numComments'] = discussion['numComments']
 			
             result.append(entry)
             

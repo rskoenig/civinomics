@@ -395,7 +395,9 @@ def make_map():
     # Meetings    #
     ###############
     map.connect('/meeting/{id1}/{id2}/meetingNew{end:/?}', controller = 'meeting', action = 'meetingNew', id1 = '{id1}', id2 = '{id2}')   
-    map.connect('/meeting/{id1}/{id2}/meetingNewHandler{end:/?}', controller = 'meeting', action = 'meetingNewHandler', id1 = '{id1}', id2 = '{id2}')   
+    map.connect('/meeting/{id1}/{id2}/meetingNewHandler{end:/?}', controller = 'meeting', action = 'meetingNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/meetingEdit{end:/?}', controller = 'meeting', action = 'meetingEdit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/meetingEditHandler{end:/?}', controller = 'meeting', action = 'meetingEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/meeting/{id1}/{id2}/show{end:/?}', controller = 'meeting', action = 'meetingShow', id1 = '{id1}', id2 = '{id2}')
     map.connect('/meeting/{id1}/{id2}/meetingAgendaItemAddHandler{end:/?}', controller = 'meeting', action = 'meetingAgendaItemAddHandler', id1 = '{id1}', id2 = '{id2}') 
     map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')

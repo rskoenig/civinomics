@@ -25,6 +25,8 @@
         <li>Who is meeting: ${meeting['group']}</li>
         <li>Location: ${meeting['location']}</li>
         <li>Meeting Date: ${meeting['meetingDate']}</li>
+        <li>Meeting Time: ${meeting['meetingTime']}</li>
+        <li>Meeting Category: ${meeting['tag']}</li>
         % if meeting['agendaPostDate'] != '0000-00-00':
             <li>Date Agenda Is Posted: ${meeting['agendaPostDate']}</li>
         % endif
@@ -39,6 +41,11 @@
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
     </div><!-- row-fluid -->
+    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser)):
+        <div class="row-fluid">
+            <a href="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingEdit" class="btn btn-defaut">Edit</a>
+        </div><!-- row-fluid -->
+    % endif
 </%def>
 
 
@@ -394,5 +401,66 @@
                 </form>
             </div>
         </div><!-- row-fluid -->
+    % endif
+</%def>
+
+<%def name="meetingModeration(thing)">
+    <%
+        if 'user' not in session or thing.objType == 'revision' or c.privs['provisional']:
+            return
+        flagID = 'flag-%s' % thing['urlCode']
+        adminID = 'admin-%s' % thing['urlCode']
+        publishID = 'publish-%s' % thing['urlCode']
+        unpublishID = 'unpublish-%s' % thing['urlCode']
+    %>
+    <div class="btn-group">
+        % if thing['disabled'] == '0' and thing.objType != 'meetingUnpublished':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+        % endif
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initativeUnpublished':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+        % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
+            % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % endif
+        % endif
+        % if c.revisions:
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
+        % endif
+
+        % if userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+    </div>
+    
+    % if thing['disabled'] == '0':
+        % if thing.objType != 'meetingUnpublished':
+            ${lib_6.flagThing(thing)}
+        % endif
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            % if thing.objType == 'meetingUnpublished':
+                ${lib_6.publishThing(thing)}
+            % else:
+                ${lib_6.unpublishThing(thing)}
+            % endif
+            % if userLib.isAdmin(c.authuser.id):
+                ${lib_6.adminThing(thing)}
+            % endif
+        % endif
+    % else:
+        % if userLib.isAdmin(c.authuser.id):
+            ${lib_6.adminThing(thing)}
+        % endif
+    % endif
+    % if c.revisions:
+        <div id="revisions" class="collapse">
+            <ul class="unstyled">
+            % for revision in c.revisions:
+                <li>Revision: <a href="/meeting/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>
+            % endfor
+            </ul>
+        </div>
     % endif
 </%def>
