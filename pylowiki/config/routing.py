@@ -397,6 +397,7 @@ def make_map():
     map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
     
     map.connect('/crm-prototype', controller = 'crm', action = 'crmPrototype')
+    map.connect('/crm-dashboard', controller = 'crm', action = 'crmDashboard')
 
     
     ###############

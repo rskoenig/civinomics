@@ -12,7 +12,7 @@
                 <div class="span3">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                            <div class="i-photo-large" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
                 </div>

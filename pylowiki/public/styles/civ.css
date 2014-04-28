@@ -1170,6 +1170,26 @@ img.avatar{
    margin-right: 15px;
 }
 
+.medLarge-avatar{
+   height: 70px;
+   width: 70px;
+}
+.medLarge-cell{
+   height: 80px;
+   width: 80px;
+   padding: 5px;
+   text-align: center;
+}
+.i-photo-cell{
+   width: 100px;
+   padding: 5px;
+   text-align: center;
+}
+
+.initiative-table td{
+    vertical-align: top;
+}
+
 .avatar.topbar-avatar{
     height:20px;
     width:20px;
@@ -3347,6 +3367,14 @@ hr.object-list-header{
   padding: 8px 0 8px 0 !important;
 }
 
+.i-photo-large{
+  height:150px;
+  width:100%;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+  border-radius: 4px;
+}
 .i-photo{
   height:100px;
   width:100%;
@@ -3591,6 +3619,18 @@ svg{
     background-position: center center;
     z-index: 0;
 }
+
+.org-top.sub{
+    position: absolute;
+    top: 0;
+    left:0;
+    width: 100%;
+    height: 200px;
+    background-size: cover; 
+    background-position: center center;
+    z-index: 0;
+}
+
 .title-gradient{
     background-image: -webkit-linear-gradient(bottom,rgba(25,25,25,0),rgba(25,25,25,.45),rgba(25,25,25,.85));
     position: absolute;
@@ -3598,9 +3638,69 @@ svg{
     top: 0;
     left:0;
     width: 100%;
-    height: 150px;
+    height: 200px;
 }
 .org-title{
     color: #fff;
+    height: 380px;
+}
+
+.org-title.sub{
+    color: #fff;
+    height: 160px;
+}
+
+.title-table{
+    margin-top: 30px;
+}
+.title-table td{
+    vertical-align: top;
+}
+.media-table{
+    margin-top: 150px;
+}
+
+.event{
+    margin-bottom: 10px;
+}
+
+.module-header{
+    margin-top: 0;
+    /*text-transform: uppercase;*/
+}
+.dollar{
+    /*
+    font-family: 'Courgette', 'cursive';
+    font-weight: 700;
+    */
+}
+
+.org-thumbnail{
+    height: 100px;
+    width: 100px;
+}
+.org-thumbnail-small{
+    height: 50px;
+    width: 50px;
+}
+
+.video-preview{
+    width: 200px;
+    height: 113px;
+    margin-right: 10px;
+    position: relative;
+    background-position: center center;
+    background-size: cover;
+}
+
+.icon-overlay{
+    color: #fff;
+    position: absolute;
+    top: 30%;
+    left: 40%;
+}
+.success-well{
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
 }
 

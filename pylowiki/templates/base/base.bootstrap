@@ -15,7 +15,7 @@
       <link rel="stylesheet" href="/styles/vendor/font-awesome/css/font-awesome.min.css">
       <link rel="stylesheet" href="${lib_6.fingerprintFile('/styles/civ.css')}">
       <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
-      <link href='//fonts.googleapis.com/css?family=Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
+      <link href='//fonts.googleapis.com/css?family=Courgette|Roboto:500,400,300,100,400italic,300italic,700' rel='stylesheet' type='text/css'>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-sanitize.js"></script>
@@ -212,6 +212,8 @@
          }
        </script>
    % endif  ## if 'user' in session
+   <!-- start Imprint -->
+    <script id="imprint-js" src="//getimprint.io/track.js" data-key="iKNLrCdvFL9WNdOydAvoQpOiyGl"></script>
    </body>
 </html>
 
