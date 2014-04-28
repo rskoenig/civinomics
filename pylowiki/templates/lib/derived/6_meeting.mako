@@ -412,15 +412,11 @@
     <%
         if 'user' not in session or thing.objType == 'revision' or c.privs['provisional']:
             return
-        flagID = 'flag-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
     <div class="btn-group">
-        % if thing['disabled'] == '0' and thing.objType != 'meetingUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-        % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initativeUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
         % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':

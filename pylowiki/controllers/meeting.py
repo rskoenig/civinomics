@@ -32,13 +32,13 @@ class MeetingController(BaseController):
         c.meeting = None
         c.items = None
         adminList = ['meetingNew', 'meetingNewHandler', 'meetingEdit', 'meetingEditHandler', 'itemEditHandler']
-        if action == 'meetingNew' and id1 is not None and id2 is not None:
-            action = 'meetingEdit'
+        if (action == 'meetingNew' or action == 'meetingNewHandler') and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
+            c.author = c.user
             c.meetingEdit = False
             if not c.user:
                 abort(404)
-        if id1 is not None and id2 is not None:
+        elif id1 is not None and id2 is not None:
             c.meeting = meetingLib.getMeeting(id1)
             if not c.meeting:
                 c.meeting = revisionLib.getRevisionByCode(id1)
@@ -52,6 +52,8 @@ class MeetingController(BaseController):
         else:
             if action in adminList:
                 abort(404)
+        if c.meeting:
+            c.author = userLib.getUserByCode(c.meeting['userCode'])
     
     def meetingNew(self):
         
@@ -362,7 +364,6 @@ class MeetingController(BaseController):
         return redirect(returnURL)
         
     def getMeetingAgendaItems(self, id1, id2):
-        log.info("got %s and %s"%(id1, id2))
         c.agendaItems = meetingLib.getAgendaItems(id1)
         if not c.agendaItems:
             c.agendaItems = []

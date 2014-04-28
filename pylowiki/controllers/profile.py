@@ -358,7 +358,6 @@ class ProfileController(BaseController):
         for item in c.unpublishedActivity:
             entry = {}
             entry['objType'] = item.objType.replace("Unpublished", "")
-            entry['objType'] = item.objType.replace("Unpublished", "")
             if entry['objType'] != 'comment':
                 entry['url']= item['url']
                 entry['urlCode']=item['urlCode']

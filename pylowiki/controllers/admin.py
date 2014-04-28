@@ -382,6 +382,8 @@ class AdminController(BaseController):
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
         elif c.thing.objType.replace("Unpublished", "") == 'initiative':
             returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif 'meetingCode' in c.thing:
+            returnURL = "/meeting/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
