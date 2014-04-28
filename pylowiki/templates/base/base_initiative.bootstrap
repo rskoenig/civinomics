@@ -36,14 +36,36 @@
                                     <a class="label workshop-tag {{tag}}" ng-href="/searchTags/{{tag}}/" >{{tag}}</a>
                                 </div>
                                 <span ng-if="initiativeData.initiative.iPrivs">
-                                    <span>
-                                        <my-watch-button userInSession="initiativeData.user.uSession" following="initiativeData.user.isFollowing" objCode="initiativeData.initiative.urlCode" objUrl="initiativeData.initiative.url"></my-watch-button>
+                                    <span ng-hide="followButtonDisabled">>
+                                        <button class="btn btn-civ pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
+                                            <span>
+                                                <i class="icon-bookmark btn-height icon-light"></i>
+                                                <strong>{{followButtonText}}</strong></span>
+                                        </button>
+                                    </span>
+                                    <span ng-hide="!followButtonDisabled">>
+                                        <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
+                                            <span>
+                                                <i class="icon-bookmark btn-height icon-light"></i>
+                                                <strong>{{followButtonText}}</strong></span>
+                                        </button>
                                     </span>
                                     watch edit rev view:
                                 </span>
                                 <span ng-if="iPrivsNoiHomeYesiOnjTypeNo">
-                                    <span>
-                                        <my-watch-button></my-watch-button>
+                                    <span ng-hide="followButtonDisabled">>
+                                        <button class="btn btn-civ pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
+                                            <span>
+                                                <i class="icon-bookmark btn-height icon-light"></i>
+                                                <strong>{{followButtonText}}</strong></span>
+                                        </button>
+                                    </span>
+                                    <span ng-hide="!followButtonDisabled">>
+                                        <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
+                                            <span>
+                                                <i class="icon-bookmark btn-height icon-light"></i>
+                                                <strong>{{followButtonText}}</strong></span>
+                                        </button>
                                     </span>
                                 </span>
                             </h4>

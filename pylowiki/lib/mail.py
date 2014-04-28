@@ -80,7 +80,8 @@ def sendPMemberInvite(workshopName, senderName, recipient, message, browseURL):
 
     send(toEmail, fromEmail, subject, textMessage)
     
-def sendWorkshopMail(recipient):    
+def sendWorkshopMail(recipient):
+    log.info('app_conf %s'%config['app_conf'])
     emailDir = config['app_conf']['emailDirectory']
     myURL = config['app_conf']['site_base_url']
 
