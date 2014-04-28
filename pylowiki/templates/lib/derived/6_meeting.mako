@@ -41,7 +41,11 @@
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
     </div><!-- row-fluid -->
-    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser)):
+    % if c.meeting.objType == 'revision':
+        <div class="alert alert-error">
+            This is a revision dated ${c.meeting.date}
+        </div>
+    % elif 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser)):
         <div class="row-fluid">
             <a href="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingEdit" class="btn btn-defaut">Edit</a>
         </div><!-- row-fluid -->

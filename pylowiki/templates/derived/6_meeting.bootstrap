@@ -6,7 +6,9 @@
 
 <% lib.return_to() %>
 ${mhelpers.showInfo(c.meeting, c.author)}
-${mhelpers.addAgendaItem(c.meeting, c.author)}
+% if c.meeting.objType == 'meeting':
+    ${mhelpers.addAgendaItem(c.meeting, c.author)}
+% endif
 ${mhelpers.meetingModeration(c.meeting)}
 
 <div class="spacer"></div>

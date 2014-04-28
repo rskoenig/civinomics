@@ -40,6 +40,10 @@ class MeetingController(BaseController):
                 abort(404)
         if id1 is not None and id2 is not None:
             c.meeting = meetingLib.getMeeting(id1)
+            if not c.meeting:
+                c.meeting = revisionLib.getRevisionByCode(id1)
+                if not c.meeting:
+                    abort(404)
         else:
             abort(404)
 
