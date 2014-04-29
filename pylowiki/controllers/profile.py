@@ -369,7 +369,12 @@ class ProfileController(BaseController):
             if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
-            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
+            href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting':
+                href += '/show'
+                
+            entry['href'] = href
+                
             entry['unpublishedBy'] = item['unpublished_by']
             result.append(entry)
             

@@ -45,7 +45,7 @@
         <div class="alert alert-error">
             This is a revision dated ${c.meeting.date}
         </div>
-    % elif 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser)):
+    % elif 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
         <div class="row-fluid">
             <a href="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingEdit" class="btn btn-defaut">Edit</a>
         </div><!-- row-fluid -->
@@ -417,7 +417,7 @@
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
     <div class="btn-group">
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initativeUnpublished':
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
         % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
@@ -436,9 +436,6 @@
     </div>
     
     % if thing['disabled'] == '0':
-        % if thing.objType != 'meetingUnpublished':
-            ${lib_6.flagThing(thing)}
-        % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
             % if thing.objType == 'meetingUnpublished':
                 ${lib_6.publishThing(thing)}

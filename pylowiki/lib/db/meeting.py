@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 def getMeeting(code):
     try:
         return meta.Session.query(Thing)\
-            .filter_by(objType = 'meeting')\
+            .filter(Thing.objType.in_(['meeting', 'meetingUnpublished']))\
             .filter(Thing.data.any(wc('urlCode', code)))\
             .one()
     except:
@@ -24,7 +24,7 @@ def getMeeting(code):
 def getAgendaItem(code):
     try:
         return meta.Session.query(Thing)\
-            .filter_by(objType = 'agendaitem')\
+            .filter(Thing.objType.in_(['agendaitem', 'agendaitemUnpublished']))\
             .filter(Thing.data.any(wc('urlCode', code)))\
             .one()
     except:
