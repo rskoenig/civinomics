@@ -67,6 +67,13 @@ class AdminController(BaseController):
             elif c.thing.objType.replace("Unpublished", "") == 'initiative':
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'meeting':
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
+            elif 'meetingCode' in c.thing:
+                parent = generic.getThing(c.thing['meetingCode'])
+                c.user = generic.getThing(parent['userCode'])
+                userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item
             if c.thing.objType != 'user' and userLib.isAdmin(author.id):
@@ -141,6 +148,12 @@ class AdminController(BaseController):
         
     def photos(self):
         c.list = photoLib.getAllPhotos()
+        if not c.list:
+            c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def meetings(self):
+        c.list = meetingLib.getAllMeetings()
         if not c.list:
             c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )
@@ -270,6 +283,7 @@ class AdminController(BaseController):
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType.replace("Unpublished", ""), thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
+        message = False
         title = '%s a post you made' %(action)
         text = '(This is an automated message)'
         extraInfo = action
@@ -293,9 +307,10 @@ class AdminController(BaseController):
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user)
 
 
-        eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
-        message = generic.linkChildToParent(message, thing)
-        dbHelpers.commit(message)
+        if message:
+            eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
+            message = generic.linkChildToParent(message, thing)
+            dbHelpers.commit(message)
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):

@@ -33,6 +33,10 @@ ${mhelpers.meetingModeration(c.meeting)}
 </div><!-- ng-init -->
 <p>
 
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+</%def>
+
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/meetings.js')}" type="text/javascript"></script>
