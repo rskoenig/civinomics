@@ -11,15 +11,15 @@
 
 <%def name="agenda_item_listing()">
     <div style="margin-top: 30px;"></div>
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            <div class="well yesNoWell" >
+            <div class="well yesNoWell" ng-show="(canVote == 'yes')">
                 ${yesNoVoteBlock()}
             </div>
             <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div>
-        <div class="row-fluid">
+        <div class="row-fluid" ng-show="(canComment == 'yes')">
             ${actions()}
         </div>
     </div>

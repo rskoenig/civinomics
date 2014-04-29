@@ -381,6 +381,16 @@ class MeetingController(BaseController):
             entry['text'] = item['text']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            if item['canVote'] == 'on':
+                entry['canVote'] = 'yes'
+            else:
+                entry['canVote'] = 'no'
+                
+            if item['canComment'] == 'on':
+                entry['canComment'] = 'yes'
+            else:
+                entry['canComment'] = 'no'
+                
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 
 			# user rating
