@@ -130,7 +130,75 @@
                         </span>
                         <span ng-if="iLastNoEditNoObjTypeInit">
                             <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
-                                last sidebar stuff
+                                <span ng-if"initiativeData.initiative.objType != 'revision'">
+                                    <h4 class="section-header initiative smaller initiative-title">Vote</h4>
+                                    <div class="row-fluid">
+                                        <div class="span6 offset3">
+                                            lib_6.yesNoVote(c.initiative, 'detail')
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <hr class="narrow">
+                                    <div>
+                                    <table id="metrics">
+                                        <tr>
+                                          <td class="clickable" style="padding-left: 0px;" ng-click="toggleAdopted()">
+                                            <span class="workshop-metrics">Comments</span><br>
+                                              <strong ng-cloak>c.numComments</strong>
+                                          </td>
+                                          <td class="clickable" ng-click="toggleIdeas()">
+                                            <span class="workshop-metrics">Views</span><br>
+                                              <strong ng-cloak>c.initiative['views']</strong>
+                                          </td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                    -->
+                                    <hr class="narrow">
+                                    <div class="row-fluid centered">
+                                        <span>
+                                            
+                                            if c.initiative['public'] == '1':
+                                                lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)
+
+                                                if not c.privs['provisional']
+                                                    <a class="btn btn-primary" ng-href="mailto:?subject={{emailSubject}}&body={{emailBody}}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                                                endif
+
+                                                <!-- % if c.initiative['public'] == '1':
+                                                    <a href="/workshop/c.initiative['urlCode']/c.initiative['url']/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                                                #%endif -->
+                                            else
+                                                <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
+                                                    <i class="icon-facebook icon-light right-space"></i> | Share
+                                                </a>
+                                                <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
+                                            endif
+                                        </span>
+                                    
+                                    </div>
+                                    <!--
+                                    <div class="row-fluid">
+                                        <div class="span10 offset2">
+                                            <label class="checkbox grey">
+                                            <input type="checkbox" class="shareVote" name="shareVote" value="shareVote"> Show how I voted when sharing
+                                            </label>
+                                        </div>
+                                    </div>
+                                    -->
+                                    <!-- 
+                                    <h4 class="section-header smaller section-header-inner">Fund It</h4>
+                                    <br>
+                                    <div>$136,000 of c.initiative['cost']</div>
+                                    <div class="progress">
+                                      <div class="bar bar-primary" style="width: 35%;"></div>
+                                    </div>
+                                    <small class="pull-right grey" style="margin-top: -20px;">43 funders</small><br>
+                                    <div class="row-fluid centered">
+                                        <button class="btn-large btn-success btn">Fund Initiative</button>
+                                    </div>
+                                    -->
+                                </span>
                             </div><!-- section-wrapper -->
                             <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                                 ihelpers.showAuthor(c.initiative)

@@ -61,6 +61,9 @@ app.controller('showInitiativeController', function($scope, $http){
                 if (!$scope.initPubNoComplete && !$scope.iLastNoPubNo) {
                     $scope.iLastTwoNo = true;
                 }
+                $scope.emailSubject = 'Vote on "' + $scope.initiativeData.initiative.title  + '"';
+                $scope.emailBody = $scope.initiativeData.initiative.link;
+
             } else if (data.statusCode === 2){
                 //console.log('data.statusCode == 2');
                 $scope.initiativeNoResult = true;

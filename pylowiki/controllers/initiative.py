@@ -564,9 +564,12 @@ class InitiativeController(BaseController):
             initiativeJson['editInitiative'] = True
         initiativeJson['home'] = c.initiativeHome
         initiativeJson['iPrivs'] = c.iPrivs
+        initiativeJson['link'] = utils.initiativeURL(c.initiative)
         initiativeJson['objType'] = c.initiative.objType
         initiativeJson['photo_url'] = c.photo_url
         initiativeJson['public'] = c.initiative['public']
+        log.info('cprvprov: %s'%c.privs['provisional'])
+        initiativeJson['privsProvisional'] = c.privs['provisional']
         initiativeJson['scopeFlag'] = c.scopeFlag
         initiativeJson['scopeHref'] = c.scopeHref
         initiativeJson['scopeTitle'] = c.scopeTitle
