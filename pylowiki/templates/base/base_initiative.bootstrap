@@ -36,31 +36,42 @@
                                     <a class="label workshop-tag {{tag}}" ng-href="/searchTags/{{tag}}/" >{{tag}}</a>
                                 </div>
                                 <span ng-if="initiativeData.initiative.iPrivs">
-                                    <span ng-hide="followButtonDisabled">>
+                                    <span ng-hide="followButtonDisabled">
                                         <button class="btn btn-civ pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
                                             <span>
                                                 <i class="icon-bookmark btn-height icon-light"></i>
                                                 <strong>{{followButtonText}}</strong></span>
                                         </button>
                                     </span>
-                                    <span ng-hide="!followButtonDisabled">>
+                                    <span ng-hide="!followButtonDisabled">
                                         <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
                                             <span>
                                                 <i class="icon-bookmark btn-height icon-light"></i>
                                                 <strong>{{followButtonText}}</strong></span>
                                         </button>
                                     </span>
-                                    watch edit rev view:
+                                    <span ng-if="initiativeData.initiative.editInitiative">
+                                        <a class="btn pull-right" href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}/show"><strong>View Initiative</strong></a>
+                                    </span>
+                                    <span ng-if="editInitNoObjTypeNoRev">
+                                        <span class="pull-right">
+                                            <a class="btn" href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}/edit"><strong>Edit Initiative</strong></a>
+                                            <a class="btn" href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}/updateEdit/new"><strong>Add Update</strong></a>
+                                        </span>
+                                    </span>
+                                    <span ng-if="editInitNoObjTypeNoRevElse">
+                                        <a class="btn pull-right" href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}/show"><strong>View Current Version</strong></a>
+                                    </span>
                                 </span>
-                                <span ng-if="iPrivsNoiHomeYesiOnjTypeNo">
-                                    <span ng-hide="followButtonDisabled">>
+                                <span ng-if="iPrivsNoiHomeYesiObjTypeNoRev">
+                                    <span ng-hide="followButtonDisabled">
                                         <button class="btn btn-civ pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
                                             <span>
                                                 <i class="icon-bookmark btn-height icon-light"></i>
                                                 <strong>{{followButtonText}}</strong></span>
                                         </button>
                                     </span>
-                                    <span ng-hide="!followButtonDisabled">>
+                                    <span ng-hide="!followButtonDisabled">
                                         <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
                                             <span>
                                                 <i class="icon-bookmark btn-height icon-light"></i>
@@ -78,7 +89,54 @@
                     ${next.body()}
                 </div>
                 <div class="span3" id="sidebar">
-                    <p> sidebar </p>
+                    <div style="position:fixed; width: inherit; max-width: 280px; margin-top: 8px;">
+                        <span ng-if="iPrivsEditInitObjTypeNoUnpub">
+                            <ul class="nav nav-tabs nav-stacked nav-init no-top" style="width: 100%;">
+                                <li class="active"><a href="#basics">1. Basics</a></li>
+                                <li><a href="#summary">2. Summary</a></li>
+                                <li><a href="#detail">3. Detail</a></li>
+                                <li><a href="#photo">4. Photo</a></li>
+                                <li><a href="#coauthors">5. Coauthors</a></li>
+                                <!--
+                                <li><a href="#iStats" data-toggle="tab">Stats</a></li>
+                                <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
+                                <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
+                                -->
+                            </ul>
+                            <div class="well" style="background-color: whitesmoke;">
+                                <div class="row-fluid">
+                                    <span ng-if="initPubNoComplete">
+                                        <form method="POST" name="publish" id="publish" action="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}/edit">
+                                            <button type="submit" class="btn btn-large btn-success input-block-level" name="public" value="publish">Publish</button>
+                                        </form>
+                                        <p>You have added all of the required information. Click 'Publish' to make your initiative publicly discoverable.</p>
+                                    </span>
+                                    <span ng-if="iLastNoPubNo">
+                                    
+                                        <button class="btn btn-large btn-warning input-block-level" disabled>Publish</button>
+                                        <br>
+                                        <p>You must complete all required information and upload a picture before you can publish.</p>
+                                    </span>
+                                    <span ng-if="iLastTwoNo">
+                                        <div class="row-fluid">
+                                            <form method="POST" name="publish" id="publish" action="/unpublish/initiative/{{initiativeData.initiative.urlCode}}">
+                                                <button type="submit" class="btn btn-large btn-warning input-block-level" name="public" value="unpublish">Unpublish</button>
+                                            </form><br>
+                                        </div>
+                                        <p>Unpublished initiatives don't show up in searches or on public listings.</p>
+                                    </span>
+                                </div>
+                            </div>
+                        </span>
+                        <span ng-if="iLastNoEditNoObjTypeInit">
+                            <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
+                                last sidebar stuff
+                            </div><!-- section-wrapper -->
+                            <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
+                                ihelpers.showAuthor(c.initiative)
+                            </div>
+                        </span>
+                    </div> <!-- position:fixed -->
                 </div><!-- span3 -->
             </div><!-- row-fluid -->
         </div><!-- row-fluid -->

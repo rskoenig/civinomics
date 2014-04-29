@@ -555,7 +555,13 @@ class InitiativeController(BaseController):
         result = {}
 
         initiativeJson = {}
+        log.info("complete: %s"%c.complete)
+        initiativeJson['complete'] = c.complete
         initiativeJson['description'] = c.initiative['description']
+        if len(c.editInitiative) == 0:
+            initiativeJson['editInitiative'] = False
+        else:
+            initiativeJson['editInitiative'] = True
         initiativeJson['home'] = c.initiativeHome
         initiativeJson['iPrivs'] = c.iPrivs
         initiativeJson['objType'] = c.initiative.objType
