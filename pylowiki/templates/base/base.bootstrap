@@ -155,36 +155,43 @@
         function fbConnected(authResponse) {
             FB.api('/me', function(response) {
                 var bigPic = '';
+                var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
                 var smallPic = '';
+                var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
                 var result = '';
                 async.series([
                     // get the big and small profile pics for this person, do this in parallel 
                     function(callback) {
                         async.parallel([
-                            // load big pic
                             function(callback) {
-                                // grab the url to a 200x200 photo of this user
-                                var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
-                                bigPicFql.wait(function (rows) {
-                                  // the big pic link
-                                  bigPic = rows[0].url;
+                                // load big pic
+                                getThePic(bigPicFql, function(err, bigPicResult) {
+                                    console.log('1');
+                                    if (err) return callback(err);
+                                    bigPic = bigPicResult;
+                                    callback();
                                 });
                             },
                             //load small pic 50x50 photo
                             function(callback) {
-                                var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
-                                smallPicFql.wait(function (rows) {
-                                  //the small pic link
-                                  smallPic = rows[0].url;
+                                getThePic(smallPicFql, function(err, smallPicResult) {
+                                    console.log('2');
+                                    if (err) return callback(err);
+                                    smallPic = smallPicResult;
+                                    callback();
                                 });
                             }
                         ], callback);
                     },
-                    // now that we have small and big pics, call fbCheckAccount
                     function(callback) {
-                        result = fbCheckAccount(response, authResponse, smallPic, bigPic);
+                        callFbCheckAccount(response, authResponse, smallPic, bigPic, function(err, checkResult) {
+                            console.log('3');
+                            if (err) return callback(err);
+                            result = checkResult;
+                        });
                     }
                 ], function(err) {
+                    console.log('4');
                     //check on the result of fbCheckAccount
                     if (err) return next(err);
                     if (result == "not found") {
@@ -221,6 +228,24 @@
                     }
                 });
             });
+        }
+
+        function getThePic(thePicFql, callback) {
+            console.log('!');
+            var thePic = '';
+            // grab the url to a 200x200 photo of this user
+            thePicFql.wait(function (rows) {
+              // the big pic link
+              thePic = rows[0].url;
+            });
+            callback(null, thePic);
+        }
+
+        function callFbCheckAccount(response, authResponse, smallPic, bigPic, callback) {
+            result = '';
+            // now that we have small and big pics, call fbCheckAccount
+            result = fbCheckAccount(response, authResponse, smallPic, bigPic);
+            callback(null, result);
         }
       </script>
    % endif  ## if 'user' in session
