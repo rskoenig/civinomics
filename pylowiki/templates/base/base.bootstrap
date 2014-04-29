@@ -73,144 +73,156 @@
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
    % if 'user' not in session:
-       <%
-           facebookAppId = c.facebookAppId
-           channelUrl = c.channelUrl
-       %>
-       <div id="fb-root"></div>
-       <script>
-         //console.log('in fb init')
-         // activate facebook javascript sdk
-         window.fbAsyncInit = function() {
-            FB.init({
-              appId      : "${facebookAppId}",
-              channelUrl : "${channelUrl}", // Channel File
-              status     : true, // check login status
-              cookie     : false, // enable cookies to allow the server to access the session
-              xfbml      : true  // parse XFBML
-            });
-            // this is needed to prevent a hangup with one of the login flows
-            FB.Event.subscribe('auth.login', function(response1) {
-              authSignal();
-            });
-            // check facebook login status
-            FB.Event.subscribe('auth.authResponseChange', function(response) {
-              if (response.status === 'connected') {
-                // this person is logged into facebook and our app has auth
-                fbConnected(response.authResponse);
-              } else if (response.status === 'not_authorized') {
-                // this person is logged into facebook but our app does not have auth
-                FB.login(function(response) {
-                  if (response.authResponse) {
-                    //console.log('Welcome!  Fetching your information.... ');
-                    //console.log("response status: " + response.status)
-                    //console.log("response email: " + response.email)
-                    fbConnected(response.authResponse);
-                  } else {
-                    console.log('User cancelled login or did not fully authorize.');
-                  }
-                }, {scope: 'email'});
-              } else {
-                // user not logged into facebook
-                FB.login(function(response) {
-                  if (response.authResponse) {
-                    //console.log('Welcome!  Fetching your information.... ');
-                    //console.log("response status: " + response.status)
-                    //console.log("response email: " + response.email)
-                    fbConnected(response.authResponse);
-                  } else {
-                    console.log('User cancelled login or did not fully authorize.');
-                  }
-                }, {scope: 'email'});
-              }
-            });
-         };
+      <script type="text/javascript" src="/js/vendor/async.min.js"></script>
+      <%
+          facebookAppId = c.facebookAppId
+          channelUrl = c.channelUrl
+      %>
+      <div id="fb-root"></div>
+      <script>
+        //console.log('in fb init')
+        // activate facebook javascript sdk
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : "${facebookAppId}",
+            channelUrl : "${channelUrl}", // Channel File
+            status     : true, // check login status
+            cookie     : false, // enable cookies to allow the server to access the session
+            xfbml      : true  // parse XFBML
+          });
+          // this is needed to prevent a hangup with one of the login flows
+          FB.Event.subscribe('auth.login', function(response1) {
+            authSignal();
+          });
+          // check facebook login status
+          FB.Event.subscribe('auth.authResponseChange', function(response) {
+            if (response.status === 'connected') {
+              // this person is logged into facebook and our app has auth
+              fbConnected(response.authResponse);
+            } else if (response.status === 'not_authorized') {
+              // this person is logged into facebook but our app does not have auth
+              FB.login(function(response) {
+                if (response.authResponse) {
+                  //console.log('Welcome!  Fetching your information.... ');
+                  //console.log("response status: " + response.status)
+                  //console.log("response email: " + response.email)
+                  fbConnected(response.authResponse);
+                } else {
+                  console.log('User cancelled login or did not fully authorize.');
+                }
+              }, {scope: 'email'});
+            } else {
+              // user not logged into facebook
+              FB.login(function(response) {
+                if (response.authResponse) {
+                  //console.log('Welcome!  Fetching your information.... ');
+                  //console.log("response status: " + response.status)
+                  //console.log("response email: " + response.email)
+                  fbConnected(response.authResponse);
+                } else {
+                  console.log('User cancelled login or did not fully authorize.');
+                }
+              }, {scope: 'email'});
+            }
+          });
+        };
 
-         // Load the SDK asynchronously
-         (function(d){
+        // Load the SDK asynchronously
+        (function(d){
           var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
           if (d.getElementById(id)) {return;}
           js = d.createElement('script'); js.id = id; js.async = true;
           js.src = "//connect.facebook.net/en_US/all.js";
           ref.parentNode.insertBefore(js, ref);
-         }(document));
+        }(document));
 
-         function authSignal() {
-           var authSignal = '<div id="authSignal"></div>'
-           $('#fbLoginButton1').append(authSignal);
-           $('#fbLoginButton2').append(authSignal);
-         }
+        function authSignal() {
+          var authSignal = '<div id="authSignal"></div>';
+          $('#fbLoginButton1').append(authSignal);
+          $('#fbLoginButton2').append(authSignal);
+        }
 
-         /*
-         function printObject(o) {
-           var out = '';
-           for (var p in o) {
-             out += p + ': ' + o[p] + '\n';
-           }
-           console.log(out);
-         }
-         */
+        /*
+        function printObject(o) {
+          var out = '';
+          for (var p in o) {
+            out += p + ': ' + o[p] + '\n';
+          }
+          console.log(out);
+        }
+        */
 
-         function fbConnected(authResponse) {
-           FB.api('/me', function(response) {
-             // grab the url to a 200x200 photo of this user
-             var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
-             var bigPic = '';
-             bigPicFql.wait(function (rows) {
-               // the big pic link
-               bigPic = rows[0].url;
-             });
-             // grab the url to a 50x50 photo of this user
-             var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
-             var smallPic = '';
-             var holder = 0;
-             smallPicFql.wait(function (rows) {
-               //the small pic link
-               smallPic = rows[0].url;
-               holder = 1;
-             });
-             var result = ''
-             setTimeout(function(){
-               // check account status on our site for this user
-               //console.log('ya');
-               //printObject(authResponse);
-               result = fbCheckAccount(response, authResponse, smallPic, bigPic);
-               if (result == "not found") {
-                 // no account on site yet.
-                 // this is a unique situation where the person has authorized us to use their
-                 // fb identity, but hasn't created an account yet. This assumes that's what they
-                 // want to do and redirects once this situation is recognized.
-                 if ($('#fbSignUp').length) {
-                   console.log('facebook signup')
-                 } else {
-                   window.location = '/signup/fbSignUp/';
-                 }
-               } else {
-                 // found a matching account on our site
-                 if ($('#authSignal').length) {
-                   // this triggers when a person has arrived but was not yet logged into facebook,
-                   // or had not yet given auth to our app
-                   var newButton = 'Logging In'
-                   $('#fbLoginButton1').html(newButton);
-                   $('#fbLoginButton2').html(newButton);
-                   window.location = '/fbLoggingIn/';
-                 } else if ($('#fbLoggingIn').length) {
-                   // this element is only found on a page meant to be used as a redirect when
-                   // the 'login with facebook' link has been clicked.
-                   window.location = '/fbLoggingIn/';
-                 } else {
-                   // this code is used when a person arrives and it is seen that they have 
-                   // auth'd our app and are logged into facebook 
-                   // replace current button with returned result
-                   var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
-                   $('#fbLoginButton1').html(newButton);
-                   $('#fbLoginButton2').html(newButton);
-                 }
-               }
-             },1000);
-           });
-         }
-       </script>
+        function fbConnected(authResponse) {
+            FB.api('/me', function(response) {
+                var bigPic = '';
+                var smallPic = '';
+                var result = '';
+                async.series([
+                    // get the big and small profile pics for this person, do this in parallel 
+                    function(callback) {
+                        async.parallel([
+                            // load big pic
+                            function(callback) {
+                                // grab the url to a 200x200 photo of this user
+                                var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
+                                bigPicFql.wait(function (rows) {
+                                  // the big pic link
+                                  bigPic = rows[0].url;
+                                });
+                            },
+                            //load small pic 50x50 photo
+                            function(callback) {
+                                var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
+                                smallPicFql.wait(function (rows) {
+                                  //the small pic link
+                                  smallPic = rows[0].url;
+                                });
+                            }
+                        ], callback);
+                    },
+                    // now that we have small and big pics, call fbCheckAccount
+                    function(callback) {
+                        result = fbCheckAccount(response, authResponse, smallPic, bigPic);
+                    }
+                ], function(err) {
+                    //check on the result of fbCheckAccount
+                    if (err) return next(err);
+                    if (result == "not found") {
+                        // no account on site yet.
+                        // this is a unique situation where the person has authorized us to use their
+                        // fb identity, but hasn't created an account yet. This assumes that's what they
+                        // want to do and redirects once this situation is recognized.
+                        if ($('#fbSignUp').length) {
+                            console.log('facebook signup')
+                        } else {
+                            window.location = '/signup/fbSignUp/';
+                        }
+                    } else {
+                        // found a matching account on our site
+                        if ($('#authSignal').length) {
+                            // this triggers when a person has arrived but was not yet logged into facebook,
+                            // or had not yet given auth to our app
+                            var newButton = 'Logging In'
+                            $('#fbLoginButton1').html(newButton);
+                            $('#fbLoginButton2').html(newButton);
+                            window.location = '/fbLoggingIn/';
+                        } else if ($('#fbLoggingIn').length) {
+                            // this element is only found on a page meant to be used as a redirect when
+                            // the 'login with facebook' link has been clicked.
+                            window.location = '/fbLoggingIn/';
+                        } else {
+                            // this code is used when a person arrives and it is seen that they have 
+                            // auth'd our app and are logged into facebook 
+                            // replace current button with returned result
+                            var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
+                            $('#fbLoginButton1').html(newButton);
+                            $('#fbLoginButton2').html(newButton);
+                        }
+                    }
+                });
+            });
+        }
+      </script>
    % endif  ## if 'user' in session
    </body>
 </html>
