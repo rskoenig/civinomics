@@ -383,7 +383,7 @@
 </%def>
 
 <%def name="addAgendaItem(meeting, author)">
-    % if c.authuser['email'] == author['email']:
+    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
         <div class="row-fluid">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Agenda Item</button>
             <div id="addItem" class="collapse">
