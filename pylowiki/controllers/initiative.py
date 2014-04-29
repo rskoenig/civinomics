@@ -265,7 +265,7 @@ class InitiativeController(BaseController):
         #photo = "/images/icons/generalInitiative.jpg"
     
         #create the initiative
-        initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        initiative = initiativeLib.Initiative(c.user, title, description, scope, tags = tags, goal = goal)
         log.info('new initiative created')
         session['facilitatorInitiatives'].append(initiative['urlCode'])
         return json.dumps({'statusCode': 0, 'newObjCode': initiative['urlCode'], 'newObjUrl': initiative['url']})

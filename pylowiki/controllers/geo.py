@@ -135,10 +135,11 @@ class GeoController(BaseController):
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':statusCode, 'result':result})
             else:
-                for state in states:
-                    if state['StateFullName'] != 'District of Columbia':
-                        sList = sList + state['StateFullName'] + '|'
-                return json.dumps({'result':sList})
+                return json.dumps({'result':states})
+                #for state in states:
+                #    if state['StateFullName'] != 'District of Columbia':
+                #        sList = sList + state['StateFullName'] + '|'
+                #return json.dumps({'result':sList})
         except:
             if iPhoneApp:
                 statusCode = 2
@@ -170,8 +171,11 @@ class GeoController(BaseController):
                 return json.dumps({'statusCode':statusCode, 'result':result})
             else:
                 for county in counties:
-                    cList = cList + county['County'].title() + '|'
-                return json.dumps({'result':cList})
+                    county['County'] = county['County'].title()
+                return json.dumps({'result':counties})
+                #for county in counties:
+                #    cList = cList + county['County'].title() + '|'
+                #return json.dumps({'result':cList})
         except:
             if iPhoneApp:
                 statusCode = 2
@@ -204,9 +208,10 @@ class GeoController(BaseController):
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':statusCode, 'result':result})
             else:
-                for city in cities:
-                    cList = cList + city['City'].title() + '|'
-                return json.dumps({'result':cList})
+                return json.dumps({'result':cities})
+                #for city in cities:
+                #    cList = cList + city['City'].title() + '|'
+                #return json.dumps({'result':cList})
         except:
             if iPhoneApp:
                 statusCode = 2
@@ -241,9 +246,10 @@ class GeoController(BaseController):
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':statusCode, 'result':result})
             else:
-                for postal in postalCodes:
-                    pList = pList + str(postal['ZipCode']) + '|'
-                return json.dumps({'result':pList})
+                return json.dumps({'result':postalCodes})
+                #for postal in postalCodes:
+                #    pList = pList + str(postal['ZipCode']) + '|'
+                #return json.dumps({'result':pList})
         except:
             if iPhoneApp:
                 statusCode = 2
