@@ -27,6 +27,7 @@ import pylowiki.lib.db.generic          as generic
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
 import pylowiki.lib.db.message          as messageLib
+import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.alerts              as alertsLib
 import pylowiki.lib.utils               as utils
 

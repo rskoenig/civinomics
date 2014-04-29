@@ -21,6 +21,14 @@ def getMeeting(code):
     except:
         return False
         
+def getAllMeetings():
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['meeting', 'meetingUnpublished']))\
+            .all()
+    except:
+        return False
+        
 def getAgendaItem(code):
     try:
         return meta.Session.query(Thing)\
