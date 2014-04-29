@@ -252,13 +252,15 @@ class InitiativeController(BaseController):
         else:
             description = ''
 
-        if 'scope' in request.params:
+        if 'scope' in payload:
             scope = payload['scope']
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
         
-        if 'tag' in request.params:
-            tags = payload['tag']  
+        if 'tags' in payload:
+            tags = payload['tags']  
+        else:
+            tags = None
             
         goal = self.getInitiativeGoal(scope)
 
