@@ -78,7 +78,7 @@
                                 </a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                     <li>
-                                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                                        <a href="/create/initiative"><i class="icon-file-text"></i> New Initiative</a>
                                     </li>
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                                 </ul>

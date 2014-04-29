@@ -1,0 +1,61 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
+<h1>Create New Thing</h1>
+% if c.authuser:
+    <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
+%endif
+<div ng-init="test = '1 2 3 4'"></div>
+<div class="row-fluid" ng-controller="createController">
+    <div class="well span8">
+            {{test}}{{createUrl}}{{authorCode}}{{authorUrl}}
+            <form ng-submit="createNew()">
+                <div>
+                    <input class="span12 input-large" type="text" ng-model="title" placeholder="Title" required></input>    
+                </div>
+                <div>
+                    <textarea class="span12 input-large" rows="4" type="text" ng-model="description" placeholder="Description"></textarea>        
+                </div>  
+                <hr>
+                Upload a photo
+                <hr>
+                <div>
+                    <select ng-model="tag">
+                        <option value="">Tags</option>
+                        % for tag in c.tagList:
+                            <option value="${tag}"> ${tag}</option>
+                        % endfor
+                    </select>
+                    
+                    <select ng-model="objType">
+                        <option value="">Type</option>        
+                        <option value="initiative">Initiative</option>        
+                        <option value="ballot_measure">Ballot Measure</option>        
+                        <option value="candidate">Candidate</option>        
+                    </select>
+                </div>
+                <div ng-show="objType == 'initiative'" ng-cloak>
+                    <hr>
+                    <p class="lead">Additional Fields</p>
+                    Date picker coming soon
+                </div>
+                <div ng-show="objType == 'candidate'" ng-cloak>
+                    <hr>
+                    <p class="lead">Additional Fields</p>
+                    <label>What position is this candidate running for?</label>
+                    <input class="span6 input-large" type="text" ng-model="positionTitle" placeholder="Position Title"></input>
+                    
+                </div>
+                <div>
+                    ${lib_6.geoSelect()}
+                </div>
+                <button type="submit" class="btn btn-large btn-success pull-right">Submit</button>
+        </form>
+        {{newObjUrl}}
+    </div>
+</div>
+
+<%def name="extraScripts()">
+    <script src="${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/create.js')}" type="text/javascript"></script>
+</%def>

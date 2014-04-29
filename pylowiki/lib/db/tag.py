@@ -35,6 +35,7 @@ def countTags(searchString, disabled = '0'):
     except:
         return False
 
+# depricate this function becaue it uses 'workshop' terminology - use getCategoryTags() instead
 def getWorkshopTagCategories():
     workshopTags = []
     workshopTags.append('Arts')
@@ -55,6 +56,27 @@ def getWorkshopTagCategories():
     workshopTags.append('Water')
     workshopTags.append('Other')
     return workshopTags
+    
+def getCategoryTags():
+    categoryTags = []
+    categoryTags.append('Arts')
+    categoryTags.append('Business')
+    categoryTags.append('Civil Rights')
+    categoryTags.append('Community')
+    categoryTags.append('Economy')
+    categoryTags.append('Education')
+    categoryTags.append('Environment')
+    categoryTags.append('Government')
+    categoryTags.append('Health')
+    categoryTags.append('Housing')
+    categoryTags.append('Land Use')
+    categoryTags.append('Municipal Services')
+    categoryTags.append('Parks and Rec')
+    categoryTags.append('Safety')
+    categoryTags.append('Transportation')
+    categoryTags.append('Water')
+    categoryTags.append('Other')
+    return categoryTags
 
 def getWorkshopTagColouring():
     mapping = { 'Civil Rights':         'red-tag',

@@ -132,6 +132,7 @@ def Initiative(owner, title, description, scope, goal = None, workshop = None):
     i['downs'] = '0'
     i['views'] = '0'
     i['goal'] = goal
+    i['deadline'] = ""
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
     return i

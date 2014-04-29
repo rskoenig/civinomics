@@ -37,7 +37,7 @@ class InitiativeController(BaseController):
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
-        if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
+        if action == 'initiativeNewHandler' or action == 'initiativeCreateHandler'  and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
                 abort(404)
@@ -236,6 +236,40 @@ class InitiativeController(BaseController):
         c.editInitiative = True
        
         return render('/derived/6_initiative_edit.bootstrap')
+        
+    ## Create an initiative using a json payload    
+    def initiativeCreateHandler(self):
+        log.info('in initiative created')
+        payload = json.loads(request.body)
+        
+        if 'title' in payload:
+            title = payload['title']
+        else:
+            return json.dumps({'statusCode':1, 'errorMsg': 'no title provided'})
+            
+        if 'description' in payload:
+            description = payload['description']
+        else:
+            description = ''
+
+        if 'scope' in request.params:
+            scope = payload['scope']
+        else:
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
+        
+        if 'tag' in request.params:
+            tags = payload['tag']  
+            
+        goal = self.getInitiativeGoal(scope)
+
+        #photo = "/images/icons/generalInitiative.jpg"
+    
+        #create the initiative
+        initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        log.info('new initiative created')
+        session['facilitatorInitiatives'].append(initiative['urlCode'])
+        return json.dumps({'statusCode': 0, 'newObjCode': initiative['urlCode'], 'newObjUrl': initiative['url']})
+        
     
     def initiativeCheck(self):
         atrList = ['title', 'scope', 'tags', 'description', 'funding_summary', 'cost', 'background', 'proposal', 'directoryNum_photos', 'pictureHash_photos']

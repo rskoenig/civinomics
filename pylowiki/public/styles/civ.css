@@ -3575,3 +3575,15 @@ svg{
     padding-right: 10px;
 }
 
+
+/* input */
+input.input-large{
+    font-size: 1.125em;
+    line-height: 23px;
+    height: 43px;
+}
+
+textarea.input-large{
+    font-size: 1.125em;
+    line-height: 23px;
+}

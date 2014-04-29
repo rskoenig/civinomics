@@ -19,6 +19,7 @@
    import pylowiki.lib.db.follow        as followLib
    import pylowiki.lib.db.initiative    as initiativeLib
    import pylowiki.lib.utils            as utilsLib
+   import pylowiki.lib.db.geoInfo       as geoInfoLib
    from pylons import session
    
    import misaka as m
@@ -2000,4 +2001,122 @@
   <a ${initiativeLink(i)}>
       <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
+</%def>
+
+<%def name="geoSelect()">
+    <!-- need to get the c.initiative['scope'] and update the selects accordingly -->
+    <% 
+        countrySelected = ""
+        countyMessage = ""
+        cityMessage = ""
+        postalMessage = ""
+        underPostalMessage = ""
+        countyMessage = "Leave 'State' blank if your initiative applies to the entire country."
+        countrySelected = "selected"
+        states = c.states
+    %>
+    <div class="row-fluid"><span id="planetSelect">
+        <div class="span3">Planet:</div>
+        <div class="span8">
+            <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
+                <option value="0">Earth</option>
+            </select>
+        </div><!-- span8 -->
+    </span><!-- countrySelect -->
+    </div><!-- row-fluid -->     
+    <div class="row-fluid"><span id="countrySelect">
+        <div class="span3">Country:</div>
+        <div class="span8">
+            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+                <option value="0">Select a country</option>
+                <option value="United States" ${countrySelected}>United States</option>
+            </select>
+        </div><!-- span8 -->
+    </span><!-- countrySelect -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid"><span id="stateSelect">
+        % if c.country != "0":
+            <div class="span3">State:</div><div class="span8">
+            <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+            <option value="0">Select a state</option>
+            <% states = geoInfoLib.getStateList('United-States') %>
+            % for state in states:
+                % if state != 'District of Columbia':
+                    % if c.state == state['StateFullName']:
+                        <% stateSelected = "selected" %>
+                    % else:
+                        <% stateSelected = "" %>
+                    % endif
+                    <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
+                % endif
+            % endfor
+            </select>
+            </div><!-- span8 -->
+        % else:
+            Leave 'Country' blank if your initiative applies to the entire planet.
+        % endif
+    </span></div><!-- row-fluid -->
+    <div class="row-fluid"><span id="countySelect">
+        % if c.state != "0":
+            <% counties = geoInfoLib.getCountyList("united-states", c.state) %>
+            <% cityMessage = "Leave blank 'County' blank if your initiative applies to the entire state." %>
+            <div class="span3">County:</div><div class="span8">
+            <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                <option value="0">Select a county</option>
+                % for county in counties:
+                    <option value="${county['County'].title()}">${county['County'].title()}</option>
+                % endfor
+            </select>
+            </div><!-- span8 -->
+        % else:
+            <% cityMessage = "" %>
+            ${countyMessage}
+        % endif
+    </span></div><!-- row -->
+    <div class="row-fluid"><span id="citySelect">
+        % if c.county != "0":
+            <% cities = geoInfoLib.getCityList("united-states", c.state, c.county) %>
+            <% postalMessage = "Leave 'City' blank if your initiative applies to the entire county." %>
+            <div class="span3">City:</div><div class="span8">
+            <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+            <option value="0">Select a city</option>
+                % for city in cities:
+                    % if c.city == city['City'].title():
+                        <% citySelected = "selected" %>
+                    % else:
+                        <% citySelected = "" %>
+                    % endif
+                    <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                % endfor
+            </select>
+            </div><!-- span8 -->
+        % else:
+            <% postalMessage = "" %>
+            ${cityMessage}
+        % endif
+        </span></div><!-- row-fluid -->
+    <div class="row-fluid"><span id="postalSelect">
+        % if c.city != "0":
+            <% postalCodes = geoInfoLib.getPostalList("united-states", c.state, c.county, c.city) %>
+            <% underPostalMessage = "or leave blank if your initiative is specific to the entire city." %>
+            <div class="span3">Zip Code:</div><div class="span8">
+            <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
+            <option value="0">Select a zip code</option>
+                % for pCode in postalCodes:
+                    % if c.postal == str(pCode['ZipCode']):
+                        <% postalSelected = "selected" %>
+                    % else:
+                        <% postalSelected = "" %>
+                    % endif
+                    <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
+                % endfor
+            </select>
+            </div><!-- span8 -->
+        % else:
+            <% underPostalMessage = "" %>
+            ${postalMessage}
+        % endif
+        </span></div><!-- row-fluid -->
+    <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
+    <br/>
 </%def>
