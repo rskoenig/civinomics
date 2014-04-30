@@ -13,13 +13,38 @@
     <div style="margin-top: 30px;"></div>
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            <div class="well yesNoWell" ng-show="(canVote == 'yes')">
+            <div class="well yesNoWell" ng-show="(canVote == 'checked')">
                 ${yesNoVoteBlock()}
             </div>
             <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div>
-        <div class="row-fluid" ng-show="(canComment == 'yes')">
+        <div class="row-fluid">
+            <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+            <div id="edit-{{urlCode}}" class="collapse">
+                <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
+                    <fieldset>
+                        <label>Item Title</label>
+                        <input type="text" name="agendaItemTitle" class="span6" value="{{item.title}}">
+                        <label>Item Text</label>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="agendaItemText" class="span6">{{item.text}}</textarea>
+                        <label class="checkbox">
+                        <input type="checkbox" name="agendaItemVote" ng-show="(canVote == '')">
+                        <input type="checkbox" name="agendaItemVote" checked ng-show="(canVote == 'checked')">
+                        People can vote on this
+                        </label>
+                        <label class="checkbox">
+                        <input type="checkbox" name="agendaItemComment" ng-show="(canComment == '')">
+                        <input type="checkbox" name="agendaItemComment" checked ng-show="(canComment == 'checked')">
+                        People can comment on this
+                        </label>
+                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="row-fluid" ng-show="(canComment == 'checked')">
             ${actions()}
         </div>
     </div>

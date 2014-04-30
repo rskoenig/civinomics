@@ -31,7 +31,7 @@ class MeetingController(BaseController):
         c.user = None
         c.meeting = None
         c.items = None
-        adminList = ['meetingNew', 'meetingNewHandler', 'meetingEdit', 'meetingEditHandler', 'itemEditHandler']
+        adminList = ['meetingNew', 'meetingNewHandler', 'meetingEdit', 'meetingEditHandler', 'agendaitemEditHandler']
         if (action == 'meetingNew' or action == 'meetingNewHandler') and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             c.author = c.user
@@ -39,12 +39,21 @@ class MeetingController(BaseController):
             if not c.user:
                 abort(404)
         elif id1 is not None and id2 is not None:
-            c.meeting = meetingLib.getMeeting(id1)
+            if action == 'agendaitemEditHandler':
+                c.agendaitem = meetingLib.getAgendaItem(id1)
+                if c.agendaitem:
+                    c.meeting = meetingLib.getMeeting(c.agendaitem['meetingCode'])
+                else:
+                    abort(404)
+            else:
+                c.meeting = meetingLib.getMeeting(id1)
+                
             if not c.meeting:
                 c.meeting = revisionLib.getRevisionByCode(id1)
                 if not c.meeting:
                     abort(404)
         else:
+            log.info("meeting abort 3")
             abort(404)
 
         if 'user' in session and c.authuser:
@@ -363,6 +372,33 @@ class MeetingController(BaseController):
             
         return redirect(returnURL)
         
+    def agendaitemEditHandler(self):
+        if 'agendaItemTitle' in request.params:
+            c.agendaitem['title'] = request.params['agendaItemTitle']
+        else:
+            title = ''
+        
+        if 'agendaItemText' in request.params:
+            c.agendaitem['text'] = request.params['agendaItemText']
+        else:
+            text = ''
+
+        if 'agendaItemVote' in request.params:
+            c.agendaitem['canVote'] = request.params['agendaItemVote']
+        else:
+            c.agendaitem['canVote'] = ''
+
+        if 'agendaItemComment' in request.params:
+            c.agendaitem['canComment'] = request.params['agendaItemComment']
+        else:
+            c.agendaitem['canComment'] = ''
+            
+        dbHelpers.commit(c.agendaitem)
+        
+        returnURL = '/meeting/%s/%s/show'%(c.meeting['urlCode'], c.meeting['url'])
+            
+        return redirect(returnURL)
+        
     def getMeetingAgendaItems(self, id1, id2):
         c.agendaItems = meetingLib.getAgendaItems(id1)
         if not c.agendaItems:
@@ -382,14 +418,14 @@ class MeetingController(BaseController):
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
             if item['canVote'] == 'on':
-                entry['canVote'] = 'yes'
+                entry['canVote'] = 'checked'
             else:
-                entry['canVote'] = 'no'
+                entry['canVote'] = ''
                 
             if item['canComment'] == 'on':
-                entry['canComment'] = 'yes'
+                entry['canComment'] = 'checked'
             else:
-                entry['canComment'] = 'no'
+                entry['canComment'] = ''
                 
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 
