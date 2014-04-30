@@ -38,8 +38,15 @@
       <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
+    <p>t1</p>
     ${next.body()}
-
+    <p id="ta"></p>
+    <p id="t0"></p>
+    <p id="t1"></p>
+    <p id="t2"></p>
+    <p id="t3"></p>
+    <p id="t4"></p>
+    <p id="t5"></p>
    
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
@@ -90,42 +97,59 @@
             cookie     : false, // enable cookies to allow the server to access the session
             xfbml      : true  // parse XFBML
           });
-          // this is needed to prevent a hangup with one of the login flows
-          FB.Event.subscribe('auth.login', function(response1) {
-            authSignal();
-          });
-          // check facebook login status
-          FB.Event.subscribe('auth.authResponseChange', function(response) {
-            if (response.status === 'connected') {
-              // this person is logged into facebook and our app has auth
-              fbConnected(response.authResponse);
-            } else if (response.status === 'not_authorized') {
-              // this person is logged into facebook but our app does not have auth
-              FB.login(function(response) {
-                if (response.authResponse) {
-                  //console.log('Welcome!  Fetching your information.... ');
-                  //console.log("response status: " + response.status)
-                  //console.log("response email: " + response.email)
-                  fbConnected(response.authResponse);
-                } else {
-                  console.log('User cancelled login or did not fully authorize.');
-                }
-              }, {scope: 'email'});
-            } else {
-              // user not logged into facebook
-              FB.login(function(response) {
-                if (response.authResponse) {
-                  //console.log('Welcome!  Fetching your information.... ');
-                  //console.log("response status: " + response.status)
-                  //console.log("response email: " + response.email)
-                  fbConnected(response.authResponse);
-                } else {
-                  console.log('User cancelled login or did not fully authorize.');
-                }
-              }, {scope: 'email'});
-            }
-          });
+          runFbInitCriticalCode();
         };
+
+        function runFbInitCriticalCode() {
+            // this is needed to prevent a hangup with one of the login flows
+            var testa = '<p id="ta">ta</p>';
+            $('#ta').html(testa);
+            FB.Event.subscribe('auth.login', function(response1) {
+              var test1 = '<p id="t0">t0</p>';
+              $('#t0').html(test0);
+              authSignal();
+            });
+
+            // check facebook login status
+            FB.Event.subscribe('auth.authResponseChange', function(response) {
+              var test1 = '<p id="t1">t1</p>';
+              $('#t1').html(test1);
+              if (response.status === 'connected') {
+                // this person is logged into facebook and our app has auth
+                var test2 = '<p id="t2">t2</p>';
+                $('#t2').html(test2);
+                fbConnected(response.authResponse);
+              } else if (response.status === 'not_authorized') {
+                // this person is logged into facebook but our app does not have auth
+                var test3 = '<p id="t3">t3</p>';
+                $('#t3').html(test3);
+                FB.login(function(response) {
+                  if (response.authResponse) {
+                    //console.log('Welcome!  Fetching your information.... ');
+                    //console.log("response status: " + response.status)
+                    //console.log("response email: " + response.email)
+                    fbConnected(response.authResponse);
+                  } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                  }
+                }, {scope: 'email'});
+              } else {
+                // user not logged into facebook
+                var test4 = '<p id="t4">t4</p>';
+                $('#t4').html(test4);
+                FB.login(function(response) {
+                  if (response.authResponse) {
+                    //console.log('Welcome!  Fetching your information.... ');
+                    //console.log("response status: " + response.status)
+                    //console.log("response email: " + response.email)
+                    fbConnected(response.authResponse);
+                  } else {
+                    console.log('User cancelled login or did not fully authorize.');
+                  }
+                }, {scope: 'email'});
+              }
+            });
+        }
 
         // Load the SDK asynchronously
         (function(d){
@@ -137,6 +161,8 @@
         }(document));
 
         function authSignal() {
+          var test5 = '<p id="t5">t5</p>';
+          $('#t5').html(test5);
           var authSignal = '<div id="authSignal"></div>';
           $('#fbLoginButton1').append(authSignal);
           $('#fbLoginButton2').append(authSignal);
@@ -153,6 +179,7 @@
         */
 
         function fbConnected(authResponse) {
+
             FB.api('/me', function(response) {
                 var bigPic = '';
                 var bigPicFql = '';
@@ -169,7 +196,6 @@
                             callback();
                         });
                         
-                        console.log('r.id: '+response.id);
                     },
                     function(callback) {
                         smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
