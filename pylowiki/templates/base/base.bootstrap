@@ -242,7 +242,7 @@
         function callFbCheckAccount(response, authResponse, smallPic, bigPic, callback) {
             result = '';
             // now that we have small and big pics, call fbCheckAccount
-            result = fbCheckAccount(response, authResponse, smallPic, bigPic);
+            result = fbCheckAccount(response, authResponse, smallPic, bigPic);            
             callback(null, result);
         }
       </script>
