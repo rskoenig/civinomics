@@ -34,7 +34,9 @@
 
     
     <div class="row-fluid">
-        ${m.html(meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        <div class="span9">
+            ${m.html(meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        </div>
     </div><!-- row-fluid -->
     
     <div class="row-fluid">

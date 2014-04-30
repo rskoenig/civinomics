@@ -372,6 +372,8 @@ class MeetingController(BaseController):
         return redirect(returnURL)
         
     def agendaitemEditHandler(self):
+        # make a revision first of the previous version
+        revisionLib.Revision(c.authuser, c.agendaitem)
         if 'agendaItemTitle' in request.params:
             c.agendaitem['title'] = request.params['agendaItemTitle']
         else:
@@ -393,6 +395,7 @@ class MeetingController(BaseController):
             c.agendaitem['canComment'] = ''
             
         dbHelpers.commit(c.agendaitem)
+        revisionLib.Revision(c.authuser, c.agendaitem)
         
         returnURL = '/meeting/%s/%s/show'%(c.meeting['urlCode'], c.meeting['url'])
             
@@ -449,7 +452,23 @@ class MeetingController(BaseController):
             entry['numComments'] = '0'
             if 'numComments' in item:
                 entry['numComments'] = discussion['numComments']
-			
+                
+            # get revisions
+            revisions = revisionLib.getRevisionsForThing(item)
+            if revisions:
+                entry['revisions'] = 'yes'
+            else:
+                entry['revisions'] = 'no'
+            entry['revisionList'] = []
+            if revisions:
+                for rev in revisions:
+                    revision = {}
+                    code = rev['urlCode'] 
+                    date = str(rev.date)
+                    revision['date'] = date
+                    revision['urlCode'] = code
+                    entry['revisionList'].append(revision)
+                
             result.append(entry)
             
         if len(result) == 0:

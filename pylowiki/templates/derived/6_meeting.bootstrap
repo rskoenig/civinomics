@@ -19,7 +19,6 @@ ${mhelpers.meetingModeration(c.meeting)}
             <div class="centered" ng-show="loading" ng-cloak>
                 <i class="icon-spinner icon-spin icon-4x"></i>
             </div><!-- loading -->
-                        
             <div ng-repeat="item in activity">
                 <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
                     <tr><td>

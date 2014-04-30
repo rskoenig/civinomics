@@ -15,5 +15,7 @@ function meetingsController($scope, $http) {
 			$scope.loading = false;
 		});
 	};
+
 	$scope.getAgendaItems();
 }
+

@@ -11,7 +11,7 @@
 
 <%def name="agenda_item_listing()">
     <div style="margin-top: 30px;"></div>
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment; revisions = item.revisions; revisionList = item.revisionList">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="well yesNoWell" ng-show="(canVote == 'checked')">
                 ${yesNoVoteBlock()}
@@ -20,15 +20,18 @@
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div>
         <div class="row-fluid">
-            <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+            <div class="btn-group">
+                <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#revisions-{{urlCode}}" ng-show="(revisions == 'yes')">Revisions</button>
+                <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+            </div>
             <div id="edit-{{urlCode}}" class="collapse">
                 <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
                     <fieldset>
                         <label>Item Title</label>
-                        <input type="text" name="agendaItemTitle" class="span6" value="{{item.title}}">
+                        <input type="text" name="agendaItemTitle" class="span6" value="{{item.title}}" class="span9">
                         <label>Item Text</label>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="agendaItemText" class="span6">{{item.text}}</textarea>
+                        <textarea rows="3" name="agendaItemText" class="span6" class="span9">{{item.text}}</textarea>
                         <label class="checkbox">
                         <input type="checkbox" name="agendaItemVote" ng-show="(canVote == '')">
                         <input type="checkbox" name="agendaItemVote" checked ng-show="(canVote == 'checked')">
@@ -42,6 +45,11 @@
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
                     </fieldset>
                 </form>
+            </div>
+            <div id="revisions-{{urlCode}}" class="collapse">
+                <div ng-repeat="rev in revisionList">
+                    {{rev.date}} {{rev.urlCode}}<br>
+                </div>
             </div>
         </div>
         <div class="row-fluid" ng-show="(canComment == 'checked')">
