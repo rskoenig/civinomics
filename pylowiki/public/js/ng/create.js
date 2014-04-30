@@ -3,7 +3,7 @@ function createController($scope, $http) {
 	$scope.createUrl = '/profile/' + $scope.authorCode + '/' + $scope.authorUrl + '/createInitiative';
 	
 	$scope.createNew = function() {
-        var createData = {'submit':'submit', 'title': $scope.title, 'description': $scope.description, 'scope': $scope.scope, 'tags': $scope.tag};
+        var createData = {'submit':'submit', 'title': $scope.title, 'description': $scope.description, 'scope': $scope.scope, 'tags': $scope.tag, 'deadline': $scope.date};
 		//$scope.newObjURL = '/add/' + $scope.objType + '/handler';
 		$http.post($scope.createUrl, createData).success(function(data){
             $scope.success = true
@@ -91,5 +91,27 @@ function createController($scope, $http) {
 	$scope.showCountySelect = false;
 	$scope.showCitySelect = false;
 	$scope.showPostalSelect = false;
+	
+	// Date picker
+	
+    $scope.clear = function () {
+        $scope.date = null;
+    };
+    
+    
+    $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+    
+        $scope.opened = true;
+    };
+    
+    $scope.dateOptions = {
+        'year-format': "'yy'",
+        'starting-day': 1
+    };
+    
+    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'shortDate'];
+    $scope.format = $scope.formats[0];
 
 }

@@ -28,6 +28,8 @@
                     <h4> 
                         <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
                         ${lib_6.showTags(c.initiative)}
+                        <br>
+                        Deadline: ${c.initiative['deadline']}
                     % if c.iPrivs:
                         <span>
                             ${ihelpers.watchButton(c.initiative)}

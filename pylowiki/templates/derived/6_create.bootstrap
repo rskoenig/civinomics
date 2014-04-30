@@ -9,7 +9,7 @@
 <div ng-init="test = '1 2 3 4'"></div>
 <div class="row-fluid" ng-controller="createController">
     <div class="well span8">
-            {{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}
+            {{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}{{date}}
             <form ng-submit="createNew()">
                 <div>
                     <input class="span12 input-large" type="text" ng-model="title" placeholder="Title" required></input>    
@@ -35,10 +35,21 @@
                         <option value="candidate">Candidate</option>        
                     </select>
                 </div>
-                <div ng-show="objType == 'initiative'" ng-cloak>
+                <div>
                     <hr>
                     <p class="lead">Additional Fields</p>
-                    Date picker coming soon
+                    <h4>Deadline</h4>
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <p class="input-group">
+                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                              <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
+                              </span>
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
                 <div ng-show="objType == 'candidate'" ng-cloak>
                     <hr>

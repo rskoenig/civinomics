@@ -262,12 +262,17 @@ class InitiativeController(BaseController):
         else:
             tags = None
             
+        if 'deadline' in payload:
+            deadline = payload['deadline']  
+        else:
+            deadline = None
+            
         goal = self.getInitiativeGoal(scope)
 
         #photo = "/images/icons/generalInitiative.jpg"
     
         #create the initiative
-        initiative = initiativeLib.Initiative(c.user, title, description, scope, tags = tags, goal = goal)
+        initiative = initiativeLib.Initiative(c.user, title, description, scope, tags = tags, goal = goal, deadline = deadline)
         log.info('new initiative created')
         session['facilitatorInitiatives'].append(initiative['urlCode'])
         return json.dumps({'statusCode': 0, 'newObjCode': initiative['urlCode'], 'newObjUrl': initiative['url']})

@@ -341,6 +341,7 @@
                         The topic area associated with your initiative.
                     </div><!-- alert -->
                 </div><!-- span6 -->
+                    
             </div><!-- row-fluid -->
             <div class="row-fluid" id="summary">
                 <h3 class="initiative-title edit">2. Summary</h3>

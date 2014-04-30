@@ -109,7 +109,7 @@ def updateInitiativeChildren(initiative, initiativeKey):
         
 
 # Object
-def Initiative(owner, title, description, scope, tags = None, goal = None, workshop = None):
+def Initiative(owner, title, description, scope, tags = None, goal = None, deadline = None, workshop = None):
     i = Thing('initiative', owner.id)
     generic.linkChildToParent(i, owner)
     if workshop is not None:
@@ -132,7 +132,7 @@ def Initiative(owner, title, description, scope, tags = None, goal = None, works
     i['downs'] = '0'
     i['views'] = '0'
     i['goal'] = goal
-    i['deadline'] = ""
+    i['deadline'] = deadline
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
     return i
