@@ -17,21 +17,21 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showInfo(meeting, author)">
+    <% scopeInfo = utils.getPublicScope(c.meeting['scope']) %>
     <div class="row-fluid">
         <h3>${meeting['title']}</h3>
+        <img src="${scopeInfo['flag']}" width="60" height="60"> ${scopeInfo['level']} of ${scopeInfo['name']}
     </div><!-- row-fluid -->
-    <div class="row-fluid">
-        <ul>
-        <li>Who is meeting: ${meeting['group']}</li>
-        <li>Location: ${meeting['location']}</li>
-        <li>Meeting Date: ${meeting['meetingDate']}</li>
-        <li>Meeting Time: ${meeting['meetingTime']}</li>
-        <li>Meeting Category: ${meeting['tag']}</li>
-        % if meeting['agendaPostDate'] != '0000-00-00':
-            <li>Date Agenda Is Posted: ${meeting['agendaPostDate']}</li>
-        % endif
-        </ul>
-    </div><!-- row-fluid -->
+    <div class="spacer"></div>
+    <div class="row-fluid"><div class="span2 text-right">Who is meeting:</div><div class="span9 text-left">${meeting['group']}</div></div>
+    <div class="row-fluid"><div class="span2 text-right">Location:</div><div class="span9 text-left">${meeting['location']}</div></div>
+    <div class="row-fluid"><div class="span2 text-right">Meeting Date:</div><div class="span9 text-left">${meeting['meetingDate']}</div></div>
+    <div class="row-fluid"><div class="span2 text-right">Meeting Time:</div><div class="span9 text-left">${meeting['meetingTime']}</div></div>
+    <div class="row-fluid"><div class="span2 text-right">Meeting Category:</div><div class="span9 text-left">${meeting['tag']}</div></div>
+    % if meeting['agendaPostDate'] != '':
+        <div class="row-fluid"><div class="span2 text-right">Date Agenda Is Posted: ${meeting['agendaPostDate']}</li>
+    % endif
+
     
     <div class="row-fluid">
         ${m.html(meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}
@@ -45,10 +45,6 @@
         <div class="alert alert-error">
             This is a revision dated ${c.meeting.date}
         </div>
-    % elif 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
-        <div class="row-fluid">
-            <a href="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingEdit" class="btn btn-defaut">Edit</a>
-        </div><!-- row-fluid -->
     % endif
 </%def>
 
@@ -418,6 +414,7 @@
     %>
     <div class="btn-group">
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
+            <a href="/meeting/${thing['urlCode']}/${thing['url']}/meetingEdit" class="btn btn-mini">Edit</a>
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
         % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):

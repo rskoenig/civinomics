@@ -336,7 +336,6 @@ class MeetingController(BaseController):
 
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         c.author = userLib.getUserByCode(c.meeting['userCode'])
-        c.agendaItems = meetingLib.getAgendaItems(c.meeting['urlCode'])
         
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1
