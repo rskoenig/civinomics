@@ -1467,7 +1467,7 @@
     <% unpublishID = 'unpublish-%s' % thing['urlCode'] %>
     <div class="row-fluid collapse" id="${unpublishID}">
         <div class="span11 offset1 alert">
-            <strong>Are you sure you want to unpublish this ${thing.objType}?</strong>
+            <strong>Are you sure you want to send this ${thing.objType} to the trash?</strong>
             <br />
             <a ${unpublishThingLink(thing)} class="btn btn-danger">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">No</a>

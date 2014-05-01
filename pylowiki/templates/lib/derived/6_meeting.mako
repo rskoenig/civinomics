@@ -417,7 +417,7 @@
     <div class="btn-group">
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
             <a href="/meeting/${thing['urlCode']}/${thing['url']}/meetingEdit" class="btn btn-mini">Edit</a>
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">trash</a>
         % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>

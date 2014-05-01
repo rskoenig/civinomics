@@ -22,6 +22,7 @@
         <div class="row-fluid">
             <div class="btn-group">
                 <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
             </div>
             <div id="edit-{{urlCode}}" class="collapse">
                 <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
@@ -44,6 +45,15 @@
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
                     </fieldset>
                 </form>
+            </div>
+            <div id="unpublish-{{urlCode}}" class="collapse" >
+                <div class="alert">
+                    <strong>Are you sure you want to send this meeting agenda item to the trash?</strong>
+                    <br />
+                    <a href="/unpublish/agendaitem/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                    <span id = "unpublish_{{urlCode}}"></span>
+                </div>
             </div>
             <div class="accordion" id="revisions">
                 <div ng-repeat="rev in revisionList">
