@@ -160,6 +160,23 @@
     </div>
 </%def>
 
+<%def name="followButton()">
+    <span ng-hide="followButtonDisabled">
+        <button class="btn pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
+            <span>
+                <i class="icon-bookmark med-green"></i>
+                <strong>{{followButtonText}}</strong></span>
+        </button>
+    </span>
+    <span ng-hide="!followButtonDisabled">
+        <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
+            <span>
+                <i class="icon-bookmark med-green"></i>
+                <strong>{{followButtonText}}</strong></span>
+        </button>
+    </span>
+</%def>
+
 <%def name="yesNoVoteBlock()">
     % if 'user' in session:
         <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">

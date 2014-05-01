@@ -36,19 +36,10 @@
                                     <a class="label workshop-tag {{tag}}" ng-href="/searchTags/{{tag}}/" >{{tag}}</a>
                                 </div>
                                 <span ng-if="initiativeData.initiative.iPrivs">
-                                    <span ng-hide="followButtonDisabled">
-                                        <button class="btn btn-civ pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
-                                            <span>
-                                                <i class="icon-bookmark btn-height icon-light"></i>
-                                                <strong>{{followButtonText}}</strong></span>
-                                        </button>
-                                    </span>
-                                    <span ng-hide="!followButtonDisabled">
-                                        <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
-                                            <span>
-                                                <i class="icon-bookmark btn-height icon-light"></i>
-                                                <strong>{{followButtonText}}</strong></span>
-                                        </button>
+                                    <span ng-init="isFollowing=initiativeData.user.isFollowing; followButtonDisabled=followButtonDisabled;">
+                                        <div ng-contoller="followButtonCtrl">
+                                            ${ng_lib.followButton()}
+                                        </div>
                                     </span>
                                     <span ng-if="initiativeData.initiative.editInitiative">
                                         <a class="btn pull-right" href="/initiative/{{initiativeData.initiative.urlCode}}/{{initiativeData.initiative.url}}/show"><strong>View Initiative</strong></a>
@@ -64,19 +55,10 @@
                                     </span>
                                 </span>
                                 <span ng-if="iPrivsNoiHomeYesiObjTypeNoRev">
-                                    <span ng-hide="followButtonDisabled">
-                                        <button class="btn btn-civ pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark" ng-click="followPushed()">
-                                            <span>
-                                                <i class="icon-bookmark btn-height icon-light"></i>
-                                                <strong>{{followButtonText}}</strong></span>
-                                        </button>
-                                    </span>
-                                    <span ng-hide="!followButtonDisabled">
-                                        <button class="btn btn-grey pull-right followButton{{followButtonClass}}" rel="tooltip" data-placement="bottom" id="initiativeBookmark">
-                                            <span>
-                                                <i class="icon-bookmark btn-height icon-light"></i>
-                                                <strong>{{followButtonText}}</strong></span>
-                                        </button>
+                                    <span ng-init="isFollowing=initiativeData.user.isFollowing; followButtonDisabled=followButtonDisabled;">
+                                        <div ng-contoller="followButtonCtrl">
+                                            ${ng_lib.followButton()}
+                                        </div>
                                     </span>
                                 </span>
                             </h4>
@@ -128,13 +110,15 @@
                                 </div>
                             </div>
                         </span>
-                        <span ng-if="iLastNoEditNoObjTypeInit">
+                        <span> <!--  ng - if = " iLastNoEditNoObjTypeInit" -->
                             <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                                 <span ng-if"initiativeData.initiative.objType != 'revision'">
                                     <h4 class="section-header initiative smaller initiative-title">Vote</h4>
                                     <div class="row-fluid">
                                         <div class="span6 offset3">
-                                            lib_6.yesNoVote(c.initiative, 'detail')
+                                            <div ng-controller="yesNoVoteCtrl">
+                                                ${ng_lib.yesNoVoteBlock()}
+                                            </div>
                                         </div>
                                     </div>
                                     <!--
@@ -265,8 +249,9 @@
         <!-- $('body').scrollspy({target: '#sidebar'}) -->
         $(window).scrollspy({wrap: $('#wrap')[0]});
     </script> 
+    <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/follow_button.js')}" type="text/javascript"></script>
     % if 'user' in session:
-        <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
         <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
     % endif
 </%def>

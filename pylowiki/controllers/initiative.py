@@ -578,17 +578,42 @@ class InitiativeController(BaseController):
         initiativeJson['url'] = c.initiative['url']
         initiativeJson['urlCode'] = c.initiative['urlCode']
         initiativeJson['tags'] = utils.showTags(c.initiative)
-        
+        # votes
+        initiativeJson['voteCount'] = int(c.initiative['ups']) + int(c.initiative['downs'])
+        log.info("ijvc: %s"%initiativeJson['voteCount'])
+        initiativeJson['ups'] = int(c.initiative['ups'])
+        initiativeJson['downs'] = int(c.initiative['downs'])
+        initiativeJson['netVotes'] = int(c.initiative['ups']) - int(c.initiative['downs'])
+
         result['initiative'] = initiativeJson
         
+        # grab user ratings if they're in the session
+        myRatings = {}
+        if 'ratings' in session:
+            myRatings = session['ratings']
+
         userJson = {}
         userJson['isFollowing'] = c.isFollowing
         userJson['uSession'] = False
         if 'user' in session:
             userJson['uSession'] = True
 
+        # define this user's rating for this object
+        if initiativeJson['urlCode'] in myRatings:
+            userJson['rated'] = myRatings[initiativeJson['urlCode']]
+            userJson['vote'] = 'voted'
+        else:
+            userJson['rated'] = 0
+            userJson['vote'] = 'nvote'
+
         result['user'] = userJson
+
         
+
+        
+
+                
+
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode': 0, 'result': result})
