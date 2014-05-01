@@ -395,7 +395,6 @@ class MeetingController(BaseController):
             c.agendaitem['canComment'] = ''
             
         dbHelpers.commit(c.agendaitem)
-        revisionLib.Revision(c.authuser, c.agendaitem)
         
         returnURL = '/meeting/%s/%s/show'%(c.meeting['urlCode'], c.meeting['url'])
             
@@ -465,8 +464,14 @@ class MeetingController(BaseController):
                     revision = {}
                     code = rev['urlCode'] 
                     date = str(rev.date)
+                    title = rev['title']
+                    text = rev['text']
+                    html = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
                     revision['date'] = date
                     revision['urlCode'] = code
+                    revision['title'] = title
+                    revision['text'] = text
+                    revision['html'] = html
                     entry['revisionList'].append(revision)
                 
             result.append(entry)

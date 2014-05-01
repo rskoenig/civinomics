@@ -21,7 +21,6 @@
         </div>
         <div class="row-fluid">
             <div class="btn-group">
-                <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#revisions-{{urlCode}}" ng-show="(revisions == 'yes')">Revisions</button>
                 <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
             </div>
             <div id="edit-{{urlCode}}" class="collapse">
@@ -46,11 +45,23 @@
                     </fieldset>
                 </form>
             </div>
-            <div id="revisions-{{urlCode}}" class="collapse">
+            <div class="accordion" id="revisions">
                 <div ng-repeat="rev in revisionList">
-                    {{rev.date}} {{rev.urlCode}}<br>
-                </div>
-            </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                            Revision: {{rev.date}}
+                            </a>
+                        </div><!-- accordian-heading -->
+                        <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <p>{{rev.title}}</p>
+                                <span ng-bind-html="rev.html"></span>
+                            </div><!-- accordian-inner -->
+                        </div><!-- accordian-body -->
+                    </div><!-- accordian-group -->
+                </div><!-- ng-repeat -->
+            </div><!-- accordian -->
         </div>
         <div class="row-fluid" ng-show="(canComment == 'checked')">
             ${actions()}
