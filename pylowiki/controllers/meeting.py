@@ -374,6 +374,7 @@ class MeetingController(BaseController):
     def agendaitemEditHandler(self):
         # make a revision first of the previous version
         revisionLib.Revision(c.authuser, c.agendaitem)
+        
         if 'agendaItemTitle' in request.params:
             c.agendaitem['title'] = request.params['agendaItemTitle']
         else:
@@ -411,6 +412,10 @@ class MeetingController(BaseController):
 		    myRatings = session['ratings']
         for item in c.agendaItems:
             entry = {}
+            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+                entry['canEdit'] = 'yes'
+            else:
+                entry['canEdit'] = 'no'
             entry['objType'] = 'agendaitem'
             entry['url']= item['url']
             entry['urlCode']=item['urlCode']
@@ -466,14 +471,14 @@ class MeetingController(BaseController):
                     date = str(rev.date)
                     title = rev['title']
                     text = rev['text']
-                    html = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+                    html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
                     revision['date'] = date
                     revision['urlCode'] = code
                     revision['title'] = title
                     revision['text'] = text
                     revision['html'] = html
                     entry['revisionList'].append(revision)
-                
+                    
             result.append(entry)
             
         if len(result) == 0:

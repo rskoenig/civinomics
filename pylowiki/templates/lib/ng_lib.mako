@@ -11,7 +11,7 @@
 
 <%def name="agenda_item_listing()">
     <div style="margin-top: 30px;"></div>
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment; revisions = item.revisions; revisionList = item.revisionList">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="well yesNoWell" ng-show="(canVote == 'checked')">
                 ${yesNoVoteBlock()}
@@ -21,7 +21,7 @@
         </div>
         <div class="row-fluid">
             <div class="btn-group">
-                <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
             </div>
             <div id="edit-{{urlCode}}" class="collapse">
                 <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
@@ -55,7 +55,7 @@
                         </div><!-- accordian-heading -->
                         <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
                             <div class="accordion-inner">
-                                <p>{{rev.title}}</p>
+                                <h4>{{rev.title}}</h4>
                                 <span ng-bind-html="rev.html"></span>
                             </div><!-- accordian-inner -->
                         </div><!-- accordian-body -->
