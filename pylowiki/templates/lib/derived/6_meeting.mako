@@ -29,7 +29,7 @@
     <div class="row-fluid"><div class="span2 text-right">Meeting Time:</div><div class="span9 text-left">${meeting['meetingTime']}</div></div>
     <div class="row-fluid"><div class="span2 text-right">Meeting Category:</div><div class="span9 text-left">${meeting['tag']}</div></div>
     % if meeting['agendaPostDate'] != '':
-        <div class="row-fluid"><div class="span2 text-right">Date Agenda Is Posted: ${meeting['agendaPostDate']}</li>
+        <div class="row-fluid"><div class="span2 text-right">Date Agenda Is Posted:</div><div class="span9 text-left">${meeting['agendaPostDate']}</div>
     % endif
 
     
@@ -67,6 +67,11 @@
             meetingDate = c.meeting['meetingDate']
             meetingTime = c.meeting['meetingTime']
             agendaPostDate = c.meeting['agendaPostDate']
+            public = c.meeting['public']
+            if public == 'on':
+                publicChecked = 'checked'
+            else:
+                publicChecked = ""
         else:
             mScope = "0|0|0|0|0|0|0|0|0|0"
             title = ""
@@ -77,6 +82,8 @@
             meetingDate = ""
             meetingTime = ""
             agendaPostDate = ""
+            public = ""
+            publicChecked = ""
             
         scopeList = mScope.split('|')
         if scopeList[9] == '0' and scopeList[8] == '0':
@@ -143,6 +150,18 @@
             
             <div class="row-fluid">
                 <div class="span6">
+                    <label for="title" class="control-label" required><strong>Agenda Post Date:</strong></label>
+                    <input type="text" name="agendaPostDate" id="agendaPostDate" class="span6" value="${agendaPostDate}">
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Date the meeting agenda will be posted for this meeting.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
                     <label for="title" class="control-label" required><strong>Name of group:</strong></label>
                     <input type="text" name="meetingGroup" class="span12" value="${group}" required>
                 </div><!-- span6 -->
@@ -165,7 +184,7 @@
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
             
-            <div class="row-fluid">
+            <div class="row-fluid spacer">
                 <div class="span6">
                     <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label>
                     ${geoSelect()}
@@ -204,56 +223,34 @@
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
             
-            <div class="row-fluid">
-                <div class="span3">
+            <div class="row-fluid spacer">
+                <div class="span6">
                     <label for="text" class="control-label" required><strong>Description:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
-                <div class="span9">
+                <div class="span6">
                     <div class="alert alert-info">
                         A short description about the meeting.
                     </div>
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
             <textarea rows="10" id="meetingText" name="meetingText" class="span12" required>${text}</textarea>
+            
+            <div class="row-fluid spacer">
+                <div class="span6">            
+                    <input type="checkbox" name="public" ${publicChecked}> Publish this meeting
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Makes the meeting viewable by members and the public, with members able to comment and vote (where set).
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
 
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
         </div><!-- span12 -->
     </div><!-- row-fluid -->
-</%def>
-
-<%def name="itemEdit()">
-    <%
-        if not c.update:
-            updateTitle = ""
-            updateText = ""
-            updateCode = "new"
-        else:
-            updateTitle = c.update['title']
-            updateText = c.update['text']
-            updateCode = c.update['urlCode']
-            
-    %>
-    % if not c.update:
-        <form id="addUpdateForm" name="addUpdateForm">
-            <fieldset>
-                <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
-                <span ng-show="addUpdateTitleShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Progress Report Text</strong>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
-                <span ng-show="addUpdateTextShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTextResponse}}</div></span>
-                <span class="help-block"> (A description of the progress made on implementing the initiative since the last progress report.) </span>
-            </fieldset>
-            <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
-        </form>
-    % endif
 </%def>
 
 <%def name="geoSelect()">

@@ -80,7 +80,7 @@ def searchMeetings( keys, values, deleted = u'0', public = '1', count = False):
         
 
 # Meeting Object
-def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime, tag, agendaPostDate = '0000-00-00'):
+def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime, tag, public, agendaPostDate = '0000-00-00'):
     m = Thing('meeting', owner.id)
     generic.linkChildToParent(m, owner)
     commit(m)
@@ -98,7 +98,7 @@ def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime
     m['agendaPostDate'] = agendaPostDate
     m['deleted'] = u'0'
     m['disabled'] = u'0'
-    m['public'] = u'0'
+    m['public'] = public
     m['archived'] = u'0'
     m['views'] = '0'
     commit(m)

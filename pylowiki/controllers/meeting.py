@@ -149,10 +149,15 @@ class MeetingController(BaseController):
         if 'agendaPostDate' in request.params:
             agendaPostDate = request.params['agendaPostDate']
         else:
-            agendaPostDate = '' 
+            agendaPostDate = ''
+            
+        if 'public' in request.params:
+            public = request.params['public']
+        else:
+            public = ''
             
         #create the meeting
-        c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, tag, agendaPostDate)
+        c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, tag, public, agendaPostDate)
         if 'meeting_counter' in c.authuser:
             meeting_counter = int(c.authuser['meeting_counter'])
         else:
@@ -254,6 +259,8 @@ class MeetingController(BaseController):
             c.meeting['group'] = request.params['meetingGroup']
         if 'meetingLocation' in request.params:
             c.meeting['location'] = request.params['meetingLocation']
+        if 'public' in request.params:
+            c.meeting['public'] = request.params['public']
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form
