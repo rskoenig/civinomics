@@ -244,12 +244,12 @@
             */
 
             console.log('b');
+            var name = '';
             var bigPic = '';
             var bigPicFql = '';
             var smallPic = '';
             var smallPicFql = '';
             var result = '';
-            var apiResponse1 = {};
             async.series([
                 function(callback) {
                     console.log('c');
@@ -259,9 +259,8 @@
                         query: 'SELECT name, pic_square FROM user WHERE uid=' + response.authResponse.userID
                       },
                       function(apiResponse1) {
-                        console.log('c. ' + printObject(apiResponse1[0]));
-                        console.log('cn. ' + apiResponse1[0].name);
-                        console.log('ce. ' + apiResponse1[0].email);
+                        //console.log('cn. ' + apiResponse1[0].name);
+                        name = apiResponse1[0].name;
                         smallPic = bigPic = apiResponse1[0].pic_square;
                         callback();
                       }
@@ -315,7 +314,7 @@
                 function(callback) {
                     // perform fbauthcheck now that the pic urls have been loaded
                     console.log('e');
-                    callFbCheckAccount(apiResponse1[0], response.authResponse, smallPic, bigPic, function(err, checkResult) {
+                    callFbCheckAccount(name, response.authResponse, smallPic, bigPic, function(err, checkResult) {
                         if (err) return callback(err);
                         result = checkResult;
                         callback();

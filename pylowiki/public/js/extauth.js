@@ -1,13 +1,16 @@
-function fbCheckAccount(response, authResponse, smallPic, bigPic){
+function fbCheckAccount(responseName, authResponse, smallPic, bigPic){
+    // NOTE: response.email not working, can't retrieve email at this point
+
     //console.log('in /public/js/extauth.js fbCheckAccount: ' + response.name);
     //var newstring = 'email in extauth: ' + email;
     //return newstring;
     //console.log('hello')
+
     var encodedSmall = encodeURIComponent(smallPic)
     encodedSmall = encodedSmall.replace(/\%/g, ",")
     var encodedBig = encodeURIComponent(bigPic)
     encodedBig = encodedBig.replace(/\%/g, ",")
-    var checkURL = "/extauth/fbEmail/" + response.name + "&" + response.email + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID + "&" + encodedSmall + "&" + encodedBig 
+    var checkURL = "/extauth/fbEmail/" + responseName + "&" + 'emailNotAvailable' + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID + "&" + encodedSmall + "&" + encodedBig 
     console.log('urlcheck: '+checkURL)
     var checkResult = $.ajax({
         type : 'POST',
