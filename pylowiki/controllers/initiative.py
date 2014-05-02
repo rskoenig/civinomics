@@ -499,6 +499,7 @@ class InitiativeController(BaseController):
                 abort(404) # Maybe make this a json response instead
             imageHash = imageLib.generateHash(filename, c.authuser)
             
+            #this is where the function could take a url code and attach any kind of thing
             image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
             
             width = min(image.size)
@@ -541,6 +542,7 @@ class InitiativeController(BaseController):
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
             image = imageLib.resizeImage(image, imageHash, 160, 160)
             image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+            # should add some more photo sizes here: 1200x1200 and 50x50
             
             jsonResponse =  {'files': [
                                 {

@@ -43,6 +43,11 @@ class CreateController(BaseController):
     
     def showCreateForm(self):
         c.tagList = getCategoryTags()
+        
+        c.initiative = initiativeLib.getInitiative('4JwA')
+        
+        c.user = userLib.getUserByCode(c.initiative['userCode'])
+        
         return render('/derived/6_create.bootstrap')
 
     

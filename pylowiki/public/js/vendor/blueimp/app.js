@@ -28,8 +28,8 @@
     if(testPhotos[1] == 'initiative') {
         isInitiativeUpload = 1;
     }  
-
-    angular.module('civ', [
+ 
+    var photoApp = angular.module('civ', [
         'blueimp.fileupload'
     ])
         .config([
@@ -127,5 +127,8 @@
                 }
             }
         ]);
+        
 
 }());
+
+angular.bootstrap(document.getElementById("createForm"), ["photoApp"])
