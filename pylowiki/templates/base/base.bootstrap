@@ -94,7 +94,7 @@
                     console.log('Welcome!  Fetching your information.... ');
                     console.log("response status: " + response.status)
                     console.log("response email: " + response.email)
-                    fbConnected(response.authResponse);
+                    fbConnected(response);
                 } else {
                     console.log('User cancelled login or did not fully authorize.');
                 }
@@ -110,33 +110,17 @@
             // for FB.getLoginStatus().
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
-                fbConnected(response.authResponse);
+                console.log('connected');
+                fbConnected(response);
             } else if (response.status === 'not_authorized') {
                 // The person is logged into Facebook, but not your app.
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        console.log('4');
-                        console.log('WADDUP! your 411.... ');
-                        console.log("response status: " + response.status)
-                        console.log("response email: " + response.email)
-                        fbConnected(response.authResponse);
-                    } else {
-                        console.log('User cancelled login or did not fully authorize.');
-                    }
-                }, {scope: 'public_profile,email'});
+                console.log('notAuthed');
+                fbLogin();
             } else {
                 // The person is not logged into Facebook, so we're not sure if 
                 // they are logged into this app or not.
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        console.log('Howdy! your info.... ');
-                        console.log("response status: " + response.status)
-                        console.log("response email: " + response.email)
-                        fbConnected(response.authResponse);
-                    } else {
-                        console.log('User cancelled login or did not fully authorize.');
-                    }
-                }, {scope: 'public_profile,email'});
+                console.log('not logged into fb');
+                fbLogin();
             }
         }
 
@@ -150,6 +134,8 @@
         }
 
         function authSignal() {
+          console.log('auth sig');
+          var authSignal = '<div id="authSignal"></div>';
           $('#fbLoginButton1').append(authSignal);
           $('#fbLoginButton2').append(authSignal);
         }
@@ -220,7 +206,7 @@
         }
         
 
-        function fbConnected(authResponse) {
+        function fbConnected(response) {
             //console.log('a');
             //FB.api('/me', function(response) {
             console.log('b');
@@ -229,29 +215,32 @@
             var smallPic = '';
             var smallPicFql = '';
             var result = '';
-            FB.api('/me', {fields: 'profile_pic'}, function(response) {
-                console.log('b. '+printObject(response));
-            });
+            
             async.series([
                 function(callback) {
                     console.log('c');
-                    FB.api('/me', {fields: 'profile_pic'}, function(response) {
-                        console.log('c. '+printObject(response));
-                    });
-                    /*bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
+                    //FB.api('/me', {fields: 'profile_pic'}, function(response) {
+                    //    console.log('c. '+printObject(response));
+                    //});
+                    /*
+                    FB.login(function(){
+                        FB.api('/me/feed', 'post', {message: 'Hello, fbland!'});
+                    }, {scope: 'publish_actions'});
+
+                    bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
                     bigPicFql.wait(function (rows) {
                         // the big pic link
                         bigPic = rows[0].url;
                         console.log('bp: '+bigPic);
                         callback();
                     });*/
-                    
+                    callback();
                 },
                 function(callback) {
                     console.log('d');
-                    FB.api('/me', {fields: 'profile_pic'}, function(response) {
-                        console.log('d. '+printObject(response));
-                    });
+                    //FB.api('/me', {fields: 'profile_pic'}, function(response) {
+                    //    console.log('d. '+printObject(response));
+                    //});
                     /*smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
                     smallPicFql.wait(function (rows) {
                         // the big pic link
@@ -260,10 +249,12 @@
                         console.log('sp: '+smallPic);
                         callback();
                     });*/
+                    callback();
                 },
                 function(callback) {
                     // perform fbauthcheck now that the pic urls have been loaded
-                    callFbCheckAccount(response, authResponse, smallPic, bigPic, function(err, checkResult) {
+                    console.log('e');
+                    callFbCheckAccount(response, response.authResponse, smallPic, bigPic, function(err, checkResult) {
                         if (err) return callback(err);
                         result = checkResult;
                         callback();
@@ -271,6 +262,7 @@
                 }
             ], function(err) {
                 //check on the result of fbCheckAccount
+                console.log('result: '+result);
                 if (err) return next(err);
                 if (result == "not found") {
                     // no account on site yet.
@@ -285,6 +277,7 @@
                 } else {
                     // found a matching account on our site
                     if ($('#authSignal').length) {
+                        console.log('1');
                         // this triggers when a person has arrived but was not yet logged into facebook,
                         // or had not yet given auth to our app
                         var newButton = 'Logging In'
@@ -292,14 +285,16 @@
                         $('#fbLoginButton2').html(newButton);
                         window.location = '/fbLoggingIn/';
                     } else if ($('#fbLoggingIn').length) {
+                        console.log('2');
                         // this element is only found on a page meant to be used as a redirect when
                         // the 'login with facebook' link has been clicked.
                         window.location = '/fbLoggingIn/';
                     } else {
+                        console.log('3');
                         // this code is used when a person arrives and it is seen that they have 
                         // auth'd our app and are logged into facebook 
                         // replace current button with returned result
-                        var newButton = '<a href="#" onclick="fbLogin()"><img src="/images/f-login.png"></a>'
+                        var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
                         $('#fbLoginButton1').html(newButton);
                         $('#fbLoginButton2').html(newButton);
                     }
