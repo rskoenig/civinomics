@@ -8,7 +8,7 @@ function fbCheckAccount(response, authResponse, smallPic, bigPic){
     var encodedBig = encodeURIComponent(bigPic)
     encodedBig = encodedBig.replace(/\%/g, ",")
     var checkURL = "/extauth/fbEmail/" + response.name + "&" + response.email + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID + "&" + encodedSmall + "&" + encodedBig 
-    //console.log('urlcheck: '+checkURL)
+    console.log('urlcheck: '+checkURL)
     var checkResult = $.ajax({
         type : 'POST',
         async : false,

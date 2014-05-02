@@ -89,16 +89,18 @@
       <script>
         //console.log('in fb init')
         function fbLogin() {
-            FB.login(function(response) {
-                if (response.authResponse) {
-                    console.log('Welcome!  Fetching your information.... ');
-                    console.log("response status: " + response.status)
-                    console.log("response email: " + response.email)
-                    fbConnected(response, FB);
-                } else {
-                    console.log('User cancelled login or did not fully authorize.');
-                }
-            }, {scope: 'public_profile,email'});
+            if (FB) {
+                FB.login(function(response) {
+                    if (response.authResponse) {
+                        console.log('Welcome!  Fetching your information.... ');
+                        console.log("response status: " + response.status)
+                        console.log("response email: " + response.email)
+                        fbConnected(response, FB);
+                    } else {
+                        console.log('User cancelled login or did not fully authorize.');
+                    }
+                }, {scope: 'public_profile,email'});
+            }
         }
         // This is called with the results from from FB.getLoginStatus().
         function statusChangeCallback(response) {
@@ -152,29 +154,33 @@
             console.log(response);
         }
 
-        // activate facebook javascript sdk
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : "${facebookAppId}",
-                status     : true,
-                cookie     : true,  // enable cookies to allow the server to access the session
-                xfbml      : true,  // parse social plugins on this page
-                version    : 'v2.0' // use version 2.0
-            });
-            // getLoginStatus: gets the state of the person visiting this page
-            // RETURNS: 
-            // 1. Logged into our app ('connected')
-            // 2. Logged into Facebook, but not our app ('not_authorized')
-            // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
-            // In your onload method:
-            FB.Event.subscribe('auth.login', login_event);
-            FB.Event.subscribe('auth.logout', logout_event);
+        $(document).ready(function() {
+            $.ajaxSetup({ cache: true });
+            $.getScript('//connect.facebook.net/en_UK/all.js', function(){
+                FB.init({
+                    appId      : "${facebookAppId}",
+                    status     : true,
+                    cookie     : true,  // enable cookies to allow the server to access the session
+                    xfbml      : true,  // parse social plugins on this page
+                    version    : 'v2.0' // use version 2.0
+                });
+                // getLoginStatus: gets the state of the person visiting this page
+                // RETURNS: 
+                // 1. Logged into our app ('connected')
+                // 2. Logged into Facebook, but not our app ('not_authorized')
+                // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
+                // In your onload method:
+                FB.Event.subscribe('auth.login', login_event);
+                FB.Event.subscribe('auth.logout', logout_event);
 
-            FB.Event.subscribe('auth.authResponseChange', function(response) {
-                statusChangeCallback(response);
+                FB.Event.subscribe('auth.authResponseChange', function(response) {
+                    statusChangeCallback(response);
+                });
             });
-
-        };
+        });
+        // og way to activate facebook javascript sdk:
+        // window . fbAsyncInit = function() { .. FB.init() .. }
+        
         
         // Load the SDK asynchronously
         (function(d, s, id) {
@@ -225,34 +231,54 @@
             //  link to reference on the data we can ask for with public_profile permissions:
             //  (https://developers.facebook.com/docs/graph-api/reference/v2.0/user/)
 
+            /*
+                took this out
+                ,{
+                    "object": {
+                        "redirect": false,
+                        "height": "200",
+                        "type": "normal",
+                        "width": "200"
+                    }
+                },
+            */
+
             console.log('b');
             var bigPic = '';
             var bigPicFql = '';
             var smallPic = '';
             var smallPicFql = '';
             var result = '';
+            var apiResponse1 = {};
             async.series([
                 function(callback) {
                     console.log('c');
-                    FB_handle.api(
-                        "/me/picture",
-                        {
-                            "object": {
-                                "redirect": false,
-                                "height": "200",
-                                "type": "normal",
-                                "width": "200"
-                            }
-                        },
-                        function (response) {
-                            console.log('c. '+printObject(response));
-                            if (response && !response.error) {
-                                /* handle the result */
-                                console.log('c.. '+response);
-                            }
-                        }
+                    FB.api(
+                      {
+                        method: 'fql.query',
+                        query: 'SELECT name, pic_square FROM user WHERE uid=' + response.authResponse.userID
+                      },
+                      function(apiResponse1) {
+                        console.log('c. ' + printObject(apiResponse1[0]));
+                        console.log('cn. ' + apiResponse1[0].name);
+                        console.log('ce. ' + apiResponse1[0].email);
+                        smallPic = bigPic = apiResponse1[0].pic_square;
+                        callback();
+                      }
                     );
-                    /* make the API call */
+                    // response[0].name
+                    /*
+                    FB.api('/me/picture', 'get', {}, function(response) {
+                    //FB_handle.api("/me/picture", function (response) {
+                        console.log('c. '+printObject(response));
+                        console.log('ce. '+response.error);
+                        if (response && !response.error) {
+                            // handle the result
+                            console.log('c.. '+printObject(response));
+                        }
+                    }); */
+
+                    // make the API call 
                     
                     //FB.api('/me', {fields: 'profile_pic'}, function(response) {
                     //    console.log('c. '+printObject(response));
@@ -269,7 +295,7 @@
                         console.log('bp: '+bigPic);
                         callback();
                     });*/
-                    callback();
+                    
                 },
                 function(callback) {
                     console.log('d');
@@ -289,7 +315,7 @@
                 function(callback) {
                     // perform fbauthcheck now that the pic urls have been loaded
                     console.log('e');
-                    callFbCheckAccount(response, response.authResponse, smallPic, bigPic, function(err, checkResult) {
+                    callFbCheckAccount(apiResponse1[0], response.authResponse, smallPic, bigPic, function(err, checkResult) {
                         if (err) return callback(err);
                         result = checkResult;
                         callback();
