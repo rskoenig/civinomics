@@ -94,7 +94,7 @@
                     console.log('Welcome!  Fetching your information.... ');
                     console.log("response status: " + response.status)
                     console.log("response email: " + response.email)
-                    fbConnected(response);
+                    fbConnected(response, FB);
                 } else {
                     console.log('User cancelled login or did not fully authorize.');
                 }
@@ -111,7 +111,7 @@
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
                 console.log('connected');
-                fbConnected(response);
+                fbConnected(response, FB);
             } else if (response.status === 'not_authorized') {
                 // The person is logged into Facebook, but not your app.
                 console.log('notAuthed');
@@ -206,19 +206,54 @@
         }
         
 
-        function fbConnected(response) {
-            //console.log('a');
-            //FB.api('/me', function(response) {
+        function fbConnected(response, FB_handle) {
+            // this person has given us permission to work with their facebook identity.
+            // there are two scenarios possible now:
+            // 1) They've authorized us to use their facebook id but as far as we can tell, they don't
+            //    have an account on our site yet.
+            // 2) They've authorized us AND they have an account on our site. 
+            //    We're just gonna wait for them to press the login button.
+            // At this point we ping the facebook graph API for their profile pic (big and small),
+            //    loading these urls and other important info into the session vars for this user so
+            //    that we'll be prepared to log them right in (or sign them up for an account on here)  
+            //    should they press the "Login with Facebook" button
+            //
+            //  Facebook Graph API syntax for the Javascript SDK
+            //  FB.api(path, method, params, callback)
+            //
+            //  (source: https://developers.facebook.com/docs/javascript/reference/FB.api/)
+            //  link to reference on the data we can ask for with public_profile permissions:
+            //  (https://developers.facebook.com/docs/graph-api/reference/v2.0/user/)
+
             console.log('b');
             var bigPic = '';
             var bigPicFql = '';
             var smallPic = '';
             var smallPicFql = '';
             var result = '';
-            
             async.series([
                 function(callback) {
                     console.log('c');
+                    FB_handle.api(
+                        "/me/picture",
+                        {
+                            "object": {
+                                "redirect": false,
+                                "height": "200",
+                                "type": "normal",
+                                "width": "200"
+                            }
+                        },
+                        function (response) {
+                            console.log('c. '+printObject(response));
+                            if (response && !response.error) {
+                                /* handle the result */
+                                console.log('c.. '+response);
+                            }
+                        }
+                    );
+                    /* make the API call */
+                    
                     //FB.api('/me', {fields: 'profile_pic'}, function(response) {
                     //    console.log('c. '+printObject(response));
                     //});
