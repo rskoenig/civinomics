@@ -207,6 +207,20 @@ class HomeController(BaseController):
 		    else:
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+		    	
+		elif type == 'meetings' and c.authuser:
+		    # try getting the activity of their area
+		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+		    scopeList = userScope.split('|')
+		    countyScope = scopeList[6]
+		    #log.info("countyScope is %s"%countyScope)
+		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
+		    if countyActivity:
+		    	recentActivity = countyActivity
+		    else:
+		    	alertMsg = "There are no upcoming meetings listed for your county yet."
+		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
 		elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
@@ -340,14 +354,24 @@ class HomeController(BaseController):
 				entry['vote'] = 'nvote'
 
 			# votes
-			entry['voteCount'] = int(item['ups']) + int(item['downs'])
-			entry['ups'] = int(item['ups'])
-			entry['downs'] = int(item['downs'])
-			entry['netVotes'] = int(item['ups']) - int(item['downs'])
+			if 'ups' in item and 'downs' in item:
+			    entry['voteCount'] = int(item['ups']) + int(item['downs'])
+			    entry['ups'] = int(item['ups'])
+			    entry['downs'] = int(item['downs'])
+			    entry['netVotes'] = int(item['ups']) - int(item['downs'])
+			else:
+			    entry['voteCount'] = 0
+			    entry['ups'] = 0
+			    entry['downs'] = 0
+			    entry['netVotes'] = 0
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)
-			entry['discussion'] = discussion['urlCode']
+			if discussion:
+			    entry['discussion'] = discussion['urlCode']
+			else:
+			    entry['discussion'] = "0000"
+			    
 			entry['numComments'] = 0
 			if 'numComments' in item:
 				entry['numComments'] = item['numComments']
@@ -374,6 +398,14 @@ class HomeController(BaseController):
 			elif 'initiativeCode' in item:
 				entry['parentTitle'] = item['initiative_title']
 				entry['parentObjType'] = 'initiative'
+				
+			# special case for meetings
+			if item.objType == 'meeting':
+			    dList = item['meetingDate'].split('-')
+			    entry['meetingDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+			    entry['location'] = item['location']
+			    entry['group'] = item['group']
+			    entry['href'] += '/show'
 
 			result.append(entry)
 

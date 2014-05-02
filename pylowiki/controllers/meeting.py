@@ -243,6 +243,7 @@ class MeetingController(BaseController):
             c.meeting['text'] = request.params['meetingText']
         if 'meetingDate' in request.params:
             c.meeting['meetingDate'] = request.params['meetingDate']
+            c.meeting.sort = c.meeting['meetingDate']
         if 'meetingTime' in request.params:
             c.meeting['meetingTime'] = request.params['meetingTime']
         if 'agendaPostDate' in request.params:

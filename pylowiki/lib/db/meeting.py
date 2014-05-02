@@ -89,11 +89,12 @@ def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime
     m['url'] = utils.urlify(title[:20])
     m['text'] = text
     m['group'] = group
-    m['location'] = group
+    m['location'] = location
     m['tag'] = tag
     m['scope'] = scope
     m['meetingDate'] = meetingDate
     m['meetingTime'] = meetingTime
+    m.sort = meetingTime
     m['agendaPostDate'] = agendaPostDate
     m['deleted'] = u'0'
     m['disabled'] = u'0'

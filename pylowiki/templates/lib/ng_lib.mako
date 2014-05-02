@@ -6,7 +6,14 @@
 </%def>
 
 <%def name="meeting_listing()">
-    <td><a href="{{item.href}}">{{item.title}}</a> {{item.meetingDate}}<p><img src="{{item.flag}}" width="60" height="60"> {{item.scopeLevel}} of {{item.scopeName}} Public Meeting of {{item.group}}</td>
+    <div class="media well search-listing">
+        <div class="row-fluid">
+            <div class="span2"><img src="{{item.flag}}" width="60" height="60"></div><div class="span9">{{item.scopeLevel}} of {{item.scopeName}}</div>
+        </div><!-- row-fluid -->
+        <div class="row-fluid">
+            <div class="span2"><strong>{{item.meetingDate}}</strong></div><div class="span9"><a href="{{item.href}}">{{item.title}}</a>Public Meeting of {{item.group}}</div>
+        </div><!-- row-fluid -->
+    </div><!-- media-well -->
 </%def>
 
 <%def name="agenda_item_listing()">

@@ -48,6 +48,12 @@ function activityController($scope, $http) {
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
+	
+	$scope.getMeetingActivity = function(){
+		$scope.activityType = '/meetings';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
 
 	$scope.browseInitiatives = function(){
 		$scope.activityType = '/initiatives';

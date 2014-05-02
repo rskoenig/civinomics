@@ -64,6 +64,7 @@
           % if c.authuser:
             <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
             <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
+            <li ng-class="{'active' : activityType == '/meetings'}"><a ng-click="getMeetingActivity()"> Upcoming Meetings </a></li>
           % endif
         </ul>
       </div>
@@ -77,6 +78,10 @@
         <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
+          </td>
+          
+          <td ng-if="item.objType == 'meeting'">
+            ${ng_helpers.meeting_listing()}
           </td>
 
           <td ng-if="item.objType == 'idea'">
