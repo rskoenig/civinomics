@@ -362,7 +362,7 @@
 <%def name="socialLogins()">
     <div class="row-fluid social-login centered">
         <div id="fbLoginButton2">
-            <a href="/fbLogin"><img src="/images/f-login.png"></a>
+            <a href="#" onclick="fbLogin()"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
