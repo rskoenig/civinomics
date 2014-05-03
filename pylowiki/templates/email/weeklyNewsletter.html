@@ -34,9 +34,9 @@
                                 <img style="border-radius: 5px;" src='/images/photos/${i['directoryNum_photos']}/thumbnail/${i['pictureHash_photos']}.png'>
                             </td>
                             <td style="vertical-align: top; padding: 0 10px;">
-                                <strong><a style="text-decoration: none; color: #3c51bf;" href="${i['href']} target="_blank"">${i['title']}</a></strong>
+                                <strong><a style="text-decoration: none; color: #3c51bf;" href="${i['href']}" target="_blank">${i['title']}</a></strong>
                                 <br>
-                                <span style="text-transform: capitalize; font-size:14px;line-height:20px;">Tags: ${i['scopeLevel']} of ${i['scopeName']}, ${i['tags']}</span>
+                                <span style="font-size:14px;line-height:20px;">Tags: ${i['scopeLevel']} of ${i['scopeName']}, ${i['tags']}</span>
                                 <br>
                                 <p style="font-size:14px;line-height:20px;">
                                     ${i['description'][:200]}
