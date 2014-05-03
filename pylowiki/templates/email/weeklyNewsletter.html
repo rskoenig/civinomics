@@ -1,179 +1,85 @@
-<link rel="stylesheet" href="/styles/newsletter.css">
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<div class="page-header">
-    <div class="logo-div">
-        <a href="http://www.civinomics.com" target="_blank">
-            <div class="logo logo-lg"></div>
-        </a>
-    </div>
-</div>
-<div class="container">
-
-    <div class="row-fluid">
-        <div style="padding: 8px 35px 8px 14px; margin-bottom: 20px; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5); background-color: #fcf8e3; border: 1px solid #fbeed5; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; color: #c09853;">
-            <div class="row-fluid">
-                <div class="span9">
-                    <strong>Activate your account!</strong> You have not yet confirmed an email address for your Civinomics account. If you do not do so within two weeks of signing up any votes you have cast will be erased.
-                </div>
-                <div class="span3 centered">
-                    <a href="#" target="_blank" class="btn btn-success" style="margin-top:10px;">Activate now</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row-fluid email-section">
-        <div class="lead">New Initiatives for 95060</div>
-    
-    % for i in c.recentInitiatives:
-    
-        <div class="well obj-listing">
-            <div class="row-fluid">
-                <div class="span3">
-                    <a href = "${i['href']}">
-                        <div class="i-photo" style="background-image:url('/images/photos/${i['directoryNum_photos']}/thumbnail/${i['pictureHash_photos']}.png');"></div> 
-                    </a>
-                </div>
-                <div class="span9">
-                    <div class="well yesNoWell" >
-                        <a href="${i['href']}">
-                            <div class="vote-icon yes-icon"></div>
-                        </a>
-                        <br>
-                        <br>
-                        <a href="${i['href']}">
-                            <div class="vote-icon no-icon"></div>
-                        </a>
-                        <br>
-                        <div class="totalVotesWrapper">
-                            <small class="grey pull-left">Votes:</small>
-                            <strong class="pull-right">
-                                <span>${int(i['ups']) + int(i['downs'])}</span>
-                            </strong>
-                        </div>
-                    </div>
-                    <h4 class="listed-item-title initiative-title"><a href="${i['href']}">${i['title']}</a></h4>
-                    <table>
-                        <tr style="vertical-align: middle;">
-                            <td>
-                                <img class="thumbnail flag mini-flag border" src="${i['flag']}">
-                            </td>
-                            <td>
-                                <small>
-                                    <span style="text-transform: capitalize;">Initiative</span> for <a class="green green-hover" href="${i['scopeHref']}">${i['scopeLevel']} of ${i['scopeName']}</span></a>
-                                    <span class="label workshop-tag ${i['tags']}">${i['tags']}</span>
-                                </small>
-                            </td>
+<body style="margin: 0; font-family: arial, sans-serif;">
+    <table style="width: 100%; height: 80px; background-color: #f8f8f8; border-spacing: 0px; border-color: none;">
+        <tr style="background-color: #f8f8f8; height: 50px;">
+            <td style="width:5%; border-bottom: 1px solid #e7e7e7;"></td>
+            <td style="border-bottom: 1px solid #e7e7e7;"><img src="/images/civ_logo_simple.png"></td>
+            <td style="width:2%; border-bottom: 1px solid #e7e7e7;"></td>
+            <td style="width:86%; border-bottom: 1px solid #e7e7e7;"><strong style="color: #333;">Raimanu Koenig</strong><br><span style="color: #666;">Your Civinomics Weekly Update</span></td>
+            <td style="border-bottom: 1px solid #e7e7e7;"><img style="border-radius: 500px; width: 50px;" src="${lib_6._userImageSource(c.authuser)}"></td>
+            <td style="width:5%; border-bottom: 1px solid #e7e7e7;"></td>
+        </tr>
+    </table>
+    <table style="width: 100%; height: 100%; background-color: #fff; border-spacing: 0px; border-color: none;">
+        <!-- spacer row -->
+        <tr style="height: 20px;">
+            <td style="width:3%;"></td>
+            <td style="width:40px; background-color: "></td>
+            <td style="width:2%;"></td>
+            <td style="vertical-align: top;"></td>
+            <td style="width:40px;"></td>
+            <td style="width:3%;"></td>
+        </tr>
+        <tr>
+            <td style="width:3%;"></td>
+            <td style="width:40px;"></td>
+            <td style="width:2%;"></td>
+            <td style="vertical-align: top; height: 100%;">
+                <span style="font-size:24px; line-height:28px;font-style:italic;font-family:'Georgia','Helvetica Neue',Helvetica,Arial,sans-serif;color:#777">New Initiatives</span>
+                % for i in c.recentInitiatives:
+                    <table style="color:#333333;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; padding-top: 10px;">
                         <tr>
+                            <td>
+                                <img style="border-radius: 5px;" src='/images/photos/${i['directoryNum_photos']}/thumbnail/${i['pictureHash_photos']}.png'>
+                            </td>
+                            <td style="vertical-align: top; padding: 0 10px;">
+                                <strong><a style="text-decoration: none; color: #3c51bf;" href="${i['href']} target="_blank"">${i['title']}</a></strong>
+                                <br>
+                                <span style="text-transform: capitalize; font-size:14px;line-height:20px;">Tags: ${i['scopeLevel']} of ${i['scopeName']}, ${i['tags']}</span>
+                                <br>
+                                <p style="font-size:14px;line-height:20px;">
+                                    ${i['description'][:200]}
+                                    % if len(i['description']) > 200:
+                                        ... <a href="${i['href']}" target="_blank" style="text-decoration: none; color: #3c51bf;">read more</a>
+                                    % endif  
+                                </p>
+                            </td>
+                        </tr>
                     </table>
-                    <p>
-                        ${i['description'][:200]}
-                        % if len(i['description']) > 200:
-                            ...
-                        % endif
-                    </p>
-                    <h4>
-                        <small class="grey centered">Estimated Cost:</small>
-                        <span class="pull-right">$ ${i['cost']}</span>
-                    </h4>
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="actions">
-                    <div class="actions-links">
-                        <ul class="horizontal-list iconListing">
-                            <li>
-                                <% 
-                                    if 'numComments' in i:
-                                        numComments = i['numComments']
-                                    else: 
-                                        numComments = 0
-                                %>
-                                <a href="${i['href']}" class="no-highlight"><i class="icon-comment"></i> Comments (${numComments})</a>
-                            </li>
-                            <li><i class="icon-eye-open"></i> Views (${i['views']})</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-    % endfor
-    </div>
-
-    <div class="row-fluid email-section">
-        <div class="lead">New Workshops for 95060</div>
-
-    % for w in c.recentWorkshops[0:3]:
-
-        <div class="well obj-listing">
-            <div class="row-fluid">
-                <div class="span3">
-                    <a href = "${w['href']}">
-                        <div class="i-photo" style="background-image: url(${w['mainImage']})"></div> 
-                    </a>
-                </div>
-                <div class="span9">
-                    <h4 class="listed-item-title initiative-title"><a href="${i['href']}">${w['title']}</a></h4>
-                    <table>
-                        <tr style="vertical-align: middle;">
-                            <td>
-                                <img class="thumbnail flag mini-flag border" src="${w['flag']}">
+                    <table style="width: 100%; margin-top: 8px; margin-bottom: 20px;">
+                         <tr style="background-color: #f8f8f8; height: 50px; width: 100%; text-align: center;">
+                            <td style="border: 1px solid #e7e7e7;border-radius: 5px; padding: 5px;">
+                                <a  href="${i['href']}" target="_blank" style="text-decoration: none; display: inline-block; width: 100px; background-color: #4aca5f; border-radius: 5px; border: 1px solid #e7e7e7; font-size: 16px; color: #fff; padding: 10px;">YES</a>
+                                <a  href="${i['href']}" target="_blank" style="text-decoration: none; display: inline-block; width: 100px; background-color: #ff3b30; border-radius: 5px; border: 1px solid #e7e7e7; font-size: 16px; color: #fff; padding: 10px;">NO</a>
                             </td>
-                            <td>
-                                <small>
-                                    <span style="text-transform: capitalize;">Workshop</span> for <a class="green green-hover" href="${w['scopeHref']}">${w['scopeLevel']} of ${w['scopeName']}</span></a>
-                                    <% 
-                                        wTags = []
-                                        tags = w['workshop_category_tags'].split('|')
-                                        for tag in tags:
-                                            if tag != '':
-                                                wTags.append(tag)
-                                    %>
-                                    % for tag in wTags:
-                                        <span class="label workshop-tag ${tag}">${tag}</span>
-                                    % endfor
-                                </small>
-                            </td>
+                        </tr>
+                    </table>
+                % endfor
+            </td>
+            <td style="width:40px;"></td>
+            <td style="width:3%;"></td>
+        </tr>
+    </table> 
+    <table style="margin-top: 40px;">
+        <tr>
+            <td style="width:3%;"></td>
+            <td style="width:40px;"></td>
+            <td style="width:2%;"></td>
+            <td style="vertical-align: top; height: 100%;">
+                <span style="font-size:24px;line-height:28px;font-style:italic;font-family:'Georgia','Helvetica Neue',Helvetica,Arial,sans-serif;color:#777">Workshops You're Following</span>
+                % for w in c.recentWorkshops:
+                    <table style="color:#333333;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; border-bottom: 1px solid #e7e7e7; margin-bottom: 20px; padding-top: 10px; padding-bottom: 10px;">
                         <tr>
-                    </table>
-                    <p>
-                        ${w['description'][:200]}
-                        % if len(w['description']) > 200:
-                            ...
-                        % endif
-                    </p>
-                    <a class="btn btn-success pull-right" href="${w['href']}">Add your idea</a>
-                </div>
-            </div>
-            
-        </div>
-    % endfor
-    </div>
-
-
-    <div class="row-fluid email-section">
-        <div class="lead">Following</div>
-
-        % for w in c.recentWorkshops[3:5]:
-
-            <div class="well obj-listing">
-                <div class="row-fluid">
-                    <div class="span3">
-                        <a href = "${i['href']}">
-                            <div class="i-photo" style="background-image: url(${w['mainImage']})"></div> 
-                        </a>
-                    </div>
-                    <div class="span9">
-                        <h4 class="listed-item-title initiative-title"><a href="${i['href']}">${w['title']}</a></h4>
-                        <table>
-                            <tr style="vertical-align: middle;">
-                                <td>
-                                    <img class="thumbnail flag mini-flag border" src="${w['flag']}">
-                                </td>
-                                <td>
-                                    <small>
-                                        <span style="text-transform: capitalize;">Workshop</span> for <a class="green green-hover" href="${w['scopeHref']}">${w['scopeLevel']} of ${w['scopeName']}</span></a>
+                            <td style="vertical-align: top;">
+                                <img style="border-radius: 5px;" src='${w['mainImage']}'>
+                            </td>
+                            <td style="vertical-align: top; padding: 0 10px;">
+                                <strong><a style="text-decoration: none; color: #3c51bf;" href="${w['href']}" target="_blank">${w['title']}</a></strong>
+                                <br>
+                                <span style="font-size:14px;line-height:20px;">
+                                    
+                                    Tags: ${w['scopeLevel']} of ${w['scopeName']},
                                         <% 
                                             wTags = []
                                             tags = w['workshop_category_tags'].split('|')
@@ -182,53 +88,36 @@
                                                     wTags.append(tag)
                                         %>
                                         % for tag in wTags:
-                                            <span class="label workshop-tag ${tag}">${tag}</span>
+                                            % if tag != wTags[0]:
+                                                and                                   
+                                            % endif
+                                            <span>${tag}</span>
                                         % endfor
-                                    </small>
-                                </td>
-                            <tr>
-                        </table>
-                        <table id="metrics">
-                            <tr>
-                              <td class="clickable" style="padding-left: 0px;">
-                                <span class="workshop-metrics">Ideas</span><br>
-                                  <span class="badge orange-badge">+ 3</badge>
-                              </td>
-                              <td class="clickable" ng-click="toggleAdopted()">
-                                <span class="workshop-metrics">Adopted</span><br>
-                                  <span class="badge orange-badge">+ 4</badge>
-                              </td>
-                              <td class="clickable" ng-click="toggleDiscussions()">
-                                <span class="workshop-metrics">Discussions</span><br>
-                                  <span class="badge orange-badge">+ 2</badge>
-                              </td>
-                              <td class="clickable" ng-click="toggleResources()">
-                                <span class="workshop-metrics">Resources</span><br>
-                                  <span class="badge orange-badge">+ 5</badge>
-                              </td>
-                            </tr>
-                        </table>
-                        <table class="table-obj">
-                            <tr>
-                                <td><span class="workshop-metrics">Top Idea</span></td>
-                                <td><a href="#" target="_blank">This is the best idea in the workshop.<a/></td>
-                            </tr>
-                            <tr>
-                                <td><span class="workshop-metrics">Top Resource</span></td>
-                                <td><a href="#" target="_blank">This is the best resource in the workshop.</a></td>
-                            </tr>
-                            <tr>
-                                <td><span class="workshop-metrics">Top Discussion</span></td>
-                                <td><a href="#" target="_blank">This is the best discussion in the workshop.</a></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                
-            </div>
-        % endfor
-
-    </div>
-
-</div>
+                                </span>
+                                <br>
+                                <table style="font-size:14px;line-height:20px;">
+                                    <tr>
+                                        <td>Ideas: <a href="#" target="_blank" style="text-decoration: none; color: #3c51bf;">3</a> · Discussions: <a href="#" target="_blank" style="text-decoration: none; color: #3c51bf;">4</a> · Resources: <a href="#" target="_blank" style="text-decoration: none; color: #3c51bf;">5</a> · Comments: <a href="#" target="_blank" style="text-decoration: none; color: #3c51bf;">6</a> · Votes: <a href="#" target="_blank" style="text-decoration: none; color: #3c51bf;">7</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Top Idea: </strong><a href="#" target="_blank" style="text-decoration: none; color:#333;">This is the top idea This is the top idea This is the top idea This is the top idea</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Top Resource: </strong><a href="#" target="_blank" style="text-decoration: none; color:#333;">This is the top resource</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Top Discussion: </strong><a href="#" target="_blank" style="text-decoration: none; color:#333;">This is the top discussion</a></td>
+                                    </tr>
+                                    
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                % endfor
+            </td>
+            <td style="width:40px;"></td>
+            <td style="width:3%;"></td>
+        </tr>
+    </table>
+</body>
 

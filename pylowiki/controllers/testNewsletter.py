@@ -46,7 +46,7 @@ class TestnewsletterController(BaseController):
         c.recentWorkshops = workshopLib.getActiveWorkshops()
         for w in c.recentWorkshops:
         	image = mainImageLib.getMainImage(w)
-	       	w['mainImage'] = '/images/mainImage/%s/orig/%s.png' %(image['directoryNum'], image['pictureHash'])
+	       	w['mainImage'] = '/images/mainImage/%s/thumbnail/%s.png' %(image['directoryNum'], image['pictureHash'])
 	       	# scope attributes
 	       	w['scopeName'] = ''
 	       	w['scopeLevel'] = ''
