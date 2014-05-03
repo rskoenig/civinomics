@@ -98,7 +98,7 @@
                         <li class="dropdown ${pSelected}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" id="profileDropdown">
                                 <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
                                 % if c.authuser['activated'] == '1':
                                     <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>

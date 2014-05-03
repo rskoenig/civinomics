@@ -38,15 +38,7 @@
       <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
-    <p>t1</p>
-    ${next.body()}
-    <p id="ta"></p>
-    <p id="t0"></p>
-    <p id="t1"></p>
-    <p id="t2"></p>
-    <p id="t3"></p>
-    <p id="t4"></p>
-    <p id="t5"></p>
+      ${next.body()}
    
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
@@ -79,228 +71,314 @@
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
+   
    % if 'user' not in session:
-      <script type="text/javascript" src="/js/vendor/async.min.js"></script>
-      <%
-          facebookAppId = c.facebookAppId
-          channelUrl = c.channelUrl
-      %>
-      <div id="fb-root"></div>
-      <script>
-        //console.log('in fb init')
-        function fbLogin() {
-            if (FB) {
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        // console.log('Welcome!  Fetching your information.... ');
-                        // console.log("response status: " + response.status)
-                        // console.log("response email: " + response.email)
-                        fbConnected(response);
-                    } else {
-                        console.log('User cancelled login or did not fully authorize.');
-                    }
-                }, {scope: 'public_profile,email'});
-            }
-        }
-        // This is called with the results from from FB.getLoginStatus().
-        function statusChangeCallback(response) {
-            // console.log('statusChangeCallback');
-            // The response object is returned with a status field that lets the
-            // app know the current login status of the person.
-            // Full docs on the response object can be found in the documentation
-            // for FB.getLoginStatus().
-            if (response.status === 'connected') {
-                // Logged into your app and Facebook.
-                // console.log('connected');
-                fbConnected(response);
-            } else if (response.status === 'not_authorized') {
-                // The person is logged into Facebook, but not your app.
-                // console.log('notAuthed');
-                fbLogin();
-            } else {
-                // The person is not logged into Facebook, so we're not sure if 
-                // they are logged into this app or not.
-                // console.log('not logged into fb');
-                fbLogin();
-            }
-        }
+        <%
+            facebookAppId = c.facebookAppId
+        %>
+        <script type="text/javascript" src="/js/vendor/async.min.js"></script>
+        <div id="fb-root"></div>
+        <script>
+            // Load the SDK asynchronously
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
 
-        // This function is called when someone finishes with the Login
-        // Button.  See the onlogin handler attached to it in the sample
-        // code below.
-        function checkLoginState() {
-            FB.getLoginStatus(function(response) {
-                statusChangeCallback(response);
-            });
-        }
-
-        function authSignal() {
-          console.log('auth sig');
-          var authSignal = '<div id="authSignal"></div>';
-          $('#fbLoginButton1').append(authSignal);
-          $('#fbLoginButton2').append(authSignal);
-        }
-
-        var login_event = function(response) {
-            console.log("login_event");
-            console.log(response.status);
-            console.log(response);
-            authSignal();
-        }
-        var logout_event = function(response) {
-            console.log("logout_event");
-            console.log(response.status);
-            console.log(response);
-        }
-
-        $(document).ready(function() {
-            $.ajaxSetup({ cache: true });
-            $.getScript('//connect.facebook.net/en_UK/all.js', function(){
-                FB.init({
-                    appId      : "${facebookAppId}",
-                    status     : true,
-                    cookie     : true,  // enable cookies to allow the server to access the session
-                    xfbml      : true,  // parse social plugins on this page
-                    version    : 'v2.0' // use version 2.0
-                });
-                // getLoginStatus: gets the state of the person visiting this page
-                // RETURNS: 
-                // 1. Logged into our app ('connected')
-                // 2. Logged into Facebook, but not our app ('not_authorized')
-                // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
-                // In your onload method:
-                FB.Event.subscribe('auth.login', login_event);
-                FB.Event.subscribe('auth.logout', logout_event);
-
-                FB.Event.subscribe('auth.authResponseChange', function(response) {
-                    statusChangeCallback(response);
-                });
-            });
-        });
-        
-        // Load the SDK asynchronously
-        (function(d, s, id) {
-          var js, fjs = d.getElementsByTagName(s)[0];
-          if (d.getElementById(id)) return;
-          js = d.createElement(s); js.id = id;
-          js.src = "//connect.facebook.net/en_US/sdk.js";
-          fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-        
-        function printObject(o) {
-          var out = '';
-          for (var p in o) {
-            out += p + ': ' + o[p] + '\n';
-          }
-          console.log(out);
-        }
-        
-
-        function fbConnected(response) {
-            // this person has given us permission to work with their facebook identity.
-            // there are two scenarios possible now:
-            // 1) They've authorized us to use their facebook id but as far as we can tell, they don't
-            //    have an account on our site yet.
-            // 2) They've authorized us AND they have an account on our site. 
-            //    We're just gonna wait for them to press the login button.
-            // At this point we ping the facebook graph API for their profile pic (big and small),
-            //    loading these urls and other important info into the session vars for this user so
-            //    that we'll be prepared to log them right in (or sign them up for an account on here)  
-            //    should they press the "Login with Facebook" button
-            //
-            //  Facebook Graph API syntax for the Javascript SDK
-            //  FB.api(path, method, params, callback)
-            //
-            //  (source: https://developers.facebook.com/docs/javascript/reference/FB.api/)
-            //  link to reference on the data we can ask for with public_profile permissions:
-            //  (https://developers.facebook.com/docs/graph-api/reference/v2.0/user/)
-
-            var name = '';
-            var bigPic = '';
-            var bigPicFql = '';
-            var smallPic = '';
-            var smallPicFql = '';
-            var result = '';
-            async.series([
-                function(callback) {
-                    FB.api(
-                      {
-                        method: 'fql.query',
-                        query: 'SELECT name, pic_square, pic_big FROM user WHERE uid=' + response.authResponse.userID 
-                      },
-                      function(apiResponse) {
-                        name = apiResponse[0].name;
-                        smallPic = apiResponse[0].pic_square;
-                        bigPic = apiResponse[0].pic_big;
-                        callback();
-                      }
-                    );                    
-                },
-                function(callback) {
-                    // perform fbauthcheck now that the pic urls have been loaded
-                    callFbCheckAccount(name, response.authResponse, smallPic, bigPic, function(err, checkResult) {
-                        if (err) return callback(err);
-                        result = checkResult;
-                        callback();
-                    });
+            //console.log('in fb init')
+            function fbLogin() {
+                if (FB) {
+                    FB.login(function(response) {
+                        if (response.authResponse) {
+                            // console.log('Welcome!  Fetching your information.... ');
+                            // console.log("response status: " + response.status)
+                            // console.log("response email: " + response.email)
+                            fbConnected(response);
+                        } else {
+                            console.log('User cancelled login or did not fully authorize.');
+                        }
+                    }, {scope: 'public_profile,email'});
                 }
-            ], function(err) {
-                //check on the result of fbCheckAccount
-                if (err) return next(err);
-                if (result == "not found") {
-                    // no account on site yet.
-                    // this is a unique situation where the person has authorized us to use their
-                    // fb identity, but hasn't created an account yet. This assumes that's what they
-                    // want to do and redirects once this situation is recognized.
-                    if ($('#fbSignUp').length) {
-                        console.log('facebook signup')
-                    } else {
-                        window.location = '/signup/fbSignUp/';
-                    }
+            }
+            // This is called with the results from from FB.getLoginStatus().
+            function statusChangeCallback(response) {
+                // console.log('statusChangeCallback');
+                // The response object is returned with a status field that lets the
+                // app know the current login status of the person.
+                // Full docs on the response object can be found in the documentation
+                // for FB.getLoginStatus().
+                if (response.status === 'connected') {
+                    // Logged into your app and Facebook.
+                    // console.log('connected');
+                    fbConnected(response);
+                } else if (response.status === 'not_authorized') {
+                    // The person is logged into Facebook, but not your app.
+                    // console.log('notAuthed');
+                    fbLogin();
                 } else {
-                    // found a matching account on our site
-                    if ($('#authSignal').length) {
-                        // this triggers when a person has arrived but was not yet logged into facebook,
-                        // or had not yet given auth to our app
-                        var newButton = 'Logging In'
-                        $('#fbLoginButton1').html(newButton);
-                        $('#fbLoginButton2').html(newButton);
-                        window.location = '/fbLoggingIn/';
-                    } else if ($('#fbLoggingIn').length) {
-                        // this element is only found on a page meant to be used as a redirect when
-                        // the 'login with facebook' link has been clicked.
-                        window.location = '/fbLoggingIn/';
-                    } else {
-                        // this code is used when a person arrives and it is seen that they have 
-                        // auth'd our app and are logged into facebook 
-                        // replace current button with returned result
-                        var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
-                        $('#fbLoginButton1').html(newButton);
-                        $('#fbLoginButton2').html(newButton);
-                    }
+                    // The person is not logged into Facebook, so we're not sure if 
+                    // they are logged into this app or not.
+                    // console.log('not logged into fb');
+                    fbLogin();
                 }
-            });
-        }
+            }
 
-        function getThePic(thePicFql, callback) {
-            console.log('!');
-            var thePic = '';
-            // grab the url to a 200x200 photo of this user
-            thePicFql.wait(function (rows) {
-              // the big pic link
-              thePic = rows[0].url;
-            });
-            callback(null, thePic);
-        }
+            // This function is called when someone finishes with the Login
+            // Button.  See the onlogin handler attached to it in the sample
+            // code below.
+            //function checkLoginState() {
+            //    FB.getLoginStatus(function(response) {
+            //        statusChangeCallback(response);
+            //    });
+            //}
 
-        function callFbCheckAccount(response, authResponse, smallPic, bigPic, callback) {
-            result = '';
-            // now that we have small and big pics, call fbCheckAccount
-            result = fbCheckAccount(response, authResponse, smallPic, bigPic);            
-            callback(null, result);
-        }
-      </script>
+            function authSignal() {
+              //console.log('auth sig');
+              var authSignal = '<div id="authSignal"></div>';
+              $('#fbLoginButton1').append(authSignal);
+              $('#fbLoginButton2').append(authSignal);
+            }
+
+            var login_event = function(response) {
+                console.log("login_event");
+                console.log(response.status);
+                console.log(response);
+                authSignal();
+            }
+            var logout_event = function(response) {
+                console.log("logout_event");
+                console.log(response.status);
+                console.log(response);
+            }
+
+            $(document).ready(function() {
+                $.ajaxSetup({ cache: true });
+                $.getScript('//connect.facebook.net/en_UK/all.js', function(){
+                    FB.init({
+                        appId      : "${facebookAppId}",
+                        status     : true,
+                        cookie     : true,  // enable cookies to allow the server to access the session
+                        xfbml      : true,  // parse social plugins on this page
+                        version    : 'v2.0' // use version 2.0
+                    });
+                    // getLoginStatus: gets the state of the person visiting this page
+                    // RETURNS: 
+                    // 1. Logged into our app ('connected')
+                    // 2. Logged into Facebook, but not our app ('not_authorized')
+                    // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
+                    // In your onload method:
+                    FB.Event.subscribe('auth.login', login_event);
+                    FB.Event.subscribe('auth.logout', logout_event);
+
+                    FB.Event.subscribe('auth.authResponseChange', function(response) {
+                        statusChangeCallback(response);
+                    });
+                });
+            });
+            
+            function printObject(o) {
+              var out = '';
+              for (var p in o) {
+                out += p + ': ' + o[p] + '\n';
+              }
+              console.log(out);
+            }
+            
+
+            function fbConnected(response) {
+                // this person has given us permission to work with their facebook identity.
+                // there are two scenarios possible now:
+                // 1) They've authorized us to use their facebook id but as far as we can tell, they don't
+                //    have an account on our site yet.
+                // 2) They've authorized us AND they have an account on our site. 
+                //    We're just gonna wait for them to press the login button.
+                // At this point we ping the facebook graph API for their profile pic (big and small),
+                //    loading these urls and other important info into the session vars for this user so
+                //    that we'll be prepared to log them right in (or sign them up for an account on here)  
+                //    should they press the "Login with Facebook" button
+                //
+                //  Facebook Graph API syntax for the Javascript SDK
+                //  FB.api(path, method, params, callback)
+                //
+                //  (source: https://developers.facebook.com/docs/javascript/reference/FB.api/)
+                //  link to reference on the data we can ask for with public_profile permissions:
+                //  (https://developers.facebook.com/docs/graph-api/reference/v2.0/user/)
+
+                var name = '';
+                var bigPic = '';
+                var bigPicFql = '';
+                var smallPic = '';
+                var smallPicFql = '';
+                var result = '';
+                async.series([
+                    function(callback) {
+                        FB.api(
+                          {
+                            method: 'fql.query',
+                            query: 'SELECT name, pic_square, pic_big FROM user WHERE uid=' + response.authResponse.userID 
+                          },
+                          function(apiResponse) {
+                            name = apiResponse[0].name;
+                            smallPic = apiResponse[0].pic_square;
+                            bigPic = apiResponse[0].pic_big;
+                            callback();
+                          }
+                        );                    
+                    },
+                    function(callback) {
+                        // perform fbauthcheck now that the pic urls have been loaded
+                        callFbCheckAccount(name, response.authResponse, smallPic, bigPic, function(err, checkResult) {
+                            if (err) return callback(err);
+                            result = checkResult;
+                            callback();
+                        });
+                    }
+                ], function(err) {
+                    //check on the result of fbCheckAccount
+                    if (err) return next(err);
+                    if (result == "not found") {
+                        // no account on site yet.
+                        // this is a unique situation where the person has authorized us to use their
+                        // fb identity, but hasn't created an account yet. This assumes that's what they
+                        // want to do and redirects once this situation is recognized.
+                        if ($('#fbSignUp').length) {
+                            console.log('facebook signup')
+                        } else {
+                            window.location = '/signup/fbSignUp/';
+                        }
+                    } else {
+                        // found a matching account on our site
+                        if ($('#authSignal').length) {
+                            // this triggers when a person has arrived but was not yet logged into facebook,
+                            // or had not yet given auth to our app
+                            var newButton = 'Logging In'
+                            $('#fbLoginButton1').html(newButton);
+                            $('#fbLoginButton2').html(newButton);
+                            window.location = '/fbLoggingIn/';
+                        } else if ($('#fbLoggingIn').length) {
+                            // this element is only found on a page meant to be used as a redirect when
+                            // the 'login with facebook' link has been clicked.
+                            window.location = '/fbLoggingIn/';
+                        } else {
+                            // this code is used when a person arrives and it is seen that they have 
+                            // auth'd our app and are logged into facebook 
+                            // replace current button with returned result
+                            var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
+                            $('#fbLoginButton1').html(newButton);
+                            $('#fbLoginButton2').html(newButton);
+                        }
+                    }
+                });
+            }
+
+            function getThePic(thePicFql, callback) {
+                console.log('!');
+                var thePic = '';
+                // grab the url to a 200x200 photo of this user
+                thePicFql.wait(function (rows) {
+                  // the big pic link
+                  thePic = rows[0].url;
+                });
+                callback(null, thePic);
+            }
+
+            function callFbCheckAccount(response, authResponse, smallPic, bigPic, callback) {
+                result = '';
+                // now that we have small and big pics, call fbCheckAccount
+                result = fbCheckAccount(response, authResponse, smallPic, bigPic);            
+                callback(null, result);
+            }
+        </script>
+    % else:
+        <%
+            facebookAppId = c.facebookAppId
+        %>
+        <script type="text/javascript" src="/js/vendor/async.min.js"></script>
+        <div id="fb-root"></div>
+        <script>
+            // Load the SDK asynchronously
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+            var logout_event = function(response) {
+                console.log("logout_event");
+                console.log(response.status);
+                console.log(response);
+            }
+
+            function fbLogout() {
+                FB.logout(function(response) {
+                    // user is now logged out of facebook
+                    console.log('bye!');
+                    // complete by logging out of our site
+                    window.location = '/login/logout';
+                });
+            }
+
+            // someone is logged in, we need to see if they're using facebook auth
+            // This is called with the results from from FB.getLoginStatus().
+            function statusChangeCallback(response) {
+                // console.log('statusChangeCallback');
+                // The response object is returned with a status field that lets the
+                // app know the current login status of the person.
+                // Full docs on the response object can be found in the documentation
+                // for FB.getLoginStatus().
+                // 
+                // create a logout button for the facebook auth
+                var fbLogoutHtml = '<li><a tabindex="-1" href="#" onclick="fbLogout()">Facebook Logout</a></li>';
+                if (response.status === 'connected') {
+                    // Logged into our app and Facebook.
+                    // add a logout button for this
+                    $("#profileDropdown").append(fbLogoutHtml);
+                } else if (response.status === 'not_authorized') {
+                    // The person is logged into Facebook, but not your app.
+                    // console.log('notAuthed');
+                    // add a logout button for this
+                    $("#profileDropdown").append(fbLogoutHtml);
+                } else {
+                    // The person is not logged into Facebook, so we're not sure if 
+                    // they are logged into this app or not.
+                    // console.log('not logged into fb');
+                    console.log('not logged into facebook');
+                }
+            }
+            $(document).ready(function() {
+                $.getScript('//connect.facebook.net/en_UK/all.js', function(){
+                    console.log('eh hem');
+                    FB.init({
+                        appId      : "${facebookAppId}",
+                        status     : true,
+                        cookie     : true,  // enable cookies to allow the server to access the session
+                        xfbml      : true,  // parse social plugins on this page
+                        version    : 'v2.0' // use version 2.0
+                    });
+                    // getLoginStatus: gets the state of the person visiting this page
+                    // RETURNS: 
+                    // 1. Logged into our app ('connected')
+                    // 2. Logged into Facebook, but not our app ('not_authorized')
+                    // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
+                    // In your onload method:
+                    
+                    FB.Event.subscribe('auth.logout', logout_event);
+
+                    FB.getLoginStatus(statusChangeCallback);
+
+                    //FB.Event.subscribe('auth.authResponseChange', function(response) {
+                    //    statusChangeCallback(response);
+                    //});
+                });
+            });
+        </script>
    % endif  ## if 'user' in session
+      </script>
    </body>
 </html>
 
