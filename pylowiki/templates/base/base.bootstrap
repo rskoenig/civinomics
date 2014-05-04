@@ -5,7 +5,7 @@
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
 <html lang="en-US" ng-app='civ'>
-   <head>
+    <head>
       <meta charset="UTF8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
       <title>${c.title}</title>
@@ -36,45 +36,46 @@
       <!--[if lt IE 9]>
          <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->      
-   </head>
-   <body ${self.bodyTag_extras()}>
-      ${next.body()}
+    </head>
+    <body ${self.bodyTag_extras()}>
+        ${next.body()}
    
-   <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
-   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
-   <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
-   <script type="text/javascript">
-    // fix for bootstrap dropdown menus not working on iPad
-    $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
-   </script>
-   <script>
-      $(document).ready(function(){
-        $('textarea').autosize();   
-      });
-   </script>
-   <!-- makes non-local links open in a new tab/window -->
-   <script type="text/javascript">
-      $(document.links).filter(function() {
-          return this.hostname != window.location.hostname;
-      }).attr('target', '_blank');
-   </script>
+        <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
+        <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
+        <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+        <script type="text/javascript">
+        // fix for bootstrap dropdown menus not working on iPad
+        $('body').on('touchstart.dropdown', '.dropdown-menu', function (e) { e.stopPropagation(); });
+        </script>
+        <script>
+          $(document).ready(function(){
+            $('textarea').autosize();   
+          });
+        </script>
+        <!-- makes non-local links open in a new tab/window -->
+        <script type="text/javascript">
+          $(document.links).filter(function() {
+              return this.hostname != window.location.hostname;
+          }).attr('target', '_blank');
+        </script>
 
-   <!-- Javascript to enable link to tab -->
-   <script type="text/javascript">
-      $(function () { 
-        var a = $('[href=' + location.hash + ']'); 
-        a && a.tab('show'); 
-      });
-    </script>
+        <!-- Javascript to enable link to tab -->
+        <script type="text/javascript">
+            $(function () { 
+                var a = $('[href=' + location.hash + ']'); 
+                a && a.tab('show');
+            });
+        </script>
 
-
-   ${self.extraScripts()}
-   ${self.extraScripts2()}
-   ${self.atlassian_issueCollector()}
-   
-   % if 'user' not in session:
+        ${self.extraScripts()}
+        ${self.extraScripts2()}
+        ${self.atlassian_issueCollector()}
+           
         <%
             facebookAppId = c.facebookAppId
+            userLoggedIn = 'false'
+            if 'user' in session:
+                userLoggedIn = 'true'
         %>
         <script type="text/javascript" src="/js/vendor/async.min.js"></script>
         <div id="fb-root"></div>
@@ -87,6 +88,43 @@
                 js.src = "//connect.facebook.net/en_US/sdk.js";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
+            
+            function fbLogout() {
+                FB.logout(function(response) {
+                    // user is now logged out of facebook
+                    console.log('bye!');
+                    // complete by logging out of our site
+                    window.location = '/login/logout';
+                });
+            }
+
+            // someone is logged in, we need to see if they're using facebook auth
+            // This is called with the results from from FB.getLoginStatus().
+            function appendFacebookLogout(response) {
+                // console.log('statusChangeCallback');
+                // The response object is returned with a status field that lets the
+                // app know the current login status of the person.
+                // Full docs on the response object can be found in the documentation
+                // for FB.getLoginStatus().
+                // 
+                // create a logout button for the facebook auth
+                var fbLogoutHtml = '<li><a tabindex="-1" href="#" onclick="fbLogout()">Facebook Logout</a></li>';
+                if (response.status === 'connected') {
+                    // Logged into our app and Facebook.
+                    // add a logout button for this
+                    $("#profileDropdown").append(fbLogoutHtml);
+                } else if (response.status === 'not_authorized') {
+                    // The person is logged into Facebook, but not your app.
+                    // console.log('notAuthed');
+                    // add a logout button for this
+                    $("#profileDropdown").append(fbLogoutHtml);
+                } else {
+                    // The person is not logged into Facebook, so we're not sure if 
+                    // they are logged into this app or not.
+                    // console.log('not logged into fb');
+                    console.log('not logged into facebook');
+                }
+            }
 
             //console.log('in fb init')
             function fbLogin() {
@@ -173,9 +211,13 @@
                     FB.Event.subscribe('auth.login', login_event);
                     FB.Event.subscribe('auth.logout', logout_event);
 
-                    FB.Event.subscribe('auth.authResponseChange', function(response) {
-                        statusChangeCallback(response);
-                    });
+                    if (${userLoggedIn}) {
+                        FB.getLoginStatus(appendFacebookLogout);
+                    } else {
+                        FB.Event.subscribe('auth.authResponseChange', function(response) {
+                            statusChangeCallback(response);
+                        });
+                    }
                 });
             });
             
@@ -292,94 +334,8 @@
                 callback(null, result);
             }
         </script>
-    % else:
-        <%
-            facebookAppId = c.facebookAppId
-        %>
-        <script type="text/javascript" src="/js/vendor/async.min.js"></script>
-        <div id="fb-root"></div>
-        <script>
-            // Load the SDK asynchronously
-            (function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/en_US/sdk.js";
-                fjs.parentNode.insertBefore(js, fjs);
-            }(document, 'script', 'facebook-jssdk'));
-
-            var logout_event = function(response) {
-                console.log("logout_event");
-                console.log(response.status);
-                console.log(response);
-            }
-
-            function fbLogout() {
-                FB.logout(function(response) {
-                    // user is now logged out of facebook
-                    console.log('bye!');
-                    // complete by logging out of our site
-                    window.location = '/login/logout';
-                });
-            }
-
-            // someone is logged in, we need to see if they're using facebook auth
-            // This is called with the results from from FB.getLoginStatus().
-            function statusChangeCallback(response) {
-                // console.log('statusChangeCallback');
-                // The response object is returned with a status field that lets the
-                // app know the current login status of the person.
-                // Full docs on the response object can be found in the documentation
-                // for FB.getLoginStatus().
-                // 
-                // create a logout button for the facebook auth
-                var fbLogoutHtml = '<li><a tabindex="-1" href="#" onclick="fbLogout()">Facebook Logout</a></li>';
-                if (response.status === 'connected') {
-                    // Logged into our app and Facebook.
-                    // add a logout button for this
-                    $("#profileDropdown").append(fbLogoutHtml);
-                } else if (response.status === 'not_authorized') {
-                    // The person is logged into Facebook, but not your app.
-                    // console.log('notAuthed');
-                    // add a logout button for this
-                    $("#profileDropdown").append(fbLogoutHtml);
-                } else {
-                    // The person is not logged into Facebook, so we're not sure if 
-                    // they are logged into this app or not.
-                    // console.log('not logged into fb');
-                    console.log('not logged into facebook');
-                }
-            }
-            $(document).ready(function() {
-                $.getScript('//connect.facebook.net/en_UK/all.js', function(){
-                    console.log('eh hem');
-                    FB.init({
-                        appId      : "${facebookAppId}",
-                        status     : true,
-                        cookie     : true,  // enable cookies to allow the server to access the session
-                        xfbml      : true,  // parse social plugins on this page
-                        version    : 'v2.0' // use version 2.0
-                    });
-                    // getLoginStatus: gets the state of the person visiting this page
-                    // RETURNS: 
-                    // 1. Logged into our app ('connected')
-                    // 2. Logged into Facebook, but not our app ('not_authorized')
-                    // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
-                    // In your onload method:
-                    
-                    FB.Event.subscribe('auth.logout', logout_event);
-
-                    FB.getLoginStatus(statusChangeCallback);
-
-                    //FB.Event.subscribe('auth.authResponseChange', function(response) {
-                    //    statusChangeCallback(response);
-                    //});
-                });
-            });
-        </script>
-   % endif  ## if 'user' in session
-      </script>
-   </body>
+    
+    </body>
 </html>
 
 <%def name="bodyTag_extras()">
