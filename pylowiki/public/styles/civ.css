@@ -1232,7 +1232,7 @@ a.Pending, a.Pending:active, a.Pending:link, a.Pending:hover{
 }
 
 a, a:hover{
-   color: #D15D00;
+   color: #3c51bf;
    text-decoration: none;
 }
 
@@ -3147,10 +3147,10 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
-tr.con, .accordion-heading.against{
+tr.con, .accordion-heading.against, .con{
   background-color: #f2dede
 }
-tr.pro, .accordion-heading.favor{
+tr.pro, .accordion-heading.favor, .pro{
   background-color: #dff0d8;
 }
 tr.neutral, .accordion-heading.neutral{
@@ -3161,7 +3161,7 @@ a.no-highlight{
   color:#333333;
 }
 a.no-highlight:hover{
-    color: #D15D00;
+    color: #3c51bf;
 }
 a.no-highlight.no-hover:hover{
     color: #333333;
@@ -3349,7 +3349,7 @@ hr.object-list-header{
 
 .i-photo{
   height:100px;
-  width:100%;
+  width:100px;
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;

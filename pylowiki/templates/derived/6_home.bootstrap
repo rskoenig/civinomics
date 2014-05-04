@@ -91,6 +91,10 @@
           <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
             ${ng_helpers.discussion_listing()}
           </td>
+          
+          <td ng-if="item.objType == 'position'">
+            ${ng_helpers.position_listing()}
+          </td>
 
           <td ng-if="item.objType == 'photo'">
             ${ng_helpers.photo_listing()}

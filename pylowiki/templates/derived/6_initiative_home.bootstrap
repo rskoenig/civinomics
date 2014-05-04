@@ -16,8 +16,8 @@
         </div>
         <table ng-show="!positionsLoading" style="width: 100%" ng-cloak>
             <tr>
-                <td class="lead green">Support</td>
-                <td class="lead red">Oppose</td>
+                <td class="lead green"><h4 class="initiative-title">Support</h4></td>
+                <td class="lead red"><h4 class="initiative-title">Oppose</h4></td>
             </tr>
             <tr>
                 <td style="width:50%; vertical-align:top;">
@@ -26,7 +26,7 @@
                         <tr ng-repeat="s in support" class="pro">
                             <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{s.authorPhoto}}"></td>
                             <td>
-                                <strong>{{s.authorName}}</strong> <small class="grey">{{s.fuzzyTime}} ago</small>
+                                <a ng-href="{{s.authorHref}}"><strong>{{s.authorName}}</strong></a><br><small class="grey">{{s.fuzzyTime}} ago</small>
                                 <br>
                                 {{s.text}}
                             </td>
@@ -39,7 +39,8 @@
                         <tr ng-repeat="o in oppose" class="con"> 
                             <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{o.authorPhoto}}"></td>
                             <td>
-                                <strong>{{o.authorName}}</strong> <small class="grey">{{o.fuzzyTime}} ago</small>
+                                <a ng-href="{{o.authorHref}}"><strong>{{o.authorName}}</strong></a><br>
+                                <small class="grey">{{o.fuzzyTime}} ago</small>
                                 <br>
                                 {{o.text}}
                             </td>

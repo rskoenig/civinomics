@@ -9,14 +9,14 @@
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
             <div class="row-fluid">
-                <div class="span3">
+                <div class="span2">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
                             <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
                 </div>
-                <div class="span9">
+                <div class="span10">
                     <div class="well yesNoWell" >
                         ${yesNoVoteBlock()}
                     </div>
@@ -40,7 +40,7 @@
         <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
             <div class="media-body row-fluid" ng-controller="yesNoVoteCtrl">
                 % if not c.w:
-                    <div class="span3">
+                    <div class="span2">
                         <div class="listed-photo">
                             <a href = '{{item.parentHref}}'>
                                 <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
@@ -49,7 +49,7 @@
                     </div>
                 % endif
                 % if not c.w:
-                    <div class="span9">
+                    <div class="span10">
                 % else:
                     <div class="span12">
                 % endif
@@ -75,7 +75,7 @@
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             % if not c.w:
-                <div class="span3">
+                <div class="span2">
                     <div class="listed-photo">
                         <a href = '{{item.parentHref}}'>
                             <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
@@ -84,7 +84,7 @@
                 </div>
             % endif
             % if not c.w:
-                <div class="span8">
+                <div class="span9">
             % else:
                 <div class="span11 media-body">
             % endif
@@ -115,14 +115,14 @@
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             % if not c.w:
-                <div ng-if="item.thumbnail != ''" class="span3">
+                <div ng-if="item.thumbnail != ''" class="span2">
                     <div class="listed-photo">
                         <a href = '{{item.parentHref}}'>
                             <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
                 </div>
-                <div ng-if="item.thumbnail != ''" class="span8">
+                <div ng-if="item.thumbnail != ''" class="span9">
                     <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     % if not c.w:
                         <p><small>${metaData()}</small></p>
@@ -138,6 +138,28 @@
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 </div>
             % endif
+            <div class="span1 voteWrapper">
+                ${upDownVoteBlock()}
+            </div>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+
+<%def name="position_listing()">
+    <div class="media well search-listing" ng-class="{pro : item.position == 'support', con : item.position == 'oppose'}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+            <div class="span11">
+                <p>
+                <strong ng-if="item.position == 'support'">We support: </strong>
+                <strong ng-if="item.position == 'oppose'">We oppose: </strong>
+                <a ng-href = '{{item.parentHref}}'><img ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
+                <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a><img class="thumbnail flag mini-flag border" src="{{item.flag}}"><span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                </p>
+                <p>"{{item.text}}"</p>
+            </div>
             <div class="span1 voteWrapper">
                 ${upDownVoteBlock()}
             </div>
@@ -253,12 +275,12 @@
 </%def>
 
 <%def name="authorPosting()">
-    <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+    <img class="avatar med-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <small>
         <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
         <span class="date">{{item.fuzzyTime}} ago</span>
         % if not (c.w or c.initiative):
-            <span ng-if="item.parentObjType && !(item.parentObjType == '')">
+            <span ng-if="item.parentObjType && !(item.parentObjType == '') && !(item.objType == 'position')">
                 in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
             </span>
         % endif
