@@ -9,6 +9,7 @@ from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.utils as utils
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.user         as userLib
@@ -20,6 +21,7 @@ import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.alerts          as  alertsLib
+import pylowiki.lib.fuzzyTime	    as fuzzyTime	
 
 from pylowiki.lib.facebook import FacebookShareObject
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -34,43 +36,41 @@ class DiscussionController(BaseController):
     def __before__(self, action, workshopCode = None):
         publicOrPrivate = ['index', 'topic', 'thread']
         
-        if workshopCode is None:
-            abort(404)
-        c.w = workshopLib.getWorkshopByCode(workshopCode)
-        if not c.w:
-            abort(404)
+        if workshopCode:
+            c.w = workshopLib.getWorkshopByCode(workshopCode)
+            c.mainImage = mainImageLib.getMainImage(c.w)
+        
+            ## All of the below code dependent on a workshop; this dependency must be removed
             
-        c.mainImage = mainImageLib.getMainImage(c.w)
-        
-        #################################################
-        # these values are needed for facebook sharing
-        c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-        shareOk = workshopLib.isPublic(c.w)
-        c.facebookShare = FacebookShareObject(
-            itemType='workshop',
-            url=utils.workshopURL(c.w) + '/discussion',
-            parentCode=workshopCode, 
-            image=c.backgroundImage,
-            title=c.w['title'],
-            description=c.w['description'].replace("'", "\\'"),
-            shareOk = shareOk
-        )
-        # add this line to tabs in the workshop in order to link to them on a share:
-        # c.facebookShare.url = c.facebookShare.url + '/activity'
-        #################################################
-
-        # Demo workshop status
-        c.demo = workshopLib.isDemo(c.w)
-        
-        workshopLib.setWorkshopPrivs(c.w)
-        if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
-        if action in publicOrPrivate:
-            if c.w['public_private'] != 'public':
-                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    abort(404)
-        if 'user' in session:
-            utils.isWatching(c.authuser, c.w)
+            #################################################
+            # these values are needed for facebook sharing
+            c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+            shareOk = workshopLib.isPublic(c.w)
+            c.facebookShare = FacebookShareObject(
+                itemType='workshop',
+                url=utils.workshopURL(c.w) + '/discussion',
+                parentCode=workshopCode, 
+                image=c.backgroundImage,
+                title=c.w['title'],
+                description=c.w['description'].replace("'", "\\'"),
+                shareOk = shareOk
+            )
+            # add this line to tabs in the workshop in order to link to them on a share:
+            # c.facebookShare.url = c.facebookShare.url + '/activity'
+            #################################################
+    
+            # Demo workshop status
+            c.demo = workshopLib.isDemo(c.w)
+            
+            workshopLib.setWorkshopPrivs(c.w)
+            if c.w['public_private'] == 'public':
+                c.scope = geoInfoLib.getPublicScope(c.w)
+            if action in publicOrPrivate:
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+            if 'user' in session:
+                utils.isWatching(c.authuser, c.w)
 
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -196,4 +196,43 @@ class DiscussionController(BaseController):
             return redirect(utils.thingURL(c.w, d.d))
         elif json.loads(request.body):
             return json.dumps({'statusCode':2})
+            
+            
+    def getOrgPositions(self, objType, code):
+        if objType == 'initiative':
+            thing = initiativeLib.getInitiative(code)
+        elif objType == 'idea':
+            pass
+            
+        
+        pStr = ""
+        positions = discussionLib.getPositionsForItem(thing)
+
+        # jsonify
+        support = []
+        oppose = []
+        for p in positions:
+            entry = {}
+            org = userLib.getUserByID(p.owner)
+            entry['authorName'] = org['name']
+            entry['authorPhoto'] = utils._userImageSource(org)
+            entry['authorHref'] = '/profile/' + org['urlCode'] + '/' + org['url']
+            entry['text'] = p['text']
+            entry['fuzzyTime'] = fuzzyTime.timeSince(p.date)
+            
+            if p['position'] == 'support':
+                support.append(entry)
+            elif p['position'] == 'oppose':
+                oppose.append(entry)
+                
+        if len(support) == 0 and len(oppose) == 0:
+            return json.dumps({'status':1})
+        else:
+            return json.dumps({'support': support, 'oppose': oppose})
+            
+        
+        
+        
+        
+        
         
