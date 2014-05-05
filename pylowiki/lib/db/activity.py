@@ -294,7 +294,7 @@ def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
         .filter(Thing.data.any(wc('deleted', u'0')))\
         .filter(Thing.data.any(wkcl('scope', scope)))\
         .filter(Thing.data.any(gtc('meetingDate', SQLtoday)))\
-        .filter(Thing.data.any(and_(Data.key.ilike('%public'), Data.value == u'0')))\
+        .filter(Thing.data.any(and_(Data.key.ilike('%public'), Data.value == u'on')))\
         .order_by('sort')\
         .offset(offset)
     if limit:

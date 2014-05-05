@@ -261,6 +261,8 @@ class MeetingController(BaseController):
             c.meeting['location'] = request.params['meetingLocation']
         if 'public' in request.params:
             c.meeting['public'] = request.params['public']
+        else:
+            c.meeting['public'] = ''
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form
