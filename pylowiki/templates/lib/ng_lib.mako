@@ -9,17 +9,14 @@
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
             <div class="row-fluid">
-                <div class="span3">
+                <div class="span2">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
                             <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
                 </div>
-                <div class="span9">
-                    <div class="well yesNoWell" >
-                        ${yesNoVoteBlock()}
-                    </div>
+                <div class="span10">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
@@ -30,6 +27,7 @@
                 </div>
             </div>
             <div class="row-fluid">
+                ${yesNoVoteFooter()}
                 ${actions()}
             </div>
         </div>
@@ -198,6 +196,13 @@
     % endif
 </%def>
 
+<%def name="yesNoVoteFooter()">
+    <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
+        <a  href="#" target="_blank" style="margin-bottom: 10px; text-decoration: none; display: inline-block; width: 100px; background-color: #4aca5f; border-radius: 5px; border: 1px solid #e7e7e7; font-size: 16px; color: #fff; padding: 10px;">YES</a>
+        <a  href="#" target="_blank" style="margin-bottom: 10px; text-decoration: none; display: inline-block; width: 100px; background-color: #ff3b30; border-radius: 5px; border: 1px solid #e7e7e7; font-size: 16px; color: #fff; padding: 10px;">NO</a>
+    </div>
+</%def>
+
 <%def name="upDownVoteBlock()">   
     % if 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
@@ -252,33 +257,12 @@
 <%def name="actions()">
     <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
         <div ng-controller="commentsController">
-            <div class="actions-links">
-                <ul class="horizontal-list iconListing">
-                    <li>
-                        <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                        <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                    </li>
-                    <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
-                </ul>
-            </div>
             ### Comments
             <div class="centered" ng-show="commentsLoading" ng-cloak>
                 <i class="icon-spinner icon-spin icon-2x bottom-space-med"></i>
             </div>
 
-            <table class="activity-comments" ng-class="{hidden : commentsHidden}">
-                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral'}">
-
-                    <td class="comment-avatar-cell">
-                        <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
-                    </td>
-                    <td style="padding: 10px;">
-                        <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
-                        <br>
-                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
-                  </td>
-                </tr>
-                
+            <table class="activity-comments">
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
                     <td>
@@ -293,8 +277,8 @@
                         <td style="padding: 10px;">
                             % if c.privs and not c.privs['provisional']:
                                 <form class="no-bottom" ng-submit="submitComment()">
-                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                    <textarea rows="1" class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <button type="submit" style="vertical-align: top; background-color: #3c51bf; color: #fff; border-radius: 5px; border: none; border: 1px solid #e7e7e7; padding: 10px;">Submit</button>
                                     <div ng-show="type == 'initiative' || type == 'idea'">
                                         <label class="radio inline">
                                             <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
@@ -309,7 +293,7 @@
                                 </form>
                             % else:
                                 <a href="#activateAccountModal" data-toggle='modal'>
-                                    <textarea class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <textarea rows="1" class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <a href="#activateAccountModal" data-toggle='modal' class="btn btn-success" style="vertical-align: top;">Submit</a>
                                 </a>
                             % endif
@@ -319,7 +303,7 @@
                         <td style="padding: 10px;">
                             <form class="no-bottom" ng-submit="submitComment()">
                                 <a href="#signupLoginModal" data-toggle='modal'>
-                                    <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <textarea rows="1" class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                 </a>
                                 <div ng-show="type == 'initiative' || type == 'idea'">
@@ -339,6 +323,31 @@
                         </td>
                     % endif
                 </tr> 
+                
+                <tr class="actions-links">
+                    <td colspan="2" style="padding: 10px;">
+                        <ul class="horizontal-list iconListing">
+                            <li>
+                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                            </li>
+                            <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                        </ul>
+                    </td>
+                </tr>
+                
+                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', hidden : commentsHidden}">
+
+                    <td class="comment-avatar-cell">
+                        <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
+                    </td>
+                    <td style="padding: 10px;">
+                        <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
+                        <br>
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
+                  </td>
+                </tr>
+                
             </table>
         </div>
     </div>
