@@ -10,8 +10,8 @@
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
       <title>${c.title}</title>
       <!-- Third-party assets -->
-      <link rel="stylesheet" href="/styles/vendor/bootstrap.css">
-      <link rel="stylesheet" href="/styles/vendor/bootstrap-responsive.min.css">
+      <link rel="stylesheet" href="/styles/vendor/bootstrap/css/bootstrap.css">
+      <link rel="stylesheet" href="/styles/vendor/bootstrap/css/bootstrap.min.css">
       <link rel="stylesheet" href="/styles/vendor/font-awesome/css/font-awesome.min.css">
       <link rel="stylesheet" href="${lib_6.fingerprintFile('/styles/civ.css')}">
       <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
