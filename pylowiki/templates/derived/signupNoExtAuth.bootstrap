@@ -5,7 +5,6 @@
 </%def>
 
 <%def name="headScripts()">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
     <script src="/js/ng/signup_login.js" type="text/javascript"></script>
     <script src="/js/geo.js" type="text/javascript"></script>
 </%def>

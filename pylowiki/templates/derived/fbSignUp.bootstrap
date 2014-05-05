@@ -1,11 +1,11 @@
 <%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
 <%def name="headScripts()">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
     <script src="/js/ng/signup_login.js" type="text/javascript"></script>
     <script src="/js/geo.js" type="text/javascript"></script>
 </%def>
@@ -84,6 +84,7 @@
                                 </div>
                             </form>
                             <script src="/js/signup.js" type="text/javascript"></script>
+                            <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
                         </div>
                     % endif
                 </div>
