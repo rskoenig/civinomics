@@ -9,6 +9,77 @@
 
 !
 <%def name="mainNavbar()">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="container">
+        <ul class="nav navbar-nav navbar-left">
+            <li><a style="padding: 5px 0 0 0;" href="/home"><img style="height:40px;" src="/images/civ_logo_simple.png"></a></li>
+        </ul>
+        
+        <form class="navbar-form navbar-left" action="/search">
+          <div class="form-group">
+            <input type="text" class="form-control" name="searchQuery" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Explore</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                    </li>
+                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                </ul>
+            </li>
+            % if userLib.isAdmin(c.authuser.id):
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                        <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
+                        <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                        <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                        <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                        <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                        <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                        <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                        <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                    </ul>
+                </li>
+            % endif
+            <li>
+                <%
+                    messageCount = ''
+                    numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
+                    if numMessages:
+                        if numMessages > 0:
+                            messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                %>
+                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
+            </li>
+            <li class="dropdown">
+                <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                    % if c.authuser['activated'] == '1':
+                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                    % endif
+                    <li><a href="/help">Help</a></li>
+                    <li class="divider"></li>
+                    <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+      </div>
+    </nav>
+</%def>
+
+
+<%def name="oldNavbar()">
     <% tagCategories = workshopLib.getWorkshopTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
