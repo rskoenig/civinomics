@@ -399,6 +399,7 @@ def make_map():
     map.connect('/meeting/{id1}/{id2}/meetingEdit{end:/?}', controller = 'meeting', action = 'meetingEdit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/meeting/{id1}/{id2}/meetingEditHandler{end:/?}', controller = 'meeting', action = 'meetingEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/meeting/{id1}/{id2}/show{end:/?}', controller = 'meeting', action = 'meetingShow', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/agendaitem/{id3}{end:/?}', controller = 'meeting', action = 'meetingShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/meeting/{id1}/{id2}/meetingAgendaItemAddHandler{end:/?}', controller = 'meeting', action = 'meetingAgendaItemAddHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/agendaitem/{id1}/{id2}/editHandler{end:/?}', controller = 'meeting', action = 'agendaitemEditHandler', id1 = '{id1}', id2 = '{id2}') 
     map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')

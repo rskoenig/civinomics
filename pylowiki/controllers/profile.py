@@ -372,6 +372,10 @@ class ProfileController(BaseController):
             href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
             if entry['objType'] == 'initiative' or entry['objType'] == 'meeting':
                 href += '/show'
+            if entry['objType'] == 'agendaitem':
+                mCode = item['meetingCode']
+                mURL = item['meeting_url']
+                href = '/meeting/' + mCode + '/' + mURL + '/agendaitem/' + item['urlCode']
                 
             entry['href'] = href
                 

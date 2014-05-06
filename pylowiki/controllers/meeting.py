@@ -52,8 +52,11 @@ class MeetingController(BaseController):
                 c.meeting = revisionLib.getRevisionByCode(id1)
                 if not c.meeting:
                     abort(404)
+            if id3 is not None:
+                c.agendaitem = meetingLib.getAgendaItem(id3)
+                if not c.agendaitem:
+                    abort(404)
         else:
-            log.info("meeting abort 3")
             abort(404)
 
         if 'user' in session and c.authuser:
