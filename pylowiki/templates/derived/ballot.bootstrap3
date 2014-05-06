@@ -1,0 +1,218 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+
+${helpers.mainNavbar()}
+
+<div class="container">
+    <div class="row">
+        <h1>
+            <div class="col-md-12">
+                Primary Election - Tuesday June 3, 2014
+            </div>
+            <div class="col-md-6">
+                <small>Sample Ballot for </small>
+                <img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states.gif">
+                <img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california.gif">
+                <img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz.gif">
+                <img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz/cities/watsonville.gif">   
+            </div>
+        </h1>
+    </div>
+    <!-- US -->
+    <hr>
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states.gif"> US Congress </h3>
+        <h4>House of Representatives, California District 20</h4>
+        <ul>
+            <li>Sam Farr, Democratic</li>
+            <li>Ronald Paul Kabat</li>
+        </ul>
+    </div>
+    
+    <!-- California -->
+    <hr>
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california.gif"> California State Executive Offices</h3>
+        
+        <h4>Govenor</h4>
+        <ul>
+            <li>Rakesh Kumar Christian</li>
+            <li>Cindy L. Sheehan, Peace and Freedom</li>
+            <li>Bogdan "Bo" Ambrozewicz</li>
+            <li>Alma Marie Winston, Republican</li>
+            <li>Neel Kashkari, Republican</li>
+            <li>Akinyemi Agbede, Democratic</li>
+            <li>Janel Hyeshia Buycks</li>
+            <li>Richard William Aguirre, Republican</li>
+            <li>Edmund G. "Jerry" Brown, Democratic</li>
+            <li>Andrew Blount, Republican</li>
+            <li>Tim Donnelly, Republican</li>
+            <li>Luis J. Rodriguez, Green</li>
+            <li>Robert Newman</li>
+            <li>Glenn Champ, Republican</li>
+            <li>Joe Leicht</li>
+        </ul>
+        
+        <h4>Lieutenant Govenor</h4>
+        <ul>
+            <li>George Yang, Republican</li>
+            <li>David Fennell, Republican</li>
+            <li>Gavin Newsom, Democratic</li>
+            <li>Jena F. Goodman, Green</li>
+            <li>Ron Nehring, Republican</li>
+            <li>Alan Reynolds, Americans Elect</li>
+            <li>Amos Johnson, Peace and Freedom</li>
+            <li>Eric Korevaar, Democratic</li>
+        </ul>
+        
+        <h4>Secretary of State</h4>
+        <ul>
+            <li><a name="schnur_d">Dan Schnur</a>
+            <li><a name="allmond_r" href="../state/vote/allmond_r/">Roy Allmond</a><i>, Republican</i>
+            <li><a name="cressman_d">Derek Cressman</a><i>, Democratic</i>
+            <li><a name="yee_l">Leland Yee</a><i>, Democratic</i>
+            <li><a name="padilla_a" href="../state/vote/padilla_a/">Alex Padilla</a><i>, Democratic</i>
+            <li><a name="drobman_j" href="../state/vote/drobman_j/">Jeffrey H. Drobman</a><i>, Democratic</i>
+            <li><a name="curtis_d" href="../state/vote/curtis_d/">David Curtis</a><i>, Green</i>
+            <li><a name="peterson_p">Pete Peterson</a><i>, Republican</i>            
+        </ul>
+
+        <h4>Controller</h4>
+        <ul>
+            <li><a name="evans_d">David Evans</a><i>, Republican</i>
+            <li><a name="yee_b" href="../state/vote/yee_b/">Betty T. Yee</a><i>, Democratic</i>
+            <li><a name="perez_j" href="../state/vote/perez_j/">John A. Pérez</a><i>, Democratic</i>
+            <li><a name="swearengin_a">Ashley Swearengin</a><i>, Republican</i>
+            <li><a name="wells_l" href="../state/vote/wells_l/">Laura Wells</a><i>, Green</i>
+            <li><a name="blair_t" href="../state/vote/blair_t/">Tammy D. Blair</a><i>, Democratic</i>
+        </ul>
+        
+        <h4>Treasurer</h4>
+        <ul>
+            <li><a name="conlon_g" href="../state/vote/conlon_g/">Greg Conlon</a><i>, Republican</i>
+            <li><a name="brown_eh">Ellen H. Brown</a><i>, Green</i>
+            <li><a name="chiang_j">John Chiang</a><i>, Democratic</i>
+        </ul>
+        
+        <h4>Attorney General</h4>
+        <ul>
+            <li><a name="taitz_o">Orly Taitz</a>
+            <li><a name="king_d">David King</a><i>, Republican</i>
+            <li><a name="gold_r">Ronald Gold</a><i>, Republican</i>
+            <li><a name="wyman_p">Phil Wyman</a><i>, Republican</i>
+            <li><a name="haggerty_j">John Haggerty</a><i>, Republican</i>
+            <li><a name="harris_k">Kamala D. Harris</a><i>, Democratic</i>
+            <li><a name="jaech_j" href="../state/vote/jaech_j/">Jonathan Jaech</a><i>, Libertarian</i>
+        </ul>
+
+        <h4>Insurance Commissioner</h4>
+        <ul>
+            <li><a name="jones_d">Dave Jones</a><i>, Democratic</i>
+            <li><a name="hrizi_n">Nathalie Hrizi</a><i>, Peace and Freedom</i>
+            <li><a name="gaines_t">Ted Gaines</a><i>, Republican</i>
+        </ul>
+        
+        <h4>State Board of Equalization; District 2</h4>
+        <ul>
+            <li><a name="ma_f">Fiona Ma</a><i>, Democratic</i>
+            <li><a name="theis_j">James E. Theis</a><i>, Republican</i>
+        </ul>
+        
+    </div>
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california.gif"> California State Legislature</h3>
+        <h4>Member of the State Assembly, District 30</h4>
+        <ul>
+            <li>Luis Alejo, Democratic</li>
+            <li>Mark Starritt, Republican</li>
+        </ul>
+    </div>
+    
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california.gif"> California Schools</h3>
+        <h4>State Superintendent of Public Instruction</h4>
+        <ul>
+            <li><a name="torlakson_t" href="../state/vote/torlakson_t/">Tom Torlakson</a>
+            <li><a name="tuck_m">Marshall Tuck</a>
+            <li><a name="gutierrez_l">Lydia A. Gutiérrez</a>
+        </ul>
+    </div>
+    
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california.gif"> California Propositions</h3>
+        <ul>
+            <li>
+                Proposition 41. Veterans Housing and Homeless Prevention Bond Act of 2014
+            </li>
+            <li>
+                Proposition 42. Public Records. Open Meetings. State Reimbursement to Local Agencies
+            </li>
+        </ul>
+        
+    </div>
+    
+    <!-- Santa Cruz County -->
+    <hr>
+    
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz.gif"> Santa Cruz County Executive Offices</h3>
+        <h4>Supervisor, Santa Cruz County, Supervisorial District 4</h4>
+        <ul>
+            <li>Greg Caput
+            <li>Jimmy Dutra
+            <li>Terry Medina
+            <li>Dana M. Sales
+        </ul>
+        
+        <h4>Assesor-Recorder</h4>
+        <ul>
+            <li>Sean Saldavia
+        </ul>
+        
+        <h4>Auditor-Controller-Treasurer-Tax Collector</h4>
+        <ul>
+            <li>Mry Jo Walker
+        </ul>
+        
+        <h4>County Clerk</h4>
+        <ul>
+            <li>Gail L. Pellerin
+        </ul>
+        
+        <h4>DA-Pub Admin</h4>
+        <ul>
+            <li>Ryan Coonerty
+        </ul>
+        
+        <h4>Sheriff-Coroner</h4>
+        <ul>
+            <li>Robert J. Pursley, Jr.
+            <li>Roger Wildey
+            <li>Jim Hart</li>
+        </ul>
+    </div>
+    
+    <div class="row">
+        <h3><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz.gif"> Santa Cruz County Schools</h3>
+        <h4>County Superintendent of Schools</h4>
+        <ul>
+            <li>Michael C. Watkins
+        </ul>
+    </div>
+    
+    <!-- Local Measures -->
+    <hr>
+    <div class="row">
+        <h3> Local Measures </h3>
+        <ul>
+            <li><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz/cities/watsonville.gif"> Measure G. Sales Tax <em>(2/3 Approval Required)</em></li>
+            <li><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz/cities/watsonville.gif"> Measure H. Filling Vacancies By Election <em>(Charter Amendment - Majority Approval Required)</em></li>
+            <li><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz/cities/watsonville.gif"> Measure I. Selection of Mayor <em>( Majority Approval Required)</em></li>
+            <li><img class="thumbnail flag small-flag border no-bottom" src="/images/flags/country/united-states/states/california/counties/santa-cruz/cities/watsonville.gif"> Measure J. Vote Required for Naming Public Places <em>(Majority Approval Required)</em></li>
+        </ul>
+    </div>
+    
+    
+    
+    
+</div>

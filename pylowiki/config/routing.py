@@ -406,6 +406,12 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateEditHandler/{id3}{end:/?}', controller = 'initiative', action = 'updateEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
+    ###############
+    # Ballot      #
+    ###############
+    map.connect('/ballot/june-3-2014', controller = 'ballot', action = 'showMockup')
+    
+    
     ################
     # Messaging    #
     ################
