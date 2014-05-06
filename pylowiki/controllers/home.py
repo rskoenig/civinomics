@@ -61,20 +61,30 @@ class HomeController(BaseController):
         return render('/derived/6_home.bootstrap')
 
     def getFollowingInitiatives(self, offset=0, limit=0):
-		interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
-		# reverse list so most recent first
-		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+        if 'facilitatorInitiatives' in session:
+            facilitatorInitiativeCodes = session['facilitatorInitiatives']
+        else:
+            facilitatorInitiativeCodes = []
+            
+        if 'bookmarkedInitiatives' in session:
+            bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
+        else:
+            bookmarkedInitiativeCodes = []
 
-		offset = int(offset)
-		limit = int(limit)
-		interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+        interestedInitiativeCodes = facilitatorInitiativeCodes + bookmarkedInitiativeCodes
 
-		interestedInitiatives = []
-		for code in interestedInitiativeCodes:
-			log.info('%s' % code)
-			i = initiativeLib.getInitiative(code)
-			if i:
-			    interestedInitiatives.append(i)
+        # reverse list so most recent first
+        interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+        offset = int(offset)
+        limit = int(limit)
+        interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+        interestedInitiatives = []
+        for code in interestedInitiativeCodes:
+            i = initiativeLib.getInitiative(code)
+            if i:
+                interestedInitiatives.append(i)
 
 		if len(interestedInitiatives) == 0:
 			return json.dumps({'statusCode':1})
