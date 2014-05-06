@@ -194,11 +194,7 @@
                     if (${userLoggedIn}) {
                         console.log('user logged in');
                         // getLoginStatus: gets the state of the person visiting this page
-                        FB.getLoginStatus(appendFacebookLogout);
-                        // RETURNS: 
-                        // 1. Logged into our app ('connected')
-                        // 2. Logged into Facebook, but not our app ('not_authorized')
-                        // 3. Not logged into Facebook and can't tell if they are logged into our app or not.
+                        // FB.getLoginStatus(appendFacebookLogout);
                     } else {
                         console.log('user not logged in');
                         FB.Event.subscribe('auth.authResponseChange', function(response) {
