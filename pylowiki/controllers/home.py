@@ -40,8 +40,6 @@ log = logging.getLogger(__name__)
 class HomeController(BaseController):
 
     def __before__(self):
-    	# load our app id
-    	c.facebookAppId = config['facebook.appid']
         if c.conf['public.sitemap'] != "true": 
             h.check_if_login_required()
         if 'user' in session:
