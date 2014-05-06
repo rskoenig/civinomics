@@ -356,10 +356,19 @@
                     <td style="padding: 10px;">
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
-                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                        <div ng-show="(comment.canEdit == 'yes')">
+                            <div class="btn-group">
+                                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
+                            </div>
+                            <div id="edit-{{comment.urlCode}}" class="collapse">
+                                <form action="/comment/edit/{{comment.urlCode}}" method="POST">
+                                    <textarea class="span10" name="data">{{comment.text}}</textarea>
+                                </form>
+                            </div><!-- collapse -->
+                        </div><!-- ng-show -->
                   </td>
                 </tr>
-                
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
                     <td>

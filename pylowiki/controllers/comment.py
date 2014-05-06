@@ -221,6 +221,11 @@ class CommentController(BaseController):
             entry['authorName'] = author['name']
             entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
             entry['authorPhoto'] = utils._userImageSource(author)
+            if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
+                entry['canEdit'] = 'yes'
+            else:
+                entry['canEdit'] = 'no'
+                
             result.append(entry)
 
         if len(result) == 0:
