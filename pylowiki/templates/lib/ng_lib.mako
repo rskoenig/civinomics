@@ -365,14 +365,15 @@
                                 <form action="/comment/edit/{{comment.urlCode}}" method="POST">
                                     <textarea class="span10" name="data">{{comment.text}}</textarea>
                                     <div ng-show="(comment.doCommentRole == 'yes')">
-                                        <label class="radio inline">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes" checked> Pro
+                                        Change to: 
+                                        <label class="radio inline" ng-show="(comment.commentRole != 'yes')">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes"> Pro
                                         </label>
-                                        <label class="radio inline">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
+                                        <label class="radio inline" ng-show="(comment.commentRole != 'neutral')">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral"> Neutral
                                         </label>
-                                        <label class="radio inline">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
+                                        <label class="radio inline" ng-show="(comment.commentRole != 'no')">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="no"> Con
                                         </label>
                                     </div><!-- ng-show -->
                                 </form>

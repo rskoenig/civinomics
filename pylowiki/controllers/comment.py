@@ -212,9 +212,18 @@ class CommentController(BaseController):
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['urlCode'] = comment['urlCode']
             entry['commentRole'] = ''
+            entry['yesChecked'] = ''
+            entry['noChecked'] = ''
+            entry['neutralChecked'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
-
+                if comment['commentRole'] == 'yes':
+                    entry['yesChecked'] = 'checked'
+                if comment['commentRole'] == 'no':
+                    entry['noChecked'] = 'checked'
+                if comment['commentRole'] == 'neutral':
+                    entry['neutralChecked'] = 'checked'
+                    
             if 'ideaCode' in comment or 'initiativeCode' in comment or 'meetingCode' in comment:
                 entry['doCommentRole'] = 'yes'
             else:
