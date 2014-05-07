@@ -52,6 +52,37 @@
                 </span>
             </h4> 
         </div>
+        <div class='span4' id='dc-age-chart'>
+            <h4>Age
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-howDidYouHearAboutThis-chart'> 
+            <h4>How did you hear about today's event? (Check all that apply)
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:howDidYouHearAboutThisChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc--chart'>
+            <h4>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
         <div class='span4' id='dc--chart'>
             <h4>
                 <span>
@@ -64,16 +95,51 @@
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
+    <div class='row-fluid'>   
+        <div class='span4' id='dc--chart'> 
+            <h4>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc--chart'>
+            <h4>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc--chart'>
+            <h4>
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
 
     <script>
         // Create the dc.js chart objects & link to div
         var genderChart = dc.pieChart("#dc-gender-chart");
         var withFamilyChart = dc.rowChart("#dc-withFamily-chart");
+        var ageChart = dc.pieChart("#dc-age-chart");
+        var howDidYouHearAboutThisChart = dc.rowChart("#dc-howDidYouHearAboutThis-chart");
 
+        function capitalize(s) {
+            return s[0].toUpperCase() + s.slice(1);
+        }
         d3.csv("/surveys/OpenStreetsCapitolaResults1.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
             var withFamilyValues = {};
+            var howDidYouHearAboutThisValues = {};
 
             i = 0;
             data.forEach(function(d) {
@@ -84,7 +150,28 @@
                 } else {
                     withFamilyValues[d.withFamily] = i + '^' + d.withFamily;
                 }
+
+                if (d.howDidYouHearAboutThis == "") {
+                    howDidYouHearAboutThisValues[d.howDidYouHearAboutThis] = i + '^' + 'No answer';
+                } else {
+                    // separate string into an array by |
+                    if (d.howDidYouHearAboutThis) {
+                        var betterString = d.howDidYouHearAboutThis.replace(/\//g, " or ");
+                        var allAnswers = betterString.split("|");
+                        //console.log(allAnswers);
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                    }
+                }
+
             });
+            console.log(withFamilyValues);
+            console.log(howDidYouHearAboutThisValues);
 
             // Run the data through crossfilter and load our 'facts'
             var facts = crossfilter(data);
@@ -112,6 +199,21 @@
                 return withFamilyValues[d.withFamily]
             });
             var withFamilyGroup = withFamily.group();
+
+            var age = facts.dimension(function (d) { 
+                if (d.age == "") {
+                    return "No answer";
+                } else {
+                    return d.age;
+                }
+            });
+            var ageGroup = age.group();
+
+            var howDidYouHearAboutThis = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                return howDidYouHearAboutThisValues[d.howDidYouHearAboutThis]
+            });
+            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.group();
 
             var peopleFormatter = function(d) {
                 if (d > 1)
@@ -161,6 +263,30 @@
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
+
+            ageChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(age) 
+                .group(ageGroup)
+                .label(function(d){return piePercentage(d, ageGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+            
+            howDidYouHearAboutThisChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(howDidYouHearAboutThis) 
+                .group(howDidYouHearAboutThisGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howDidYouHearAboutThisGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
             // Render the Charts
             dc.renderAll();
 
