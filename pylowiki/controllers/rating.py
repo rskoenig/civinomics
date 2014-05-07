@@ -69,15 +69,33 @@ class RatingController(BaseController):
 
     @h.login_required
     def rateDiscussion(self, code, url, amount):
-        return redirect(session['return_to'])
+        #return redirect(session['return_to'])
+        if (amount):
+            # get the new rating in the object and return it
+            return json.dumps({'statusCode':0, 'result':amount})
+        else:
+            log.info("oops: no rating recorded")
+            return json.dumps({'statusCode':2})
     
     @h.login_required
     def rateResource(self, code, url, amount):        
-        return redirect(session['return_to'])
+        #return redirect(session['return_to'])
+        if (amount):
+            # get the new rating in the object and return it
+            return json.dumps({'statusCode':0, 'result':amount})
+        else:
+            log.info("oops: no rating recorded")
+            return json.dumps({'statusCode':2})
     
     @h.login_required
     def rateComment(self, code, amount):
-        return redirect(session['return_to'])
+        #return redirect(session['return_to'])
+        if (amount):
+            # get the new rating in the object and return it
+            return json.dumps({'statusCode':0, 'result':amount})
+        else:
+            log.info("oops: no rating recorded")
+            return json.dumps({'statusCode':2})
 
     @h.login_required
     def rateIdea(self, code, amount):
@@ -92,15 +110,34 @@ class RatingController(BaseController):
             response.headers['Content-type'] = 'application/json'
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
-            return redirect(session['return_to'])
+            #return redirect(session['return_to'])
+            if (amount):
+                # get the new rating in the object and return it
+                return json.dumps({'statusCode':0, 'result':amount})
+            else:
+                log.info("oops: no rating recorded")
+                return json.dumps({'statusCode':2})
         
     @h.login_required
     def ratePhoto(self, code, amount):
-        return redirect(session['return_to'])
+        #return redirect(session['return_to'])
+        if (amount):
+            # get the new rating in the object and return it
+            return json.dumps({'statusCode':0, 'result':amount})
+        else:
+            log.info("oops: no rating recorded")
+            return json.dumps({'statusCode':2})
         
     @h.login_required
     def rateInitiative(self, code, amount):
-        return redirect(session['return_to'])
+        #return redirect(session['return_to'])
+        if (amount):
+            # get the new rating in the object and return it
+            return json.dumps({'statusCode':0, 'result':amount})
+        else:
+            log.info("oops: no rating recorded")
+            return json.dumps({'statusCode':2})
+        
 
     ########################################################################
     # 

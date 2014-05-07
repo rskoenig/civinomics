@@ -13,5 +13,7 @@ ${helpers.shortFooter()}
 		${helpers.activateAccountModal()}
 	% endif
 % endif
+${helpers.voteShareModal()}
 ${helpers.signupLoginModal()}
+
 

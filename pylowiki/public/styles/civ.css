@@ -503,6 +503,21 @@ font-size: 14px;
     max-height: 800px;
 }
 
+#voteShareModal span {
+  background-image: none;
+  background-color: #ffffff;
+}
+
+#voteShareModal .modal-footer{
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+#voteShareModal .modal-body{
+    max-height: 800px;
+}
+
 .sc-font-light {
 font-weight: 100;
 }
