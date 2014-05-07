@@ -1,0 +1,92 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/derived/6_profile_edit.mako" name="edit" />
+<%!
+    from pylowiki.lib.db.user import isAdmin
+%>
+##<div ng-app="ngUploadApp">
+    <div class="spacer"></div>
+    <div class="row-fluid" ng-controller="profileController">
+        <div class="span8">
+            <div class="tabbable">
+                <ul class="nav nav-tabs" id="editTabs">
+                <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover">Edit Profile</a></li>
+                <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab-edit">
+                        ${edit.editProfile()}
+                    </div><!-- tab-edit -->
+                </div><!-- tab-content -->
+            </div><!-- tabbable -->
+        </div><!-- span8 -->
+        <div class="span4">
+            ${dashboard.profileDashboard()}
+        </div><!--/.span4-->
+    </div>
+##</div>
+
+<%def name = 'extraScripts()'>
+    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 55,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
+            
+            
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.ui.widget.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/load-image.min.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/canvas-to-blob.min.js')}"></script>
+            ##<script src="${lib_6.fingerprintFile('/js/vendor/blueimp/bootstrap-image-gallery.min.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-process.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-resize.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-validate.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-angular.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/jquery.Jcrop.js')}"></script>
+        % endif 
+    % endif
+
+</%def>
+
+<%def name="headScripts()">
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+        % endif
+    % endif
+    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-tab.js')}" type="text/javascript"></script>
+    <script>
+        $(function () {
+            if(location.hash && location.hash.match(/tab-edit/)) {
+                $('#profileTabs a[href="#tab-edit"]').tab('show');
+            } else {
+                $('#profileTabs a:first').tab('show');
+            }
+        });
+    </script>
+</%def>
+
+<%def name="extraStyles()">
+    <link rel="stylesheet" href="/styles/vendor/jquery.Jcrop.css">
+    <link rel="stylesheet" href="/styles/vendor/blueimp.css">
+</%def>
+
