@@ -359,15 +359,26 @@
                         <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
                         <div ng-show="(comment.canEdit == 'yes')">
                             <div class="btn-group">
-                                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
-                            </div>
+                                <button type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
+                            </div><!-- btn-group -->
                             <div id="edit-{{comment.urlCode}}" class="collapse">
                                 <form action="/comment/edit/{{comment.urlCode}}" method="POST">
                                     <textarea class="span10" name="data">{{comment.text}}</textarea>
+                                    <div ng-show="(comment.doCommentRole == 'yes')">
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes" checked> Pro
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
+                                        </label>
+                                    </div><!-- ng-show -->
                                 </form>
                             </div><!-- collapse -->
                         </div><!-- ng-show -->
-                  </td>
+                    </td>
                 </tr>
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>

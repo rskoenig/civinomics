@@ -210,9 +210,15 @@ class CommentController(BaseController):
             entry = {}
             entry['text'] = comment['data']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['urlCode'] = comment['urlCode']
             entry['commentRole'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
+
+            if 'ideaCode' in comment or 'initiativeCode' in comment or 'meetingCode' in comment:
+                entry['doCommentRole'] = 'yes'
+            else:
+                entry['doCommentRole'] = 'no'
 
             entry['date'] = fuzzyTime.timeSince(comment.date)
 
