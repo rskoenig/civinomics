@@ -17,7 +17,12 @@
 ##  * multiple choice answers end up giving us a unique situation. We
 ##  need to create a count of the occurrences for all the answers, but
 ##  at the same time we need to map how many people have picked any one answer.
-##   
+##   refs:
+## http://stackoverflow.com/questions/17524627/is-there-a-way-to-tell-crossfilter-to-treat-elements-of-array-as-separate-record/17529113#17529113
+## http://stackoverflow.com/questions/16767231/what-are-the-reduceadd-reducesum-reduceremove-functions-in-crossfilter-how-s
+## https://github.com/square/crossfilter/wiki/API-Reference
+## AND SINCE WE NEED TO ID CUSTOM ATTRIBUTES:
+## https://github.com/square/crossfilter/issues/102#issuecomment-31570749
 ######################################
 <%def name="reduceAddRemoveInitial()">
     <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
@@ -191,7 +196,8 @@
     <hr>
     <div class='row-fluid'>   
         <div class='span4' id='dc-howDidYouHearAboutThis-chart'> 
-            <h4>How did you hear about today's event? (Check all that apply)
+            <h4>How did you hear about today's event?
+                <br /><a href="#howDidYouHearAboutThis1">see descriptions</a>
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
@@ -199,21 +205,23 @@
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>
+        <div class='span4' id='dc-whatDrewYou-chart'>
+            <h4>What drew you to today's event?
+                <br /><a href="#whatDrewYou1">see descriptions</a>
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:whatDrewYouChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>
+        <div class='span4' id='dc-howYouArrive-chart'>
+            <h4>How did you arrive at today's event?
+                <br /><a href="#howYouArrive1">see descriptions</a>
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:howYouArriveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -221,21 +229,22 @@
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
     <div class='row-fluid'>   
-        <div class='span4' id='dc--chart'> 
-            <h4>
+        <div class='span4' id='dc-parkingGood-chart'> 
+            <h4>Was the available parking satisfactory?
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>
+        <div class='span4' id='dc-whereLive-chart'>
+            <h4>Where do you live?
+                <br /><a href="#whereLive1">see descriptions</a>
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:whereLiveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
@@ -250,12 +259,58 @@
         </div>
     </div>
 
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='howDidYouHearAboutThis1'>Further input on question:
+                <a href="#dc-howDidYouHearAboutThis-chart"><br />"How did you hear about today's event?"</a>
+            </h4>
+            <div id="howDidYouHearAboutThis1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='whatDrewYou1'>Further input on question:
+                <a href="#dc-whatDrewYou-chart"><br />"What drew you to today's event?"</a>
+            </h4>
+            <div id="whatDrewYou1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='howYouArrive1'>Further input on question:
+                <a href="#dc-howYouArrive-chart"><br />"How did you arrive at today's event?"</a>
+            </h4>
+            <div id="howYouArrive1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='whereLive1'>Further input on question:
+                <a href="#dc-whereLive-chart"><br />"Where do you live?"</a>
+            </h4>
+            <div id="whereLive1"></div>
+        </div>
+    </div>
+
+
     <script>
         // Create the dc.js chart objects & link to div
         var genderChart = dc.pieChart("#dc-gender-chart");
         var withFamilyChart = dc.rowChart("#dc-withFamily-chart");
         var ageChart = dc.pieChart("#dc-age-chart");
         var howDidYouHearAboutThisChart = dc.rowChart("#dc-howDidYouHearAboutThis-chart");
+        var whatDrewYouChart = dc.rowChart("#dc-whatDrewYou-chart");
+        var howYouArriveChart = dc.rowChart("#dc-howYouArrive-chart");
+        var parkingGoodChart = dc.pieChart("#dc-parkingGood-chart");
+        var whereLiveChart = dc.pieChart("#dc-whereLive-chart");
+
 
         function capitalize(s) {
             return s[0].toUpperCase() + s.slice(1);
@@ -264,7 +319,7 @@
             //console.log(error);
             //console.log(data);
             var withFamilyValues = {};
-            //var howDidYouHearAboutThisValues = {};
+            var howYouArriveValues = {};
 
             i = 0;
             data.forEach(function(d) {
@@ -275,29 +330,24 @@
                 } else {
                     withFamilyValues[d.withFamily] = i + '^' + d.withFamily;
                 }
-                /*
-                if (d.howDidYouHearAboutThis == "") {
-                    howDidYouHearAboutThisValues[d.howDidYouHearAboutThis] = i + '^' + 'No answer';
-                } else {
-                    // separate string into an array by |
-                    if (d.howDidYouHearAboutThis) {
-                        var betterString = d.howDidYouHearAboutThis.replace(/\//g, " or ");
-                        var allAnswers = betterString.split("|");
-                        //console.log(allAnswers);
-                        for (var j = 0; j < allAnswers.length; j++) {
-                            //console.log(allAnswers[j]);
-                            i++;
-                            var answer = capitalize(allAnswers[j].trim());
-                            //console.log(answer);
-                            howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
-                        }
-                    }
+                if (d.howDidYouHearAboutThis1 != "") {
+                    $('#howDidYouHearAboutThis1').append('<p>* ' + capitalize(d.howDidYouHearAboutThis1) + '</p>');
                 }
-                */
-
+                if (d.whatDrewYou1 != "") {
+                    $('#whatDrewYou1').append('<p>* ' + capitalize(d.whatDrewYou1) + '</p>');
+                }
+                if (d.howYouArrive == "") {
+                    howYouArriveValues[d.howYouArrive] = i + '^' + 'No answer';
+                } else {
+                    howYouArriveValues[d.howYouArrive] = i + '^' + d.howYouArrive;
+                }
+                if (d.howYouArrive1 != "") {
+                    $('#howYouArrive1').append('<p>* ' + capitalize(d.howYouArrive1) + '</p>');
+                }
+                if (d.whereLive1 != "") {
+                    $('#whereLive1').append('<p>* ' + capitalize(d.whereLive1) + '</p>');
+                }
             });
-            //console.log(withFamilyValues);
-            //console.log(howDidYouHearAboutThisValues);
 
             // Run the data through crossfilter and load our 'facts'
             var facts = crossfilter(data);
@@ -319,7 +369,7 @@
                 }
             });
             var genderGroup = gender.group();
- 
+            
             var withFamily = facts.dimension(function (d) {
                 // for row charts, we return a predefined string: "#.string"
                 //console.log(d.withFamily);               
@@ -336,74 +386,99 @@
             });
             var ageGroup = age.group();
 
-            /*
-            var howDidYouHearAboutThis = facts.dimension(function (d) {
-                // for row charts, we return a predefined string: "#.string"
-                return howDidYouHearAboutThisValues[d.howDidYouHearAboutThis]
-            });
-            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.group();
-            */
-            function reduceAdd(p, v) {
-                if (v.howDidYouHearAboutThis === "") return p;    // skip empty values
-                // convert v.howDidYouHearAboutThis into an array
-                var betterString = v.howDidYouHearAboutThis.replace(/\//g, " or ");
-                var allAnswers = betterString.split("|");
-                //console.log(allAnswers);
-                answersArray = [];
-                for (var j = 0; j < allAnswers.length; j++) {
-                    //console.log(allAnswers[j]);
-                    i++;
-                    var answer = capitalize(allAnswers[j].trim());
-                    //console.log(answer);
-                    answersArray.push(answer);
-                    //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
-                }
-                answersArray.forEach(function(val, idx) {
-                    p[val] = (p[val] || 0) + 1; //increment counts
-                });
-                return p;
+            function reduceAddAttr(attr) {
+                return function(p, v) {
+                    if (v[attr] === "") return p;    // skip empty values
+                    // convert v.howDidYouHearAboutThis into an array
+                    var betterString = v[attr].replace(/\//g, " or ");
+                    var allAnswers = betterString.split("|");
+                    //console.log(allAnswers);
+                    answersArray = [];
+                    for (var j = 0; j < allAnswers.length; j++) {
+                        //console.log(allAnswers[j]);
+                        i++;
+                        var answer = capitalize(allAnswers[j].trim());
+                        //console.log(answer);
+                        answersArray.push(answer);
+                        //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                    }
+                    answersArray.forEach(function(val, idx) {
+                        p[val] = (p[val] || 0) + 1; //increment counts
+                    });
+                    return p;
+                };
             }
 
-            function reduceRemove(p, v) {
-                if (v.howDidYouHearAboutThis === "") return p;    // skip empty values
-                var betterString = v.howDidYouHearAboutThis.replace(/\//g, " or ");
-                var allAnswers = betterString.split("|");
-                //console.log(allAnswers);
-                answersArray = [];
-                for (var j = 0; j < allAnswers.length; j++) {
-                    //console.log(allAnswers[j]);
-                    i++;
-                    var answer = capitalize(allAnswers[j].trim());
-                    //console.log(answer);
-                    answersArray.push(answer);
-                    //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
-                }
-                answersArray.forEach(function(val, idx) {
-                    p[val] = (p[val] || 0) - 1; //decrement counts
-                });
-                return p;
+            function reduceRemoveAttr(attr) {
+                return function(p, v) {
+                    if (v[attr] === "") return p;    // skip empty values
+                    var betterString = v[attr].replace(/\//g, " or ");
+                    var allAnswers = betterString.split("|");
+                    //console.log(allAnswers);
+                    answersArray = [];
+                    for (var j = 0; j < allAnswers.length; j++) {
+                        //console.log(allAnswers[j]);
+                        i++;
+                        var answer = capitalize(allAnswers[j].trim());
+                        //console.log(answer);
+                        answersArray.push(answer);
+                        //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                    }
+                    answersArray.forEach(function(val, idx) {
+                        p[val] = (p[val] || 0) - 1; //decrement counts
+                    });
+                    return p;
+                };
             }
 
             function reduceInitial() {
                 return {};  
             }
 
-            var howDidYouHearAboutThis = facts.dimension(function(d){ return d.howDidYouHearAboutThis;});
-            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
-
             // hack to make dc.js charts work
-            howDidYouHearAboutThisGroup.all = function() {
+            function groupAllKludge(thisGroup) {
                 var newObject = [];
-                for (var key in this) {
-                    if (this.hasOwnProperty(key) && key != "all") {
+                for (var key in thisGroup) {
+                    if (thisGroup.hasOwnProperty(key) && key != "all") {
                         newObject.push({
                             key: key,
-                            value: this[key]
+                            value: thisGroup[key]
                         });
                     }
                 }
                 return newObject;
-            };
+            }
+
+            var howDidYouHearAboutThis = facts.dimension(function(d){ return d.howDidYouHearAboutThis;});
+            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.groupAll().reduce(reduceAddAttr('howDidYouHearAboutThis'), reduceRemoveAttr('howDidYouHearAboutThis'), reduceInitial).value();
+            howDidYouHearAboutThisGroup.all = function() { return groupAllKludge(this); };
+
+            var whatDrewYou = facts.dimension(function(d) {return d.whatDrewYou;});
+            var whatDrewYouGroup = whatDrewYou.groupAll().reduce(reduceAddAttr('whatDrewYou'), reduceRemoveAttr('whatDrewYou'), reduceInitial).value();
+            whatDrewYouGroup.all = function() { return groupAllKludge(this); };
+
+            var howYouArrive = facts.dimension(function (d) {
+                return howYouArriveValues[d.howYouArrive];
+            });
+            var howYouArriveGroup = howYouArrive.group();
+
+            var parkingGood = facts.dimension(function (d) { 
+                if (d.parkingGood == "") {
+                    return "No answer";
+                } else {
+                    return d.parkingGood;
+                }
+            });
+            var parkingGoodGroup = parkingGood.group();
+
+            var whereLive = facts.dimension(function (d) { 
+                if (d.whereLive == "") {
+                    return "No answer";
+                } else {
+                    return d.whereLive;
+                }
+            });
+            var whereLiveGroup = whereLive.group();
 
             var peopleFormatter = function(d) {
                 if (d > 1)
@@ -461,30 +536,57 @@
                 .dimension(age) 
                 .group(ageGroup)
                 .label(function(d){return piePercentage(d, ageGroup);})
-                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
-            
-            /*
-            howDidYouHearAboutThisChart.width(300) 
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+
+            howDidYouHearAboutThisChart
                 .height(220)
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
-                .dimension(howDidYouHearAboutThis) 
+                .colors(d3.scale.category20b())
+                .dimension(howDidYouHearAboutThis)
                 .group(howDidYouHearAboutThisGroup)
+                .title(function(d){return piePercentage(d, howDidYouHearAboutThisGroup);})
+                .xAxis().ticks(4);
+
+            whatDrewYouChart
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .colors(d3.scale.category20b())
+                .dimension(whatDrewYou)
+                .group(whatDrewYouGroup)
+                .title(function(d){return piePercentage(d, whatDrewYouGroup);})
+                .xAxis().ticks(4);
+
+            howYouArriveChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(howYouArrive) 
+                .group(howYouArriveGroup)
                 .colors(d3.scale.category20b())
                 .label(function (d){
                   return d.key.split('^')[1];
                   })
-                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howDidYouHearAboutThisGroup);})
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howYouArriveGroup);})
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
-            */
+            
+            parkingGoodChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(parkingGood) 
+                .group(parkingGoodGroup)
+                .label(function(d){return piePercentage(d, parkingGoodGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
 
-            howDidYouHearAboutThisChart
-                .renderLabel(true)
-                .height(220)
-                .dimension(howDidYouHearAboutThis)
-                .group(howDidYouHearAboutThisGroup)
-                .xAxis().ticks(4);
+            whereLiveChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(whereLive) 
+                .group(whereLiveGroup)
+                .label(function(d){return piePercentage(d, whereLiveGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
 
             // Render the Charts
             dc.renderAll();
