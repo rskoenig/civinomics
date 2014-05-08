@@ -37,8 +37,6 @@ class RegisterController(BaseController):
             h.check_if_login_required()
 
     def splashDisplay(self):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
         c.title = config['custom.titlebar']
 
         c.backgroundPhoto = {'title': 'City Council Meeting'}
@@ -114,9 +112,6 @@ class RegisterController(BaseController):
         return render("/derived/signupNoExtAuth.bootstrap")
 
     def fbNewAccount( self ):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'

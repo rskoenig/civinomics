@@ -44,8 +44,6 @@ class SearchController(BaseController):
 
     def __before__(self, action, searchType = None, **kwargs):
         # need this for facebook login in modal
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
         c.baseUrl = utils.getBaseUrl()
         #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
         c.title = c.heading = "Civinomics Search"

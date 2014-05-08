@@ -247,8 +247,6 @@
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
-        facebookAppId = c.facebookAppId
-        channelUrl = c.channelUrl
         thingCode = c.thingCode
         if not thingCode:
           thingCode = 'noCode'
