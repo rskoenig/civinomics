@@ -9,7 +9,131 @@
 
 <%def name="includeD3()">
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+</%def>
+
+######################################
+## reduceAddRemoveInitial
+##  * HANDY EXAMPLE HERE
+##  * multiple choice answers end up giving us a unique situation. We
+##  need to create a count of the occurrences for all the answers, but
+##  at the same time we need to map how many people have picked any one answer.
+##   
+######################################
+<%def name="reduceAddRemoveInitial()">
+    <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
+    <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3reduceAddRemoveInitial.css' rel='stylesheet' type='text/css'>
+
+    <div id="chart"></div>
+    <div id="piechart"></div>
+    <div id="chart2"></div>
+
+    <script>
+        
+
+        function reduceAdd(p, v) {
+            if (v.topics[0] === "") return p;    // skip empty values
+            v.topics.forEach (function(val, idx) {
+                p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+        }
+
+        function reduceRemove(p, v) {
+            if (v.topics[0] === "") return p;    // skip empty values
+            v.topics.forEach (function(val, idx) {
+                p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+           
+        }
+
+        function reduceInitial() {
+            return {};  
+        }
+
+        var data = [
+            {"key":"KEY-1","state":"CA", "topics":["Technology", "Science", "Automotive"], "date":new Date("10/02/2012")},
+            {"key":"KEY-2","state":"CA", "topics":["Health"], "date": new Date("10/05/2012")},
+            {"key":"KEY-3","state":"OR", "topics":["Science"], "date":new Date("10/08/2012")},
+            {"key":"KEY-4","state":"WA", "topics":["Automotive", "Science"], "date":new Date("10/09/2012")},
+            {"key":"KEY-5","state":"WA", "topics":["Science"], "date":new Date("10/09/2012")}
+        ];
+
+        var cf = crossfilter(data);
+
+        var topicsDim = cf.dimension(function(d){ return d.topics;});
+        var topicsGroup = topicsDim.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+        // hack to make dc.js charts work
+        topicsGroup.all = function() {
+          var newObject = [];
+          for (var key in this) {
+            if (this.hasOwnProperty(key) && key != "all") {
+              newObject.push({
+                key: key,
+                value: this[key]
+              });
+            }
+          }
+          return newObject;
+        };
+
+        var dates = cf.dimension(function(d){ return d.date;});
+        var datesGroup = dates.group();
+
+        var states = cf.dimension(function(d){ return d.state;});
+        var stateGroup = states.group();
+
+        var pieChart = dc.pieChart("#piechart");
+        pieChart.height(75).width(75).dimension(states).group(stateGroup);
+
+        var barChart = dc.rowChart("#chart");
+            
+        barChart
+            .renderLabel(true)
+            .height(200)
+            .dimension(topicsDim)
+            .group(topicsGroup)
+            .xAxis().ticks(3);
+
+        barChart.filterHandler (function (dimension, filters) {
+                dimension.filter(null);   
+                if (filters.length === 0)
+                    dimension.filter(null);
+                else
+                    dimension.filter(function (d) {
+                        for (var i=0; i < d.length; i++) {
+                            if (filters.indexOf(d[i]) >= 0) return true;
+                        }
+                        return false;
+                    });
+            return filters; 
+            }
+        );
+
+        var chart2 = dc.barChart("#chart2");
+
+        chart2
+            .width(500)
+            .height(200)
+            .transitionDuration(800)
+            .margins({top: 10, right: 50, bottom: 30, left: 40})
+            .dimension(dates)
+            .group(datesGroup)  
+            .x(d3.time.scale().domain([new Date(2012, 9, 1), new Date(2012, 9, 11)]))
+            .xUnits(d3.time.days)
+            .centerBar(true)
+            .renderHorizontalGridLines(true)       
+            .brushOn(true);    
+            
+        chart2.xAxis()
+            .tickFormat(d3.time.format('%b %d'));
+            
+        dc.renderAll();
+
+    </script>
 </%def>
 
 <%def name="dcOpenStreetsCap1()">
@@ -17,6 +141,7 @@
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <hr>
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
@@ -139,7 +264,7 @@
             //console.log(error);
             //console.log(data);
             var withFamilyValues = {};
-            var howDidYouHearAboutThisValues = {};
+            //var howDidYouHearAboutThisValues = {};
 
             i = 0;
             data.forEach(function(d) {
@@ -150,7 +275,7 @@
                 } else {
                     withFamilyValues[d.withFamily] = i + '^' + d.withFamily;
                 }
-
+                /*
                 if (d.howDidYouHearAboutThis == "") {
                     howDidYouHearAboutThisValues[d.howDidYouHearAboutThis] = i + '^' + 'No answer';
                 } else {
@@ -168,10 +293,11 @@
                         }
                     }
                 }
+                */
 
             });
-            console.log(withFamilyValues);
-            console.log(howDidYouHearAboutThisValues);
+            //console.log(withFamilyValues);
+            //console.log(howDidYouHearAboutThisValues);
 
             // Run the data through crossfilter and load our 'facts'
             var facts = crossfilter(data);
@@ -196,7 +322,8 @@
  
             var withFamily = facts.dimension(function (d) {
                 // for row charts, we return a predefined string: "#.string"
-                return withFamilyValues[d.withFamily]
+                //console.log(d.withFamily);               
+                return withFamilyValues[d.withFamily];
             });
             var withFamilyGroup = withFamily.group();
 
@@ -209,11 +336,74 @@
             });
             var ageGroup = age.group();
 
+            /*
             var howDidYouHearAboutThis = facts.dimension(function (d) {
                 // for row charts, we return a predefined string: "#.string"
                 return howDidYouHearAboutThisValues[d.howDidYouHearAboutThis]
             });
             var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.group();
+            */
+            function reduceAdd(p, v) {
+                if (v.howDidYouHearAboutThis === "") return p;    // skip empty values
+                // convert v.howDidYouHearAboutThis into an array
+                var betterString = v.howDidYouHearAboutThis.replace(/\//g, " or ");
+                var allAnswers = betterString.split("|");
+                //console.log(allAnswers);
+                answersArray = [];
+                for (var j = 0; j < allAnswers.length; j++) {
+                    //console.log(allAnswers[j]);
+                    i++;
+                    var answer = capitalize(allAnswers[j].trim());
+                    //console.log(answer);
+                    answersArray.push(answer);
+                    //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                }
+                answersArray.forEach(function(val, idx) {
+                    p[val] = (p[val] || 0) + 1; //increment counts
+                });
+                return p;
+            }
+
+            function reduceRemove(p, v) {
+                if (v.howDidYouHearAboutThis === "") return p;    // skip empty values
+                var betterString = v.howDidYouHearAboutThis.replace(/\//g, " or ");
+                var allAnswers = betterString.split("|");
+                //console.log(allAnswers);
+                answersArray = [];
+                for (var j = 0; j < allAnswers.length; j++) {
+                    //console.log(allAnswers[j]);
+                    i++;
+                    var answer = capitalize(allAnswers[j].trim());
+                    //console.log(answer);
+                    answersArray.push(answer);
+                    //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                }
+                answersArray.forEach(function(val, idx) {
+                    p[val] = (p[val] || 0) - 1; //decrement counts
+                });
+                return p;
+            }
+
+            function reduceInitial() {
+                return {};  
+            }
+
+            var howDidYouHearAboutThis = facts.dimension(function(d){ return d.howDidYouHearAboutThis;});
+            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+
+            // hack to make dc.js charts work
+            howDidYouHearAboutThisGroup.all = function() {
+                var newObject = [];
+                for (var key in this) {
+                    if (this.hasOwnProperty(key) && key != "all") {
+                        newObject.push({
+                            key: key,
+                            value: this[key]
+                        });
+                    }
+                }
+                return newObject;
+            };
 
             var peopleFormatter = function(d) {
                 if (d > 1)
@@ -273,6 +463,7 @@
                 .label(function(d){return piePercentage(d, ageGroup);})
                 .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
             
+            /*
             howDidYouHearAboutThisChart.width(300) 
                 .height(220)
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
@@ -286,6 +477,14 @@
                 .xAxis()
                 .tickFormat(function(d) { return d; })
                 .ticks(4);
+            */
+
+            howDidYouHearAboutThisChart
+                .renderLabel(true)
+                .height(220)
+                .dimension(howDidYouHearAboutThis)
+                .group(howDidYouHearAboutThisGroup)
+                .xAxis().ticks(4);
 
             // Render the Charts
             dc.renderAll();
@@ -302,6 +501,7 @@
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <hr>
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
@@ -928,6 +1128,7 @@
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <div class='row-fluid' name="dc-data-top">
         <div class="pull-left workshop-metrics metrics-large">
@@ -1577,6 +1778,11 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
 </%def>
 
 <%def name="dcCommuterSurvey()">
+  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
   <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
     <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
       <span> 
@@ -1789,10 +1995,6 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     </div>
   </div>
 
-  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
-  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
-  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
-  
   <script>
       // Create the dc.js chart objects & link to div
       var salaryChart = dc.barChart("#dc-salary-chart");

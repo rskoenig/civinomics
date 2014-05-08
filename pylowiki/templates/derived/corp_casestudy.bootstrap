@@ -85,6 +85,7 @@
           ${d3Lib.includeD3()}
           <!-- $ - { d3Lib.dcExample()} -->
           % if c.study['stats'] == 'openStreetsCap1':
+              <!-- $ -{- d3Lib.reduceAddRemoveInitial()} -->
               ${d3Lib.dcOpenStreetsCap1()}
           % elif c.study['stats'] == 'plasticBagBan':
               ${d3Lib.dcPlasticBagSurvey()}
