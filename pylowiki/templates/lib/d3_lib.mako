@@ -248,14 +248,80 @@
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc--chart'>
-            <h4>
+        <div class='span4' id='dc-wantHappenAgain-chart'>
+            <h4>Would you like to see this event happen again?
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
-    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+    onclick="javascript:wantHappenAgainChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-spendMoreTimeIfTrafficFree-chart'> 
+            <h4>Would you spend more time in Capitola Village if the Esplanade was periodically closed to car traffic?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-howMuchSpendingToday-chart'>
+            <h4>How much money have you spent, or do you expect to spend at the Capitola Village today?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc-learnAboutNewBusinesses-chart'>
+            <h4>Did you learn about any new Capitola Village businesses that you weren't aware of before?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
+    <div class='row-fluid'>   
+        <div class='span4' id='dc-enterRaffleFamilyCycling-chart'> 
+            <h4>Would  you like to enter a free raffle to win a $500 gift certificate from Family Cycling Center?
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:enterRaffleFamilyCyclingChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        <div class='span4' id='dc-likeContactAbout-chart'>
+            <h4>Would you like to be contacted about...
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:likeContactAboutChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4' id='dc--chart'>
+
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='suggestionsComments'>Do you have any suggestions for future events? General comments?
+            </h4>
+            <div id="suggestionsComments"></div>
         </div>
     </div>
 
@@ -310,7 +376,12 @@
         var howYouArriveChart = dc.rowChart("#dc-howYouArrive-chart");
         var parkingGoodChart = dc.pieChart("#dc-parkingGood-chart");
         var whereLiveChart = dc.pieChart("#dc-whereLive-chart");
-
+        var wantHappenAgainChart = dc.pieChart("#dc-wantHappenAgain-chart");
+        var spendMoreTimeIfTrafficFreeChart = dc.pieChart("#dc-spendMoreTimeIfTrafficFree-chart");
+        var howMuchSpendingTodayChart = dc.pieChart("#dc-howMuchSpendingToday-chart");
+        var learnAboutNewBusinessesChart = dc.pieChart("#dc-learnAboutNewBusinesses-chart");
+        var enterRaffleFamilyCyclingChart = dc.pieChart("#dc-enterRaffleFamilyCycling-chart");
+        var likeContactAboutChart = dc.rowChart("#dc-likeContactAbout-chart");
 
         function capitalize(s) {
             return s[0].toUpperCase() + s.slice(1);
@@ -320,6 +391,7 @@
             //console.log(data);
             var withFamilyValues = {};
             var howYouArriveValues = {};
+            var likeContactAboutValues = {};
 
             i = 0;
             data.forEach(function(d) {
@@ -346,6 +418,14 @@
                 }
                 if (d.whereLive1 != "") {
                     $('#whereLive1').append('<p>* ' + capitalize(d.whereLive1) + '</p>');
+                }
+                if (d.suggestionsComments != "") {
+                    $('#suggestionsComments').append('<p>* ' + capitalize(d.suggestionsComments) + '</p>');
+                }
+                if (d.likeContactAbout == "") {
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + 'No answer';
+                } else {
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + d.likeContactAbout;
                 }
             });
 
@@ -480,6 +560,56 @@
             });
             var whereLiveGroup = whereLive.group();
 
+            var wantHappenAgain = facts.dimension(function (d) { 
+                if (d.wantHappenAgain == "") {
+                    return "No answer";
+                } else {
+                    return d.wantHappenAgain;
+                }
+            });
+            var wantHappenAgainGroup = wantHappenAgain.group();
+            
+            var spendMoreTimeIfTrafficFree = facts.dimension(function (d) { 
+                if (d.spendMoreTimeIfTrafficFree == "") {
+                    return "No answer";
+                } else {
+                    return d.spendMoreTimeIfTrafficFree;
+                }
+            });
+            var spendMoreTimeIfTrafficFreeGroup = spendMoreTimeIfTrafficFree.group();
+
+            var howMuchSpendingToday = facts.dimension(function (d) { 
+                if (d.howMuchSpendingToday == "") {
+                    return "No answer";
+                } else {
+                    return d.howMuchSpendingToday;
+                }
+            });
+            var howMuchSpendingTodayGroup = howMuchSpendingToday.group();
+
+            var learnAboutNewBusinesses = facts.dimension(function (d) { 
+                if (d.learnAboutNewBusinesses == "") {
+                    return "No answer";
+                } else {
+                    return d.learnAboutNewBusinesses;
+                }
+            });
+            var learnAboutNewBusinessesGroup = learnAboutNewBusinesses.group();
+
+            var enterRaffleFamilyCycling = facts.dimension(function (d) { 
+                if (d.enterRaffleFamilyCycling == "") {
+                    return "No answer";
+                } else {
+                    return d.enterRaffleFamilyCycling;
+                }
+            });
+            var enterRaffleFamilyCyclingGroup = enterRaffleFamilyCycling.group();
+
+            var likeContactAbout = facts.dimension(function (d) {
+                return likeContactAboutValues[d.likeContactAbout];
+            });
+            var likeContactAboutGroup = likeContactAbout.group();
+
             var peopleFormatter = function(d) {
                 if (d > 1)
                     return d + " people";
@@ -587,6 +717,65 @@
                 .group(whereLiveGroup)
                 .label(function(d){return piePercentage(d, whereLiveGroup);})
                 .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            wantHappenAgainChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(wantHappenAgain) 
+                .group(wantHappenAgainGroup)
+                .label(function(d){return piePercentage(d, wantHappenAgainGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            spendMoreTimeIfTrafficFreeChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(spendMoreTimeIfTrafficFree) 
+                .group(spendMoreTimeIfTrafficFreeGroup)
+                .label(function(d){return piePercentage(d, spendMoreTimeIfTrafficFreeGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            howMuchSpendingTodayChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(howMuchSpendingToday) 
+                .group(howMuchSpendingTodayGroup)
+                .label(function(d){return piePercentage(d, howMuchSpendingTodayGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            learnAboutNewBusinessesChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(learnAboutNewBusinesses) 
+                .group(learnAboutNewBusinessesGroup)
+                .label(function(d){return piePercentage(d, learnAboutNewBusinessesGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            enterRaffleFamilyCyclingChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(enterRaffleFamilyCycling) 
+                .group(enterRaffleFamilyCyclingGroup)
+                .label(function(d){return piePercentage(d, enterRaffleFamilyCyclingGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            likeContactAboutChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(likeContactAbout) 
+                .group(likeContactAboutGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, likeContactAboutGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             // Render the Charts
             dc.renderAll();
