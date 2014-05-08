@@ -872,6 +872,15 @@ class CorpController(BaseController):
         toddAnderson['photo']='todd_585.jpg'
         toddAnderson['photoHover']='todd_silly_585.jpg'
         c.team.append(toddAnderson)
+        
+        seanCampbell={}
+        seanCampbell["name"]="Sean Campbell"
+        seanCampbell['title']='CFO'
+        seanCampbell['bio']="An MBA with a passion for startups and government, Sean is excited to develop the infrastructure behind Civinomics. Sean spent three years as an accountant and finance manager at Ticketfly, the social ticketing platform. Previously he worked with a wide variety of small businesses and startups in San Francisco. While at UCSC Sean co-owned Slug Books Co-op, which for ten years provided discount textbooks to thousands of UCSC students at low margins while employing hundreds. Sean currently serves on the Santa Cruz Public Library Joint Powers Board as a Citizen Member."
+        seanCampbell['photo']='sean_campbell.jpg'
+        seanCampbell['photoHover']='sean_campbell.jpg'
+        c.team.append(seanCampbell)
+        
         juanPabloD={}
         juanPabloD["name"]="Juan Pablo Duvanced"
         juanPabloD['title']='Account Executive'

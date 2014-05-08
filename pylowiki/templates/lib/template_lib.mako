@@ -243,6 +243,7 @@
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="http://civinomics.storenvy.com" target="_blank">Gear Store</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         <li>© 2014 Civinomics, Inc. </li>
                     </ul>
