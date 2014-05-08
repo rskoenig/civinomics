@@ -55,3 +55,7 @@ function commentsController($scope, $http) {
         });
 	};
 }
+
+function commentEditController($scope, $http) {
+    
+}

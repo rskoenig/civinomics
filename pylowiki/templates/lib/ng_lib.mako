@@ -25,7 +25,7 @@
             </div>
             <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-        </div>
+        </div><!-- row-fluid -->
         <div class="row-fluid">
             <div class="btn-group">
                 <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
@@ -362,24 +362,29 @@
                                 <button type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
                             </div><!-- btn-group -->
                             <div id="edit-{{comment.urlCode}}" class="collapse">
-                                <form action="/comment/edit/{{comment.urlCode}}" method="POST">
-                                    <textarea class="span10" name="data">{{comment.text}}</textarea>
-                                    <div ng-show="(comment.doCommentRole == 'yes')">
-                                        Change to: 
-                                        <label class="radio inline" ng-show="(comment.commentRole != 'yes')">
-                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes"> Pro
-                                        </label>
-                                        <label class="radio inline" ng-show="(comment.commentRole != 'neutral')">
-                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral"> Neutral
-                                        </label>
-                                        <label class="radio inline" ng-show="(comment.commentRole != 'no')">
-                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="no"> Con
-                                        </label>
-                                    </div><!-- ng-show -->
-                                </form>
+                                <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
+                                    <form action="/comment/edit/{{comment.urlCode}}" method="POST">
+                                        <textarea class="span10" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                        <div ng-show="(comment.doCommentRole == 'yes')">
+                                            <label class="radio inline">
+                                                <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                            </label>
+                                            <label class="radio inline">
+                                                <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                            </label>
+                                            <label class="radio inline">
+                                                <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                            </label>
+                                        </div><!-- ng-show -->
+                                    </form>
+                                </div><!-- controller -->
                             </div><!-- collapse -->
                         </div><!-- ng-show -->
                     </td>
+                    <td ng-controller="yesNoVoteCtrl">
+                        ${upDownVoteBlock()}
+                    </td>
+            </div>
                 </tr>
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>

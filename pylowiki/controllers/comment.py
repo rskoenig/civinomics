@@ -211,6 +211,10 @@ class CommentController(BaseController):
             entry['text'] = comment['data']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['urlCode'] = comment['urlCode']
+            entry['voteCount'] = int(comment['ups']) + int(comment['downs'])
+            entry['ups'] = int(comment['ups'])
+            entry['downs'] = int(comment['downs'])
+            entry['netVotes'] = int(comment['ups']) - int(comment['downs'])
             entry['commentRole'] = ''
             entry['yesChecked'] = ''
             entry['noChecked'] = ''
