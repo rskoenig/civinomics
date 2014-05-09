@@ -29,7 +29,10 @@ class ActivateController(BaseController):
         session.save()
 
     def index(self, id):
+    	log.info(self)
+    	log.info(id)
         hash, sep, email = id.partition('__')
+        log.info(email)
         user = userLib.getUserByEmail(email)
         splashMsg = {}
         if user:
