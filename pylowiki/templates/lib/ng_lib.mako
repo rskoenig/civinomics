@@ -363,9 +363,11 @@
                             </div><!-- btn-group -->
                             <div id="edit-{{comment.urlCode}}" class="collapse">
                                 <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
-                                    <form action="/comment/edit/{{comment.urlCode}}" method="POST">
+                                    <form class="no-bottom" ng-submit="submitEditComment()">
                                         <textarea class="span10" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                        <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                         <div ng-show="(comment.doCommentRole == 'yes')">
+                                            &nbsp;
                                             <label class="radio inline">
                                                 <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
                                             </label>
@@ -381,8 +383,10 @@
                             </div><!-- collapse -->
                         </div><!-- ng-show -->
                     </td>
-                    <td ng-controller="yesNoVoteCtrl">
-                        ${upDownVoteBlock()}
+                    <td>
+                        <div ng-controller="yesNoVoteCtrl" ng-init="rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs;">
+                            ${upDownVoteBlock()}
+                        </div>
                     </td>
             </div>
                 </tr>

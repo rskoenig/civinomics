@@ -238,6 +238,7 @@ def make_map():
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
+    map.connect('/{comment:comments?}/edit/{handler:handler/?}', controller = 'comment', action = 'jsonEditCommentHandler')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
     map.connect('/profile/{urlCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto', urlCode = '{urlCode}')
     map.connect('/getComments/{urlCode}{end:/?}', controller = 'comment', action = 'jsonCommentsForItem', urlCode = '{urlCode}')

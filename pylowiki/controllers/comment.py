@@ -216,17 +216,8 @@ class CommentController(BaseController):
             entry['downs'] = int(comment['downs'])
             entry['netVotes'] = int(comment['ups']) - int(comment['downs'])
             entry['commentRole'] = ''
-            entry['yesChecked'] = ''
-            entry['noChecked'] = ''
-            entry['neutralChecked'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
-                if comment['commentRole'] == 'yes':
-                    entry['yesChecked'] = 'checked'
-                if comment['commentRole'] == 'no':
-                    entry['noChecked'] = 'checked'
-                if comment['commentRole'] == 'neutral':
-                    entry['neutralChecked'] = 'checked'
                     
             if 'ideaCode' in comment or 'initiativeCode' in comment or 'meetingCode' in comment:
                 entry['doCommentRole'] = 'yes'
@@ -250,6 +241,24 @@ class CommentController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})
+        
+    def jsonEditCommentHandler(self, urlCode):
+        payload = json.loads(request.body)
+        if 'commentCode' in payload:
+            commentCode = payload['commentCode']
+            comment = commentLib.getCommentByCode(commentCode)
+            if not comment:
+                return json.dumps({'statusCode':1})
+            
+            if 'commentEditText' in payload and payload['commentEditText'] != '':
+                comment['data'] = payload['commentEditText']
+                comment['commentRole'] = payload['commentEditRole']
+                dbHelpers.commit(comment)
+                return json.dumps({'statusCode':0})
+
+        return json.dumps({'statusCode':1})
+
+        
         
     ####################################################
     # 
