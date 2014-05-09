@@ -368,20 +368,22 @@
 
     <script>
         // Create the dc.js chart objects & link to div
-        var genderChart = dc.pieChart("#dc-gender-chart");
+        var genderChart = dc.rowChart("#dc-gender-chart");
         var withFamilyChart = dc.rowChart("#dc-withFamily-chart");
-        var ageChart = dc.pieChart("#dc-age-chart");
+        var ageChart = dc.rowChart("#dc-age-chart");
         var howDidYouHearAboutThisChart = dc.rowChart("#dc-howDidYouHearAboutThis-chart");
         var whatDrewYouChart = dc.rowChart("#dc-whatDrewYou-chart");
         var howYouArriveChart = dc.rowChart("#dc-howYouArrive-chart");
         var parkingGoodChart = dc.pieChart("#dc-parkingGood-chart");
-        var whereLiveChart = dc.pieChart("#dc-whereLive-chart");
+        var whereLiveChart = dc.rowChart("#dc-whereLive-chart");
         var wantHappenAgainChart = dc.pieChart("#dc-wantHappenAgain-chart");
         var spendMoreTimeIfTrafficFreeChart = dc.pieChart("#dc-spendMoreTimeIfTrafficFree-chart");
-        var howMuchSpendingTodayChart = dc.pieChart("#dc-howMuchSpendingToday-chart");
+        var howMuchSpendingTodayChart = dc.rowChart("#dc-howMuchSpendingToday-chart");
         var learnAboutNewBusinessesChart = dc.pieChart("#dc-learnAboutNewBusinesses-chart");
         var enterRaffleFamilyCyclingChart = dc.pieChart("#dc-enterRaffleFamilyCycling-chart");
         var likeContactAboutChart = dc.rowChart("#dc-likeContactAbout-chart");
+
+        var NO_ANSWER = "No answer";
 
         function capitalize(s) {
             return s[0].toUpperCase() + s.slice(1);
@@ -389,18 +391,32 @@
         d3.csv("/surveys/OpenStreetsCapitolaResults1.csv", function(error, data) {
             //console.log(error);
             //console.log(data);
+            var genderValues = {};
             var withFamilyValues = {};
+            var ageValues = {};
             var howYouArriveValues = {};
+            var whereLiveValues = {};
+            var howMuchSpendingTodayValues = {};
             var likeContactAboutValues = {};
 
             i = 0;
             data.forEach(function(d) {
                 i++;
-                d.ageLower = +d.ageLower;
+                var allGender = d.gender + d.gender1;
+                if (allGender == "") {
+                    genderValues[allGender] = i + '^' + NO_ANSWER;
+                } else {
+                    genderValues[allGender] = i + '^' + allGender;
+                }
                 if (d.withFamily == "") {
-                    withFamilyValues[d.withFamily] = i + '^' + 'No answer';
+                    withFamilyValues[d.withFamily] = i + '^' + NO_ANSWER;
                 } else {
                     withFamilyValues[d.withFamily] = i + '^' + d.withFamily;
+                }
+                if (d.age == "") {
+                    ageValues[d.age] = i + '^' + NO_ANSWER;
+                } else {
+                    ageValues[d.age] = i + '^' + d.age;
                 }
                 if (d.howDidYouHearAboutThis1 != "") {
                     $('#howDidYouHearAboutThis1').append('<p>* ' + capitalize(d.howDidYouHearAboutThis1) + '</p>');
@@ -409,12 +425,17 @@
                     $('#whatDrewYou1').append('<p>* ' + capitalize(d.whatDrewYou1) + '</p>');
                 }
                 if (d.howYouArrive == "") {
-                    howYouArriveValues[d.howYouArrive] = i + '^' + 'No answer';
+                    howYouArriveValues[d.howYouArrive] = i + '^' + NO_ANSWER;
                 } else {
                     howYouArriveValues[d.howYouArrive] = i + '^' + d.howYouArrive;
                 }
                 if (d.howYouArrive1 != "") {
                     $('#howYouArrive1').append('<p>* ' + capitalize(d.howYouArrive1) + '</p>');
+                }
+                if (d.whereLive == "") {
+                    whereLiveValues[d.whereLive] = i + '^' + NO_ANSWER;
+                } else {
+                    whereLiveValues[d.whereLive] = i + '^' + d.whereLive;
                 }
                 if (d.whereLive1 != "") {
                     $('#whereLive1').append('<p>* ' + capitalize(d.whereLive1) + '</p>');
@@ -422,8 +443,13 @@
                 if (d.suggestionsComments != "") {
                     $('#suggestionsComments').append('<p>* ' + capitalize(d.suggestionsComments) + '</p>');
                 }
+                if (d.howMuchSpendingToday == "") {
+                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = i + '^' + NO_ANSWER;
+                } else {
+                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = i + '^' + d.howMuchSpendingToday;
+                }
                 if (d.likeContactAbout == "") {
-                    likeContactAboutValues[d.likeContactAbout] = i + '^' + 'No answer';
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + NO_ANSWER;
                 } else {
                     likeContactAboutValues[d.likeContactAbout] = i + '^' + d.likeContactAbout;
                 }
@@ -441,12 +467,11 @@
                 .group(all);
 
             /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-            var gender = facts.dimension(function (d) { 
-                if (d.gender == "") {
-                    return "No answer";
-                } else {
-                    return d.gender;
-                }
+            var gender = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);
+                var allGender = d.gender + d.gender1;               
+                return genderValues[allGender];
             });
             var genderGroup = gender.group();
             
@@ -457,57 +482,61 @@
             });
             var withFamilyGroup = withFamily.group();
 
-            var age = facts.dimension(function (d) { 
-                if (d.age == "") {
-                    return "No answer";
-                } else {
-                    return d.age;
-                }
+            var age = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);               
+                return ageValues[d.age];
             });
-            var ageGroup = age.group();
+            var ageGroup = age.group();            
 
             function reduceAddAttr(attr) {
                 return function(p, v) {
-                    if (v[attr] === "") return p;    // skip empty values
-                    // convert v.howDidYouHearAboutThis into an array
-                    var betterString = v[attr].replace(/\//g, " or ");
-                    var allAnswers = betterString.split("|");
-                    //console.log(allAnswers);
-                    answersArray = [];
-                    for (var j = 0; j < allAnswers.length; j++) {
-                        //console.log(allAnswers[j]);
-                        i++;
-                        var answer = capitalize(allAnswers[j].trim());
-                        //console.log(answer);
-                        answersArray.push(answer);
-                        //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                    if (v[attr] === "") {
+                        p[NO_ANSWER] = (p[NO_ANSWER] || 0) + 1;
+                        return p; // replace empty values with 'No Answer'
+                    } else {
+                        // convert v.howDidYouHearAboutThis into an array
+                        var allAnswers = v[attr].split("|");
+                        //console.log(allAnswers);
+                        answersArray = [];
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            answersArray.push(answer);
+                            //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                        answersArray.forEach(function(val, idx) {
+                            p[val] = (p[val] || 0) + 1; //increment counts
+                        });
+                        return p;
                     }
-                    answersArray.forEach(function(val, idx) {
-                        p[val] = (p[val] || 0) + 1; //increment counts
-                    });
-                    return p;
                 };
             }
 
             function reduceRemoveAttr(attr) {
                 return function(p, v) {
-                    if (v[attr] === "") return p;    // skip empty values
-                    var betterString = v[attr].replace(/\//g, " or ");
-                    var allAnswers = betterString.split("|");
-                    //console.log(allAnswers);
-                    answersArray = [];
-                    for (var j = 0; j < allAnswers.length; j++) {
-                        //console.log(allAnswers[j]);
-                        i++;
-                        var answer = capitalize(allAnswers[j].trim());
-                        //console.log(answer);
-                        answersArray.push(answer);
-                        //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                    if (v[attr] === "") {
+                        p[NO_ANSWER] = (p[NO_ANSWER] || 0) - 1;
+                        return p; // replace empty values with 'No Answer'
+                    } else {
+                        var allAnswers = v[attr].split("|");
+                        //console.log(allAnswers);
+                        answersArray = [];
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            answersArray.push(answer);
+                            //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                        answersArray.forEach(function(val, idx) {
+                            p[val] = (p[val] || 0) - 1; //decrement counts
+                        });
+                        return p;
                     }
-                    answersArray.forEach(function(val, idx) {
-                        p[val] = (p[val] || 0) - 1; //decrement counts
-                    });
-                    return p;
                 };
             }
 
@@ -544,25 +573,21 @@
 
             var parkingGood = facts.dimension(function (d) { 
                 if (d.parkingGood == "") {
-                    return "No answer";
+                    return NO_ANSWER;
                 } else {
                     return d.parkingGood;
                 }
             });
             var parkingGoodGroup = parkingGood.group();
 
-            var whereLive = facts.dimension(function (d) { 
-                if (d.whereLive == "") {
-                    return "No answer";
-                } else {
-                    return d.whereLive;
-                }
+            var whereLive = facts.dimension(function (d) {
+                return whereLiveValues[d.whereLive];
             });
             var whereLiveGroup = whereLive.group();
 
             var wantHappenAgain = facts.dimension(function (d) { 
                 if (d.wantHappenAgain == "") {
-                    return "No answer";
+                    return NO_ANSWER;
                 } else {
                     return d.wantHappenAgain;
                 }
@@ -571,25 +596,21 @@
             
             var spendMoreTimeIfTrafficFree = facts.dimension(function (d) { 
                 if (d.spendMoreTimeIfTrafficFree == "") {
-                    return "No answer";
+                    return NO_ANSWER;
                 } else {
                     return d.spendMoreTimeIfTrafficFree;
                 }
             });
             var spendMoreTimeIfTrafficFreeGroup = spendMoreTimeIfTrafficFree.group();
 
-            var howMuchSpendingToday = facts.dimension(function (d) { 
-                if (d.howMuchSpendingToday == "") {
-                    return "No answer";
-                } else {
-                    return d.howMuchSpendingToday;
-                }
+            var howMuchSpendingToday = facts.dimension(function (d) {
+                return howMuchSpendingTodayValues[d.howMuchSpendingToday];
             });
             var howMuchSpendingTodayGroup = howMuchSpendingToday.group();
 
             var learnAboutNewBusinesses = facts.dimension(function (d) { 
                 if (d.learnAboutNewBusinesses == "") {
-                    return "No answer";
+                    return NO_ANSWER;
                 } else {
                     return d.learnAboutNewBusinesses;
                 }
@@ -598,7 +619,7 @@
 
             var enterRaffleFamilyCycling = facts.dimension(function (d) { 
                 if (d.enterRaffleFamilyCycling == "") {
-                    return "No answer";
+                    return NO_ANSWER;
                 } else {
                     return d.enterRaffleFamilyCycling;
                 }
@@ -637,13 +658,18 @@
             }
 
             genderChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(gender) 
                 .group(genderGroup)
-                .label(function(d){return piePercentage(d, genderGroup);})
-                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, genderGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
             
             withFamilyChart.width(300) 
                 .height(220)
@@ -660,13 +686,18 @@
                 .ticks(4);
 
             ageChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(age) 
                 .group(ageGroup)
-                .label(function(d){return piePercentage(d, ageGroup);})
-                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, ageGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
 
             howDidYouHearAboutThisChart
                 .height(220)
@@ -710,13 +741,18 @@
                 .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
 
             whereLiveChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(whereLive) 
                 .group(whereLiveGroup)
-                .label(function(d){return piePercentage(d, whereLiveGroup);})
-                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, whereLiveGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);  
 
             wantHappenAgainChart.width(300) 
                 .height(220) 
@@ -737,13 +773,18 @@
                 .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
 
             howMuchSpendingTodayChart.width(300) 
-                .height(220) 
-                .radius(100) 
-                .innerRadius(30) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .dimension(howMuchSpendingToday) 
                 .group(howMuchSpendingTodayGroup)
-                .label(function(d){return piePercentage(d, howMuchSpendingTodayGroup);})
-                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howMuchSpendingTodayGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);  
 
             learnAboutNewBusinessesChart.width(300) 
                 .height(220) 
