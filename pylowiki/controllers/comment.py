@@ -242,7 +242,7 @@ class CommentController(BaseController):
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})
         
-    def jsonEditCommentHandler(self, urlCode):
+    def jsonEditCommentHandler(self):
         payload = json.loads(request.body)
         if 'commentCode' in payload:
             commentCode = payload['commentCode']
@@ -250,9 +250,9 @@ class CommentController(BaseController):
             if not comment:
                 return json.dumps({'statusCode':1})
             
-            if 'commentEditText' in payload and payload['commentEditText'] != '':
-                comment['data'] = payload['commentEditText']
-                comment['commentRole'] = payload['commentEditRole']
+            if 'commentText' in payload and payload['commentText'] != '':
+                comment['data'] = payload['commentText']
+                comment['commentRole'] = payload['commentRole']
                 dbHelpers.commit(comment)
                 return json.dumps({'statusCode':0})
 

@@ -1,8 +1,12 @@
+
 var commentApp = angular.module('commentApp', []);
 
 commentApp.factory('editService', function ($rootScope) {
     var commentEdit = {};
-    
+ 
+    commentEdit.prepBroadcast = function() {
+        this.sendBroadcast('editDone');
+    };   
     commentEdit.sendBroadcast = function() {
         $rootScope.$broadcast('editDone');
     };
@@ -66,6 +70,10 @@ function commentsController($scope, $http, editService) {
             $scope.commentText = '';
         });
 	};
+	
+	$scope.$on('editDone', function() {
+	    $scope.getUpdatedComments();
+    });
 }
 
 function commentEditController($scope, $http, editService) {
@@ -75,11 +83,21 @@ function commentEditController($scope, $http, editService) {
 		$scope.editCommentURL = '/comment/edit/handler';
 		$http.post($scope.editCommentURL, commentData).success(function(data){
             $scope.getUpdatedComments();
-            $scope.commentRole = '';
-            $scope.commentText = '';
         });
 	};
     
+	$scope.getUpdatedComments = function(){
+		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
+			if (data.statusCode == 1){
+				$scope.commentsResult = true;
+			} 
+			else if (data.statusCode === 0){
+				$scope.commentsResult = false;
+				$scope.comments = data.result;
+			}
+			$scope.newCommentLoading = false
+		})
+	};
 }
 
 commentEditController.$inject = ['$scope', '$http'];
