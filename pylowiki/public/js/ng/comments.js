@@ -1,11 +1,11 @@
 
-var commentApp = angular.module('commentApp', []);
+var commentApp = angular.module('civ', ['ngSanitize']);
 
 commentApp.factory('editService', function ($rootScope) {
     var commentEdit = {};
  
     commentEdit.prepBroadcast = function() {
-        this.sendBroadcast('editDone');
+        this.sendBroadcast();
     };   
     commentEdit.sendBroadcast = function() {
         $rootScope.$broadcast('editDone');
@@ -14,7 +14,7 @@ commentApp.factory('editService', function ($rootScope) {
     return commentEdit;
 });
 
-function commentsController($scope, $http, editService) {
+function commentsController($rootScope, $scope, $http, editService) {
 	$scope.commentsLoading = false;
 	$scope.commentsHidden = true;
 	$scope.newCommentLoading = false;
@@ -76,29 +76,17 @@ function commentsController($scope, $http, editService) {
     });
 }
 
-function commentEditController($scope, $http, editService) {
+function commentEditController($rootScope, $scope, $http, editService) {
         $scope.submitEditComment = function(){
 		$scope.newCommentLoading = true;
 		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
 		$scope.editCommentURL = '/comment/edit/handler';
 		$http.post($scope.editCommentURL, commentData).success(function(data){
-            $scope.getUpdatedComments();
+            editService.prepBroadcast();
         });
 	};
     
-	$scope.getUpdatedComments = function(){
-		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
-			if (data.statusCode == 1){
-				$scope.commentsResult = true;
-			} 
-			else if (data.statusCode === 0){
-				$scope.commentsResult = false;
-				$scope.comments = data.result;
-			}
-			$scope.newCommentLoading = false
-		})
-	};
 }
 
-commentEditController.$inject = ['$scope', '$http'];
-commentsController.$inject = ['$scope', '$http'];
+commentEditController.$inject = ['$rootScope', '$scope', '$http', 'editService'];
+commentsController.$inject = ['$rootScope', '$scope', '$http', 'editService'];
