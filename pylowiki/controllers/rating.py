@@ -55,6 +55,8 @@ class RatingController(BaseController):
             return False
         
         ratingObj = ratingLib.makeOrChangeRating(thing, c.authuser, amount, ratingType)
+        log.info("ratingObj.amount: %s"%ratingObj['amount'])
+        c.newAmount = ratingObj['amount']
 
     def index(self):
         # Dummy controller, prevents error logs, shows nothing of importance
@@ -72,7 +74,7 @@ class RatingController(BaseController):
         #return redirect(session['return_to'])
         if (amount):
             # get the new rating in the object and return it
-            return json.dumps({'statusCode':0, 'result':amount})
+            return json.dumps({'statusCode':0, 'result':c.newAmount})
         else:
             log.info("oops: no rating recorded")
             return json.dumps({'statusCode':2})
@@ -82,7 +84,7 @@ class RatingController(BaseController):
         #return redirect(session['return_to'])
         if (amount):
             # get the new rating in the object and return it
-            return json.dumps({'statusCode':0, 'result':amount})
+            return json.dumps({'statusCode':0, 'result':c.newAmount})
         else:
             log.info("oops: no rating recorded")
             return json.dumps({'statusCode':2})
@@ -92,7 +94,7 @@ class RatingController(BaseController):
         #return redirect(session['return_to'])
         if (amount):
             # get the new rating in the object and return it
-            return json.dumps({'statusCode':0, 'result':amount})
+            return json.dumps({'statusCode':0, 'result':c.newAmount})
         else:
             log.info("oops: no rating recorded")
             return json.dumps({'statusCode':2})
@@ -108,12 +110,12 @@ class RatingController(BaseController):
             result.append(entry)
             statusCode = 0
             response.headers['Content-type'] = 'application/json'
-            return json.dumps({'statusCode':statusCode, 'result':result})
+            return json.dumps({'statusCode':statusCode, 'result':c.newAmount})
         else:
             #return redirect(session['return_to'])
             if (amount):
                 # get the new rating in the object and return it
-                return json.dumps({'statusCode':0, 'result':amount})
+                return json.dumps({'statusCode':0, 'result':c.newAmount})
             else:
                 log.info("oops: no rating recorded")
                 return json.dumps({'statusCode':2})
@@ -123,7 +125,7 @@ class RatingController(BaseController):
         #return redirect(session['return_to'])
         if (amount):
             # get the new rating in the object and return it
-            return json.dumps({'statusCode':0, 'result':amount})
+            return json.dumps({'statusCode':0, 'result':c.newAmount})
         else:
             log.info("oops: no rating recorded")
             return json.dumps({'statusCode':2})
@@ -131,9 +133,10 @@ class RatingController(BaseController):
     @h.login_required
     def rateInitiative(self, code, amount):
         #return redirect(session['return_to'])
+        log.info('yup')
         if (amount):
             # get the new rating in the object and return it
-            return json.dumps({'statusCode':0, 'result':amount})
+            return json.dumps({'statusCode':0, 'result':c.newAmount})
         else:
             log.info("oops: no rating recorded")
             return json.dumps({'statusCode':2})

@@ -127,6 +127,8 @@
             function shareOnWall() {
                 // grab checked value of checkbox IF it's on the page. add to description.
                 //var shareChecked = $("#shareVote").is(':checked');
+                // for the case that there's a modal onscreen, it will be hidden once this button is activated
+                $('#voteShareModal').modal('hide');
                 
                 var shareChecked = false;
                 var shareText = '';
@@ -193,6 +195,9 @@
                 // we can simply record that the message dialog was brought up
                 // grab checked value of checkbox IF it's on the page. add to description.
                 
+                // for the case that there's a modal onscreen, it will be hidden once this button is activated
+                $('#voteShareModal').modal('hide');
+
                 var thingCode = "${thingCode}";
                 var link = "${link}";
                 var userCode = fbAuthId;

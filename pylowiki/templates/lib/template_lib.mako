@@ -470,24 +470,25 @@
 
 <%def name="voteShareModal()">
     <!-- Vote Sharing Modal -->
-
     <div id="voteShareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="voteShareModal" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 class="login top centered">Sign up</h3>
-        <h3 class="login top centered">Log in</h3>
-        <h3 class="login top centered">Forgot Password</h3>
-      </div>
-      <div class="modal-body">
-        yo
-      </div>
-      <div class="modal-footer">
-        <div class="row-fluid centered tcs">
-          <div class="span10 offset1">
-            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
-          </div>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 class="login top centered">Thanks for voting!</h3>
         </div>
-      </div>
+        <div class="modal-body">
+            <span class="share-icons right-space">
+                ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
+            </span>
+            <p>huh, very interesting</p>
+            <p>very, very interesting</p>
+        </div>
+        <div class="modal-footer">
+            <div class="row-fluid centered tcs">
+                <div class="span10 offset1">
+                    <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+                </div>
+            </div>
+        </div>
     </div>
 </%def>
 
