@@ -404,19 +404,68 @@
                 i++;
                 var allGender = d.gender + d.gender1;
                 if (allGender == "") {
-                    genderValues[allGender] = i + '^' + NO_ANSWER;
+                    genderValues[allGender] = '4^' + NO_ANSWER;
                 } else {
-                    genderValues[allGender] = i + '^' + allGender;
+                    switch(allGender) {
+                        case "Female":
+                            genderValues[allGender] = '1^' + allGender;
+                            break;
+                        case "Male":
+                            genderValues[allGender] = '2^' + allGender;
+                            break;
+                        default:
+                            genderValues[allGender] = '3^' + allGender;
+                            break;
+                    }
                 }
                 if (d.withFamily == "") {
-                    withFamilyValues[d.withFamily] = i + '^' + NO_ANSWER;
+                    withFamilyValues[d.withFamily] = '6^' + NO_ANSWER;
                 } else {
-                    withFamilyValues[d.withFamily] = i + '^' + d.withFamily;
+                    switch(d.withFamily) {
+                        case "I did not come with my family": 
+                            withFamilyValues[d.withFamily] = '0^' + d.withFamily;
+                            break;
+                        case "1":
+                            withFamilyValues[d.withFamily] = '1^' + d.withFamily;
+                            break;
+                        case "2":
+                            withFamilyValues[d.withFamily] = '2^' + d.withFamily;
+                            break;
+                        case "3":
+                            withFamilyValues[d.withFamily] = '3^' + d.withFamily;
+                            break;
+                        case "4":
+                            withFamilyValues[d.withFamily] = '4^' + d.withFamily;
+                            break;
+                        case "5+":
+                            withFamilyValues[d.withFamily] = '5^' + d.withFamily;
+                            break;
+                        default:
+                            withFamilyValues[d.withFamily] = '6^' + NO_ANSWER;
+                            break;
+                    }
                 }
                 if (d.age == "") {
-                    ageValues[d.age] = i + '^' + NO_ANSWER;
+                    ageValues[d.age] = '4^' + NO_ANSWER;
                 } else {
-                    ageValues[d.age] = i + '^' + d.age;
+                    switch(d.age) {
+                        case "0-17": 
+                            ageValues[d.age] = '0^' + d.age;
+                            break;
+                        case "18-40":
+                            ageValues[d.age] = '1^' + d.age;
+                            break;
+                        case "41-62":
+                            ageValues[d.age] = '2^' + d.age;
+                            break;
+                        case "63+":
+                            ageValues[d.age] = '3^' + d.age;
+                            break;
+                        default:
+                            ageValues[d.age] = '4^' + NO_ANSWER;
+                            break;
+                    }
+                    
                 }
                 if (d.howDidYouHearAboutThis1 != "") {
                     $('#howDidYouHearAboutThis1').append('<p>* ' + capitalize(d.howDidYouHearAboutThis1) + '</p>');
@@ -444,10 +493,30 @@
                     $('#suggestionsComments').append('<p>* ' + capitalize(d.suggestionsComments) + '</p>');
                 }
                 if (d.howMuchSpendingToday == "") {
-                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = i + '^' + NO_ANSWER;
+                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = '7^' + NO_ANSWER;
                 } else {
-                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = i + '^' + d.howMuchSpendingToday;
+                    switch(d.howMuchSpendingToday) {
+                        case "$1-10":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '1^' + d.howMuchSpendingToday;
+                            break;
+                        case "$11-25":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '2^' + d.howMuchSpendingToday;
+                            break;
+                        case "$26-50":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '3^' + d.howMuchSpendingToday;
+                            break;
+                        case "$51-100":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '4^' + d.howMuchSpendingToday;
+                            break;
+                        case "$100+":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '5^' + d.howMuchSpendingToday;
+                            break;
+                        default:
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '6^' + d.howMuchSpendingToday;
+                            break;
+                    }
                 }
+
                 if (d.likeContactAbout == "") {
                     likeContactAboutValues[d.likeContactAbout] = i + '^' + NO_ANSWER;
                 } else {
