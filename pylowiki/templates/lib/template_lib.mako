@@ -27,13 +27,15 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
-                    </li>
+                    % if c.authuser:
+                        <li>
+                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                        </li>
+                    % endif
                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                 </ul>
             </li>
-            % if userLib.isAdmin(c.authuser.id):
+            % if c.authuser and userLib.isAdmin(c.authuser.id):
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
@@ -51,28 +53,30 @@
                     </ul>
                 </li>
             % endif
-            <li>
-                <%
-                    messageCount = ''
-                    numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
-                    if numMessages:
-                        if numMessages > 0:
-                            messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
-                %>
-                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
-            </li>
-            <li class="dropdown">
-                <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
-                    % if c.authuser['activated'] == '1':
-                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
-                    % endif
-                    <li><a href="/help">Help</a></li>
-                    <li class="divider"></li>
-                    <li><a tabindex="-1" href="/login/logout">Logout</a></li>
-                </ul>
-            </li>
+            % if c.authuser:
+                <li>
+                    <%
+                        messageCount = ''
+                        numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
+                        if numMessages:
+                            if numMessages > 0:
+                                messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                    %>
+                    <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                        % if c.authuser['activated'] == '1':
+                            <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                        % endif
+                        <li><a href="/help">Help</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                    </ul>
+                </li>
+            % endif
         </ul>
       </div>
     </nav>

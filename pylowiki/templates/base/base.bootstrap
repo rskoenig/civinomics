@@ -38,6 +38,7 @@
       <![endif]-->      
    </head>
    <body ${self.bodyTag_extras()}>
+    ${template_lib.mainNavbar()}
     ${next.body()}
 
    

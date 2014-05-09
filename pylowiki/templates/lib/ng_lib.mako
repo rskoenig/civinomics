@@ -36,9 +36,9 @@
 
 <%def name="idea_listing()">
         <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
-            <div class="media-body row-fluid" ng-controller="yesNoVoteCtrl">
+            <div class="media-body row" ng-controller="yesNoVoteCtrl">
                 % if not c.w:
-                    <div class="span3">
+                    <div class="col-sm-3">
                         <div class="listed-photo">
                             <a href = '{{item.parentHref}}'>
                                 <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
@@ -47,13 +47,10 @@
                     </div>
                 % endif
                 % if not c.w:
-                    <div class="span9">
+                    <div class="col-sm-9">
                 % else:
-                    <div class="span12">
+                    <div class="col-sm-12">
                 % endif
-                    <div class="well yesNoWell" >
-                        ${yesNoVoteBlock()}
-                    </div>
                     <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     % if not c.w:
                         <p><small>${metaData()}</small></p>
@@ -61,10 +58,14 @@
                     <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    ${authorPosting()}
                 </div>
             </div><!-- media-body -->
-            <div class="row-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                ${yesNoVoteFooter()}
                 ${actions()}
+                </div>
             </div>
         </div><!-- search-listing -->
 </%def>
@@ -198,8 +199,8 @@
 
 <%def name="yesNoVoteFooter()">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
-        <a  href="#" target="_blank" style="margin-bottom: 10px; text-decoration: none; display: inline-block; width: 100px; background-color: #4aca5f; border-radius: 5px; border: 1px solid #e7e7e7; font-size: 16px; color: #fff; padding: 10px;">YES</a>
-        <a  href="#" target="_blank" style="margin-bottom: 10px; text-decoration: none; display: inline-block; width: 100px; background-color: #ff3b30; border-radius: 5px; border: 1px solid #e7e7e7; font-size: 16px; color: #fff; padding: 10px;">NO</a>
+        <a  href="#" target="_blank" class="btn btn-lg btn-success" style="width:100px;">YES</a>
+        <a  href="#" target="_blank" class="btn btn-lg btn-danger" style="width:100px;">NO</a>
     </div>
 </%def>
 
@@ -262,6 +263,7 @@
                 <i class="icon-spinner icon-spin icon-2x bottom-space-med"></i>
             </div>
 
+
             <table class="activity-comments">
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
@@ -274,11 +276,15 @@
                 <tr ng-hide="newCommentLoading">
                     % if c.authuser:
                         <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
-                        <td style="padding: 10px;">
+                        <td style="padding: 10px 0px;">
                             % if c.privs and not c.privs['provisional']:
                                 <form class="no-bottom" ng-submit="submitComment()">
-                                    <textarea rows="1" class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                    <button type="submit" style="vertical-align: top; background-color: #3c51bf; color: #fff; border-radius: 5px; border: none; border: 1px solid #e7e7e7; padding: 10px;">Submit</button>
+                                    <div class="form-group col-xs-10">
+                                        <textarea class="form-control" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
                                     <div ng-show="type == 'initiative' || type == 'idea'">
                                         <label class="radio inline">
                                             <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
@@ -293,19 +299,21 @@
                                 </form>
                             % else:
                                 <a href="#activateAccountModal" data-toggle='modal'>
-                                    <textarea rows="1" class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                    <textarea class="form-control col-xs-10" rows="1" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <a href="#activateAccountModal" data-toggle='modal' class="btn btn-success" style="vertical-align: top;">Submit</a>
                                 </a>
                             % endif
                         </td>
                     % else:
-                        <td class="comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar small-avatar"></td>
+                        <td class="comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar topbar-avatar"></td>
                         <td style="padding: 10px;">
                             <form class="no-bottom" ng-submit="submitComment()">
-                                <a href="#signupLoginModal" data-toggle='modal'>
-                                    <textarea rows="1" class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                </a>
+                                <div class="form-group col-xs-10">
+                                    <a href="#signupLoginModal" data-toggle='modal'>
+                                        <textarea rows="1" class="form-control" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                        <button type="submit" class="btn btn-primary" style="vertical-align: top;">Submit</button>
+                                    </a>
+                                </div>
                                 <div ng-show="type == 'initiative' || type == 'idea'">
                                     <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
                                         <label class="radio inline">
@@ -349,6 +357,7 @@
                 </tr>
                 
             </table>
+
         </div>
     </div>
 </%def>

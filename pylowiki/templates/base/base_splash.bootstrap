@@ -2,7 +2,7 @@
 <%namespace name="helpers" file="/lib/template_lib.mako" />
 
 <div id="wrap">
-   ${helpers.splashNavbar()}
+ 
    <div>
       ${next.body()}
    </div>

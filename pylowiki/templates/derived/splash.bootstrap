@@ -1,4 +1,4 @@
-<%inherit file="/base/base_splash.bootstrap"/>
+<%inherit file="/base/base.bootstrap"/>
 <%namespace name="templateHelpers" file="/lib/template_lib.mako" />
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
@@ -33,7 +33,7 @@
         </div>
     % else: 
     <div class="slogan centered">
-        <h1>Democracy starts at home</h1>
+        <h1>Welcome to Civinomics <p class="lead">Vote, propose, be a citizen.</p></h1>
         % if c.splashMsg:
             <% message = c.splashMsg %>
             <div class="row-fluid centered">
@@ -43,13 +43,50 @@
                 </div>
             </div>
         % endif
-        <button href="#signupLoginModal" data-toggle="modal" class="btn btn-large btn-primary">Sign up to Vote</button>
+        <button href="#signupLoginModal" data-toggle="modal" class="btn btn-lg btn-primary">Sign up</button>
+        <button href="#signupLoginModal" data-toggle="modal" class="btn btn-lg btn-success">Login</button>
         <!-- <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p> -->
     </div>
 </div><!-- row welcome -->
 <div class="container splash-container">
-    <div class="row-fluid">
-        <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
+    <div class="row">
+        <div class="col-sm-4">
+            <h3 class="text-center">For Citizens</h3>
+        </div>
+        <div class="col-sm-4">
+            <h3 class="text-center">For Government Agencies</h3>
+        </div>
+        <div class="col-sm-4">
+            <h3 class="text-center">For Organizations</h3> 
+        </div>
+    </div>
+    <div class="row">
+        <p class="lead text-center">
+            A few of our valued clients
+        </p>
+    </div>
+    <hr>
+    <div class="row">
+        <h2 class="text-center">
+            Surveys
+        </h2>
+        <p class="lead text-center">
+            Respondents are citizens not just data points. Get the data you need, enrich the public data set, foster civic participation. Government transparency really is a beautiful thing.
+        </p>
+    </div>
+    <hr>
+     <div class="row">
+        <h2 class="text-center">
+            From the Blog
+        </h2>
+        <p class="lead text-center">
+            Some thoughts on the times we live in.
+        </p>
+    </div>
+
+    <!--
+    <div class="row">
+        <div class="col-sm-4 pull-right zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
             <div class="well well-splash-content">
                 <h3>Zip Code Lookup</h3>
                 <form class="form-inline" name="zipForm">
@@ -70,7 +107,7 @@
                 </table>
             </div>
         </div>
-        <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
+        <div class="col-sm-8 well well-splash-content" ng-controller="SearchCtrl">
             <h3>
                 Top Initiatives
                 <!--
@@ -118,23 +155,17 @@
                     </tr>
 
                 </table>
-                <div class="centered" ng-show="initiative.length>pageSize">
-                    <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
-                        Prev
-                    </button>
-                    <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
-                    <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
-                        Next
-                    </button>
-                    <div class="spacer"></div>
-                </div>
                 <div class="row-fluid centered">
                     <a href="/browse/initiatives">View more initiatives</a>
                 </div>
             </div>
         </div><!-- span8 -->
         
-    </div><!-- row-fluid -->
+    </div><!-- row -->
+    -->
+
+    
+    
     </div>
     ${templateHelpers.condensedFooter()}
     ${templateHelpers.signupLoginModal()}
