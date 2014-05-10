@@ -1,5 +1,5 @@
 
-var commentApp = angular.module('civ', ['ngSanitize']);
+var commentApp = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
 
 commentApp.factory('editService', function ($rootScope) {
     var commentEdit = {};

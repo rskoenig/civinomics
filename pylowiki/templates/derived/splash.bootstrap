@@ -141,6 +141,7 @@
 
 % endif
 <%def name="headScripts()">
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/comments.js')}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>

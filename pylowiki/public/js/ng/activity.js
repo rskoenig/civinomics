@@ -84,3 +84,4 @@ function activityController($scope, $http) {
 	};
 
 }
+

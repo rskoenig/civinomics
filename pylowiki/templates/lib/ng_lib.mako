@@ -388,7 +388,6 @@
                             ${upDownVoteBlock()}
                         </div>
                     </td>
-            </div>
                 </tr>
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
@@ -451,6 +450,6 @@
                     % endif
                 </tr> 
             </table>
-        </div>
-    </div>
+        </div><!-- comments controller -->
+    </div><!-- action -->
 </%def>
