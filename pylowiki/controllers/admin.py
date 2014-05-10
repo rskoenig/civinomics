@@ -98,11 +98,11 @@ class AdminController(BaseController):
                         c.returnDict = json.dumps({'code':c.thing['urlCode'], 'result':'Error: cannot %s an item touched by an administrator' % action})
                         c.error = True
 
-        if action in ['setDemo']:
+        if action in ['setDemo', 'setFeatured', 'removeFeatured']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
-        if action in ['delete', 'setDemo']:
+        if action in ['delete', 'setDemo', 'setFeatured', 'removeFeatured']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt', 'publish', 'unpublish']:
@@ -476,6 +476,14 @@ class AdminController(BaseController):
         
     def setDemo(self, thingCode):
         response = workshopLib.setDemo(c.thing)
+        return response
+        
+    def setFeatured(self, thingCode):
+        response = generic.setFeatured(c.thing)
+        return response
+    
+    def removeFeatured(self, thingCode):
+        response = generic.removeFeatured(c.thing)
         return response
         
     def activate(self, thingCode):

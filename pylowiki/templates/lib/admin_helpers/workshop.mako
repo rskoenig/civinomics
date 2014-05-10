@@ -44,9 +44,15 @@
                         <label class="control-label" for="setDemo">Set as demo?</label>
                         <div class="controls">
                             <a id="setDemo" class="btn btn-primary" ng-click="setDemo()" href="#">Do it</a>
-                            <span class="help-block" ng-show="showResponse">{{response}}</span>
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="setFeatured">Set as featured?</label>
+                        <div class="controls">
+                            <a id="setFeatured" class="btn btn-primary" ng-click="setFeatured()" href="#">Do it</a>
+                        </div>
+                    </div>
+                    <span class="help-block" ng-show="showResponse">{{response}}</span>
                 </form>
             </div><!-- browse -->
         </div><!-- section-wrapper -->

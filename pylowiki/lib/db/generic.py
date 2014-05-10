@@ -198,3 +198,13 @@ def userImageSource(user, **kwargs):
         if large and gravatar:
             source += '&s=200'
         return source
+        
+def setFeatured(thing):
+    thing['featured'] = '1'
+    commit(thing)
+    return 'New featured thing'
+    
+def removeFeatured(thing):
+    thing['featured'] = '0'
+    commit(thing)
+    return 'removed featured thing'

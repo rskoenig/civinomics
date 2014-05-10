@@ -168,6 +168,9 @@ def make_map():
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
     map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
     
+    # featured
+    map.connect('/getFeatured{end:/?}' , controller = 'home', action = 'getFeatured')
+    
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
@@ -252,7 +255,7 @@ def make_map():
     map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/initiative/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateInitiative', code = '{code}', url = '{url}', amount = '{amount}')
     
-    # Disable/enable/delete/edit/flag Things
+    # Disable/enable/delete/edit/flag/feature Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
     map.connect('/enable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'enable')
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
@@ -263,6 +266,8 @@ def make_map():
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
+    map.connect('/featured/set/{thingCode}{end:/?}', controller = 'admin', action='setFeatured')
+    map.connect('/featured/remove/{thingCode}{end:/?}', controller = 'admin', action='removeFeatured')
     map.connect('/activate/user/{thingCode}{end:/?}', controller = 'admin', action='activate')
     
     ########################################################################################################

@@ -9,6 +9,15 @@ function adminController($scope, $http, $location) {
         $scope.showResponse = true;
     });
   };
+  
+  $scope.setFeatured = function() {
+    var setFeaturedURL = '/featured/set/' + $scope.code;
+    var postData = '';
+    $http.post(setFeaturedURL, postData).success(function(data){
+        $scope.response = data;
+        $scope.showResponse = true;
+    });
+  };
 }
 
 function facilitatorController($scope, $http, $location) {

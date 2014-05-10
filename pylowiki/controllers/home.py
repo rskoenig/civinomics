@@ -23,6 +23,7 @@ import pylowiki.lib.db.mainImage    	as mainImageLib
 import pylowiki.lib.db.follow       	as followLib
 import pylowiki.lib.db.workshop     	as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.featured         as featuredLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
@@ -59,6 +60,22 @@ class HomeController(BaseController):
         c.title = c.heading = c.workshopTitlebar = 'Home'
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
+    
+        
+    def getFeatured(self):
+	    featured = featuredLib.getFeatured()
+	    log.info('%s' % featured)
+	    result = []
+	    for f in featured:
+	        entry = {}
+	        entry['title'] = f['title']
+	        
+	        result.append(entry)
+	   
+	    if len(result) == 0:
+	           return json.dumps({'statusCode':1})
+	    return json.dumps({'statusCode':0, 'result': result})
+	    
 
     def getFollowingInitiatives(self, offset=0, limit=0):
         if 'facilitatorInitiatives' in session:
@@ -166,8 +183,7 @@ class HomeController(BaseController):
 			if len(result) == 0:
 				return json.dumps({'statusCode':1})
 			return json.dumps({'statusCode':0, 'result': result})
-
-
+	        
 
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
 		# get recent activity and return it into json format
