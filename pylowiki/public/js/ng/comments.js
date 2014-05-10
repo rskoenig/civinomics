@@ -1,7 +1,7 @@
 
-var commentApp = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
+var app = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
 
-commentApp.factory('editService', function ($rootScope) {
+app.factory('editService', function ($rootScope) {
     var commentEdit = {};
  
     commentEdit.prepBroadcast = function() {
