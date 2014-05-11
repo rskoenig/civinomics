@@ -1,5 +1,7 @@
 import gzip
 import StringIO
+import logging
+log = logging.getLogger(__name__)
 
 class GzipMiddleware(object):
     def __init__(self, app, compresslevel=9):

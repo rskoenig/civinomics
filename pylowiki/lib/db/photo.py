@@ -126,3 +126,9 @@ def Photo(owner, title, description, tags, scope):
     commit(p)
     d = discussionLib.Discussion(owner = owner, discType = 'photo', attachedThing = p, title = title)
     return p
+
+def isPublic(photo):
+    if photo.objType != 'photoUnpublished':
+        return True
+    else:
+        return False

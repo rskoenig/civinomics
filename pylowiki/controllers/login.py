@@ -17,6 +17,13 @@ from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.rating   as ratingLib
 import pylowiki.lib.db.share    as shareLib
 import pylowiki.lib.utils       as utils
+import pylowiki.lib.db.follow       	as followLib
+import pylowiki.lib.db.workshop     	as workshopLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.pmember      	as pMemberLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.initiative   	as initiativeLib
 
 # twython imports
 from twython import Twython
@@ -87,7 +94,7 @@ class LoginController(BaseController):
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens()
+        auth = twitter.get_authentication_tokens(force_login=True)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
@@ -215,10 +222,6 @@ class LoginController(BaseController):
         else:
             if user:
                 log.info("found user by facebook id")
-
-        #if user:
-        #    for thisKey in user.keys():
-        #        log.info("user %s == %s"%(thisKey, user[thisKey]))
 
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
@@ -537,7 +540,7 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        log.info("login:logUserIn session save")
+        #log.info("login:logUserIn session save")
 
         c.authuser = user
         
@@ -545,8 +548,19 @@ class LoginController(BaseController):
         ratings = ratingLib.getRatingsForUser()
         session["ratings"] = ratings
         session.save()
+        
+        # get their workshops and initiatives of interest
+        #log.info("start session cache")
+        followLib.setWorkshopFollowsInSession()
+        followLib.setUserFollowsInSession()
+        pMemberLib.setPrivateMemberWorkshopsInSession()
+        listenerLib.setListenersForUserInSession()
+        facilitatorLib.setFacilitatorsByUserInSession()
+        initiativeLib.setInitiativesForUserInSession()
+        followLib.setInitiativeFollowsInSession()
+        #log.info("end session cache")
 
-        log.info("login:logUserIn")
+        #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
             if kwargs['iPhoneApp'] != True:
                 if 'externalAuthType' in user.keys():
@@ -616,7 +630,7 @@ class LoginController(BaseController):
             if email and password:
                 user = userLib.getUserByEmail( email )
                 if user: # not none or false
-                    if user['activated'] == '0':
+                    if user['activated'] == '6':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
@@ -736,9 +750,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':
@@ -757,9 +768,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/login.bootstrap")
 
     def loginRedirects(self, page):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         afterLoginURL = ''
         if page == 'newWorkshop':
             afterLoginURL += "/workshop/display/create/form"

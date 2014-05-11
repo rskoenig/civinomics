@@ -27,10 +27,12 @@ import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
-import pylowiki.lib.utils               as utils
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+
+from pylowiki.lib.facebook              import FacebookShareObject
 import pylowiki.lib.images              as imageLib
+import pylowiki.lib.utils               as utils
 
 import time, datetime
 import simplejson as json
@@ -63,9 +65,6 @@ class ProfileController(BaseController):
                 if c.user.id == c.authuser.id or c.isAdmin:
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-        
-
-
                     
         userLib.setUserPrivs()
   
@@ -342,15 +341,41 @@ class ProfileController(BaseController):
         if photos:
             c.photos = photos
             c.photos.reverse()
-
+            
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
+        return render("/derived/6_profile_archives.bootstrap")
+        
+            
+    def getUserTrash(self, id1, id2):
         c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
-
-        return render("/derived/6_profile_archives.bootstrap")
+            
+        result = []
+        for item in c.unpublishedActivity:
+            entry = {}
+            entry['objType'] = item.objType.replace("Unpublished", "")
+            entry['objType'] = item.objType.replace("Unpublished", "")
+            if entry['objType'] != 'comment':
+                entry['url']= item['url']
+                entry['urlCode']=item['urlCode']
+                entry['title'] = item['title']
+            else:
+                entry['url']= ''
+                entry['urlCode']= ''
+                entry['title'] = item['data']
+            if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                
+            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
+            entry['unpublishedBy'] = item['unpublished_by']
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
         
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':
@@ -366,15 +391,6 @@ class ProfileController(BaseController):
         # the next area of fields is needed for sharing functions
         c.imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png"
         c.photoLink = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + c.photo['urlCode']
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.requestUrl = request.url
-        c.thingCode = id3
 
         if 'views' not in c.photo:
             c.photo['views'] = u'0'
@@ -421,7 +437,24 @@ class ProfileController(BaseController):
                         c.city = geoInfoLib.geoDeurlify(scope[8].title())
                         if scope[9] != '' and scope[9] != '0':
                             c.postal = scope[9]
-                            
+                    
+
+        #################################################
+        # these values are needed for facebook sharing
+        shareOk = photoLib.isPublic(c.photo)
+        c.facebookShare = FacebookShareObject(
+            itemType='photo',
+            url=c.photoLink,
+            thingCode=id3, 
+            image=c.imgSrc,
+            title=c.photoTitle,
+            description=c.description,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
+
         return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):
@@ -570,7 +603,7 @@ class ProfileController(BaseController):
     @h.login_required
     def edit(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
-        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
             c.title = 'Edit Profile'
             if 'confTab' in session:
                 c.tab = session['confTab']
@@ -605,7 +638,7 @@ class ProfileController(BaseController):
         SQLtoday = now.strftime("%Y-%m-%d")
 
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1 and not c.privs['provisional']:
             abort(404)
             
         session['confTab'] = "tab1"
@@ -769,7 +802,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
@@ -869,7 +902,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
-        if c.authuser.id != c.user.id:
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
         requestKeys = request.params.keys()
@@ -946,6 +979,10 @@ class ProfileController(BaseController):
             
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
+        
+        if c.privs['provisional']:
+            abort(404)
+            
         photo = photoLib.getPhotoByHash(id3)
         if not photo:
             abort(404)
@@ -1056,7 +1093,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1 or c.privs['provisional']:
             abort(404)      
                     
         session['confTab'] = "tab4"

@@ -175,6 +175,11 @@ def updateWorkshopChildren(workshop, workshopKey):
             if workshopKey == "workshop_title":
                 item[workshopKey] = workshop["title"]
                 item['workshop_url'] = workshop['url']
+            elif workshopKey == "workshop_searchable":
+                if 'discType' in item and (item['discType'] != 'general' and item['discType'] != 'general'):
+                    item[workshopKey] = '0'
+                else:
+                    item[workshopKey] = workshop[workshopKey]
             else:
                 item[workshopKey] = workshop[workshopKey]
             commit(item)
@@ -197,29 +202,29 @@ def updateWorkshopChildren(workshop, workshopKey):
 
 def getWorkshopTagCategories():
     workshopTags = []
-    workshopTags.append('Animals')
+    #workshopTags.append('Animals')
     workshopTags.append('Arts')
     workshopTags.append('Business')
     workshopTags.append('Civil Rights')
     workshopTags.append('Community')
     workshopTags.append('Economy')
     workshopTags.append('Education')
-    workshopTags.append('Employment')
-    workshopTags.append('Entertainment')
+    #workshopTags.append('Employment')
+    #workshopTags.append('Entertainment')
     workshopTags.append('Environment')
-    workshopTags.append('Family')
+    #workshopTags.append('Family')
     workshopTags.append('Government')
     workshopTags.append('Health')
     workshopTags.append('Housing')
-    workshopTags.append('Infrastructure')
-    workshopTags.append('Justice')
+    #workshopTags.append('Infrastructure')
+    #workshopTags.append('Justice')
     workshopTags.append('Land Use')
     workshopTags.append('Municipal Services')
-    workshopTags.append('NonProfit')
-    workshopTags.append('Outdoors')
-    workshopTags.append('Policy')
+    #workshopTags.append('NonProfit')
+    workshopTags.append('Parks and Rec')
+    #workshopTags.append('Policy')
     workshopTags.append('Safety')
-    workshopTags.append('Sports')
+    #workshopTags.append('Sports')
     workshopTags.append('Transportation')
     workshopTags.append('Water')
     workshopTags.append('Other')
@@ -408,20 +413,32 @@ def setWorkshopPrivs(workshop):
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
     c.privs['guest'] = isGuest(workshop)
+    # User not yet activated
+    c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
     # is a demo workshop
     c.privs['demo'] = isDemo(workshop)
     
     if 'user' in session:
-        c.privs['admin'] = userLib.isAdmin(c.authuser.id)
-        c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
-        testL = listenerLib.getListener(c.authuser, workshop)
-        if testL and testL['pending'] != '1':
-            c.privs['listener'] = True
-        c.privs['participant'] = isScoped(c.authuser, workshop)
-        c.privs['guest'] = False
-        c.privs['visitor'] = False
+        if c.authuser['activated'] == '0':
+            c.privs['provisional'] = True
+            c.privs['admin'] = False
+            c.privs['facilitator'] = False
+            c.privs['listener'] = False
+            c.privs['participant'] = isScoped(c.authuser, workshop)
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
+        else:
+            c.privs['provisional'] = False
+            c.privs['admin'] = userLib.isAdmin(c.authuser.id)
+            c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
+            testL = listenerLib.getListener(c.authuser, workshop)
+            if testL and testL['pending'] != '1':
+                c.privs['listener'] = True
+            c.privs['participant'] = isScoped(c.authuser, workshop)
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
 
 
 def Workshop(title, owner, publicPrivate, type = "personal"):

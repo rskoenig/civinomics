@@ -1,4 +1,4 @@
-function ProfileEditController($scope, $http) {
+function profileController($scope, $http) {
     /*
     * submitStatus: 0   ->  Successfully submitted, like with Unix status codes
     *               1   ->  Error
@@ -55,4 +55,30 @@ function ProfileEditController($scope, $http) {
             $scope.emailOnCommentsResponse = data;
         });
     }
+    
+    
+    $scope.getActivityURL = '/getActivity/' + $scope.code + '/' + $scope.url
+    $scope.getTrashURL = '/getTrash/' + $scope.code + '/' + $scope.url
+    if ($scope.trash){
+        $scope.getActivityURL = $scope.getTrashURL
+    }
+
+    $scope.getActivity = function() {
+		$scope.loading = true;
+		$http.get($scope.getActivityURL).success(function(data){
+			if (data.statusCode == 1){
+				$scope.activity = []
+				$scope.alertMsg = data.alertMsg;
+				$scope.alertType = data.alertType;
+			} 
+			else if (data.statusCode === 0){
+				$scope.trash = data.result;
+				
+			}
+			$scope.loading = false;
+		})
+	};
+	
+	$scope.getActivity()
+    
 }

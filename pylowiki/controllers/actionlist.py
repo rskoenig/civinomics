@@ -11,7 +11,7 @@ from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWor
 from pylowiki.lib.db.activity import getRecentActivity
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
-from pylowiki.lib.db.user import searchUsers, getUserByID
+from pylowiki.lib.db.user import searchUsers, getUserByID, getUserByCode
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 import pylowiki.lib.db.initiative as initiativeLib
@@ -93,6 +93,7 @@ class ActionlistController(BaseController):
             language=u"en"
         )
         for item in c.activity:
+            thisUser = getUserByID(item.owner)
             if item.objType == 'comment':
                 continue
             if 'workshopCode' in item:
@@ -106,8 +107,11 @@ class ActionlistController(BaseController):
                     parent = item
                 baseURL = config['site_base_url'] + "/initiative/" + parent['urlCode'] + "/" + parent['url']
                 baseTitle = 'the initiative named "<a href="' + baseURL + '">' + parent['title'] + '</a>"'
+            elif item.objType == 'photo':
+                parent = thisUser
+                baseURL = config['site_base_url'] + "/profile/" + parent['urlCode'] + "/" + parent['url']
             
-            thisUser = getUserByID(item.owner)
+            
             activityStr = ""
             userName = thisUser['name']
             if item.objType == 'resource':
@@ -122,6 +126,9 @@ class ActionlistController(BaseController):
             elif item.objType == 'initiative':
                 activityStr += 'A new initiative launched by ' + userName
                 itemURL = baseURL
+            elif item.objType == 'photo':
+                activityStr += 'A new photo added by ' + userName
+                itemURL = baseURL + "/" + item.objType + "/show/" + item['urlCode']
 
             #activityStr += '"' + item['title'] + '"'
             if 'workshopCode' in item:

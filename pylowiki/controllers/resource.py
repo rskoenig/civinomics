@@ -7,6 +7,7 @@ import pylowiki.lib.db.user             as  userLib
 import pylowiki.lib.db.facilitator      as  facilitatorLib
 import pylowiki.lib.db.dbHelpers        as  dbHelpers
 import pylowiki.lib.db.workshop         as  workshopLib
+import pylowiki.lib.db.initiative       as  initiativeLib
 import pylowiki.lib.db.event            as  eventLib
 import pylowiki.lib.db.generic          as  genericLib
 import pylowiki.lib.db.resource         as  resourceLib
@@ -14,14 +15,19 @@ import pylowiki.lib.db.discussion       as  discussionLib
 import pylowiki.lib.db.comment          as  commentLib
 import pylowiki.lib.db.revision         as  revisionLib
 import pylowiki.lib.db.geoInfo          as  geoInfoLib
+import pylowiki.lib.db.mainImage        as  mainImageLib
+
+
 import pylowiki.lib.alerts              as  alertsLib
+from pylowiki.lib.base                  import BaseController, render
+from pylowiki.lib.facebook              import FacebookShareObject
+import pylowiki.lib.helpers             as h
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
-import pylowiki.lib.db.mainImage        as  mainImageLib
+
 import webbrowser
 from tldextract import extract
-from pylowiki.lib.base import BaseController, render
-import pylowiki.lib.helpers as h
+
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -43,20 +49,45 @@ class ResourceController(BaseController):
             if c.w['public_private'] != 'public':
                 if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                     abort(404)
-        
+            
             # Demo workshop status
             c.demo = workshopLib.isDemo(c.w)
-                    
+
             if 'user' in session:
                 utils.isWatching(c.authuser, c.w)
+
+            shareType = 'workshop'
+            shareUrl = utils.workshopURL(c.w)
+            shareDescription = c.w['description'].replace("'", "\\'")
+            shareOk = workshopLib.isPublic(c.w)
         elif parent.objType == 'initiative':
             c.initiative = parent
             userLib.setUserPrivs()
+            shareType = 'initiative'
+            shareUrl = utils.initiativeURL(c.initiative)
+            # note: why doesn't the workshop description use misaka? if this changes over we'll need to
+            #   catch this happening and mod the uses of c.w['description'] in places that can't handle html
+            shareDescription = utils.getTextFromMisaka(c.initiative['description'])
+            shareOk = initiativeLib.isPublic(c.initiative)
         else:
             abort(404)
 
         c.title = parent['title']
         
+        ################## FB SHARE ###############################
+        # these values are needed for facebook sharing of a workshop
+        # - details for sharing a specific idea are modified in the view idea function
+        c.facebookShare = FacebookShareObject(
+            itemType=shareType,
+            url=shareUrl,
+            parentCode=parentCode,
+            title=c.title,
+            description=shareDescription,
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
 
     def listing(self, parentCode, parentURL):
         #get the scope to display jurisidction flag
@@ -74,16 +105,7 @@ class ResourceController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def showResource(self, parentCode, parentURL, resourceCode, resourceURL):
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.objectUrl = request.url
-        if c.w:
-            c.requestUrl = c.baseUrl + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
+        
         c.thingCode = resourceCode
         log.info("in showResource")
         if c.w:
@@ -92,14 +114,18 @@ class ResourceController(BaseController):
                 c.scope = workshopLib.getPublicScope(c.w)
 
             # standard thumbnail image for facebook shares
-            if c.mainImage['pictureHash'] == 'supDawg':
-                c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-            elif 'format' in c.mainImage.keys():
-                c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-            else:
-                c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-
-
+            #if c.mainImage['pictureHash'] == 'supDawg':
+            #    c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+            #elif 'format' in c.mainImage.keys():
+            #    c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+            #else:
+            #    c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+            # Note: I need to check on how c.backgroundImage is used elsewhere. If it's only being used with fb shares,
+            #   then I should call this with the thumbnail flag set to true, and I don't need to use the c. global, 
+            #   I just need to update the c.facebookShare object.
+            c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+            c.facebookShare.updateImageUrl(c.backgroundImage)
+            thingParent = c.w
         if c.initiative:
             scopeProps = utils.getPublicScope(c.initiative)
             scopeName = scopeProps['name'].title()
@@ -111,14 +137,17 @@ class ResourceController(BaseController):
             c.scopeFlag = scopeProps['flag']
             c.scopeHref = scopeProps['href']
 
-            if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
-                c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-                c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
-            else:
-                c.photo_url = "/images/icons/generalInitiative.jpg"
-                c.thumbnail_url = "/images/icons/generalInitiative.jpg"
-            c.bgPhoto_url = "'" + c.photo_url + "'"
+            #if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+            #    c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+            #    c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+            #else:
+            #    c.photo_url = "/images/icons/generalInitiative.jpg"
+            #    c.thumbnail_url = "/images/icons/generalInitiative.jpg"
+            #c.bgPhoto_url = "'" + c.photo_url + "'"
 
+            c.bgPhoto_url, c.photo_url, c.thumbnail_url = utils.initiativeImageURL(c.initiative)
+            c.facebookShare.updateImageUrl(c.photo_url)
+            thingParent = c.initiative
 
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
@@ -128,8 +157,16 @@ class ResourceController(BaseController):
                 if not c.thing:
                     abort(404)
         c.resource = c.thing
-        # name/title for facebook sharing
-        c.name = c.thing['title']
+
+        ################## FB SHARE ###############################
+        c.facebookShare.title = c.thing['title']
+        c.facebookShare.thingCode = c.thingCode
+        # update url for this item
+        c.facebookShare.updateUrl(utils.thingURL(thingParent, c.thing))
+        # set description to be that of the topic's description
+        c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
+
         if 'views' not in c.thing:
             c.thing['views'] = u'0'
             

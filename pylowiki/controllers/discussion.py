@@ -21,6 +21,7 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.alerts          as  alertsLib
 
+from pylowiki.lib.facebook import FacebookShareObject
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
 import pylowiki.lib.helpers as h
@@ -41,6 +42,23 @@ class DiscussionController(BaseController):
             
         c.mainImage = mainImageLib.getMainImage(c.w)
         
+        #################################################
+        # these values are needed for facebook sharing
+        c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+        shareOk = workshopLib.isPublic(c.w)
+        c.facebookShare = FacebookShareObject(
+            itemType='workshop',
+            url=utils.workshopURL(c.w) + '/discussion',
+            parentCode=workshopCode, 
+            image=c.backgroundImage,
+            title=c.w['title'],
+            description=c.w['description'].replace("'", "\\'"),
+            shareOk = shareOk
+        )
+        # add this line to tabs in the workshop in order to link to them on a share:
+        # c.facebookShare.url = c.facebookShare.url + '/activity'
+        #################################################
+
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
         
@@ -74,32 +92,24 @@ class DiscussionController(BaseController):
         #get the scope to display jurisidction flag
         if c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
-        # these values are needed for facebook sharing
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-        c.baseUrl = config['site_base_url']
-        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
-        if c.baseUrl[-1:] == "/":
-            c.baseUrl = c.baseUrl[:-1]
-        c.objectUrl = request.url
-        if c.w:
-            c.requestUrl = c.baseUrl + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
-        c.thingCode = discussionCode
-        # standard thumbnail image for facebook shares
-        if c.mainImage['pictureHash'] == 'supDawg':
-            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
-        elif 'format' in c.mainImage.keys():
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
-        else:
-            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-
+        
+        # sharing - extra details
+        c.thingCode = discussionCode        
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(discussionCode)
             if not c.thing:
                 abort(404)
-        # name/title for facebook sharing
-        c.name = c.thing['title']
+        
+        ################## FB SHARE ###############################
+        c.facebookShare.title = c.thing['title']
+        c.facebookShare.thingCode = c.thingCode
+        # update url for this item
+        c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
+        # set description to be that of the topic's description
+        c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
+
         if 'views' not in c.thing:
             c.thing['views'] = u'0'
             
@@ -120,6 +130,7 @@ class DiscussionController(BaseController):
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, discussionCode, discussionURL, commentCode):
+        # note: how to structure a url in order to link to this thread for facebook sharing?
         c.rootComment = commentLib.getCommentByCode(commentCode)
         c.discussion = discussionLib.getDiscussionByID(c.rootComment['discussion_id'])
         c.title = c.w['title']
@@ -143,25 +154,35 @@ class DiscussionController(BaseController):
 
     @h.login_required
     def addDiscussionHandler(self, workshopCode, workshopURL):
+
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
-            return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
        
-        if 'title' in request.params:
-            title = request.params['title']
+        if 'title' in payload:
+            title = payload['title']
         else: 
             title = False
-        if 'text' in request.params:
-            text = request.params['text']
+        if 'text' in payload:
+            text = payload['text']
         else:
             text = ''
 
         if not title or title=='':
-            alert = {'type':'error'}
-            alert['title'] = 'Title Field Required'
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-            return redirect(session['return_to'])
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
 
         else:
             if len(title) > 120:
@@ -171,4 +192,8 @@ class DiscussionController(BaseController):
             alertsLib.emailAlerts(d.d)
             commit(c.w)
         
-        return redirect(utils.thingURL(c.w, d.d))
+        if request.params:
+            return redirect(utils.thingURL(c.w, d.d))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
+        
