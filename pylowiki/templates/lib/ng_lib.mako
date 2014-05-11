@@ -385,7 +385,7 @@
                         </div><!-- ng-show -->
                     </td>
                     <td>
-                        <div ng-controller="yesNoVoteCtrl" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs;">
+                        <div class="span1 voteWrapper" ng-controller="yesNoVoteCtrl" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
                             ${upDownVoteBlock()}
                         </div>
                     </td>

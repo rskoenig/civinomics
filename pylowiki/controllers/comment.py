@@ -205,6 +205,8 @@ class CommentController(BaseController):
 
     def jsonCommentsForItem(self, urlCode):
         result = []
+        if 'ratings' in session:
+		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
         for comment in comments:
             entry = {}
@@ -215,6 +217,11 @@ class CommentController(BaseController):
             entry['ups'] = int(comment['ups'])
             entry['downs'] = int(comment['downs'])
             entry['netVotes'] = int(comment['ups']) - int(comment['downs'])
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+            else:
+                entry['rated'] = 0
+                
             entry['commentRole'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
