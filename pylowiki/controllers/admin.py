@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import datetime
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -363,6 +364,9 @@ class AdminController(BaseController):
         if c.error:
             return c.returnDict
         c.thing['unpublished_by'] = ''
+        publishDate = datetime.datetime.now(None)
+        c.thing['publishDate'] = publishDate
+        c.thing['unpublishDate'] = u'0000-00-00'
         c.thing.objType = c.thing.objType.replace("Unpublished", "")
         dbHelpers.commit(c.thing)
         
@@ -392,6 +396,8 @@ class AdminController(BaseController):
             auth = 'admin'
             
         c.thing['unpublished_by'] = auth
+        unpublishDate = datetime.datetime.now(None)
+        c.thing['unpublishDate'] = unpublishDate
         c.thing.objType = c.thing.objType.replace("Unpublished", "") + "Unpublished"
         dbHelpers.commit(c.thing)
         

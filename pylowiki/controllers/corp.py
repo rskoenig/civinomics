@@ -23,7 +23,7 @@ class CorpController(BaseController):
 
     def caseStudies(self):
         c.pagetype="caseStudies"  
-        c.title="Case Studies"
+        c.title="Surveys"
 
         c.clients=[]
         client={}
@@ -59,6 +59,34 @@ class CorpController(BaseController):
 
 
         c.studies=[]
+
+        study={}
+        study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+        study["description"]="Conducted via door-to-door interviews of registered voters."
+        study["image"]="bagCreek.jpg"
+        study["url"]="svbagban"
+        study['date']="4.9.14"
+        study['stats']='plasticBagBan'
+        study['respondents'] = 397
+        study['partnerLogo']='sosLogo.jpg'
+        study['partnerName']='Save Our shores'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+        study["description"]="A survey of Pacific Ave. business owners regarding the efficacy of the Host Program at creating a safe environment downtown."
+        study["image"]="hostPic.png"
+        study["url"]="dmc"
+        study['date']="4.8.14"
+        study['stats']='dcDmcSurvey'
+        study['respondents'] = 183
+        study['clientLogo']='dmcLogo.png'
+        study['cientName']='Downtown Management Corporation of Santa Cruz'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
 
         study={}
         study["title"]="Santa Cruz Tech Commuters"
@@ -164,7 +192,7 @@ class CorpController(BaseController):
 
     def displayCaseStudy(self, id):
         c.pagetype="caseStudies"  
-        c.title="Case Studies"
+        c.title="Surveys"
 
         casestudyname=id
         study={}
@@ -579,10 +607,92 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
+        elif casestudyname =="dmc":
+            study["url"]="dmc"
+            study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+            study["image"]="hostPic.png"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-9-2014"
+            study["background"]="Downtown SC is gnarly, we asked how the help's doing."
+            study["solution"]="Civinomics created an iPad survey for use in street outreach that.."
+            study["results"]=""
+            study["pressRelease"]='dmc'
+            study["nextSteps"]=""
+            study['stats']='dcDmcSurvey'
+            study['link']= 'http://surveys.civinomics.com/dmc'
+            study["text"]='dmc'
+
+            study['respondents'] = 183
+            study['clientLogo']='dmcLogo.png'
+            study['clientName']='Downtown Management Corporation'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss DMC"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
+        elif casestudyname =="svbagban":
+            study["url"]="svbagban"
+            study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+            study["image"]="bagCreek.jpg"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-8-2014"
+            study["background"]="Plastic Bags are bad."
+            study["solution"]="Plastic Bag Fees ain't so bad."
+            study["results"]=""
+            study["text"]='svBagBan'
+            study["nextSteps"]=""
+            study['stats']='plasticBagBan'
+            study['link']= 'http://surveys.civinomics.com/svbagban'
+
+            study['respondents'] = 397
+            study['partnerLogo']='sosLogo.jpg'
+            study['partnerName']='Save Our Shores'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss plasticBagBan"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+            
+            
+            
+
 
         return render("/derived/corp_casestudy.bootstrap")
-
-
 
 
     def displayCareer(self, id):
@@ -762,6 +872,20 @@ class CorpController(BaseController):
         toddAnderson['photo']='todd_585.jpg'
         toddAnderson['photoHover']='todd_silly_585.jpg'
         c.team.append(toddAnderson)
+        juanPabloD={}
+        juanPabloD["name"]="Juan Pablo Duvanced"
+        juanPabloD['title']='Account Executive'
+        juanPabloD['bio']="Juan Pablo's strives to increase social awareness of individual responsibility as well as the need for effective collaboration that can alleviate suffering and promote quality of life. As an Account Executive at Civinomics he helps ensure quality service delivery to non-profit and educational clients. His past experience includes Consulting for Family Services & Advocacy Projects with San Francisco school districts and acting as Family Support Coordinator for the Mission Learning Center (also in San Francisco). Previously he was a Senior Research Assistant at the Public Research Institute at San Francisco Sate University."
+        juanPabloD['photo']='juanPablo_duvanced_285.jpg'
+        juanPabloD['photoHover']='juanPablo_duvanced_285.jpg'
+        c.team.append(juanPabloD)
+        kelseyG={}
+        kelseyG["name"]="Kelsey Grimsley"
+        kelseyG['title']='Outreach Representative'
+        kelseyG['bio']="Kelsey gained valuable experience with diverse constituents as Congressman Henry Waxman's intern for his D.C. office (summer, 2012) and for Congressman Sam Farr in his local Santa Cruz office (spring, 2013). She campaigned in three states for Obama for America (2012), and helped coordinate successful regional environmental campaigns including Ban-the-Bag in Santa Cruz, CA. "
+        kelseyG['photo']='kelsey_grimsley_585.jpg'
+        kelseyG['photoHover']='kelsey_grimsley_585.jpg'
+        c.team.append(kelseyG)
         estherKim={}
         estherKim["name"]="Esther Kim"
         estherKim['title']='Marketing Manager'

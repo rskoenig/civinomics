@@ -239,6 +239,27 @@ def getRecentActivity(limit, comments = 0, offset = 0):
         else:
             return []
 
+def getInitiativeActivity(limit, comments = 0, offset = 0):
+        objectList = ['initiative']
+        if comments:
+            objectList.append('comment')
+        q = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objectList))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
+            .order_by('-date')\
+            .offset(offset)
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
+
+        if postList:
+            return postList
+        else:
+            return []
+
 def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
     postList = []
     objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
