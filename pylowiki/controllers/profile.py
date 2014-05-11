@@ -1023,11 +1023,9 @@ class ProfileController(BaseController):
         
     @h.login_required
     def csvUploadHandler(self, id1, id2):
-        log.error("I'm alive in Profile")
         if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
-        log.info("I'm alive in Profile 2")
         requestKeys = request.params.keys()
         
         if 'files[]' in requestKeys:
@@ -1040,10 +1038,11 @@ class ProfileController(BaseController):
             for csvUser in c.csv:
                 log.info(csvUser)
                 if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
-                    memberType = 100
-                    password = "changeThis"
-                    country = "United States"
-                    u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'])
+                    if (not userLib.getUserByEmail(csvUser['email'])):
+                        memberType = 100
+                        password = "changeThis"
+                        country = "United States"
+                        u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'])
 #                     user = u.u
 #                     if 'laston' in user:
 #                         t = time.localtime(float(user['laston']))
