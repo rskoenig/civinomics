@@ -1,75 +1,42 @@
 <%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="template_lib" file="/lib/template_lib.mako" />
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/Large_CityHall.jpg' alt="">
-</div>
+<%def name="headScripts()">
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
+<div id="login-bg"></div>
+
+<%
+  if 'loginResetPassword' in session._environ['PATH_INFO']:
+    session['afterLoginURL'] = 'loginResetPassword'
+%>
+
 <div class="login">
   <div class="container">
-      <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well">
-                  % if c.splashMsg:
-                      <% message = c.splashMsg %>
-                      <div class="alert alert-${message['type']}">
-                          <button data-dismiss="alert" class="close">x</button>
-                          <strong>${message['title']}</strong> ${message['content']}
-                      </div>
-                  % endif
-                  <div class="login-top">
-                      <h2> Login </h2>
-                  </div>
-                  <div class="login-body">
-                      % if c.conf['read_only.value'] == 'true':
-                          <h1> Sorry, Civinomics is in read only mode right now </h1>
-                      % else:
-                          <div class="row">
-                              <div class="span3 offset2" id="fbLoginButton1">
-                                  <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
-                              </div>
-                          </div>
-                          <div class="row">
-                              <div class="span3 offset2" style="padding-top:21px;" id="twtLoginButton1">
-                                  <a href="/twitterLoginBegin"><img src="/images/twitter-sign-in-with-gray.png"></a>
-                              </div>
-                          </div>
-                          <div class="social-sign-in-separator sc-font-light sc-text-light">
-                              <span>Or sign in with your email</span>
-                          </div>
-                          <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
-                              <div class="control-group">
-                                  <label class="control-label" for="email"> Email: </label>
-                                  <div class="controls">
-                                      <input type="email" name="email" id="email" required>
-                                  </div>
-                              </div>
-                              <div class="control-group">
-                                  <label class="control-label" for="passphrase"> Password: </label>
-                                  <div class="controls">
-                                      <input type="password" name="password" id="password">
-                                  </div>
-                              </div>
-                              <div class="control-group">
-                                  <div class="controls">
-                                      <button type="submit" class="btn btn-primary"> Log in </button>
-                                      
-                                  </div>
-                              </div>
-                          </form>
-                      % endif
-                  </div>
-                  <div class="login-bottom">
-                      
-                      <text class="form-subtext"><a href="/forgotPassword" style="color: #075D00; padding-top:20px;"> Forgot password?</a></text>
-                      <text class="form-subtext pull-right"><a href="/signup" style="color: #075D00; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
-                      </label>
-                      
-                  </div>
-              </div><!-- main-well -->
-          </div><!-- sapn6 -->
-      </div><!-- row -->
+    <div class="row">
+      % if 'forgot' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'pTitle'">
+      % elif 'signup' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'sTitle'">
+      % elif 'login' or 'Login' in session._environ['PATH_INFO']:
+        <div ng-init="showTitle = 'lTitle'">
+      % endif
+          <div class="well main-well login" ng-controller="signupController">
+              <div class="row-fluid">
+                ${template_lib.tabbableSignupLogin('title')}
+              </div>
+              <div class="social-sign-in-separator sc-font-light sc-text-light no-bottom"></div>
+              <div class="row-fluid centered tcs">
+                  <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+              </div>
+          </div><!-- main-well -->
+      </div><!-- sapn6 -->
+    </div><!-- row -->
   </div><!-- container -->
 </div><!-- login -->

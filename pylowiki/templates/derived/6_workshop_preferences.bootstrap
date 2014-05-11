@@ -4,157 +4,139 @@
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
 <%namespace name="admin_helpers" file="/lib/admin_helpers/workshop.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
+<%namespace name="home_helpers" file="/lib/derived/6_workshop_home.mako" />
 
 <%
     lib.return_to()
 
-    tab1active = ""
-    tab2active = ""
-    tab3active = ""
-    tab4active = ""
-    tab5active = ""
-    tab6active = ""
-    tab7active = ""
-    tab8active = ""
-    tab9active = ""
-    tab10active = ""
+    basicInfo_active = ""
+    participants_active = ""
+    tags_active = ""
+    slideshow_active = ""
+    background_active = ""
+    notables_active = ""
+    manageWs_active = ""
+    eventLog_active = ""
 
 
     if c.tab == "tab1":
-        tab1active = "active"
-    elif c.tab == "tab2":
-        tab2active = "active"
-    elif c.tab == "tab3":
-        tab3active = "active"
-    elif c.tab == "tab4":
-        tab4active = "active"
-    elif c.tab == "tab5":
-        tab5active = "active"
-    elif c.tab == "tab6":
-        tab6active = "active"
-    elif c.tab == "tab7":
-        tab7active = "active"
-    elif c.tab == "tab8":
-        tab8active = "active"
-    elif c.tab == "tab9":
-        tab9active = "active"
-    elif c.tab == "tab10":
-        tab10active = "active"
+        basicInfo_active = "active"
+    elif c.tab == "participants":
+        participants_active = "active"
+    elif c.tab == "tags":
+        tags_active = "active"
+    elif c.tab == "slideshow":
+        slideshow_active = "active"
+    elif c.tab == "background":
+        background_active = "active"
+    elif c.tab == "notables":
+        notables_active = "active"
+    elif c.tab == "manageWs":
+        manageWs_active = "active"
+    elif c.tab == "eventLog":
+        eventLog_active = "active"
     else:
         if c.w['startTime'] == '0000-00-00':
-            tab1active = "active"
+            basicInfo_active = "active"
         else:
-            tab7active = "active"
+            manageWs_active = "active"
 %>
-
 <div class="row-fluid">
-    <div class="tabbable">
-        <div class="span3">
-            % if c.w['startTime'] != '0000-00-00':
-                <div class="section-wrapper">
-                    <div class="browse">
-                        <h4 class="section-header smaller">Administrate</h4>
-                        <ul class="nav nav-pills nav-stacked">
-                        <% tabCount = 1 %>
-                            <li class="${tab7active}"><a href="#tab7" data-toggle="tab">${tabCount}. Manage Workshop
-                            <% tabCount += 1 %>
-                            </a></li>
-                            <li class="${tab6active}"><a href="#tab6" data-toggle="tab">${tabCount}. Facilitators, Listeners
-                            <% tabCount += 1 %>
-                            </a></li>
-                            <li class="${tab10active}"><a href="#tab10" data-toggle="tab">${tabCount}. Event Log
-                            <% tabCount += 1 %>
-                            </a></li>
-                            % if c.w['type'] == 'professional' and c.accounts:
-                            <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">4. Account Management</a></li>
-                            % endif
-                            % if c.privs['admin']:
-                            <li><a href="#admin" data-toggle="tab">Civ admin</a></li>
-                            % endif
-                        </ul>
-                    </div><!-- browse -->
-                </div><!-- section-wrapper -->
-            % endif       
-            <div class="section-wrapper">
-                <div class="browse">
-                    <h4 class="section-header smaller">Configure</h4>
-                    <ul class="nav nav-pills nav-stacked">
-                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Basic Info
-                        % if c.basicConfig:
-                            <i class="icon-ok pull-right"></i>
-                        % endif
-                        </a></li>
-                        <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Participants
-                        % if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public'):
-                            <i class="icon-ok pull-right"></i>
-                        % endif
-                        </a></li>
-                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Tags
-                        % if c.tagConfig:
-                            <i class="icon-ok pull-right"></i>
-                        % endif
-                        </a></li>
-                        <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Slideshow
-                        % if c.slideConfig:
-                            <i class="icon-ok pull-right"></i>
-                        % endif
-                        </a></li>
-                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Background
-                        % if c.backConfig:
-                            <i class="icon-ok pull-right"></i>
-                        % endif
-                        </a></li>
-                    </ul>
-                    ${helpers.publish()}
-                </div><!-- browse -->
-            </div><!-- section-wrapper -->
-        </div><!-- span3 -->
-        <div class="span9">
-            % if c.conf['read_only.value'] == 'true':
-                <!-- read only -->
-            % else:
+    <div class="span9">
+        ${home_helpers.workshopHero()}
+        % if c.conf['read_only.value'] == 'true':
+            <!-- read only -->
+        % else:
             ${helpers.fields_alert()}
-            <div class="tab-content">
-                <div class="tab-pane ${tab1active}" id="tab1">
-                    ${helpers.basic()}
-                </div><!-- tab-pane template tab1 -->
-                <div class="tab-pane ${tab2active}" id="tab2">
-                    ${helpers.scope()}
-                </div><!-- tab-pane template tab2 -->
-                <div class="tab-pane ${tab3active}" id="tab3">
-                    ${helpers.tags()}
-                </div><!-- tab-pane template tab3 -->
-                <div class="tab-pane ${tab4active}" id="tab4">
-                    ${slide_helpers.workshop_admin_slideshow()}
-                </div><!-- tab-pane template tab4 -->
-                <div class="tab-pane ${tab5active}" id="tab5">
-                    ${helpers.edit_background()}
-                </div><!-- tab-pane template tab5 -->
-                <div class="tab-pane ${tab6active}" id="tab6">
-                    <div class="section-wrapper">
-                        <div class="browse">
-                            <h4 class="section-header smaller">Facilitators and Listeners</h4>
-                            ${admin_helpers.admin_facilitators()}
-                            ${admin_helpers.admin_listeners()}
-                        </div><!-- browse -->
-                    </div><!-- section-wrapper -->
-                </div><!-- tab6 -->
-                <div class="tab-pane ${tab7active}" id="tab7">
-                    ${admin_helpers.marked_items()}
-                </div><!-- tab7 -->
-                <div class="tab-pane ${tab10active}" id="tab10">    
-                    ${admin_helpers.admin_event_log()}
-                </div><!-- tab10 -->
-                % if c.privs['admin']:
-                <div class="tab-pane" id="admin">
-                    ${admin_helpers.admin()}
-                </div>
-                % endif
-            </div><!-- tab-content -->
+            <div class="tabbable">
+                <div class="tab-content">
+                    <div class="tab-pane ${basicInfo_active} edit-workshop-pane" id="basicInfo">
+                        ${helpers.basic()}
+                    </div><!-- tab-pane template basicInfo -->
+                    <div class="tab-pane ${participants_active} edit-workshop-pane" id="participants">
+                        ${helpers.scope()}
+                    </div><!-- tab-pane template participants -->
+                    <div class="tab-pane ${tags_active} edit-workshop-pane" id="tags">
+                        ${helpers.tags()}
+                    </div><!-- tab-pane template tags -->
+                    <div class="tab-pane ${slideshow_active} edit-workshop-pane" id="slideshow">
+                        ${slide_helpers.workshop_admin_slideshow()}
+                    </div><!-- tab-pane template slideshow -->
+                    <div class="tab-pane ${background_active} edit-workshop-pane" id="background">
+                        ${helpers.edit_background()}
+                    </div><!-- tab-pane template background -->
+                    <div class="tab-pane ${notables_active} edit-workshop-pane" id="notables">
+                        <div class="section-wrapper">
+                            <div class="browse">
+                                <h4 class="section-header smaller">Facilitators and Officials</h4>
+                                ${admin_helpers.admin_facilitators()}
+                                ${admin_helpers.admin_listeners()}
+                            </div>
+                        </div>
+                    </div><!-- notables -->
+                    <div class="tab-pane ${manageWs_active}" id="manageWs">
+                        ${admin_helpers.marked_items()}
+                    </div><!-- manageWs -->
+                    <div class="tab-pane ${eventLog_active}" id="eventLog">    
+                        ${admin_helpers.admin_event_log()}
+                    </div><!-- eventLog -->
+                    % if c.privs['admin']:
+                        <div class="tab-pane" id="admin">
+                            ${admin_helpers.admin()}
+                        </div>
+                    % endif
+                </div><!-- tab-content -->
+            </div>
         % endif
-        </div><!-- span9 -->
-    </div><!-- tabbable template -->
+    </div><!-- span9 -->
+    <div class="span3">
+        <ul class="nav nav-tabs nav-stacked" style="margin-top: 12px; margin-right:0; width: 100%">
+            <li class="${basicInfo_active}"><a href="#basicInfo" data-toggle="tab">Basic Info
+            % if c.basicConfig:
+                <i class="icon-ok pull-right"></i>
+            % endif
+            </a></li>
+            <li class="${tags_active}"><a href="#tags" data-toggle="tab">Tags
+            % if c.tagConfig:
+                <i class="icon-ok pull-right"></i>
+            % endif
+            </a></li>
+            <li class="${slideshow_active}"><a href="#slideshow" data-toggle="tab">Slideshow
+            % if c.slideConfig:
+                <i class="icon-ok pull-right"></i>
+            % endif
+            </a></li>
+            <li class="${background_active}"><a href="#background" data-toggle="tab">Information
+            % if c.backConfig:
+                <i class="icon-ok pull-right"></i>
+            % endif
+            </a></li>
+            <li class="${participants_active}"><a href="#participants" data-toggle="tab">Participants
+            % if c.participantsConfig:
+                <i class="icon-ok pull-right"></i>
+            % endif
+            </a></li>
+        </ul>
+        % if c.w['startTime'] != '0000-00-00':
+            <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-right:0; width: 100%">
+                <li class="${manageWs_active}"><a href="#manageWs" data-toggle="tab">Manage Workshop
+                </a></li>
+                <li class="${notables_active}"><a href="#notables" data-toggle="tab">Facilitators and Officials
+                </a></li>
+                <li class="${eventLog_active}"><a href="#eventLog" data-toggle="tab">Event Log
+                </a></li>
+                % if c.w['type'] == 'professional' and c.accounts:
+                <!-- <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">Account Management</a></li> -->
+                % endif
+                % if c.privs['admin']:
+                    <li><a href="#admin" data-toggle="tab">Civ admin</a></li>
+                % endif
+            </ul>
+        % endif 
+        ${helpers.publish()}
+    </div><!-- span3 -->
 </div><!-- row-fluid -->
+    
 
 <%def name = 'extraStyles()'>
     <link type="text/css" rel="stylesheet" href="/styles/vendor/blueimp-bootstrap-image-gallery.min.css">
@@ -259,4 +241,5 @@
         <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
     % endif
 </%def>
+
 

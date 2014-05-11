@@ -1,4 +1,6 @@
 <%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
 <%def name="page_specific_css()">
     <!-- None -->
 </%def>
@@ -7,8 +9,8 @@
     <div class="row-fluid">
         <h1>Careers</h1>
         </br>
-        <p class="lead">Let's reinvent the world.</p>
-        <p> We're looking for talented, self-directed people to join our team. Don't see your job posting below? We're open to crazy ideas: <a href="#">careers @ civinomics.com</a></p>
+        <p class="lead">Join us in reinventing citizenship.</p>
+        <p> We're looking for talented, self-directed people to join our team. Don't see your job posting below? We're open to crazy ideas: ${mako.formatEmail("careers@civinomics.com", "Crazy Job Idea")}</p>
     </div>
     <div>
 
@@ -40,3 +42,6 @@
 </%def>
 
 <%def name="display_body_bottom_content()"></%def>
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>

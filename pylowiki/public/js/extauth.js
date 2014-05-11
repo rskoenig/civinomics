@@ -1,13 +1,12 @@
-function fbCheckAccount(response, authResponse, smallPic, bigPic){
-    console.log('in /public/js/extauth.js fbCheckAccount: ' + response.name);
-    //var newstring = 'email in extauth: ' + email;
-    //return newstring;
+function fbCheckAccount(responseName, authResponse, smallPic, bigPic){
+    // NOTE: response.email not working, can't retrieve email at this point
+
     var encodedSmall = encodeURIComponent(smallPic)
     encodedSmall = encodedSmall.replace(/\%/g, ",")
     var encodedBig = encodeURIComponent(bigPic)
     encodedBig = encodedBig.replace(/\%/g, ",")
-    var checkURL = "/extauth/fbEmail/" + response.name + "&" + response.email + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID + "&" + encodedSmall + "&" + encodedBig 
-    
+    var checkURL = "/extauth/fbEmail/" + responseName + "&" + 'emailNotAvailable' + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID + "&" + encodedSmall + "&" + encodedBig 
+    //console.log('urlcheck: '+checkURL)
     var checkResult = $.ajax({
         type : 'POST',
         async : false,
@@ -15,20 +14,24 @@ function fbCheckAccount(response, authResponse, smallPic, bigPic){
     }).responseText;
     //console.log('cr ' + checkResult)
     return checkResult;
-    //var gobj = jQuery.parseJSON(checkResult);
-    //return gobj.result
-    //document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
 }
 
-function postShared(response, itemCode, itemURL, postId, userCode, workshopCode){
+function postShared(response, itemCode, itemURL, postId, userCode, workshopCode, shareType){
+    itemCode = itemCode || "noitemCode";
+    itemURL = itemURL || "noitemURL";
+    postId = postId || "nopostId";
+    userCode = userCode || "nouserCode";
+    workshopCode = workshopCode || "noworkshopCode";
+    shareType = shareType || "noshareType";
     // someone shared something. record this in the db
     // needing info to define the object that is being shared. could be a workshop, could be an 
     // object within a workshop
     // ! determine this here, then send the message to the corresponding route
     var encodedUrl = encodeURIComponent(itemURL)
     encodedUrl = encodedUrl.replace(/\%/g, ",")
-    
-    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId
+    //console.log('ea ic: '+itemCode);
+    //console.log('ea wc: '+workshopCode);
+    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId + "/" + shareType
     //var checkURL = "/share/facebook"
     var checkResult = $.ajax({
         type : 'POST',
@@ -37,4 +40,12 @@ function postShared(response, itemCode, itemURL, postId, userCode, workshopCode)
     }).responseText;
 
     return checkResult
+}
+
+function fPrintObject(o) {
+    var out = '';
+    for (var p in o) {
+        out += p + ': ' + o[p] + '\n';
+    }
+    //console.log(out);
 }

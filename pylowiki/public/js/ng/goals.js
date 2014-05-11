@@ -1,4 +1,4 @@
-var app = angular.module('civ', []);
+var app = angular.module('civ', ['ngSanitize']);
 
 app.controller('GoalsCtrl', function($scope, $http){
   $scope.baseURL = location.pathname;

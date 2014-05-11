@@ -57,8 +57,6 @@ div .well.sidebar-nav{
 
 #team img{
   margin-top: 12px;
-  width: 100px;
-  height: 100px;
 }
 
 .tab-content.corp{
@@ -124,6 +122,10 @@ div .well.sidebar-nav{
   width: 400px;
 }
 
-
+@media (max-width: 979px) and (min-width: 768px) {
+  .tabs-left > .nav-tabs {
+    margin-right: 0;
+  }
+}
 
 

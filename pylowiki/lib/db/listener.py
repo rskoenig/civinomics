@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
 import sqlalchemy as sa
 from dbHelpers import commit
@@ -50,11 +51,31 @@ def getListenersForUser(user, disabled = 0):
     except:
         return False
 
+def setListenersForUserInSession(lwdisabled = 0):
+    listenerWorkshops = []
+    listenerList = getListenersForUser(c.authuser, disabled = lwdisabled)
+    if listenerList:
+        listenerWorkshops += [lw['workshopCode'] for lw in listenerList]      
+
+    session["listenerWorkshops"] = listenerWorkshops
+    session.save()
+        
+
 def Listener(name, title, email, workshop, pending = 1):
     # recycle existing disabled listener objects for this user and this workshop
     listener = getListener(email, workshop)
     if listener:
         listener['disabled'] = '0'
+        if 'userCode' in listener:
+            user = userLib.getUserByCode(listener['userCode'])
+            lKey = 'listener_counter'
+            if lKey in user:
+                lValue = int(user[lKey])
+                lValue += 1
+                user[lKey] = str(lValue)
+            else:
+                user[lKey] = '1'
+            commit(user)
         listener['pending'] = pending
         commit(listener)
     else:

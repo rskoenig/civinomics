@@ -60,7 +60,7 @@ def getPhotoLocation(photo):
     
 
 def searchPhotos( keys, values, deleted = u'0', count = False):
-    log.info("db search")
+    #log.info("db search")
     try:
         if type(keys) != type([]):
             p_keys = [keys]
@@ -126,3 +126,9 @@ def Photo(owner, title, description, tags, scope):
     commit(p)
     d = discussionLib.Discussion(owner = owner, discType = 'photo', attachedThing = p, title = title)
     return p
+
+def isPublic(photo):
+    if photo.objType != 'photoUnpublished':
+        return True
+    else:
+        return False

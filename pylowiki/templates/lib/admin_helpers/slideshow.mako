@@ -30,16 +30,10 @@
 
 <%def name="add_slides(parent)">
     <!-- The file upload form used as target for the file upload widget -->
-    <form id="fileupload" action="/${parent.objType}/${parent['urlCode']}/${parent['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
-    <p><strong>Add images</strong></p>
-    <ul>
-        <li>Slideshow looks best with 6 or more images</li>
-        <li>Make sure you have permission to use the images</li>
-        <li>Avoid images smaller than 640 pixels wide by 480 pixels high</li>
-    </ul>
+    <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="row-fluid">
-        <div class="span7 offset1 fileupload-buttonbar">
+        <div class="span7 fileupload-buttonbar">
             <!-- The fileinput-button span is used to style the file input field as button -->
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
@@ -50,7 +44,7 @@
                 <i class="icon-upload icon-white"></i>
                 <span>Start upload</span>
             </button>
-            <button type="reset" class="btn btn-warning cancel">
+            <button type="reset" class="btn btn-danger cancel">
                 <i class="icon-ban-circle icon-white"></i>
                 <span>Cancel upload</span>
             </button>
@@ -115,16 +109,16 @@
                 <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;"></div></div>
             </td>
             <td class="start">{% if (!o.options.autoUpload) { %}
-                <button class="btn btn-primary">
+                <!-- <button class="btn btn-primary">
                     <i class="icon-upload icon-white"></i>
                     <span>{%=locale.fileupload.start%}</span>
-                </button>
+                </button> -->
             {% } %}</td>
         {% } else { %}
             <td colspan="2"></td>
         {% } %}
         <td class="cancel">{% if (!i) { %}
-            <button class="btn btn-warning">
+            <button class="btn btn-danger">
                 <i class="icon-ban-circle icon-white"></i>
                 <span>{%=locale.fileupload.cancel%}</span>
             </button>
@@ -173,6 +167,11 @@
             <li>Add captions</li>
             <li>Drag images to Trash to delete</li>
         </ul>
+        % if c.w['startTime'] == '0000-00-00':
+            <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+                <button type="submit" class="btn btn-warning" name="continueToNext">Save Slideshow and Continue</button>
+            </form>
+        % endif
         <div class="demo">
             <div class="column" id="published">
                 <h4 class="centered">Published slides</h4 >
@@ -184,10 +183,8 @@
                             <div class = "portlet-image">
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
-                                % elif 'format' in slide.keys():
-                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.${slide['format']}" class="image-thumbnail">
                                 % else:
-                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
+                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.png" class="image-thumbnail">
                                 % endif
                             </div><!-- portlet-image -->
                         </div><!-- portlet -->
@@ -203,8 +200,6 @@
                             <div class = "portlet-image">
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
-                                % elif 'format' in slide.keys():
-                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.${slide['format']}" class="image-thumbnail">
                                 % else:
                                     <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
                                 % endif

@@ -10,21 +10,6 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="thingCount(user, things, title)">
-    <% 
-        thisTitle = title
-        if title == 'conversations':
-            thisTitle = 'discussions'
-        elif title == 'bookmarks':
-            thisTitle = 'watching'
-        thingListingURL = "/profile/%s/%s/%s" %(user['urlCode'], user['url'], thisTitle)
-    %>
-    <h3 class="profile-count centered">
-        <a class="black" href="${thingListingURL}">${len(things)}</a>
-    </h3>
-    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">${title}</a></p></div>
-</%def>
-
 <%def name="profileDashboard()">
     <div class="centered">
         ${lib_6.userImage(c.user, className="avatar avatar-large")}
@@ -32,12 +17,12 @@
     <div class="section-wrapper">
         <div class="browse">
             %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
-                <div ng-init="dashboardFullName='${c.username}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.username}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
+                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
                     <h3 class="section-header">{{fullName}}</h3>
                     <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
                 </div>
             %else:
-                <h3 class="section-header">${c.username}</h3>
+                <h3 class="section-header">${c.user['name']}</h3>
                 <p>${lib_6.userGeoLink(c.user)}</p>
             %endif
             
@@ -70,37 +55,127 @@
             <hr>
             <div class="row-fluid">
                 <div class="span4">
-                    ${thingCount(c.user, c.resources, 'resources')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/resources" %(c.user['urlCode'], c.user['url'])
+                        if 'resource_counter' in c.user:
+                            numThings = c.user['resource_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">resources</a></p></div>
+                </div><!-- span4 -->
+                <div class="span4">
+                    <% 
+                        thingListingURL = "/profile/%s/%s/ideas" %(c.user['urlCode'], c.user['url'])
+                        if 'idea_counter' in c.user:
+                            numThings = c.user['idea_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">ideas</a></p></div>
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.ideas, 'ideas')}
-                </div>
-                <div class="span4">
-                    ${thingCount(c.user, c.discussions, 'conversations')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/discussions" %(c.user['urlCode'], c.user['url'])
+                        if 'discussion_counter' in c.user:
+                            numThings = c.user['discussion_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">conversations</a></p></div>
                 </div>
             </div> <!--/.row-fluid-->
             <hr>
             <div class="row-fluid">
                 <div class="span4">
-                    ${thingCount(c.user, c.followers, 'followers')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/followers" %(c.user['urlCode'], c.user['url'])
+                        if 'follower_counter' in c.user:
+                            numThings = c.user['follower_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">followers</a></p></div>
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.following, 'following')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/following" %(c.user['urlCode'], c.user['url'])
+                        if 'follow_counter' in c.user:
+                            numThings = c.user['follow_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">following</a></p></div>
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.watching, 'bookmarks')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/watching" %(c.user['urlCode'], c.user['url'])
+                        if 'bookmark_counter' in c.user:
+                            numThings = c.user['bookmark_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">bookmarks</a></p></div>
                 </div>
             </div> <!--/.row-fluid-->
                         <hr>
             <div class="row-fluid">
                 <div class="span4">
-                    ${thingCount(c.user, c.photos, 'pictures')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/pictures" %(c.user['urlCode'], c.user['url'])
+                        if 'photo_counter' in c.user:
+                            numThings = c.user['photo_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">pictures</a></p></div>
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.facilitatorWorkshops, 'facilitating')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/facilitating" %(c.user['urlCode'], c.user['url'])
+                        if 'facilitator_counter' in c.user:
+                            numThings = c.user['facilitator_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">facilitating</a></p></div>
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.listeningWorkshops, 'listening')}
+                    <% 
+                        thingListingURL = "/profile/%s/%s/listening" %(c.user['urlCode'], c.user['url'])
+                        if 'listener_counter' in c.user:
+                            numThings = c.user['listener_counter']
+                        else:
+                            numThings = '0'
+                    %>
+                    <h3 class="profile-count centered">
+                    <a class="black" href="${thingListingURL}">${numThings}</a>
+                    </h3>
+                    <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">listening</a></p></div>
                 </div>
             </div> <!--/.row-fluid-->
         </div><!--/.browse-->

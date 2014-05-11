@@ -22,11 +22,13 @@
 ########################################################################
 <%def name="comments(thing, discussion, **kwargs)">
     <%
-        if 'user' in session and discussion.objType != 'comment':
+        if 'user' in session and discussion.objType != 'comment' and not c.privs['provisional']:
             if thing['disabled'] != '1':
                 addCommentToDiscussion(thing, discussion)
         elif 'user' not in session and discussion.objType != 'comment':
                 loginToAddComment(thing)
+        elif c.privs['provisional']:
+                activateToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
 </%def>
@@ -37,19 +39,33 @@
     ## Display a button to login to add a comment
     ##
     ########################################################################
-    % if c.w:
-        url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url']
-    % else:
-        url = '/login'
-    %endif
-
 
     <fieldset>
         <legend></legend>
         <div class="span1">
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
-        <a href="${url}"><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+        <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
+    </fieldset>
+
+
+</%def>
+
+<%def name="activateToAddComment(thing)">
+    ########################################################################
+    ##
+    ## Display a button to activate account to add a comment
+    ##
+    ########################################################################
+
+    <fieldset>
+        <legend></legend>
+        <div class="span1">
+            ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+        </div>
+        <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
         <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
     </fieldset>
@@ -63,25 +79,45 @@
     ## Add a comment to the root of the discussion tree
     ##
     ########################################################################
-    <div class="row-fluid">
-        <div class="span12">
-            <form action="/comment/add/handler" id="commentAddHandler_root">
-                <input type="hidden" id="type" name="type" value="${thing.objType}" />
-                <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
-                <input type="hidden" name="parentCode" value="0" />
-                <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-                <fieldset>
-                    <legend></legend>
-                    <div class="span1">
-                        ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
-                    </div>
-                    <textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea>
-                    <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-                    <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
-                </fieldset>
-            </form>
-        </div>
-    </div>
+    <div class="spacer"></div>
+    <form action="/comment/add/handler" id="commentAddHandler_root">
+        <input type="hidden" id="type" name="type" value="${thing.objType}" />
+        <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
+        <input type="hidden" name="parentCode" value="0" />
+        <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
+        <div class="row-fluid">
+            <div class="span1">
+                ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+            </div>
+            <div class="span11">
+                <textarea rows="2" class="span12" name="comment-textarea" placeholder="Add a comment..."></textarea>
+            </div>
+        </div><!-- row-fluid -->
+        % if thing.objType == 'idea' or thing.objType == 'initiative':
+            <% log.info("thing type is %s"%thing.objType) %>
+            <div class="row-fluid">
+                <div class="span1">
+                </div>
+                <div class="span11">
+                    <label class="radio inline">
+                        <input type=radio name="commentRole" value="yes"> Pro
+                    </label>
+                    <label class="radio inline">
+                        <input type=radio name="commentRole" value="neutral" checked> Neutral
+                    </label>
+                    <label class="radio inline">
+                        <input type=radio name="commentRole" value="no"> Con
+                    </label>
+                    <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button></span>
+                </div><!- span11 -->
+            </div><!-- row-fluid -->
+        % else:
+        <div class="row-fluid">
+            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
+        </div><!-- row-fluid -->
+        % endif
+    </form>
 </%def>
 
 <%def name="commentClubRule()">
@@ -205,6 +241,31 @@
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
 
+        roleClass = ''
+        roleLabel = ''
+
+        try:
+            if comment['commentRole']:
+                roleClass = 'commentRole '
+                roleLabel = ''
+                if comment['commentRole'] == 'no':
+                    roleClass += "red"
+                    roleLabel += 'Con'
+                    headerClass += " against"
+
+                elif comment['commentRole'] == 'yes':
+                    roleClass += "green"
+                    roleLabel += "Pro"
+                    headerClass += " favor"
+
+                else:
+                    roleClass +="grey"
+                    roleLabel = "Neutral"
+                    headerClass += " neutral"
+        except:
+            roleClass = ''
+            roleLabel = ''
+
     %>
     <div class="${headerClass}">
         <!--<button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
@@ -220,6 +281,9 @@
         %>
         ${role}<span class="grey">${lib_6.userGreetingMsg(author)}</span> from ${lib_6.userGeoLink(author, comment=True)}
         
+        % if roleClass != '':
+            <span class="pull-right ${roleClass}">${roleLabel}</span>
+        % endif
         <span class="pull-right disabledComment-notice">
             <small>
             % if parent:
@@ -230,6 +294,8 @@
                                 dparent = c.w
                             elif c.user:
                                 dparent = c.user
+                            elif c.initiative:
+                                dparent = c.initiative
                         %>
                         <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif
@@ -266,9 +332,8 @@
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
-                if 'user' in session:
-                    if c.thing['disabled'] == '0':
-                        commentFooter(comment, author)
+                if c.thing['disabled'] == '0':
+                    commentFooter(comment, author)
             %>
             ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1)}
         </div><!--/.accordion-inner-->
@@ -293,15 +358,21 @@
     <div class="row-fluid">
         <div class="span11 offset1">
             <div class="btn-group">
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
-                % endif
-                % if c.privs['facilitator'] or c.privs['admin']:
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                % if 'user' in session and not c.privs['provisional']:
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                    % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
+                        <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+                    % endif
+                    % if c.privs['facilitator'] or c.privs['admin']:
+                        <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                    % endif
+                % elif not c.privs['provisional']:
+                    <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
+                    <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
             </div>
+            Added ${comment.date}
             <%
                 revisions = revisionLib.getRevisionsForThing(comment)
                 lib_6.revisionHistory(revisions, comment)
@@ -325,14 +396,16 @@
     ## Flag
     ${lib_6.flagThing(comment)}
     
-    ## Edit
-    % if c.privs['admin'] or c.authuser.id == comment.owner or c.privs['facilitator']:
-        ${lib_6.editThing(comment)}
-    % endif
+    % if 'user' in session:
+        ## Edit
+        % if c.privs['admin'] or c.authuser.id == comment.owner or c.privs['facilitator']:
+            ${lib_6.editThing(comment)}
+        % endif
     
-    ## Admin
-    % if c.privs['facilitator'] or c.privs['admin']:
-        ${lib_6.adminThing(comment)}
+        ## Admin
+        % if c.privs['facilitator'] or c.privs['admin']:
+            ${lib_6.adminThing(comment)}
+        % endif
     % endif
 </%def>
 

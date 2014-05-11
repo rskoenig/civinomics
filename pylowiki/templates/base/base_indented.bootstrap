@@ -8,3 +8,10 @@
    </div>
 </div><!-- close wrap -->
 ${helpers.shortFooter()}
+% if c.authuser and c.privs:
+	% if c.privs['provisional']:
+		${helpers.activateAccountModal()}
+	% endif
+% endif
+${helpers.signupLoginModal()}
+
