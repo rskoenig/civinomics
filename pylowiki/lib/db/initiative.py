@@ -22,7 +22,7 @@ def getInitiative(initiativeCode):
 
 def getInitiativesForUser(user):
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
     except:
         return False
 
@@ -109,14 +109,13 @@ def updateInitiativeChildren(initiative, initiativeKey):
         
 
 # Object
-def Initiative(owner, title, description, scope, workshop = None):
+def Initiative(owner, title, description, scope, goal = None, workshop = None):
     i = Thing('initiative', owner.id)
     generic.linkChildToParent(i, owner)
     if workshop is not None:
         generic.linkChildToParent(i, workshop)
     commit(i)
     i['urlCode'] = utils.toBase62(i)
-       
     i['title'] = title
     i['url'] = utils.urlify(title[:20])
     i['description'] = description
@@ -131,6 +130,8 @@ def Initiative(owner, title, description, scope, workshop = None):
     i['public'] = u'0'
     i['ups'] = '0'
     i['downs'] = '0'
+    i['views'] = '0'
+    i['goal'] = goal
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
     return i
