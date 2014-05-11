@@ -617,6 +617,24 @@ class ProfileController(BaseController):
             abort(404)
 
     @h.login_required
+    def csv(self, id1, id2):
+        c.events = eventLib.getParentEvents(c.user)
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
+            c.title = 'Edit Profile'
+            if 'confTab' in session:
+                c.tab = session['confTab']
+                session.pop('confTab')
+                session.save()
+            if userLib.isAdmin(c.authuser.id):
+                c.admin = True
+            else:
+                c.admin = False
+                
+            return render('/derived/6_profile_csv.bootstrap')
+        else:
+            abort(404)
+
+    @h.login_required
     def infoEditHandler(self,id1, id2):
         perror = 0
         perrorMsg = ""
@@ -1022,7 +1040,7 @@ class ProfileController(BaseController):
                 log.info(csvUser)
                 if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
                     if (not userLib.getUserByEmail(csvUser['email'])):
-                        memberType = 100
+                        memberType = 50
                         password = "changeThis"
                         country = "United States"
                         u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'])

@@ -324,7 +324,13 @@ class User(object):
         Revision(u, u)
         
         # send the activation email
-        mailLib.sendActivationMail(u['email'], url)
+        if (u['memberType'] == '50'):
+            password = generatePassword() 
+            changePassword( u, password )
+            commit( u ) # commit database change
+            mailLib.sendActivationMailWithPassword(u['email'], url, password)
+        else:
+            mailLib.sendActivationMail(u['email'], url)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
     
