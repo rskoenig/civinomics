@@ -64,9 +64,16 @@
         <h2 class="text-center">
             Surveys
         </h2>
-        <p class="lead text-center">
-            Respondents are citizens not just data points. Get the data you need, enrich the public data set, foster civic participation. Government transparency really is a beautiful thing.
-        </p>
+        <div class="col-sm-6">
+            <a class="thumbnail">
+                <img src="/images/splash/respondent_family.png" style="max-height: 300px;">
+            </a>
+        </div>
+        <div class="col-sm-6">
+            <p class="lead text-center">
+                Respondents are citizens not just data points. Get the data you need, enrich the public data set, foster civic participation. Government transparency really is a beautiful thing.
+            </p>
+        </div>
     </div>
     <div class="row">
         <p class="lead text-center">A few of our valued clients</p>
@@ -103,6 +110,35 @@
 
     </div>
     <hr> 
+    <div class="row">
+        <h2 class="text-center">
+            About
+        </h2>
+        <p class="lead text-center">
+            Doing good is in our code.
+        </p>
+        <div class="col-sm-6">
+            <a class="thumbnail">
+                <img src="/images/civ_logo_simple_lg.png" style="max-height: 300px;">
+            </a>
+        </div>
+        <div class="col-sm-6">
+            <p>Like Wikipedia, Mozilla and countless others before us, we believe that the best parts of the internet can and should be owned by everyone. That's why we're a non-profit, open source organization.</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <a>Fork the code</a>
+                </div>
+                <div class="col-sm-4">
+                    <a>Volunteer</a>
+                </div>
+                <div class="col-sm-4">
+                    <a>Support the cause</a>
+                </div>
+            </div>
+            <br>
+            <p>"Dovehand" - It's a dove, it's a hand... yup, it's both. Our logo symbolyzes the belief that we can create peace (the dove) through our active participation (the hand).
+        </div>
+    </div>
     <hr>
     <div class="row">
         <h2 class="text-center">
