@@ -11,7 +11,12 @@
             <div class="span2"><img src="{{item.flag}}" width="60" height="60"></div><div class="span9">{{item.scopeLevel}} of {{item.scopeName}}</div>
         </div><!-- row-fluid -->
         <div class="row-fluid">
-            <div class="span2"><strong>{{item.meetingDate}}</strong></div><div class="span9"><a href="{{item.href}}">{{item.title}}</a>Public Meeting of {{item.group}}</div>
+            <div class="span2"><strong>{{item.meetingDate}}</strong></div>
+            <div class="span9">
+                <a href="{{item.href}}">{{item.title}}</a>
+                <p>Public Meeting of {{item.group}}</p>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+            </div>
         </div><!-- row-fluid -->
     </div><!-- media-well -->
 </%def>
@@ -279,7 +284,7 @@
     % endif
 </%def>
 
-<%def name="upDownVoteBlock()">   
+<%def name="upDownVoteBlock()">
     % if 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
             <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
@@ -384,9 +389,11 @@
                             </div><!-- collapse -->
                         </div><!-- ng-show -->
                     </td>
-                    <td>
-                        <div class="span1 voteWrapper" ng-controller="yesNoVoteCtrl" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
-                            ${upDownVoteBlock()}
+                    <td class="span1 voteWrapper">
+                        <div class="row-fluid" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
+                            <div ng-controller="yesNoVoteCtrl">
+                                ${upDownVoteBlock()}
+                            </div>
                         </div>
                     </td>
                 </tr>
