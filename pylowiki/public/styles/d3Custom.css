@@ -11,6 +11,8 @@ h4 span {
     padding-left: 0.2em;
 }
 
+
+
 .dc-data-count2 .filter-count {
     color: #3182bd;
     font-weight: bold;
@@ -34,14 +36,11 @@ h4 span {
 .dc-chart g.row text {
     font-size: 0.7em !important;
     font: arial !important;
-
+    text-shadow: 0 0 5px #fff;
 }
 
 .dc-chart .pie-slice {
     fill: black !important;
     font-size: 0.8em !important;
-}
-
-.table {
-    width: 60%;
+    text-shadow: 0 0 5px #fff;
 }

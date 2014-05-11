@@ -247,8 +247,6 @@
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
-        facebookAppId = c.facebookAppId
-        channelUrl = c.channelUrl
         thingCode = c.thingCode
         if not thingCode:
           thingCode = 'noCode'
@@ -319,6 +317,7 @@
         if c.initiative:
             if c.initiative['public'] == '1':
                 shareOk = True
+        log.info("link: "+link)
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -805,6 +804,7 @@
             elif 'format' in mainImage.keys():
                 return "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
+               # note: due to a recent slideshow thumbnail bugfix, Todd believes this .jpg should be .png
                return "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
                
       imgStr = '<a href="'

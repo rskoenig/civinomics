@@ -223,10 +223,6 @@ class LoginController(BaseController):
             if user:
                 log.info("found user by facebook id")
 
-        #if user:
-        #    for thisKey in user.keys():
-        #        log.info("user %s == %s"%(thisKey, user[thisKey]))
-
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
@@ -754,9 +750,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':
@@ -775,9 +768,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/login.bootstrap")
 
     def loginRedirects(self, page):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         afterLoginURL = ''
         if page == 'newWorkshop':
             afterLoginURL += "/workshop/display/create/form"
