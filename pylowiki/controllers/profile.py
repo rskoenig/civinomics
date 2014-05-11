@@ -615,23 +615,6 @@ class ProfileController(BaseController):
             return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
-    @h.login_required      
-    def edit(self, id1, id2):
-        c.events = eventLib.getParentEvents(c.user)
-        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
-            c.title = 'Edit Profile'
-            if 'confTab' in session:
-                c.tab = session['confTab']
-                session.pop('confTab')
-                session.save()
-            if userLib.isAdmin(c.authuser.id):
-                c.admin = True
-            else:
-                c.admin = False
-                
-            return render('/derived/6_profile_csv.bootstrap')
-        else:
-            abort(404)
 
     @h.login_required
     def infoEditHandler(self,id1, id2):
