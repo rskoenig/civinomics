@@ -22,11 +22,13 @@
 ########################################################################
 <%def name="comments(thing, discussion, **kwargs)">
     <%
-        if 'user' in session and discussion.objType != 'comment':
+        if 'user' in session and discussion.objType != 'comment' and not c.privs['provisional']:
             if thing['disabled'] != '1':
                 addCommentToDiscussion(thing, discussion)
         elif 'user' not in session and discussion.objType != 'comment':
                 loginToAddComment(thing)
+        elif c.privs['provisional']:
+                activateToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
 </%def>
@@ -44,6 +46,26 @@
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
         <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+        <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
+    </fieldset>
+
+
+</%def>
+
+<%def name="activateToAddComment(thing)">
+    ########################################################################
+    ##
+    ## Display a button to activate account to add a comment
+    ##
+    ########################################################################
+
+    <fieldset>
+        <legend></legend>
+        <div class="span1">
+            ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+        </div>
+        <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
         <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
     </fieldset>
@@ -78,13 +100,13 @@
                 </div>
                 <div class="span11">
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="yes"> Argument in Favor
+                        <input type=radio name="commentRole" value="yes"> Pro
                     </label>
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="neutral" checked> Neutral Statement
+                        <input type=radio name="commentRole" value="neutral" checked> Neutral
                     </label>
                     <label class="radio inline">
-                        <input type=radio name="commentRole" value="no"> Argument Against
+                        <input type=radio name="commentRole" value="no"> Con
                     </label>
                     <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button></span>
                 </div><!- span11 -->
@@ -219,27 +241,30 @@
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
 
+        roleClass = ''
+        roleLabel = ''
+
         try:
             if comment['commentRole']:
                 roleClass = 'commentRole '
-                roleLabel = 'Argument '
+                roleLabel = ''
                 if comment['commentRole'] == 'no':
                     roleClass += "red"
-                    roleLabel += 'Against'
+                    roleLabel += 'Con'
                     headerClass += " against"
 
                 elif comment['commentRole'] == 'yes':
                     roleClass += "green"
-                    roleLabel += "in Favor"
+                    roleLabel += "Pro"
                     headerClass += " favor"
 
                 else:
                     roleClass +="grey"
-                    roleLabel = "Neutral Statement"
+                    roleLabel = "Neutral"
                     headerClass += " neutral"
-        except KeyError:
-            roleClass = ""
-            roleLabel = ""
+        except:
+            roleClass = ''
+            roleLabel = ''
 
     %>
     <div class="${headerClass}">
@@ -333,7 +358,7 @@
     <div class="row-fluid">
         <div class="span11 offset1">
             <div class="btn-group">
-                % if 'user' in session:
+                % if 'user' in session and not c.privs['provisional']:
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
                     % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
@@ -342,7 +367,7 @@
                     % if c.privs['facilitator'] or c.privs['admin']:
                         <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
-                % else:
+                % elif not c.privs['provisional']:
                     <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
                     <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif

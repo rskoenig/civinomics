@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import datetime
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -37,12 +38,12 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives']:
+        if action in ['users', 'usersNotActivated', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
         # Actions that require a workshop and a workshop child object
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish', 'activate']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -68,7 +69,7 @@ class AdminController(BaseController):
                 userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item
-            if userLib.isAdmin(author.id):
+            if c.thing.objType != 'user' and userLib.isAdmin(author.id):
                 if not userLib.isAdmin(c.authuser.id):
                     """
                         Why are we not returning here?  Pylons will only accept an abort() here
@@ -132,6 +133,10 @@ class AdminController(BaseController):
                 
     def users(self):
         c.list = userLib.getAllUsers()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def usersNotActivated(self):
+        c.list = userLib.getNotActivatedUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def photos(self):
@@ -265,7 +270,7 @@ class AdminController(BaseController):
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType.replace("Unpublished", ""), thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
-        title = 'Someone %s a post you made' %(action)
+        title = '%s a post you made' %(action)
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
@@ -305,7 +310,7 @@ class AdminController(BaseController):
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
-        title = 'Someone %s an idea you posted' %(action)
+        title = '%s an idea you posted' %(action)
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
@@ -359,6 +364,9 @@ class AdminController(BaseController):
         if c.error:
             return c.returnDict
         c.thing['unpublished_by'] = ''
+        publishDate = datetime.datetime.now(None)
+        c.thing['publishDate'] = publishDate
+        c.thing['unpublishDate'] = u'0000-00-00'
         c.thing.objType = c.thing.objType.replace("Unpublished", "")
         dbHelpers.commit(c.thing)
         
@@ -388,6 +396,8 @@ class AdminController(BaseController):
             auth = 'admin'
             
         c.thing['unpublished_by'] = auth
+        unpublishDate = datetime.datetime.now(None)
+        c.thing['unpublishDate'] = unpublishDate
         c.thing.objType = c.thing.objType.replace("Unpublished", "") + "Unpublished"
         dbHelpers.commit(c.thing)
         
@@ -467,3 +477,10 @@ class AdminController(BaseController):
     def setDemo(self, thingCode):
         response = workshopLib.setDemo(c.thing)
         return response
+        
+    def activate(self, thingCode):
+        user = c.thing
+        user['activated'] = "1"
+        dbHelpers.commit(user)
+        result = "Activated"
+        return json.dumps({'code':thingCode, 'result':result})

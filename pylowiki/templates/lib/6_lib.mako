@@ -29,13 +29,224 @@
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
 
+<%def name="facebookDialogShare2(**kwargs)">
+    <%
+        shareOk = False
+        shareOn = False
+        if c.facebookShare:
+            if c.facebookShare.facebookAppId:
+                shareOn = True
+                # link: direct url to item being shared
+                # picture: url of the parent workshop's background image
+                facebookAppId = int(c.facebookShare.facebookAppId)
+                #log.info("app id %s and %s"%(c.facebookShare.facebookAppId, facebookAppId))
+                channelUrl = c.facebookShare.channelUrl
+                thingCode = c.facebookShare.thingCode
+
+                link = c.facebookShare.url
+                image = c.facebookShare.image
+                #log.info("link %s and image %s"%(link, image))
+                userCode = ''
+
+                parentCode = c.facebookShare.parentCode
+
+                # in order to prevent the javascript for these buttons from being included multiple
+                # times, these kwargs are now used to activate either or both of the buttons
+                if 'shareOnWall' in kwargs:
+                    if kwargs['shareOnWall'] is True:
+                        shareOnWall = True
+                    else:
+                        shareOnWall = False
+                else:
+                    shareOnWall = False
+
+                if 'sendMessage' in kwargs:
+                    if kwargs['sendMessage'] is True:
+                        sendMessage = True
+                    else:
+                        sendMessage = False
+                else:
+                    sendMessage = False
+                
+
+                title = c.facebookShare.title
+                description = c.facebookShare.description
+
+                # this is an elaborate way to get the item or workshop's description loaded as the caption
+                caption = c.facebookShare.caption
+                if c.thing:
+                    if 'text' in c.thing.keys():
+                        caption = c.thing['text']
+                    else:
+                        caption = ''
+                
+                shareOk = c.facebookShare.shareOk
+
+    %>
+
+    % if shareOk and shareOn:
+        <div id="fb-root"></div>
+        <script src="/js/extauth.js" type="text/javascript"></script>
+        <script>
+            // activate facebook javascript sdk
+            var fbAuthId = '';
+            
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId      : "${facebookAppId}", // App ID
+                    channelUrl : "${channelUrl}", // Channel File
+                    status     : true, // check login status
+                    cookie     : false, // enable cookies to allow the server to access the session
+                    xfbml      : true  // parse XFBML
+                });
+                FB.Event.subscribe('auth.authResponseChange', function(response) {
+                // Here we specify what we do with the response anytime this event occurs.
+                console.log('above response tree');
+                if (response.status === 'connected') {
+                    console.log('calling fb connected');
+                    fbAuthId = response.authResponse.userID;
+                } else if (response.status === 'not_authorized') {
+                    console.log('not authd');                
+                    //FB.login();
+                } else {
+                    console.log('else');
+                    //FB.login();
+                }
+                });
+            };
+            
+            // Load the SDK asynchronously
+            (function(d){
+                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement('script'); js.id = id; js.async = true;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                ref.parentNode.insertBefore(js, ref);
+            }(document));
+
+            function shareOnWall() {
+                // grab checked value of checkbox IF it's on the page. add to description.
+                //var shareChecked = $("#shareVote").is(':checked');
+                
+                var shareChecked = false;
+                var shareText = '';
+                var inputElements = document.getElementsByTagName('input');
+                for(var i=0; inputElements[i]; ++i){
+                    //console.log("input class: "+inputElements[i].className)
+                    if(inputElements[i].className=="shareVote" && inputElements[i].checked) {
+                        //console.log("it's checked ")
+                        shareChecked = true;
+                        break;
+                    }
+                }
+                
+                if (shareChecked) {
+                    //console.log("share checked")
+                    // get the value of the voted button
+                    var linkElements = document.getElementsByTagName('a');
+                    for(var j=0; linkElements[j]; ++j){
+                        //console.log(linkElements[j].className)
+                        if(linkElements[j].className=="voted yesVote" || linkElements[j].className=="yesVote voted"){
+                            //console.log("HURRAH!")
+                            shareText = 'I am in favor of this.';
+                            break;
+                        } else if(linkElements[j].className=="noVote voted" || linkElements[j].className=="voted noVote") {
+                            //console.log("NAH AH!")
+                            shareText = 'I am not in favor of this.';
+                            break;
+                        } else {
+                            shareText = 'I have not voted on this yet.';
+                        }
+                    }
+                }
+                
+                FB.ui(
+                    {
+                      method: 'feed',
+                      name: "${title}",
+                      link: "${link}",
+                      picture: "${image}",
+                      caption: shareText,
+                      description: "${description}"
+                    },
+                    function(response) 
+                    {
+                        
+                        if (response && response.post_id) {
+                          // if there's a post_id, create share object
+                          var thingCode = "${thingCode}";
+                          var link = "${link}"
+                          var userCode = fbAuthId;
+                          var parentCode = "${parentCode}"
+                          
+                          //console.log('tc: '+thingCode);
+                          //console.log('wc: '+parentCode);
+
+                          result = postShared(response, thingCode, link, response.post_id, userCode, parentCode, 'facebook-wall');
+                        }
+                    }
+                );
+            };
+
+            function messageFriends() {
+                // there is no callback for messages sent
+                // we can simply record that the message dialog was brought up
+                // grab checked value of checkbox IF it's on the page. add to description.
+                
+                var thingCode = "${thingCode}";
+                var link = "${link}";
+                var userCode = fbAuthId;
+                var parentCode = "${parentCode}";
+                
+                //console.log('tc mf: '+thingCode);
+                //console.log('wc mf: '+parentCode);
+                          
+                result = postShared("no response", thingCode, link, '0', userCode, parentCode, 'facebook-message');
+                console.log("3");
+                FB.ui(
+                    {
+                      method: 'send',
+                      name: "${title}",
+                      link: "${link}",
+                      picture: "${image}"
+                    }
+                );
+
+            };
+        
+        </script>
+        <div class="btn-group facebook">
+          % if 'btn' in kwargs:
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+              <i class="icon-facebook icon-light right-space"></i> | Share
+            </a>
+          % else:
+            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+              <i class="icon-facebook-sign icon-2x"></i>
+            </a>
+          % endif
+          <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            <li>
+              % if shareOnWall:
+                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+              % endif
+            </li>
+            <li>
+              % if sendMessage:
+                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+              % endif
+            </li>
+          </ul>
+        </div>
+        
+        
+    % endif
+</%def>
 
 <%def name="facebookDialogShare(link, picture, **kwargs)">
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
-        facebookAppId = c.facebookAppId
-        channelUrl = c.channelUrl
         thingCode = c.thingCode
         if not thingCode:
           thingCode = 'noCode'
@@ -106,6 +317,7 @@
         if c.initiative:
             if c.initiative['public'] == '1':
                 shareOk = True
+        log.info("link: "+link)
     %>
     % if shareOk:
         <div id="fb-root"></div>
@@ -262,7 +474,7 @@
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
@@ -271,7 +483,7 @@
 </%def>
 
 <%def name="emailShareModal(itemURL, itemCode)">
-    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
             memberMessage = "I thought this might interest you!"
         %>
@@ -315,7 +527,7 @@
          <% return %>
       % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
@@ -391,7 +603,7 @@
         else:
             myRatings = {}
       %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             thingCode = thing['urlCode']
             #log.info("thingCode is %s"%thingCode)
@@ -483,9 +695,13 @@
         btnX = "large"
         if 'small' in args or 'tiny' in args:
             btnX = "small"
+
+        if c.privs['provisional']:
+            printStr = '<a href="#activateAccountModal" data-toggle="modal"'
       
-        if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
+        elif c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
             printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
+
         else:
             printStr = '<a href="#signupLoginModal" data-toggle="modal"'
             
@@ -588,6 +804,7 @@
             elif 'format' in mainImage.keys():
                 return "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
+               # note: due to a recent slideshow thumbnail bugfix, Todd believes this .jpg should be .png
                return "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
                
       imgStr = '<a href="'
@@ -1592,6 +1809,15 @@
     % endfor
   </select>
 </%def>
+
+<%def name="public_tag_list_filter()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+      <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
+    % for category in sorted(categories):
+      <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
+    % endfor
+</%def>
+
 <%def name="public_tag_links()">
   <%  categories = workshopLib.getWorkshopTagCategories() %>
     % for category in sorted(categories):
@@ -1671,7 +1897,6 @@
 
 <%def name="showTags(item)">
     <% 
-        colors = workshopLib.getWorkshopTagColouring()
         try:
           tagList = item['tags'].split('|')
         except KeyError:
@@ -1681,10 +1906,9 @@
       % for tag in tagList:
           % if tag and tag != '':
               <% 
-                tagClass = colors[tag] 
                 tagValue = tag.replace(" ", "_")
               %>
-              <a class="label workshop-tag ${tagClass}" href="/searchTags/${tagValue}/" >${tag}</a>
+              <a class="label workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>

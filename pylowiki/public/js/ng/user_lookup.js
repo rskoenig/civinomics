@@ -1,5 +1,4 @@
 function userLookupCtrl($scope, $http) {
-	$scope.test = "testing testing 3 2 1 4";
 	// loading removed until asynchronous calls between coAuthor add/remove and coAuthor list generation are implemented
 	// messages will have to work for time being
 	//$scope.loading = true;

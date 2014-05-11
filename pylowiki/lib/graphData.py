@@ -37,6 +37,7 @@ def buildConstancyData(parent, activities, **kwargs):
         # log.info("views: %s"%views)
         # get the date and vote stats
         thisTime = str(item.date)
+        
         upVotes = int(item['ups'])
         downVotes = int(item['downs'])
         totalVotes = upVotes + downVotes

@@ -2,6 +2,7 @@
 import logging
 
 from sqlalchemy import and_
+from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit, with_characteristic as wc
@@ -39,6 +40,15 @@ def getWorkshopFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'workshopCode'))).all()
     except:
         return False
+
+def setWorkshopFollowsInSession(fwdisabled = '0'):        
+    bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
+    if bookmarked:
+        bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+    else:
+        bookmarkedWorkshops = []
+    session["bookmarkedWorkshops"] = bookmarkedWorkshops
+    session.save()
         
 # Which initiatives is the user following
 def getInitiativeFollows( user, disabled = '0'):
@@ -50,6 +60,20 @@ def getInitiativeFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'initiativeCode'))).all()
     except:
         return False
+        
+def setInitiativeFollowsInSession(idisabled = '0'):
+        bookmarkedInitiatives = []
+        iwatching = getInitiativeFollows(c.authuser)
+        if iwatching:
+            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in iwatching ]
+            for i in initiativeList:
+                if i.objType == 'initiative':
+                    if i['public'] == '1':
+                        if i['deleted'] != '1':
+                            bookmarkedInitiatives.append(i['urlCode'])
+                            
+        session["bookmarkedInitiatives"] = bookmarkedInitiatives
+        session.save()
 
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):
@@ -61,6 +85,16 @@ def getUserFollows( user, disabled = '0'):
             .filter(Thing.data.any(and_(Data.key == u'userCode'))).all()
     except:
         return False
+        
+def setUserFollowsInSession(udisabled = '0'):        
+    following = getUserFollows(c.authuser, disabled = udisabled)
+    if following:
+        userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
+        followingUsers = [ user.id for user in userList ]
+    else:
+        followingUsers = []
+    session["followingUsers"] = followingUsers
+    session.save()
 
 # get the Follow object for this user and thing
 def getFollow( user, thing ):
@@ -97,17 +131,37 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
     # (dict notation).
     try:
         f = getFollow(user, thing)
+        thingCode = thing['urlCode']
+        if thing.objType == 'workshop':
+            sKey = 'bookmarkedWorkshops'
+        elif thing.objType == 'initiative':
+            sKey = 'bookmarkedInitiatives'
+        elif thing.objType == 'user':
+            sKey = 'followingUsers'
+            thingCode = thing.id
         if f:
             # Ugly hack to reverse the bit when it's stored as a string
             f['disabled'] = str(int(not int(f['disabled'])))
+            if f['disabled'] == '1':
+                if sKey in session and thingCode in session[sKey]:
+                    session[sKey].remove(thingCode)
+            else:
+                log.info("follow thing enabled")
+                if sKey in session and thingCode not in session[sKey]:
+                    session[sKey].append(thingCode)
         else:
             f = Thing('follow', user.id)
             generic.linkChildToParent(f, thing)
             f['itemAlerts'] = '0'
             f['digest'] = '0'
             f['disabled'] = disabled
+            if sKey in session and session[sKey] and thingCode not in session[sKey]:
+                session[sKey].append(thingCode)
+            elif sKey in session and not session[sKey]:
+                session[sKey].append(thingCode)
+
         
-        if thing.objType == 'user': 
+        if thing.objType == 'user':
             fKey = 'follower_counter'
             if f['disabled'] == '0':
                 if fKey in thing:
@@ -141,9 +195,10 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
                 user[fKey] = str(fValue)
             else:
                 user[fKey] = '0'
-
         commit(user)
         commit(f)
+        
+        session.save()
         return True
     except:
         return False
