@@ -34,6 +34,35 @@
     </div>
 </%def>
 
+<%def name="initiative_listing_condensed()">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+        <div ng-controller="yesNoVoteCtrl"> 
+            <div class="row-fluid">
+                <div class="span2">
+                    <div class="listed-photo">
+                        <a href = '{{item.href}}'>
+                            <div class="i-photo full-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                        </a>
+                    </div>
+                </div>
+                <div class="span10">
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <p style="line-height: 16px;"><small>${metaData()}</small></p>
+                    <small style="grey" ng-init="stringLimit=200"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small>
+                    <h4>
+                        <small class="grey centered">Estimated Cost:</small>
+                        <span class="pull-right">{{item.cost | currency}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div class="row-fluid">
+                ${yesNoVoteFooter()}
+                ${actions()}
+            </div>
+        </div>
+    </div>
+</%def>
+
 <%def name="idea_listing()">
         <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
             <div class="media-body row" ng-controller="yesNoVoteCtrl">
@@ -236,8 +265,8 @@
 </%def>
 
 <%def name="metaData()">
-    <small><img class="thumbnail flag mini-flag border" src="{{item.flag}}"> 
-        <span style="text-transform: capitalize;">{{item.objType}}</span> for <a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
+    <small><img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
+        <span style="text-transform: capitalize;"><a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
         <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
     </small>
 </%def>

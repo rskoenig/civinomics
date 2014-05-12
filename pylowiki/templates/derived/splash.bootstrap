@@ -51,13 +51,36 @@
     <div class="row">
         <div class="col-sm-4">
             <h3 class="text-center">For Citizens</h3>
+            <p>There's only one way that "we the people" have ever passed laws: through the coordinated action of large groups of people. Civinomics lets you organize followers around the best proposals in your city, state or nation and be the change you want to see.</p>
         </div>
         <div class="col-sm-4">
             <h3 class="text-center">For Government Agencies</h3>
+            <p>Join the open data, transparent government revolution. Civinomics gives you you a FREE, easy to use citizen-feedback platform so you can crowdsource public input and new ideas for your department, city, or cabinet.<a href="#orgSignup">Get started.</a></p><p>Want to make sure you have a truly representative sample? Civinomics direct iPad surveys and outreach services let you connect person-to-person with all segments of the population. <a href="#surveys">Learn More.</a></p>
         </div>
         <div class="col-sm-4">
             <h3 class="text-center">For Organizations</h3> 
+            <p>Open source group decision making for your organization. Take program and feature suggestions from customers or team members. Does your organization take a stand on a political issue? Let everyone know that too. Start an organization.
         </div>
+    </div>
+    <hr>
+    <div class="row">
+        <h2 class="text-center">Recently Proposed</h2>
+        <div ng-controller="SearchCtrl">
+            <div class="loading-civ" ng-show="loading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+            </div>
+
+            <div class="col-sm-6 col-md-4" ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:6" ng-cloak>
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            ${ng_helpers.initiative_listing_condensed()}
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div><!-- ng-controller -->
     </div>
     <hr>
     <div class="row">

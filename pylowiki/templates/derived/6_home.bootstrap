@@ -114,8 +114,8 @@
       <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
 
         % if c.authuser:
+            <div class="spacer"></div>
             <div class="home-right-pane well">
-                <div class="spacer"></div>
                 % if c.authuser and c.authuser['activated'] == '0':
                   <div class="alert alert-success">
                     <h4>Welcome!</h4> 

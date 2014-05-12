@@ -3317,6 +3317,10 @@ hr.object-list-header{
   padding: 8px 0 8px 0 !important;
 }
 
+.i-photo.full-photo{
+  height: 150px;
+}
+
 .i-photo{
   height:100px;
   width:100%;
@@ -3394,7 +3398,7 @@ hr.object-list-header{
 }
 
 .activity-item.follow{
-    border-top: solid 1px #5b5b5b;
+    border-top: solid 1px #ddd;
     margin-bottom: 5px;
     margin-left: -10px;
     position: relative;
