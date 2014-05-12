@@ -9,7 +9,144 @@
 
 <%def name="includeD3()">
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+</%def>
+
+################################################################################
+## initiativeStats
+##   - displays d3 charts corresponding to the data avialable on initial load of 
+## an initiative
+##      :VARS:
+## yes              - the number of yes votes for this object
+## no               - " " " no votes " " "
+## views            - number of views 
+## numComments      - number of comments
+## myRating         - this info available in the session if this user has made a rating.
+##                      if not, this is 0, if so, 1=yes and -1=no
+##
+## structure of data for the charts:
+## data = [
+##  {
+##      "label":"YES", 
+##      "value":yes
+##  }, {
+##      "label":"NO", 
+##      "value":no
+##  }];
+################################################################################
+<%def name="initiativeStats(**kwargs)">
+    
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
+    <div class='row-fluid'>   
+        <div class='span4'>
+            <h4>Yes / No
+            </h4>
+            <div id='d3-yesNo-chart'></div>
+        </div>
+        <div class='span4'>
+            <h4>Votes / Resources / Comments
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+        <div class='span4'>
+            <h4>Comments for/neutral/against
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        yes = ${kwargs['yes'] | n};
+        no = ${kwargs['no'] | n};
+        views = ${kwargs['views'] | n};
+        numComments = ${kwargs['numComments'] | n};
+        myRating = ${kwargs['myRating'] | n};
+        totalVotes = yes + no;
+
+        var data = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
+
+        var w = 300,                        //width
+        h = 300,                            //height
+        r = 100,                            //radius
+        color = d3.scale.category20c();     //builtin range of colors
+        
+        console.log('hey: '+totalVotes);
+        console.log('yo: '+myRating);
+
+        var vis = d3.select("#d3-yesNo-chart")
+            .append("svg:svg")              //create the SVG element inside the <body>
+            .data([data])                   //associate our data with the document
+                .attr("width", w)           //set the width and height of our visualization (these will be attributes of the <svg> tag
+                .attr("height", h)
+            .append("svg:g")                //make a group to hold our pie chart
+                .attr("transform", "translate(" + r + "," + r + ")")    //move the center of the pie chart from 0, 0 to radius, radius
+     
+        var arc = d3.svg.arc()              //this will create <path> elements for us using arc data
+            .outerRadius(r);
+     
+        var pie = d3.layout.pie()           //this will create arc data for us given a list of values
+            .value(function(d) { return d.value; });    //we must tell it out to access the value of each element in our data array
+     
+        var arcs = vis.selectAll("g.slice")     //this selects all <g> elements with class slice (there aren't any yet)
+            .data(pie)                          //associate the generated pie data (an array of arcs, each having startAngle, endAngle and value properties) 
+            .enter()                            //this will create <g> elements for every "extra" data element that should be associated with a selection. The result is creating a <g> for every object in the data array
+                .append("svg:g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+                    .attr("class", "slice");    //allow us to style things in the slices (like text)
+     
+        arcs.append("svg:path")
+            .attr("fill", function(d, i) { return color(i); } ) //set the color for each slice to be chosen from the color function defined above
+            .attr("d", arc);                                    //this creates the actual SVG path using the associated data (pie) with the arc drawing function
+ 
+        arcs.append("svg:text")                                     //add a label to each slice
+            .attr("transform", function(d) {                    //set the label's origin to the center of the arc
+                //we have to make sure to set these before calling arc.centroid
+                d.innerRadius = 0;
+                d.outerRadius = r;
+                return "translate(" + arc.centroid(d) + ")";        //this gives us a pair of coordinates like [50, 50]
+            })
+        .attr("text-anchor", "middle")                    //center the text on it's origin
+        .text(function(d, i) { return data[i].label; });  //get the label from our original data array
+        
+        function changePie(newValue) {
+            if (myRating == 0) {
+                // react to the newValue by adding a vote to corresponding side
+                // (data[0] is the yes data)
+                data[0].value = (newValue > 0) ? data[0].value + 1 : data[1].value + 1; 
+            } else {
+                // react to the newValue by adding a vote to corresponding side
+                // and subtracting a vote from the other
+                if (newValue > 0) {
+                    data[0].value + 1
+                    data[1].value - 1;
+                } else {
+                    data[0].value - 1
+                    data[1].value + 1;
+                }
+            }
+            vis = vis.data(pie); // compute the new angles
+            vis.transition().duration(1500).attrTween("d", arcTween); // redraw the arcs
+        }
+
+        // Store the displayed angles in _current.
+        // Then, interpolate from _current to the new angles.
+        // During the transition, _current is updated in-place by d3.interpolate.
+        function arcTween(a) {
+            var i = d3.interpolate(this._current, a);
+            this._current = i(0);
+            return function(t) {
+                return arc(i(t));
+            };
+        }
+    </script>
+
 </%def>
 
 <%def name="dcPlasticBagSurvey()">
@@ -35,7 +172,7 @@
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <div class='row-fluid'>   
-        <div class='span4' id='dc-heardOfBagBans-chart'> 
+        <div class='span4' id='dc-heardOfBagBans-chart'>
             <h4>Have you heard about the plastic bag bans in Santa Cruz County?
                 <span>
                     <br />(click to filter results)

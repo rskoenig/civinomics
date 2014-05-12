@@ -6,6 +6,7 @@ $(document).ready(function()
         // only activates if vote is cast
         //console.log(data);
         var json = JSON.parse(data);
+        changePie(data);
         if (json.result != 0) {
             $('#voteShareModal').modal('show');
         }

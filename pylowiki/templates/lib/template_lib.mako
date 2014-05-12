@@ -1,5 +1,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/mako_lib.mako" import="fields_alert"/>
+<%namespace name="d3Lib" file="/lib/d3_lib.mako" />
+
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
@@ -468,7 +470,7 @@
     </form>
 </%def>
 
-<%def name="voteShareModal()">
+<%def name="voteShareModal(**kwargs)">
     <!-- Vote Sharing Modal -->
     <div id="voteShareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="voteShareModal" aria-hidden="true">
         <div class="modal-header">
@@ -476,16 +478,42 @@
             <h3 class="login top centered">Thanks for voting!</h3>
         </div>
         <div class="modal-body">
-            <span class="share-icons right-space">
-                ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
-            </span>
-            <p>huh, very interesting</p>
-            <p>very, very interesting</p>
+            ${d3Lib.includeD3()}
+            ${d3Lib.initiativeStats(yes=kwargs['yes'], no=kwargs['no'], views=kwargs['views'], numComments=kwargs['numComments'], myRating=kwargs['myRating'])}
+            <div class='row-fluid'>   
+                <div class='span4'>
+                    <h4> views vs. all other actions/objects
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+            onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4>
+                </div>
+                <div class='span4'>
+                    <h4>views over time
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+            onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4> 
+                </div>
+                <div class='span4'>
+                    <h4>how this initiative compares with others in the area?
+                        <span>
+                            <br />(click to filter results)
+                            <a href="#dc-data-top" class="reset"
+            onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                        </span>
+                    </h4> 
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
             <div class="row-fluid centered tcs">
                 <div class="span10 offset1">
-                    <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+                    <p class="sc-font-light tcs">These charts are available for view by clicking the Charts tab on the right side of this page.</p>
                 </div>
             </div>
         </div>

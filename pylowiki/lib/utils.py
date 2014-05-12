@@ -126,6 +126,24 @@ def getGeoExceptions():
 
     return geoExceptions
 
+def getMyRating(thing):
+    # returns this user's rating of this object. if none, returns 0
+    if thing['disabled'] == '1' or thing.objType == 'revision':
+        return "0"
+    if 'ratings' in session:
+        myRatings = session["ratings"]
+    else:
+        myRatings = {}
+    if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional']):
+        thingCode = thing['urlCode']
+        #log.info("thingCode is %s"%thingCode)
+        if thingCode in myRatings:
+            myRating = myRatings[thingCode]
+            log.info("thingCode %s myRating %s"%(thingCode, myRating))
+        else:
+            myRating = "0"
+        return myRating
+
 def getPublicScope(item):
     # takes an item with scope attribute and returns scope level, name, flag and href
     flag = '/images/flags/'

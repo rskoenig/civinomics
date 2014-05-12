@@ -11,6 +11,7 @@ from operator import itemgetter
 import simplejson as json
 log = logging.getLogger(__name__)
 
+
 ##################################################
 # builds a new json data structure for a constancy chart
 ##################################################

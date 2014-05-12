@@ -1,8 +1,9 @@
 <%inherit file="/base/base_initiative.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
-<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
+<%namespace import="comments" file="/lib/6_comments.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/template_lib.mako" />
 
 <% lib.return_to() %>
     <h4 class="initiative-title">Summary</h4>
@@ -31,5 +32,6 @@
             <hr>
             <h4 class="initiative-title">Arguments</h4>
             ${comments(c.initiative, c.discussion)}
+            ${helpers.voteShareModal(yes=c.initiative['ups'], no=c.initiative['downs'], views=c.initiative['views'], numComments=c.initiative['numComments'], myRating=c.initiative['myRating'])}
         % endif
     % endif

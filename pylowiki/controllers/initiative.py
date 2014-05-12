@@ -19,6 +19,7 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
+import pylowiki.lib.graphData       as graphData
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.images          as imageLib
 import pylowiki.lib.utils           as utils
@@ -540,6 +541,15 @@ class InitiativeController(BaseController):
                 c.authors.append(author)
         
         c.initiativeHome = True
+
+        #log.info(c.initiativeStats)
+        #from pprint import pprint
+        #l = dir(c.user)
+        #log.info(pprint (vars(l)))
+        #log.info(pprint(l))
+
+        # nice to know if I've voted on this without having to do this in 6_lib.mako
+        c.initiative['myRating'] = utils.getMyRating(c.initiative)
 
         return render('/derived/6_initiative_home.bootstrap')
 

@@ -221,7 +221,6 @@ class HomeController(BaseController):
 
 		elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
-
 		else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
