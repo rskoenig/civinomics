@@ -132,7 +132,7 @@ class CommentController(BaseController):
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
-            if parentAuthor != c.authuser:
+            if parentAuthor != c.authuser and thing.objType != 'agendaitem':
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
@@ -222,9 +222,7 @@ class CommentController(BaseController):
                 entry['rated'] = myRatings[entry['urlCode']]
             else:
                 entry['rated'] = 0
-                
-            log.info("rating for urlCode %s is %s"%(entry['urlCode'], str(entry['rated'])))
-                
+
             entry['commentRole'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
