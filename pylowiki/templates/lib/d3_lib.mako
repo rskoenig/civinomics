@@ -319,7 +319,7 @@ onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style
             <p class="lead">Half of all attendees reported discovering a new store thanks to the event.</p>
             <p><small>Question: "Did you learn about any new Capitola Village businesses that you weren't aware of before?"</small></p>
         </div>
-        <div class='span4' id='dc-learnAboutNewBusinesses-chart'>
+        <div class='span6' id='dc-learnAboutNewBusinesses-chart'>
             <span>
                 <br />(click to filter results)
                 <a href="#dc-data-top" class="reset"
@@ -331,7 +331,7 @@ onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" st
     <div class="pull-left workshop-metrics metrics-large">Comments</div>
     <br>
     <br>
-    <p class="lead">Many attendees suggested increasing the number of booths including more music, food vendors, crafts and existing Capitola Village businesses. Other suggestions mentioned better incorporation of the beach through a surf competition, kids games, and continuing the kite flying event. Lots of respondens commented that they would like to see this event happen more frequently.</p>
+    <p class="lead">Many attendees suggested increasing the number of booths including more music, food vendors, crafts and existing Capitola Village businesses. Other suggestions mentioned better incorporation of the beach through a surf competition, kids games, and continuing the kite flying event. Lots of respondents commented that they would like to see this event happen more frequently.</p>
     <p><small>Question: "Do you have any suggestions for future events? General comments?"</small></p>
     <div class='row-fluid'> 
         <div class='span12'>
