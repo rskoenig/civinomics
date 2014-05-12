@@ -9,7 +9,907 @@
 
 <%def name="includeD3()">
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+</%def>
+
+######################################
+## reduceAddRemoveInitial
+##  * HANDY EXAMPLE HERE
+##  * multiple choice answers end up giving us a unique situation. We
+##  need to create a count of the occurrences for all the answers, but
+##  at the same time we need to map how many people have picked any one answer.
+##   refs:
+## http://stackoverflow.com/questions/17524627/is-there-a-way-to-tell-crossfilter-to-treat-elements-of-array-as-separate-record/17529113#17529113
+## http://stackoverflow.com/questions/16767231/what-are-the-reduceadd-reducesum-reduceremove-functions-in-crossfilter-how-s
+## https://github.com/square/crossfilter/wiki/API-Reference
+## AND SINCE WE NEED TO ID CUSTOM ATTRIBUTES:
+## https://github.com/square/crossfilter/issues/102#issuecomment-31570749
+######################################
+<%def name="reduceAddRemoveInitial()">
+    <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
+    <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3reduceAddRemoveInitial.css' rel='stylesheet' type='text/css'>
+
+    <div id="chart"></div>
+    <div id="piechart"></div>
+    <div id="chart2"></div>
+
+    <script>
+        
+
+        function reduceAdd(p, v) {
+            if (v.topics[0] === "") return p;    // skip empty values
+            v.topics.forEach (function(val, idx) {
+                p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+        }
+
+        function reduceRemove(p, v) {
+            if (v.topics[0] === "") return p;    // skip empty values
+            v.topics.forEach (function(val, idx) {
+                p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+           
+        }
+
+        function reduceInitial() {
+            return {};  
+        }
+
+        var data = [
+            {"key":"KEY-1","state":"CA", "topics":["Technology", "Science", "Automotive"], "date":new Date("10/02/2012")},
+            {"key":"KEY-2","state":"CA", "topics":["Health"], "date": new Date("10/05/2012")},
+            {"key":"KEY-3","state":"OR", "topics":["Science"], "date":new Date("10/08/2012")},
+            {"key":"KEY-4","state":"WA", "topics":["Automotive", "Science"], "date":new Date("10/09/2012")},
+            {"key":"KEY-5","state":"WA", "topics":["Science"], "date":new Date("10/09/2012")}
+        ];
+
+        var cf = crossfilter(data);
+
+        var topicsDim = cf.dimension(function(d){ return d.topics;});
+        var topicsGroup = topicsDim.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+        // hack to make dc.js charts work
+        topicsGroup.all = function() {
+          var newObject = [];
+          for (var key in this) {
+            if (this.hasOwnProperty(key) && key != "all") {
+              newObject.push({
+                key: key,
+                value: this[key]
+              });
+            }
+          }
+          return newObject;
+        };
+
+        var dates = cf.dimension(function(d){ return d.date;});
+        var datesGroup = dates.group();
+
+        var states = cf.dimension(function(d){ return d.state;});
+        var stateGroup = states.group();
+
+        var pieChart = dc.pieChart("#piechart");
+        pieChart.height(75).width(75).dimension(states).group(stateGroup);
+
+        var barChart = dc.rowChart("#chart");
+            
+        barChart
+            .renderLabel(true)
+            .height(200)
+            .dimension(topicsDim)
+            .group(topicsGroup)
+            .xAxis().ticks(3);
+
+        barChart.filterHandler (function (dimension, filters) {
+                dimension.filter(null);   
+                if (filters.length === 0)
+                    dimension.filter(null);
+                else
+                    dimension.filter(function (d) {
+                        for (var i=0; i < d.length; i++) {
+                            if (filters.indexOf(d[i]) >= 0) return true;
+                        }
+                        return false;
+                    });
+            return filters; 
+            }
+        );
+
+        var chart2 = dc.barChart("#chart2");
+
+        chart2
+            .width(500)
+            .height(200)
+            .transitionDuration(800)
+            .margins({top: 10, right: 50, bottom: 30, left: 40})
+            .dimension(dates)
+            .group(datesGroup)  
+            .x(d3.time.scale().domain([new Date(2012, 9, 1), new Date(2012, 9, 11)]))
+            .xUnits(d3.time.days)
+            .centerBar(true)
+            .renderHorizontalGridLines(true)       
+            .brushOn(true);    
+            
+        chart2.xAxis()
+            .tickFormat(d3.time.format('%b %d'));
+            
+        dc.renderAll();
+
+    </script>
+</%def>
+
+<%def name="dcOpenStreetsCap1()">
+    <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
+    <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
+    <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+        <div class="pull-left workshop-metrics metrics-large">
+            Results
+        </div>
+        <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
+            <span> 
+                <span class="filter-count"></span>
+                selected out of
+                <span class="total-count"></span> 
+                records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
+            </span>
+        </div>
+    </div>
+    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    <div class='row-fluid'> 
+        <!--  
+        <div class='span4' id='dc-gender-chart'> 
+            <h4>Gender
+                <span>
+                    <br />(click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4>
+        </div>
+        -->
+        <div class='span6'>
+            <p class="lead">76% of attendees came with at least one family member, 54% came with two or more.</p>
+            <p><small>Question: "Did you come with your family? If so, how many family members are with you?"</small></p>
+        </div>
+        <div class='span6' id='dc-withFamily-chart'>
+            (click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:withFamilyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">50% of attendees were 41-62 years of age.</p>
+            <p><small>Question: "How old are you?"</small></p>
+        </div>
+        <div class='span6' id='dc-age-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row-fluid'> 
+        <div class="span6">
+            <p class="lead">25% of attendees heard about the event through word of mouth, 30% heard about it through the newspaper, 19% heard about it through email or social media.</p>
+            <p><small>Question: "How did you hear about today's event?"</small></p>
+        </div>
+        <div class='span6' id='dc-howDidYouHearAboutThis-chart'> 
+            <a href="#howDidYouHearAboutThis1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howDidYouHearAboutThisChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">Most people came just to hang out and experience the event rather than any particular activities.</p>
+            <p><small>Question: "What drew you to today's event?"</small></p>
+        </div>
+        <div class='span6' id='dc-whatDrewYou-chart'>
+            <a href="#whatDrewYou1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:whatDrewYouChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">81% of attendees biked or walked to the event. Only 13% drove.</p>
+            <p><small>Question: "How did you arrive at today's event?"</small></p>
+        </div>
+        <div class='span6' id='dc-howYouArrive-chart'>
+            <a href="#howYouArrive1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howYouArriveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    </hr>
+    <hr>
+    <div class='row-fluid'>  
+        <div class="span6">
+            <p class="lead">Of the people who drove, 90% found the parking satisfactory.</p>
+            <p><small>Question: "Was the available parking satisfactory?"</small></p>
+        </div>
+        <div class='span6' id='dc-parkingGood-chart'> 
+            <span>(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">32% of attendees live in Capitola.</p>
+            <p><small>Question: "Where do you live?"</small></p>
+        </div>
+        <div class='span6' id='dc-whereLive-chart'>
+            <a href="#whereLive1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:whereLiveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span6'>
+            <p class="lead">Nearly everyone who respondend to the survey would like to see Open Streets happen again.</p>
+            <p><small>Question: "Would you like to see this event happen again?"</small></p>
+        </div>
+        <div class="span6" id='dc-wantHappenAgain-chart'>
+            <span>
+                (click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:wantHappenAgainChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row-fluid'>   
+        <div class='span6' id='dc-wantHappenAgain-chart'>
+            <p class="lead">89% of attendees said they would spend more time in Capitola Village if it regularly held Open Streets.</p>
+            <p><small>Question: "Would you spend more time in Capitola Village if the Esplanade was periodically closed to car traffic?"</small></p>
+        </div>
+        <div class='span6' id='dc-spendMoreTimeIfTrafficFree-chart'> 
+            <span>(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span6'>
+            <p class="lead">44% of attendees anticipated spending more than $25. An additional 31% said they would probably spend $10-$25.</p>
+            <p><small>Question: "How much money have you spent, or do you expect to spend at the Capitola Village today?"</small></p>
+        </div>
+        <div class='span6' id='dc-howMuchSpendingToday-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span6'>
+            <p class="lead">Half of all attendees reported discovering a new store thanks to the event.</p>
+            <p><small>Question: "Did you learn about any new Capitola Village businesses that you weren't aware of before?"</small></p>
+        </div>
+        <div class='span6' id='dc-learnAboutNewBusinesses-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="pull-left workshop-metrics metrics-large">Comments</div>
+    <br>
+    <br>
+    <p class="lead">Many attendees suggested increasing the number of booths including more music, food vendors, crafts and existing Capitola Village businesses. Other suggestions mentioned better incorporation of the beach through a surf competition, kids games, and continuing the kite flying event. Lots of respondents commented that they would like to see this event happen more frequently.</p>
+    <p><small>Question: "Do you have any suggestions for future events? General comments?"</small></p>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <div id="suggestionsComments"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='howDidYouHearAboutThis1'>Further input on question:
+                <a href="#dc-howDidYouHearAboutThis-chart"><br />"How did you hear about today's event?"</a>
+            </h4>
+            <div id="howDidYouHearAboutThis1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='whatDrewYou1'>Further input on question:
+                <a href="#dc-whatDrewYou-chart"><br />"What drew you to today's event?"</a>
+            </h4>
+            <div id="whatDrewYou1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='howYouArrive1'>Further input on question:
+                <a href="#dc-howYouArrive-chart"><br />"How did you arrive at today's event?"</a>
+            </h4>
+            <div id="howYouArrive1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-fluid'> 
+        <div class='span12'>
+            <h4 name='whereLive1'>Further input on question:
+                <a href="#dc-whereLive-chart"><br />"Where do you live?"</a>
+            </h4>
+            <div id="whereLive1"></div>
+        </div>
+    </div>
+
+
+    <script>
+        // Create the dc.js chart objects & link to div
+        var genderChart = dc.rowChart("#dc-gender-chart");
+        var withFamilyChart = dc.rowChart("#dc-withFamily-chart");
+        var ageChart = dc.rowChart("#dc-age-chart");
+        var howDidYouHearAboutThisChart = dc.rowChart("#dc-howDidYouHearAboutThis-chart");
+        var whatDrewYouChart = dc.rowChart("#dc-whatDrewYou-chart");
+        var howYouArriveChart = dc.rowChart("#dc-howYouArrive-chart");
+        var parkingGoodChart = dc.pieChart("#dc-parkingGood-chart");
+        var whereLiveChart = dc.rowChart("#dc-whereLive-chart");
+        var wantHappenAgainChart = dc.pieChart("#dc-wantHappenAgain-chart");
+        var spendMoreTimeIfTrafficFreeChart = dc.pieChart("#dc-spendMoreTimeIfTrafficFree-chart");
+        var howMuchSpendingTodayChart = dc.rowChart("#dc-howMuchSpendingToday-chart");
+        var learnAboutNewBusinessesChart = dc.pieChart("#dc-learnAboutNewBusinesses-chart");
+        var enterRaffleFamilyCyclingChart = dc.pieChart("#dc-enterRaffleFamilyCycling-chart");
+        var likeContactAboutChart = dc.rowChart("#dc-likeContactAbout-chart");
+
+        var NO_ANSWER = "No answer";
+
+        function capitalize(s) {
+            return s[0].toUpperCase() + s.slice(1);
+        }
+        d3.csv("/surveys/OpenStreetsCapitolaResults1.csv", function(error, data) {
+            //console.log(error);
+            //console.log(data);
+            var genderValues = {};
+            var withFamilyValues = {};
+            var ageValues = {};
+            var howYouArriveValues = {};
+            var whereLiveValues = {};
+            var howMuchSpendingTodayValues = {};
+            var likeContactAboutValues = {};
+
+            i = 0;
+            data.forEach(function(d) {
+                i++;
+                var allGender = d.gender + d.gender1;
+                if (allGender == "") {
+                    genderValues[allGender] = '4^' + NO_ANSWER;
+                } else {
+                    switch(allGender) {
+                        case "Female":
+                            genderValues[allGender] = '1^' + allGender;
+                            break;
+                        case "Male":
+                            genderValues[allGender] = '2^' + allGender;
+                            break;
+                        default:
+                            genderValues[allGender] = '3^' + allGender;
+                            break;
+                    }
+                }
+                if (d.withFamily == "") {
+                    withFamilyValues[d.withFamily] = '6^' + NO_ANSWER;
+                } else {
+                    switch(d.withFamily) {
+                        case "I did not come with my family": 
+                            withFamilyValues[d.withFamily] = '0^' + d.withFamily;
+                            break;
+                        case "1":
+                            withFamilyValues[d.withFamily] = '1^' + d.withFamily;
+                            break;
+                        case "2":
+                            withFamilyValues[d.withFamily] = '2^' + d.withFamily;
+                            break;
+                        case "3":
+                            withFamilyValues[d.withFamily] = '3^' + d.withFamily;
+                            break;
+                        case "4":
+                            withFamilyValues[d.withFamily] = '4^' + d.withFamily;
+                            break;
+                        case "5+":
+                            withFamilyValues[d.withFamily] = '5^' + d.withFamily;
+                            break;
+                        default:
+                            withFamilyValues[d.withFamily] = '6^' + NO_ANSWER;
+                            break;
+                    }
+                }
+                if (d.age == "") {
+                    ageValues[d.age] = '4^' + NO_ANSWER;
+                } else {
+                    switch(d.age) {
+                        case "0-17": 
+                            ageValues[d.age] = '0^' + d.age;
+                            break;
+                        case "18-40":
+                            ageValues[d.age] = '1^' + d.age;
+                            break;
+                        case "41-62":
+                            ageValues[d.age] = '2^' + d.age;
+                            break;
+                        case "63+":
+                            ageValues[d.age] = '3^' + d.age;
+                            break;
+                        default:
+                            ageValues[d.age] = '4^' + NO_ANSWER;
+                            break;
+                    }
+                    
+                }
+                if (d.howDidYouHearAboutThis1 != "") {
+                    $('#howDidYouHearAboutThis1').append('<p>* ' + capitalize(d.howDidYouHearAboutThis1) + '</p>');
+                }
+                if (d.whatDrewYou1 != "") {
+                    $('#whatDrewYou1').append('<p>* ' + capitalize(d.whatDrewYou1) + '</p>');
+                }
+                if (d.howYouArrive == "") {
+                    howYouArriveValues[d.howYouArrive] = i + '^' + NO_ANSWER;
+                } else {
+                    howYouArriveValues[d.howYouArrive] = i + '^' + d.howYouArrive;
+                }
+                if (d.howYouArrive1 != "") {
+                    $('#howYouArrive1').append('<p>* ' + capitalize(d.howYouArrive1) + '</p>');
+                }
+                if (d.whereLive == "") {
+                    whereLiveValues[d.whereLive] = i + '^' + NO_ANSWER;
+                } else {
+                    whereLiveValues[d.whereLive] = i + '^' + d.whereLive;
+                }
+                if (d.whereLive1 != "") {
+                    $('#whereLive1').append('<p>* ' + capitalize(d.whereLive1) + '</p>');
+                }
+                if (d.suggestionsComments != "") {
+                    $('#suggestionsComments').append('<p>* ' + capitalize(d.suggestionsComments) + '</p>');
+                }
+                if (d.howMuchSpendingToday == "") {
+                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = '7^' + NO_ANSWER;
+                } else {
+                    switch(d.howMuchSpendingToday) {
+                        case "$1-10":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '1^' + d.howMuchSpendingToday;
+                            break;
+                        case "$11-25":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '2^' + d.howMuchSpendingToday;
+                            break;
+                        case "$26-50":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '3^' + d.howMuchSpendingToday;
+                            break;
+                        case "$51-100":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '4^' + d.howMuchSpendingToday;
+                            break;
+                        case "$100+":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '5^' + d.howMuchSpendingToday;
+                            break;
+                        default:
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '6^' + d.howMuchSpendingToday;
+                            break;
+                    }
+                }
+
+                if (d.likeContactAbout == "") {
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + NO_ANSWER;
+                } else {
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + d.likeContactAbout;
+                }
+            });
+
+            // Run the data through crossfilter and load our 'facts'
+            var facts = crossfilter(data);
+
+            // reset all button - this includes all facts
+            var all = facts.groupAll();
+
+            // reset all button - count all the facts
+            dc.dataCount(".dc-data-count") 
+                .dimension(facts) 
+                .group(all);
+
+            /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+            var gender = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);
+                var allGender = d.gender + d.gender1;               
+                return genderValues[allGender];
+            });
+            var genderGroup = gender.group();
+            
+            var withFamily = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);               
+                return withFamilyValues[d.withFamily];
+            });
+            var withFamilyGroup = withFamily.group();
+
+            var age = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);               
+                return ageValues[d.age];
+            });
+            var ageGroup = age.group();            
+
+            function reduceAddAttr(attr) {
+                return function(p, v) {
+                    if (v[attr] === "") {
+                        p[NO_ANSWER] = (p[NO_ANSWER] || 0) + 1;
+                        return p; // replace empty values with 'No Answer'
+                    } else {
+                        // convert v.howDidYouHearAboutThis into an array
+                        var allAnswers = v[attr].split("|");
+                        //console.log(allAnswers);
+                        answersArray = [];
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            answersArray.push(answer);
+                            //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                        answersArray.forEach(function(val, idx) {
+                            p[val] = (p[val] || 0) + 1; //increment counts
+                        });
+                        return p;
+                    }
+                };
+            }
+
+            function reduceRemoveAttr(attr) {
+                return function(p, v) {
+                    if (v[attr] === "") {
+                        p[NO_ANSWER] = (p[NO_ANSWER] || 0) - 1;
+                        return p; // replace empty values with 'No Answer'
+                    } else {
+                        var allAnswers = v[attr].split("|");
+                        //console.log(allAnswers);
+                        answersArray = [];
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            answersArray.push(answer);
+                            //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                        answersArray.forEach(function(val, idx) {
+                            p[val] = (p[val] || 0) - 1; //decrement counts
+                        });
+                        return p;
+                    }
+                };
+            }
+
+            function reduceInitial() {
+                return {};  
+            }
+
+            // hack to make dc.js charts work
+            function groupAllKludge(thisGroup) {
+                var newObject = [];
+                for (var key in thisGroup) {
+                    if (thisGroup.hasOwnProperty(key) && key != "all") {
+                        newObject.push({
+                            key: key,
+                            value: thisGroup[key]
+                        });
+                    }
+                }
+                return newObject;
+            }
+
+            var howDidYouHearAboutThis = facts.dimension(function(d){ return d.howDidYouHearAboutThis;});
+            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.groupAll().reduce(reduceAddAttr('howDidYouHearAboutThis'), reduceRemoveAttr('howDidYouHearAboutThis'), reduceInitial).value();
+            howDidYouHearAboutThisGroup.all = function() { return groupAllKludge(this); };
+
+            var whatDrewYou = facts.dimension(function(d) {return d.whatDrewYou;});
+            var whatDrewYouGroup = whatDrewYou.groupAll().reduce(reduceAddAttr('whatDrewYou'), reduceRemoveAttr('whatDrewYou'), reduceInitial).value();
+            whatDrewYouGroup.all = function() { return groupAllKludge(this); };
+
+            var howYouArrive = facts.dimension(function (d) {
+                return howYouArriveValues[d.howYouArrive];
+            });
+            var howYouArriveGroup = howYouArrive.group();
+
+            var parkingGood = facts.dimension(function (d) { 
+                if (d.parkingGood == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.parkingGood;
+                }
+            });
+            var parkingGoodGroup = parkingGood.group();
+
+            var whereLive = facts.dimension(function (d) {
+                return whereLiveValues[d.whereLive];
+            });
+            var whereLiveGroup = whereLive.group();
+
+            var wantHappenAgain = facts.dimension(function (d) { 
+                if (d.wantHappenAgain == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.wantHappenAgain;
+                }
+            });
+            var wantHappenAgainGroup = wantHappenAgain.group();
+            
+            var spendMoreTimeIfTrafficFree = facts.dimension(function (d) { 
+                if (d.spendMoreTimeIfTrafficFree == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.spendMoreTimeIfTrafficFree;
+                }
+            });
+            var spendMoreTimeIfTrafficFreeGroup = spendMoreTimeIfTrafficFree.group();
+
+            var howMuchSpendingToday = facts.dimension(function (d) {
+                return howMuchSpendingTodayValues[d.howMuchSpendingToday];
+            });
+            var howMuchSpendingTodayGroup = howMuchSpendingToday.group();
+
+            var learnAboutNewBusinesses = facts.dimension(function (d) { 
+                if (d.learnAboutNewBusinesses == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.learnAboutNewBusinesses;
+                }
+            });
+            var learnAboutNewBusinessesGroup = learnAboutNewBusinesses.group();
+
+            var enterRaffleFamilyCycling = facts.dimension(function (d) { 
+                if (d.enterRaffleFamilyCycling == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.enterRaffleFamilyCycling;
+                }
+            });
+            var enterRaffleFamilyCyclingGroup = enterRaffleFamilyCycling.group();
+
+            var likeContactAbout = facts.dimension(function (d) {
+                return likeContactAboutValues[d.likeContactAbout];
+            });
+            var likeContactAboutGroup = likeContactAbout.group();
+
+            var peopleFormatter = function(d) {
+                if (d > 1)
+                    return d + " people";
+                else if (d == 1)
+                    return d + " person";
+                else
+                    return d;
+            }
+
+            var piePercentage = function(d, sumgroup) {
+                //var percent = d.data.key;
+                var fraction = d.value / _.reduce(sumgroup.all(), function(memo, d){ return memo + d.value; }, 0);
+                var percent = Math.round(fraction * 100);
+                var phrase = "";
+                if (d.data) {
+                    phrase = d.data.key + "  " + percent + "%";    
+                } else {
+                    phrase = percent + "%";    
+                }
+                return phrase;
+            }
+            var yearsFormatter = function(d) {
+                var yearText = (d == 0 ? d : d + " years");
+                return yearText;
+            }
+
+            genderChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(gender) 
+                .group(genderGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, genderGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+            
+            withFamilyChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(withFamily) 
+                .group(withFamilyGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, withFamilyGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            ageChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(age) 
+                .group(ageGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, ageGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            howDidYouHearAboutThisChart
+                .width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .colors(d3.scale.category20b())
+                .dimension(howDidYouHearAboutThis)
+                .group(howDidYouHearAboutThisGroup)
+                .title(function(d){return piePercentage(d, howDidYouHearAboutThisGroup);})
+                .xAxis().ticks(4);
+
+            whatDrewYouChart
+                .width(300)
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .colors(d3.scale.category20b())
+                .dimension(whatDrewYou)
+                .group(whatDrewYouGroup)
+                .title(function(d){return piePercentage(d, whatDrewYouGroup);})
+                .xAxis().ticks(4);
+
+            howYouArriveChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(howYouArrive) 
+                .group(howYouArriveGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howYouArriveGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+            
+            parkingGoodChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(parkingGood) 
+                .group(parkingGoodGroup)
+                .label(function(d){return piePercentage(d, parkingGoodGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            whereLiveChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(whereLive) 
+                .group(whereLiveGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, whereLiveGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);  
+
+            wantHappenAgainChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(wantHappenAgain) 
+                .group(wantHappenAgainGroup)
+                .label(function(d){return piePercentage(d, wantHappenAgainGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            spendMoreTimeIfTrafficFreeChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(spendMoreTimeIfTrafficFree) 
+                .group(spendMoreTimeIfTrafficFreeGroup)
+                .label(function(d){return piePercentage(d, spendMoreTimeIfTrafficFreeGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            howMuchSpendingTodayChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(howMuchSpendingToday) 
+                .group(howMuchSpendingTodayGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howMuchSpendingTodayGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);  
+
+            learnAboutNewBusinessesChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(learnAboutNewBusinesses) 
+                .group(learnAboutNewBusinessesGroup)
+                .label(function(d){return piePercentage(d, learnAboutNewBusinessesGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            enterRaffleFamilyCyclingChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(enterRaffleFamilyCycling) 
+                .group(enterRaffleFamilyCyclingGroup)
+                .label(function(d){return piePercentage(d, enterRaffleFamilyCyclingGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            likeContactAboutChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(likeContactAbout) 
+                .group(likeContactAboutGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, likeContactAboutGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            // Render the Charts
+            dc.renderAll();
+
+        });
+
+    </script>
+
 </%def>
 
 <%def name="dcPlasticBagSurvey()">
@@ -18,6 +918,7 @@
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <hr>
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
@@ -644,6 +1545,7 @@
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <div class='row-fluid' name="dc-data-top">
         <div class="pull-left workshop-metrics metrics-large">
@@ -1293,6 +2195,11 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
 </%def>
 
 <%def name="dcCommuterSurvey()">
+  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
   <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
     <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
       <span> 
@@ -1505,10 +2412,6 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     </div>
   </div>
 
-  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
-  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
-  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
-  
   <script>
       // Create the dc.js chart objects & link to div
       var salaryChart = dc.barChart("#dc-salary-chart");
