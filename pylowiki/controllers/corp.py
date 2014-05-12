@@ -62,14 +62,13 @@ class CorpController(BaseController):
 
         study={}
         study["title"]="Open Streets - Capitola"
-        study["description"]="Conducted in person at the fair."
-        study["image"]="bagCreek.jpg"
+        study["description"]="Event attendees survey and feedback."
+        study["image"]="openStreetsCover.jpg"
         study["url"]="openStreetsCapitola"
         study['date']="5.4.14"
         study['stats']='openStreetsCap1'
         study['respondents'] = 428
-        study['partnerLogo']='sosLogo.jpg'
-        study['partnerName']='Family Cycling'
+        study['partnerLogo']='openStreetsLogo.gif'
         study['scope'] = ''
         study['tag'] = ''
         c.studies.append(study)
@@ -704,21 +703,21 @@ class CorpController(BaseController):
 
         elif casestudyname =="openStreetsCapitola":
             study["url"]="openStreetsCapitola"
-            study["title"]="needs a title"
-            study["image"]=""
+            study["title"]="Open Streets - Capitola"
+            study["image"]="openStreetsCover.jpg"
             study["statusType"]="danger"
             study["statusMessage"]="Closed"
-            study["date"]=" 5-4-2014"
+            study["date"]=" 5-12-2014"
             study["background"]=""
             study["solution"]=""
             study["results"]=""
             study["text"]='openStreetsCapitola'
             study["nextSteps"]=""
             study['stats']='openStreetsCap1'
-            study['link']= 'http://surveys.civinomics.com/openStreetsCapitola'
+            study['link']= 'http://surveys.civinomics.com/open-streets-capitola-participant-survey-questions'
 
-            study['respondents'] = 397
-            study['partnerLogo']=''
+            study['respondents'] = 428
+            study['partnerLogo']='openStreetsLogo.gif'
             study['partnerName']=''
             study['scope'] = ''
             study['tag'] = ''

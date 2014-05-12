@@ -148,7 +148,6 @@
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
     <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
-    <hr>
     <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
         <div class="pull-left workshop-metrics metrics-large">
             Results
@@ -163,7 +162,8 @@
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>   
+    <div class='row-fluid'> 
+        <!--  
         <div class='span4' id='dc-gender-chart'> 
             <h4>Gender
                 <span>
@@ -173,154 +173,168 @@
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc-withFamily-chart'>
-            <h4>Did you come with your family? If so, how many family members are with you?
-                <span>
-                    <br />(click to filter results)
+        -->
+        <div class='span6'>
+            <p class="lead">76% of attendees came with at least one family member, 54% came with two or more.</p>
+            <p><small>Question: "Did you come with your family? If so, how many family members are with you?"</small></p>
+        </div>
+        <div class='span6' id='dc-withFamily-chart'>
+            (click to filter results)
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:withFamilyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-age-chart'>
-            <h4>Age
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-howDidYouHearAboutThis-chart'> 
-            <h4>How did you hear about today's event?
-                <br /><a href="#howDidYouHearAboutThis1">see descriptions</a>
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:howDidYouHearAboutThisChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">50% of attendees were 41-62 years of age.</p>
+            <p><small>Question: "How old are you?"</small></p>
         </div>
-        <div class='span4' id='dc-whatDrewYou-chart'>
-            <h4>What drew you to today's event?
-                <br /><a href="#whatDrewYou1">see descriptions</a>
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:whatDrewYouChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-howYouArrive-chart'>
-            <h4>How did you arrive at today's event?
-                <br /><a href="#howYouArrive1">see descriptions</a>
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:howYouArriveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+        <div class='span6' id='dc-age-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-parkingGood-chart'> 
-            <h4>Was the available parking satisfactory?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-whereLive-chart'>
-            <h4>Where do you live?
-                <br /><a href="#whereLive1">see descriptions</a>
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:whereLiveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-wantHappenAgain-chart'>
-            <h4>Would you like to see this event happen again?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:wantHappenAgainChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-spendMoreTimeIfTrafficFree-chart'> 
-            <h4>Would you spend more time in Capitola Village if the Esplanade was periodically closed to car traffic?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-howMuchSpendingToday-chart'>
-            <h4>How much money have you spent, or do you expect to spend at the Capitola Village today?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-learnAboutNewBusinesses-chart'>
-            <h4>Did you learn about any new Capitola Village businesses that you weren't aware of before?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-enterRaffleFamilyCycling-chart'> 
-            <h4>Would  you like to enter a free raffle to win a $500 gift certificate from Family Cycling Center?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:enterRaffleFamilyCyclingChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-likeContactAbout-chart'>
-            <h4>Would you like to be contacted about...
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:likeContactAboutChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc--chart'>
-
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
     <div class='row-fluid'> 
+        <div class="span6">
+            <p class="lead">25% of attendees heard about the event through word of mouth, 30% heard about it through the newspaper, 19% heard about it through email or social media.</p>
+            <p><small>Question: "How did you hear about today's event?"</small></p>
+        </div>
+        <div class='span6' id='dc-howDidYouHearAboutThis-chart'> 
+            <a href="#howDidYouHearAboutThis1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howDidYouHearAboutThisChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">Most people came just to hang out and experience the event rather than any particular activities.</p>
+            <p><small>Question: "What drew you to today's event?"</small></p>
+        </div>
+        <div class='span6' id='dc-whatDrewYou-chart'>
+            <a href="#whatDrewYou1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:whatDrewYouChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">81% of attendees biked or walked to the event. Only 13% drove.</p>
+            <p><small>Question: "How did you arrive at today's event?"</small></p>
+        </div>
+        <div class='span6' id='dc-howYouArrive-chart'>
+            <a href="#howYouArrive1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howYouArriveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    </hr>
+    <hr>
+    <div class='row-fluid'>  
+        <div class="span6">
+            <p class="lead">Of the people who drove, 90% found the parking satisfactory.</p>
+            <p><small>Question: "Was the available parking satisfactory?"</small></p>
+        </div>
+        <div class='span6' id='dc-parkingGood-chart'> 
+            <span>(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="lead">32% of attendees live in Capitola.</p>
+            <p><small>Question: "Where do you live?"</small></p>
+        </div>
+        <div class='span6' id='dc-whereLive-chart'>
+            <a href="#whereLive1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:whereLiveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span6'>
+            <p class="lead">Nearly everyone who respondend to the survey would like to see Open Streets happen again.</p>
+            <p><small>Question: "Would you like to see this event happen again?"</small></p>
+        </div>
+        <div class="span6" id='dc-wantHappenAgain-chart'>
+            <span>
+                (click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:wantHappenAgainChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row-fluid'>   
+        <div class='span6' id='dc-wantHappenAgain-chart'>
+            <p class="lead">89% of attendees said they would spend more time in Capitola Village if it regularly held Open Streets.</p>
+            <p><small>Question: "Would you spend more time in Capitola Village if the Esplanade was periodically closed to car traffic?"</small></p>
+        </div>
+        <div class='span6' id='dc-spendMoreTimeIfTrafficFree-chart'> 
+            <span>(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span6'>
+            <p class="lead">44% of attendees anticipated spending more than $25. An additional 31% said they would probably spend $10-$25.</p>
+            <p><small>Question: "How much money have you spent, or do you expect to spend at the Capitola Village today?"</small></p>
+        </div>
+        <div class='span6' id='dc-howMuchSpendingToday-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row-fluid">
+        <div class='span6'>
+            <p class="lead">Half of all attendees reported discovering a new store thanks to the event.</p>
+            <p><small>Question: "Did you learn about any new Capitola Village businesses that you weren't aware of before?"</small></p>
+        </div>
+        <div class='span4' id='dc-learnAboutNewBusinesses-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="pull-left workshop-metrics metrics-large">Comments</div>
+    <br>
+    <br>
+    <p class="lead">Many attendees suggested increasing the number of booths including more music, food vendors, crafts and existing Capitola Village businesses. Other suggestions mentioned better incorporation of the beach through a surf competition, kids games, and continuing the kite flying event. Lots of respondens commented that they would like to see this event happen more frequently.</p>
+    <p><small>Question: "Do you have any suggestions for future events? General comments?"</small></p>
+    <div class='row-fluid'> 
         <div class='span12'>
-            <h4 name='suggestionsComments'>Do you have any suggestions for future events? General comments?
-            </h4>
             <div id="suggestionsComments"></div>
         </div>
     </div>
@@ -769,6 +783,7 @@
                 .ticks(4);
 
             howDidYouHearAboutThisChart
+                .width(300) 
                 .height(220)
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .colors(d3.scale.category20b())
@@ -778,6 +793,7 @@
                 .xAxis().ticks(4);
 
             whatDrewYouChart
+                .width(300)
                 .height(220)
                 .margins({top: 5, right: 1, bottom: 20, left: 6})
                 .colors(d3.scale.category20b())
