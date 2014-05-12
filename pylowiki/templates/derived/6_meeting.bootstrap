@@ -21,10 +21,10 @@ ${mhelpers.showInfo(c.meeting, c.author)}
         </div><!-- row-fluid -->
     </div><!-- media-well -->
 % else:
+    ${mhelpers.meetingModeration(c.meeting)}
     % if c.meeting.objType == 'meeting':
         ${mhelpers.addAgendaItem(c.meeting, c.author)}
     % endif
-    ${mhelpers.meetingModeration(c.meeting)}
     <div class="spacer"></div>
     <div ng-init="url = '${c.meeting['url']}'; code = '${c.meeting['urlCode']}';">
         <div ng-controller="meetingsController">
