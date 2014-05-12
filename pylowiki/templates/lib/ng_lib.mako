@@ -367,6 +367,23 @@
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
                         <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                        <div class="accordion" id="revisions">
+                            <div ng-repeat="rev in comment.revisionList">
+                                <div class="accordion-group">
+                                    <div class="accordion-heading">
+                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                                        Revision: {{rev.date}}
+                                        </a>
+                                    </div><!-- accordian-heading -->
+                                    <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                                        <div class="accordion-inner">
+                                            <p>Position: {{rev.role}}</p>
+                                            Comment: <span ng-bind-html="rev.html"></span>
+                                        </div><!-- accordian-inner -->
+                                    </div><!-- accordian-body -->
+                                </div><!-- accordian-group -->
+                            </div><!-- ng-repeat -->
+                        </div><!-- accordian -->
                         <div ng-show="(comment.canEdit == 'yes')">
                             <div class="btn-group">
                                 <button type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>

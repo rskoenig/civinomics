@@ -244,6 +244,35 @@ class CommentController(BaseController):
             else:
                 entry['canEdit'] = 'no'
                 
+            # get revisions
+            revisions = revisionLib.getRevisionsForThing(comment)
+            if revisions:
+                entry['revisions'] = 'yes'
+            else:
+                entry['revisions'] = 'no'
+            entry['revisionList'] = []
+            if revisions:
+                for rev in revisions:
+                    revision = {}
+                    code = rev['urlCode'] 
+                    date = str(rev.date)
+                    text = rev['data']
+                    html = m.html(rev['data'], render_flags=m.HTML_SKIP_HTML)
+                    role = rev['commentRole']
+                    if role == 'yes':
+                        role = 'Pro'
+                    elif role == 'no':
+                        role = 'Con'
+                    else:
+                        role = 'Neutral'
+                        
+                    revision['date'] = date
+                    revision['urlCode'] = code
+                    revision['text'] = text
+                    revision['html'] = html
+                    revision['role'] = role
+                    entry['revisionList'].append(revision)
+                
             result.append(entry)
 
         if len(result) == 0:
@@ -262,6 +291,8 @@ class CommentController(BaseController):
                 comment['data'] = payload['commentText']
                 comment['commentRole'] = payload['commentRole']
                 dbHelpers.commit(comment)
+                # save a revision
+                revision = revisionLib.Revision(c.authuser, comment)
                 return json.dumps({'statusCode':0})
 
         return json.dumps({'statusCode':1})
