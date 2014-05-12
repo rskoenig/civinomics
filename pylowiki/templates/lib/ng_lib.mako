@@ -11,11 +11,15 @@
             <div class="span2"><img src="{{item.flag}}" width="60" height="60"></div><div class="span9">{{item.scopeLevel}} of {{item.scopeName}}</div>
         </div><!-- row-fluid -->
         <div class="row-fluid">
-            <div class="span2"><strong>{{item.meetingDate}}</strong></div>
+            <div class="span2">
+                <strong>{{item.meetingDate}}</strong>
+                <p><strong>{{item.meetingTime}}</strong></p>
+            </div>
             <div class="span9">
                 <a href="{{item.href}}">{{item.title}}</a>
                 <p>Public Meeting of {{item.group}}</p>
-                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p>{{item.location}}</p>
+                <p><a href="{{item.href}}">View, vote and comment on agenda items.</a></p>
             </div>
         </div><!-- row-fluid -->
     </div><!-- media-well -->

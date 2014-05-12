@@ -403,6 +403,7 @@ class HomeController(BaseController):
 			if item.objType == 'meeting':
 			    dList = item['meetingDate'].split('-')
 			    entry['meetingDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+			    entry['meetingTime'] = item['meetingTime']
 			    entry['location'] = item['location']
 			    entry['group'] = item['group']
 			    entry['href'] += '/show'
