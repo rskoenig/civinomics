@@ -284,6 +284,8 @@ class CommentController(BaseController):
         if 'commentCode' in payload:
             commentCode = payload['commentCode']
             comment = commentLib.getCommentByCode(commentCode)
+            # save a revision first
+            revision = revisionLib.Revision(c.authuser, comment)
             if not comment:
                 return json.dumps({'statusCode':1})
             
@@ -291,8 +293,6 @@ class CommentController(BaseController):
                 comment['data'] = payload['commentText']
                 comment['commentRole'] = payload['commentRole']
                 dbHelpers.commit(comment)
-                # save a revision
-                revision = revisionLib.Revision(c.authuser, comment)
                 return json.dumps({'statusCode':0})
 
         return json.dumps({'statusCode':1})
