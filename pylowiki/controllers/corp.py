@@ -61,6 +61,19 @@ class CorpController(BaseController):
         c.studies=[]
 
         study={}
+        study["title"]="Open Streets - Capitola"
+        study["description"]="Event attendees survey and feedback."
+        study["image"]="openStreetsCover.jpg"
+        study["url"]="openStreetsCapitola"
+        study['date']="5.4.14"
+        study['stats']='openStreetsCap1'
+        study['respondents'] = 428
+        study['partnerLogo']='openStreetsLogo.gif'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
         study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
         study["description"]="Conducted via door-to-door interviews of registered voters."
         study["image"]="bagCreek.jpg"
@@ -672,6 +685,46 @@ class CorpController(BaseController):
             partners=[]
             partner={}
             partner['name']="Boss plasticBagBan"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
+        elif casestudyname =="openStreetsCapitola":
+            study["url"]="openStreetsCapitola"
+            study["title"]="Open Streets - Capitola"
+            study["image"]="openStreetsCover.jpg"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 5-12-2014"
+            study["background"]=""
+            study["solution"]=""
+            study["results"]=""
+            study["text"]='openStreetsCapitola'
+            study["nextSteps"]=""
+            study['stats']='openStreetsCap1'
+            study['link']= 'http://surveys.civinomics.com/open-streets-capitola-participant-survey-questions'
+
+            study['respondents'] = 428
+            study['partnerLogo']='openStreetsLogo.gif'
+            study['partnerName']=''
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']=""
             partner['url']="http://www.civ.io"
             partners.append(partner)
             study["partners"]=partners
