@@ -167,6 +167,7 @@ def make_map():
     map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
     map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}') 
     
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
