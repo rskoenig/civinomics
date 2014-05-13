@@ -190,13 +190,14 @@
                     
                     FB.Event.subscribe('auth.login', login_event);
                     FB.Event.subscribe('auth.logout', logout_event);
-
                     if (${userLoggedIn}) {
                         console.log('user logged in');
                         // getLoginStatus: gets the state of the person visiting this page
                         // FB.getLoginStatus(appendFacebookLogout);
                     } else {
                         console.log('user not logged in');
+                        var notLoggedInButton = '<a href="#" onclick="fbLogin()" class="fbLogin"><img src="/images/f-login.png"></a>';
+                        $('.fbLogin').html(notLoggedInButton);
                         FB.Event.subscribe('auth.authResponseChange', function(response) {
                             statusChangeCallback(response);
                         });
@@ -286,7 +287,7 @@
                             // this code is used when a person arrives and it is seen that they have 
                             // auth'd our app and are logged into facebook 
                             // replace current button with returned result
-                            var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
+                            var newButton = '<a href="/fbLogin" class="fbLogin"><img src="/images/f-login.png"></a>'
                             $('#fbLoginButton1').html(newButton);
                             $('#fbLoginButton2').html(newButton);
                         }
@@ -317,33 +318,33 @@
 </html>
 
 <%def name="bodyTag_extras()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="extraStyles()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="headScripts()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="headScripts2()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="extraScripts()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="extraScripts2()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="google_analytics()">
