@@ -541,7 +541,7 @@
       % endif
       <span class = "share-icons pull-right">
         ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
-        ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+        ${lib_6.mailToShare(c.w)}
         % if c.w['public_private'] == 'public':
           <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
         %endif

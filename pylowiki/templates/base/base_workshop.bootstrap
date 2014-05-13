@@ -15,10 +15,6 @@
     </div>
   </div><!-- /.span12 -->
 </div><!--/.row-->
-% if c.thing:
-  ${lib_6.emailShareModal(c.objectUrl, c.thing['urlCode'])}
-% endif
-${lib_6.emailShareModal(c.requestUrl, c.w['urlCode'])}
 ${helpers.whoListeningModals()}
 
 <%def name="extraScripts()">

@@ -473,6 +473,22 @@
     % endif
 </%def>
 
+<%def name="mailToShare(item, **kwargs)">
+    <%  
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+        subj = 'Vote on "' + item['title'] + '"'
+        subj = subj.replace(' ','%20')
+        if item.objType == 'initiative':
+            body = initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+        elif item.objType == 'workshop':
+            body = workshopLink(item)
+        else:
+            body = itemInWorkshopLink(item, workshop=workshop)
+    %>
+    <a class="listed-item-title" target="_blank" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope icon-2x"></i></a>
+</%def>
+
 <%def name="emailShare(itemURL, itemCode)">
     % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
@@ -784,14 +800,26 @@
 
 <%def name="workshopLink(w, **kwargs)">
    <%
-   if 'embed' in kwargs:
-      if kwargs['embed'] == True:
-         if 'raw' in kwargs:
-            if kwargs['raw'] == True:
-               return "/workshop/%s/%s" %(w['urlCode'], w['url'])
-         return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
+    if 'embed' in kwargs:
+        if kwargs['embed'] == True:
+            if 'raw' in kwargs:
+                if kwargs['raw'] == True:
+                    return "/workshop/%s/%s" %(w['urlCode'], w['url'])
+            return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
+
+    else:
+        baseUrl = utilsLib.getBaseUrl()
+        return '%s/workshop/%s/%s' % (baseUrl, w['urlCode'], w['url'])
    %>
    href="/workshops/${w['urlCode']}/${w['url']}"
+</%def>
+
+<%def name="itemInWorkshopLink(item, **kwargs)">
+    <%
+        workshop = kwargs['workshop']
+        baseUrl = utilsLib.getBaseUrl()
+        return '%s/workshop/%s/%s/%s/%s/%s' % (baseUrl, workshop['urlCode'],workshop['url'],item.objType, item['urlCode'], item['url'] )
+    %>
 </%def>
 
 <%def name="workshopImage(w, **kwargs)">
