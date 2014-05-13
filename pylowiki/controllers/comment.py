@@ -258,7 +258,11 @@ class CommentController(BaseController):
                     date = str(rev.date)
                     text = rev['data']
                     html = m.html(rev['data'], render_flags=m.HTML_SKIP_HTML)
-                    role = rev['commentRole']
+                    if 'commentRole' in rev:
+                        role = rev['commentRole']
+                    else:
+                        role = 'Neutral'
+                        
                     if role == 'yes':
                         role = 'Pro'
                     elif role == 'no':
