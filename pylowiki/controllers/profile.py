@@ -356,6 +356,9 @@ class ProfileController(BaseController):
             
         result = []
         for item in c.unpublishedActivity:
+            objType = item.objType.replace("Unpublished", "")
+            if objType == 'discussion' and item['discType'] != 'general':
+                continue
             entry = {}
             entry['objType'] = item.objType.replace("Unpublished", "")
             if entry['objType'] != 'comment':

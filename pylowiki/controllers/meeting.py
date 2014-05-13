@@ -90,7 +90,7 @@ class MeetingController(BaseController):
         if 'meetingText' in request.params:
             text = request.params['meetingText']
         else:
-            text = ''
+            text = 'New meeting description'
             
         if 'geoTagCountry' in request.params:
             if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
@@ -245,8 +245,10 @@ class MeetingController(BaseController):
         
     def meetingEditHandler(self):
         if 'meetingTitle' in request.params:
-            c.meeting['title'] = request.params['meetingTitle']
-            c.meeting['url'] = utils.urlify(c.meeting['title'])
+            title = request.params['meetingTitle']
+            if title and title != '':
+                c.meeting['title'] = request.params['meetingTitle']
+                c.meeting['url'] = utils.urlify(c.meeting['title'])
         if 'meetingText' in request.params:
             c.meeting['text'] = request.params['meetingText']
         if 'meetingDate' in request.params:
@@ -361,12 +363,12 @@ class MeetingController(BaseController):
         if 'agendaItemTitle' in request.params:
             title = request.params['agendaItemTitle']
         else:
-            title = ''
+            title = 'New agenda item'
         
         if 'agendaItemText' in request.params:
             text = request.params['agendaItemText']
         else:
-            text = ''
+            text = 'New agenda item description'
 
         if 'agendaItemVote' in request.params:
             canVote = request.params['agendaItemVote']
@@ -389,14 +391,14 @@ class MeetingController(BaseController):
         revisionLib.Revision(c.authuser, c.agendaitem)
         
         if 'agendaItemTitle' in request.params:
-            c.agendaitem['title'] = request.params['agendaItemTitle']
-        else:
-            title = ''
+            title = request.params['agendaItemTitle']
+            if title and title != '':
+                c.agendaitem['title'] = title
         
         if 'agendaItemText' in request.params:
-            c.agendaitem['text'] = request.params['agendaItemText']
-        else:
-            text = ''
+            text = request.params['agendaItemText']
+            if text and text != '':
+                c.agendaitem['text'] = text
 
         if 'agendaItemVote' in request.params:
             c.agendaitem['canVote'] = request.params['agendaItemVote']

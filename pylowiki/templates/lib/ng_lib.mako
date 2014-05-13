@@ -32,7 +32,7 @@
             <div class="well yesNoWell" ng-show="(canVote == 'checked')">
                 ${yesNoVoteBlock()}
             </div>
-            <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+            <h4 class="listed-item-title">{{item.title}}</h4>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div><!-- row-fluid -->
         <div class="row-fluid">
@@ -44,10 +44,10 @@
                 <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
                     <fieldset>
                         <label>Item Title</label>
-                        <input type="text" name="agendaItemTitle" class="span6" value="{{item.title}}" class="span9">
+                        <input type="text" name="agendaItemTitle" class="span6" value="{{item.title}}" class="span9" required>
                         <label>Item Text</label>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="agendaItemText" class="span6" class="span9">{{item.text}}</textarea>
+                        <textarea rows="3" name="agendaItemText" class="span6" class="span9" required>{{item.text}}</textarea>
                         <label class="checkbox">
                         <input type="checkbox" name="agendaItemVote" ng-show="(canVote == '')">
                         <input type="checkbox" name="agendaItemVote" checked ng-show="(canVote == 'checked')">
