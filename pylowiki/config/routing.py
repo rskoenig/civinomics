@@ -387,6 +387,11 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
+    # CSV Parsing 
+    map.connect('/profile/{id1}/{id2}/{csv:csv/?}', controller = 'profile', action = 'csv', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/csv/upload/{handler:handler/?}', controller = 'profile', action = 'csvUploadHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/csv/update/{handler:handler/?}', controller = 'profile', action = 'csvUpdateHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+
     
     ###############
     # Initiatives #
@@ -478,5 +483,8 @@ def make_map():
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/{id}')
+    
+
+    
     
     return map

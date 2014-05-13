@@ -11,6 +11,9 @@ from pylowiki.lib.utils import urlify
 import pylowiki.lib.helpers as h
 from pylons import config
 
+from pylowiki.lib.db.user import User
+from pylowiki.lib.db.dbHelpers import commit
+
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
@@ -29,14 +32,20 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+import pylowiki.lib.fuzzyTime           as fuzzyTime
+import pylowiki.lib.mail                as mailLib
+
+
 
 from pylowiki.lib.facebook              import FacebookShareObject
+import pylowiki.lib.csvHelper           as csv
 import pylowiki.lib.images              as imageLib
 import pylowiki.lib.utils               as utils
 
 import time, datetime
 import simplejson as json
 import copy as copy
+import misaka as m
 
 
 log = logging.getLogger(__name__)
@@ -67,6 +76,7 @@ class ProfileController(BaseController):
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
                     
         userLib.setUserPrivs()
+        
   
     def showUserPage(self, id1, id2, id3 = ''):
         # check to see if this is a request from the iphone app
@@ -322,6 +332,20 @@ class ProfileController(BaseController):
         else:    
             return render("/derived/6_profile.bootstrap")
 
+    def orgUpgradeHandler(self, id1, id2):
+        if (userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id) and not c.privs['provisional']:
+            # set the memberType
+            c.user['memberType'] = 'organization'
+            
+            # initialize it for voting
+            c.user['ups'] = '0'
+            c.user['downs'] = '0'
+            dbHelpers.commit(c.user)
+
+            return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+        else:
+            abort(404)
+
         
     def showUserPhotos(self, id1, id2):
         # defaults for photo editor
@@ -341,41 +365,15 @@ class ProfileController(BaseController):
         if photos:
             c.photos = photos
             c.photos.reverse()
-            
+
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
-        return render("/derived/6_profile_archives.bootstrap")
-        
-            
-    def getUserTrash(self, id1, id2):
         c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
-            
-        result = []
-        for item in c.unpublishedActivity:
-            entry = {}
-            entry['objType'] = item.objType.replace("Unpublished", "")
-            entry['objType'] = item.objType.replace("Unpublished", "")
-            if entry['objType'] != 'comment':
-                entry['url']= item['url']
-                entry['urlCode']=item['urlCode']
-                entry['title'] = item['title']
-            else:
-                entry['url']= ''
-                entry['urlCode']= ''
-                entry['title'] = item['data']
-            if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-                
-            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
-            entry['unpublishedBy'] = item['unpublished_by']
-            result.append(entry)
-            
-        if len(result) == 0:
-            return json.dumps({'statusCode':1})
-        return json.dumps({'statusCode':0, 'result': result})
+
+        return render("/derived/6_profile_archives.bootstrap")
         
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':
@@ -615,6 +613,24 @@ class ProfileController(BaseController):
                 c.admin = False
                 
             return render('/derived/6_profile_edit.bootstrap')
+        else:
+            abort(404)
+
+    @h.login_required
+    def csv(self, id1, id2):
+        c.events = eventLib.getParentEvents(c.user)
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
+            c.title = 'Edit Profile'
+            if 'confTab' in session:
+                c.tab = session['confTab']
+                session.pop('confTab')
+                session.save()
+            if userLib.isAdmin(c.authuser.id):
+                c.admin = True
+            else:
+                c.admin = False
+                
+            return render('/derived/6_profile_csv.bootstrap')
         else:
             abort(404)
 
@@ -977,6 +993,82 @@ class ProfileController(BaseController):
         else:
             abort(404)
             
+            
+ ######################################## ########################################    
+    @h.login_required
+    def addUser(csvUser):
+        csvUser['memberType'] = 100
+        csvUser['password'] = "changeThis"
+        csvUser['country'] = "United States"
+        u = User(csvUser['email'], csvUser['name'], csvUser['password'], csvUser['country'], csvUser['memberType'], csvUser['zip'])
+        user = u.u
+        if 'laston' in user:
+            t = time.localtime(float(user['laston']))
+            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
+        user['laston'] = time.time()
+        #user['activated'] = u'1'
+        loginTime = time.localtime(float(user['laston']))
+        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+        commit(user)
+        baseURL = c.conf['activation.url']
+        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+        mailLib.sendActivationMail(user['email'], url)
+        
+    @h.login_required
+    def checkUser(csvUser):
+        if (csvUser['email'] is None or csvUser['name'] is None or csvUser['zip'] is None):
+            return false
+        else:
+            return true
+ 
+        
+    @h.login_required
+    def csvUploadHandler(self, id1, id2):
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
+            abort(404)
+        
+        requestKeys = request.params.keys()
+        
+        if 'files[]' in requestKeys:
+            file = request.params['files[]']
+            filename = file.filename
+            fileitem = file.file
+            log.info(file.filename)
+            csvFile = csv.saveCsv(file)
+            c.csv = csv.parseCsv(csvFile.fullpath)
+            for csvUser in c.csv:
+                log.info(csvUser)
+                if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
+                    if (not userLib.getUserByEmail(csvUser['email'])):
+                        memberType = 50
+                        password = "changeThis"
+                        country = "United States"
+                        u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'])
+#                     user = u.u
+#                     if 'laston' in user:
+#                         t = time.localtime(float(user['laston']))
+#                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
+#                     user['laston'] = time.time()
+#                     #user['activated'] = u'1'
+#                     loginTime = time.localtime(float(user['laston']))
+#                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+#                     commit(user)
+#                     baseURL = c.conf['activation.url']
+#                     url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+#                     mailLib.sendActivationMail(user['email'], url)
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'path':csvFile.fullpath
+                                }
+                            ]}
+            json.dumps(jsonResponse)
+            return render("/derived/6_profile_csv.bootstrap")
+        else:
+            abort(404)
+            
+ ######################################## ########################################            
+            
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
         
@@ -1256,4 +1348,125 @@ class ProfileController(BaseController):
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
 
+    def getDiscussions(self, id1, id2):        
+        discussions = discussionLib.getDiscussionsForThing(c.user)
+        
+        result = []
+        for d in discussions:
+            entry = {}
+            entry['title'] = d['title']
+            entry['text'] = m.html(d['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['date'] = d.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(d.date)
+            entry['voteCount'] = int(d['ups']) + int(d['downs'])
+            entry['ups'] = int(d['ups'])
+            entry['downs'] = int(d['downs'])
+            entry['netVotes'] = int(d['ups']) - int(d['downs'])
+            entry['numComments'] = 0
+            if 'numComments' in d:
+                entry['numComments'] = d['numComments']
+            author = userLib.getUserByID(item.owner)
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
+            result.append(entry)
+            
+        statusCode = 0
+        response.headers['Content-type'] = 'application/json'
+        
+        return json.dumps({'statusCode':statusCode, 'result':result})
+        
+    def showDiscussion(self, id1, id2, id3):
+        c.discussion = discussionLib.getDiscussion(id3)
+        if c.discussion:
+            if 'views' in c.discussion:
+                views = int(c.discussion['views'])
+            else:
+                views = 0
+            views += 1
+            c.discussion['views'] = str(views)
+            dbHelpers.commit(c.discussion)
+        else:
+            c.discussion = revisionLib.getRevisionByCode(id3)
+            
+        c.revisions = revisionLib.getRevisionsForThing(c.discussion)
+        
+        # kludge for comments
+        c.thing = c.discussion
+        
+        return render("/derived/6_profile_discussion.bootstrap")
+        
+    @h.login_required
+    def updateDiscussionHandler(self, id1, id2):
+        
+        payload = json.loads(request.body)
+        title = payload['title']
+        text = payload['text']
+
+        if 'code' in payload:
+            d = discussionLib.getDiscussion(payload['code'])  
+        else:
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'organization_general', attachedThing = c.user, title = title, text = text)
+
+        d.d['title'] = title
+        d.d['text'] = payload['text']
+
+        dbHelpers.commit(d.d)
+        revisionLib.Revision(c.authuser, d.d)
+        
+        jsonReturn = '{"state":"Success", "topicCode":"' + d.d['urlCode'] + '","topicURL":"' + d.d['url'] + '"}'
+        return jsonReturn
+
+    def showPosition(self, id1, id2, id3):
+        c.discussion = discussionLib.getDiscussion(id3)
+        if c.discussion:
+            if 'views' in c.discussion:
+                views = int(c.discussion['views'])
+            else:
+                views = 0
+            views += 1
+            c.discussion['views'] = str(views)
+            dbHelpers.commit(c.discussion)
+        else:
+            c.discussion = revisionLib.getRevisionByCode(id3)
+            
+        c.revisions = revisionLib.getRevisionsForThing(c.discussion)
+        
+        # kludge for comments
+        c.thing = c.discussion
+        
+        return render("/derived/6_profile_position.bootstrap")
+        
+    @h.login_required
+    def updatePositionHandler(self, id1, id2, id3):
+        item = genericLib.getThing(id3)
+        payload = request.params
+        position = payload['position']
+        text = payload['text']
+        
+        if 'title' in payload:
+            title = payload['title']
+        else:
+            title = 'We %s the %s "%s"'%(position, item.objType, item['title'])
+
+        if 'code' in payload:
+            d = discussionLib.getDiscussion(payload['code'])  
+        else:
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'organization_position', attachedThing = item, title = title, text = text, position = position)
+            d.d['views'] = '1'
+
+        d.d['title'] = title
+        d.d['position'] = position
+        d.d['text'] = payload['text']
+        
+        dbHelpers.commit(d.d)
+        revisionLib.Revision(c.authuser, d.d)
+        
+        # kludge for comments
+        c.discussion = d.d
+        c.thing = d.d
+        
+        return render("/derived/6_profile_position.bootstrap")
