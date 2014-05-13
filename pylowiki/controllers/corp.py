@@ -64,7 +64,7 @@ class CorpController(BaseController):
         study["title"]="Open Streets - Capitola"
         study["description"]="Event attendees survey and feedback."
         study["image"]="openStreetsCover.jpg"
-        study["url"]="openStreetsCapitola"
+        study["url"]="open_streets_capitola"
         study['date']="5.4.14"
         study['stats']='openStreetsCap1'
         study['respondents'] = 428
@@ -105,7 +105,7 @@ class CorpController(BaseController):
         study["title"]="Santa Cruz Tech Commuters"
         study["description"]="Measuring Santa Cruz County's daily tech worker brain drain and awareness, opportunity and feedback on the emerging Santa Cruz tech ecosystem."
         study["image"]="techCommuter.png"
-        study["url"]="techCommuter"
+        study["url"]="tech_commuter"
         study['date']="3.25.14"
         study['stats']='dcCommuterSurvey'
         study['respondents'] = 102
@@ -119,7 +119,7 @@ class CorpController(BaseController):
         study["title"]="Sewer System Improvement Program"
         study["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
         study["image"]="ssipCover.png"
-        study["url"]="SSIP"
+        study["url"]="ssip"
         study['date']="3.4.13"
         study['stats']='dcCommuterSurvey'
         study['respondents'] = 1200
@@ -131,7 +131,7 @@ class CorpController(BaseController):
         study["title"]="Eastside Recycled Water Project"
         study["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
         study["image"]="eastsideProject.png"
-        study["url"]="eastsideProject"
+        study["url"]="eastside_project"
         study['date']="10.10.12"
         study['respondents'] = 934
         study['clientLogo']='sfpucLogo.png'
@@ -473,8 +473,8 @@ class CorpController(BaseController):
             study["questions"]=questions
 
 
-        elif casestudyname =="eastsideProject":
-            study["url"]="eastsideProject"
+        elif casestudyname =="eastside_project" or casestudyname =="eastsideProject" or casestudyname =="eastsideproject":
+            study["url"]="eastside_project"
             study["title"]="Eastside Recycled Water Project"
             study["image"]="eastsideProject.png"
             study["statusType"]="success"
@@ -543,8 +543,8 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="SSIP":
-            study["url"]="SSIP"
+        elif casestudyname =="ssip" or casestudyname =="SSIP":
+            study["url"]="ssip"
             study["title"]="Sewer System Improvement Program"
             study["image"]="ssipCover.png"
             study["statusType"]="success"
@@ -581,8 +581,8 @@ class CorpController(BaseController):
             c.video='<iframe width="560" height="315" src="http://www.youtube.com/embed/m4039IQU7BM" frameborder="0" allowfullscreen></iframe></p>'
 
 
-        elif casestudyname =="techCommuter":
-            study["url"]="techCommuter"
+        elif casestudyname =="tech_commuter" or casestudyname =="techCommuter" or casestudyname =="techcommuter":
+            study["url"]="tech_commuter"
             study["title"]="Santa Cruz Tech Commuter Survey"
             study["image"]="techCommuter.png"
             study["statusType"]="danger"
@@ -701,8 +701,8 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="openStreetsCapitola":
-            study["url"]="openStreetsCapitola"
+        elif casestudyname =="open_streets_capitola" or casestudyname == "openStreetsCapitola" or casestudyname == "openstreetscapitola":
+            study["url"]="open_streets_capitola"
             study["title"]="Open Streets - Capitola"
             study["image"]="openStreetsCover.jpg"
             study["statusType"]="danger"
