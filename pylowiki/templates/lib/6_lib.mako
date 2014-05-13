@@ -1814,7 +1814,7 @@
 </%def>
 
 <%def name="public_tags()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Search by Tag
@@ -1829,7 +1829,7 @@
 </%def>
 
 <%def name="public_tag_filter()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
   <select class="med-width" ng-model="query">
       <option value=''>All Tags</option>
     % for category in sorted(categories):
@@ -1839,7 +1839,7 @@
 </%def>
 
 <%def name="public_tag_list_filter()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
       <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
     % for category in sorted(categories):
       <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
@@ -1847,7 +1847,7 @@
 </%def>
 
 <%def name="public_tag_links()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
     % for category in sorted(categories):
       <a href="/searchTags/${category}">${category}</a><br>
     % endfor

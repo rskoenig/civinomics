@@ -1,5 +1,5 @@
 <%!
-    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
@@ -151,7 +151,7 @@
         </fieldset>
         </div><!-- span8 -->
         <div class="span4">
-            <% tagList = workshopLib.getWorkshopTagCategories() %>
+            <% tagList = tagLib.getTagCategories() %>
             <fieldset>
             Category Tags
             % for tag in tagList:
