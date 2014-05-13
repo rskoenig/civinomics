@@ -1470,7 +1470,7 @@ class WorkshopController(BaseController):
         commments = int(comments)
 
         #recentActivity = activityLib.getRecentActivity(max)
-        workshopActivity = activityLib.getActivityForWorkshop(c.w['urlCode'])[offset:max + offset]
+        workshopActivity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         
         myRatings = {}
         if 'ratings' in session:
@@ -1591,5 +1591,5 @@ class WorkshopController(BaseController):
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})
-        return json.dumps({'statusCode':0, 'result': result, 'numItems': numItems, 'numAdopted': numAdopted, 'numIdeas': numIdeas, 'numDiscussions': numDiscussions, 'numResources':numResources})
+        return json.dumps({'statusCode':0, 'result': result[offset:max + offset], 'numItems': numItems, 'numAdopted': numAdopted, 'numIdeas': numIdeas, 'numDiscussions': numDiscussions, 'numResources':numResources})
 
