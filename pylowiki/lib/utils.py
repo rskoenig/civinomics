@@ -126,8 +126,13 @@ def getGeoExceptions():
 
     return geoExceptions
 
+################################################################
+#  getMyRating
+#
+# returns this user's rating of this object. if none, returns 0
+################################################################
 def getMyRating(thing):
-    # returns this user's rating of this object. if none, returns 0
+    
     if thing['disabled'] == '1' or thing.objType == 'revision':
         return "0"
     if 'ratings' in session:

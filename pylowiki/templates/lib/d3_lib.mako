@@ -116,6 +116,7 @@
         .text(function(d, i) { return data[i].label; });  //get the label from our original data array
         
         function changePie(newValue) {
+            /*
             if (myRating == 0) {
                 // react to the newValue by adding a vote to corresponding side
                 // (data[0] is the yes data)
@@ -133,6 +134,7 @@
             }
             vis = vis.data(pie); // compute the new angles
             vis.transition().duration(1500).attrTween("d", arcTween); // redraw the arcs
+            */
         }
 
         // Store the displayed angles in _current.
