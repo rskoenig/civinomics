@@ -923,7 +923,7 @@ class CorpController(BaseController):
         toddAnderson['title']='Lead Mobile Engineer'
         toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
         toddAnderson['photo']='todd_585.jpg'
-        toddAnderson['photoHover']='todd_silly_585.jpg'
+        toddAnderson['photoHover']='todd_585.jpg'
         c.team.append(toddAnderson)
         
         seanCampbell={}
@@ -953,21 +953,21 @@ class CorpController(BaseController):
         estherKim['title']='Marketing Manager'
         estherKim['bio']="My name is Esther Kim, I'm a recent graduate from UCSC in Business Management & Economics. I am an avid blogger, amateur videographer, and a work hard play hard advocate. I fell in love with Santa Cruz when I started surfing and mountain biking and I don't plan on leaving anytime soon. At Civinomics, I hope to bring in a specialized skillset of what I call 'grassroots' marketing to help set a structured brand goal of being a community leader."
         estherKim['photo']='esther_585.jpg'
-        estherKim['photoHover']='esther_silly_585.jpg'
+        estherKim['photoHover']='esther_585.jpg'
         c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
         manuK['title']='Founder & CEO'
         manuK['bio']="Manu makes sure Civinomics runs on time. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford."
         manuK['photo']='manu_585.jpg'
-        manuK['photoHover']='manu_silly_585.jpg'
+        manuK['photoHover']='manu_585.jpg'
         c.team.append(manuK)
         chrisN={}
         chrisN["name"]="Chris Neklason"
         chrisN['title']='Product Management'
         chrisN['bio']="Chris Neklason has been involved with community networking since 1984, before the Internet, and has decades of experience as a UNIX software engineer and as co-founder of Cruzio, one of the oldest ongoing independent ISPs in the United States."
         chrisN['photo']='chris_585.jpg'
-        chrisN['photoHover']='chris_silly_585.jpg'
+        chrisN['photoHover']='chris_585.jpg'
         c.team.append(chrisN)
         derroldP={}
         derroldP["name"]="Derrold Purifoy"
@@ -981,14 +981,14 @@ class CorpController(BaseController):
         robertS['title']='Founder & CMO'
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
         robertS['photo']='robert_585.jpg'
-        robertS['photoHover']='robert_silly_585.jpg'
+        robertS['photoHover']='robert_585.jpg'
         c.team.append(robertS)
         russellSterten={}
         russellSterten["name"]="Russell Sterten"
         russellSterten['title']='Program Manager '
         russellSterten['bio']="Hi, my name is Russell and it's good to be on board with Civinomics.  I am excited about the prospect of leveraging cutting edge communications and Web 2.0 technologies to dramatically increase people's engagement on issues facing their community. Before joining Civinomics I worked as a grassroots campaign organizer - most recently on a San Rafael city councilman's successful bid for the State Assembly - and have also been a substitute teacher in the East Bay and Marin.  Now I am looking forward to working with Civinomics and empowering people to help change the world."
         russellSterten['photo']='russell_585.jpg'
-        russellSterten['photoHover']='russell_silly_585.jpg'
+        russellSterten['photoHover']='russell_585.jpg'
         c.team.append(russellSterten)
 
         c.advisors=[]
