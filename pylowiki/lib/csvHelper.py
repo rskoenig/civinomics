@@ -10,7 +10,7 @@ from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
 log = logging.getLogger(__name__)
 
-EMAIL = 'Email Address'
+EMAIL = 'Email'
 NAME = 'Full Name'
 ZIP_CODE = 'Zip Code'
 
