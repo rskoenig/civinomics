@@ -4,11 +4,9 @@
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/liberty.jpg' alt="">
-</div>
+<div id="login-bg"></div>
 <div class="login">
-  <div class="container">
+  <div id="fbSignUp" class="container">
       <div class="row">
           <div class="span6 offset3" style="padding-top:100px;">
               <div class="well main-well login">
