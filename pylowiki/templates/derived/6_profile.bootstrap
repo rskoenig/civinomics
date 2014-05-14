@@ -18,6 +18,11 @@
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
+                    % if 'user' in session and (c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id)):
+                        % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
+                            <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/meetings">My Meetings</a></li>
+                        % endif
+                    % endif
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives"><i class="icon-trash"></i> Trash</i></a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):

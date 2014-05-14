@@ -5,11 +5,12 @@ import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
 from pylowiki.lib.utils import urlify
 import logging
+import datetime
 log = logging.getLogger(__name__)
 
 def getMemberPosts(user, unpublished = '0'):
     if unpublished == '1':
-        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished']
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished']
     else:
         activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
     codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
@@ -280,6 +281,29 @@ def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
         postList += q.all()
             
     return postList
+    
+def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
+    now = datetime.datetime.now()
+    SQLtoday = now.strftime("%Y-%m-%d")
+    postList = []
+    objectList = ['meeting']
+
+    q = meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(objectList))\
+        .filter(Thing.data.any(wc('disabled', u'0')))\
+        .filter(Thing.data.any(wc('deleted', u'0')))\
+        .filter(Thing.data.any(wkcl('scope', scope)))\
+        .filter(Thing.data.any(gtc('meetingDate', SQLtoday)))\
+        .filter(Thing.data.any(and_(Data.key.ilike('%public'), Data.value == u'on')))\
+        .order_by('sort')\
+        .offset(offset)
+    if limit:
+        postList += q.limit(limit)
+    else:
+        postList += q.all()
+            
+    return postList
+
 
 
 def getActivityForWorkshopList(limit, workshops, comments = 0, offset = 0):

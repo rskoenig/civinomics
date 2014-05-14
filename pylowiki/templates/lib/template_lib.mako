@@ -68,6 +68,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -81,6 +82,9 @@
                                         <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                                     </li>
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if c.authuser['accessLevel'] > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
                                 </ul>
                             </li>
 

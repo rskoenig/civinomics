@@ -231,11 +231,12 @@
     </script>
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
-    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/workshop_activity.js')}" type="text/javascript"></script>
 </%def>
