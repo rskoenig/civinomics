@@ -20,7 +20,7 @@ def setup_app(command, conf, vars):
 
     # If test.ini drop all existing tables
     filename = os.path.split(conf.filename)[-1]
-    if filename == 'developmentMaria.ini':    
+    if filename == 'developmentMaria.ini' or filename == 'developmentTodd.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
         
