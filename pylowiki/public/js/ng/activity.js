@@ -1,6 +1,8 @@
 function activityController($scope, $http) {
 	$scope.listingType = 'activity';
-	$scope.activityType = '/all';
+	if ($scope.activityType == undefined) {
+	    $scope.activityType = '/all';
+	}
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
