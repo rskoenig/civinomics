@@ -10,9 +10,10 @@ from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
 log = logging.getLogger(__name__)
 
-ZIP_CODE = 'Zip code  (where you are registered to vote if applicable)'
-EMAIL = 'Email'
-NAME = 'Name'
+EMAIL = 'Full Name'
+NAME = 'Email Address'
+ZIP_CODE = 'Zip Code'
+
 
 def saveCsv(fileitem):
     pathname = "pylowiki/public/temp"
@@ -32,7 +33,7 @@ def saveCsv(fileitem):
         return False
 
 def parseCsv(filepath):
-    with open(filepath) as f:
+    with open(filepath, 'rU') as f:
         r = helper.DictReader(f)
         users = []    
         for row in r:
