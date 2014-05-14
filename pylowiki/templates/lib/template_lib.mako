@@ -3,13 +3,13 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
-    import pylowiki.lib.db.workshop as workshopLib
+    import pylowiki.lib.db.tag      as tagLib
     from types import StringTypes
 %>
 
 !
 <%def name="mainNavbar()">
-    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+    <% tagCategories = tagLib.getTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -269,7 +269,7 @@
 
 <%def name="search_drawer()">
     <div id="search" class="collapse search_drawer">
-        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <% tagCategories = tagLib.getTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid searches">
             <div class="span3 offset1 small-show">

@@ -29,7 +29,7 @@ class CorpController(BaseController):
         client={}
         client['name']="San Francisco Public Utilities Commission"
         client['logo']="sfpuc_small.jpg"
-        client['url']='SSIP'
+        client['url']='sfpuc_ssip'
         c.clients.append(client)
         client={}
         client['name']="Soquel Creek Water District"
@@ -64,7 +64,7 @@ class CorpController(BaseController):
         study["title"]="Open Streets - Capitola"
         study["description"]="Event attendees survey and feedback."
         study["image"]="openStreetsCover.jpg"
-        study["url"]="openStreetsCapitola"
+        study["url"]="open_streets_capitola"
         study['date']="5.4.14"
         study['stats']='openStreetsCap1'
         study['respondents'] = 428
@@ -105,7 +105,7 @@ class CorpController(BaseController):
         study["title"]="Santa Cruz Tech Commuters"
         study["description"]="Measuring Santa Cruz County's daily tech worker brain drain and awareness, opportunity and feedback on the emerging Santa Cruz tech ecosystem."
         study["image"]="techCommuter.png"
-        study["url"]="techCommuter"
+        study["url"]="tech_commuter"
         study['date']="3.25.14"
         study['stats']='dcCommuterSurvey'
         study['respondents'] = 102
@@ -119,9 +119,8 @@ class CorpController(BaseController):
         study["title"]="Sewer System Improvement Program"
         study["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
         study["image"]="ssipCover.png"
-        study["url"]="SSIP"
+        study["url"]="sfpuc_ssip"
         study['date']="3.4.13"
-        study['stats']='dcCommuterSurvey'
         study['respondents'] = 1200
         study['clientLogo']='sfpucLogo.png'
         study['clientName']='San Francisco Public Utilities Commission'
@@ -131,7 +130,7 @@ class CorpController(BaseController):
         study["title"]="Eastside Recycled Water Project"
         study["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
         study["image"]="eastsideProject.png"
-        study["url"]="eastsideProject"
+        study["url"]="eastside_project"
         study['date']="10.10.12"
         study['respondents'] = 934
         study['clientLogo']='sfpucLogo.png'
@@ -473,8 +472,8 @@ class CorpController(BaseController):
             study["questions"]=questions
 
 
-        elif casestudyname =="eastsideProject":
-            study["url"]="eastsideProject"
+        elif casestudyname =="eastside_project" or casestudyname =="eastsideProject" or casestudyname =="eastsideproject":
+            study["url"]="eastside_project"
             study["title"]="Eastside Recycled Water Project"
             study["image"]="eastsideProject.png"
             study["statusType"]="success"
@@ -543,8 +542,8 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="SSIP":
-            study["url"]="SSIP"
+        elif casestudyname =="sfpuc_ssip" or casestudyname =="SSIP" or casestudyname =="ssip":
+            study["url"]="sfpuc_ssip"
             study["title"]="Sewer System Improvement Program"
             study["image"]="ssipCover.png"
             study["statusType"]="success"
@@ -581,8 +580,8 @@ class CorpController(BaseController):
             c.video='<iframe width="560" height="315" src="http://www.youtube.com/embed/m4039IQU7BM" frameborder="0" allowfullscreen></iframe></p>'
 
 
-        elif casestudyname =="techCommuter":
-            study["url"]="techCommuter"
+        elif casestudyname =="tech_commuter" or casestudyname =="techCommuter" or casestudyname =="techcommuter":
+            study["url"]="tech_commuter"
             study["title"]="Santa Cruz Tech Commuter Survey"
             study["image"]="techCommuter.png"
             study["statusType"]="danger"
@@ -701,8 +700,8 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="openStreetsCapitola":
-            study["url"]="openStreetsCapitola"
+        elif casestudyname =="open_streets_capitola" or casestudyname == "openStreetsCapitola" or casestudyname == "openstreetscapitola":
+            study["url"]="open_streets_capitola"
             study["title"]="Open Streets - Capitola"
             study["image"]="openStreetsCover.jpg"
             study["statusType"]="danger"
@@ -751,7 +750,7 @@ class CorpController(BaseController):
     def displayCareer(self, id):
         careername=id
         career={}
-        if careername=="engfrontend":
+        if careername=="eng_frontend":
             career["title"]="Software Engineer - Front End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
             career["description"]="Make this site beautiful. We need someone who is going to transform Civinomics into a clean, modern web app. Doing so will require more than a few photoshop mockups. Ideally you have already used bootstrap, angular JS and know some python. You can't make the front end fun unless you know the basics of passing data around. Show us that you know way more than us about composing clean, snappy CSS. If you have experience with iOS to boot, that rocks."
@@ -780,7 +779,7 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
-        if careername=="engbackend":
+        if careername=="eng_backend":
             career["title"]="Software Engineer - Back End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
             career["description"]="Make Civinomics faster, more secure and self-sustaining. We're looking for someone who can help us quickly materialize revenue opportunities on the platform, refine our architecture, internationalize and scale. Experience managing a team is a huge plus."
@@ -819,7 +818,7 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
-        if careername=="prgmManager":
+        if careername=="prgm_manager":
             career["title"]="Program Manager"
             career["commitment location"]="Fulll time - Santa Cruz, CA"
             career["description"]="Implement best practices to help Civinomics customers get the most out of their usage. Make vital product recommendations based on customer feedback. Facilitate cutting edge online interaction paradigm."
@@ -854,7 +853,7 @@ class CorpController(BaseController):
             recommendeds=[]
             career["recommendeds"]=recommendeds
 
-        if careername=="acctManager":
+        if careername=="acct_manager":
             career["title"]="Account Manager"
             career["commitment location"]="Full time - Santa Cruz and San Francisco, CA"
             career["description"]="We need a meticulous go getter who can keep clients happy and grow business. Existing clients range from government, to non-profit organizations, to political candidates, to sponsors.  Demonstrated passion for social causes through previous work or serious personal projects is a must. Amazing talent with CRM and PowerPoint / Keynote required. Prove to us that you can listen to what a client needs and work with a team to over-deliver on tight deadlines."
@@ -886,21 +885,21 @@ class CorpController(BaseController):
         engfrontend={}
         engfrontend["title"]="Software Engineer - Front End"
         engfrontend["department"]="Engineering"
-        engfrontend["url"]="engfrontend"
+        engfrontend["url"]="eng_frontend"
         c.careers.append(engfrontend)
         engbackend={}
         engbackend["title"]="Software Engineer - Back End"
         engbackend["department"]="Engineering"
-        engbackend["url"]="engbackend"
+        engbackend["url"]="eng_backend"
         c.careers.append(engbackend)
         career={}
         #career["title"]="Program Manager"
         #career["department"]="Operations"
-        #career["url"]="prgmManager"
+        #career["url"]="prgm_manager"
         #c.careers.append(career)
         career["title"]="Account Manager"
         career["department"]="Sales"
-        career["url"]="acctManager"
+        career["url"]="acct_manager"
         c.careers.append(career)
         prep={}
         prep["title"]="Public Outreach Representative"

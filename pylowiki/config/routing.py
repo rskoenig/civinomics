@@ -449,14 +449,14 @@ def make_map():
     map.connect('/help/{abuseHandler:abuseHandler/?}', controller = 'help', action='abuseHandler')
     map.connect('/help/{feedbackWorkshop:feedbackWorkshop/?}', controller = 'help', action='feedbackWorkshop')
     map.connect('/help/{markdownGuide:markdownGuide/?}', controller = 'help', action='markdownGuide')
-    map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
-    map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
-    map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
-    map.connect('/searchWorkshops/{id1}/{id2}{end:/?}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchUsers/{id1}/{id2}{end:/?}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
-    map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
+    #map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
+    #map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
+    #map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
+    #map.connect('/searchWorkshops/{id1}/{id2}{end:/?}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/searchUsers/{id1}/{id2}{end:/?}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
+    #map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
 
     ################
     # Search       #
