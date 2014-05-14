@@ -71,7 +71,7 @@ class HomeController(BaseController):
 
 		interestedInitiatives = []
 		for code in interestedInitiativeCodes:
-			log.info('%s' % code)
+			#log.info('%s' % code)
 			i = initiativeLib.getInitiative(code)
 			interestedInitiatives.append(i)
 
@@ -159,7 +159,7 @@ class HomeController(BaseController):
 
 
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
-        log.info("activity type is %s"%type)
+        #log.info("activity type is %s"%type)
         # get recent activity and return it into json format
         result = []
         allActivity = []
