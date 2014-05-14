@@ -29,7 +29,7 @@ class CorpController(BaseController):
         client={}
         client['name']="San Francisco Public Utilities Commission"
         client['logo']="sfpuc_small.jpg"
-        client['url']='SSIP'
+        client['url']='sfpuc_ssip'
         c.clients.append(client)
         client={}
         client['name']="Soquel Creek Water District"
@@ -119,9 +119,8 @@ class CorpController(BaseController):
         study["title"]="Sewer System Improvement Program"
         study["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
         study["image"]="ssipCover.png"
-        study["url"]="ssip"
+        study["url"]="sfpuc_ssip"
         study['date']="3.4.13"
-        study['stats']='dcCommuterSurvey'
         study['respondents'] = 1200
         study['clientLogo']='sfpucLogo.png'
         study['clientName']='San Francisco Public Utilities Commission'
@@ -543,8 +542,8 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="ssip" or casestudyname =="SSIP":
-            study["url"]="ssip"
+        elif casestudyname =="sfpuc_ssip" or casestudyname =="SSIP" or casestudyname =="ssip":
+            study["url"]="sfpuc_ssip"
             study["title"]="Sewer System Improvement Program"
             study["image"]="ssipCover.png"
             study["statusType"]="success"
