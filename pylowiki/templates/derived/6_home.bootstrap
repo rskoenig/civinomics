@@ -17,11 +17,11 @@
         <div ng-init="zipValue = ${c.postalCode}">
             <div ng-controller="zipLookupCtrl" ng-cloak>
                 <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i><br>
-            
+                <div style="height: 30px;"></div>
                 <table ng-show="!loading" class="full-width">
                     <tr ng-repeat="geo in geos">
                         <td>
-                            <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag small-flag" src="{{geo.flag}}"></a>
+                            <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
                         </td>
                     </tr>
                 </table>
@@ -59,11 +59,11 @@
       ###
       <div class="bottom-space-md">
         <ul class="nav nav-pills">
-          <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> All Activity </a></li>
+          <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
           <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
           % if c.authuser:
-            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
-            <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
+            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
+            <!-- <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li> -->
           % endif
         </ul>
       </div>

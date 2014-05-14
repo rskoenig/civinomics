@@ -106,9 +106,7 @@ class HomeController(BaseController):
 				entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
 				#goal votes
-				if entry['voteCount'] < 100:
-				    entry['goal'] = 100
-				elif 'goal' in item:
+				if 'goal' in item:
 					entry['goal'] = item['goal']
 				else:
 					entry['goal'] = 100
@@ -344,6 +342,12 @@ class HomeController(BaseController):
 			entry['ups'] = int(item['ups'])
 			entry['downs'] = int(item['downs'])
 			entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+			#goal votes
+			if 'goal' in item:
+				entry['goal'] = item['goal']
+			else:
+				entry['goal'] = 100
 
 			# comments
 			discussion = discussionLib.getDiscussionForThing(item)

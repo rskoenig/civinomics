@@ -10,7 +10,7 @@
 !
 <%def name="mainNavbar()">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container">
+      <div class="container-fluid">
         <ul class="nav navbar-nav navbar-left">
             <li><a style="padding: 5px 0 0 0;" href="/home"><img style="height:40px;" src="/images/civ_logo_simple.png"></a></li>
         </ul>
@@ -27,7 +27,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    % if c.authuser:
+                    % if 'user' in session:
                         <li>
                             <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                         </li>
@@ -35,25 +35,25 @@
                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                 </ul>
             </li>
-            % if c.authuser and userLib.isAdmin(c.authuser.id):
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                        <li><a tabindex="-1" href="/admin/users">All Users</a></li>
-                        <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
-                        <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
-                        <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
-                        <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
-                        <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
-                        <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
-                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
-                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
-                        <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
-                        <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-                    </ul>
-                </li>
-            % endif
             % if c.authuser:
+                % if userLib.isAdmin(c.authuser.id):
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                            <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                            <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
+                            <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                            <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                            <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                            <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                            <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                            <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                            <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                            <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                            <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                        </ul>
+                    </li>
+                % endif
                 <li>
                     <%
                         messageCount = ''
@@ -76,7 +76,11 @@
                         <li><a tabindex="-1" href="/login/logout">Logout</a></li>
                     </ul>
                 </li>
+            % else:
+                <li><a href="/login">Login</a></li>
+                <li><a href="/signup">Signup</a></li>
             % endif
+
         </ul>
       </div>
     </nav>

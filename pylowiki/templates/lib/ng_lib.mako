@@ -8,25 +8,27 @@
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
-            <div class="row-fluid">
-                <div class="span2">
+            ${authorPosting()}
+            <div class="row" style="margin-top:19px;">
+                <div class="col-sm-3">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
                             <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
                         </a>
                     </div>
                 </div>
-                <div class="span10">
+                <div class="col-sm-9 no-left">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
-                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    <h4>
-                        <small class="grey centered">Estimated Cost:</small>
-                        <span class="pull-right">{{item.cost | currency}}</span>
-                    </h4>
+                    <p><span ng-init="stringLimit=300"</span>{{item.text | limitTo:stringLimit}} ${moreLess()}</p>
+                    <p><strong>
+                        <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
+                        <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
+                        <span class="pull-right">{{(item.cost | currency).replace(".00", "")}}</span>
+                    </strong></p>
                 </div>
             </div>
-            <div class="row-fluid">
+            <div class="row">
                 ${yesNoVoteFooter()}
                 ${actions()}
             </div>
@@ -65,6 +67,7 @@
 
 <%def name="idea_listing()">
         <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+            ${authorPosting()}
             <div class="media-body row" ng-controller="yesNoVoteCtrl">
                 % if not c.w:
                     <div class="col-sm-3">
@@ -101,32 +104,16 @@
 
 <%def name="resource_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
-        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            % if not c.w:
-                <div class="span3">
-                    <div class="listed-photo">
-                        <a href = '{{item.parentHref}}'>
-                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                        </a>
-                    </div>
-                </div>
-            % endif
-            % if not c.w:
-                <div class="span8">
-            % else:
-                <div class="span11 media-body">
-            % endif
-                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                % if not c.w:
-                    <p><small>${metaData()}</small></p>
-                % endif
-                <p><a class="break" href="{{item.link}}" target="_blank">{{item.link}}</a><p>
+        <div class="row" ng-controller="yesNoVoteCtrl">
+            <div class="col-xs-11">
+                <p>${authorPosting()}</p>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small>({{item.link}})</small></a> ${metaData()}</h4>
             </div>
-            <div class="span1 voteWrapper">
+            <div class="col-xs-1">
                 ${upDownVoteBlock()}
             </div>
         </div>
-        <div class="row-fluid">
+        <div class="row">
             ${actions()}
         </div>
     </div>
@@ -134,6 +121,7 @@
 
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
+        ${authorPosting()}
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             % if not c.w:
                 <div class="span3">
@@ -167,6 +155,7 @@
 
 <%def name="photo_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
+        ${authorPosting()}
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="span11 media-body">
                 <div class="listed-photo">
@@ -228,8 +217,53 @@
 
 <%def name="yesNoVoteFooter()">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
-        <a  href="#" target="_blank" class="btn btn-lg btn-success" style="width:100px;">YES</a>
-        <a  href="#" target="_blank" class="btn btn-lg btn-danger" style="width:100px;">NO</a>
+        % if 'user' in session:
+            <div class="row">
+                <div class="col-sm-9 col-sm-offset-3">
+                    <table class="text-left">
+                        <tr>
+                            <td>
+                                <a ng-click="updateYesVote()" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                                <a ng-click="updateNoVote()" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                            </td>
+                            <td>
+                                <small class="grey">{{totalVotes}} votes: {{yesVotes}} YES {{noVotes}} NO</small>
+                                <div>
+                                    <div class="progress vote-progress">
+                                      <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
+                                        <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
+                                      </div>
+                                      <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
+                                        <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
+                                      </div>
+                                    </div>
+
+
+
+                                    <small class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
+                                </div>
+                          </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        % else:
+            <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
+                <div class="vote-icon yes-icon"></div>
+            </a>
+            <br>
+            <br>
+            <a href="#signupLoginModal" role="button" data-toggle="modal" class="noVote">
+                <div class="vote-icon no-icon"></div>
+            </a>
+            <br>
+            <div class="totalVotesWrapper">
+                <small class="grey pull-left">Votes:</small>
+                <strong class="pull-right">
+                    <span class="totalVotes">{{totalVotes}}</span>
+                </strong>
+            </div>
+        % endif
     </div>
 </%def>
 
@@ -265,9 +299,10 @@
 </%def>
 
 <%def name="metaData()">
-    <small><img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
-        <span style="text-transform: capitalize;"><a class="green green-hover" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
+    <small>
         <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+        <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
+        <a style="text-transform: capitalize;" href="{{item.scopeHref}}"><span ng-show="!(item.scopeLevel == 'Country' || item.scopeLevel == 'Postalcode' || item.scopeLevel == 'County')">{{item.scopeLevel}} of</span> {{item.scopeName}} <span ng-show="item.scopeLevel == 'County'"> {{item.scopeLevel}}</span></a>
     </small>
 </%def>
 
@@ -276,11 +311,6 @@
     <small>
         <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
         <span class="date">{{item.fuzzyTime}} ago</span>
-        % if not (c.w or c.initiative):
-            <span ng-if="item.parentObjType && !(item.parentObjType == '')">
-                in <a ng-href="{{item.parentHref}}" class="green green-hover">{{item.parentTitle}}</a>
-            </span>
-        % endif
     </small>
 </%def>
 

@@ -1,6 +1,6 @@
 function activityController($scope, $http) {
 	$scope.listingType = 'activity';
-	$scope.activityType = '/all';
+	$scope.activityType = '/initiatives';
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;

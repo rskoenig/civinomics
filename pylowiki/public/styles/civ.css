@@ -1318,6 +1318,29 @@ td.scope-icon{
    width: 98%;
 }
 
+.btn-vote{
+  width: 100px;
+}
+
+.btn-success.noVoted{
+  background-color: #fff;
+  border-color: #ccc;
+  color: #333;
+}
+.btn-success.yesVoted{
+  background-color: #47a447;
+  border-color: #398439;
+}
+.btn-danger.noVoted{
+  background-color: #d2322d;
+  border-color: #ac2925;
+}
+.btn-danger.yesVoted{
+  background-color: #fff;
+  border-color: #ccc;
+  color: #333;
+}
+
 .vote-icon{
   background-size: auto 30px;
   background-repeat: no-repeat;
