@@ -173,31 +173,36 @@
     </div>
     <hr>
     <div class="row">
-        <h2 class="text-center">
+        <h2 class="text-center" style="margin-bottom: 30px;">
             In the News
         </h2>
-        <div class="col-md-2 col-md-offset-1">
-            <a class="thumbnail">
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.bizjournals.com/sanjose/chreynolds-data-centers/2014/05/public-policy-startup-civnomics-wants-to-hack-u-s.html">
+                <img  src="/images/corp/news/SVBJ.jpg" target="_blank">
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="https://www.youtube.com/watch?v=vJ-Nb0WB1aw">
+                <img  src="/images/corp/news/tedx_brc.jpg" target="_blank">
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html" target="_blank">
                 <img  src="/images/corp/news/goodtimes.jpg">
             </a>
         </div>
         <div class="col-md-2">
-            <a class="thumbnail">
+            <a class="thumbnail no-border" href="http://www.santacruzsentinel.com/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders" target="_blank">
                 <img  src="/images/corp/news/sentinel.jpg">
             </a>
         </div>
         <div class="col-md-2">
-            <a class="thumbnail">
-                <img  src="/images/corp/news/SVBJ.jpg">
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="thumbnail">
+            <a class="thumbnail no-border" href="http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/" target="_blank">
                 <img  src="/images/corp/news/xconomy.png">
             </a>
         </div>
         <div class="col-md-2">
-            <a class="thumbnail">
+            <a class="thumbnail no-border" href="http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72" target="_blank">
                 <img  src="/images/corp/news/RP.jpg">
             </a>
         </div>
@@ -229,7 +234,6 @@
         <div class="col-sm-8 well well-splash-content" ng-controller="SearchCtrl">
             <h3>
                 Top Initiatives
-                <!--
                 <span class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
                     % if 'user' in session:
                         <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
@@ -239,7 +243,7 @@
                         <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-edit"></i> Start an Initiative</a>
                     % endif
                 </span>
-                -->
+
             </h3>
             <div class="loading-civ" ng-show="loading" ng-cloak>
                 <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
@@ -278,9 +282,9 @@
                     <a href="/browse/initiatives">View more initiatives</a>
                 </div>
             </div>
-        </div><!-- span8 -->
+        </div>
         
-    </div><!-- row -->
+    </div>
     -->
 
     
