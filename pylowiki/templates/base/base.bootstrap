@@ -80,6 +80,9 @@
         <script type="text/javascript" src="/js/vendor/async.min.js"></script>
         <div id="fb-root"></div>
         <script>
+            var FB_NO_PRESS_ID = "fbNoPress";
+            var FB_NO_PRESS = '<div id="' + FB_NO_PRESS_ID + '"></div>';
+
             // Load the SDK asynchronously
             (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
@@ -150,11 +153,17 @@
                 } else if (response.status === 'not_authorized') {
                     // The person is logged into Facebook, but not your app.
                     console.log('notAuthed');
+                    // erase the fb-no-press marker, if they press the facebook button now, 
+                    //  the auto-forward will occur
+                    $( ".fbLogin" ).data("touched", "yes");
                     fbLogin();
                 } else {
                     // The person is not logged into Facebook, so we're not sure if 
                     // they are logged into this app or not.
                     console.log('not logged into fb');
+                    // erase the fb-no-press marker, if they press the facebook button now, 
+                    //  the auto-forward will occur
+                    $( ".fbLogin" ).data("touched", "yes");
                     fbLogin();
                 }
             }
@@ -190,14 +199,19 @@
                     
                     FB.Event.subscribe('auth.login', login_event);
                     FB.Event.subscribe('auth.logout', logout_event);
+                    // mark no fb button press yet
                     if (${userLoggedIn}) {
                         console.log('user logged in');
                         // getLoginStatus: gets the state of the person visiting this page
                         // FB.getLoginStatus(appendFacebookLogout);
+                    } else if ($( "#fbSignUp" ).length > 0) {
+                        console.log('user in process of signing up for facebook or twitter');
                     } else {
-                        console.log('user not logged in');
+                        console.log('user not logged in yo');
                         var notLoggedInButton = '<a href="#" onclick="fbLogin()" class="fbLogin"><img src="/images/f-login.png"></a>';
-                        $('.fbLogin').html(notLoggedInButton);
+                        $( ".fbLogin" ).replaceWith(notLoggedInButton);
+                        // note that the login button has not been touched yet
+                        $( ".fbLogin" ).data("touched", "no");
                         FB.Event.subscribe('auth.authResponseChange', function(response) {
                             statusChangeCallback(response);
                         });
@@ -265,9 +279,11 @@
                         // this is a unique situation where the person has authorized us to use their
                         // fb identity, but hasn't created an account yet. This assumes that's what they
                         // want to do and redirects once this situation is recognized.
-                        if ($('#fbSignUp').length) {
-                            console.log('facebook signup')
+                        if ($(".fbLogin").data("touched") == "no") {
+                            //console.log('we see auth with facebook, but no account on here. forward to account completion only if they press a login button');
+                            $( ".fbLogin" ).data("touched", "yes");
                         } else {
+                            //console.log('i want to forward to signup/fbSignUp');
                             window.location = '/signup/fbSignUp/';
                         }
                     } else {
