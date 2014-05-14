@@ -473,6 +473,22 @@
     % endif
 </%def>
 
+<%def name="mailToShare(item, **kwargs)">
+    <%  
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+        subj = 'Vote on "' + item['title'] + '"'
+        subj = subj.replace(' ','%20')
+        if item.objType == 'initiative':
+            body = initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+        elif item.objType == 'workshop':
+            body = workshopLink(item)
+        else:
+            body = itemInWorkshopLink(item, workshop=workshop)
+    %>
+    <a class="listed-item-title" target="_blank" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope icon-2x"></i></a>
+</%def>
+
 <%def name="emailShare(itemURL, itemCode)">
     % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w) and not c.privs['provisional']):
         <% 
@@ -784,14 +800,26 @@
 
 <%def name="workshopLink(w, **kwargs)">
    <%
-   if 'embed' in kwargs:
-      if kwargs['embed'] == True:
-         if 'raw' in kwargs:
-            if kwargs['raw'] == True:
-               return "/workshop/%s/%s" %(w['urlCode'], w['url'])
-         return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
+    if 'embed' in kwargs:
+        if kwargs['embed'] == True:
+            if 'raw' in kwargs:
+                if kwargs['raw'] == True:
+                    return "/workshop/%s/%s" %(w['urlCode'], w['url'])
+            return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
+
+    else:
+        baseUrl = utilsLib.getBaseUrl()
+        return '%s/workshop/%s/%s' % (baseUrl, w['urlCode'], w['url'])
    %>
    href="/workshops/${w['urlCode']}/${w['url']}"
+</%def>
+
+<%def name="itemInWorkshopLink(item, **kwargs)">
+    <%
+        workshop = kwargs['workshop']
+        baseUrl = utilsLib.getBaseUrl()
+        return '%s/workshop/%s/%s/%s/%s/%s' % (baseUrl, workshop['urlCode'],workshop['url'],item.objType, item['urlCode'], item['url'] )
+    %>
 </%def>
 
 <%def name="workshopImage(w, **kwargs)">
@@ -1465,7 +1493,7 @@
     <% unpublishID = 'unpublish-%s' % thing['urlCode'] %>
     <div class="row-fluid collapse" id="${unpublishID}">
         <div class="span11 offset1 alert">
-            <strong>Are you sure you want to unpublish this ${thing.objType}?</strong>
+            <strong>Are you sure you want to send this ${thing.objType} to the trash?</strong>
             <br />
             <a ${unpublishThingLink(thing)} class="btn btn-danger">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">No</a>
@@ -1786,7 +1814,7 @@
 </%def>
 
 <%def name="public_tags()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Search by Tag
@@ -1801,7 +1829,7 @@
 </%def>
 
 <%def name="public_tag_filter()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
   <select class="med-width" ng-model="query">
       <option value=''>All Tags</option>
     % for category in sorted(categories):
@@ -1811,7 +1839,7 @@
 </%def>
 
 <%def name="public_tag_list_filter()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
       <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
     % for category in sorted(categories):
       <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
@@ -1819,7 +1847,7 @@
 </%def>
 
 <%def name="public_tag_links()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
     % for category in sorted(categories):
       <a href="/searchTags/${category}">${category}</a><br>
     % endfor

@@ -33,6 +33,7 @@ class plaintextForm(formencode.Schema):
 class RegisterController(BaseController):
 
     def __before__(self):
+        c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
@@ -40,7 +41,6 @@ class RegisterController(BaseController):
         c.title = config['custom.titlebar']
 
         c.backgroundPhoto = {'title': 'City Council Meeting'}
-        c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
         c.backgroundAuthor = 'unknown'
 
         #c.photos = photoLib.getAllPhotos()

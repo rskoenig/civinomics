@@ -251,6 +251,7 @@ class User(object):
         u['follower_counter'] = '0'
         u['bookmark_counter'] = '0'
         u['photo_counter'] = '0'
+        u['meeting_counter'] = '0'
         u['accessLevel'] = 0
         commit(u)
         u['urlCode'] = toBase62(u)

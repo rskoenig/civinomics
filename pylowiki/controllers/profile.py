@@ -32,6 +32,7 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.mail                as mailLib
 
@@ -361,8 +362,10 @@ class ProfileController(BaseController):
             
         result = []
         for item in c.unpublishedActivity:
+            objType = item.objType.replace("Unpublished", "")
+            if objType == 'discussion' and item['discType'] != 'general':
+                continue
             entry = {}
-            entry['objType'] = item.objType.replace("Unpublished", "")
             entry['objType'] = item.objType.replace("Unpublished", "")
             if entry['objType'] != 'comment':
                 entry['url']= item['url']
@@ -375,8 +378,47 @@ class ProfileController(BaseController):
             if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
-            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
+            href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting':
+                href += '/show'
+            if entry['objType'] == 'agendaitem':
+                mCode = item['meetingCode']
+                mURL = item['meeting_url']
+                href = '/meeting/' + mCode + '/' + mURL + '/agendaitem/' + item['urlCode']
+                
+            entry['href'] = href
+                
             entry['unpublishedBy'] = item['unpublished_by']
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
+    def showUserMeetings(self, id1, id2):
+        return render("/derived/6_profile_meetings.bootstrap")
+        
+    def getUserMeetings(self, id1, id2):
+        c.meetings = meetingLib.getMeetingsForUser(id1)
+        if not c.meetings:
+            c.meetings = []
+            
+        result = []
+        for item in c.meetings:
+            entry = {}
+            entry['objType'] = 'meeting'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['meetingDate'] = item['meetingDate']
+            entry['group'] = item['group']
+            
+            scopeInfo = utils.getPublicScope(item['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
+            entry['href']= '/meeting/' + entry['urlCode'] + '/' + entry['url'] + '/show'
             result.append(entry)
             
         if len(result) == 0:
