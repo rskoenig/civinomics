@@ -94,7 +94,7 @@ def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime
     m['scope'] = scope
     m['meetingDate'] = meetingDate
     m['meetingTime'] = meetingTime
-    m.sort = meetingTime
+    m.sort = meetingDate
     m['agendaPostDate'] = agendaPostDate
     m['deleted'] = u'0'
     m['disabled'] = u'0'

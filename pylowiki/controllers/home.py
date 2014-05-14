@@ -159,18 +159,18 @@ class HomeController(BaseController):
 
 
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
-		# get recent activity and return it into json format
-		result = []
-		allActivity = []
+        log.info("activity type is %s"%type)
+        # get recent activity and return it into json format
+        result = []
+        allActivity = []
+        
+        offset = int(offset)
+        commments = int(comments)
 
-		offset = int(offset)
-		commments = int(comments)
+        if type == 'all':
+		    recentActivity = activityLib.getRecentActivity(max, 0, offset)
 
-		if type == 'all':
-			recentActivity = activityLib.getRecentActivity(max, 0, offset)
-				
-
-		elif type == 'following' and c.authuser:
+        elif type == 'following' and c.authuser:
 			if c.privs['participant'] or c.privs['provisional']:
 				# combine the list of interested workshops
 				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
@@ -194,7 +194,7 @@ class HomeController(BaseController):
 				alertMsg = "You are not following any people, workshops or initiatives yet!"
 				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
-		elif type == 'geo' and c.authuser:
+        elif type == 'geo' and c.authuser:
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
@@ -208,7 +208,7 @@ class HomeController(BaseController):
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 		    	
-		elif type == 'meetings' and c.authuser:
+        elif type == 'meetings' and c.authuser:
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
@@ -222,17 +222,17 @@ class HomeController(BaseController):
 		    	alertMsg = "There are no upcoming meetings listed for your county yet."
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
-		elif type == 'initiatives':
+        elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
-		else:
+        else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
-		myRatings = {}
-		if 'ratings' in session:
+        myRatings = {}
+        if 'ratings' in session:
 			myRatings = session['ratings']
 
-		for item in recentActivity:
+        for item in recentActivity:
 			entry = {}
 			# item attributes
 			entry['title'] = item['title']
@@ -410,9 +410,9 @@ class HomeController(BaseController):
 
 			result.append(entry)
 
-		if len(result) == 0:
+        if len(result) == 0:
 			return json.dumps({'statusCode':1})
-		return json.dumps({'statusCode':0, 'result': result})
+        return json.dumps({'statusCode':0, 'result': result})
 
 
 
