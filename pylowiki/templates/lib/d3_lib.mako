@@ -78,8 +78,10 @@
         r = 100,                            //radius
         color = d3.scale.category20c();     //builtin range of colors
         
-        console.log('hey: '+totalVotes);
-        console.log('yo: '+myRating);
+        console.log('yes: '+yes);
+        console.log('no: '+no);
+        console.log('total: '+totalVotes);
+        console.log('me: '+myRating);
 
         var vis = d3.select("#d3-yesNo-chart")
             .append("svg:svg")              //create the SVG element inside the <body>
@@ -115,26 +117,31 @@
         .attr("text-anchor", "middle")                    //center the text on it's origin
         .text(function(d, i) { return data[i].label; });  //get the label from our original data array
         
+        // these changes are attempting to show what's happening on our server
+        // might be a complicated system if I need to handle these updates while a person 
+        // adds and rescinds their vote.
         function changePie(newValue) {
-            /*
+            var data1 = [];
             if (myRating == 0) {
                 // react to the newValue by adding a vote to corresponding side
                 // (data[0] is the yes data)
-                data[0].value = (newValue > 0) ? data[0].value + 1 : data[1].value + 1; 
+                if (newValue > 0) {
+                    data1 = [{"label":"YES", "value":yes + 1}, {"label":"NO", "value":no}];
+                } else {
+                    data1 = [{"label":"YES", "value":yes}, {"label":"NO", "value":no + 1}];
+                }
             } else {
                 // react to the newValue by adding a vote to corresponding side
                 // and subtracting a vote from the other
                 if (newValue > 0) {
-                    data[0].value + 1
-                    data[1].value - 1;
+                    data1 = [{"label":"YES", "value":yes + 1}, {"label":"NO", "value":no - 1}];
                 } else {
-                    data[0].value - 1
-                    data[1].value + 1;
+                    data1 = [{"label":"YES", "value":yes - 1}, {"label":"NO", "value":no + 1}];
                 }
             }
-            vis = vis.data(pie); // compute the new angles
-            vis.transition().duration(1500).attrTween("d", arcTween); // redraw the arcs
-            */
+
+            console.log(data1);
+            
         }
 
         // Store the displayed angles in _current.
