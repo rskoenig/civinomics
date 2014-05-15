@@ -11,6 +11,9 @@ from pylowiki.lib.utils import urlify
 import pylowiki.lib.helpers as h
 from pylons import config
 
+from pylowiki.lib.db.user import User
+from pylowiki.lib.db.dbHelpers import commit
+
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
@@ -30,8 +33,11 @@ import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.meeting          as meetingLib
+import pylowiki.lib.fuzzyTime           as fuzzyTime
+import pylowiki.lib.mail                as mailLib
 
 from pylowiki.lib.facebook              import FacebookShareObject
+import pylowiki.lib.csvHelper           as csv
 import pylowiki.lib.images              as imageLib
 import pylowiki.lib.utils               as utils
 
@@ -342,7 +348,7 @@ class ProfileController(BaseController):
         if photos:
             c.photos = photos
             c.photos.reverse()
-            
+
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
@@ -657,6 +663,24 @@ class ProfileController(BaseController):
                 c.admin = False
                 
             return render('/derived/6_profile_edit.bootstrap')
+        else:
+            abort(404)
+
+    @h.login_required
+    def csv(self, id1, id2):
+        c.events = eventLib.getParentEvents(c.user)
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
+            c.title = 'Edit Profile'
+            if 'confTab' in session:
+                c.tab = session['confTab']
+                session.pop('confTab')
+                session.save()
+            if userLib.isAdmin(c.authuser.id):
+                c.admin = True
+            else:
+                c.admin = False
+                
+            return render('/derived/6_profile_csv.bootstrap')
         else:
             abort(404)
 
@@ -1018,6 +1042,80 @@ class ProfileController(BaseController):
             return json.dumps(jsonResponse)
         else:
             abort(404)
+            
+    @h.login_required
+    def addUser(csvUser):
+        csvUser['memberType'] = 100
+        csvUser['password'] = "changeThis"
+        csvUser['country'] = "United States"
+        u = User(csvUser['email'], csvUser['name'], csvUser['password'], csvUser['country'], csvUser['memberType'], csvUser['zip'])
+        user = u.u
+        if 'laston' in user:
+            t = time.localtime(float(user['laston']))
+            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
+        user['laston'] = time.time()
+        #user['activated'] = u'1'
+        loginTime = time.localtime(float(user['laston']))
+        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+        commit(user)
+        baseURL = c.conf['activation.url']
+        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+        mailLib.sendActivationMail(user['email'], url)
+        
+    @h.login_required
+    def checkUser(csvUser):
+        if (csvUser['email'] is None or csvUser['name'] is None or csvUser['zip'] is None):
+            return false
+        else:
+            return true
+ 
+        
+    @h.login_required
+    def csvUploadHandler(self, id1, id2):
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
+            abort(404)
+        
+        requestKeys = request.params.keys()
+        
+        if 'files[]' in requestKeys:
+            file = request.params['files[]']
+            filename = file.filename
+            fileitem = file.file
+            log.info(file.filename)
+            csvFile = csv.saveCsv(file)
+            c.csv = csv.parseCsv(csvFile.fullpath)
+            for csvUser in c.csv:
+                log.info(csvUser)
+                if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
+                    if (not userLib.getUserByEmail(csvUser['email'])):
+                        memberType = 50
+                        password = "changeThis"
+                        country = "United States"
+                        u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'])
+#                     user = u.u
+#                     if 'laston' in user:
+#                         t = time.localtime(float(user['laston']))
+#                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
+#                     user['laston'] = time.time()
+#                     #user['activated'] = u'1'
+#                     loginTime = time.localtime(float(user['laston']))
+#                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+#                     commit(user)
+#                     baseURL = c.conf['activation.url']
+#                     url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+#                     mailLib.sendActivationMail(user['email'], url)
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'path':csvFile.fullpath
+                                }
+                            ]}
+            json.dumps(jsonResponse)
+            return render("/derived/6_profile_csv.bootstrap")
+        else:
+            abort(404)
+            
+ ######################################## ########################################            
             
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
