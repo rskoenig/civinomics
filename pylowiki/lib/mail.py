@@ -55,6 +55,26 @@ def sendActivationMail(recipient, activationLink):
 
     send(toEmail, fromEmail, subject, textMessage)
     
+def sendActivationMailWithPassword(recipient, activationLink, password):
+    subject = 'Civinomics Account Activation'
+    
+
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/activateWithPassword.txt"
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    textMessage = textMessage.replace('${c.activationLink}', activationLink)
+    textMessage = textMessage.replace('${password}', password)
+    
+    fromEmail = config['activation.email']
+    toEmail = recipient
+
+    send(toEmail, fromEmail, subject, textMessage)
+
+       
 def sendPMemberInvite(workshopName, senderName, recipient, message, browseURL):
     
     emailDir = config['app_conf']['emailDirectory']

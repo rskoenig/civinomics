@@ -1,5 +1,6 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
@@ -27,6 +28,9 @@
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
+                            	% if c.user['accessLevel'] > '200':
+                                	<li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
+                                % endif
                                 <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                             % endif
                         % else:
