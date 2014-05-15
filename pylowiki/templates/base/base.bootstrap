@@ -8,6 +8,7 @@
     <head>
       <meta charset="UTF8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
+      <meta name="google-site-verification" content="lPlafwU4hDp8hUCFAMamWxHdI7LM12YH8aWTY1cuUdY" />
       <title>${c.title}</title>
       <!-- Third-party assets -->
       <link rel="stylesheet" href="/styles/vendor/bootstrap.css">
