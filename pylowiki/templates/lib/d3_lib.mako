@@ -121,27 +121,57 @@
         // might be a complicated system if I need to handle these updates while a person 
         // adds and rescinds their vote.
         function changePie(newValue) {
+            console.log('new rating: '+newValue);
             var data1 = [];
             if (myRating == 0) {
-                // react to the newValue by adding a vote to corresponding side
-                // (data[0] is the yes data)
+                console.log('no vote previously');
+                // if the previous rating was 0 (no vote), then the new value can 
+                // only be a vote (+/-1)
                 if (newValue > 0) {
-                    data1 = [{"label":"YES", "value":yes + 1}, {"label":"NO", "value":no}];
+                    console.log('add 1 to yes');
+                    yes = yes + 1;
                 } else {
-                    data1 = [{"label":"YES", "value":yes}, {"label":"NO", "value":no + 1}];
+                    console.log('add 1 to no');
+                    no = no + 1;
                 }
             } else {
-                // react to the newValue by adding a vote to corresponding side
-                // and subtracting a vote from the other
-                if (newValue > 0) {
-                    data1 = [{"label":"YES", "value":yes + 1}, {"label":"NO", "value":no - 1}];
+                console.log('previous rating ' + myRating);
+                // if the previous rating was +/-1 (a vote), then the new value can 
+                // either be 0 (no vote) or +/-1 (a vote for the other side)
+                if (newValue == 0) {
+                    // vote has been rescinded
+                    console.log('vote has been rescinded');
+                    if (myRating > 0) {
+                        console.log('removed my yes vote');
+                        yes = yes - 1;
+                    } else {
+                        console.log('removed my no vote');
+                        no = no - 1;
+                    }
                 } else {
-                    data1 = [{"label":"YES", "value":yes - 1}, {"label":"NO", "value":no + 1}];
+                    // a different vote has been cast
+                    console.log('vote has been changed to the other');
+                    if (newValue > 0) {
+                        console.log('yes instead of no');
+                        yes = yes + 1;
+                        no = no - 1;
+                    } else {
+                        console.log('no instead of yes');
+                        yes = yes - 1;
+                        no = no + 1;
+                    }
                 }
             }
-
+            data1 = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
+            myRating = newValue;
+            console.log(data);
             console.log(data1);
-            
+            console.log('yesN: '+yes);
+            console.log('noN: '+no);
+            totalVotes = yes + no;
+            console.log('totalN: '+totalVotes);
+            console.log('meN: '+myRating);
+
         }
 
         // Store the displayed angles in _current.
