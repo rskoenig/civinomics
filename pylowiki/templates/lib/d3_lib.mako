@@ -20,61 +20,77 @@
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
     <hr>
-    <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
-        <div class="pull-left workshop-metrics metrics-large">
-            Results
-        </div>
-        <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
-            <span> 
-                <span class="filter-count"></span>
-                selected out of
-                <span class="total-count"></span> 
-                records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
-            </span>
+    <div class='row' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+        <div class="col-sm-12">
+            <div class="pull-left workshop-metrics metrics-large">
+                Results
+            </div>
+            <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
+                <span> 
+                    <span class="filter-count"></span>
+                    selected out of
+                    <span class="total-count"></span> 
+                    records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
+                </span>
+            </div>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-heardOfBagBans-chart'> 
-            <h4>Have you heard about the plastic bag bans in Santa Cruz County?
+    <div class='row'>   
+        <div class='col-sm-6'>
+            <p class="lead">The majority of Scotts Valley residents are aware of the other plastic bag bans in Santa Cruz County.</p>
+            <h6>Question: "Have you heard about the plastic bag bans in Santa Cruz County?"</h6>
+        </div>
+        <div class='col-sm-6' id='dc-heardOfBagBans-chart'> 
                 <span>
-                    <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
+                <br>(click to filter results)
         </div>
-        <div class='span4' id='dc-impressionOfBagBans-chart'>
-            <h4>What is your impression of the Santa Cruz plastic bag bans?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+    </div><!-- row --> 
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">About half of respondents (48%) believe the existing bag bans have had a positive effect. 15% believe they've had no effect or a negative effect.</p>
+            <h6>Question: "What is your impression of the Santa Cruz plastic bag bans?"</h6>
         </div>
-        <div class='span4' id='dc-proposedBagBan-chart'>
-            <h4>Have you heard about the proposed Plastic Bag Ban for Scotts Valley?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+        <div class='col-sm-6' id='dc-impressionOfBagBans-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class='row-fluid'>   
-        <div class='span6' id='dc-voteInFavor-chart'> 
-            <h4>If the vote were held today on the Plastic Bag Ban, would you vote "yes" in favor of it or "no" to oppose it?
-                <span>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">32% of respondents were aware that a bag ban had been proposed for the City of Scotts Valley</p>
+            <h6>Question: "Have you heard about the proposed Plastic Bag Ban for Scotts Valley?"</h6>
+        </div>
+        <div class='col-sm-6' id='dc-proposedBagBan-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row'>   
+        <div class='col-sm-6'> 
+            <p class="lead">72% of Scotts Valley residents would vote "YES" for a City of Scotts Valley plastic bag ban.</p>
+            <h6>Question: "If the vote were held today on the Plastic Bag Ban, would you vote 'YES' in favor of it or 'NO' to oppose it?"</h6>
+        </div>
+        <div class="col-sm-6" id='dc-voteInFavor-chart'>
+            <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:voteInFavorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
+    </div>
+    <hr>
         <div class='span6' id='dc-includeFeeVoteYes-chart'>
             <h4>How about if the Plastic Bag Ban included a fee of $0.10 on paper bags? Would you vote "yes" or "no" on this measure?
                 <span>

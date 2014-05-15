@@ -37,29 +37,30 @@
 </%def>
 
 <%def name="initiative_listing_condensed()">
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing initiative-listing" style="height: 450px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
-            <div class="row-fluid">
-                <div class="span2">
+            <div class="row">
+                <div class="col-sm-12">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
                             <div class="i-photo full-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
                         </a>
                     </div>
                 </div>
-                <div class="span10">
+            </div>
+            <div class="row" style="height: 190px;">
+                <div class="col-sm-12">
                     <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p style="line-height: 16px;"><small>${metaData()}</small></p>
-                    <small style="grey" ng-init="stringLimit=200"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small>
+                    <small style="grey" ng-init="stringLimit=150"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small>
                     <h4>
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
                     </h4>
                 </div>
             </div>
-            <div class="row-fluid">
-                ${yesNoVoteFooter()}
-                ${actions()}
+            <div class="row">
+                ${yesNoVoteFooter(noStats = True)}
             </div>
         </div>
     </div>
@@ -215,38 +216,33 @@
     % endif
 </%def>
 
-<%def name="yesNoVoteFooter()">
+<%def name="yesNoVoteFooter(**kwargs)">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
         % if 'user' in session:
-            <div class="row">
-                <div class="col-sm-9 col-sm-offset-3">
-                    <table class="text-left">
-                        <tr>
-                            <td>
-                                <a ng-click="updateYesVote()" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
-                                <a ng-click="updateNoVote()" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
-                            </td>
-                            <td>
-                                <small class="grey">{{totalVotes}} votes: {{yesVotes}} YES {{noVotes}} NO</small>
-                                <div>
-                                    <div class="progress vote-progress">
-                                      <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
-                                        <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
-                                      </div>
-                                      <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
-                                        <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
-                                      </div>
-                                    </div>
-
-
-
-                                    <small class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
-                                </div>
-                          </td>
-                        </tr>
-                    </table>
+            <div class="row centered">
+                <div class="col-sm-12">
+                    <a ng-click="updateYesVote()" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a ng-click="updateNoVote()" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
+            % if not 'noStats' in kwargs:
+                <div class="row" centered>
+                    <div class="col-sm-12">
+                        <small class="grey">{{totalVotes}} votes: {{yesVotes}} YES {{noVotes}} NO</small>
+                        <div>
+                            <div class="progress vote-progress">
+                              <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
+                                <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
+                              </div>
+                              <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
+                                <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
+                              </div>
+                            </div>
+                            <small class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
+                        </div>
+                    </div>
+                </div>
+            % endif
         % else:
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
                 <div class="vote-icon yes-icon"></div>
