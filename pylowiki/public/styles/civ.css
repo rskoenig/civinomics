@@ -32,6 +32,11 @@ html,body{
 
 /* a */
 
+h5.listed-item-title{
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 h4.listed-item-title{
   margin-top: 0px;
 }
@@ -87,6 +92,16 @@ h5.h45, h4.h45{
 }
 
 /* Set the fixed height of the footer here */
+
+.footer{
+  background-color: #333;
+  padding: 30px 0;
+  color: #fff;
+}
+.footer a{
+  color: #fff;
+}
+
 #baseTemplate_footer{
   height:40px;
 }
@@ -478,7 +493,7 @@ height: 1px;
 padding: 0 10px;
 position: relative;
 top: -9px;
-background-image: url('/images/splash/dust.png');
+background-color: #fff;
 font-size: 14px;
 }
 
@@ -667,6 +682,10 @@ div.unread-message:hover {
   background-color: whitesmoke;
   margin: 8px -19px -19px;
   border-top: 1px solid #ddd;
+}
+
+.actions .div{
+  margin: 0 10px;
 }
 
 .actions-links{
@@ -1320,6 +1339,9 @@ td.scope-icon{
 
 .btn-vote{
   width: 100px;
+  background-color: #fff;
+  border-color: #ccc;
+  color: #333;
 }
 
 .btn-success.noVoted{
@@ -1330,10 +1352,12 @@ td.scope-icon{
 .btn-success.yesVoted{
   background-color: #47a447;
   border-color: #398439;
+  color: #fff;
 }
 .btn-danger.noVoted{
   background-color: #d2322d;
   border-color: #ac2925;
+  color: #fff;
 }
 .btn-danger.yesVoted{
   background-color: #fff;
@@ -2222,7 +2246,6 @@ li.thumbnail-gallery{
 */
 
 .well.search-listing{
-  opacity: 0.9;
   margin-bottom: 8px;
 }
 
@@ -2695,9 +2718,13 @@ hr.list-header{
   font-weight: 300;
 }
 
+.well-login{
+  margin-top: 40px;
+}
+
 .main-well{
     background-color: #ffffff;
-    background-image: url('/images/splash/dust.png');
+    /*background-image: url('/images/splash/dust.png');*/
     background-repeat: repeat;
     background-position: top left;
     
@@ -2977,7 +3004,7 @@ button.close{
 
 .row.welcome{
   position: relative;
-  height: 485px;
+  height: 500px;
   margin-top: -60px;
 }
 
@@ -3003,7 +3030,7 @@ button.close{
 #splash-bg{
     position: absolute; 
     width:100%; 
-    height:385px; 
+    height:425px; 
     background-size:cover;
     background-position: center center;
 }
@@ -3421,9 +3448,10 @@ hr.object-list-header{
 }
 
 .activity-item.follow{
-    border-top: solid 1px #ddd;
-    margin-bottom: 5px;
+    border-bottom: solid 1px #ddd;
+    margin-bottom: 4px;
     margin-left: -10px;
+    margin-right: -10px;
     position: relative;
 }
 
@@ -3537,7 +3565,7 @@ svg{
 }
 
 .vote-progress{
-    width: 175px;   
+    width: 160px;   
 }
 .progress.vote-progress{
     height: 8px;
@@ -3577,3 +3605,7 @@ svg{
     padding-right: 10px;
 }
 
+.spaced-bullets li{
+  margin-top: 20px;
+  margin-right: 20px;
+}

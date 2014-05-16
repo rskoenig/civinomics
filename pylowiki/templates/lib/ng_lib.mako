@@ -20,7 +20,7 @@
                 <div class="col-sm-9 no-left">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
-                    <p><span ng-init="stringLimit=300"</span>{{item.text | limitTo:stringLimit}} ${moreLess()}</p>
+                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                     <p><strong>
                         <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
                         <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
@@ -37,7 +37,7 @@
 </%def>
 
 <%def name="initiative_listing_condensed()">
-    <div class="media well search-listing initiative-listing" style="height: 450px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing initiative-listing" style="height: 415px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
             <div class="row">
                 <div class="col-sm-12">
@@ -47,12 +47,12 @@
                         </a>
                     </div>
                 </div>
-            </div>
-            <div class="row" style="height: 190px;">
-                <div class="col-sm-12">
-                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                <div class="col-sm-12" style="height: 155px;">
+                    <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p style="line-height: 16px;"><small>${metaData()}</small></p>
-                    <small style="grey" ng-init="stringLimit=150"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small>
+                    <!--
+                    <p ng-init="stringLimit=300"><small><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small></p>
+                    -->
                     <h4>
                         <small class="grey centered">Estimated Cost:</small>
                         <span class="pull-right">{{item.cost | currency}}</span>
@@ -226,19 +226,21 @@
                 </div>
             </div>
             % if not 'noStats' in kwargs:
-                <div class="row" centered>
-                    <div class="col-sm-12">
-                        <small class="grey">{{totalVotes}} votes: {{yesVotes}} YES {{noVotes}} NO</small>
-                        <div>
-                            <div class="progress vote-progress">
-                              <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
-                                <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
-                              </div>
-                              <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
-                                <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
-                              </div>
-                            </div>
-                            <small class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
+                <div class="row text-center" style="margin: 0 19px;">
+                        <!--
+                        <div class="progress col-sm-8">
+                          <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
+                            <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
+                          </div>
+                          <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
+                            <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
+                          </div>
+                        -->
+                        <div class="col-sm-12">
+                            <small class="grey">
+                                {{totalVotes}} votes of <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED </span>
+                                <span class="{{display}}">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -314,12 +316,26 @@
     <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
         <div ng-controller="commentsController">
             ### Comments
-            <div class="centered" ng-show="commentsLoading" ng-cloak>
-                <i class="icon-spinner icon-spin icon-2x bottom-space-med"></i>
-            </div>
-
-
+            
             <table class="activity-comments">
+
+                <tr class="actions-links">
+                    <td colspan="2" style="padding: 10px;">
+                        <ul class="horizontal-list iconListing">
+                            <li>
+                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                            </li>
+                            <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr class="centered" ng-show="commentsLoading" ng-cloak>
+                    <td></td>
+                    <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
+                </tr>
+
                 <tr ng-show="newCommentLoading" ng-cloak>
                     <td></td>
                     <td>
@@ -328,28 +344,43 @@
                         </div>
                     </td>
                 </tr>
-                <tr ng-hide="newCommentLoading">
+
+                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', hidden : commentsHidden}">
+
+                    <td class="comment-avatar-cell">
+                        <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
+                    </td>
+                    <td style="padding: 10px;">
+                        <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
+                        <br>
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
+                  </td>
+                </tr>
+
+                <tr ng-hide="newCommentLoading || commentsHidden">
                     % if c.authuser:
-                        <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
-                        <td style="padding: 10px 0px;">
+                        <td class="col-xs-1 comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
+                        <td class="col-xs-11" style="padding: 10px 0px;">
                             % if c.privs and not c.privs['provisional']:
-                                <form class="no-bottom" ng-submit="submitComment()">
-                                    <div class="form-group col-xs-10">
-                                        <textarea class="form-control" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                <form class="no-bottom form-inline" ng-submit="submitComment()">
+                                    <div class="form-group col-sm-10 text-right" style="margin-left: 0; padding-left:0;">
+                                        <textarea class="form-control" style="width: 100%;" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+
+                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
+                                            </span>
+                                        </small>
+                                        
                                     </div>
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
-                                    <div ng-show="type == 'initiative' || type == 'idea'">
-                                        <label class="radio inline">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
-                                        </label>
-                                        <label class="radio inline">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral
-                                        </label>
-                                        <label class="radio inline">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con
-                                        </label>
                                     </div>
                                 </form>
                             % else:
@@ -385,30 +416,6 @@
                             </form>
                         </td>
                     % endif
-                </tr> 
-                
-                <tr class="actions-links">
-                    <td colspan="2" style="padding: 10px;">
-                        <ul class="horizontal-list iconListing">
-                            <li>
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                            </li>
-                            <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
-                        </ul>
-                    </td>
-                </tr>
-                
-                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', hidden : commentsHidden}">
-
-                    <td class="comment-avatar-cell">
-                        <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
-                    </td>
-                    <td style="padding: 10px;">
-                        <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
-                        <br>
-                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
-                  </td>
                 </tr>
                 
             </table>

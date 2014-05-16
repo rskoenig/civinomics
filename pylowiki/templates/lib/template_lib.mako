@@ -12,7 +12,13 @@
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <ul class="nav navbar-nav navbar-left">
-            <li><a style="padding: 5px 0 0 0;" href="/home"><img style="height:40px;" src="/images/civ_logo_simple.png"></a></li>
+            <li>
+                % if 'user' in session:
+                    <a style="padding: 5px 0 0 0;" href="/home"><img style="height:40px;" src="/images/civ_logo_simple.png"></a>
+                % else:
+                    <a style="padding: 5px 0 0 0;" href="/splash"><img style="height:40px;" src="/images/civ_logo_simple.png"></a>
+                % endif
+            </li>
         </ul>
         
         <form class="navbar-form navbar-left" action="/search">
@@ -23,7 +29,7 @@
         </form>
         
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Explore</a></li>
+            <li><a href="/home">Explore</a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -254,7 +260,7 @@
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
             <div class="row footer well">
-                <div class="span8 no-left">
+                <div class="col-sm-8 no-left">
                     <ul class="horizontal-list">
                         <li><a class="green green-hover" href="/corp/about">About</a></li> 
                         <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
@@ -264,7 +270,7 @@
                         <li><a class="green green-hover" href="/help">Help</a></li>
                         <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
                     </ul>
-                </div><!-- span8 -->
+                </div><!-- col-sm-8 -->
                 <div class="span pull-right">
                   © 2014 Civinomics
                 </div><!-- span pull-right -->
@@ -286,56 +292,30 @@
 </%def>
 
 <%def name="condensedFooter()">
-    <div class="footer-civ condensed">
+    <div class="footer">
         <div class="container-fluid" >
-            <div class="row-fluid pretty">
-                <div class="span5">
-                    <div class="pull-right">
-                        © 2014 Civinomics, Inc. 
-                        <ul class="horizontal-list">
-                            <li><a href="/corp/terms">Terms</a></li>
-                            <li><a href="/corp/privacy">Privacy</a></li>
-                            <li><a href="/corp/news">News</a></li>
-                            <li><a href="/corp/contact">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="span2 centered">
-                    <img src="/images/logo_white_simple.png">
-                </div>
-                <div class="span5">
+            <div class="row ">
+                <div class="col-sm-5 text-center">
                     <ul class="horizontal-list">
-                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/team">Team</a></li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/news">News</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
+                        
                     </ul>
                 </div>
-            </div>
-            <div class="row-fluid simple">
-                <div class="span10">
+                <div class="col-sm-2 centered">
+                    <img src="/images/logo_white_simple.png">
+                </div>
+                <div class="col-sm-5">
                     <ul class="horizontal-list">
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>
-                        <li><a href="/corp/news">News</a></li>
-                        <li><a href="/corp/contact">Contact</a></li>
-                        <li><a href="/corp/careers">Careers</a></li>
-                        <li><a href="/corp/team">Team</a></li>
-                        <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
-                        <li><a href="/corp/caseStudies">Case Studies</a></li>
                         <li>© 2014 Civinomics, Inc. </li>
                     </ul>
                 </div>
-                <div class="span2 centered">
-                    <img src="/images/logo_white_simple.png">
-                </div>
-            </div>
-            <div class="row-fluid">
-		% if not isinstance(c.backgroundAuthor, StringTypes):
-			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
-		% else:
-			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${c.backgroundAuthor}</em>
-		% endif
             </div>
         </div>
     </div>
@@ -439,7 +419,7 @@
 </%def>
 
 <%def name="socialLogins()">
-    <div class="row-fluid social-login centered">
+    <div class="row social-login centered">
         <div id="fbLoginButton2">
             <a href="/fbLogin"><img src="/images/f-login.png"></a>
         </div>
@@ -453,16 +433,14 @@
 </%def>
 
 <%def name="signupForm()">
-        <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
-            <input type="hidden" name="country" value="United States">
+        <form id="sign_in" action="/signup/handler" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST" role="form">
+            <input type="hidden"  name="country" value="United States">
             <input type="hidden" name="memberType" value="professional">
 
-            <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
-                <label class="control-label" for="name"> Full name: </label>
-                <div class="controls">
-                    <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
-                    <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
-                </div>
+            <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
+                <label for="name"> Full name: </label>
+                <input type="text" class="form-control" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
             </div>
             <div class="control-group">
                 <label class="control-label" for="email"> Email: </label>
@@ -566,24 +544,27 @@
         alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
-
-    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h3>
-        <h3 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h3>
-        <h3 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h3>
-      </div>
-      <div class="modal-body">
-        ${tabbableSignupLogin()}
-      </div>
-      <div class="modal-footer">
-        <div class="row-fluid centered tcs">
-          <div class="span10 offset1">
-            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
-          </div>
+    <div class="modal fade" id="signupLoginModal" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 ng-show="showTitle == 'sTitle'" class="modal-title login top centered" ng-cloak>Sign up</h3>
+                    <h3 ng-show="showTitle == 'lTitle'" class="modal-title login top centered" ng-cloak>Log in</h3>
+                    <h3 ng-show="showTitle == 'pTitle'" class="modal-title login top centered" ng-cloak>Forgot Password</h3>
+                </div>
+                <div class="modal-body">
+                    ${tabbableSignupLogin()}
+                </div>
+                <div class="modal-footer">
+                    <div class="row centered tcs">
+                      <div class="col-sm-10 col-sm-offset-1">
+                        <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 </%def>
 

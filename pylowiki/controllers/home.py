@@ -106,7 +106,9 @@ class HomeController(BaseController):
 				entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
 				#goal votes
-				if 'goal' in item:
+				if entry['voteCount'] < 100:
+				    entry['goal'] = 100
+				elif 'goal' in item:
 					entry['goal'] = item['goal']
 				else:
 					entry['goal'] = 100
@@ -344,7 +346,9 @@ class HomeController(BaseController):
 			entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
 			#goal votes
-			if 'goal' in item:
+			if entry['voteCount'] < 100:
+			    entry['goal'] = 100
+			elif 'goal' in item:
 				entry['goal'] = item['goal']
 			else:
 				entry['goal'] = 100
