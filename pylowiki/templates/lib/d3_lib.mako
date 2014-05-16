@@ -60,10 +60,11 @@
 
         var data1 = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
 
-        var width = 300,                //width
-        height = 300,                   //height
-        radius = 100;                   //radius
+        var width = 300,
+            height = 300,
+            radius = Math.min(width, height) / 2;
 
+        /*
         var pieYesNoChart = d3.select("#d3-yesNo-chart").append("svg")
             .attr("width", width)
             .attr("height", height)
@@ -96,16 +97,86 @@
             .attr("d", arc)
             .each(function(d) { this._current = d; }); // store the initial angles
 
-        slices
-            .append('text')
-            // d.data is the original datum remember the data is wrapped in the pie helper
-            .text(function(d) { return d.data.label + ' dawg'; });
-
+        slices.append("text")
+            .attr("transform", function (d) {
+                return "translate(" + arc.centroid(d) + ")";
+            })
+            .attr("dy", ".35em")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+                return d.data.label;
+            });
 
         function change(data){
             //setTimeout(function(){
             slices.data(pie(data));
             slices.transition().duration(50).attrTween("d", arcTween); // redraw the arcs
+            //}, 1500);
+        }
+        */
+
+        var color = d3.scale.ordinal()
+            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+        var arc = d3.svg.arc()
+            .outerRadius(radius - 10)
+            .innerRadius(radius - 70);
+
+        var pie = d3.layout.pie()
+            .sort(null)
+            .value(function (d) {
+                return d.value;
+            });
+
+        var svg = d3.select("#d3-yesNo-chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var g = svg.selectAll(".arc")
+            .data(pie(data1))
+            .enter().append("g")
+            .attr("class", "arc");
+
+        g.append("path")
+            .attr("d", arc)
+            .style("fill", function (d) {
+                return color(d.data.label);
+            });
+
+        g.append("text")
+            .attr("transform", function (d) {
+                return "translate(" + arc.centroid(d) + ")";
+            })
+            .attr("dy", ".35em")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+                return d.data.label;
+            });
+
+        function change(data){
+            //setTimeout(function(){
+            g = svg.selectAll(".arc")
+                .data(pie(data))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            g.append("path")
+                .attr("d", arc)
+                .style("fill", function (d) {
+                    return color(d.data.label);
+                });
+
+            g.append("text")
+                .attr("transform", function (d) {
+                    return "translate(" + arc.centroid(d) + ")";
+                })
+                .attr("dy", ".35em")
+                .style("text-anchor", "middle")
+                .text(function (d) {
+                    return d.data.label;
+                });
             //}, 1500);
         }
 
