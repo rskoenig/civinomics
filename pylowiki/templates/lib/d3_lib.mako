@@ -64,12 +64,12 @@
         height = 300,                   //height
         radius = 100;                   //radius
 
-        var color = d3.scale.ordinal()
-            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-        var arc = d3.svg.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(radius - 70);
+        var pieYesNoChart = d3.select("#d3-yesNo-chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("id", "pieChart")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
         var pie = d3.layout.pie()
             .sort(null)
@@ -77,30 +77,35 @@
             return d.value;
         });
 
+        var color = d3.scale.ordinal()
+            .range(["#a05d56", "#d0743c", "#ff8c00"]);
 
-        var svg = d3.select("#d3-yesNo-chart").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("id", "pieChart")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var arc = d3.svg.arc()
+            .outerRadius(radius - 10)
+            .innerRadius(radius - 70);
 
-        var path = svg.selectAll("path")
+
+        var slices = pieYesNoChart.selectAll("path")
             .data(pie(data1))
             .enter()
             .append("path");
 
-        path.transition()
-            .duration(500)
+
+        slices.transition()
             .attr("fill", function(d, i) { return color(d.data.label); })
             .attr("d", arc)
             .each(function(d) { this._current = d; }); // store the initial angles
 
+        slices
+            .append('text')
+            // d.data is the original datum remember the data is wrapped in the pie helper
+            .text(function(d) { return d.data.label + ' dawg'; });
+
 
         function change(data){
             //setTimeout(function(){
-            path.data(pie(data));
-            path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+            slices.data(pie(data));
+            slices.transition().duration(50).attrTween("d", arcTween); // redraw the arcs
             //}, 1500);
         }
 
