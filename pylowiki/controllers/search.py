@@ -975,6 +975,14 @@ class SearchController(BaseController):
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
 
+            #goal votes
+            if entry['voteCount'] < 100:
+                entry['goal'] = 100
+            elif 'goal' in item:
+                entry['goal'] = item['goal']
+            else:
+                entry['goal'] = 100
+
             # author data
             # CCN - need to find a way to optimize this lookup
             author = userLib.getUserByID(i.owner)

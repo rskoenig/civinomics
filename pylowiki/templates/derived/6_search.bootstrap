@@ -49,6 +49,7 @@
                         Initiatives (${c.numInitiatives})
                     </a>
                 </li>
+                <!--
                 <li ng-class="showingWorkshops.class">
                     <a href="#workshops" data-toggle="tab" ng-click="searchWorkshops()">
                         Workshops (${c.numWorkshops})
@@ -88,6 +89,7 @@
                         </li>
                     </ul>
                 </li>
+                -->
                 <li>
                     <a class="accordion-toggle" href="#sortOptions" data-toggle="collapse">
                         Search tools
@@ -115,20 +117,20 @@
                     % if 'user' in session:
                         % if c.searchType != 'region':
                             % if not c.privs['provisional']:
-                                <button class="btn btn-civ" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
-                                    <i class="icon-plus"></i> Start Initiative
+                                <button class="btn btn-default" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                    Start Initiative
                                 </button>
                             % endif
                         % else:
                             % if not c.privs['provisional']:
                                 <form id="create_intitiatve" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative" method = "post" class="inline">
                                     <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
-                                    <button class="btn btn-civ" type="submit"><i class="icon-plus"></i> Start Initiative</button>
+                                    <button class="btn btn-default" type="submit">Start Initiative</button>
                                 </form>
                             % endif
                         % endif
                     % else:
-                        <button class="btn btn-civ" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"><i class="icon-plus"></i> Start Initiative</button>
+                        <button class="btn btn-default" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"> Start Initiative</button>
                     % endif
                 </li>
             </ul>
@@ -570,7 +572,7 @@
                         <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
                         </a>
                     % else:
-                        <a href="/login" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                        <a href="/login" class="btn btn-default btn-small pull-right bottom-space"><i class="icon-plus"></i>
                         </a>
                     % endif
                 </span>
