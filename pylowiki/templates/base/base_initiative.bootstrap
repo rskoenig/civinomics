@@ -10,7 +10,7 @@
 
 <div class="container" ng-app="civ">
     <div class="row-fluid" style="position: relative;">
-        <div class="col-sm-8 col-md-8 well initiative-panel">
+        <div class="col-sm-9 col-md-9 well initiative-panel">
             <div class="row">
                 % if c.initiativeHome:
                     <div class="row-fluid">
@@ -56,7 +56,7 @@
                 % endif
             ${next.body()}
         </div>
-        <div class="col-sm-4 col-md-4" id="sidebar">
+        <div class="col-sm-3 col-md-3" id="sidebar">
             <div style="position:fixed; width: inherit; max-width: 280px; margin-top: 8px;">
             % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
                 <ul class="nav nav-tabs nav-stacked nav-init no-top" style="width: 100%;">
@@ -75,17 +75,17 @@
                     <div class="row-fluid">
                         % if c.initiative['public'] == '0' and c.complete:
                             <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
-                                <button type="submit" class="btn btn-large btn-success input-block-level" name="public" value="publish">Publish</button>
+                                <button type="submit" class="btn btn-lg btn-success btn-block" name="public" value="publish">Publish</button>
                             </form>
                             <p>You have added all of the required information. Click 'Publish' to make your initiative publicly discoverable.</p>
                         % elif c.initiative['public'] == '0':
-                            <button class="btn btn-large btn-warning input-block-level" disabled>Publish</button>
+                            <button class="btn btn-lg btn-warning btn-block" disabled>Publish</button>
                             <br>
                             <p>You must complete all required information and upload a picture before you can publish.</p>
                         % else:
                             <div class="row-fluid">
                                 <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
-                                    <button type="submit" class="btn btn-large btn-warning input-block-level" name="public" value="unpublish">Unpublish</button>
+                                    <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>
                                 </form><br>
                             </div>
                             <p>Unpublished initiatives don't show up in searches or on public listings.</p>
