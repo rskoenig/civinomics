@@ -159,7 +159,7 @@
                                   <small class="grey">{{item.voteCount}} votes</small>
                                   <div>
                                       <div class="progress vote-progress">
-                                        <div class="bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
+                                        <div class="progress-bar" role="progress-bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
                                       </div>
                                       <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this idea to become an initiative.">{{item.goal - item.voteCount | number}} NEEDED</small>
                                       <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>

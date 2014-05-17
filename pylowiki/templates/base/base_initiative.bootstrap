@@ -8,7 +8,9 @@
 
 <% lib.return_to() %>
 
-<div class="container" style="margin-top: 20px;" ng-app="civ">
+<span ng-app="civ"></span>
+<span ng-init="iCode = '${c.initiative['urlCode']}'; iUrl = '${c.initiative['url']}'; initiativeTitle = '${c.initiative['title']}';"></span>
+<div class="container" style="margin-top: 20px;" ng-controller="initiativeCtrl">
     <div class="row" style="position: relative;">
         <div class="col-sm-9 col-md-9 well initiative-panel">
             <div class="row">
@@ -24,7 +26,7 @@
                     <% titleSpan = "col-xs-10" %>
                 % endif
                 <div class="${titleSpan}" style="position:relative;">
-                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-init="initiativeTitle = '${c.initiative['title']}'" ng-cloak>{{initiativeTitle}}</a></h2>
+                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
                     <h4> 
                         <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
                         ${lib_6.showTags(c.initiative)}
@@ -95,10 +97,15 @@
             % elif not c.editInitiative and c.initiative.objType == 'initiative':
                 <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                     % if c.initiative.objType != 'revision':
-                        <h4 class="section-header initiative smaller initiative-title">Vote</h4>
+                        <h4 class="text-center gray">Vote</h4>
+                        <hr class="narrow">
                         <div class="row">
-                            <div class="span6 offset3">
-                                ${lib_6.yesNoVote(c.initiative, 'detail')}
+                            <div class="col-xs-10 col-xs-offset-1">
+                                <div>
+                                    <div ng-controller="yesNoVoteCtrl">
+                                        ${ng_lib.yesNoVoteBlock()}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!--
@@ -209,6 +216,8 @@
             % endif
         % endif
     % endif
+    <script src="${lib_6.fingerprintFile('/js/ng/initiative.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="extraScripts()">
@@ -228,15 +237,12 @@
         $('textarea').autosize();   
       });
     </script>
-    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
-    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     <script type="text/javascript"> 
         $('#inner-sidebar').affix({offset: 130})
         <!-- $('body').scrollspy({target: '#sidebar'}) -->
         $(window).scrollspy({wrap: $('#wrap')[0]});
     </script> 
     % if 'user' in session:
-        <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
         <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
     % endif
 </%def>

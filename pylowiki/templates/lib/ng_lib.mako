@@ -6,7 +6,7 @@
 </%def>
 
 <%def name="initiative_listing()">
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
             ${authorPosting()}
             <div class="row" style="margin-top:19px;">
@@ -180,22 +180,18 @@
 
 <%def name="yesNoVoteBlock()">
     % if 'user' in session:
-        <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
-            <div class="vote-icon yes-icon detail"></div>
-            <div class="ynScoreWrapper"><span class="yesScore {{display}}">{{yesPercent | number:0 }}%</span></div>
-        </a>
-        <br>
-        <br>
-        <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
-            <div class="vote-icon no-icon detail"></div>
-            <div class="ynScoreWrapper"><span class="noScore {{display}}">{{noPercent | number:0 }}%</span></div>
-        </a>
-        <br>
-        <div class="totalVotesWrapper">
-            <span class="grey pull-left">Votes:</span>
-            <strong class="pull-right">
-                <span class="totalVotes">{{totalVotes}}</span>
-            </strong>
+        <div class="form-group">
+            <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+            <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+            <br>
+            <div ng-cloak>
+                <small class="grey">{{totalVotes}} votes <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+                <div class="progress" style="height: 12px; margin-bottom: 5px;">
+                    <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
+                </div>
+                <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+                <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+            </div>
         </div>
     % else:
         <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
@@ -210,7 +206,7 @@
         <div class="totalVotesWrapper">
             <small class="grey pull-left">Votes:</small>
             <strong class="pull-right">
-                <span class="totalVotes">{{totalVotes}}</span>
+                <span class="totalVotes">{{totalVotes}} <span ng-if="goal">of {{goal - totalVotes | number}} NEEDED</span></span>
             </strong>
         </div>
     % endif
@@ -238,7 +234,7 @@
                         -->
                         <div class="col-sm-12">
                             <small class="grey">
-                                {{totalVotes}} votes of <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED </span>
+                                {{totalVotes}} votes, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED </span>
                                 <span class="{{display}}">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
                             </small>
                         </div>
