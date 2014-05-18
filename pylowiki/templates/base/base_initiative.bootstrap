@@ -28,8 +28,7 @@
                 <div class="${titleSpan}" style="position:relative;">
                     <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
                     <h4> 
-                        <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" src="${c.scopeFlag}"></a> Initiative for the <a href="${c.scopeHref}" class="green">${c.scopeTitle}</a>
-                        ${lib_6.showTags(c.initiative)}
+                        ${lib_6.showTags(c.initiative)}<a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a href="${c.scopeHref}">${c.scopeTitle}</a>
                     % if c.iPrivs:
                         <span>
                             ${ihelpers.watchButton(c.initiative)}
@@ -37,8 +36,8 @@
                                 <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
                             % elif c.initiative.objType != 'revision':
                                 <span class="pull-right">
-                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                    <a class="btn" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                                    <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                    <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
                                 </span>
                             % else:
                                 <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
@@ -59,7 +58,7 @@
             ${next.body()}
         </div>
         <div class="col-sm-3 col-md-3" id="sidebar">
-            <div style="position:fixed; width: inherit; max-width: 280px; margin-top: 8px;">
+            <div style="position:fixed; width: inherit; max-width: 280px;">
             % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
                 <ul class="nav nav-tabs nav-stacked nav-init no-top" style="width: 100%;">
                     <li class="active"><a href="#basics">1. Basics</a></li>
@@ -101,7 +100,7 @@
                         <hr class="narrow">
                         <div class="row">
                             <div class="col-xs-10 col-xs-offset-1">
-                                <div>
+                                <div ng-init="inPage = true;">
                                     <div ng-controller="yesNoVoteCtrl">
                                         ${ng_lib.yesNoVoteBlock()}
                                     </div>

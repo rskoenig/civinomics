@@ -4,10 +4,11 @@ function yesNoVoteCtrl($scope) {
         $scope.yesPercent = 0;
         $scope.noPercent = 0;
     }
-    else if($scope.initiative == false){
+    else if(!($scope.inPage)){
         $scope.yesPercent = $scope.yesVotes / $scope.totalVotes * 100;
         $scope.noPercent = $scope.noVotes / $scope.totalVotes * 100;
     }
+
     // set the appropriate voting icon
     if ($scope.rated == 0) {
         $scope.voted = '';

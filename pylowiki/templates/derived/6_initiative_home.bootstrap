@@ -22,9 +22,12 @@
     % if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
-        ${ihelpers.initiativeModerationPanel(c.initiative)}
+        <br>
+        <div class="text-right">
+            ${ihelpers.initiativeModerationPanel(c.initiative)}
+        </div>
         <hr>
-        <h4 class="initiative-title">Informational Resources${ihelpers.addResourceButton()}</h4>
+        <h4 class="initiative-title">Related Links ${ihelpers.addResourceButton()}</h4>
         ${ihelpers.listResources()}
         <br>
         % if c.initiative.objType != 'initiativeUnpublished':

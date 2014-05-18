@@ -5,12 +5,7 @@ function initiativeCtrl($scope, $http) {
             $scope.initiativeTitle = '';
         }
     };
-
-    $scope.iTest = "rock a doozy";
-
-    /*
-    $scope.iCode (init)
-    $scope.iUrl (init)*/
+    
     $scope.getUrl = '/initiative/' + $scope.iCode + '/' + $scope.iUrl + '/json';
 
     $scope.getInitiativeData = function(){

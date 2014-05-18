@@ -124,11 +124,11 @@
 <%def name="watchButton(i, **kwargs)">
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
+            <button class="btn btn-default pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
+            <span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
+            <button class="btn btn-default pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
              <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -144,7 +144,7 @@
             elif not c.privs['provisional']:
                 printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
-            printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
+            printStr += ' title="Click to add a resource to this initiative" class="btn btn-default btn-sm pull-right"><i class="icon icon-plus"></i></a>'
             
             if 'user' in session and c.privs['provisional']:
                 printStr = ''
@@ -155,8 +155,8 @@
 
 <%def name="listResources()">
     % if len(c.resources) <= 0:
-        <div class="alert alert-info">
-            There are no resources yet! Be the first to add one.
+        <div class="alert alert-info top-space-md">
+            There are no links yet! Be the first to add one.
         </div>
     % else:
         % for item in c.resources:
@@ -252,7 +252,7 @@
                         <div class="row" ng-controller="followerController">
                             <div class="col-sm-9"></div>
                             <div class="col-sm-3">
-                                <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
+                                <a class="btn btn-default pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
                     % endif
@@ -505,23 +505,23 @@
     %>
     <div class="btn-group">
         % if thing['disabled'] == '0' and thing.objType != 'initiativeUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initiativeUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+            <a class="btn btn-default  btn-sm accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
         % elif thing.objType == 'initiativeUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default  btn-sm accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % endif
         % endif
         % if c.revisions:
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
         % endif
 
         % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
     </div>
     
@@ -758,19 +758,21 @@
             cost = cost * -1
             currency = '- $'
     %>
-    <h4 class="initiative-title">
-        <div class="col-sm-6 pull-left">
-            Cost Estimate
-        </div>
-        <div class="col-sm-6">
-            <table class="pull-right">
-                <tr>
-                    <td>${currency}</td>
-                    <td>${locale.format("%d", cost, grouping=True)}</td>
-                <tr>
-            </table>
-        </div>
-    </h4>
+    <div class="row">
+        <h4 class="initiative-title">
+            <div class="col-sm-6 pull-left">
+                Cost Estimate
+            </div>
+            <div class="col-sm-6">
+                <table class="pull-right">
+                    <tr>
+                        <td>${currency}</td>
+                        <td>${locale.format("%d", cost, grouping=True)}</td>
+                    <tr>
+                </table>
+            </div>
+        </h4>
+    </div>
 </%def>
 
 <%def name="coAuthorInvite()">
