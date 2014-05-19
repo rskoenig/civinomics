@@ -174,9 +174,9 @@
                 rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
             %>
             <div class="row bottom-space-med">
-                <div class="span1">
+                <div class="col-sm-1">
                         <i class="${iconClass} icon-3x"></i>
-                </div><!-- span1 -->
+                </div><!-- col-sm-1 -->
                 <div class="col-sm-11">
                     <h5 class="no-bottom no-top">
                     <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
@@ -571,23 +571,23 @@
         <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
             <fieldset>
                 <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+                <input type="text" class="input-block-level form-control" name="title" ng-model="title" maxlength = "120" required>
                 <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
             </fieldset>
             <fieldset>
                 <label>Resource URL</label>
-                <input type="url" class="input-block-level" name="link" ng-model="link" placeholder="http://" required>
+                <input type="url" class="input-block-level form-control" name="link" ng-model="link" placeholder="http://" required>
                 <span ng-show="addResourceURLShow"><div class="alert alert-danger" ng-cloak>{{addResourceURLResponse}}</div></span>
             </fieldset>
             <fieldset>
                 <label><strong>Additional information</strong><br>
                 <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text"></textarea>
+                <textarea name="text" rows="3" class="input-block-level form-control" ng-model="text"></textarea>
                 <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
             </fieldset>
             <span ng-show="addResourceShow">{{addResourceResponse}}</span>
             <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+                <button class="btn btn-large btn-default pull-right" type="submit" name="submit">Submit</button>
             </fieldset>
         </form>
     % endif
