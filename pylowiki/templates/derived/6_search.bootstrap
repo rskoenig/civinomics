@@ -522,19 +522,19 @@
                     <span>Stats</span>
                     <form class="form-horizontal stats">
                         <div class="form-group">
-                            <label class="control-label grey" for="inputEmail">Population:</label>
+                            <span class="control-label grey" for="inputEmail">Population:</span>
                             <div class="controls">
                                 <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label grey" for="inputEmail">Median Age:</label>
+                            <span class="control-label grey" for="inputEmail">Median Age:</span>
                             <div class="controls">
                                 <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label grey" for="inputEmail">Persons per Household:</label>
+                            <span class="control-label grey" for="inputEmail">Persons per Household:</span>
                             <div class="controls">
                                 <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
                             </div>
@@ -542,19 +542,19 @@
                         % if 'Postal Code' in c.searchQuery:
                             <hr class="stats">
                             <div class="form-group">
-                                <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                                <span class="control-label grey" for="inputEmail">Income per Household:</span>
                                 <div class="controls">
                                     <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                                <span class="control-label grey" for="inputEmail">Avg House Value:</span>
                                 <div class="controls">
                                     <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                                <span class="control-label grey" for="inputEmail">Business Annual Payroll:</span>
                                 <div class="controls">
                                     <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
                                 </div>

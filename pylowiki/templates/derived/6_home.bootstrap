@@ -27,7 +27,7 @@
 
                 <div class="btn-group" ng-show="!loading">
                   <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="grey icon-search"></i>
+                    <i class="grey icon-search centered"></i>
                   </a>
                   <ul class="dropdown-menu" >
                     <li class="dropdown-form">

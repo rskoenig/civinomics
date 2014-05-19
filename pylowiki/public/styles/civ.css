@@ -307,6 +307,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
 .nav-pills.civ-search-tools > li > a{
   font-size: 16px;
+  padding-left: 10px;
 }
 
 .nav-pills.civ-search-tools > li.active > a{
@@ -357,7 +358,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 }
 
 .civ-search-tools.tags li, .civ-search-tools.tags a{
-  width: 142px;
+  width: 160px;
   padding-left: 0px;
   padding-right: 0px;
 }
