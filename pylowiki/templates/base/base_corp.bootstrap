@@ -10,18 +10,18 @@
     <div class="spacer"></div>
     <div class="row">
       <div class="col-sm-2">
-          <ul class="nav nav-tabs nav-stacked" style="margin-top: 0; margin-bottom: 10px; margin-right:0; width: 100%">
+          <ul class="nav nav-pills nav-stacked" style="margin-top: 0; margin-bottom: 10px; margin-right:0; width: 100%">
               <li
                 % if c.pagetype == "about":
                    class ="active"
                 % endif
               >
-                  <a href="/corp/about" class="green green-hover">
+                  <a href="/corp/about">
                       About
                   </a>
               </li>
               <li>
-                <a href="http://civinomics.wordpress.com" target="_blank" class="green green-hover">
+                <a href="http://civinomics.wordpress.com" target="_blank">
                     Blog
                 </a>
               </li>
@@ -30,7 +30,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/news" class="green green-hover">
+                  <a href="/corp/news">
                      News
                   </a>
               </li>
@@ -39,7 +39,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/team" class="green green-hover">
+                  <a href="/corp/team">
                       Team
                   </a>
               </li>
@@ -48,7 +48,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/careers" class="green green-hover">
+                  <a href="/corp/careers">
                       Careers
                   </a>
               </li>
@@ -57,7 +57,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/surveys" class="green green-hover">
+                  <a href="/corp/surveys">
                       Surveys
                   </a>
               </li>
@@ -66,7 +66,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/terms" class="green green-hover">
+                  <a href="/corp/terms">
                       Terms
                   </a>
               </li>
@@ -75,7 +75,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/privacy" class="green green-hover">
+                  <a href="/corp/privacy">
                       Privacy
                   </a>
               </li>
@@ -84,7 +84,7 @@
                    class ="active"
                 % endif
               >
-                  <a href="/corp/contact" class="green green-hover">
+                  <a href="/corp/contact">
                       Contact
                   </a>
               </li>

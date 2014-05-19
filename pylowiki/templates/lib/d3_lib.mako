@@ -38,25 +38,23 @@
     <div class='row'>   
         <div class='col-sm-6'>
             <p class="lead">The majority of Scotts Valley residents are aware of the other plastic bag bans in Santa Cruz County.</p>
-            <h6>Question: "Have you heard about the plastic bag bans in Santa Cruz County?"</h6>
+            <h4>Question: "Have you heard about the plastic bag bans in Santa Cruz County?"</h4>
         </div>
         <div class='col-sm-6' id='dc-heardOfBagBans-chart'> 
                 <span>
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-                <br>(click to filter results)
         </div>
     </div><!-- row --> 
     <hr>
     <div class="row">
         <div class="col-sm-6">
             <p class="lead">About half of respondents (48%) believe the existing bag bans have had a positive effect. 15% believe they've had no effect or a negative effect.</p>
-            <h6>Question: "What is your impression of the Santa Cruz plastic bag bans?"</h6>
+            <h4>Question: "What is your impression of the Santa Cruz plastic bag bans?"</h4>
         </div>
         <div class='col-sm-6' id='dc-impressionOfBagBans-chart'>
             <span>
-                <br />(click to filter results)
                 <a href="#dc-data-top" class="reset"
 onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
             </span>
@@ -66,11 +64,10 @@ onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style=
     <div class="row">
         <div class="col-sm-6">
             <p class="lead">32% of respondents were aware that a bag ban had been proposed for the City of Scotts Valley</p>
-            <h6>Question: "Have you heard about the proposed Plastic Bag Ban for Scotts Valley?"</h6>
+            <h4>Question: "Have you heard about the proposed Plastic Bag Ban for Scotts Valley?"</h4>
         </div>
         <div class='col-sm-6' id='dc-proposedBagBan-chart'>
             <span>
-                <br />(click to filter results)
                 <a href="#dc-data-top" class="reset"
 onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
             </span>
@@ -80,138 +77,153 @@ onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="disp
     <div class='row'>   
         <div class='col-sm-6'> 
             <p class="lead">72% of Scotts Valley residents would vote "YES" for a City of Scotts Valley plastic bag ban.</p>
-            <h6>Question: "If the vote were held today on the Plastic Bag Ban, would you vote 'YES' in favor of it or 'NO' to oppose it?"</h6>
+            <h4>Question: "If the vote were held today on the Plastic Bag Ban, would you vote 'YES' in favor of it or 'NO' to oppose it?"</h4>
         </div>
         <div class="col-sm-6" id='dc-voteInFavor-chart'>
             <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:voteInFavorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
         </div>
     </div>
     <hr>
-        <div class='span6' id='dc-includeFeeVoteYes-chart'>
-            <h4>How about if the Plastic Bag Ban included a fee of $0.10 on paper bags? Would you vote "yes" or "no" on this measure?
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">64% of residents would still support a Plastic Bag Ban if it had a $0.10 fee.</p>
+            <h4>Question: "How about if the Plastic Bag Ban included a fee of $0.10 on paper bags? Would you vote "yes" or "no" on this measure?"</h4>
+        </div>
+        <div class='col-sm-6' id='dc-includeFeeVoteYes-chart'>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:includeFeeVoteYesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4> 
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <p class="lead"><em>
+    <h4>
         "Next, you will read a few of the reasons that some people and organizations may give for being in favor of the measure to implement a Plastic Bag Ban and an accompanying Fee for Paper Bags. Please indicate if each one makes you much more likely to favor the measure, somewhat more likely to favor it, or if the statement makes no difference to you one way or the other."
-    </em></p>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    </h4>
     <hr>
-    <div class='row-fluid'>   
-        <div class='span6' id='dc-bagsFoundDecreased-chart'>
-            <h4>Save Our Shores reports that the number of plastic bags collected during beach cleanups has decreased 80% since the passage of the Santa Cruz bans. Does this make you...
+    <div class='row'>   
+        <div class="col-sm-6">
+            <p class="lead">82% of respondents who indicated that they would vote "Probably No" on a Bag Ban, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "Save Our Shores reports that the number of plastic bags collected during beach cleanups has decreased 80% since the passage of the Santa Cruz bans. Does this make you..."</h4>
+        </div>
+        <div class='col-sm-6' id='dc-bagsFoundDecreased-chart'>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:bagsFoundDecreasedChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4> 
         </div>
-        <div class='span6' id='dc-trenchHasBags-chart'> 
-            <h4>The Monterey Bay Aquarium Research Institute has observed thousands of pieces of trash in our marine sanctuary's deep sea trench with plastic bags being the most common type of trash. Does this make you...
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">88% of respondents who indicated that they would vote "Probably No" on a Bag Ban, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "The Monterey Bay Aquarium Research Institute has observed thousands of pieces of trash in our marine sanctuary's deep sea trench with plastic bags being the most common type of trash. Does this make you..."</h4>
+        </div>
+        <div class='col-sm-6' id='dc-trenchHasBags-chart'> 
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:trenchHasBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class="row-fluid">
-        <div class='span6' id='dc-carmelDoesntFee-chart'>
-            <h4>The only region that didn't include a fee along with their plastic bag ban (Carmel) saw NO increase in reusable bag usage. (Compared to a 28% increase in regions that did include a fee). Does this make you..
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">49% of respondents who indicated that they would vote "Probably No" on a Bag Ban with a $0.10 fee, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "The only region that didn't include a fee along with their plastic bag ban (Carmel) saw NO increase in reusable bag usage. (Compared to a 28% increase in regions that did include a fee). Does this make you.."</h4>
+
         </div>
-        <div class='span6' id='dc-highCostsPlasticBags-chart'>
-            <h4>The high environmental and energy costs of producing paper bags is well documented by the scientific community. For this reason, proponents of reusable bags say we cannot simply substitute paper for plastic. Does this make you...
+        <div class='col-sm-6' id='dc-carmelDoesntFee-chart'>
+            <span>
+                
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">49% of respondents who indicated that they would vote "Probably No" on a Bag Ban with a $0.10 fee, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "The high environmental and energy costs of producing paper bags is well documented by the scientific community. For this reason, proponents of reusable bags say we cannot simply substitute paper for plastic. Does this make you..."</h4>
+        </div class="col-sm-6">
+        <div class='col-sm-6' id='dc-highCostsPlasticBags-chart'>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:highCostsPlasticBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4> 
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class="row-fluid">
-        <div class='span6' id='dc-everyOtherCityFees-chart'> 
-            <h4>Every other City in the County of Santa Cruz has implemented a plastic bag ban and accompanying fee. Does this make you...
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">34% of respondents who indicated that they would vote "Probably No" on a Bag Ban with a $0.10 fee, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "Every other City in the County of Santa Cruz has implemented a plastic bag ban and accompanying fee. Does this make you..."</h4>
+        </div>
+        <div class='col-sm-6' id='dc-everyOtherCityFees-chart'> 
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:everyOtherCityFeesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
     <div class="workshop-metrics metrics-large">
         Demographics / Population Segments
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class='span4' id='dc-localMerchant-chart'>
+    <div class="row">
+        <div class='col-sm-4' id='dc-localMerchant-chart'>
             <h4>Are you a local merchant?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:localMerchantChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-ageLower-chart'> 
+        <div class='col-sm-4' id='dc-ageLower-chart'> 
             <h4>Age
                 <span>
                     <br />(drag sliders to filter results)
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc-gender-chart'>
+        <div class='col-sm-4' id='dc-gender-chart'>
             <h4>Gender
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-childrenInHome-chart'>
+    <div class='row'>   
+        <div class='col-sm-4' id='dc-childrenInHome-chart'>
             <h4>Are there any children, 17 years of age or younger, living in your household?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:childrenInHomeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-howLongInSC-chart'>
+        <div class='col-sm-4' id='dc-howLongInSC-chart'>
             <h4>For about how long have you lived in Santa Cruz County?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:howLongInSCChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -224,8 +236,8 @@ onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="disp
         Comments and Suggestions
     </div>
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12' id='dc-commentsOrSuggestions-chart'>
+    <div class='row'> 
+        <div class='col-xs-12' id='dc-commentsOrSuggestions-chart'>
           <div id="commentsOrSuggestionsContainer">
           </div>
         </div>
@@ -661,7 +673,7 @@ onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="disp
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
 
-    <div class='row-fluid' name="dc-data-top">
+    <div class='row' name="dc-data-top">
         <div class="pull-left workshop-metrics metrics-large">
             Results
         </div>
@@ -676,11 +688,11 @@ onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="disp
     </div>
 
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>   
+    <div class='row'>   
         <div class='span4' id='dc-familiarDtProgram-chart'>
             <h4>How familiar are you with the Downtown Hospitality Program?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -692,11 +704,11 @@ onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="disp
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class="row-fluid">
+    <div class="row">
         <div class='span4' id='dc-feelSafeWorkingDt-chart'>
             <h4>In general, do you feel safe working downtown?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -705,7 +717,7 @@ onclick="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="d
         <div class='span4' id='dc-believeDtProgramMakesSafer-chart'>
             <h4>In general, do you believe the Downtown Hospitality Program makes downtown safer?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -714,7 +726,7 @@ onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();"
         <div class='span4' id='dc-howEffectiveResolveBehavior-chart'>
             <h4>In your opinion, how effective is the program at addressing and resolving anti-social behavior?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -723,12 +735,12 @@ onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class='row-fluid'>
+    <div class='row'>
         <div class='span4' id='dc-everWitnessedProgramHost-chart'>
             <h4>Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
                 <br /><a href="#everWitnessedProgramHostDescription">see descriptions</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -737,7 +749,7 @@ onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" s
         <div class='span4' id='dc-hostApproachable-chart'>
             <h4>In your opinion, how approachable are the downtown hospitality hosts?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -746,7 +758,7 @@ onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="di
         <div class='span4' id='dc-howOftenSeeHost-chart'>
             <h4>How often do you see a downtown hospitality host?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -755,36 +767,36 @@ onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="dis
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class='row-fluid'>
+    <div class='row'>
         <div class='span4' id='dc-howOftenInteractWithPeople-chart'>
             <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
                 <br /><a href="#additionalServicesSuggestions">see service suggestions</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class="row-fluid">
-        <div class='span6' id='dc-opinionFirstPriorityForServices-chart'>
+    <div class="row">
+        <div class='col-sm-6' id='dc-opinionFirstPriorityForServices-chart'>
             <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
                 <br /><a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
-        <div class='span6' id='dc-mostImportantAboutHosts-chart'>
+        <div class='col-sm-6' id='dc-mostImportantAboutHosts-chart'>
             <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
                 <br /><a href="#mostImportantAboutHosts1">see further input</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -796,11 +808,11 @@ onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAl
         Demographics / Business Type
     </div>
     <hr>
-    <div class="row-fluid">
+    <div class="row">
         <div class='span4' id='dc-whatDescribesYourBusiness-chart'>
             <h4>Which of the following best describes your business or working environment?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -810,7 +822,7 @@ onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" 
             <h4>What is your role in the business?
                 <br /><a href="#yourRoleInBusiness1">see further comments</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -819,7 +831,7 @@ onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="
         <div class='span4' id='dc-gender-chart'>
             <h4>Gender
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -827,7 +839,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <hr>
-    <div class='row-fluid'>
+    <div class='row'>
         <div class='span4' id='dc-ageLower-chart'> 
             <h4>Age of respondents
                 <span>
@@ -837,7 +849,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <hr>
-    <div class='row-fluid'> 
+    <div class='row'> 
         <div class='span12'>
             <h4 name='everWitnessedProgramHostDescription'>Can you please briefly describe your experience? Was it positive?
                 <a href="#dc-everWitnessedProgramHost-chart"><br />Responses to question: "Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?"</a>
@@ -845,7 +857,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
             <div id="everWitnessedProgramHostDescription"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
+    <div class='row'> 
         <div class='span12'>
             <h4 name='howOftenInteractWithPeople'>Additional services suggested for:
                 <a href="#dc-everWitnessedProgramHost-chart"><br />"When you see a hospitality host, how often are they interacting with visitors and shoppers?"</a>
@@ -853,7 +865,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
             <div id="additionalServicesSuggestions"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
+    <div class='row'> 
         <div class='span12'>
             <h4 name='mostImportantAboutHosts1'>Further input on question: 
                 <a href="#dc-mostImportantAboutHosts-chart"><br />"Out of the following additional services the DMC could provide, which would be the most important to you?"</a>
@@ -862,7 +874,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
             <div id="mostImportantAboutHosts2"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
+    <div class='row'> 
         <div class='span12'>
             <h4 name='opinionFirstPriorityForServices1'>Additional suggestions for:
                 <a href="#dc-opinionFirstPriorityForServices-chart"><br />"In your opinion, what should be the DMC's first priority in terms of downtown programing and services?"</a>
@@ -870,7 +882,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
             <div id="opinionFirstPriorityForServices1"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
+    <div class='row'> 
         <div class='span12'>
             <h4 name='improvementsForYourSafety1'>Additional suggestions for:
                 <a href="#dc-improvementsForYourSafety-chart"><br />"What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)"</a>
@@ -878,7 +890,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
             <div id="improvementsForYourSafety1"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
+    <div class='row'> 
         <div class='span12'>
             <h4 name='whatDescribesYourBusiness1'>Additional input from:
                 <a href="#dc-whatDescribesYourBusiness-chart"><br />"Which of the following best describes your business or working environment?"</a>
@@ -1309,7 +1321,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
 </%def>
 
 <%def name="dcCommuterSurvey()">
-  <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+  <div class='row' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
     <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
       <span> 
           <span class="filter-count"></span>
@@ -1319,7 +1331,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
       </span>
     </div>
   </div>
-  <div class='row-fluid'>   
+  <div class='row'>   
     <div class='span4' id='dc-commuteDuration-chart'>
         <h4>How much time do you spend each day commuting over the hill and back?</h4> 
     </div>
@@ -1333,14 +1345,14 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <div class='span4' id='dc-commuteActivity-chart'>
       <h4>What do you primarily do on the bus during your commute?
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <hr>
-  <div class="row-fluid">
+  <div class="row">
     <div class='span4' id='dc-employmentType-chart'>
       <h4>What is your functional employment area at your current job?
         <span>
@@ -1358,9 +1370,9 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <hr>
-  <div class="row-fluid">
+  <div class="row">
     <div class='span4' id='dc-salary-chart'> 
       <h4>Salary Range
         <span>
@@ -1384,9 +1396,9 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <hr>
-  <div class="row-fluid">
+  <div class="row">
     <div class='span4' id='dc-college-chart'>
       <h4>Did you go to college in Santa Cruz?
         <span>
@@ -1406,18 +1418,18 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <div class='span4' id='dc-workedInSc-chart'>
       <h4>Have you ever worked in Santa Cruz?
         <span>
-            <br />(click to filter results)
+            
             <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <hr>
-  <div class="row-fluid">
+  <div class="row">
     <div class='span4' id='dc-whyNotWorkInSc-chart'>
       <h4>Why did you stop working in Santa Cruz?
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
@@ -1425,7 +1437,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <div class='span4' id='dc-salaryNeeded-chart'>
       <h4>Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
@@ -1433,14 +1445,14 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <div class='span4' id='dc-heardOfStartupNewsHere-chart'>
       <h4>How much have you heard about recent start-up activity in Santa Cruz?
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <hr>
-  <div class="row-fluid">
+  <div class="row">
     <div class='span4' id='dc-consideredJobsInSantaCruz-chart'>
       <h4>Have you considered exploring job openings with any Santa Cruz tech companies or startups?
         <span>
@@ -1466,13 +1478,13 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <hr>
-  <div class="row-fluid">
+  <div class="row">
     <div class='span4' id='dc-maritalStatus-chart'>
       <h4>Marital status
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
@@ -1480,7 +1492,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <div class='span4' id='dc-children-chart'>
       <h4>Do you have children 17 years of age or younger living in the household?
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
@@ -1488,15 +1500,15 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <div class='span4' id='dc-rentOrOwn-chart'>
       <h4>Do you rent or own your home?
         <span>
-          <br />(click to filter results)
+          
           <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </span>
       </h4>
     </div>
-  </div><!-- row-fluid -->
+  </div><!-- row -->
   <!-- removing table for now
   <hr>
-   <div class='row-fluid'> 
+   <div class='row'> 
     <div class='span12'>
       <div class='dc-data-count2'>
         <span> 
@@ -1513,7 +1525,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     </table>
   </div> -->
   <hr>
-  <div class='row-fluid'> 
+  <div class='row'> 
     <div class='span12' id='dc-commentsOrSuggestions-chart'>
       <h4>Comments and Suggestions</h4>
       <div id="commentsOrSuggestionsContainer">

@@ -3263,6 +3263,11 @@ a.no-highlight.no-hover:hover{
   -moz-border-radius: 4px 4px 0 0;
   border-radius: 4px 4px 0 0;
 }
+
+.i-main-photo.survey-main-photo{
+  margin: -19px -4px 0 -4px;
+}
+
 .section-header.smaller.initiative{
   font-size: 16px;
   font-weight: bold;

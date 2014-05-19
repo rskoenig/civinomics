@@ -282,7 +282,7 @@
 <%def name="copyright()">
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer well">
+            <div class="row footer rounded well">
                 <div class="span pull-right">
                   © 2014 Civinomics
                 </div>
