@@ -616,8 +616,7 @@ padding: 0;
 }
 
 .well.footer{
-   background: white;
-   border-color: transparent;
+   background-color: #333;
    opacity:0.9;
    filter:alpha(opacity=90); /* For IE8 and earlier */
    box-shadow: none;
@@ -2739,20 +2738,6 @@ hr.list-header{
   position: absolute; 
 }
 
-.main-well.signup{
-  width: 370px;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
-  top: 145px;
-  right: 2%; 
-}
-.main-well.login{
-  width: 390px;
-  top: 20%;
-  left: 50%;
-  margin-left: -195px; 
-}
-
 .main-well.success-well{
   font-size:24px;
   line-height:32px;
@@ -2795,7 +2780,7 @@ button.signup, button.login{
 .tcs{
   margin-top: 5px;
   margin-left: 10px;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .slogan{

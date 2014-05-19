@@ -41,15 +41,18 @@
     ##
     ########################################################################
 
-    <fieldset>
-        <legend></legend>
+    <div class="row">
         <div class="col-sm-1">
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
-        <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
-        <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-        <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
-    </fieldset>
+        <div class="col-sm-11">
+            <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="col-sm-12 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        </div>
+        <div class="col-sm-11 col-sm-offset-1">
+            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <a href="#signupLoginModal" data-toggle='modal' title="Login to comment." class="btn btn-primary" type="button">Submit</a>
+        </div>
+    </div>
 
 
 </%def>
@@ -117,7 +120,7 @@
         % else:
         <div class="row">
             <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-            <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
+            <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button></span>
         </div><!-- row -->
         % endif
     </form>

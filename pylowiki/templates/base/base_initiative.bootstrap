@@ -33,7 +33,7 @@
                         <span>
                             ${ihelpers.watchButton(c.initiative)}
                             % if c.editInitiative:
-                                <a class="btn pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                                <a class="btn btn-default pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
                             % elif c.initiative.objType != 'revision':
                                 <span class="pull-right">
                                     <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
@@ -84,11 +84,9 @@
                             <br>
                             <p>You must complete all required information and upload a picture before you can publish.</p>
                         % else:
-                            <div class="row">
-                                <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
-                                    <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>
-                                </form><br>
-                            </div>
+                            <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
+                                <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>
+                            </form><br>
                             <p>Unpublished initiatives don't show up in searches or on public listings.</p>
                         % endif
                     </div>
@@ -192,6 +190,7 @@
         </div><!-- span4 -->
     </div><!-- row -->
 </div><!-- row -->
+
 
 <%def name="headScripts()">
     % if c.facebookShare:

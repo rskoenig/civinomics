@@ -393,9 +393,9 @@
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
         % if 'title' in args:
-            <h2 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h2>
-            <h2 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h2>
-            <h2 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h2>
+            <h2 ng-show="showTitle == 'sTitle'" class="no-top centered" ng-cloak>Sign up</h2>
+            <h2 ng-show="showTitle == 'lTitle'" class="no-top centered" ng-cloak>Log in</h2>
+            <h2 ng-show="showTitle == 'pTitle'" class="no-top centered" ng-cloak>Forgot Password</h2>
         % endif
         ${fields_alert()}
         % if c.splashMsg:
@@ -438,41 +438,42 @@
             <input type="hidden" name="memberType" value="professional">
 
             <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
-                <label for="name"> Full name: </label>
-                <input type="text" class="form-control" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
-                <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+                <label class="col-sm-3 control-label" for="name"> Full name: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                    <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+                </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="email"> Email: </label>
-                <div class="controls">
-                    <input type="email" name="email" id="email" ng-model="email" required>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="email"> Email: </label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="email" name="email" id="email" ng-model="email" required>
                     <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="passphrase"> Password: </label>
-                <div class="controls">
-                    <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                 </div>
             </div>
-            <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
-                <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
-                <div class="controls">
-                    <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
                     <div id="postalCodeResult"></div>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="terms">&nbsp;</label>
-                <div class="controls">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="terms">&nbsp;</label>
+                <div class="col-sm-8">
                     <span id="terms">&nbsp;</span>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="submit">&nbsp;</label>
-                <div class="controls">
-                    <button type="submit" name="submit" class="btn btn-success signup">Sign up</button>
+            <div class="form-group text-center">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" name="submit" class="btn btn-success btn-block btn-lg">Sign up</button>
                 </div>
             </div>
         </form>
@@ -481,23 +482,23 @@
 </%def>
 
 <%def name="loginForm()">
-    <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
-        <div class="control-group">
-            <label class="control-label" for="email"> Email: </label>
-            <div class="controls">
-                <input type="email" name="email" id="email" required>
+    <form id="sign_in" action="/loginHandler" class="form-horizontal" method="post">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="email"> Email: </label>
+            <div class="col-sm-8">
+                <input class="form-control" type="email" name="email" id="email" required>
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="passphrase"> Password: </label>
-            <div class="controls">
-                <input type="password" name="password" id="password"><br>
+        <div class="form-group">
+            <label class="col-sm-3  control-label" for="passphrase"> Password: </label>
+            <div class="col-sm-8">
+                <input class="form-control" type="password" name="password" id="password"><br>
                 <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-civ login"> Log in </button>
+        <div class="form-group">
+            <div class="col-sm-6 col-sm-offset-3">
+                <button type="submit" class="btn btn-success btn-lg btn-block"> Log in </button>
             </div>
         </div>
     </form>

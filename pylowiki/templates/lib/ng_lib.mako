@@ -179,37 +179,27 @@
 </%def>
 
 <%def name="yesNoVoteBlock()">
-    % if 'user' in session:
-        <div class="form-group">
+    <div class="form-group">
+        % if 'user' in session:
+        
             <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
             <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
-            <br>
-            <div ng-cloak>
-                <small class="grey">{{totalVotes}} votes <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
-                <div class="progress" style="height: 12px; margin-bottom: 5px;">
-                    <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
-                </div>
-                <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
-                <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+
+        % else:
+            <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+            <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+        % endif
+        <br>
+        <div ng-cloak>
+            <small class="grey">{{totalVotes}} votes <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+            <div class="progress" style="height: 12px; margin-bottom: 5px;">
+                <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
             </div>
+            <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+            <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
         </div>
-    % else:
-        <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
-            <div class="vote-icon yes-icon"></div>
-        </a>
-        <br>
-        <br>
-        <a href="#signupLoginModal" role="button" data-toggle="modal" class="noVote">
-            <div class="vote-icon no-icon"></div>
-        </a>
-        <br>
-        <div class="totalVotesWrapper">
-            <small class="grey pull-left">Votes:</small>
-            <strong class="pull-right">
-                <span class="totalVotes">{{totalVotes}} <span ng-if="goal">of {{goal - totalVotes | number}} NEEDED</span></span>
-            </strong>
-        </div>
-    % endif
+
+    </div>
 </%def>
 
 <%def name="yesNoVoteFooter(**kwargs)">
@@ -221,41 +211,32 @@
                     <a ng-click="updateNoVote()" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
-            % if not 'noStats' in kwargs:
-                <div class="row text-center" style="margin: 0 19px;">
-                        <!--
-                        <div class="progress col-sm-8">
-                          <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
-                            <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
-                          </div>
-                          <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
-                            <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
-                          </div>
-                        -->
-                        <div class="col-sm-12">
-                            <small class="grey">
-                                {{totalVotes}} votes, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED </span>
-                                <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
-                            </small>
-                        </div>
+        % else:
+            <div class="row centered">
+                <div class="col-sm-12">
+                    <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            </div>
+        % endif
+        % if not 'noStats' in kwargs:
+            <div class="row text-center" style="margin: 0 19px;">
+                <!-- multi-colored progress bar test
+                <div class="progress col-sm-8">
+                    <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
+                        <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
+                    </div>
+                    <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
+                        <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
                     </div>
                 </div>
-            % endif
-        % else:
-            <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
-                <div class="vote-icon yes-icon"></div>
-            </a>
-            <br>
-            <br>
-            <a href="#signupLoginModal" role="button" data-toggle="modal" class="noVote">
-                <div class="vote-icon no-icon"></div>
-            </a>
-            <br>
-            <div class="totalVotesWrapper">
-                <small class="grey pull-left">Votes:</small>
-                <strong class="pull-right">
-                    <span class="totalVotes">{{totalVotes}}</span>
-                </strong>
+                -->
+                <div class="col-sm-12">
+                    <small class="grey">
+                        {{totalVotes}} votes, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED </span>
+                        <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+                    </small>
+                </div>
             </div>
         % endif
     </div>
@@ -387,29 +368,28 @@
                             % endif
                         </td>
                     % else:
-                        <td class="comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar topbar-avatar"></td>
-                        <td style="padding: 10px;">
-                            <form class="no-bottom" ng-submit="submitComment()">
-                                <div class="form-group col-xs-10">
-                                    <a href="#signupLoginModal" data-toggle='modal'>
-                                        <textarea rows="1" class="form-control" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                        <button type="submit" class="btn btn-primary" style="vertical-align: top;">Submit</button>
-                                    </a>
-                                </div>
-                                <div ng-show="type == 'initiative' || type == 'idea'">
-                                    <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
-                                        <label class="radio inline">
-                                            <input type="radio"> Pro
-                                        </label>
-                                        <label class="radio inline">
-                                            <input type="radio"> Neutral
-                                        </label>
-                                        <label class="radio inline">
-                                            <input type="radio"> Con
-                                        </label>
-                                    </a>
-                                </div>
-                            </form>
+                        <td class="col-xs-1 comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar topbar-avatar"></td>
+                        <td class="col-xs-11" style="padding: 10px;">
+                            <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
+                                <form class="no-bottom form-inline">
+                                    <div class="form-group col-sm-10">
+                                        <textarea rows="1" class="form-control" style="width:100%" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
+                                            </span>
+                                        </small>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
                         </td>
                     % endif
                 </tr>
