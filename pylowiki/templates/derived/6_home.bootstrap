@@ -117,18 +117,23 @@
         % if c.authuser:
             <div>
                 % if c.authuser and c.authuser['activated'] == '0':
+                  <div class="spacer"></div>
                   <div class="alert alert-success">
                     <h4>Welcome!</h4> 
-                    Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder.
-                    <p>You can't add comments or ideas until you complete setup.</p>
-            
-                    <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+                    <p>Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.</p>
+                    <p>You can't add comments until you click on the link in the confirmation email.</p>
+                    <br>
+                    <div class="row">
+                      <div class="col-xs-8 col-xs-offset-2">
+                        <button class="btn btn-success btn-block resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+                      </div>
+                    </div>
                     <div class="top-space" id="resendMessage"></div>
                   </div>
                 % endif
 
                 <h2><small>Following</small></h2>
-                <div class="well">
+                <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
                   <div ng-repeat="item in followInitiatives">
                       <div ng-init="url=item.url; code=item.urlCode">
                           <div ng-controller="follow_unfollowCtrl">
@@ -175,12 +180,15 @@
                       </div><!-- follow_unfollowCtrl -->
                     </div><!-- ng-init -->
                   </div><!-- ng-repeat -->
-                  <div class="centered following-spinner" ng-show="followLoading || followSliceLoading" ng-cloak>
+                  <div class="centered following-spinner" ng-show="followSliceLoading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x"></i>
                   </div>
                 </div><!-- well -->
+                <div class="centered following-spinner" ng-show="followLoading" ng-cloak>
+                  <i class="icon-spinner icon-spin icon-4x"></i>
+                </div>
                 <div ng-if="noFollowingResult" class="alert alert-info" ng-cloak>
-                    You have not follwed or started any initiatives yet.
+                    You have not follwed or authored any initiatives yet.
                  </div>
                 <div class="large-spacer"></div>
             </div>

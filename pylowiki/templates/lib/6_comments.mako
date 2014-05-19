@@ -64,15 +64,18 @@
     ##
     ########################################################################
 
-    <fieldset>
-        <legend></legend>
+    <div class="row">
         <div class="col-sm-1">
             ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
         </div>
-        <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
-        <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-        <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
-    </fieldset>
+        <div class="col-sm-11">
+            <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        </div>
+        <div class="col-sm-11 col-sm-offset-1">
+            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
+        </div>
+    </div>
 
 
 </%def>

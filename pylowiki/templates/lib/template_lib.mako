@@ -571,21 +571,24 @@
 
 
 <%def name="activateAccountModal()">
-    <div id="activateAccountModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="activateAccountModal" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Activate Your Account</h3>
-      </div>
-      <div class="modal-body">
-        <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
+    <div class="modal fade" id="activateAccountModal" tabindex="-1" role="dialog" aria-labelledby="activateAccountModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="no-top">Activate Your Account <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></h3>
+                </div>
+                <div class="modal-body">
+                    <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
 
-        <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
-        <div class="top-space green" id="resendMessage"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
-      </div>
+                    <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
+                    <div class="top-space green" id="resendMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
 </%def>
