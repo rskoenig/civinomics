@@ -1528,21 +1528,22 @@
                 <label>Edit</label>
                 <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
-                    <label>Comment text</label>
                     % if ctype == 'initiative' or ctype == 'idea':
-                        <div class="row-fluid">
-                                <label class="radio inline">
-                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}
-                                </label>
-                                <label class="radio inline">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> Pro
+                                </span>
+                                <span class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="neutral" ${neutralChecked}> Neutral
-                                </label>
-                                <label class="radio inline">
-                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> I am against this ${ctype}
-                                </label>
-                        </div><!-- row-fluid -->
+                                </span>
+                                <span class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> Con
+                                </span>
+                            </div>
+                        </div>
                     % endif
-                    <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
+                    <textarea class="comment-reply col-sm-10 form-control" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
@@ -1562,7 +1563,7 @@
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
                 </fieldset>
-                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
+                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
@@ -1575,7 +1576,7 @@
         adminID = 'admin-%s' % thing['urlCode']
     %>
     <div class="row-fluid collapse" id="${adminID}">
-        <div class="span11 offset1 alert">
+        <div class="col-sm-11 col-sm-offset-1 alert">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
@@ -1593,7 +1594,7 @@
                         <form class="form-inline" action = ${disableThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
+                                <input type="text" name="reason" class="col-sm-8 form-control">
                                 <button type="submit" name="submit" class="btn disableButton" ${disableThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
@@ -1603,7 +1604,7 @@
                         <form class="form-inline" action = ${enableThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
+                                <input type="text" name="reason" class="col-sm-8 form-control">
                                 <button type="submit" name = "submit" class="btn enableButton" ${enableThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
@@ -1613,7 +1614,7 @@
                         <form class="form-inline" action = ${immunifyThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
+                                <input type="text" name="reason" class="col-sm-8 form-control">
                                 <button type="submit" name = "submit" class="btn immunifyButton" ${immunifyThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
@@ -1624,7 +1625,7 @@
                         <form class="form-inline" action = ${adoptThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
+                                <input type="text" name="reason" class="col-sm-8 form-control">
                                 <button class="btn adoptButton" type="submit" name="submit" ${adoptThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
@@ -1636,7 +1637,7 @@
                         <form class="form-inline" action = ${deleteThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
+                                <input type="text" name="reason" class="col-sm-8 form-control">
                                 <button class="btn deleteButton" type="submit" name="submit" ${deleteThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>

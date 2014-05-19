@@ -32,7 +32,7 @@
         <br>
         % if c.initiative.objType != 'initiativeUnpublished':
             <hr>
-            <h4 class="initiative-title">Arguments</h4>
+            <h4 class="initiative-title">Comments</h4>
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif

@@ -4,6 +4,7 @@
     import pylowiki.lib.db.revision     as revisionLib
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
+    from pylowiki.lib.fuzzyTime import timeSince
     import logging, random
     from datetime import datetime
     import misaka as misaka
@@ -42,12 +43,12 @@
 
     <fieldset>
         <legend></legend>
-        <div class="span1">
+        <div class="col-sm-1">
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
-        <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-        <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
+        <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
     </fieldset>
 
 
@@ -62,12 +63,12 @@
 
     <fieldset>
         <legend></legend>
-        <div class="span1">
+        <div class="col-sm-1">
             ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
         </div>
-        <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
-        <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
+        <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
     </fieldset>
 
 
@@ -85,37 +86,39 @@
         <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
         <input type="hidden" name="parentCode" value="0" />
         <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-        <div class="row-fluid">
-            <div class="span1">
+        <div class="row">
+            <div class="col-sm-1">
                 ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
             </div>
-            <div class="span11">
-                <textarea rows="2" class="span12" name="comment-textarea" placeholder="Add a comment..."></textarea>
+            <div class="col-sm-11">
+                <textarea rows="2" class="col-sm-12 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea>
             </div>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
         % if thing.objType == 'idea' or thing.objType == 'initiative':
             <% log.info("thing type is %s"%thing.objType) %>
-            <div class="row-fluid">
-                <div class="span1">
+            <div class="row top-space">
+                <div class="col-sm-1">
                 </div>
-                <div class="span11">
-                    <label class="radio inline">
-                        <input type=radio name="commentRole" value="yes"> Pro
-                    </label>
-                    <label class="radio inline">
-                        <input type=radio name="commentRole" value="neutral" checked> Neutral
-                    </label>
-                    <label class="radio inline">
-                        <input type=radio name="commentRole" value="no"> Con
-                    </label>
-                    <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button></span>
-                </div><!- span11 -->
-            </div><!-- row-fluid -->
+                <div class="col-sm-11">
+                    <small>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="yes"> Pro
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="neutral" checked> Neutral
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="no"> Con
+                        </span>
+                    </small>
+                    <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button></span>
+                </div><!- col-sm-11 -->
+            </div><!-- row -->
         % else:
-        <div class="row-fluid">
+        <div class="row">
             <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
             <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
         % endif
     </form>
 </%def>
@@ -214,7 +217,7 @@
                         return
         else:
             return
-        accordionID = 'accordion-%s' % comment['urlCode']
+        panelID = 'panel-%s' % comment['urlCode']
         collapseID = 'collapse-%s' % comment['urlCode']
         
         if curDepth % 2 == 1:
@@ -223,17 +226,17 @@
             backgroundShade = ' evenComment'
         
     %>
-    <div class="accordion" id="${accordionID}">
-        <div class="accordion-group ${backgroundShade}">
-            ${commentHeading(comment, author, accordionID, collapseID, parent)}
-            ${commentContent(comment, commentType, curDepth, maxDepth, author, accordionID, collapseID)}
+    <div class="panel panel-default" id="${panelID}">
+        <div class="${backgroundShade}">
+            ${commentHeading(comment, author, panelID, collapseID, parent)}
+            ${commentContent(comment, commentType, curDepth, maxDepth, author, panelID, collapseID)}
         </div>
     </div>
 </%def>
 
-<%def name="commentHeading(comment, author, accordionID, collapseID, parent)">
+<%def name="commentHeading(comment, author, panelID, collapseID, parent)">
     <%
-        headerClass = "accordion-heading"
+        headerClass = "panel-heading"
         if comment['addedAs'] == 'admin':
             headerClass += " admin"
         elif comment['addedAs'] == 'facilitator':
@@ -267,19 +270,23 @@
             roleLabel = ''
 
     %>
-    <div class="${headerClass}">
-        <!--<button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
+    <div class="${headerClass}" style="border-bottom: 1px solid #ddd">
+        <!--<button class="panel-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${panelID}" href="#${collapseID}">
             Hide
         </button> -->
         <%
-            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")
+            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar no-bottom no-top", linkClass="inline")
             lib_6.userLink(author, className="inline")
             role = ''
             roles = ['admin', 'facilitator', 'listener']
             if comment['addedAs'] in roles:
                 role = '(%s)' % comment['addedAs']
         %>
-        ${role}<span class="grey">${lib_6.userGreetingMsg(author)}</span> from ${lib_6.userGeoLink(author, comment=True)}
+        ${role} from ${lib_6.userGeoLink(author, comment=True)}
+        <small class="grey">
+            <% date = timeSince(comment.date) %>
+            ${date} ago
+        </small>
         
         % if roleClass != '':
             <span class="pull-right ${roleClass}">${roleLabel}</span>
@@ -297,7 +304,7 @@
                             elif c.initiative:
                                 dparent = c.initiative
                         %>
-                        <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
+                        <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n}>Parent</a>
                     % endif
                 % endif
             % endif
@@ -306,38 +313,38 @@
             % endif
             </small>
         </span>
-    </div> <!--/.accordion-heading-->
+    </div> <!--/.panel-heading-->
 </%def>
 
-<%def name="commentContent(comment, commentType, curDepth, maxDepth, author, accordionID, collapseID)">
+<%def name="commentContent(comment, commentType, curDepth, maxDepth, author, panelID, collapseID)">
     <%
-        thisClass = 'accordion-body collapse'
+        thisClass = 'panel-collapse collapse'
         if comment['disabled'] == '0' and comment['deleted'] == '0':
             thisClass += ' in'
     %>
     <div id="${collapseID}" class="${thisClass}">
-        <div class="accordion-inner">
-            <div class="row-fluid">
-                <div class="span1">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-1">
                     <%
                         if c.thing['disabled'] == '0':
                             lib_6.upDownVote(comment)
                     %>
-                </div> <!--/.span1-->
-                <div class="span11 comment-data">
+                </div> <!--/.col-sm-1-->
+                <div class="col-sm-11 comment-data">
                     ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK, render_flags = misaka.HTML_SKIP_IMAGES) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif
-                </div> <!--/.span11-->
-            </div> <!--/.row-fluid-->
+                </div> <!--/.col-sm-11-->
+            </div> <!--/.row-->
             <%
                 if c.thing['disabled'] == '0':
                     commentFooter(comment, author)
             %>
             ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1)}
-        </div><!--/.accordion-inner-->
-    </div><!--/.accordion-body.collapse-->
+        </div><!--/.panel-inner-->
+    </div><!--/.panel-body.collapse-->
 </%def>
 
 <%def name="commentFooter(comment, author)">
@@ -355,40 +362,38 @@
         editID = 'edit-%s' % comment['urlCode']
         adminID = 'admin-%s' % comment['urlCode']
     %>
-    <div class="row-fluid">
-        <div class="span11 offset1">
+    <div class="row">
+        <div class="col-sm-11 col-sm-offset-1">
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
+                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
                     % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
-                        <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
                     % endif
                     % if c.privs['facilitator'] or c.privs['admin']:
-                        <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
                 % elif not c.privs['provisional']:
-                    <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
-                    <a class="btn btn-mini accordion-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
+                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
+                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
             </div>
-            Added ${comment.date}
             <%
                 revisions = revisionLib.getRevisionsForThing(comment)
                 lib_6.revisionHistory(revisions, comment)
             %>
-        </div><!--/.span11.offset1-->
-    </div><!--/.row-fluid-->
+        </div><!--/.col-sm-11.offset1-->
+    </div><!--/.row-->
     
     ## Reply
-    <div class="row-fluid collapse" id="${replyID}">
-        <div class="span11 offset1">
+    <div class="row collapse" id="${replyID}">
+        <div class="col-sm-11 col-sm-offset-1">
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
-                <label>reply</label>
-                <textarea name="comment-textarea" class="comment-reply span12" placeholder="Add a reply..."></textarea>
+                <textarea name="comment-textarea" class="comment-reply col-sm-12 form-control" placeholder="Add a reply..."></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
                 <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
+                <button type="submit" class="btn btn-primary left-space" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>

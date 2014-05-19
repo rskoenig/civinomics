@@ -1752,10 +1752,6 @@ button.transparent{
     margin-left:5px;
 }
 
-.geoLink, .geoLink:hover{
-   color: #075D00;
-}
-
 .mainGeo > .alert {
     display: block;
 }
@@ -3173,13 +3169,13 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
-tr.con, .accordion-heading.against{
+tr.con, .panel-heading.against{
   background-color: #f2dede
 }
-tr.pro, .accordion-heading.favor{
+tr.pro, .panel-heading.favor{
   background-color: #dff0d8;
 }
-tr.neutral, .accordion-heading.neutral{
+tr.neutral, .panel-heading.neutral{
   background-color: #e0e0e0;
 }
 
