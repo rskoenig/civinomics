@@ -259,7 +259,7 @@
     </div><!-- kludge for case of missing close div tag -->
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer well">
+            <div class="row footer rounded well">
                 <div class="col-sm-8 no-left">
                     <ul class="horizontal-list">
                         <li><a class="green green-hover" href="/corp/about">About</a></li> 

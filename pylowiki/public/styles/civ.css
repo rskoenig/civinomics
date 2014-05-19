@@ -93,11 +93,20 @@ h5.h45, h4.h45{
 
 /* Set the fixed height of the footer here */
 
+.footer.rounded{
+  background-color: #f8f8f8 !important;
+  padding: 30px 0;
+  color: #777;
+}
+.footer.rounded a{
+  color: #777;
+}
 .footer{
   background-color: #333;
   padding: 30px 0;
-  color: #fff;
+  color: #eee;
 }
+
 .footer a{
   color: #fff;
 }
@@ -679,7 +688,7 @@ div.unread-message:hover {
 
 .actions{
   background-color: whitesmoke;
-  margin: 8px -19px -19px;
+  margin: 8px -4px -19px;
   border-top: 1px solid #ddd;
 }
 
@@ -761,36 +770,6 @@ h1.workshop-title{
   .small-hidden{
     display: none;
   }
-}
-
-.dropdown-menu li > a:hover,
-.dropdown-menu li > a:focus,
-.dropdown-submenu:hover > a {
-  color: #ffffff;
-  text-decoration: none;
-  background-color: #00903e;
-  background-image: -moz-linear-gradient(top, #00903e, #007733);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#00903e), to(#007733));
-  background-image: -webkit-linear-gradient(top, #00903e, #007733);
-  background-image: -o-linear-gradient(top, #00903e, #007733);
-  background-image: linear-gradient(to bottom, #00903e, #007733);
-  background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
-}
-
-.dropdown-menu .active > a,
-.dropdown-menu .active > a:hover {
-  color: #ffffff;
-  text-decoration: none;
-  background-color: #00903e;
-  background-image: -moz-linear-gradient(top, #00903e, #007733);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#00903e), to(#007733));
-  background-image: -webkit-linear-gradient(top, #00903e, #007733);
-  background-image: -o-linear-gradient(top, #00903e, #007733);
-  background-image: linear-gradient(to bottom, #00903e, #007733);
-  background-repeat: repeat-x;
-  outline: 0;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
 }
 
 .counter{
@@ -3431,6 +3410,7 @@ hr.object-list-header{
 
 .activity-item .avatar-cell, .avatar-cell{
   vertical-align: top;
+  text-align: center;
   width: 60px;
 }
 

@@ -14,8 +14,8 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="editPhoto()">
-    <div class="row-fluid">
-        <div class="span8">
+    <div class="row">
+        <div class="col-sm-8">
             % if not c.photo:
                 <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
                 <br />1/3 size thumbnail
@@ -34,7 +34,7 @@
                 postalMessage = ""
                 underPostalMessage = ""
             %>
-            <div class="row-fluid"><span id="countrySelect">
+            <div class="row"><span id="countrySelect">
                 <div class="span1"></div>
                 <div class="span2">Country:</div>
                 <div class="span9">
@@ -48,8 +48,8 @@
                     </select>
                 </div><!-- span9 -->
                 </span><!-- countrySelect -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid"><span id="stateSelect">
+            </div><!-- row -->
+            <div class="row"><span id="stateSelect">
                 % if c.country != "0":
                     <% states = geoLib.getStateList(c.country) %>
                     <div class="span1"></div>
@@ -72,8 +72,8 @@
                 % else:
                     or leave blank if your photo is specific to the entire planet.
                 % endif
-            </span></div><!-- row-fluid -->
-            <div class="row-fluid"><span id="countySelect">
+            </span></div><!-- row -->
+            <div class="row"><span id="countySelect">
                 % if c.state != "0":
                     <% counties = geoLib.getCountyList("united-states", c.state) %>
                     <% cityMessage = "or leave blank if your photo is specific to the entire state." %>
@@ -97,7 +97,7 @@
                     ${countyMessage}
                 % endif
             </span></div><!-- row -->
-            <div class="row-fluid"><span id="citySelect">
+            <div class="row"><span id="citySelect">
                 % if c.county != "0":
                     <% cities = geoLib.getCityList("united-states", c.state, c.county) %>
                     <% postalMessage = "or leave blank if your photo is specific to the entire county." %>
@@ -120,8 +120,8 @@
                     <% postalMessage = "" %>
                     ${cityMessage}
                 % endif
-            </span></div><!-- row-fluid -->
-            <div class="row-fluid"><span id="postalSelect">
+            </span></div><!-- row -->
+            <div class="row"><span id="postalSelect">
                 % if c.city != "0":
                     <% postalCodes = geoLib.getPostalList("united-states", c.state, c.county, c.city) %>
                     <% underPostalMessage = "or leave blank if your photo is specific to the entire city." %>
@@ -144,13 +144,13 @@
                     <% underPostalMessage = "" %>
                     ${postalMessage}
                 % endif
-            </span></div><!-- row-fluid -->
-            <div class="row-fluid">
+            </span></div><!-- row -->
+            <div class="row">
                 <span id="underPostal">${underPostalMessage}</span><br />
-            </div><!-- row-fluid -->
+            </div><!-- row -->
         </fieldset>
-        </div><!-- span8 -->
-        <div class="span4">
+        </div><!-- col-sm-8 -->
+        <div class="col-sm-4">
             <% tagList = workshopLib.getWorkshopTagCategories() %>
             <fieldset>
             Category Tags
@@ -164,15 +164,15 @@
                 </label>
             % endfor
             </fieldset>
-        </div><!-- span4 -->
-    </div><!-- row-fluid -->
+        </div><!-- col-sm-4 -->
+    </div><!-- row -->
 </%def>
 
 <%def name="uploadPhoto()">
     % if 'user' in session and (c.authuser.id == c.user.id) and not c.privs['provisional']:
         <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
-            <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
-                <div class="span10 offset1">
+            <div id="fileinput-button-div" class="row fileupload-buttonbar collapse in">
+                <div class="col-sm-10 col-sm-offset-1">
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="pull-left">Document your community with pictures.  (5MB max, please)</span>
                     <span class="btn btn-success fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
@@ -184,15 +184,15 @@
                     <div class="fileupload-loading"></div>
                 </div><!-- span10 -->
                 <!-- The global progress information -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+            </div><!-- row -->
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 fade" data-ng-class="{true: 'in'}[!!active()]">
                     <!-- The global progress bar -->
                     <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
                     <!-- The extended global progress information -->
                     <div class="progress-extended">&nbsp;</div>
                 </div><!- span10 -->
-            </div><!-- row-fluid -->
+            </div><!-- row -->
             <!-- The table listing the files available for upload/download -->
             <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
                 <tbody><tr data-ng-repeat="file in queue">
@@ -205,9 +205,9 @@
                                 }
                             </script>
                             ${editPhoto()}
-                            <div class="row-fluid">
+                            <div class="row">
                                 <button class="btn btn-success" type="Submit" onClick="setAction('{{file.image_hash}}'); return 1;">Save Changes</button>
-                            </div><!-- row-fluid -->
+                            </div><!-- row -->
                             </form>
                         </div><!-- preview -->
                         <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
@@ -270,17 +270,17 @@
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
             % if thing.objType != 'photoUnpublished':
                 <% editID = 'edit-%s'%thing['urlCode'] %>
-                <div class="row-fluid collapse" id="${editID}">
+                <div class="row collapse" id="${editID}">
                     <div class="span11 offset1">
                         <div class="spacer"></div>
                         <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
                             ${self.editPhoto()}
-                            <div class="row-fluid">
+                            <div class="row">
                                 <button class="btn btn-success" type="Submit">Save Changes</button>
-                            </div><!-- row-fluid -->
+                            </div><!-- row -->
                         </form>
-                    </div><!-- span11 -->
-                </div><!-- row-fluid -->
+                    </div><!-- col-sm-11 -->
+                </div><!-- row -->
             % endif
             % if thing.objType == 'photoUnpublished':
                 ${lib_6.publishThing(thing)}
@@ -294,17 +294,17 @@
     % else:
         % if userLib.isAdmin(c.authuser.id):
             <% editID = 'edit-%s'%thing['urlCode'] %>
-            <div class="row-fluid collapse" id="${editID}">
-                <div class="span11 offset1">
+            <div class="row collapse" id="${editID}">
+                <div class="col-sm-11 col-sm-offset-1">
                     <div class="spacer"></div>
                     <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
                         ${self.editPhoto()}
-                        <div class="row-fluid">
+                        <div class="row">
                             <button class="btn btn-success" type="Submit">Save Changes</button>
-                        </div><!-- row-fluid -->
+                        </div><!-- row -->
                     </form>
-                </div><!-- span11 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-sm-11 -->
+            </div><!-- row -->
         % endif
         % if userLib.isAdmin(c.authuser.id):
             ${lib_6.adminThing(thing)}
@@ -349,8 +349,8 @@
             deleter = userLib.getUserByID(event.owner)
             reason = event['reason']
         %>
-        <div class="row-fluid">
+        <div class="row">
             This picture deleted by ${deleter['name']} because: ${reason}
-        </div><!-- row-fluid -->
+        </div><!-- row -->
     % endif
 </%def>
