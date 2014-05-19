@@ -35,6 +35,8 @@
 ################################################################################
 <%def name="initiativeStats(**kwargs)">
     
+    <script src="/js/vendor/d3.legend.js"></script>
+
     <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <div class='row-fluid'>   
@@ -44,6 +46,14 @@
             <div id='d3-yesNo-chart'></div>
         </div>
     </div>
+    
+    <style>
+        .legend rect {
+            fill:white;
+            stroke:black;
+            opacity:0.8;
+        }
+    </style>
 
     <script type="text/javascript">
         yes = ${kwargs['yes'] | n};
@@ -63,57 +73,6 @@
         var width = 300,
             height = 300,
             radius = Math.min(width, height) / 2;
-
-        /*
-        var pieYesNoChart = d3.select("#d3-yesNo-chart").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("id", "pieChart")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        var pie = d3.layout.pie()
-            .sort(null)
-            .value(function (d) {
-            return d.value;
-        });
-
-        var color = d3.scale.ordinal()
-            .range(["#a05d56", "#d0743c", "#ff8c00"]);
-
-        var arc = d3.svg.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(radius - 70);
-
-
-        var slices = pieYesNoChart.selectAll("path")
-            .data(pie(data1))
-            .enter()
-            .append("path");
-
-
-        slices.transition()
-            .attr("fill", function(d, i) { return color(d.data.label); })
-            .attr("d", arc)
-            .each(function(d) { this._current = d; }); // store the initial angles
-
-        slices.append("text")
-            .attr("transform", function (d) {
-                return "translate(" + arc.centroid(d) + ")";
-            })
-            .attr("dy", ".35em")
-            .style("text-anchor", "middle")
-            .text(function (d) {
-                return d.data.label;
-            });
-
-        function change(data){
-            //setTimeout(function(){
-            slices.data(pie(data));
-            slices.transition().duration(50).attrTween("d", arcTween); // redraw the arcs
-            //}, 1500);
-        }
-        */
 
         var color = d3.scale.ordinal()
             .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
@@ -141,9 +100,20 @@
 
         g.append("path")
             .attr("d", arc)
+            .attr("data-legend", function(d){return d.data.label})
             .style("fill", function (d) {
                 return color(d.data.label);
             });
+
+        var legendX = (width / 2) - 30;
+        var legendY = (height / 2) - 30;
+        var translateString = "translate("+ legendX +", "+ legendY +")";
+
+        legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", translateString)
+            .style("font-size", "1.1em")
+            .call(d3.legend)
 
         g.append("text")
             .attr("transform", function (d) {
