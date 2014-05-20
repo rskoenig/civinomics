@@ -51,7 +51,7 @@
     <div class="row-fluid">
         <div class="span6">
             <h3 class="centered">For Citizens</h3>
-            <p>Organize your community around the best initiatives for your city, state, or nation, and help create government that is "of, by, and for the people."</p>
+            <p>Organize your community around new initiatives, find programs from other regions in the world that can be adopted, vote and comment on official City Council Agenda items, repeal bad laws, create issues and invite your network to solve them. Together we can create government that is "of, by, and for the people."</p>
         </div>
         <div class="span6">
             <h3 class="centered">For Government</h3>
@@ -87,7 +87,7 @@
                 <p>
                     <ul class="spaced-bullets">
                         <li>Proven to acheive greater statistical accuracy than traditional phone surveys.</li>
-                        <li>Get responses from hard to reach groups like youth and foreign language spearkers.</li>
+                        <li>Get responses from hard to reach groups like foreign language speakers and youth.</li>
                         <li>Multimedia content and map-based question types let you take feedback on your issue to the next level.</li>
                         <li>Discounts available for non-profits and community programs.</li>
                     </ul>
@@ -119,7 +119,7 @@
             </div>
             <div class="span2">
                 <a href="/surveys/scwd2" class="thumbnail">
-                    <img  src="/images/corp/casestudies/clientLogos/soquelCreek_small.jpg">
+                    <img  src="/images/corp/casestudies/scwd2/soquelCreek.gif">
                 </a>
             </div>
             <div class="span2">
@@ -129,7 +129,7 @@
             </div>
             <div class="span2">
                 <a href="/surveys/techCommuter" class="thumbnail">
-                    <img  src="/images/corp/casestudies/techCommuter/ssvLogo.png">
+                    <img  src="/images/corp/casestudies/tech_commuter/ssvLogo.png">
                 </a>
             </div>
         </div>
@@ -139,6 +139,7 @@
         <h2 class="centered">
             Top Citizen Initiatives
         </h2>
+        <br>
         <div class="row-fluid">
             <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
                 <div class="well well-splash-content">
@@ -210,7 +211,7 @@
             About
         </h2>
         <p class="lead centered">
-            Doing good is in our code.
+            Citizenship 2.0
         </p>
         <div class="row-fluid">
             <div class="span6">
@@ -220,7 +221,9 @@
             </div>
             <div class="span6">
                 <div class="spacer"></div>
-                <p>Like Wikipedia, Mozilla and countless others before us, we believe that the best parts of the internet can and should be owned by everyone. That's why we're a non-profit organization.</p>
+                <p>Our logo is the combination of a dove and a hand, symbolyzing our mission to create peace and prosperity (the dove) through active participation (the hand).
+                <br>
+                <p>Like Wikipedia, Mozilla and countless others before us, we believe that the best parts of the internet can and should be open to everyone. That's why we're a non-profit organization.</p>
                 <!-- 
                 <div class="row">
                     <div class="col-sm-4">
@@ -234,8 +237,6 @@
                     </div>
                 </div>
                 -->
-                <br>
-                <p>"Dovehand" - It's a dove, it's a hand... yup, it's both. Our logo symbolyzes the belief that we can create peace (the dove) through our active participation (the hand).
             </div>
         </div>
     </div>

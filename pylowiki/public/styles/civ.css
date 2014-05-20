@@ -1924,6 +1924,11 @@ li.thumbnail-gallery{
 }
 
 
+.spaced-bullets li{
+  text-align: left;
+  margin: 20px auto;
+}
+
   /* guiders */
   
   .guider {
