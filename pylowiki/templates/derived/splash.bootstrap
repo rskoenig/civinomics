@@ -49,90 +49,22 @@
 </div><!-- row welcome -->
 <div class="container splash-container">
     <div class="row-fluid">
-        <div class="span4">
+        <div class="span6">
             <h3 class="centered">For Citizens</h3>
-            <p>Organize your community around the best proposals for your city, state, or nation, so that we can create governments "of, by, and for the people."</p>
+            <p>Organize your community around the best initiatives for your city, state, or nation, and help create government that is "of, by, and for the people."</p>
         </div>
-        <div class="span4">
+        <div class="span6">
             <h3 class="centered">For Government</h3>
-            <p>Join the open data, transparent government revolution. Civinomics gives you a free and easy to use citizen-feedback platform so that you can crowdsource public input and new ideas for your department, city, county, and beyond. <a href="#orgSignup">Get started.</a></p>
-            <p>Need to go more in depth?  Want make sure you have a truly representative sample? Civinomics’ direct iPad surveys and outreach services let you connect person-to-person with all segments of the population and get the data you need to make decisions. <a href="#surveys">Learn More.</a></p>
+            <p>A free and easy to use citizen-feedback platform so that you can crowdsource public input and new ideas for your department, city, county, and beyond. <!--<a href="#orgSignup">Get started.</a> --></p>
+            <p>Need a statistically representative sample? Civinomics’ direct iPad surveys connect person-to-person with all segments of the population and get the data you need to make decisions.</p>
         </div>
+        <!--
         <div class="span4">
             <h3 class="centered">For Organizations</h3> 
             <p>Open source group decision making for your organization. Take program and feature suggestions from customers or team members. Does your organization take a stand on a political issue? Let everyone know that too. Start an organization.
         </div>
+        -->
     </div>
-    <hr>
-    <div class="row-fluid">
-        <h2 class="centered">
-            Top Initiatives
-        </h2>
-        <div class="row-fluid">
-            <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
-                <div class="well well-splash-content">
-                    <h3>Zip Code Lookup</h3>
-                    <form class="form-inline" name="zipForm">
-                        <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                            <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                            <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-                            <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-                        </div>
-                    </form>
-                    <div class="loading-civ" ng-show="loading" ng-cloak>
-                        <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
-                    </div>
-                    <table ng-show="!loading">
-                        <tr ng-repeat="geo in geos">
-                            <td><a href="{{geo.href}}"><img class="thumbnail flag med-flag border tight" src="{{geo.flag}}"></a></td>
-                            <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
-                <div class="loading-civ" ng-show="loading" ng-cloak>
-                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
-                </div>
-                <div ng-show="noQuery" ng-cloak>
-                    <div class="row-fluid">
-                        <div class="alert alert-info centered span6 offset3">
-                            Searching for nothing yields nothing.  How zen.
-                        </div>
-                    </div>
-                </div>
-                <div ng-show="noResult" ng-cloak>
-                    <div class="row-fluid">
-                        <div class="alert centered span6 offset3">
-                            % if c.searchType == 'region':
-                                Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
-                            % else:
-                                Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
-                            % endif
-                            
-                        </div>
-                    </div>
-                </div>
-                <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
-                    <table class="table">
-
-                        <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:3">
-                            <td style="border-top: none; border-bottom: 1px solid #dddddd;">
-                                ${ng_helpers.initiative_listing()}
-                            </td>
-
-                        </tr>
-
-                    </table>
-
-                    <div class="row-fluid centered">
-                        <a href="/browse/initiatives">View more initiatives</a>
-                    </div>
-                </div>
-            </div><!-- span8 -->
-        </div>
-        
-    </div><!-- row-fluid -->
     <hr>
     <div class="row-fluid">
         <h2 class="centered">
@@ -202,6 +134,76 @@
             </div>
         </div>
     </div>
+    <hr>
+    <div class="row-fluid">
+        <h2 class="centered">
+            Top Citizen Initiatives
+        </h2>
+        <div class="row-fluid">
+            <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
+                <div class="well well-splash-content">
+                    <h3>Zip Code Lookup</h3>
+                    <form class="form-inline" name="zipForm">
+                        <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                            <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                            <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                            <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                        </div>
+                    </form>
+                    <div class="loading-civ" ng-show="loading" ng-cloak>
+                        <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+                    </div>
+                    <table ng-show="!loading">
+                        <tr ng-repeat="geo in geos">
+                            <td><a href="{{geo.href}}"><img class="thumbnail flag med-flag border tight" src="{{geo.flag}}"></a></td>
+                            <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
+                <div class="loading-civ" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+                </div>
+                <div ng-show="noQuery" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert alert-info centered span6 offset3">
+                            Searching for nothing yields nothing.  How zen.
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="noResult" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert centered span6 offset3">
+                            % if c.searchType == 'region':
+                                Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                            % else:
+                                Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                            % endif
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
+                    <table class="table">
+
+                        <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:3">
+                            <td style="border-top: none; border-bottom: 1px solid #dddddd;">
+                                ${ng_helpers.initiative_listing()}
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <div class="row-fluid centered">
+                        <a href="/browse/initiatives">View more initiatives</a>
+                    </div>
+                </div>
+            </div><!-- span8 -->
+        </div>
+        
+    </div><!-- row-fluid -->
     <hr> 
     <div id="about" class="row-fluid">
         <h2 class="centered">
@@ -249,39 +251,41 @@
     </div>
     -->
     <hr>
-    <div class="row" style="margin-bottom: 50px;">
-        <h2 class="text-center" style="margin-bottom: 30px;">
+    <div class="row-fluid" style="margin-bottom: 50px;">
+        <h2 class="centered" style="margin-bottom: 30px;">
             In the News
         </h2>
-        <div class="col-md-2">
-            <a class="thumbnail no-border" href="http://www.bizjournals.com/sanjose/chreynolds-data-centers/2014/05/public-policy-startup-civnomics-wants-to-hack-u-s.html">
-                <img  src="/images/corp/news/SVBJ.jpg" target="_blank">
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="thumbnail no-border" href="https://www.youtube.com/watch?v=vJ-Nb0WB1aw">
-                <img  src="/images/corp/news/tedx_brc.jpg" target="_blank">
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="thumbnail no-border" href="http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html" target="_blank">
-                <img  src="/images/corp/news/goodtimes.jpg">
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="thumbnail no-border" href="http://www.santacruzsentinel.com/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders" target="_blank">
-                <img  src="/images/corp/news/sentinel.jpg">
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="thumbnail no-border" href="http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/" target="_blank">
-                <img  src="/images/corp/news/xconomy.png">
-            </a>
-        </div>
-        <div class="col-md-2">
-            <a class="thumbnail no-border" href="http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72" target="_blank">
-                <img  src="/images/corp/news/RP.jpg">
-            </a>
+        <div class="row-fluid client-logos">
+            <div class="span2">
+                <a class="thumbnail no-border" href="http://www.bizjournals.com/sanjose/chreynolds-data-centers/2014/05/public-policy-startup-civnomics-wants-to-hack-u-s.html">
+                    <img  src="/images/corp/news/SVBJ.jpg" target="_blank">
+                </a>
+            </div>
+            <div class="span2">
+                <a class="thumbnail no-border" href="https://www.youtube.com/watch?v=vJ-Nb0WB1aw">
+                    <img  src="/images/corp/news/tedx_brc.jpg" target="_blank">
+                </a>
+            </div>
+            <div class="span2">
+                <a class="thumbnail no-border" href="http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html" target="_blank">
+                    <img  src="/images/corp/news/goodtimes.jpg">
+                </a>
+            </div>
+            <div class="span2">
+                <a class="thumbnail no-border" href="http://www.santacruzsentinel.com/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders" target="_blank">
+                    <img  src="/images/corp/news/sentinel.jpg">
+                </a>
+            </div>
+            <div class="span2">
+                <a class="thumbnail no-border" href="http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/" target="_blank">
+                    <img  src="/images/corp/news/xconomy.png">
+                </a>
+            </div>
+            <div class="span2">
+                <a class="thumbnail no-border" href="http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72" target="_blank">
+                    <img  src="/images/corp/news/RP.jpg">
+                </a>
+            </div>
         </div>
     </div>
 </div>
