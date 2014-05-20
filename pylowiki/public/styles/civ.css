@@ -3526,6 +3526,7 @@ svg{
 
 .home-left-panel{
     position: fixed;
+    left: 0;
     overflow: show;
     width: 50px;
     height : 100vh;
