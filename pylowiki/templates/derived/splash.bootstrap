@@ -32,7 +32,7 @@
         </div>
     % else: 
     <div class="slogan centered">
-        <h1>Democracy starts at home</h1>
+        <h1>Welcome to Civinomics <p class="lead">Vote, propose, be a citizen.</p></h1>
         % if c.splashMsg:
             <% message = c.splashMsg %>
             <div class="row-fluid centered">
@@ -42,11 +42,28 @@
                 </div>
             </div>
         % endif
-        <button href="#signupLoginModal" data-toggle="modal" class="btn btn-large btn-primary">Sign up to Vote</button>
+        <a href="/signup" class="btn btn-large btn-primary">Sign up</a>
+        <a href="/login" class="btn btn-large btn-success">Login</a>
         <!-- <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p> -->
     </div>
 </div><!-- row welcome -->
 <div class="container splash-container">
+    <div class="row-fluid">
+        <div class="span4">
+            <h3 class="centered">For Citizens</h3>
+            <p>Organize your community around the best proposals for your city, state, or nation, so that we can create governments "of, by, and for the people."</p>
+        </div>
+        <div class="span4">
+            <h3 class="centered">For Government</h3>
+            <p>Join the open data, transparent government revolution. Civinomics gives you a free and easy to use citizen-feedback platform so that you can crowdsource public input and new ideas for your department, city, county, and beyond. <a href="#orgSignup">Get started.</a></p>
+            <p>Need to go more in depth?  Want make sure you have a truly representative sample? Civinomics’ direct iPad surveys and outreach services let you connect person-to-person with all segments of the population and get the data you need to make decisions. <a href="#surveys">Learn More.</a></p>
+        </div>
+        <div class="span4">
+            <h3 class="centered">For Organizations</h3> 
+            <p>Open source group decision making for your organization. Take program and feature suggestions from customers or team members. Does your organization take a stand on a political issue? Let everyone know that too. Start an organization.
+        </div>
+    </div>
+    <hr>
     <div class="row-fluid">
         <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
             <div class="well well-splash-content">
@@ -109,7 +126,7 @@
             <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
                 <table class="table">
 
-                    <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:10">
+                    <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:3">
                         <td>
                             ${ng_helpers.initiative_listing()}
                         </td>
@@ -125,9 +142,72 @@
         </div><!-- span8 -->
         
     </div><!-- row-fluid -->
+    <hr>
+    <div class="row-fluid">
+        <h2 class="centered">
+            Surveys
+        </h2>
+        <div class="span10 offset1">
+            <p class="lead centered">You need to know what everyday people think, not just the loudest people. Statistically representative iPad surveys and opinion polls allow you to connect.</p>
+        </div>
+        <div class="span6 centered">
+            <a class="thumbnail no-border">
+                <img src="/images/splash/ipad_survey.jpg" style="margin: auto auto;">
+            </a>
+        </div>
+        <div class="span6 centered" style="height: 100%;">
+            <img src="/images/splash/citizen_collage.jpg" style="margin: auto auto;">
+            <div class="spacer"></div>
+            <p>
+                <ul class="spaced-bullets">
+                    <li>Proven to acheive greater statistical accuracy than traditional phone surveys.</li>
+                    <li>Get responses from hard to reach groups like youth and foreign language spearkers.</li>
+                    <li>Multimedia content and map-based question types let you take feedback on your issue to the next level.</li>
+                    <li>Discounts available for non-profits and community programs.</li>
+                </ul>
+            </p>
+            <div class="spacer"></div>
+            <p class="text-center">
+                <a class="btn btn-large btn-primary" href="mailto:info@civinomics.com" target="_blank">Contact us to get started</a>
+            </p>
+        </div>
     </div>
-    ${templateHelpers.condensedFooter()}
-    ${templateHelpers.signupLoginModal()}
+    <div class="row-fluid">
+        <h2 class="text-center"><small>A few of our valued clients</small></h2>
+        <div class="span2">
+            <a href="/surveys/SSIP" class="thumbnail">
+                <img src="/images/corp/casestudies/SSIP/sfpucLogo.png">
+            </a>
+        </div>
+        <div class="span2">
+            <a href="corp/surveys/svbagban" class="thumbnail">
+                <img src="/images/corp/casestudies/svbagban/sosLogo.jpg">
+            </a>
+        </div>
+        <div class="span2">
+            <a href="/surveys/cap2" class="thumbnail">
+                <img src="/images/corp/casestudies/cap2/scCAP.jpg">
+            </a>
+        </div>
+        <div class="span2">
+            <a href="/surveys/scwd2" class="thumbnail">
+                <img  src="/images/corp/casestudies/clientLogos/soquelCreek_small.jpg">
+            </a>
+        </div>
+        <div class="span2">
+            <a href="/surveys/dmc" class="thumbnail">
+                <img  src="/images/corp/casestudies/dmc/dmcLogo.png">
+            </a>
+        </div>
+        <div class="span2">
+            <a href="/surveys/techCommuter" class="thumbnail">
+                <img  src="/images/corp/casestudies/techCommuter/ssvLogo.png">
+            </a>
+        </div>
+    </div>
+</div>
+${templateHelpers.condensedFooter()}
+${templateHelpers.signupLoginModal()}
 
 % endif
 <%def name="headScripts()">

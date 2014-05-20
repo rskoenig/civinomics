@@ -85,6 +85,10 @@ h5.h45, h4.h45{
   background-color: #2a2a2a;
 }
 
+#wrap.splash {
+  background-color: #fff;
+}
+
 /* Set the fixed height of the footer here */
 #baseTemplate_footer{
   height:40px;
@@ -142,6 +146,7 @@ h5.h45, h4.h45{
 @media(min-width: 767px){
   .container.splash-container{
     min-width: 940px;
+    background-color: #fff;
   }
 }
 
@@ -708,14 +713,14 @@ h1.workshop-title{
 .logo{
   background-image: url('/images/logo_white_myriad_med.png');
   height: 35px;
-  width: 185px;
+  width: 40px;
   background-repeat: none;
 }
 
 .logo.logo-lg{
-  background-image: url('/images/logo_white_myriad_medlg.png');
+  background-image: url('/images/logo_simple_medlg.png');
   height: 40px;
-  width: 210px;
+  width: 45px;
   background-repeat: none;
 }
 
