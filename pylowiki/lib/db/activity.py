@@ -284,7 +284,9 @@ def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
     
 def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
     now = datetime.datetime.now()
-    SQLtoday = now.strftime("%Y-%m-%d")
+    twodays = datetime.timedelta(days=2)
+    mdate = now - twodays
+    SQLtoday = mdate.strftime("%Y-%m-%d")
     postList = []
     objectList = ['meeting']
 
