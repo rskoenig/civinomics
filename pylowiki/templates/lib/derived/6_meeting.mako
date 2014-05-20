@@ -386,6 +386,8 @@
                     <fieldset>
                         <label>Item Title</label>
                         <input type="text" name="agendaItemTitle" class="span6" required>
+                        <label>Agenda Item Number</label>
+                        <input type="text" name="agendaItemNumber" class="span1" required>
                         <label>Item Text</label>
                         ${lib_6.formattingGuide()}<br>
                         <textarea rows="3" name="agendaItemText" class="span6" required></textarea>

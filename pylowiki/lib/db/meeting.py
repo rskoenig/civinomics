@@ -53,6 +53,7 @@ def getAgendaItems(code, deleted = u'0',):
             .filter_by(objType = 'agendaitem')\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('meetingCode', code)))\
+            .order_by('sort')\
             .all()
     except:
         return False
@@ -105,7 +106,7 @@ def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime
     return m
 
 # Object
-def Agendaitem(owner, meeting, title, text, canVote, canComment):
+def Agendaitem(owner, meeting, title, number, text, canVote, canComment):
     a = Thing('agendaitem', owner.id)
     generic.linkChildToParent(a, owner)
     generic.linkChildToParent(a, meeting)
@@ -124,6 +125,7 @@ def Agendaitem(owner, meeting, title, text, canVote, canComment):
     a['views'] = '0'
     a['ups'] = '0'
     a['downs'] = '0'
+    a.sort = number
     commit(a)
     d = discussionLib.Discussion(owner = owner, discType = 'agendaitem', attachedThing = a, title = title)
     return a
