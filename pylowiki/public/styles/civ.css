@@ -1596,6 +1596,15 @@ ul.listeners > li {
 }
 .no-border{
     border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+a.no-border:hover{
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 .no-bottom{
     padding-bottom:0;
@@ -2809,6 +2818,10 @@ button.signup, button.login{
   min-height: 175px;
 }
 
+.row-fluid.client-logos div.span2{
+  margin-left: 2.1%;
+}
+
 @media (max-width: 1250px){
   .how-it-works h3{
     font-size: 18px;
@@ -2893,6 +2906,7 @@ button.signup, button.login{
     width: 91.6%;
     margin-left: 4.2%;
   }
+
   .footer-civ.condensed{
     position: relative !important;
     margin-top: 100px;

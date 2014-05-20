@@ -65,81 +65,72 @@
     </div>
     <hr>
     <div class="row-fluid">
-        <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
-            <div class="well well-splash-content">
-                <h3>Zip Code Lookup</h3>
-                <form class="form-inline" name="zipForm">
-                    <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                        <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                        <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
-                        <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+        <h2 class="centered">
+            Top Initiatives
+        </h2>
+        <div class="row-fluid">
+            <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
+                <div class="well well-splash-content">
+                    <h3>Zip Code Lookup</h3>
+                    <form class="form-inline" name="zipForm">
+                        <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                            <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                            <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                            <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                        </div>
+                    </form>
+                    <div class="loading-civ" ng-show="loading" ng-cloak>
+                        <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
                     </div>
-                </form>
+                    <table ng-show="!loading">
+                        <tr ng-repeat="geo in geos">
+                            <td><a href="{{geo.href}}"><img class="thumbnail flag med-flag border tight" src="{{geo.flag}}"></a></td>
+                            <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
                 <div class="loading-civ" ng-show="loading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
                 </div>
-                <table ng-show="!loading">
-                    <tr ng-repeat="geo in geos">
-                        <td><a href="{{geo.href}}"><img class="thumbnail flag med-flag border tight" src="{{geo.flag}}"></a></td>
-                        <td><a class="lead no-highlight" href="{{geo.href}}" ng-cloak><span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span></a></td>
-                    </tr>
-                </table>
-            </div>
+                <div ng-show="noQuery" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert alert-info centered span6 offset3">
+                            Searching for nothing yields nothing.  How zen.
+                        </div>
+                    </div>
+                </div>
+                <div ng-show="noResult" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert centered span6 offset3">
+                            % if c.searchType == 'region':
+                                Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                            % else:
+                                Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                            % endif
+                            
+                        </div>
+                    </div>
+                </div>
+                <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
+                    <table class="table">
+
+                        <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:3">
+                            <td style="border-top: none; border-bottom: 1px solid #dddddd;">
+                                ${ng_helpers.initiative_listing()}
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <div class="row-fluid centered">
+                        <a href="/browse/initiatives">View more initiatives</a>
+                    </div>
+                </div>
+            </div><!-- span8 -->
         </div>
-        <div class="span8 well well-splash-content" ng-controller="SearchCtrl">
-            <h3>
-                Top Initiatives
-                <!--
-                <span class="pull-right" ng-show="showingInitiatives.create" ng-cloak>
-                    % if 'user' in session:
-                        <a class="btn btn-success" style="margin-top: 7px;" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
-                            <i class="icon-plus"></i> New Initiative
-                        </a>
-                    % else:
-                        <a class="btn btn-civ" style="margin-top: 7px;" href="/login"><i class="icon-edit"></i> Start an Initiative</a>
-                    % endif
-                </span>
-                -->
-            </h3>
-            <div class="loading-civ" ng-show="loading" ng-cloak>
-                <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
-            </div>
-            <div ng-show="noQuery" ng-cloak>
-                <div class="row-fluid">
-                    <div class="alert alert-info centered span6 offset3">
-                        Searching for nothing yields nothing.  How zen.
-                    </div>
-                </div>
-            </div>
-            <div ng-show="noResult" ng-cloak>
-                <div class="row-fluid">
-                    <div class="alert centered span6 offset3">
-                        % if c.searchType == 'region':
-                            Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
-                        % else:
-                            Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
-                        % endif
-                        
-                    </div>
-                </div>
-            </div>
-            <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show" ng-cloak>
-                <table class="table">
-
-                    <tr ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:3">
-                        <td>
-                            ${ng_helpers.initiative_listing()}
-                        </td>
-
-                    </tr>
-
-                </table>
-
-                <div class="row-fluid centered">
-                    <a href="/browse/initiatives">View more initiatives</a>
-                </div>
-            </div>
-        </div><!-- span8 -->
         
     </div><!-- row-fluid -->
     <hr>
@@ -147,61 +138,149 @@
         <h2 class="centered">
             Surveys
         </h2>
-        <div class="span10 offset1">
-            <p class="lead centered">You need to know what everyday people think, not just the loudest people. Statistically representative iPad surveys and opinion polls allow you to connect.</p>
+        <div class="row-fluid">
+            <div class="span10 offset1">
+                <p class="lead centered">You need to know what everyday people think, not just the loudest people. Statistically representative iPad surveys and opinion polls allow you to connect.</p>
+            </div>
         </div>
-        <div class="span6 centered">
-            <a class="thumbnail no-border">
-                <img src="/images/splash/ipad_survey.jpg" style="margin: auto auto;">
-            </a>
+        <div class="row-fluid">
+            <div class="span6 centered">
+                <a class="thumbnail no-border">
+                    <img src="/images/splash/ipad_survey.jpg" style="margin: auto auto;">
+                </a>
+            </div>
+            <div class="span6 centered" style="height: 100%;">
+                <img src="/images/splash/citizen_collage.jpg" style="margin: auto auto;">
+                <div class="spacer"></div>
+                <p>
+                    <ul class="spaced-bullets">
+                        <li>Proven to acheive greater statistical accuracy than traditional phone surveys.</li>
+                        <li>Get responses from hard to reach groups like youth and foreign language spearkers.</li>
+                        <li>Multimedia content and map-based question types let you take feedback on your issue to the next level.</li>
+                        <li>Discounts available for non-profits and community programs.</li>
+                    </ul>
+                </p>
+                <div class="spacer"></div>
+                <p class="centered">
+                    <a class="btn btn-large btn-primary" href="mailto:info@civinomics.com" target="_blank">Contact us to get started</a>
+                </p>
+            </div>
         </div>
-        <div class="span6 centered" style="height: 100%;">
-            <img src="/images/splash/citizen_collage.jpg" style="margin: auto auto;">
+        <hr>
+        <div class="row-fluid client-logos">
+            <h2 class="centered">A few of our valued clients</h2>
             <div class="spacer"></div>
-            <p>
-                <ul class="spaced-bullets">
-                    <li>Proven to acheive greater statistical accuracy than traditional phone surveys.</li>
-                    <li>Get responses from hard to reach groups like youth and foreign language spearkers.</li>
-                    <li>Multimedia content and map-based question types let you take feedback on your issue to the next level.</li>
-                    <li>Discounts available for non-profits and community programs.</li>
-                </ul>
-            </p>
-            <div class="spacer"></div>
-            <p class="text-center">
-                <a class="btn btn-large btn-primary" href="mailto:info@civinomics.com" target="_blank">Contact us to get started</a>
-            </p>
+            <div class="span2">
+                <a href="/surveys/SSIP" class="thumbnail">
+                    <img src="/images/corp/casestudies/sfpuc_ssip/sfpucLogo.png">
+                </a>
+            </div>
+            <div class="span2">
+                <a href="corp/surveys/svbagban" class="thumbnail">
+                    <img src="/images/corp/casestudies/svbagban/sosLogo.jpg">
+                </a>
+            </div>
+            <div class="span2">
+                <a href="/surveys/cap2" class="thumbnail">
+                    <img src="/images/corp/casestudies/cap2/scCAP.jpg">
+                </a>
+            </div>
+            <div class="span2">
+                <a href="/surveys/scwd2" class="thumbnail">
+                    <img  src="/images/corp/casestudies/clientLogos/soquelCreek_small.jpg">
+                </a>
+            </div>
+            <div class="span2">
+                <a href="/surveys/dmc" class="thumbnail">
+                    <img  src="/images/corp/casestudies/dmc/dmcLogo.png">
+                </a>
+            </div>
+            <div class="span2">
+                <a href="/surveys/techCommuter" class="thumbnail">
+                    <img  src="/images/corp/casestudies/techCommuter/ssvLogo.png">
+                </a>
+            </div>
         </div>
     </div>
-    <div class="row-fluid">
-        <h2 class="text-center"><small>A few of our valued clients</small></h2>
-        <div class="span2">
-            <a href="/surveys/SSIP" class="thumbnail">
-                <img src="/images/corp/casestudies/SSIP/sfpucLogo.png">
+    <hr> 
+    <div id="about" class="row-fluid">
+        <h2 class="centered">
+            About
+        </h2>
+        <p class="lead centered">
+            Doing good is in our code.
+        </p>
+        <div class="row-fluid">
+            <div class="span6">
+                <a class="thumbnail no-border">
+                    <img src="/images/civ_logo_simple_lg.png" style="max-height: 200px;">
+                </a>
+            </div>
+            <div class="span6">
+                <div class="spacer"></div>
+                <p>Like Wikipedia, Mozilla and countless others before us, we believe that the best parts of the internet can and should be owned by everyone. That's why we're a non-profit organization.</p>
+                <!-- 
+                <div class="row">
+                    <div class="col-sm-4">
+                        <a>Fork the code</a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a>Volunteer</a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a>Support the cause</a>
+                    </div>
+                </div>
+                -->
+                <br>
+                <p>"Dovehand" - It's a dove, it's a hand... yup, it's both. Our logo symbolyzes the belief that we can create peace (the dove) through our active participation (the hand).
+            </div>
+        </div>
+    </div>
+    <!--
+    <hr>
+    <div class="row">
+        <h2 class="text-center">
+            From the Blog/ Modal Trial
+        </h2>
+        <p class="lead text-center">
+            Some thoughts on the times we live in.
+        </p>
+    </div>
+    -->
+    <hr>
+    <div class="row" style="margin-bottom: 50px;">
+        <h2 class="text-center" style="margin-bottom: 30px;">
+            In the News
+        </h2>
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.bizjournals.com/sanjose/chreynolds-data-centers/2014/05/public-policy-startup-civnomics-wants-to-hack-u-s.html">
+                <img  src="/images/corp/news/SVBJ.jpg" target="_blank">
             </a>
         </div>
-        <div class="span2">
-            <a href="corp/surveys/svbagban" class="thumbnail">
-                <img src="/images/corp/casestudies/svbagban/sosLogo.jpg">
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="https://www.youtube.com/watch?v=vJ-Nb0WB1aw">
+                <img  src="/images/corp/news/tedx_brc.jpg" target="_blank">
             </a>
         </div>
-        <div class="span2">
-            <a href="/surveys/cap2" class="thumbnail">
-                <img src="/images/corp/casestudies/cap2/scCAP.jpg">
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html" target="_blank">
+                <img  src="/images/corp/news/goodtimes.jpg">
             </a>
         </div>
-        <div class="span2">
-            <a href="/surveys/scwd2" class="thumbnail">
-                <img  src="/images/corp/casestudies/clientLogos/soquelCreek_small.jpg">
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.santacruzsentinel.com/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders" target="_blank">
+                <img  src="/images/corp/news/sentinel.jpg">
             </a>
         </div>
-        <div class="span2">
-            <a href="/surveys/dmc" class="thumbnail">
-                <img  src="/images/corp/casestudies/dmc/dmcLogo.png">
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/" target="_blank">
+                <img  src="/images/corp/news/xconomy.png">
             </a>
         </div>
-        <div class="span2">
-            <a href="/surveys/techCommuter" class="thumbnail">
-                <img  src="/images/corp/casestudies/techCommuter/ssvLogo.png">
+        <div class="col-md-2">
+            <a class="thumbnail no-border" href="http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72" target="_blank">
+                <img  src="/images/corp/news/RP.jpg">
             </a>
         </div>
     </div>
