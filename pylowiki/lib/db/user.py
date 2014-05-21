@@ -300,7 +300,7 @@ class User(object):
         Revision(u, u)
         
         # send the activation email
-        if (u['needsPassword'] == '1'):
+        if ('needsPassword' in u):
             password = generatePassword() 
             changePassword( u, password )
             commit( u ) # commit database change
