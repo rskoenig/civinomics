@@ -2179,7 +2179,7 @@ li.thumbnail-gallery{
   color: #90ccaa;
 }
 
-.icon-chevron-sign-up.voted{
+.icon-chevron-sign-up.yesVoted{
   color: #00903e;
 }
 
@@ -2187,7 +2187,7 @@ li.thumbnail-gallery{
   color: #d1979b
 }
 
-.icon-chevron-sign-down.voted{
+.icon-chevron-sign-down.noVoted{
   color: #90000a;
 }
 

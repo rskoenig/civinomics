@@ -88,18 +88,20 @@
 
 <%def name="resource_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
-        <div class="row" ng-controller="yesNoVoteCtrl">
-            <div class="col-xs-11">
-                <p>${authorPosting()}</p>
-                <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small>({{item.link}})</small></a></h4>
-                <p><small>${metaData()}</small></p>
+        <div ng-controller="yesNoVoteCtrl">
+            <div class="row">
+                <div class="col-xs-11">
+                    <p>${authorPosting()}</p>
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small>({{item.link}})</small></a></h4>
+                    <p><small>${metaData()}</small></p>
+                </div>
+                <div class="col-xs-1">
+                    ${upDownVoteBlock()}
+                </div>
             </div>
-            <div class="col-xs-1">
-                ${upDownVoteBlock()}
+            <div class="row">
+                ${actions()}
             </div>
-        </div>
-        <div class="row">
-            ${actions()}
         </div>
     </div>
 </%def>
@@ -214,13 +216,13 @@
 <%def name="upDownVoteBlock()"> 
     <div class="text-center" >
     % if 'user' in session:
-        <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
-            <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+        <a ng-click="updateYesVote()" class="upVote {{voted}}">
+            <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
         </a>
         <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
-        <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
-            <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+        <a ng-click="updateNoVote()" class="downVote {{voted}}">
+            <i class="icon-chevron-sign-down icon-2x {{voted}}"></i>
         </a>
     % else:
         <a href="#signupLoginModal" data-toggle="modal" class="upVote">
