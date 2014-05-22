@@ -1,0 +1,40 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+
+
+<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
+<div class="container">
+	<div ng-controller="showThingCtrl">
+		<div class="row">
+			<div class="col-sm-9 well">
+				<h3 class="well-header" ng-cloak>${ng_lib.metaData()} {{data.message}}</h3>
+				<h1 ng-cloak>{{item.title}}</h1>
+				<p>{{item.text}}</p>
+				<p>${ng_lib.authorPosting()}</p>
+				<div class="row">
+					${ng_lib.actions()}
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+                	<div class="col-xs-12 section-wrapper overview well initiative-well">
+                		<div ng-if="item.objType != 'revision'">
+		                    <h4 class="text-center gray">Vote</h4>
+		                    <hr class="narrow">
+		                    <div ng-controller="yesNoVoteCtrl">
+								${ng_lib.yesNoVoteBlock()}
+							</div>
+						</div>
+                	</div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%def name="headScripts()">
+	<script src="${lib_6.fingerprintFile('/js/ng/showThing.js')}" type="text/javascript"></script>
+	<script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
+	<script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+</%def>

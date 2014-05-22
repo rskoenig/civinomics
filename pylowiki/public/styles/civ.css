@@ -3,7 +3,7 @@ html,body{
    font-weight: 300;
    font-size: 16px; 
    height: 100%;
-   padding-top: 20px;
+   padding-top: 30px;
    background-color: #e9eaed;
 }
 
@@ -58,6 +58,10 @@ a, .clickable{
 
 
 /* h */
+
+.well-header{
+  margin-top:0;
+}
 
 h1,h2,h3,h4,h5{
   font-weight: 500;
@@ -607,7 +611,7 @@ padding: 0;
 }
 
 .workshop-tag{
-    margin-left:5px;
+    /* margin-left:5px;*/
 }
 
 .green-tag, .Outdoors, .Land, .Environment, .Animals{
@@ -2469,6 +2473,7 @@ p.description:first-letter {
 
 .well.initiative-panel{
   box-shadow: none;
+  margin-top: 5px;
 }
 
 a.search.toggle :active{

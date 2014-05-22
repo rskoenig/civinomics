@@ -15,6 +15,7 @@ import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.rating       as ratingLib
+import pylowiki.lib.json            as jsonLib
 import pylowiki.lib.helpers as h
 
 import simplejson as json
@@ -28,43 +29,40 @@ log = logging.getLogger(__name__)
 class IdeaController(BaseController):
 
     def __before__(self, action, workshopCode = None):
-        if workshopCode is None:
-            abort(404)
-        c.w = workshopLib.getWorkshopByCode(workshopCode)
-        if not c.w:
-            abort(404)
-            
-        c.mainImage = mainImageLib.getMainImage(c.w)
-        
-        # Demo workshop status
-        c.demo = workshopLib.isDemo(c.w)
-        
-        workshopLib.setWorkshopPrivs(c.w)
-        if c.w['public_private'] != 'public':
-            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                abort(404)
-        if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
-        if 'user' in session:
-            utils.isWatching(c.authuser, c.w)
 
-        ################## FB SHARE ###############################
-        # these values are needed for facebook sharing of a workshop
-        # - details for sharing a specific idea are modified in the view idea function
-        c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-        shareOk = workshopLib.isPublic(c.w)
-        c.facebookShare = FacebookShareObject(
-            itemType='workshop',
-            url=utils.workshopURL(c.w),
-            parentCode=workshopCode, 
-            image=c.backgroundImage,
-            title=c.w['title'],
-            description=c.w['description'].replace("'", "\\'"),
-            shareOk = shareOk
-        )
-        # add this line to tabs in the workshop in order to link to them on a share:
-        # c.facebookShare.url = c.facebookShare.url + '/activity'
-        #################################################
+        ## old workshop dependency
+        if workshopCode:
+            c.w = workshopLib.getWorkshopByCode(workshopCode)
+            c.mainImage = mainImageLib.getMainImage(c.w)
+            # Demo workshop status
+            c.demo = workshopLib.isDemo(c.w)
+        
+            workshopLib.setWorkshopPrivs(c.w)
+            if c.w['public_private'] != 'public':
+                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                    abort(404)
+            if c.w['public_private'] == 'public':
+                c.scope = geoInfoLib.getPublicScope(c.w)
+            if 'user' in session:
+                utils.isWatching(c.authuser, c.w)
+
+            ################## FB SHARE ###############################
+            # these values are needed for facebook sharing of a workshop
+            # - details for sharing a specific idea are modified in the view idea function
+            c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+            shareOk = workshopLib.isPublic(c.w)
+            c.facebookShare = FacebookShareObject(
+                itemType='workshop',
+                url=utils.workshopURL(c.w),
+                parentCode=workshopCode, 
+                image=c.backgroundImage,
+                title=c.w['title'],
+                description=c.w['description'].replace("'", "\\'"),
+                shareOk = shareOk
+            )
+            # add this line to tabs in the workshop in order to link to them on a share:
+            # c.facebookShare.url = c.facebookShare.url + '/activity'
+            #################################################
 
     def listing(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -230,3 +228,24 @@ class IdeaController(BaseController):
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:    
             return render('/derived/6_item_in_listing.bootstrap')
+
+
+    def showJsonIdea(self, ideaCode, ideaURL):
+        c.ideaCode = ideaCode
+        c.ideaURL = ideaURL
+        return render('/derived/idea.bootstrap')
+
+
+    def getIdeaJson(self, ideaCode, ideaURL):
+        idea = ideaLib.getIdea(ideaCode)
+        if not idea:
+            idea = revisionLib.getRevisionByCode(ideaCode)
+            if not idea:
+                abort(404)
+
+        entry = jsonLib.getJsonProperties(idea)
+        return json.dumps({'statusCode':1, 'thing': entry})
+
+
+
+
