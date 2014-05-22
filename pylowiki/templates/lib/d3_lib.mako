@@ -52,36 +52,19 @@
     
     <div class='row-fluid'>   
         <div class='span6'>
-            <h4>Share button
-            </h4>
             <div>
-                <p>ha ha</p>
-            </div>
-        </div>
-        <div class='span6'>
-            <h4>Share button
-            </h4>
-            <div>
-                <p>ha ha</p>
-            </div>
-        </div>
-    </div>
-    <div class='row-fluid'>   
-        <div class='span6'>
-            <h4>Yes / No
-            </h4>
-            <div>
+                <h4>Vote distribution</h4>
                 <svg id="nvd3-yesNo-chart" class="voteModalPieChart"></svg>
             </div>
         </div>
         <div class='span6'>
-            <h4>Views, Comments and
-            </h4>
+            <h4>Activity counts</h4>
             <div>
                 <svg id="nvd3-viewsCommentsVotes-chart" class="voteModalPieChart"></svg>
             </div>
         </div>
     </div>
+    <!-- other charts ot consider: views/votes over time, how this compares with others in this area -->
 
     <script type="text/javascript">
         yes = ${kwargs['yes'] | n};
@@ -97,7 +80,7 @@
         console.log('me: '+myRating);
 
         var yesNoData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
-        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views}, {"label":"COMMENTS", "value":numComments}, {"label":"VOTES", "value":totalVotes}];
+        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views}, {"label":"COMMENTS  ", "value":numComments}, {"label":"VOTES", "value":totalVotes}];
 
         var margin = {
           top: 20, 
@@ -128,6 +111,17 @@
         }
 
         var yesNoChart;
+        
+        /*var chart = nv.models.pieChart()
+            .x(function(d) {return d.key;})
+            .y(function(d) {return d.daily[0].sales;})
+            .showLabels(true)
+            .values(function(d) {return d;})
+            .color(d3.scale.aColors().range())
+            .donut(true)
+            .tooltips(true)
+            .tooltip(function(key, x, y, e, graph) {
+                return '<h3>' + key + ' Custom Text Here ' + x + '</h3> here' + '<p> or here ,' + y + '</p>'});*/
 
         function redrawYesNo(data) {
             nv.addGraph(function() {
@@ -135,16 +129,23 @@
                 yesNoChart = nv.models.pieChart()
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
+                    .showLabels(true)
                     .color(d3.scale.category10().range())
+                    .tooltips(true)
                     .width(width)
                     .height(height);
 
-                  d3.select("#nvd3-yesNo-chart")
-                      .datum(data)
-                    .transition().duration(1200)
-                      .attr('width', width)
-                      .attr('height', height)
-                      .call(yesNoChart);
+                yesNoChart.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-yesNo-chart")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', width)
+                    .attr('height', height)
+                    .call(yesNoChart);
 
                 yesNoChart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
 
@@ -166,12 +167,17 @@
                     .width(width)
                     .height(height);
 
-                  d3.select("#nvd3-viewsCommentsVotes-chart")
-                      .datum(data)
-                    .transition().duration(1200)
-                      .attr('width', width)
-                      .attr('height', height)
-                      .call(viewsCommentsVotesChart);
+                viewsCommentsVotesChart.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-viewsCommentsVotes-chart")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', width)
+                    .attr('height', height)
+                    .call(viewsCommentsVotesChart);
 
                 viewsCommentsVotesChart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
 

@@ -7,14 +7,14 @@ $(document).ready(function()
         //console.log(data);
         var json = JSON.parse(data);
         console.log(json);
-        //if (json.status == 0) {
-        changePie(json.result);
-        if (json.result != 0) {
-            $('#voteShareModal').modal('show');
+        if (json.statusCode == 0) {
+            changePie(json.result);
+            if (json.result != 0) {
+                $('#voteShareModal').modal('show');
+            }
+        } else {
+            console.log("error activateVoteShareModal, something didn't work");
         }
-        //} else {
-        //    console.log("error activateVoteShareModal, something didn't work");
-        //}
     }
     // images for the Yes No icons are set by CSS - the javascript just adds or removes the 'voted' class
     $(".noVote").click(function(event)

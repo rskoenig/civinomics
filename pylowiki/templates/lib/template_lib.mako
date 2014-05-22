@@ -484,6 +484,10 @@
             views=c.initiative['views']
             numComments=c.numComments
             myRating='0'
+
+        subj = 'Vote on "' + c.initiative['title'] + '"'
+        subj = subj.replace(' ','%20')
+        body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
     %>
     <!-- Vote Sharing Modal -->
     <div id="voteShareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="voteShareModal" aria-hidden="true">
@@ -492,37 +496,29 @@
             <h3 class="login top centered">Thanks for voting!</h3>
         </div>
         <div class="modal-body">
-            ${d3Lib.includeD3()}
-            ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating)}
-            <div class='row-fluid'>   
-                <div class='span4'>
-                    <h4> views vs. all other actions/objects
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-            onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4>
-                </div>
-                <div class='span4'>
-                    <h4>views over time
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-            onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4> 
-                </div>
-                <div class='span4'>
-                    <h4>how this initiative compares with others in the area?
-                        <span>
-                            <br />(click to filter results)
-                            <a href="#dc-data-top" class="reset"
-            onclick="javascript:Chart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                        </span>
-                    </h4> 
+            <div class='row-fluid'>
+                <div class='span8 offset3'>   
+                    <p>Share this initiative:</p>
+                    % if c.initiative['public'] == '1':
+                        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
+
+                        % if not c.privs['provisional']:
+                            <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                        % endif
+
+                        <!-- % if c.initiative['public'] == '1':
+                            <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                        #%endif -->
+                    % else:
+                        <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
+                            <i class="icon-facebook icon-light right-space"></i> | Share
+                        </a>
+                        <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
+                    % endif
                 </div>
             </div>
+            ${d3Lib.includeD3()}
+            ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating)}
         </div>
         <div class="modal-footer">
             <div class="row-fluid centered tcs">
