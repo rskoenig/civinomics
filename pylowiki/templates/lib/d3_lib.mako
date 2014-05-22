@@ -34,26 +34,54 @@
 ##  }];
 ################################################################################
 <%def name="initiativeStats(**kwargs)">
-    
-    <script src="/js/vendor/d3.legend.js"></script>
 
     <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+    <!-- NVD3 2.0.0 (development for v2) -->
+    <!--link href='/js/vendor/nvd3-2.0.0/nv.d3.min.css' rel='stylesheet' type='text/css'>
+    <script src="/js/vendor/nvd3-2.0.0/nv.d3.js"></script-->
+    <!-- /NVD3 2.0.0 -->
 
+    <!-- NVD3 1.1.15 beta (current version everyone gets) -->
+    <link href='/js/vendor/nvd3-1.1.15b/nv.d3.min.css' rel='stylesheet' type='text/css'>
+    <script src="/js/vendor/nvd3-1.1.15b/nv.d3.min.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/models/legend.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/models/pie.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/models/pieChart.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/utils.js"></script>
+    <!-- /NVD3 1.1.15 beta -->
+    
     <div class='row-fluid'>   
-        <div class='span12'>
-            <h4>Yes / No
+        <div class='span6'>
+            <h4>Share button
             </h4>
-            <div id='d3-yesNo-chart'></div>
+            <div>
+                <p>ha ha</p>
+            </div>
+        </div>
+        <div class='span6'>
+            <h4>Share button
+            </h4>
+            <div>
+                <p>ha ha</p>
+            </div>
         </div>
     </div>
-    
-    <style>
-        .legend rect {
-            fill:white;
-            stroke:black;
-            opacity:0.8;
-        }
-    </style>
+    <div class='row-fluid'>   
+        <div class='span6'>
+            <h4>Yes / No
+            </h4>
+            <div>
+                <svg id="nvd3-yesNo-chart" class="voteModalPieChart"></svg>
+            </div>
+        </div>
+        <div class='span6'>
+            <h4>Views, Comments and
+            </h4>
+            <div>
+                <svg id="nvd3-viewsCommentsVotes-chart" class="voteModalPieChart"></svg>
+            </div>
+        </div>
+    </div>
 
     <script type="text/javascript">
         yes = ${kwargs['yes'] | n};
@@ -68,105 +96,97 @@
         console.log('total: '+totalVotes);
         console.log('me: '+myRating);
 
-        var data1 = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
+        var yesNoData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
+        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views}, {"label":"COMMENTS", "value":numComments}, {"label":"VOTES", "value":totalVotes}];
 
-        var width = 300,
-            height = 300,
-            radius = Math.min(width, height) / 2;
+        var margin = {
+          top: 20, 
+          right: 40, 
+          bottom: 10, 
+          left: 10
+        }; 
+        var width = 300 - margin.left - margin.right;
+        var height = 300 - margin.top - margin.bottom;
+        radius = 100;                   //radius
 
-        var color = d3.scale.ordinal()
-            .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+        var voteColors = {
+          yes: "green",
+          no: "red"
+        }
+        //var color = d3.scale.ordinal()
+        //    .range(["green", "red"]);
 
-        var arc = d3.svg.arc()
-            .outerRadius(radius - 10)
-            .innerRadius(radius - 70);
-
-        var pie = d3.layout.pie()
-            .sort(null)
-            .value(function (d) {
-                return d.value;
-            });
-
-        var svg = d3.select("#d3-yesNo-chart").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        var g = svg.selectAll(".arc")
-            .data(pie(data1))
-            .enter().append("g")
-            .attr("class", "arc");
-
-        g.append("path")
-            .attr("d", arc)
-            .attr("data-legend", function(d){return d.data.label})
-            .style("fill", function (d) {
-                return color(d.data.label);
-            });
-
-        var legendX = (width / 2) - 30;
-        var legendY = (height / 2) - 30;
-        var translateString = "translate("+ legendX +", "+ legendY +")";
-
-        legend = svg.append("g")
-            .attr("class", "legend")
-            .attr("transform", translateString)
-            .style("font-size", "1.1em")
-            .call(d3.legend)
-
-        g.append("text")
-            .attr("transform", function (d) {
-                return "translate(" + arc.centroid(d) + ")";
-            })
-            .attr("dy", ".35em")
-            .style("text-anchor", "middle")
-            .text(function (d) {
-                return d.data.label;
-            });
-
-        function change(data){
-            //setTimeout(function(){
-            g = svg.selectAll(".arc")
-                .data(pie(data))
-                .enter().append("g")
-                .attr("class", "arc");
-
-            g.append("path")
-                .attr("d", arc)
-                .style("fill", function (d) {
-                    return color(d.data.label);
-                });
-
-            g.append("text")
-                .attr("transform", function (d) {
-                    return "translate(" + arc.centroid(d) + ")";
-                })
-                .attr("dy", ".35em")
-                .style("text-anchor", "middle")
-                .text(function (d) {
-                    return d.data.label;
-                });
-            //}, 1500);
+        function color(label) {
+            switch(label) {
+                case "YES":
+                    return voteColors.yes;
+                case "NO":
+                    return voteColors.no;
+                default:
+                    return "grey";
+            }
         }
 
-        // Store the displayed angles in _current.
-        // Then, interpolate from _current to the new angles.
-        // During the transition, _current is updated in-place by d3.interpolate.
-        function arcTween(a) {
-            var i = d3.interpolate(this._current, a);
-            this._current = i(0);
-            return function(t) {
-                return arc(i(t));
-            };
+        var yesNoChart;
+
+        function redrawYesNo(data) {
+            nv.addGraph(function() {
+
+                yesNoChart = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .color(d3.scale.category10().range())
+                    .width(width)
+                    .height(height);
+
+                  d3.select("#nvd3-yesNo-chart")
+                      .datum(data)
+                    .transition().duration(1200)
+                      .attr('width', width)
+                      .attr('height', height)
+                      .call(yesNoChart);
+
+                yesNoChart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return yesNoChart;
+            });
         }
+
+        redrawYesNo(yesNoData);
+
+        var viewsCommentsVotesChart;
+
+        function redrawViewsCommentsVotes(data) {
+            nv.addGraph(function() {
+
+                viewsCommentsVotesChart = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .color(d3.scale.category10().range())
+                    .width(width)
+                    .height(height);
+
+                  d3.select("#nvd3-viewsCommentsVotes-chart")
+                      .datum(data)
+                    .transition().duration(1200)
+                      .attr('width', width)
+                      .attr('height', height)
+                      .call(viewsCommentsVotesChart);
+
+                viewsCommentsVotesChart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return viewsCommentsVotesChart;
+            });
+        }
+
+        redrawViewsCommentsVotes(viewsCommentsVotesData);
         
         // these changes are attempting to show what's happening on our server
         // might be a complicated system if I need to handle these updates while a person 
         // adds and rescinds their vote.
         function changePie(newValue) {
             console.log('new rating: '+newValue);
-            var data1 = [];
+            var newData = [];
             if (myRating == 0) {
                 console.log('no vote previously');
                 // if the previous rating was 0 (no vote), then the new value can 
@@ -206,11 +226,11 @@
                     }
                 }
             }
-            data2 = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
-            change(data2);
+            newData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
+            redrawYesNo(newData);
             myRating = newValue;
-            console.log(data1);
-            console.log(data2);
+            console.log(newData);
+
             console.log('yesN: '+yes);
             console.log('noN: '+no);
             totalVotes = yes + no;
@@ -218,6 +238,8 @@
             console.log('meN: '+myRating);
 
         }
+        // ##
+        // ################################################################################
     </script>
 
 </%def>

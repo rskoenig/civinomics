@@ -32,6 +32,6 @@
             <hr>
             <h4 class="initiative-title">Arguments</h4>
             ${comments(c.initiative, c.discussion)}
-            ${helpers.voteShareModal(yes=c.initiative['ups'], no=c.initiative['downs'], views=c.initiative['views'], numComments=c.initiative['numComments'], myRating=c.initiative['myRating'])}
+            ${helpers.voteShareModal()}
         % endif
     % endif

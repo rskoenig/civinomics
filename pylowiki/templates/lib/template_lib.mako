@@ -471,6 +471,20 @@
 </%def>
 
 <%def name="voteShareModal(**kwargs)">
+    <%
+        if 'ups' in c.initiative:
+            yes=c.initiative['ups'] 
+            no=c.initiative['downs']
+            views=c.initiative['views']
+            numComments=c.numComments
+            myRating=c.initiative['myRating']
+        else:
+            yes='0'
+            no='0'
+            views=c.initiative['views']
+            numComments=c.numComments
+            myRating='0'
+    %>
     <!-- Vote Sharing Modal -->
     <div id="voteShareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="voteShareModal" aria-hidden="true">
         <div class="modal-header">
@@ -479,7 +493,7 @@
         </div>
         <div class="modal-body">
             ${d3Lib.includeD3()}
-            ${d3Lib.initiativeStats(yes=kwargs['yes'], no=kwargs['no'], views=kwargs['views'], numComments=kwargs['numComments'], myRating=kwargs['myRating'])}
+            ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating)}
             <div class='row-fluid'>   
                 <div class='span4'>
                     <h4> views vs. all other actions/objects
