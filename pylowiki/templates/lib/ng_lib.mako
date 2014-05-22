@@ -37,7 +37,7 @@
 </%def>
 
 <%def name="initiative_listing_condensed()">
-    <div class="media well search-listing initiative-listing" style="height: 415px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing initiative-listing" style="height: 415px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
             <div class="row">
                 <div class="col-sm-12">
@@ -67,9 +67,10 @@
 </%def>
 
 <%def name="idea_listing()">
-        <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
+    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+        <div ng-controller="yesNoVoteCtrl">
             ${authorPosting()}
-            <div class="media-body row" ng-controller="yesNoVoteCtrl" style="margin-top:19px;">
+            <div class="row" style="margin-top:19px;">
                 <div class="col-sm-12">
                     <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
@@ -77,12 +78,12 @@
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 </div>
-            </div><!-- media-body -->
+            </div>
             <div class="row">
                 ${yesNoVoteFooter()}
                 ${actions()}
             </div>
-        </div><!-- search-listing -->
+    </div><!-- media well -->
 </%def>
 
 <%def name="resource_listing()">
