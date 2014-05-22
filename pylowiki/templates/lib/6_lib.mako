@@ -1911,7 +1911,7 @@
               <% 
                 tagValue = tag.replace(" ", "_")
               %>
-              <a class="label workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+              <a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>

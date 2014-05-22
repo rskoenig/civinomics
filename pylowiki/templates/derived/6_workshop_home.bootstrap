@@ -8,6 +8,7 @@
 <% import pylowiki.lib.graphData       as graphData %>
 
 
+<div class="spacer"></div>
 <% numIdeas = str(len(c.ideas)) %>
     <div class="col-sm-9">
 
@@ -83,22 +84,22 @@
     
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
-      <div class="row-fluid" ng-show="!showStats" ng-cloak>
-        <div class="span12">
+      <div class="row" ng-show="!showStats" ng-cloak>
+        <div class="col-xs-12">
           <table>
             <tr>
               <td style="vertical-align: middle;">
                 <span class="lead grey expl-phrase right-indent" style="text-transform: capitalize;"><span ng-if="showSummary">All Activity</span><span ng-if="!showSummary">{{objType}}s</span></span>
               </td>
-              <td>
-                <ul class="nav nav-pills civ-search-tools messages inline" ng-cloak>
+              <td style="padding-bottom: 10px;">
+                <ul class="nav nav-pills" ng-cloak>
                   <li ng-class="{active : orderProp == ''}"><a ng-click="orderProp = ''">Recent</a></li>
                   <li ng-class="{active : orderProp == '-netVotes'}"><a ng-click="orderProp = '-netVotes'">Top Rated</a></li>
                   <li ng-class="{active : orderProp == '-voteCount'}"><a ng-click="orderProp = '-voteCount'">Most Votes</a></li>
                   <li ng-class="{active : orderProp == '-numComments'}"><a ng-click="orderProp = '-numComments'">Most Comments</a></li>
                   <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Status <b class="caret green"></b>
+                        Status <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li ng-class="{active : query2 = {status:'proposed'}">
@@ -131,20 +132,6 @@
 
       <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
         <tr>
-          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="activity-item-content-header">
-              <small>
-                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
-                <span class="date">{{item.fuzzyTime}} ago</span>
-              </small>
-            </div>
-          </td>
-        </tr>
-        <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
           </td>
@@ -174,7 +161,7 @@
 
     </div><!-- infinite-scroll -->
 
-   </div> <!-- /.span8 -->
+   </div> <!-- /.col-sm-8 -->
 
    <div class="col-sm-3">
       % if c.authuser:
@@ -187,7 +174,7 @@
         <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
       % endif
 
-      <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
+      <ul class="nav nav-pillsn workshop-menu">
         <li ng-class="{active: showSummary == true}">
           <a ng-click="toggleSummary()">Summary</a>
         </li>
@@ -210,7 +197,7 @@
             ${helpers.showFacilitators()}
             ${helpers.whoListening()}
          </div> <!--/.browse-->
-   </div> <!-- /.span3 -->
+   </div> <!-- /.col-sm-3 -->
 
 
 <%def name="extraScripts2()">

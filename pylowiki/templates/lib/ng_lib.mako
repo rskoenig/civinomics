@@ -69,36 +69,18 @@
 <%def name="idea_listing()">
         <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
             ${authorPosting()}
-            <div class="media-body row" ng-controller="yesNoVoteCtrl">
-                % if not c.w:
-                    <div class="col-sm-3">
-                        <div class="listed-photo">
-                            <a href = '{{item.parentHref}}'>
-                                <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                            </a>
-                        </div>
-                    </div>
-                % endif
-                % if not c.w:
-                    <div class="col-sm-9">
-                % else:
-                    <div class="col-sm-12">
-                % endif
+            <div class="media-body row" ng-controller="yesNoVoteCtrl" style="margin-top:19px;">
+                <div class="col-sm-12">
                     <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    % if not c.w:
-                        <p><small>${metaData()}</small></p>
-                    % endif
+                    <p><small>${metaData()}</small></p>
                     <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    ${authorPosting()}
                 </div>
             </div><!-- media-body -->
             <div class="row">
-                <div class="col-xs-12">
                 ${yesNoVoteFooter()}
                 ${actions()}
-                </div>
             </div>
         </div><!-- search-listing -->
 </%def>
@@ -108,7 +90,8 @@
         <div class="row" ng-controller="yesNoVoteCtrl">
             <div class="col-xs-11">
                 <p>${authorPosting()}</p>
-                <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small>({{item.link}})</small></a> ${metaData()}</h4>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small>({{item.link}})</small></a></h4>
+                <p><small>${metaData()}</small></p>
             </div>
             <div class="col-xs-1">
                 ${upDownVoteBlock()}
@@ -122,33 +105,18 @@
 
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
-        ${authorPosting()}
-        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            % if not c.w:
-                <div class="span3">
-                    <div class="listed-photo">
-                        <a href = '{{item.parentHref}}'>
-                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                        </a>
-                    </div>
-                </div>
-            % endif
-            % if not c.w:
-                <div class="span8">
-            % else:
-                <div class="span11 media-body">
-            % endif
-                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                % if not c.w:
-                    <p><small>${metaData()}</small></p>
-                % endif
+        <div class="row" ng-controller="yesNoVoteCtrl">
+            <div class="col-xs-11 media-body">
+                <p>${authorPosting()}</p>
+                <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small></small></a></h4>
+                <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
-            <div class="span1 voteWrapper">
+            <div class="col-xs-1">
                 ${upDownVoteBlock()}
             </div>
         </div>
-        <div class="row-fluid">
+        <div class="row">
             ${actions()}
         </div>
     </div>
@@ -242,7 +210,8 @@
     </div>
 </%def>
 
-<%def name="upDownVoteBlock()">   
+<%def name="upDownVoteBlock()"> 
+    <div class="text-center" >
     % if 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
             <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
@@ -262,6 +231,7 @@
             <i class="icon-chevron-sign-down icon-2x"></i>
         </a>
     % endif
+    </div>
     <br>
 </%def>
 

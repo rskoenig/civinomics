@@ -55,19 +55,21 @@
       ###
       ### Feed Filters
       ###
-      <!--
-      <div class="bottom-space-md">
-        <ul class="nav nav-pills">
-          <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
-          <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
-          % if c.authuser:
-            <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following </a></li>
-            <!-- <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
-          % endif
-        </ul>
+      <div class="spacer"></div>
+      <div class="row">
+        <div class="col-xs-12" style="margin-top: 5px; margin-bottom: 10px;">
+          <ul class="nav nav-pills">
+            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
+            <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
+            % if c.authuser:
+              <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
+              <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> County Activity</a></li>
+            % endif
+          </ul>
+        </div>
       </div>
-      -->
-      <h2><small>Initiatives</small></h2>
+      
+      <!--<h2><small>Initiatives</small></h2>-->
 
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}
