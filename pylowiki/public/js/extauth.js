@@ -29,7 +29,7 @@ function postShared(response, itemCode, itemURL, postId, userCode, workshopCode,
     // ! determine this here, then send the message to the corresponding route
     var encodedUrl = encodeURIComponent(itemURL)
     encodedUrl = encodedUrl.replace(/\%/g, ",")
-    //console.log('ea ic: '+itemCode);
+    console.log('ext auth postshared itemcode: '+itemCode);
     //console.log('ea wc: '+workshopCode);
     var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId + "/" + shareType
     //var checkURL = "/share/facebook"

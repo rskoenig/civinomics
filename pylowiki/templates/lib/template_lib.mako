@@ -500,7 +500,7 @@
                 <div class='span8 offset3'>   
                     <p>Share this initiative:</p>
                     % if c.initiative['public'] == '1':
-                        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
+                        ${lib_6.fbDialogShare2Buttons(shareOnWall=True, sendMessage=True, btn=True)}
 
                         % if not c.privs['provisional']:
                             <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
