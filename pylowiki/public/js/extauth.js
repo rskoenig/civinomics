@@ -16,12 +16,18 @@ function fbCheckAccount(responseName, authResponse, smallPic, bigPic){
     return checkResult;
 }
 
-function postShared(response, itemCode, itemURL, postId, userCode, workshopCode, shareType){
+// *************************************************
+// function postShared
+// *** called by facebook javascript sdk code when an item is shared on a wall or in a message
+// e.g. wallpost: postShared(response, thingCode, link, response.post_id, userCode, parentCode, 'facebook-wall')
+// e.g. message: postShared("no response", thingCode, link, '0', userCode, parentCode, 'facebook-message')
+// *************************************************
+function postShared(response, itemCode, itemURL, postId, userCode, parentCode, shareType){
     itemCode = itemCode || "noitemCode";
     itemURL = itemURL || "noitemURL";
     postId = postId || "nopostId";
     userCode = userCode || "nouserCode";
-    workshopCode = workshopCode || "noworkshopCode";
+    parentCode = parentCode || "noParentCode";
     shareType = shareType || "noshareType";
     // someone shared something. record this in the db
     // needing info to define the object that is being shared. could be a workshop, could be an 
@@ -30,8 +36,8 @@ function postShared(response, itemCode, itemURL, postId, userCode, workshopCode,
     var encodedUrl = encodeURIComponent(itemURL)
     encodedUrl = encodedUrl.replace(/\%/g, ",")
     console.log('ext auth postshared itemcode: '+itemCode);
-    //console.log('ea wc: '+workshopCode);
-    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId + "/" + shareType
+    //console.log('ea wc: '+parentCode);
+    var checkURL = "/share/facebook/" + userCode + "/" + parentCode + "/" + itemCode + "/" + encodedUrl + "/" + postId + "/" + shareType
     //var checkURL = "/share/facebook"
     var checkResult = $.ajax({
         type : 'POST',

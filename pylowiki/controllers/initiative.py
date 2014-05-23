@@ -543,12 +543,6 @@ class InitiativeController(BaseController):
         
         c.initiativeHome = True
 
-        #log.info(c.initiativeStats)
-        #from pprint import pprint
-        #l = dir(c.user)
-        #log.info(pprint (vars(l)))
-        #log.info(pprint(l))
-
         # nice to know if I've voted on this without having to do this in 6_lib.mako
         c.initiative['myRating'] = utils.getMyRating(c.initiative)
 

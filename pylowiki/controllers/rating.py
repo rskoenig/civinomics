@@ -55,7 +55,7 @@ class RatingController(BaseController):
             return False
         
         ratingObj = ratingLib.makeOrChangeRating(thing, c.authuser, amount, ratingType)
-        log.info("ratingObj.amount: %s"%ratingObj['amount'])
+        #log.info("ratingObj.amount: %s"%ratingObj['amount'])
         c.newAmount = ratingObj['amount']
 
     def index(self):

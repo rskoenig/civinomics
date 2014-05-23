@@ -74,10 +74,10 @@
         myRating = ${kwargs['myRating'] | n};
         totalVotes = yes + no;
 
-        console.log('yes: '+yes);
+        /*console.log('yes: '+yes);
         console.log('no: '+no);
         console.log('total: '+totalVotes);
-        console.log('me: '+myRating);
+        console.log('me: '+myRating);*/
 
         var yesNoData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
         var viewsCommentsVotesData = [{"label":"VIEWS", "value":views}, {"label":"COMMENTS  ", "value":numComments}, {"label":"VOTES", "value":totalVotes}];
@@ -111,17 +111,6 @@
         }
 
         var yesNoChart;
-        
-        /*var chart = nv.models.pieChart()
-            .x(function(d) {return d.key;})
-            .y(function(d) {return d.daily[0].sales;})
-            .showLabels(true)
-            .values(function(d) {return d;})
-            .color(d3.scale.aColors().range())
-            .donut(true)
-            .tooltips(true)
-            .tooltip(function(key, x, y, e, graph) {
-                return '<h3>' + key + ' Custom Text Here ' + x + '</h3> here' + '<p> or here ,' + y + '</p>'});*/
 
         function redrawYesNo(data) {
             nv.addGraph(function() {
@@ -191,17 +180,17 @@
         // might be a complicated system if I need to handle these updates while a person 
         // adds and rescinds their vote.
         function changePie(newValue) {
-            console.log('new rating: '+newValue);
+            //console.log('new rating: '+newValue);
             var newData = [];
             if (myRating == 0) {
-                console.log('no vote previously');
+                //console.log('no vote previously');
                 // if the previous rating was 0 (no vote), then the new value can 
                 // only be a vote (+/-1)
                 if (newValue > 0) {
-                    console.log('add 1 to yes');
+                    //console.log('add 1 to yes');
                     yes = yes + 1;
                 } else {
-                    console.log('add 1 to no');
+                    //console.log('add 1 to no');
                     no = no + 1;
                 }
             } else {
@@ -210,23 +199,23 @@
                 // either be 0 (no vote) or +/-1 (a vote for the other side)
                 if (newValue == 0) {
                     // vote has been rescinded
-                    console.log('vote has been rescinded');
+                    //console.log('vote has been rescinded');
                     if (myRating > 0) {
-                        console.log('removed my yes vote');
+                        //console.log('removed my yes vote');
                         yes = yes - 1;
                     } else {
-                        console.log('removed my no vote');
+                        //console.log('removed my no vote');
                         no = no - 1;
                     }
                 } else {
                     // a different vote has been cast
-                    console.log('vote has been changed to the other');
+                    //console.log('vote has been changed to the other');
                     if (newValue > 0) {
-                        console.log('yes instead of no');
+                        //console.log('yes instead of no');
                         yes = yes + 1;
                         no = no - 1;
                     } else {
-                        console.log('no instead of yes');
+                        //console.log('no instead of yes');
                         yes = yes - 1;
                         no = no + 1;
                     }
@@ -235,17 +224,16 @@
             newData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
             redrawYesNo(newData);
             myRating = newValue;
-            console.log(newData);
+            //console.log(newData);
 
-            console.log('yesN: '+yes);
+            /*console.log('yesN: '+yes);
             console.log('noN: '+no);
             totalVotes = yes + no;
             console.log('totalN: '+totalVotes);
-            console.log('meN: '+myRating);
+            console.log('meN: '+myRating);*/
 
         }
-        // ##
-        // ################################################################################
+        
     </script>
 
 </%def>

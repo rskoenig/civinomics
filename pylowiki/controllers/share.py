@@ -58,18 +58,20 @@ class ShareController(BaseController):
         returnMsg =  "Email sent, thanks for sharing!"
         return returnMsg
   
+    # og version:
+    #def shareFacebookHandler(self, itemCode, itemURL, postId, shareType):
     @h.login_required
-    def shareFacebookHandler(self, itemCode, itemURL, postId, shareType):
+    def shareFacebookHandler(self, userCode, parentCode, itemCode, itemURL, postId, shareType):
         # create the share object
         # postId will allow us to make a facebook graph api call to see the message associated with this share
         # see https://developers.facebook.com/docs/reference/api/post/
-        log.info("in shareFacebookHandler code: %s | url: %s | postid: %s | shareType: %s"%(itemCode, itemURL, postId, shareType) )
+        log.info("in shareFacebookHandler userCode: %s,, parentCode: %s,, itemCode: %s,, itemURL: %s,, postId: %s,, shareType: %s"%(userCode, parentCode, itemCode, itemURL, postId, shareType) )
         itemURL = itemURL.replace(",","%")
         itemURL = urllib2.unquote(itemURL)
         if itemCode and itemURL and postId:
             if 'user' in session:
                 #log.info("item shared %s | %s | %s"%(itemCode, itemURL, postId) )
-                share = shareLib.Share(c.authuser, itemCode, itemURL, shareType, '', postId)
+                share = shareLib.Share(userCode, itemCode, itemURL, shareType, '', postId, parentCode=parentCode)
                 return 'share stored'
         else:
             return None
