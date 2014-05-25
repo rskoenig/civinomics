@@ -1,11 +1,14 @@
-var myApp = angular.module('myApp', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
-myApp.factory('ThingData', function(){
-	return {message:"I'm data from a service"}
-});
+//var myApp = angular.module('myApp', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
+//myApp.factory('ThingData', function(){
+//	return {message:"I'm data from a service"}
+//});
 
-function showThingCtrl($scope, $http, ThingData) {
+function showThingCtrl($scope, $http) {
 
-	$scope.item = ThingData
+	//$scope.item = ThingData
+
+    $scope.parentCode = '0';
+    $scope.submit = 'reply';
 
 	$scope.costRegex = /^(\-)?(([1-9]\d{0,2}(,\d{3})*)|(([1-9]\d*)?\d))$/;
     $scope.clearTitle = function() {
@@ -26,6 +29,7 @@ function showThingCtrl($scope, $http, ThingData) {
 				$scope.item = data.thing;
 				ThingData = $scope.item
 
+                //things for the yesNo voting controller
 				$scope.urlCode= $scope.item.urlCode;
 				$scope.url= $scope.item.url;
 				$scope.totalVotes= $scope.item.voteCount;
@@ -46,18 +50,26 @@ function showThingCtrl($scope, $http, ThingData) {
 			        $scope.voted = 'noVoted';
 			    }
 
+                //things for the comments controller
+                $scope.discussionCode = $scope.item.discussion;
+                $scope.type = $scope.item.objType;
+                $scope.thingCode = $scope.item.urlCode; 
+                $scope.numComments = $scope.item.numComments;
+                $scope.parentCode = $scope.item.parentCode;
+
+
 			}
 			$scope.loading = false;
+            $scope.getComments()
 		});
     };
 
     $scope.getThingData();
 
-}
 
-function commentsController($scope, $http, ThingData) {
 
-	$scope.thing = ThingData
+	//$scope.thing = ThingData
+    
 
 	$scope.commentsLoading = false;
 	$scope.commentsHidden = true;
@@ -66,7 +78,7 @@ function commentsController($scope, $http, ThingData) {
 	$scope.getComments = function(){
 		if ($scope.commentsHidden == true){
 			$scope.commentsLoading = true	
-			$http.get('/getComments/' + $scope.thing.discussion ).success(function(data){
+			$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 				if (data.statusCode == 1){
 					$scope.commentsResult = true;
 				} 
@@ -83,7 +95,7 @@ function commentsController($scope, $http, ThingData) {
 	};
 
 	$scope.getUpdatedComments = function(){
-		$http.get('/getComments/' + $scope.thing.discussion ).success(function(data){
+		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 			if (data.statusCode == 1){
 				$scope.commentsResult = true;
 			} 
@@ -105,9 +117,9 @@ function commentsController($scope, $http, ThingData) {
 
 	$scope.submitComment = function(){
 		$scope.newCommentLoading = true
-		var commentData = {'type':$scope.type, 'thingCode': $scope.thing.urlCode, 'discussionCode': $scope.thing.discussion, 'parentCode': $scope.thing.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
+		$scope.commentData = {'type':$scope.type, 'thingCode': $scope.urlCode, 'discussionCode': $scope.discussionCode, 'parentCode': '0', 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
 		$scope.newCommentURL = '/comment/add/handler';
-		$http.post($scope.newCommentURL, commentData).success(function(data){
+		$http.post($scope.newCommentURL, $scope.commentData).success(function(data){
 			$scope.numComments = Number($scope.numComments) + 1;
             $scope.getUpdatedComments();
             $scope.commentRole = '';

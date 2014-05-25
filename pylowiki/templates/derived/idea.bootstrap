@@ -1,19 +1,29 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+<%namespace name="comment_lib" file="/lib/6_comments.mako" />
 
 
-<div class="container" ng-app="myApp">
+<div class="container">
 	<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
-	<div ng-controller="showThingCtrl">
+	<div ng-controller="showThingCtrl" ng-cloak>
 		<div class="row">
 			<div class="col-sm-9 well">
-				<h3 class="well-header" ng-cloak>${ng_lib.metaData()} test.message = </h3>
+				<h3 class="well-header" ng-cloak>${ng_lib.metaData()}</h3>
 				<h1 ng-cloak>{{item.title}}</h1>
 				<p>{{item.text}}</p>
 				<p>${ng_lib.authorPosting()}</p>
 				<div class="row">
-					${ng_lib.actions()}
+
+					<!-- 
+						Need to clean up angular comments the way main.js controller interacts with comments controller
+					-->
+
+					<div class="actions">
+        				${ng_lib.actions2()}
+        			</div>
+
+
 				</div>
 			</div>
 			<div class="col-sm-3">

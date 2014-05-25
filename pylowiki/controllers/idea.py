@@ -15,6 +15,7 @@ import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.rating       as ratingLib
+import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.json            as jsonLib
 import pylowiki.lib.helpers as h
 
@@ -30,6 +31,7 @@ class IdeaController(BaseController):
 
     def __before__(self, action, workshopCode = None):
 
+        userLib.setUserPrivs()
         ## old workshop dependency
         if workshopCode:
             c.w = workshopLib.getWorkshopByCode(workshopCode)
@@ -233,6 +235,18 @@ class IdeaController(BaseController):
     def showJsonIdea(self, ideaCode, ideaURL):
         c.ideaCode = ideaCode
         c.ideaURL = ideaURL
+
+        # won't need these once we angular look up comments
+        c.thing = ideaLib.getIdea(ideaCode)
+        log.info('the thing code is %s' % c.thing['urlCode'])
+        c.discussion = discussionLib.getDiscussionForThing(c.thing)
+        log.info('the idea discussion code is %s' % c.discussion['urlCode'])
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
+
+
         return render('/derived/idea.bootstrap')
 
 

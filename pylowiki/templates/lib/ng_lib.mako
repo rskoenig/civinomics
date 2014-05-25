@@ -370,16 +370,13 @@
                 </tr>
                 
             </table>
-
         </div>
     </div>
 </%def>
 
 <%def name="actions2()">
-    <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
-        <div ng-controller="commentsController">
+    
             ### Comments
-            <h3>Testing fools {{thing.message}}{{thing.discussion}}</h3>
             <table class="activity-comments">
 
                 <tr class="actions-links">
@@ -484,6 +481,4 @@
                 
             </table>
 
-        </div>
-    </div>
 </%def>
