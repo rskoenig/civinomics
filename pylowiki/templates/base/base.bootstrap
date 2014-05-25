@@ -4,7 +4,7 @@
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
-<html lang="en-US" ng-app='civ'>
+<html lang="en-US">
    <head>
       <meta charset="UTF8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
@@ -24,9 +24,6 @@
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/geoSearch.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/signup_login.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/comments.js')}"></script>
-      <script>
-        var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
-      </script>
       <script src="/js/extauth.js" type="text/javascript"></script>
       ${self.extraStyles()}
       ${self.headScripts()}

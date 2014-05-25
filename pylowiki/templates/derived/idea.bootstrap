@@ -3,12 +3,12 @@
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 
 
-<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
-<div class="container">
+<div class="container" ng-app="myApp">
+	<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
 	<div ng-controller="showThingCtrl">
 		<div class="row">
 			<div class="col-sm-9 well">
-				<h3 class="well-header" ng-cloak>${ng_lib.metaData()} {{data.message}}</h3>
+				<h3 class="well-header" ng-cloak>${ng_lib.metaData()} test.message = </h3>
 				<h1 ng-cloak>{{item.title}}</h1>
 				<p>{{item.text}}</p>
 				<p>${ng_lib.authorPosting()}</p>
@@ -34,7 +34,5 @@
 </div>
 
 <%def name="headScripts()">
-	<script src="${lib_6.fingerprintFile('/js/ng/showThing.js')}" type="text/javascript"></script>
-	<script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
-	<script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+	<script src="${lib_6.fingerprintFile('/js/ng/main.js')}" type="text/javascript"></script>
 </%def>
