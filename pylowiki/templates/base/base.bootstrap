@@ -86,7 +86,7 @@
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/en_US/sdk.js";
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
             
@@ -145,6 +145,7 @@
                 // Full docs on the response object can be found in the documentation
                 // for FB.getLoginStatus().
                 if (response.status === 'connected') {
+                    console.log('connected');
                     // Logged into your app and Facebook.
                     //console.log('connected');
                     fbConnected(response);
@@ -198,6 +199,9 @@
                     FB.Event.subscribe('auth.login', login_event);
                     FB.Event.subscribe('auth.logout', logout_event);
                     // mark no fb button press yet
+                    
+                    getLikesThisPage();
+
                     if (${userLoggedIn}) {
                         console.log('user logged in');
                         // getLoginStatus: gets the state of the person visiting this page
@@ -224,6 +228,22 @@
               }
               console.log(out);
             }*/
+            function getLikesThisPage() {
+                console.log('get Likes This Page: ' + window.location);
+                FB.api(
+                    {
+                        method: 'fql.query',
+                        query: 'SELECT share_count, like_count, comment_count, total_count FROM link_stat WHERE url="' + window.location + '"'
+                    },
+                    function(countResponse) {
+                        console.log(countResponse);
+                        /*share_count = countResponse[0].share_count;
+                        like_count = countResponse[0].like_count;
+                        comment_count = countResponse[0].comment_count;
+                        total_count = countResponse[0].total_count;*/
+                    }
+                );
+            }
 
             function fbConnected(response) {
                 // this person has given us permission to work with their facebook identity.
@@ -259,7 +279,7 @@
                             bigPic = apiResponse[0].pic_big;
                             callback();
                           }
-                        );                    
+                        );
                     },
                     function(callback) {
                         // perform fbauthcheck now that the pic urls have been loaded

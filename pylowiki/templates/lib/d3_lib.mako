@@ -73,7 +73,7 @@
         numComments = ${kwargs['numComments'] | n};
         myRating = ${kwargs['myRating'] | n};
         totalVotes = yes + no;
-
+        
         /*console.log('yes: '+yes);
         console.log('no: '+no);
         console.log('total: '+totalVotes);
@@ -82,6 +82,17 @@
         var yesNoData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
         var viewsCommentsVotesData = [{"label":"VIEWS", "value":views}, {"label":"COMMENTS  ", "value":numComments}, {"label":"VOTES", "value":totalVotes}];
 
+        
+        var marginSm = {
+          top: 4,
+          right: 8,
+          bottom: 2,
+          left: 2
+        }; 
+        var widthSm = 150 - marginSm.left - marginSm.right;
+        var heightSm = 150 - marginSm.top - marginSm.bottom;
+        radiusSm = 70;                   //radius
+        
         var margin = {
           top: 20, 
           right: 40, 
@@ -144,6 +155,40 @@
 
         redrawYesNo(yesNoData);
 
+        var yesNoChartSm;
+
+        function redrawYesNoSm(data) {
+            nv.addGraph(function() {
+
+                yesNoChartSm = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .showLabels(true)
+                    .color(d3.scale.category10().range())
+                    .tooltips(true)
+                    .width(widthSm)
+                    .height(heightSm);
+
+                yesNoChartSm.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-yesNo-chartSm")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', widthSm)
+                    .attr('height', heightSm)
+                    .call(yesNoChartSm);
+
+                yesNoChartSm.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return yesNoChartSm;
+            });
+        }
+
+        redrawYesNoSm(yesNoData);
+
         var viewsCommentsVotesChart;
 
         function redrawViewsCommentsVotes(data) {
@@ -175,6 +220,38 @@
         }
 
         redrawViewsCommentsVotes(viewsCommentsVotesData);
+
+        var viewsCommentsVotesChartSm;
+
+        function redrawViewsCommentsVotesSm(data) {
+            nv.addGraph(function() {
+
+                viewsCommentsVotesChartSm = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .color(d3.scale.category10().range())
+                    .width(widthSm)
+                    .height(heightSm);
+
+                viewsCommentsVotesChartSm.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-viewsCommentsVotes-chartSm")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', widthSm)
+                    .attr('height', heightSm)
+                    .call(viewsCommentsVotesChartSm);
+
+                viewsCommentsVotesChartSm.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return viewsCommentsVotesChartSm;
+            });
+        }
+
+        redrawViewsCommentsVotesSm(viewsCommentsVotesData);
         
         // these changes are attempting to show what's happening on our server
         // might be a complicated system if I need to handle these updates while a person 
@@ -223,6 +300,7 @@
             }
             newData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
             redrawYesNo(newData);
+            redrawYesNoSm(newData);
             myRating = newValue;
             //console.log(newData);
 

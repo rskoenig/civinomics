@@ -51,6 +51,10 @@
         <div class="span4 zipLookup" ng-controller="zipLookupCtrl" ng-cloak>
             <div class="well well-splash-content">
                 <h3>Zip Code Lookup</h3>
+                <script src="//platform.linkedin.com/in.js" type="text/javascript">
+                    lang: en_US
+                </script>
+                <script type="IN/FollowCompany" data-id="Civinomics" data-counter="right"></script>
                 <form class="form-inline" name="zipForm">
                     <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
                         <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
