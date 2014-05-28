@@ -19,7 +19,8 @@
                 <a href="{{item.href}}">{{item.title}}</a>
                 <p>Public Meeting of {{item.group}}</p>
                 <p>{{item.location}}</p>
-                <p><a href="{{item.href}}">View, vote and comment on agenda items.</a></p>
+                <p ng-show="(item.agendaItemCount != '0')"><a href="{{item.href}}">View, vote and comment on agenda items.</a></p>
+                <p ng-show="(item.agendaItemCount == '0' && item.agendaPostDate != '')">Agenda posted: {{item.agendaPostDate}}</p>
             </div>
         </div><!-- row-fluid -->
     </div><!-- media-well -->
@@ -312,11 +313,11 @@
 </%def>
 
 <%def name="moreLess()">
-    <a class="green green-hover" ng-show="item.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a class="green green-hover" ng-show="item.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="moreLessComment()">
-    <a class="green green-hover" ng-show="comment.text.length > 300 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a class="green green-hover" ng-show="comment.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="metaData()">
