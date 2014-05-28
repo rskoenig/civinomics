@@ -128,14 +128,22 @@
 
                                 %>
                                 % if c.initiative['public'] == '1':
-                                    <script>
+                                    <style>
                                         .fb_iframe_widget_lift {
-                                            top: -224px !important; 
-                                            left: -246px !important; 
-                                            margin-left: -350px !important;
+                                            top: 0px !important; 
+                                            left: -156px !important; 
                                         }
-                                    </script>
-                                    <div class="fb-like" data-ref="Todd831" data-href="${c.facebookShare.url}" data-width="100" data-layout="button_count" data-action="like" data-show-faces="false" data-colorscheme="light" data-share="true"></div>
+
+                                        .btn {
+                                            margin-top: 4px !important; 
+                                            padding: 1px 6px !important; 
+                                            font-size: 12px !important;
+                                            line-height: 16px !important;
+                                        }
+                                    
+                                    </style>
+                                    <div id="fb-likesSharesComments"></div>
+                                    ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
                                     
                                     % if not c.privs['provisional']:
                                         <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>

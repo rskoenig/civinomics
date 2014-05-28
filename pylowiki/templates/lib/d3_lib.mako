@@ -52,14 +52,22 @@
     
     <div class='row-fluid'>   
         <div class='span6'>
-            <div>
-                <h4>Vote distribution</h4>
+            <div class='row-fluid'>   
+                <div class='span9 offset3'>
+                    <h4>Vote distribution</h4>
+                </div>
+            </div>
+            <div class='row-fluid'>
                 <svg id="nvd3-yesNo-chart" class="voteModalPieChart"></svg>
             </div>
         </div>
         <div class='span6'>
-            <h4>Activity counts</h4>
-            <div>
+            <div class='row-fluid'>   
+                <div class='span9 offset3'>
+                    <h4>Activity counts</h4>
+                </div> 
+            </div>
+            <div class='row-fluid'>
                 <svg id="nvd3-viewsCommentsVotes-chart" class="voteModalPieChart"></svg>
             </div>
         </div>

@@ -29,8 +29,15 @@
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
 
+
 <%def name="facebookDialogShare2(**kwargs)">
     <%
+        ####################################################################################
+        # function facebookDialogShare2:
+        #  
+        #
+        #
+        #####################################################################################
         shareOk = False
         shareOn = False
         if c.facebookShare:
@@ -197,14 +204,22 @@
           % endif
           <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
             <li>
-              % if shareOnWall:
-                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
-              % endif
+                <div class="span9 offset3">
+                    <div class="fb-like" data-href="${c.facebookShare.url}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false" style=""></div>
+                </div>
             </li>
+            % if shareOnWall:
+                <li>
+                    <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+                </li>
+            % endif
+            % if sendMessage:
+                <li>
+                    <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+                </li>
+            % endif
             <li>
-              % if sendMessage:
-                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
-              % endif
+                <div class="fb-likesSharesComments"></div>
             </li>
           </ul>
         </div>

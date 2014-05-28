@@ -236,7 +236,9 @@
                         query: 'SELECT share_count, like_count, comment_count, total_count FROM link_stat WHERE url="' + window.location + '"'
                     },
                     function(countResponse) {
-                        console.log(countResponse);
+                        console.log(countResponse[0].like_count);
+                        var likesSharesComments = '<h5>Likes ' + countResponse[0].like_count + ', Shares ' + countResponse[0].share_count + ', Comments ' + countResponse[0].comment_count + '</h5>';
+                        $('.fb-likesSharesComments').html(likesSharesComments);
                         /*share_count = countResponse[0].share_count;
                         like_count = countResponse[0].like_count;
                         comment_count = countResponse[0].comment_count;

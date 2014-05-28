@@ -497,24 +497,34 @@
         </div>
         <div class="modal-body">
             <div class='row-fluid'>
-                <div class='span8 offset3'>   
-                    <p>Share this initiative:</p>
-                    % if c.initiative['public'] == '1':
-                        <div class="fb-like" data-href="${c.facebookShare.url}" data-width="100" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+                <div class='span11 offset1'>   
+                    <p>Now that you've voted, would you like to share this initiative with others?</p>
+                    <div class='row-fluid'>
+                        % if c.initiative['public'] == '1':
+                            <div class='span4 offset2'>
+                                ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
+                            </div>
+                            % if not c.privs['provisional']:
+                                <div class='span6'>
+                                    <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                                </div>
+                            % endif
 
-                        % if not c.privs['provisional']:
-                            <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                            <!-- % if c.initiative['public'] == '1':
+                                <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                            #%endif -->
+
+                        % else:
+                            <div class='span4 offset2'>
+                                <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
+                                    <i class="icon-facebook icon-light right-space"></i> | Share
+                                </a>
+                            </div>
+                            <div class='span6'>
+                                <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
+                            </div>
                         % endif
-
-                        <!-- % if c.initiative['public'] == '1':
-                            <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-                        #%endif -->
-                    % else:
-                        <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
-                            <i class="icon-facebook icon-light right-space"></i> | Share
-                        </a>
-                        <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
-                    % endif
+                    </div>
                 </div>
             </div>
             ${d3Lib.includeD3()}
