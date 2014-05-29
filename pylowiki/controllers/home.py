@@ -28,6 +28,7 @@ import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
 import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
+import pylowiki.lib.db.meeting 			as meetingLib
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.fuzzyTime			as fuzzyTime	
 import misaka as m
@@ -410,12 +411,16 @@ class HomeController(BaseController):
 				
 			# special case for meetings
 			if item.objType == 'meeting':
+			    aCount = meetingLib.getAgendaItems(item['urlCode'], 1)
 			    dList = item['meetingDate'].split('-')
 			    entry['meetingDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+			    dList = item['agendaPostDate'].split('-')
+			    entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
 			    entry['meetingTime'] = item['meetingTime']
 			    entry['location'] = item['location']
 			    entry['group'] = item['group']
 			    entry['href'] += '/show'
+			    entry['agendaItemCount'] = str(aCount)
 
 			result.append(entry)
 
