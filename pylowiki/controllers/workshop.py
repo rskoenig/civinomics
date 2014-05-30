@@ -1471,7 +1471,12 @@ class WorkshopController(BaseController):
         commments = int(comments)
 
         #recentActivity = activityLib.getRecentActivity(max)
-        workshopActivity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        if c.w['allowIdeas'] == '0':
+            sort = 1
+        else:
+            sort = 0
+
+        workshopActivity = activityLib.getActivityForWorkshop(c.w['urlCode'], sort)
         
         myRatings = {}
         if 'ratings' in session:
