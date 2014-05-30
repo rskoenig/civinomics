@@ -1,5 +1,8 @@
 
 function activityWorkshopController($scope, $http) {
+    if ($scope.allowIdeas == '0') {
+        $scope.addObjType = 'discussion'
+    }
 	$scope.listingType = 'activity';
 	$scope.objType = 'idea'
 	$scope.activityLoading = true;

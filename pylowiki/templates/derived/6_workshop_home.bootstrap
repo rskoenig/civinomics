@@ -65,7 +65,9 @@
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
                     <select name="objType" ng-model="objType">
-                      <option value="idea">Idea</option>
+                      % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                        <option value="idea">Idea</option>
+                      % endif
                       <option value="discussion">Discussion</option>
                       <option value="resource">Resource</option>
                     </select>
@@ -179,12 +181,12 @@
    <div class="span3">
       % if c.authuser:
         % if c.privs and not c.privs['provisional']:
-          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{objType}}...</button>
+          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
         % else:
-          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
+          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
         % endif
       % else:
-        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
+        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
       % endif
 
       <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
