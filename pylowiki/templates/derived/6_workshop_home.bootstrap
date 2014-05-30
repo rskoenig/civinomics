@@ -64,12 +64,14 @@
             <td class="well" style="padding: 10px;">
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
-                    <select name="objType" ng-model="objType">
+                    <select name="objType" ng-model="addObjType">
                       % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
                         <option value="idea">Idea</option>
                       % endif
                       <option value="discussion">Discussion</option>
-                      <option value="resource">Resource</option>
+                      % if c.w['allowResources'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                        <option value="resource">Resource</option>
+                      % endif
                     </select>
                     <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
                     <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
