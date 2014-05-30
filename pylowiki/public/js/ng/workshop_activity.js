@@ -11,6 +11,9 @@ function activityWorkshopController($scope, $http) {
 	$scope.numIdeas = 0
 	$scope.numDiscussions = 0
 	$scope.numResources = 0;
+	if ($scope.offset == undefined) {
+	    $scope.offset = 0;
+	}
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
