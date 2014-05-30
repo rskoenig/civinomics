@@ -140,7 +140,7 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
     except:
        return False  
 
-def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
+def getActivityForWorkshop(workshopCode, sort = 0, disabled = '0', deleted = '0'):
     """
         Activity inside a single workshop
         Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
@@ -151,11 +151,15 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
     values = [deleted, disabled]
     finalActivityList = []
     try:
+        dateOrder = '-date'
+        if sort:
+            dateOrder = 'date'
+            
         initialActivityList = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objTypes))\
             .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
-            .order_by('-date')\
+            .order_by(dateOrder)\
             .all()
         # Messy
         for activity in initialActivityList:
