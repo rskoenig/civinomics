@@ -41,7 +41,7 @@
         else:
             manageWs_active = "active"
 %>
-<div class="row-fluid">
+<div class="row">
     <div class="col-sm-9">
         ${home_helpers.workshopHero()}
         % if c.conf['read_only.value'] == 'true':
@@ -135,7 +135,7 @@
         % endif 
         ${helpers.publish()}
     </div><!-- col-sm-3 -->
-</div><!-- row-fluid -->
+</div><!-- row -->
     
 
 <%def name = 'extraStyles()'>

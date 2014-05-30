@@ -1614,6 +1614,12 @@ ul.goals li.finished {
 .goalList{
     margin-top:-10px;
 }
+
+ul.unstyled, ol.unstyled {
+  margin-left: 0;
+  list-style: none;
+}
+
 .goalList li .deleteGoal{
   display:none;
   width:15px;
