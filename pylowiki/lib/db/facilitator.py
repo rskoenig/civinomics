@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
@@ -46,12 +47,10 @@ def getFacilitatorsByUser(user, disabled = '0'):
         return False
         
 def setFacilitatorsByUserInSession(fdisabled = '0'):
+    if 'facilitatorWorkshops' not in c.authuser or 'facilitatorInitatives' not in c.authuser:
         facilitatorList = getFacilitatorsByUser(c.authuser, disabled = fdisabled)
         facilitatorWorkshops = []
-        if 'facilitatorInitiatives' in session:
-            facilitatorInitiatives = session['facilitatorInitiatives']
-        else:
-            facilitatorInitiatives = []
+        facilitatorInitiatives = []
         
         for f in facilitatorList:
             if f['disabled'] == fdisabled:
@@ -59,10 +58,16 @@ def setFacilitatorsByUserInSession(fdisabled = '0'):
                     facilitatorWorkshops.append(f['workshopCode'])
                 elif 'initiativeCode' in f:
                     facilitatorInitiatives.append(f['initiativeCode'])
-                    
-        session["facilitatorWorkshops"] = facilitatorWorkshops
-        session["facilitatorInitiatives"] = facilitatorInitiatives
-        session.save()
+        c.authuser['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+        c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+        
+    else:
+        facilitatorWorkshops = pickle.loads(str(c.authuser["facilitatorWorkshops"]))
+        facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+        
+    session["facilitatorWorkshops"] = facilitatorWorkshops
+    session["facilitatorInitiatives"] = facilitatorInitiatives
+    session.save()
 
 def getFacilitatorsByUserAndWorkshop(user, workshop, disabled = '0'):
     try:

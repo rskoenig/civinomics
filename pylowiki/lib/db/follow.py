@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from sqlalchemy import and_
 from pylons import session, tmpl_context as c
@@ -86,13 +87,18 @@ def getUserFollows( user, disabled = '0'):
     except:
         return False
         
-def setUserFollowsInSession(udisabled = '0'):        
-    following = getUserFollows(c.authuser, disabled = udisabled)
-    if following:
-        userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
-        followingUsers = [ user.id for user in userList ]
+def setUserFollowsInSession(udisabled = '0'):
+    if 'followingUsers' not in c.authuser:
+        following = getUserFollows(c.authuser, disabled = udisabled)
+        if following:
+            userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
+            followingUsers = [ user.id for user in userList ]
+        else:
+            followingUsers = []
+        c.authuser['followingUsers'] = str(pickle.dumps(followingUsers))
+        commit(c.authuser)
     else:
-        followingUsers = []
+        followingUsers = pickle.loads(str(c.authuser['followingUsers']))
     session["followingUsers"] = followingUsers
     session.save()
 
@@ -145,10 +151,13 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             if f['disabled'] == '1':
                 if sKey in session and thingCode in session[sKey]:
                     session[sKey].remove(thingCode)
+                    user[sKey] = str(pickle.dumps(session[sKey]))
+                    commit(user)
             else:
-                log.info("follow thing enabled")
                 if sKey in session and thingCode not in session[sKey]:
                     session[sKey].append(thingCode)
+                    user[sKey] = str(pickle.dumps(session[sKey]))
+                    commit(user)
         else:
             f = Thing('follow', user.id)
             generic.linkChildToParent(f, thing)
@@ -157,8 +166,12 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             f['disabled'] = disabled
             if sKey in session and session[sKey] and thingCode not in session[sKey]:
                 session[sKey].append(thingCode)
+                user[sKey] = str(pickle.dumps(session[sKey]))
+                commit(user)
             elif sKey in session and not session[sKey]:
                 session[sKey].append(thingCode)
+                user[sKey] = str(pickle.dumps(session[sKey]))
+                commit(user)
 
         
         if thing.objType == 'user':
