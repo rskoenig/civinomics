@@ -27,7 +27,7 @@ def getShareByUserAndCode(user, code):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'share')\
                 .filter_by(owner = user.id)\
-                .filter(Thing.data.any(wc('urlCode', code)))
+                .filter(Thing.data.any(wc('urlCode', code)))\
                 .all()
     except:
         return False
