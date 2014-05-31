@@ -2216,6 +2216,13 @@ li.thumbnail-gallery{
   color: #4c66a4;
 }
 
+.fb-item-counts {
+  background: blue; 
+  color: white; 
+  padding: 2px; 
+  border-radius: 2px;
+}
+
 .icon-twitter-sign{
   color: #0099cc;
 }

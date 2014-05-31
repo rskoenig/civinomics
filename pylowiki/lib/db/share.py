@@ -23,6 +23,15 @@ def getSharesByUser(user):
     except:
         return False
 
+def getShareByUserAndCode(user, code):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'share')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('urlCode', code)))
+                .all()
+    except:
+        return False
+
 #def Share(user, itemCode, itemURL, email, name, message):
 #       userCode, itemCode, itemURL, shareType, '', postId)
 def Share(user, itemCode, itemURL, email, name, message, **kwargs):

@@ -195,7 +195,7 @@
         <div class="btn-group facebook">
           % if 'btn' in kwargs:
             <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
-              <i class="icon-facebook icon-light right-space"></i> | Share
+              <i class="icon-facebook icon-light right-space"></i> Share
             </a>
           % else:
             <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
@@ -203,11 +203,6 @@
             </a>
           % endif
           <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
-            <li>
-                <div class="span9 offset3">
-                    <div class="fb-like" data-href="${c.facebookShare.url}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false" style=""></div>
-                </div>
-            </li>
             % if shareOnWall:
                 <li>
                     <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
@@ -243,7 +238,7 @@
     <div class="btn-group facebook">
         % if 'btn' in kwargs:
             <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
-                <i class="icon-facebook icon-light right-space"></i> | Share
+                <i class="icon-facebook icon-light right-space"></i> Share
             </a>
         % else:
             <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
@@ -251,15 +246,19 @@
             </a>
         % endif
         <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
-            <li>
-                % if shareOnWall:
+            % if shareOnWall:
+                <li>
                     <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
-                % endif
-            </li>
-            <li>
-                % if sendMessage:
+                </li>
+            % endif
+            % if sendMessage:
+                <li>
                     <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
-                % endif
+                
+                </li>
+            % endif
+            <li>
+                <div class="fb-likesSharesComments"></div>
             </li>
         </ul>
     </div>

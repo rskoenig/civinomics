@@ -142,13 +142,20 @@
                                         }
                                     
                                     </style>
-                                    <div id="fb-likesSharesComments"></div>
-                                    ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
                                     
-                                    % if not c.privs['provisional']:
-                                        <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
-                                    % endif
-
+                                    <div class="span4">
+                                        <div class="top-space">
+                                            <div class="fb-like" data-href="${c.facebookShare.url}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false" style=""></div>
+                                        </div>
+                                    </div>
+                                    <div class="span2">
+                                        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
+                                    </div>
+                                    <div class="span5">
+                                        % if not c.privs['provisional']:
+                                            <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> Email</i></a>
+                                        % endif
+                                    </div>
                                     <!-- % if c.initiative['public'] == '1':
                                         <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
                                     #%endif -->
@@ -192,16 +199,16 @@
                 </div>
                 % if 'user' in session:
                     <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
-                        <h4>Vote for a better view of these charts:</h4>
+                        <h4>Vote for bigger charts:</h4>
                         <div class='row-fluid'>   
                             <div class='span6'>
                                 <div>
-                                    <h5>Vote distribution</h5>
+                                    <h5>Voting</h5>
                                     <svg id="nvd3-yesNo-chartSm" class="voteModalPieChart"></svg>
                                 </div>
                             </div>
                             <div class='span6'>
-                                <h5>Activity counts</h5>
+                                <h5>Activity</h5>
                                 <div>
                                     <svg id="nvd3-viewsCommentsVotes-chartSm" class="voteModalPieChart"></svg>
                                 </div>

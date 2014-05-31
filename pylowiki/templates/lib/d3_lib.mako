@@ -54,7 +54,7 @@
         <div class='span6'>
             <div class='row-fluid'>   
                 <div class='span9 offset3'>
-                    <h4>Vote distribution</h4>
+                    <h4>Voting</h4>
                 </div>
             </div>
             <div class='row-fluid'>
@@ -64,7 +64,7 @@
         <div class='span6'>
             <div class='row-fluid'>   
                 <div class='span9 offset3'>
-                    <h4>Activity counts</h4>
+                    <h4>Activity</h4>
                 </div> 
             </div>
             <div class='row-fluid'>
@@ -87,8 +87,8 @@
         console.log('total: '+totalVotes);
         console.log('me: '+myRating);*/
 
-        var yesNoData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
-        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views}, {"label":"COMMENTS  ", "value":numComments}, {"label":"VOTES", "value":totalVotes}];
+        var yesNoData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"         NO", "value":no, "color":"#ff0000"}];
+        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views, "color":"grey"}, {"label":"COMMENTS  ", "value":numComments, "color":"blue"}, {"label":"VOTES", "value":totalVotes, "color":"gold"}];
 
         
         var marginSm = {
@@ -101,6 +101,10 @@
         var heightSm = 150 - marginSm.top - marginSm.bottom;
         radiusSm = 70;                   //radius
         
+        var widthMed = 160 - marginSm.left - marginSm.right;
+        var heightMed = 160 - marginSm.top - marginSm.bottom;
+        radiusMed = 90;                   //radius
+
         var margin = {
           top: 20, 
           right: 40, 
@@ -111,25 +115,9 @@
         var height = 300 - margin.top - margin.bottom;
         radius = 100;                   //radius
 
-        var voteColors = {
-          yes: "green",
-          no: "red"
-        }
-        //var color = d3.scale.ordinal()
-        //    .range(["green", "red"]);
-
-        function color(label) {
-            switch(label) {
-                case "YES":
-                    return voteColors.yes;
-                case "NO":
-                    return voteColors.no;
-                default:
-                    return "grey";
-            }
-        }
-
         var yesNoChart;
+        // .color(function(d){ return d.color })
+        // .color(d3.scale.category10().range())
 
         function redrawYesNo(data) {
             nv.addGraph(function() {
@@ -138,7 +126,7 @@
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
                     .showLabels(true)
-                    .color(d3.scale.category10().range())
+                    .color(function(d){ return d.data.color })
                     .tooltips(true)
                     .width(width)
                     .height(height);
@@ -171,8 +159,8 @@
                 yesNoChartSm = nv.models.pieChart()
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
+                    .color(function(d){ return d.data.color })
                     .showLabels(true)
-                    .color(d3.scale.category10().range())
                     .tooltips(true)
                     .width(widthSm)
                     .height(heightSm);
@@ -205,7 +193,7 @@
                 viewsCommentsVotesChart = nv.models.pieChart()
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
-                    .color(d3.scale.category10().range())
+                    .color(function(d){ return d.data.color })
                     .width(width)
                     .height(height);
 
@@ -237,9 +225,9 @@
                 viewsCommentsVotesChartSm = nv.models.pieChart()
                     .x(function(d) { return d.label })
                     .y(function(d) { return d.value })
-                    .color(d3.scale.category10().range())
-                    .width(widthSm)
-                    .height(heightSm);
+                    .color(function(d){ return d.data.color })
+                    .width(widthMed)
+                    .height(heightMed);
 
                 viewsCommentsVotesChartSm.pie
                     .valueFormat(d3.format('d'))
@@ -249,8 +237,8 @@
                 d3.select("#nvd3-viewsCommentsVotes-chartSm")
                     .datum(data)
                   .transition().duration(1200)
-                    .attr('width', widthSm)
-                    .attr('height', heightSm)
+                    .attr('width', widthMed)
+                    .attr('height', heightMed)
                     .call(viewsCommentsVotesChartSm);
 
                 viewsCommentsVotesChartSm.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });

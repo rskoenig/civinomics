@@ -501,12 +501,17 @@
                     <p>Now that you've voted, would you like to share this initiative with others?</p>
                     <div class='row-fluid'>
                         % if c.initiative['public'] == '1':
-                            <div class='span4 offset2'>
-                                ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
+                            <div class="span2 offset1">
+                                <div class="top-space">
+                                    <div class="fb-like" data-href="${c.facebookShare.url}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+                                </div>
+                            </div>
+                            <div class='span2 offset1'>
+                                ${lib_6.fbDialogShare2Buttons(shareOnWall=True, sendMessage=True, btn=True)}
                             </div>
                             % if not c.privs['provisional']:
-                                <div class='span6'>
-                                    <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> | Email</i></a>
+                                <div class='span4 offset1'>
+                                    <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> Email</i></a>
                                 </div>
                             % endif
 
@@ -515,13 +520,13 @@
                             #%endif -->
 
                         % else:
-                            <div class='span4 offset2'>
+                            <div class='span2 offset4'>
                                 <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
-                                    <i class="icon-facebook icon-light right-space"></i> | Share
+                                    <i class="icon-facebook icon-light right-space"></i> Share
                                 </a>
                             </div>
-                            <div class='span6'>
-                                <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
+                            <div class='span4 offset1'>
+                                <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> Email</i></a>
                             </div>
                         % endif
                     </div>
