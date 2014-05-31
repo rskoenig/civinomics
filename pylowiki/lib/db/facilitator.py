@@ -113,17 +113,47 @@ def disableFacilitator( facilitator ):
         fValue = int(user['facilitator_counter'])
         fValue -= 1
         user['facilitator_counter'] = str(fValue)
-        commit(user)
+    else:
+        user['facilitator_counter'] = '0'
+
+    if 'workshopCode' in facilitator:
+        facilitatorWorkshops = pickle.loads(str(user["facilitatorWorkshops"]))
+        facilitatorWorkshops.append(facilitator['workshopCode'])
+        user['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+        session['facilitatorWorkshops'] = facilitatorWorkshops
+    elif 'initiativeCode' in facilitator:
+        facilitatorInitiatives = pickle.loads(str(user["facilitatorInitiatives"]))
+        facilitatorWorkshops.append(facilitator['initiativeCode'])
+        facilitatorInitiatives.append(f['initiativeCode'])
+        session['facilitatorInitiatives'] = facilitatorInitiatives
+    commit(user)
+    session.save()
+
 
 def enableFacilitator( facilitator ):
     """enable the facilitator"""
     facilitator['disabled'] = '0'
     commit(facilitator)
+    user = generic.getThingByID(facilitator.owner)
     if 'facilitator_counter' in user:
         fValue = int(user['facilitator_counter'])
         fValue += 1
         user['facilitator_counter'] = str(fValue)
-        commit(user)
+    else:
+        user['facilitator_counter'] = '1'
+
+    if 'workshopCode' in facilitator:
+        facilitatorWorkshops = pickle.loads(str(user["facilitatorWorkshops"]))
+        facilitatorWorkshops.append(facilitator['workshopCode'])
+        user['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+        session['facilitatorWorkshops'] = facilitatorWorkshops
+    elif 'initiativeCode' in facilitator:
+        facilitatorInitiatives = pickle.loads(str(user["facilitatorInitiatives"]))
+        facilitatorInitiatives.append(facilitator['initiativeCode'])
+        user['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+        session['facilitatorInitiatives'] = facilitatorInitiatives
+    commit(user)
+    session.save()
 
 # Object
 class Facilitator(object):
