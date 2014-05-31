@@ -8,7 +8,15 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 
   <div class="span12 workshop-panel" style="margin-left: 0px;">
-    <div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'; allowIdeas = '${c.w['allowIdeas']}'; allowResources = '${c.w['allowResources']}';">
+    <% 
+        if c.privs and (c.privs['admin'] or c.privs['facilitator']):
+            allowIdeas = '1'
+            allowResources = '1'
+        else:
+            allowIdeas = c.w['allowIdeas']
+            allowResources = c.w['allowResources']
+    %>
+    <div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'; allowIdeas = '${allowIdeas}'; allowResources = '${allowResources}';">
       <div id="top" class="row-fluid" ng-controller="activityWorkshopController">
         ${next.body()}
       </div>
