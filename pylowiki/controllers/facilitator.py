@@ -296,6 +296,13 @@ class FacilitatorController(BaseController):
             f['disabled'] = '1'
             f['pending'] = '1'
             dbhelpersLib.commit(f)
+            facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+            if f['initiativeCode'] in facilitatorInitiatives:
+                facilitatorInitiatives.remove(f['initiativeCode'])
+                c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+                dbhelpersLib.commit(c.authuser)
+                session['facilitatorInitiatives'] = facilitatorInitiatives
+                session.save()
 
             if 'resign' in request.params:
               # the coauthor is resigning, he should be redirected away from the edit page

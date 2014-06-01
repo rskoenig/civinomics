@@ -203,6 +203,11 @@ class InitiativeController(BaseController):
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
+        facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+        if c.initiative['urlCode'] not in facilitatorInitiatives:
+            facilitatorInitiatives.append(c.initiative['urlCode'])
+            c.authuser["facilitatorInitiatives"] = str(pickle.dumps(facilitatorInitiatives))
+            dbHelpers.commit(c.authuser)
         
         c.level = scope
 
