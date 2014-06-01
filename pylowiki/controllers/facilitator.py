@@ -252,6 +252,21 @@ class FacilitatorController(BaseController):
            alert['title'] = 'Success. CoFacilitation resignation successful.'
            session['alert'] = alert
            session.save()
+           if 'workshopCode' in doF:
+                facilitatorWorkshops = pickle.loads(str(c.authuser["facilitatorWorkshops"]))
+                if doF['workshopCode'] in facilitatorWorkshops:
+                    facilitatorWorkshops.remove(doF['workshopCode'])
+                    c.authuser['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+                    session['facilitatorWorkshops'] = facilitatorWorkshops
+           elif 'initiativeCode' in doF:
+                facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+                if doF['initiativeCode'] in facilitatorInitiatives:
+                    facilitatorInitiatives.remove(doF['initiativeCode'])
+                    c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+                    session['facilitatorInitiatives'] = facilitatorInitiatives
+           dbhelpersLib.commit(c.authuser)
+           session.save()
+                      
            return redirect("/workshop/%s/%s"%(code, url))
 
         alert = {'type':'error'}
