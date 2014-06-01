@@ -70,6 +70,7 @@ function listenerController($scope, $http, $location) {
             $scope.toggleListenerResponse = data;
             document.getElementById(reasonName).value  = '';
             document.getElementById(responseName).innerHTML  = data;
+            $scope.getList();
         });
 
     };
