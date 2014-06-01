@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import datetime
+import pickle
 
 from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect

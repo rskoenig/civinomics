@@ -86,5 +86,10 @@ def PMember(workshopCode, email, type, owner, user = None):
     commit(p)
     if user:
         p = genericLib.linkChildToParent(p, user)
+        privateWorkshops = pickle.loads(str(user["privateWorkshops"]))
+        if workshopCode not in privateWorkshops:
+            privateWorkshops.append(workshopCode)
+            user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+            commit(user)
 
     return p
