@@ -58,32 +58,18 @@ function listenerController($scope, $http, $location) {
         });
     };
     
-    $scope.toggleListener = function(urlCode) {
-        var disableURL = '/workshop/' + $scope.code + '/' + $scope.url + '/listener/' + $scope.user + '/disable/handler';
-        var formName = 'toggleForm' + urlCode;
-        var form = document.getElementById(formName);
-        var buttonName = 'toggleButton' + urlCode;
-        var button = document.getElementById(buttonName);
-        var submitName = 'toggleSubmit' + urlCode;
-        var submit = document.getElementById(submitName);
-        var responseName = 'toggleListenerResponse' + urlCode;
-        var response = document.getElementById(responseName);
-        response.innerHTML = '';
-        var lReason = form.lReason.value;
-        var postData = {'urlCode':urlCode, 'lReason':lReason};
-        $http.post(disableURL, postData).success(function(data){
-            $scope.disableListenerShow = true;
-            $scope.disableListenerResponse = data;
-            $scope.lReason = '';
-            if(button.innerHTML == 'Enable') {
-                response.innerHTML = 'Listener Enabled.';
-                button.innerHTML = 'Disable';
-                submit.innerHTML = 'Disable Listener';
-            } else {
-                response.innerHTML = 'Listener Disabled.';
-                button.innerHTML = 'Enable';
-                submit.innerHTML = 'Enable Listener';
-            }
+    $scope.toggleListener = function(urlCode, toggleState) {
+        var reasonName = 'lReason' + urlCode
+        var responseName = 'toggleListenerResponse' + urlCode
+        var lReason = document.getElementById(reasonName).value;
+        var toggleURL = '/workshop/' + $scope.code + '/' + $scope.url + '/listener/' + $scope.user + '/toggle/handler';
+
+        var postData = {'urlCode':urlCode, 'lReason':lReason, 'toggleState':toggleState};
+        $http.post(toggleURL, postData).success(function(data){
+            $scope.toggleListenerShow = true;
+            $scope.toggleListenerResponse = data;
+            document.getElementById(reasonName).value  = '';
+            document.getElementById(responseName).innerHTML  = data;
         });
 
     };
