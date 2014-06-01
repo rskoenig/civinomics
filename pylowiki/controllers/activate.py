@@ -10,6 +10,12 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.db.follow       	as followLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.pmember      	as pMemberLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.initiative   	as initiativeLib
 import simplejson as json
 
 import time
@@ -19,14 +25,23 @@ log = logging.getLogger(__name__)
 class ActivateController(BaseController):
     
     def setSession(self):
-        session['listenerWorkshops'] = []
-        session['bookmarkedWorkshops'] = [] 
-        session['privateWorkshops'] = []
-        session['facilitatorWorkshops'] = []
-        session['facilitatorInitiatives'] = [] 
-        session['bookmarkedInitiatives'] = []
-        session['followingUsers'] = []
-        session.save()
+        # get their workshops and initiatives of interest
+        followLib.setWorkshopFollowsInSession()
+        followLib.setUserFollowsInSession()
+        pMemberLib.setPrivateMemberWorkshopsInSession()
+        listenerLib.setListenersForUserInSession()
+        facilitatorLib.setFacilitatorsByUserInSession()
+        initiativeLib.setInitiativesForUserInSession()
+        followLib.setInitiativeFollowsInSession()
+        
+        #session['listenerWorkshops'] = []
+        #session['bookmarkedWorkshops'] = [] 
+        #session['privateWorkshops'] = []
+        #session['facilitatorWorkshops'] = []
+        #session['facilitatorInitiatives'] = [] 
+        #session['bookmarkedInitiatives'] = []
+        #session['followingUsers'] = []
+        #session.save()
 
     def index(self, id):
         hash, sep, email = id.partition('__')
