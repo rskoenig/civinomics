@@ -194,12 +194,8 @@
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
-                <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
-                    ${ihelpers.showAuthor(c.initiative)}
-                </div>
                 % if 'user' in session:
                     <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
-                        <h4>Vote for bigger charts:</h4>
                         <div class='row-fluid'>   
                             <div class='span6'>
                                 <div>
@@ -234,6 +230,9 @@
                         </div>
                     </div>
                 % endif 
+                <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
+                    ${ihelpers.showAuthor(c.initiative)}
+                </div>
                 <!--
                 <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
                     <li class="active"><a href="#iText" data-toggle="tab">Text</a></li>

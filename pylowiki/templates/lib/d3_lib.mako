@@ -85,16 +85,22 @@
         /*console.log('yes: '+yes);
         console.log('no: '+no);
         console.log('total: '+totalVotes);
-        console.log('me: '+myRating);*/
-
+        */
+        console.log('me: '+myRating);
+        
+        var yesNoDataSample = [{"label":"VOTE", "value":50, "color":"#005d28"}, {"label":"         TO", "value":50, "color":"#ff0000"}];
+        var viewsCommentsVotesDataSample = [{"label":"SEE", "value":30, "color":"#b2c2d1"}, {"label":"RATING", "value":30, "color":"#5c9dff"}, {"label":"CHARTS", "value":30, "color":"#ffd119"}];    
+        
         var yesNoData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"         NO", "value":no, "color":"#ff0000"}];
-        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views, "color":"grey"}, {"label":"COMMENTS  ", "value":numComments, "color":"blue"}, {"label":"VOTES", "value":totalVotes, "color":"gold"}];
+        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views, "color":"#b2c2d1"}, {"label":"COMMENTS  ", "value":numComments, "color":"#5c9dff"}, {"label":"VOTES", "value":totalVotes, "color":"#ffd119"}];    
+        
+        
 
         
         var marginSm = {
           top: 4,
           right: 8,
-          bottom: 2,
+          bottom: 20,
           left: 2
         }; 
         var widthSm = 150 - marginSm.left - marginSm.right;
@@ -102,7 +108,7 @@
         radiusSm = 70;                   //radius
         
         var widthMed = 160 - marginSm.left - marginSm.right;
-        var heightMed = 160 - marginSm.top - marginSm.bottom;
+        var heightMed = 170 - marginSm.top - marginSm.bottom;
         radiusMed = 90;                   //radius
 
         var margin = {
@@ -149,7 +155,12 @@
             });
         }
 
-        redrawYesNo(yesNoData);
+        if (myRating == 0) {
+            redrawYesNo(yesNoDataSample);
+        } else {
+            redrawYesNo(yesNoData);    
+        }
+        
 
         var yesNoChartSm;
 
@@ -183,7 +194,11 @@
             });
         }
 
-        redrawYesNoSm(yesNoData);
+        if (myRating == 0) {
+            redrawYesNoSm(yesNoDataSample);
+        } else {
+            redrawYesNoSm(yesNoData);
+        }
 
         var viewsCommentsVotesChart;
 
@@ -215,7 +230,11 @@
             });
         }
 
-        redrawViewsCommentsVotes(viewsCommentsVotesData);
+        if (myRating == 0) {
+            redrawViewsCommentsVotes(viewsCommentsVotesDataSample);
+        } else {
+            redrawViewsCommentsVotes(viewsCommentsVotesData);
+        }
 
         var viewsCommentsVotesChartSm;
 
@@ -247,11 +266,15 @@
             });
         }
 
-        redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+        if (myRating == 0) {
+            redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+        } else {
+            redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+        }
+        
         
         // these changes are attempting to show what's happening on our server
-        // might be a complicated system if I need to handle these updates while a person 
-        // adds and rescinds their vote.
+        // when a person adds and rescinds their vote on the page
         function changePie(newValue) {
             //console.log('new rating: '+newValue);
             var newData = [];
@@ -294,9 +317,21 @@
                     }
                 }
             }
-            newData = [{"label":"YES", "value":yes}, {"label":"NO", "value":no}];
-            redrawYesNo(newData);
-            redrawYesNoSm(newData);
+            newData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"NO", "value":no, "color":"#ff0000"}];
+            if (newValue != 0) {
+                console.log('new val not 0');
+                redrawYesNo(newData);
+                redrawYesNoSm(newData);
+                redrawViewsCommentsVotes(viewsCommentsVotesData);
+                redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+            } else {
+                console.log('new val is 0');
+                redrawYesNo(yesNoDataSample);
+                redrawYesNoSm(yesNoDataSample);
+                redrawViewsCommentsVotes(viewsCommentsVotesDataSample);
+                redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+            }
+            
             myRating = newValue;
             //console.log(newData);
 
