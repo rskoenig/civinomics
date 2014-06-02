@@ -140,7 +140,7 @@ class WorkshopController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
-        log.info("workshop before")
+        #log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
         if c.mainImage['pictureHash'] == 'supDawg':
             c.backgroundImage = '"/images/slide/slichow/supDawg.slideshow"'
@@ -1463,7 +1463,7 @@ class WorkshopController(BaseController):
 
 
     def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
-        log.info("offset is %s"%str(offset))
+        #log.info("offset is %s"%str(offset))
         # get recent activity and return it into json format
         result = []
 
