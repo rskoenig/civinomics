@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
@@ -46,12 +47,10 @@ def getFacilitatorsByUser(user, disabled = '0'):
         return False
         
 def setFacilitatorsByUserInSession(fdisabled = '0'):
+    if 'facilitatorWorkshops' not in c.authuser or 'facilitatorInitatives' not in c.authuser:
         facilitatorList = getFacilitatorsByUser(c.authuser, disabled = fdisabled)
         facilitatorWorkshops = []
-        if 'facilitatorInitiatives' in session:
-            facilitatorInitiatives = session['facilitatorInitiatives']
-        else:
-            facilitatorInitiatives = []
+        facilitatorInitiatives = []
         
         for f in facilitatorList:
             if f['disabled'] == fdisabled:
@@ -59,10 +58,16 @@ def setFacilitatorsByUserInSession(fdisabled = '0'):
                     facilitatorWorkshops.append(f['workshopCode'])
                 elif 'initiativeCode' in f:
                     facilitatorInitiatives.append(f['initiativeCode'])
-                    
-        session["facilitatorWorkshops"] = facilitatorWorkshops
-        session["facilitatorInitiatives"] = facilitatorInitiatives
-        session.save()
+        c.authuser['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+        c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+        
+    else:
+        facilitatorWorkshops = pickle.loads(str(c.authuser["facilitatorWorkshops"]))
+        facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+        
+    session["facilitatorWorkshops"] = facilitatorWorkshops
+    session["facilitatorInitiatives"] = facilitatorInitiatives
+    session.save()
 
 def getFacilitatorsByUserAndWorkshop(user, workshop, disabled = '0'):
     try:
@@ -108,17 +113,47 @@ def disableFacilitator( facilitator ):
         fValue = int(user['facilitator_counter'])
         fValue -= 1
         user['facilitator_counter'] = str(fValue)
-        commit(user)
+    else:
+        user['facilitator_counter'] = '0'
+
+    if 'workshopCode' in facilitator:
+        facilitatorWorkshops = pickle.loads(str(user["facilitatorWorkshops"]))
+        facilitatorWorkshops.append(facilitator['workshopCode'])
+        user['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+        session['facilitatorWorkshops'] = facilitatorWorkshops
+    elif 'initiativeCode' in facilitator:
+        facilitatorInitiatives = pickle.loads(str(user["facilitatorInitiatives"]))
+        facilitatorWorkshops.append(facilitator['initiativeCode'])
+        facilitatorInitiatives.append(f['initiativeCode'])
+        session['facilitatorInitiatives'] = facilitatorInitiatives
+    commit(user)
+    session.save()
+
 
 def enableFacilitator( facilitator ):
     """enable the facilitator"""
     facilitator['disabled'] = '0'
     commit(facilitator)
+    user = generic.getThingByID(facilitator.owner)
     if 'facilitator_counter' in user:
         fValue = int(user['facilitator_counter'])
         fValue += 1
         user['facilitator_counter'] = str(fValue)
-        commit(user)
+    else:
+        user['facilitator_counter'] = '1'
+
+    if 'workshopCode' in facilitator:
+        facilitatorWorkshops = pickle.loads(str(user["facilitatorWorkshops"]))
+        facilitatorWorkshops.append(facilitator['workshopCode'])
+        user['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+        session['facilitatorWorkshops'] = facilitatorWorkshops
+    elif 'initiativeCode' in facilitator:
+        facilitatorInitiatives = pickle.loads(str(user["facilitatorInitiatives"]))
+        facilitatorInitiatives.append(facilitator['initiativeCode'])
+        user['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+        session['facilitatorInitiatives'] = facilitatorInitiatives
+    commit(user)
+    session.save()
 
 # Object
 class Facilitator(object):

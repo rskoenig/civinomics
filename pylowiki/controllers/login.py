@@ -30,6 +30,7 @@ from twython import Twython
 
 import requests
 import mechanize
+import pickle
 
 import base64
 import hashlib
@@ -545,12 +546,16 @@ class LoginController(BaseController):
         c.authuser = user
         
         # get and cache their ratings
-        ratings = ratingLib.getRatingsForUser()
+        if 'ratings' not in c.authuser:
+            ratings = ratingLib.getRatingsForUser()
+            c.authuser['ratings'] = str(pickle.dumps(ratings))
+            commit(c.authuser)
+        else:
+            ratings = pickle.loads(str(c.authuser["ratings"]))
         session["ratings"] = ratings
         session.save()
         
         # get their workshops and initiatives of interest
-        #log.info("start session cache")
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
         pMemberLib.setPrivateMemberWorkshopsInSession()
@@ -558,7 +563,6 @@ class LoginController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
-        #log.info("end session cache")
 
         #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
