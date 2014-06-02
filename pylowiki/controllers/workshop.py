@@ -1567,20 +1567,35 @@ class WorkshopController(BaseController):
             entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
             # comments
-            discussion = discussionLib.getDiscussionForThing(item)
-            entry['discussion'] = discussion['urlCode']
+            if item.objType == 'discussion':
+                entry['discussion'] = item['urlCode']
+            else:
+                if 'discussion_child' in item:
+                    entry['discussion'] = item['discussion_child']
+                else:
+                    log.info('no discussion child for item of objType %s'%item.objType)
+                    discussion = discussionLib.getDiscussionForThing(item)
+                    entry['discussion'] = discussion['urlCode']
+                
             entry['numComments'] = 0
             if 'numComments' in item:
                 entry['numComments'] = item['numComments']
 
             # author data
             # CCN - need to find a way to optimize this lookup
-            author = userLib.getUserByID(item.owner)
-            entry['authorName'] = author['name']
-            entry['authorPhoto'] = utils._userImageSource(author)
-            entry['authorCode'] = author['urlCode']
-            entry['authorURL'] = author['url']
-            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+            if 'user_name' not in item or 'user_avatar' not in item:
+                author = userLib.getUserByID(item.owner)
+                entry['authorName'] = author['name']
+                entry['authorPhoto'] = utils._userImageSource(author)
+                entry['authorCode'] = author['urlCode']
+                entry['authorURL'] = author['url']
+            else:
+                entry['authorName'] = item['user_name']
+                entry['authorPhoto'] = item['user_avatar']
+                entry['authorCode'] = item['userCode']
+                entry['authorURL'] = item['user_url']
+                
+            entry['authorHref'] = '/profile/' + entry['authorCode'] + '/' + entry['authorURL']
 
             entry['parentTitle'] = ''
             entry['parentObjType'] = ''

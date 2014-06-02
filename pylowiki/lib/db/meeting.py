@@ -131,6 +131,8 @@ def Agendaitem(owner, meeting, title, number, text, canVote, canComment):
     a.sort = number
     commit(a)
     d = discussionLib.Discussion(owner = owner, discType = 'agendaitem', attachedThing = a, title = title)
+    a['discussion_child'] = d.d['urlCode']
+    commit(a)
     return a
 def isPublic(agenda):
     if agenda['public'] == '1':
