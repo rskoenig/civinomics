@@ -108,6 +108,7 @@ def Idea(user, title, text, workshop, privs, role = None):
     commit(idea)
     idea['urlCode'] = toBase62(idea)
     d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
+    idea['discussion_child'] = d.d['urlCode']
     idea = generic.linkChildToParent(idea, workshop)
     idea = generic.linkChildToParent(idea, user)
     commit(idea)

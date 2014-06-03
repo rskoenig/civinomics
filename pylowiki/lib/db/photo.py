@@ -125,6 +125,8 @@ def Photo(owner, title, description, tags, scope):
     p['downs'] = '0'
     commit(p)
     d = discussionLib.Discussion(owner = owner, discType = 'photo', attachedThing = p, title = title)
+    p['discussion_child'] = d.d['urlCode']
+    commit(p)
     return p
 
 def isPublic(photo):

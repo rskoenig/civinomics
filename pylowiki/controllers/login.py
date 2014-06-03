@@ -305,6 +305,7 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
+                        log.info("fblogin handoff 1")
                         loginURL = LoginController.logUserIn(self, user)
                         return redirect(loginURL)
                 elif 'unactivatedTwitterAuthId' in user.keys():
@@ -343,6 +344,7 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
+            log.info("fblogin handoff 2")
             loginURL = LoginController.logUserIn(self, user)
             return redirect(loginURL)
         else:
@@ -367,6 +369,7 @@ class LoginController(BaseController):
                         user['email'] = email
                 commit(user)
                 #return redirect("/fbLoggingIn")
+                log.info("fblogin handoff 3")
                 loginURL = LoginController.logUserIn(self, user)
                 return redirect(loginURL)
             else:
@@ -552,6 +555,7 @@ class LoginController(BaseController):
             commit(c.authuser)
         else:
             ratings = pickle.loads(str(c.authuser["ratings"]))
+
         session["ratings"] = ratings
         session.save()
         
