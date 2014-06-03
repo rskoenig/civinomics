@@ -56,7 +56,6 @@ def getPrivateMemberWorkshops(user, deleted = '0'):
     return retlist
 
 def setPrivateMemberWorkshopsInSession(pwdeleted = '0'):
-    log.info('set setPrivateMemberWorkshopsInSession')
     if 'privateWorkshops' in c.authuser:
         privateWorkshops = pickle.loads(str(c.authuser["privateWorkshops"]))   
     else:

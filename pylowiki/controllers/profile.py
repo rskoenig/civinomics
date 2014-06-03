@@ -1195,6 +1195,13 @@ class ProfileController(BaseController):
             return json.dumps({"statusCode": 1})
         c.user['avatarSource'] = source
         dbHelpers.commit(c.user)
+        
+        # update in authored objects
+        cList = genericLib.getChildrenOfParent(c.user)
+        for child in cList:
+            if child.objType in ['idea', 'resource', 'discussion', 'comment', 'photo']:
+                child['user_avatar'] = utils._userImageSource(c.user)
+                dbHelpers.commit(child)
         return json.dumps({"statusCode": 0})
         
     @h.login_required

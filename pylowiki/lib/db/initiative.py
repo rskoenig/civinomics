@@ -137,6 +137,8 @@ def Initiative(owner, title, description, scope, goal = None, workshop = None):
     i['goal'] = goal
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
+    i['discussion_child'] = d.d['urlCode']
+    commit(i)
     return i
 
 def isPublic(initiative):
