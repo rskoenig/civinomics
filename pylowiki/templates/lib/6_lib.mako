@@ -600,92 +600,110 @@
 </%def>
 
 <%def name="yesNoVote(thing, *args)">
-   <div class="yesNoWrapper">
-      % if thing['disabled'] == '1' or thing.objType == 'revision':
-         </div> <!-- /.yesNoWrapper -->
-         <% return %>
-      % endif
-      <% 
-        rating = int(thing['ups']) - int(thing['downs']) 
-        totalYes = int(thing['ups'])
-        totalNo = int(thing['downs'])
-        totalVotes = int(thing['ups']) + int(thing['downs'])
-        percentYes = percentNo = 0
-        if totalVotes > 0:
-          percentYes = int(float(totalYes)/float(totalVotes) * 100)
-          percentNo = int(float(totalNo)/float(totalVotes) * 100)
-        if 'ratings' in session:
-            myRatings = session["ratings"]
-        else:
-            myRatings = {}
-      %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
-         <% 
-            thingCode = thing['urlCode']
-            #log.info("thingCode is %s"%thingCode)
-            if thingCode in myRatings:
-                myRating = myRatings[thingCode]
-                log.info("thingCode %s myRating %s"%(thingCode, myRating))
+    <div class="yesNoWrapper">
+        % if thing['disabled'] == '1' or thing.objType == 'revision':
+            </div> <!-- /.yesNoWrapper -->
+            <% return %>
+        % endif
+        <% 
+            rating = int(thing['ups']) - int(thing['downs']) 
+            totalYes = int(thing['ups'])
+            totalNo = int(thing['downs'])
+            totalVotes = int(thing['ups']) + int(thing['downs'])
+            percentYes = percentNo = 0
+            if totalVotes > 0:
+                percentYes = int(float(totalYes)/float(totalVotes) * 100)
+                percentNo = int(float(totalNo)/float(totalVotes) * 100)
+            if 'ratings' in session:
+                myRatings = session["ratings"]
             else:
-                myRating = "0"
-                
-            if myRating == '1':
-                commentClass = 'voted yesVote'
-                displayTally = ''
-                displayPrompt = 'hidden'
-            else:
-                commentClass = 'yesVote'
-                displayTally = ''
-                displayPrompt = 'hidden'
-                if myRating == '0' :
-                    displayTally = 'hidden'
-                    displayPrompt = ''
+                myRatings = {}
+        %>
+        % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
+            <% 
+                thingCode = thing['urlCode']
+                #log.info("thingCode is %s"%thingCode)
+                if thingCode in myRatings:
+                    myRating = myRatings[thingCode]
+                    log.info("thingCode %s myRating %s"%(thingCode, myRating))
+                else:
+                    myRating = "0"
+                    
+                if myRating == '1':
+                    commentClass = 'voted yesVote'
+                    displayTally = ''
+                    displayPrompt = 'hidden'
+                else:
+                    commentClass = 'yesVote'
+                    displayTally = ''
+                    displayPrompt = 'hidden'
+                    if myRating == '0' :
+                        displayTally = 'hidden'
+                        displayPrompt = ''
 
-            #else:
-            #   commentClass = 'yesVote'
-            #   displayTally = 'hidden'
-            #   displayPrompt = ''
-         %>
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
-              <div class="vote-icon yes-icon detail"></div>
-              <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>
-         </a>
-         <br>
-         <br>
-         <%
-            if myRating == '-1':
-                commentClass = 'voted noVote'
-            else:
-                commentClass = 'noVote'
-         %>
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
-              <div class="vote-icon no-icon detail"></div>
-              <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}</span>%</div> 
-         </a>
-         <br>
-         <div class="totalVotesWrapper">
-          % if 'detail' in args:
-            <span class="orange ${displayPrompt}"><strong>Vote to display rating</strong></span><br>
-          % endif
-          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
-        </div>
-      % else:
-         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-         <div class="vote-icon yes-icon"></div>
-         </a>
-         <br>
-         <br>
-         <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
-         <div class="vote-icon no-icon"></div>
-         </a>
-         <br>
-         <div class="totalVotesWrapper">
-          % if 'detail' in args:
-            <span class="orange"><strong>Vote to display rating</strong></span><br>
-          % endif
-          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
-      % endif
-   </div>
+                log.info("myRating is %s"%myRating)
+                #else:
+                #   commentClass = 'yesVote'
+                #   displayTally = 'hidden'
+                #   displayPrompt = ''
+            %>
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
+                <div class="vote-icon yes-icon detail"></div>
+                <div class="ynScoreWrapper ${displayTally}">
+                    <span class="yesScore">
+                        ${percentYes}</span>%
+                </div>
+            </a>
+            <br>
+            <br>
+            <%
+                if myRating == '-1':
+                    commentClass = 'voted noVote'
+                else:
+                    commentClass = 'noVote'
+            %>
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
+                <div class="vote-icon no-icon detail"></div>
+                <div class="ynScoreWrapper ${displayTally}">
+                    <span class="noScore">
+                        ${percentNo}</span>%
+                </div> 
+            </a>
+            <br>
+            <div class="totalVotesWrapper">
+                % if 'detail' in args:
+                    <span class="orange ${displayPrompt}">
+                        <strong>Vote to display rating</strong>
+                    </span>
+                    <br>
+                % endif
+                Total Votes: <span class="totalVotes">
+                    ${locale.format("%d", totalVotes, grouping=True)}</span>
+            </div>
+        % else:
+            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+                <div class="vote-icon yes-icon"></div>
+            </a>
+            <br>
+            <br>
+            <a href="#signupLoginModal" role="button" data-toggle="modal" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+                <div class="vote-icon no-icon"></div>
+            </a>
+            <br>
+            <div class="totalVotesWrapper">
+                % if 'detail' in args:
+                    <span class="orange">
+                        <strong>Vote to display rating</strong></span>
+                    <br>
+                % endif
+                Total Votes: <span class="totalVotes">
+                    ${locale.format("%d", totalVotes, grouping=True)}</span>
+                <br>
+                myRating: <span class="totalVotes">
+                    ${myRating}</span>
+            </div>
+        % endif
+    </div>
 </%def>
 
 <%def name="isReadOnly()">
