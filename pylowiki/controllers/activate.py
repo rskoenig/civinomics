@@ -35,6 +35,7 @@ class ActivateController(BaseController):
             commit(c.authuser)
         else:
             ratings = pickle.loads(str(c.authuser["ratings"]))
+            
         session["ratings"] = ratings
         session.save()
         

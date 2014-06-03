@@ -65,6 +65,7 @@ def linkChildToParent(child, parent):
     if parent.objType == 'user':
         child['user_name'] = parent['name']
         child['user_url'] = parent['url']
+        child['user_avatar'] = userImageSource(parent)
         #parentUser = getUserByCode(parent['urlCode'])
         #child['user_avatar'] = userImageSource(parentUser)
         if child.objType in counters:
