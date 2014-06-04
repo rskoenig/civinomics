@@ -112,7 +112,7 @@
 							% if 'poll_name' in item:
                         		<td>${item['poll_name']}</td>
                         	%else:
-                        		<td>none</td>
+                        		<td>None</td>
                         	%endif
                         %endif
                         <% activated = "" %>

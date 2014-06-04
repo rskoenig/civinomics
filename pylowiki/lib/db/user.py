@@ -257,9 +257,6 @@ class User(object):
             u['user_source'] = "Survey App"
             u['needs_password'] = '1'
             u['poll_name'] = kwargs['poll']
-        else:    
-            u['user_source'] = "Online"
-            u['poll_name'] = "None"
         
             log.info(u['poll_name'])
 
