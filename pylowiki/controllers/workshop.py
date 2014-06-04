@@ -542,8 +542,18 @@ class WorkshopController(BaseController):
                     if pTest:
                         pTest['deleted'] = '1'
                         dbHelpers.commit(pTest)
-                        # see if they have the workshop bookmarked
+                        
                         user = userLib.getUserByEmail(pTest['email'])
+                        if 'privateWorkshops' in user:
+                            privateWorkshops = pickle.loads(str(user["privateWorkshops"]))
+                            if privateWorkshops and workshopCode in privateWorkshops:
+                                privateWorkshops.remove(workshopCode)
+                                if not privateWorkshops:
+                                    privateWorkshops = []
+                                user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+                                dbHelpers.commit(user)
+                                
+                        # see if they have the workshop bookmarked
                         follow = followLib.getFollow(user, c.w)
                         if follow:
                             follow['disabled'] = '1'
