@@ -13,6 +13,7 @@ log = logging.getLogger(__name__)
 EMAIL = 'Email'
 NAME = 'Full Name'
 ZIP_CODE = 'Zip Code'
+POLL = 'Poll Name'
 
 
 def saveCsv(fileitem):
@@ -41,6 +42,7 @@ def parseCsv(filepath):
             user['name'] = row[NAME]
             user['email'] = row[EMAIL]
             user['zip'] = row[ZIP_CODE]
+            user['poll'] = row[POLL]
             users.append(user)
         log.info(users)
     return users

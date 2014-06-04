@@ -252,8 +252,17 @@ class User(object):
         u['bookmark_counter'] = '0'
         u['photo_counter'] = '0'
         u['accessLevel'] = 0
+        u['user_source'] = "Online"
         if 'needsPassword' in kwargs:
-            u['needsPassword'] = '1'
+            u['user_source'] = "Survey App"
+            u['needs_password'] = '1'
+            u['poll_name'] = kwargs['poll']
+        else:    
+            u['user_source'] = "Online"
+            u['poll_name'] = "None"
+        
+            log.info(u['poll_name'])
+
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
@@ -300,7 +309,7 @@ class User(object):
         Revision(u, u)
         
         # send the activation email
-        if ('needsPassword' in u):
+        if ('needs_password' in u):
             password = generatePassword() 
             changePassword( u, password )
             commit( u ) # commit database change

@@ -84,6 +84,10 @@
                     <th>id</th>
                     <th>owner</th>
                     <th>date</th>
+                    % if itemType == 'user':
+                    <th>source</th>
+                    <th>poll name</th>    
+                    %endif
                     <th>link</th>
                     <th>status</th>
                 </tr>
@@ -99,6 +103,18 @@
                             <td>None</td>
                         % endif
                         <td>${item.date}</td>
+                        % if itemType == 'user':
+                        	% if 'user_source' in item:
+                        		<td>${item['user_source']}</td>
+                        	%else:
+                        		<td>Online</td>
+                        	%endif
+							% if 'poll_name' in item:
+                        		<td>${item['poll_name']}</td>
+                        	%else:
+                        		<td>none</td>
+                        	%endif
+                        %endif
                         <% activated = "" %>
                         % if itemType == 'user':
                             <td>${lib_6.userImage(item, className = 'avatar small-avatar')} ${lib_6.userLink(item)}</td>

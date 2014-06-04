@@ -1048,35 +1048,14 @@ class ProfileController(BaseController):
                 if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
                     if (not userLib.getUserByEmail(csvUser['email'])):
                         memberType = 100
-                        kwargs = {"needsPassword":"1"}
+                        kwargs = {"needsPassword":"1", "poll":csvUser['poll']}
                         password = "changeThis"
                         country = "United States"
                         u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'], **kwargs)
-#                     user = u.u
-#                     if 'laston' in user:
-#                         t = time.localtime(float(user['laston']))
-#                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
-#                     user['laston'] = time.time()
-#                     #user['activated'] = u'1'
-#                     loginTime = time.localtime(float(user['laston']))
-#                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-#                     commit(user)
-#                     baseURL = c.conf['activation.url']
-#                     url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
-#                     mailLib.sendActivationMail(user['email'], url)
-            jsonResponse =  {'files': [
-                                {
-                                    'name':filename,
-                                    'path':csvFile.fullpath
-                                }
-                            ]}
-            json.dumps(jsonResponse)
             return render("/derived/6_profile_csv.bootstrap")
         else:
             abort(404)
-            
- ######################################## ########################################            
-            
+
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
         
