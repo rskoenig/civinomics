@@ -69,6 +69,7 @@
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">All Ballots</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -84,6 +85,7 @@
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                                     % if int(c.authuser['accessLevel']) > 200:
                                         <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                        <li><a href="/ballot/${c.authuser['urlCode']}/${c.authuser['url']}/ballotNew"><i class="icon-ok"></i> New Ballot</a></li>
                                     % endif
                                 </ul>
                             </li>
