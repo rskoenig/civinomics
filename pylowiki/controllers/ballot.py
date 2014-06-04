@@ -140,7 +140,14 @@ class BallotController(BaseController):
             public = ''
             
         #create the ballot
-        c.ballot = ballotLib.Ballot(c.authuser, title, text, electionDate, electionOfficialURL, public)
+        c.ballot = ballotLib.Ballot(c.authuser, title, text, scope, electionDate, electionOfficialURL, public)
+        if 'ballot_counter' in c.authuser:
+            ballot_counter = int(c.authuser['ballot_counter'])
+        else:
+            ballot_counter = 0
+        ballot_counter += 1
+        c.authuser['ballot_counter'] = str(ballot_counter)
+        dbHelpers.commit(c.authuser)
 
         c.level = scope
 

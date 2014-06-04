@@ -124,7 +124,7 @@
             <div class="row-fluid">
                 <div class="span6">
                     <label for="title" class="control-label" required><strong>Official Election URL:</strong></label>
-                    <input type="text" name="officialElectionURL" id="officialElectionURL" class="span6" value="${officialElectionURL}">
+                    <input type="text" name="electionOfficialURL" id="electionOfficialURL" class="span6" value="${electionOfficialURL}">
                 </div><!-- span6 -->
                 <div class="span6">
                     <div class="alert alert-info">
