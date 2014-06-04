@@ -1,11 +1,14 @@
 <%inherit file="/base/base_wide.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
-
+<% 
+   lib.return_to()
+%>
 
 <div class="row">
 
