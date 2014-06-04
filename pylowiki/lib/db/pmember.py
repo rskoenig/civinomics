@@ -84,8 +84,20 @@ def PMember(workshopCode, email, type, owner, user = None):
     p['urlCode'] = toBase62(p)
     commit(p)
     if user:
+        privateWorkshops = []
         p = genericLib.linkChildToParent(p, user)
-        privateWorkshops = pickle.loads(str(user["privateWorkshops"]))
+        if 'privateWorkshops' in user:
+            privateWorkshops = pickle.loads(str(user["privateWorkshops"]))
+        else:
+            privateList = getPrivateMemberWorkshops(user)
+            if privateList:
+                pmemberWorkshops = [genericLib.getThing(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+                privateWorkshops += [w['urlCode'] for w in privateList]
+                log.info('privateWorkshops is %s'%privateWorkshops)
+                user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+                commit(user)
+
         if workshopCode not in privateWorkshops:
             privateWorkshops.append(workshopCode)
             user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
