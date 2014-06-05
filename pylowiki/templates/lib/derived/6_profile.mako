@@ -65,7 +65,7 @@
 
 <%def name="showWorkshop(workshop, **kwargs)">
     <div class="media profile-workshop">
-        <a class="pull-left" ${lib_6.workshopLink(workshop)}>
+        <a class="pull-left" href="${lib_6.workshopLink(workshop)}">
           <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${lib_6.workshopImage(workshop, raw=True) | n}); background-size: cover; background-position: center center;"></div>
         </a>
         <%
@@ -78,7 +78,7 @@
                 role = ''
         %>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)} class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
+            <a href="${lib_6.workshopLink(workshop)}" class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
             <span class="label label-inverse pull-right">${role}</span>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
@@ -389,11 +389,17 @@
                         parentURL = item['parent_url']
                         parentObjType = 'initiative'
                         parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'meetingCode' in item:
+                        parentCode = item['meetingCode']
+                        parentURL = item['meeting_url']
+                        parentObjType = 'meeting'
+                        parentLink = "/meeting/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
                         log.info("no parentObjType item is %s"%item.keys())
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+                        
                     title = lib_6.ellipsisIZE(item['data'], 40)
                     itemLink = parentLink + '?comment=' + item['urlCode']
                 elif objType == 'resource' and 'initiativeCode' in item:
@@ -450,6 +456,15 @@
                 % if item['deleted'] == '0' and ('initiative_public' in item and item['initiative_public'] == '1'):
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
+            % elif objType == 'comment' and 'meetingCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">meeting agenda item</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"

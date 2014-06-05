@@ -8,6 +8,7 @@
     <head>
       <meta charset="UTF8">
       <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
+      <meta name="google-site-verification" content="lPlafwU4hDp8hUCFAMamWxHdI7LM12YH8aWTY1cuUdY" />
       <title>${c.title}</title>
       <!-- Third-party assets -->
       <link rel="stylesheet" href="/styles/vendor/bootstrap.css">
@@ -80,6 +81,7 @@
         <script type="text/javascript" src="/js/vendor/async.min.js"></script>
         <div id="fb-root"></div>
         <script>
+
             // Load the SDK asynchronously
             (function(d, s, id) {
                 var js, fjs = d.getElementsByTagName(s)[0];
@@ -92,7 +94,7 @@
             function fbLogout() {
                 FB.logout(function(response) {
                     // user is now logged out of facebook
-                    console.log('bye!');
+                    //console.log('bye!');
                     // complete by logging out of our site
                     window.location = '/login/logout';
                 });
@@ -101,7 +103,7 @@
             // someone is logged in, we need to see if they're using facebook auth
             // This is called with the results from from FB.getLoginStatus().
             function appendFacebookLogout(response) {
-                console.log('appendFacebookLogout');
+                //console.log('appendFacebookLogout');
                 // The response object is returned with a status field that lets the
                 // app know the current login status of the person.
                 // Full docs on the response object can be found in the documentation
@@ -120,7 +122,7 @@
                 } else {
                     // The person is not logged into Facebook, so we're not sure if 
                     // they are logged into this app or not.
-                    console.log('not logged into facebook');
+                    //console.log('not logged into fb');
                 }
             }
 
@@ -145,16 +147,22 @@
                 // for FB.getLoginStatus().
                 if (response.status === 'connected') {
                     // Logged into your app and Facebook.
-                    console.log('connected');
+                    //console.log('connected');
                     fbConnected(response);
                 } else if (response.status === 'not_authorized') {
                     // The person is logged into Facebook, but not your app.
-                    console.log('notAuthed');
+                    //console.log('notAuthed');
+                    // erase the fb-no-press marker, if they press the facebook button now, 
+                    //  the auto-forward will occur
+                    $( ".fbLogin" ).data("touched", "yes");
                     fbLogin();
                 } else {
                     // The person is not logged into Facebook, so we're not sure if 
                     // they are logged into this app or not.
-                    console.log('not logged into fb');
+                    //console.log('not logged into fb');
+                    // erase the fb-no-press marker, if they press the facebook button now, 
+                    //  the auto-forward will occur
+                    $( ".fbLogin" ).data("touched", "yes");
                     fbLogin();
                 }
             }
@@ -190,13 +198,19 @@
                     
                     FB.Event.subscribe('auth.login', login_event);
                     FB.Event.subscribe('auth.logout', logout_event);
-
+                    // mark no fb button press yet
                     if (${userLoggedIn}) {
                         console.log('user logged in');
                         // getLoginStatus: gets the state of the person visiting this page
                         // FB.getLoginStatus(appendFacebookLogout);
+                    } else if ($( "#fbSignUp" ).length > 0) {
+                        console.log('user in process of signing up for facebook or twitter');
                     } else {
-                        console.log('user not logged in');
+                        //console.log('user not logged in');
+                        var notLoggedInButton = '<a href="#" onclick="fbLogin()" class="fbLogin"><img src="/images/f-login.png"></a>';
+                        $( ".fbLogin" ).replaceWith(notLoggedInButton);
+                        // note that the login button has not been touched yet
+                        $( ".fbLogin" ).data("touched", "no");
                         FB.Event.subscribe('auth.authResponseChange', function(response) {
                             statusChangeCallback(response);
                         });
@@ -264,9 +278,11 @@
                         // this is a unique situation where the person has authorized us to use their
                         // fb identity, but hasn't created an account yet. This assumes that's what they
                         // want to do and redirects once this situation is recognized.
-                        if ($('#fbSignUp').length) {
-                            console.log('facebook signup')
+                        if ($(".fbLogin").data("touched") == "no") {
+                            //console.log('we see auth with facebook, but no account on here. forward to account completion only if they press a login button');
+                            $( ".fbLogin" ).data("touched", "yes");
                         } else {
+                            //console.log('i want to forward to signup/fbSignUp');
                             window.location = '/signup/fbSignUp/';
                         }
                     } else {
@@ -286,7 +302,7 @@
                             // this code is used when a person arrives and it is seen that they have 
                             // auth'd our app and are logged into facebook 
                             // replace current button with returned result
-                            var newButton = '<a href="/fbLogin"><img src="/images/f-login.png"></a>'
+                            var newButton = '<a href="/fbLogin" class="fbLogin"><img src="/images/f-login.png"></a>'
                             $('#fbLoginButton1').html(newButton);
                             $('#fbLoginButton2').html(newButton);
                         }
@@ -317,33 +333,33 @@
 </html>
 
 <%def name="bodyTag_extras()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="extraStyles()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="headScripts()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="headScripts2()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="extraScripts()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="extraScripts2()">
-   ## do nothing by default.  Overwritten if the function is defined
-   ## in a child template
+    ## do nothing by default.  Overwritten if the function is defined
+    ## in a child template
 </%def>
 
 <%def name="google_analytics()">

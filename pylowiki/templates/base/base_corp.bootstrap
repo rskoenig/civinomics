@@ -25,6 +25,11 @@
                     Blog
                 </a>
               </li>
+              <li>
+                <a href="http://civinomics.storenvy.com/" target="_blank" class="green green-hover">
+                    Gear Store
+                </a>
+              </li>
               <li
                 % if c.pagetype == "news":
                    class ="active"

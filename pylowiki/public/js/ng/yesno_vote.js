@@ -66,7 +66,11 @@ function yesNoVoteCtrl($scope) {
             $scope.noPercent = $scope.noVotes / $scope.totalVotes * 100;
         }
 
-        $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/1');
+        if ($scope.objType == 'comment') {
+            $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/1');
+        } else {
+            $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/1');
+        }
     }
 
     $scope.updateNoVote = function(){
@@ -108,6 +112,10 @@ function yesNoVoteCtrl($scope) {
             $scope.noPercent = $scope.noVotes / $scope.totalVotes * 100;
         }
 
-        $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
+        if ($scope.objType == 'comment') {
+            $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/-1');
+        } else {
+            $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
+        }
     }
 };
