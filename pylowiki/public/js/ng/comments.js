@@ -1,4 +1,20 @@
-function commentsController($scope, $http) {
+
+var app = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
+
+app.factory('editService', function ($rootScope) {
+    var commentEdit = {};
+ 
+    commentEdit.prepBroadcast = function() {
+        this.sendBroadcast();
+    };   
+    commentEdit.sendBroadcast = function() {
+        $rootScope.$broadcast('editDone');
+    };
+    
+    return commentEdit;
+});
+
+function commentsController($rootScope, $scope, $http, editService) {
 	$scope.commentsLoading = false;
 	$scope.commentsHidden = true;
 	$scope.newCommentLoading = false;
@@ -54,4 +70,23 @@ function commentsController($scope, $http) {
             $scope.commentText = '';
         });
 	};
+	
+	$scope.$on('editDone', function() {
+	    $scope.getUpdatedComments();
+    });
 }
+
+function commentEditController($rootScope, $scope, $http, editService) {
+        $scope.submitEditComment = function(){
+		$scope.newCommentLoading = true;
+		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
+		$scope.editCommentURL = '/comment/edit/handler';
+		$http.post($scope.editCommentURL, commentData).success(function(data){
+            editService.prepBroadcast();
+        });
+	};
+    
+}
+
+commentEditController.$inject = ['$rootScope', '$scope', '$http', 'editService'];
+commentsController.$inject = ['$rootScope', '$scope', '$http', 'editService'];

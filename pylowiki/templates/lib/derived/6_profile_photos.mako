@@ -1,5 +1,5 @@
 <%!
-    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
@@ -151,7 +151,7 @@
         </fieldset>
         </div><!-- span8 -->
         <div class="span4">
-            <% tagList = workshopLib.getWorkshopTagCategories() %>
+            <% tagList = tagLib.getTagCategories() %>
             <fieldset>
             Category Tags
             % for tag in tagList:
@@ -199,14 +199,15 @@
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
                             <script type="text/javascript">
-                                function setAction(imageHash) {
+                                function setAction() {
+                                    imageHash = document.getElementById('fileuploadButton').value;
                                     actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
                                     document.getElementById('fileupload').action = actionURL;
                                 }
                             </script>
                             ${editPhoto()}
                             <div class="row-fluid">
-                                <button class="btn btn-success" type="Submit" onClick="setAction('{{file.image_hash}}'); return 1;">Save Changes</button>
+                                <button class="btn btn-success" id="fileuploadButton" type="Submit" value="{{file.image_hash}}" onClick="setAction(); return 1;">Save Changes</button>
                             </div><!-- row-fluid -->
                             </form>
                         </div><!-- preview -->

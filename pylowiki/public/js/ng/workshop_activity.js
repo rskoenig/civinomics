@@ -1,43 +1,46 @@
-var workshopApp = angular.module('workshopApp', ['ngSanitize', 'infinite-scroll']);
-workshopApp.factory( 'Data', function(){
-	return {message:"Im data from the workshopApp factory"}
-})
 
 function activityWorkshopController($scope, $http) {
+    $scope.addObjType = 'idea';
+    if ($scope.allowIdeas == '0') {
+        $scope.addObjType = 'discussion';
+    }
+    if ($scope.allowResources == '0' && $scope.allowIdeas == '0') {
+        $scope.addObjType = 'discussion';
+    }
 	$scope.listingType = 'activity';
-	$scope.objType = 'idea'
-	$scope.activityType = '/all';
+	$scope.objType = 'idea';
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
 	$scope.busy = false;
 	$scope.sliceSize = 7;
-	$scope.offset = $scope.sliceSize;
-	$scope.numAdopted = 0
-	$scope.numIdeas = 0
-	$scope.numDiscussions = 0
+	$scope.numAdopted = 0;
+	$scope.numIdeas = 0;
+	$scope.numDiscussions = 0;
 	$scope.numResources = 0;
+	if ($scope.offset == undefined) {
+	    $scope.offset = 0;
+	}
 
 	$scope.getActivity = function() {
-		$scope.alertMsg = ''
+		$scope.alertMsg = '';
 		$scope.activityLoading = true;
 		$http.get('/workshop/' + $scope.code + '/' + $scope.url + '/getActivity').success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
-				$scope.activity = []
-				$scope.alertMsg = "There are no ideas, resources or discussions yet. Be the first to add one!"
+				$scope.activity = [];
+				$scope.alertMsg = "There are no ideas, resources or discussions yet. Be the first to add one!";
 				$scope.alertType = data.alertType;
 			} 
 			else if (data.statusCode === 0){
 				$scope.activityNoResult = false;
 				$scope.noMoreSlices = false;
+				$scope.offset = $scope.sliceSize;
 				$scope.activity = data.result;
 				$scope.numAdopted = data.numAdopted;
 				$scope.numIdeas = data.numIdeas;
 				$scope.numDiscussions = data.numDiscussions;
 				$scope.numResources = data.numResources;
-
-				
 			}
 			$scope.activityLoading = false;
 		})
@@ -45,31 +48,12 @@ function activityWorkshopController($scope, $http) {
 
 	$scope.getActivity();
 
-
-	$scope.getAllActivity = function(){
-		$scope.activityType = '/all';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-
-	$scope.getFollowingActivity = function(){
-		$scope.activityType = '/following';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-
-	$scope.getGeoActivity = function(){
-		$scope.activityType = '/geo';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-
 	$scope.getActivitySlice = function() {
 		if ($scope.busy || $scope.noMoreSlices) return;
 		$scope.busy = true;
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
-		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
+		$http.get('/workshop/' + $scope.code + '/' + $scope.url + '/getActivity/' + $scope.offset).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
 			} 
@@ -88,11 +72,11 @@ function activityWorkshopController($scope, $http) {
 
 
 	// Add a new object
-	$scope.objType = 'idea'
+	$scope.objType = $scope.addObjType;
 	$scope.submitNewObj = function(){
 		$scope.showAddNew = false;
 		var newObjData = {'submit':'submit', 'title': $scope.newObjTitle, 'text': $scope.newObjText, 'link': $scope.newObjLink};
-		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.objType + '/handler';
+		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.addObjType + '/handler';
 		$http.post($scope.newObjURL, newObjData).success(function(data){
 			//$scope.numComments = Number($scope.numComments) + 1;
             $scope.getActivity();
@@ -123,7 +107,12 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = '';
 		$scope.query2 = '!disabled';
-		$scope.objType = 'idea'
+		$scope.objType = 'idea';
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'idea';
+        }
 	}
 
 	$scope.toggleInfo= function(){
@@ -137,7 +126,12 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
 		$scope.query2 = '';
-		$scope.objType = 'resource'
+		$scope.objType = 'resource';
+		if ($scope.allowResources == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'resource';
+        }
 	}
 
 	$scope.toggleStats= function(){
@@ -164,6 +158,11 @@ function activityWorkshopController($scope, $http) {
 		$scope.query = {objType:'idea'};
 		$scope.query2 = '!disabled';
 		$scope.objType = 'idea'
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'idea';
+        }
 	}
 	$scope.toggleAdopted= function(){
 		$scope.showSummary = false;
@@ -190,7 +189,8 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
 		$scope.query2 = '';
-		$scope.objType = 'discussion'
+		$scope.objType = 'discussion';
+		$scope.addObjType = 'discussion';
 	};
 
 	$scope.toggleResources= function(){
@@ -204,7 +204,12 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
 		$scope.query2 = '';
-		$scope.objType = 'resource'
+		$scope.objType = 'resource';
+		if ($scope.allowResources == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'resource';
+        }
 	};
 
 	$scope.toggleAddNew= function(){
@@ -219,13 +224,12 @@ function activityWorkshopController($scope, $http) {
 	};
 
 	$scope.cancelAddNew= function(){
-	    $scope.showAddNew = false;
+        $scope.showAddNew = false;
         $scope.newObjTitle = '';
         $scope.newObjText = '';
         $scope.newObjLink = '';
 	};
 }
-
 
 function workshopMenuController($scope, Data) {
 	$scope.data = Data

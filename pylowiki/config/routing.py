@@ -167,6 +167,7 @@ def make_map():
     map.connect('/getSiteActivity/{type}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}')
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
     map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}') 
     
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
@@ -219,7 +220,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/add/{handler:handler/?}', controller = 'listener', action = 'listenerAddHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/edit/{handler:handler/?}', controller = 'listener', action = 'listenerEditHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/disable/{handler:handler/?}', controller = 'listener', action = 'listenerDisableHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/toggle/{handler:handler/?}', controller = 'listener', action = 'listenerToggleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/email/{handler:handler/?}', controller = 'listener', action = 'listenerEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/suggest/{handler:handler/?}', controller = 'listener', action = 'listenerSuggestHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/list/{handler:handler/?}', controller = 'listener', action = 'listenerListHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
@@ -238,6 +239,7 @@ def make_map():
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
+    map.connect('/{comment:comments?}/edit/{handler:handler/?}', controller = 'comment', action = 'jsonEditCommentHandler')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
     map.connect('/profile/{urlCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto', urlCode = '{urlCode}')
     map.connect('/getComments/{urlCode}{end:/?}', controller = 'comment', action = 'jsonCommentsForItem', urlCode = '{urlCode}')
@@ -251,6 +253,7 @@ def make_map():
     map.connect('/rate/comment/{code}/{amount}{end:/?}', controller = 'rating', action = 'rateComment', code = '{code}', amount = '{amount}')
     map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/initiative/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateInitiative', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/agendaitem/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateAgendaItem', code = '{code}', url = '{url}', amount = '{amount}')
     
     # Disable/enable/delete/edit/flag Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
@@ -387,12 +390,29 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/meetings', controller = 'profile', action = 'showUserMeetings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getMeetings/{id1}/{id2}', controller = 'profile', action = 'getUserMeetings', id1 = '{id1}', id2 = '{id2}')
+
     # CSV Parsing 
     map.connect('/profile/{id1}/{id2}/{csv:csv/?}', controller = 'profile', action = 'csv', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/csv/upload/{handler:handler/?}', controller = 'profile', action = 'csvUploadHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/csv/update/{handler:handler/?}', controller = 'profile', action = 'csvUpdateHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
 
     
+    ###############
+    # Meetings    #
+    ###############
+    map.connect('/meeting/{id1}/{id2}/meetingNew{end:/?}', controller = 'meeting', action = 'meetingNew', id1 = '{id1}', id2 = '{id2}')   
+    map.connect('/meeting/{id1}/{id2}/meetingNewHandler{end:/?}', controller = 'meeting', action = 'meetingNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/meetingEdit{end:/?}', controller = 'meeting', action = 'meetingEdit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/meetingEditHandler{end:/?}', controller = 'meeting', action = 'meetingEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/show{end:/?}', controller = 'meeting', action = 'meetingShow', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/meeting/{id1}/{id2}/agendaitem/{id3}{end:/?}', controller = 'meeting', action = 'meetingShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/meeting/{id1}/{id2}/meetingAgendaItemAddHandler{end:/?}', controller = 'meeting', action = 'meetingAgendaItemAddHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/agendaitem/{id1}/{id2}/editHandler{end:/?}', controller = 'meeting', action = 'agendaitemEditHandler', id1 = '{id1}', id2 = '{id2}') 
+    map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')
+    
+
     ###############
     # Initiatives #
     ###############
@@ -435,14 +455,14 @@ def make_map():
     map.connect('/help/{abuseHandler:abuseHandler/?}', controller = 'help', action='abuseHandler')
     map.connect('/help/{feedbackWorkshop:feedbackWorkshop/?}', controller = 'help', action='feedbackWorkshop')
     map.connect('/help/{markdownGuide:markdownGuide/?}', controller = 'help', action='markdownGuide')
-    map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
-    map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
-    map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
-    map.connect('/searchWorkshops/{id1}/{id2}{end:/?}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchUsers/{id1}/{id2}{end:/?}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
-    map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
+    #map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
+    #map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
+    #map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
+    #map.connect('/searchWorkshops/{id1}/{id2}{end:/?}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/searchUsers/{id1}/{id2}{end:/?}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
+    #map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
 
     ################
     # Search       #

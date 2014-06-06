@@ -1,13 +1,16 @@
 <%inherit file="/base/base_wide.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+<% 
+   lib.return_to()
+%>
 
-<div class="row" ng-controller = "activityController">
-
+<div class="row">
 
     ###
     ### Zip Lookup
@@ -45,13 +48,13 @@
                 </div>
                 
             </div><!-- ng-controller -->
-        </div>
-    </div>
+        </div><!-- ng-init -->
+    </div><!-- home-left-panel -->
   
   ###
   ### Activity Feed
   ###
-  <div class="span7 light-grey home-center-panel">
+  <div class="span7 light-grey home-center-panel" ng-controller = "activityController">
     <div class="spacer"></div>
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
       ###
@@ -64,6 +67,7 @@
           % if c.authuser:
             <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
             <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> My County </a></li>
+            <li ng-class="{'active' : activityType == '/meetings'}"><a ng-click="getMeetingActivity()"> Upcoming Meetings </a></li>
           % endif
         </ul>
       </div>
@@ -77,6 +81,10 @@
         <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
+          </td>
+          
+          <td ng-if="item.objType == 'meeting'">
+            ${ng_helpers.meeting_listing()}
           </td>
 
           <td ng-if="item.objType == 'idea'">
@@ -101,7 +109,6 @@
       <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
-
     </div><!-- infinite-scroll -->
 
   </div><!-- /span8 -->
@@ -189,7 +196,7 @@
             </div>
         % endif
       </div><!-- infinite-scroll -->
-    </div>
+    </div><!-- follow-controller -->
 
   </div><!-- /span4 -->
 </div><!-- /row -->
@@ -201,6 +208,7 @@
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/following.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/follow_unfollow.js')}"></script>
+  <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="extraScripts()">

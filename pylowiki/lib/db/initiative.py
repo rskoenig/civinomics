@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
@@ -27,15 +28,17 @@ def getInitiativesForUser(user):
         return False
 
 def setInitiativesForUserInSession():        
-    # initiatives
+    # initiatives - these are a little odd in that we have to regenerate them every login because the session is set
+    # both here and in the facilitator initialization.
     if 'facilitatorInitiatives' in session:
         facilitatorInitiatives = session['facilitatorInitiatives']
     else:
         facilitatorInitiatives = []
-            
     initiativeList = getInitiativesForUser(c.authuser)
     facilitatorInitiatives += [initiative['urlCode'] for initiative in initiativeList if initiative['urlCode'] not in facilitatorInitiatives]
 
+    c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+    commit(c.authuser)
     session["facilitatorInitiatives"] = facilitatorInitiatives
     session.save()
         
@@ -134,6 +137,8 @@ def Initiative(owner, title, description, scope, goal = None, workshop = None):
     i['goal'] = goal
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
+    i['discussion_child'] = d.d['urlCode']
+    commit(i)
     return i
 
 def isPublic(initiative):

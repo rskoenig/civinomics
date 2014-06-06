@@ -1,7 +1,7 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="helpers" file="/lib/template_lib.mako" />
 
-<div id="wrap">
+<div id="wrap splash">
    ${helpers.splashNavbar()}
    <div>
       ${next.body()}

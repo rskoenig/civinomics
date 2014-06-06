@@ -85,6 +85,10 @@ h5.h45, h4.h45{
   background-color: #2a2a2a;
 }
 
+#wrap.splash {
+  background-color: #fff;
+}
+
 /* Set the fixed height of the footer here */
 #baseTemplate_footer{
   height:40px;
@@ -142,6 +146,7 @@ h5.h45, h4.h45{
 @media(min-width: 767px){
   .container.splash-container{
     min-width: 940px;
+    background-color: #fff;
   }
 }
 
@@ -708,14 +713,14 @@ h1.workshop-title{
 .logo{
   background-image: url('/images/logo_white_myriad_med.png');
   height: 35px;
-  width: 185px;
+  width: 40px;
   background-repeat: none;
 }
 
 .logo.logo-lg{
-  background-image: url('/images/logo_white_myriad_medlg.png');
+  background-image: url('/images/logo_simple_medlg.png');
   height: 40px;
-  width: 210px;
+  width: 45px;
   background-repeat: none;
 }
 
@@ -1591,6 +1596,15 @@ ul.listeners > li {
 }
 .no-border{
     border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+a.no-border:hover{
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 .no-bottom{
     padding-bottom:0;
@@ -1909,6 +1923,11 @@ li.thumbnail-gallery{
   border-color: #d9bdff;
 }
 
+
+.spaced-bullets li{
+  text-align: left;
+  margin: 20px auto;
+}
 
   /* guiders */
   
@@ -2804,6 +2823,10 @@ button.signup, button.login{
   min-height: 175px;
 }
 
+.row-fluid.client-logos div.span2{
+  margin-left: 2.1%;
+}
+
 @media (max-width: 1250px){
   .how-it-works h3{
     font-size: 18px;
@@ -2888,6 +2911,7 @@ button.signup, button.login{
     width: 91.6%;
     margin-left: 4.2%;
   }
+
   .footer-civ.condensed{
     position: relative !important;
     margin-top: 100px;
@@ -3502,6 +3526,7 @@ svg{
 
 .home-left-panel{
     position: fixed;
+    left: 0;
     overflow: show;
     width: 50px;
     height : 100vh;

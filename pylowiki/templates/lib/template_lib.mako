@@ -3,13 +3,13 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
-    import pylowiki.lib.db.workshop as workshopLib
+    import pylowiki.lib.db.tag      as tagLib
     from types import StringTypes
 %>
 
 !
 <%def name="mainNavbar()">
-    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+    <% tagCategories = tagLib.getTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -68,6 +68,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -81,6 +82,9 @@
                                         <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                                     </li>
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
                                 </ul>
                             </li>
 
@@ -243,6 +247,7 @@
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="http://civinomics.storenvy.com" target="_blank">Gear Store</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         <li>© 2014 Civinomics, Inc. </li>
                     </ul>
@@ -264,7 +269,7 @@
 
 <%def name="search_drawer()">
     <div id="search" class="collapse search_drawer">
-        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <% tagCategories = tagLib.getTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid searches">
             <div class="span3 offset1 small-show">
@@ -362,7 +367,7 @@
 <%def name="socialLogins()">
     <div class="row-fluid social-login centered">
         <div id="fbLoginButton2">
-            <a href="#" onclick="fbLogin()"><img src="/images/f-login.png"></a>
+            <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
