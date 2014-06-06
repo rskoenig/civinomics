@@ -253,6 +253,14 @@ class User(object):
         u['photo_counter'] = '0'
         u['meeting_counter'] = '0'
         u['accessLevel'] = 0
+        u['user_source'] = "Online"
+        if 'needsPassword' in kwargs:
+            u['user_source'] = "Survey App"
+            u['needs_password'] = '1'
+            u['poll_name'] = kwargs['poll']
+        
+            log.info(u['poll_name'])
+
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
@@ -299,7 +307,7 @@ class User(object):
         Revision(u, u)
         
         # send the activation email
-        if (u['memberType'] == '50'):
+        if ('needs_password' in u):
             password = generatePassword() 
             changePassword( u, password )
             commit( u ) # commit database change
