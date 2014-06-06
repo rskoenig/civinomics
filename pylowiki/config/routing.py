@@ -391,7 +391,9 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getTrash/{id1}/{id2}', controller = 'profile', action = 'getUserTrash', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/meetings', controller = 'profile', action = 'showUserMeetings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/ballots', controller = 'profile', action = 'showUserBallots', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getMeetings/{id1}/{id2}', controller = 'profile', action = 'getUserMeetings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallots/{id1}/{id2}', controller = 'profile', action = 'getUserBallots', id1 = '{id1}', id2 = '{id2}')
 
     # CSV Parsing 
     map.connect('/profile/{id1}/{id2}/{csv:csv/?}', controller = 'profile', action = 'csv', id1 = '{id1}', id2 = '{id2}')
@@ -412,7 +414,19 @@ def make_map():
     map.connect('/agendaitem/{id1}/{id2}/editHandler{end:/?}', controller = 'meeting', action = 'agendaitemEditHandler', id1 = '{id1}', id2 = '{id2}') 
     map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')
     
-
+    ###############
+    # Ballots     #
+    ###############
+    map.connect('/ballot/{id1}/{id2}/ballotNew{end:/?}', controller = 'ballot', action = 'ballotNew', id1 = '{id1}', id2 = '{id2}')   
+    map.connect('/ballot/{id1}/{id2}/ballotNewHandler{end:/?}', controller = 'ballot', action = 'ballotNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotEdit{end:/?}', controller = 'ballot', action = 'ballotEdit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotEditHandler{end:/?}', controller = 'ballot', action = 'ballotEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotitem/{id3}{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/ballot/{id1}/{id2}/ballotItemAddHandler{end:/?}', controller = 'ballot', action = 'ballotItemAddHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballotitem/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotitemEditHandler', id1 = '{id1}', id2 = '{id2}') 
+    map.connect('/getBallotItems/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotItems', id1 = '{id1}', id2 = '{id2}')
+    
     ###############
     # Initiatives #
     ###############

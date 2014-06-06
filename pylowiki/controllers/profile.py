@@ -33,6 +33,7 @@ import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.meeting          as meetingLib
+import pylowiki.lib.db.ballot           as ballotLib
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.mail                as mailLib
 
@@ -379,12 +380,16 @@ class ProfileController(BaseController):
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
             href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
-            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting':
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot':
                 href += '/show'
             if entry['objType'] == 'agendaitem':
                 mCode = item['meetingCode']
                 mURL = item['meeting_url']
                 href = '/meeting/' + mCode + '/' + mURL + '/agendaitem/' + item['urlCode']
+            if entry['objType'] == 'ballotitem':
+                mCode = item['ballotCode']
+                mURL = item['ballot_url']
+                href = '/ballot/' + mCode + '/' + mURL + '/ballotitem/' + item['urlCode']
                 
             entry['href'] = href
                 
@@ -424,6 +429,36 @@ class ProfileController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result': result})
+        
+    def showUserBallots(self, id1, id2):
+        return render("/derived/6_profile_ballots.bootstrap")
+        
+    def getUserBallots(self, id1, id2):
+        c.ballots = ballotLib.getBallotsForUser(id1)
+        if not c.ballots:
+            c.ballots = []
+            
+        result = []
+        for item in c.ballots:
+            entry = {}
+            entry['objType'] = 'ballot'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['electionDate'] = item['electionDate']
+            
+            scopeInfo = utils.getPublicScope(item['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
+            entry['href']= '/meeting/' + entry['urlCode'] + '/' + entry['url'] + '/show'
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
         
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':

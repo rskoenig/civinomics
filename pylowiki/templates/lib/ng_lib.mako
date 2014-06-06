@@ -96,6 +96,87 @@
     </div>
 </%def>
 
+<%def name="ballot_listing()">
+    <div class="media well search-listing">
+        <div class="row-fluid">
+            <div class="span2"><img src="{{item.flag}}" width="60" height="60"></div><div class="span9">{{item.scopeLevel}} of {{item.scopeName}}</div>
+        </div><!-- row-fluid -->
+        <div class="row-fluid">
+            <div class="span2">
+                <strong>{{item.electionDate}}</strong>
+            </div>
+            <div class="span9">
+                <a href="{{item.href}}">{{item.title}}</a>
+                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
+            </div>
+        </div><!-- row-fluid -->
+    </div><!-- media-well -->
+</%def>
+
+<%def name="ballot_item_listing()">
+    <div style="margin-top: 30px;"></div>
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+            <div class="well yesNoWell" ng-show="(canVote == 'checked')">
+                ${yesNoVoteBlock()}
+            </div>
+            <h4 class="listed-item-title">{{item.title}}</h4>
+            <p ng-show="(item.ballotItemOfficialURL != '')">Official Web Site: {{ballotItemOfficialURL}}</p>
+            <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+        </div><!-- row-fluid -->
+        <div class="row-fluid">
+            <div class="btn-group">
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
+            </div>
+            <div id="edit-{{urlCode}}" class="collapse">
+                <form action="/ballotitem/{{urlCode}}/{{url}}/editHandler" method="POST">
+                    <fieldset>
+                        <label>Item Title</label>
+                        <input type="text" name="ballotItemTitle" class="span6" value="{{item.title}}" class="span9" required>
+                        <label>Item Official Website URL</label>
+                        <input type="text" name="ballotItemOfficialURL" class="span6" value="{{item.ballotItemOfficialURL}}" class="span9">
+                        <label>Item Text</label>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="ballotItemText" class="span6" class="span9" required>{{item.text}}</textarea>
+                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                    </fieldset>
+                </form>
+            </div>
+            <div id="unpublish-{{urlCode}}" class="collapse" >
+                <div class="alert">
+                    <strong>Are you sure you want to send this ballot item to the trash?</strong>
+                    <br />
+                    <a href="/unpublish/ballotitem/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                    <span id = "unpublish_{{urlCode}}"></span>
+                </div>
+            </div>
+            <div class="accordion" id="revisions">
+                <div ng-repeat="rev in revisionList">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                            Revision: {{rev.date}}
+                            </a>
+                        </div><!-- accordian-heading -->
+                        <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <h4>{{rev.title}}</h4>
+                                <span ng-bind-html="rev.html"></span>
+                            </div><!-- accordian-inner -->
+                        </div><!-- accordian-body -->
+                    </div><!-- accordian-group -->
+                </div><!-- ng-repeat -->
+            </div><!-- accordian -->
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+
+
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl"> 
