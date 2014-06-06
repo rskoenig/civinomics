@@ -1,0 +1,10 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/lib/corp_lib.mako"/>
+
+<%def name="display_body_right_content()">
+        <h1 class="bottom-space-med">Surveys</h1> 
+		${helpers.list_studies(c.studies)}
+</%def>
+
+
+
