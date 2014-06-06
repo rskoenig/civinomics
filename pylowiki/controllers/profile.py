@@ -56,6 +56,11 @@ class ProfileController(BaseController):
                 c.user = userLib.getUserByCode(id1)
                 if not c.user:
                     abort(404)
+            elif action == 'unsubscribe':
+                hash, sep, email = id1.partition('__')
+                c.user = userLib.getUserByEmail(email)
+                if not c.user:
+                    abort(404)
             else:
                 abort(404)
 
@@ -1383,5 +1388,20 @@ class ProfileController(BaseController):
             session.save()
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+        
+    def unsubscribe(self, id1):
+        log.info('inside unsubscribe')
+        hash, sep, email = id1.partition('__')
+        if c.user['activationHash'] == hash:
+            c.user['newsletter_unsubscribe'] = '1'
+            dbHelpers.commit(c.user)
+            log.info('set newsletter_unsubscribe for %s'%c.user['email'])
+            log.info('set newsletter_unsubscribe to %s'%c.user['newsletter_unsubscribe'])
+            alert = 'You are unsubscribed from the weekly Civinomics newsletter.'
+            session['alert'] = alert
+            session.save()
+            
+        returnURL = '/profile/%s/%s'%(c.user['urlCode'], c.user['url'])
+        return redirect(returnURL)
 
 
