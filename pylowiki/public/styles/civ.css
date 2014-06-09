@@ -95,6 +95,10 @@ h5.h45, h4.h45{
   background-color: #2a2a2a;
 }
 
+#wrap.splash {
+  background-color: #fff;
+}
+
 /* Set the fixed height of the footer here */
 
 .footer.rounded{
@@ -171,6 +175,7 @@ h5.h45, h4.h45{
 @media(min-width: 767px){
   .container.splash-container{
     min-width: 940px;
+    background-color: #fff;
   }
 }
 
@@ -611,7 +616,7 @@ padding: 0;
 }
 
 .workshop-tag{
-    /* margin-left:5px;*/
+    margin-right:3px;
 }
 
 .green-tag, .Outdoors, .Land, .Environment, .Animals{
@@ -717,10 +722,13 @@ div.unread-message:hover {
   padding-bottom: 8px;
 }
 
+.icon-listing-row{
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .horizontal-list.iconListing{
   margin-left: 0px;
-  margin-top:15px;
-  margin-bottom: 0px;
   font-size: .85em;
   font-weight: 500;
 }
@@ -745,14 +753,14 @@ h1.workshop-title{
 .logo{
   background-image: url('/images/logo_white_myriad_med.png');
   height: 35px;
-  width: 185px;
+  width: 40px;
   background-repeat: none;
 }
 
 .logo.logo-lg{
-  background-image: url('/images/logo_white_myriad_medlg.png');
+  background-image: url('/images/logo_simple_medlg.png');
   height: 40px;
-  width: 210px;
+  width: 45px;
   background-repeat: none;
 }
 
@@ -1642,6 +1650,15 @@ ul.listeners > li {
 }
 .no-border{
     border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+a.no-border:hover{
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 .no-bottom{
     padding-bottom:0;
@@ -1939,6 +1956,11 @@ li.thumbnail-gallery{
   border-color: #d9bdff;
 }
 
+
+.spaced-bullets li{
+  text-align: left;
+  margin: 20px auto;
+}
 
   /* guiders */
   
@@ -2800,7 +2822,7 @@ button.signup, button.login{
   padding-right: 10px;
   width: 450px;*/
   color: #fff;
-  margin-top: 250px;
+  margin-top: 220px;
   margin-left: auto;
   margin-right: auto;
   top: auto;
@@ -2823,6 +2845,10 @@ button.signup, button.login{
 }
 .slogan2 img{
   min-height: 175px;
+}
+
+.row-fluid.client-logos div.span2{
+  margin-left: 2.1%;
 }
 
 @media (max-width: 1250px){
@@ -2909,6 +2935,7 @@ button.signup, button.login{
     width: 91.6%;
     margin-left: 4.2%;
   }
+
   .footer-civ.condensed{
     position: relative !important;
     margin-top: 100px;
@@ -3029,6 +3056,7 @@ button.close{
     height:425px; 
     background-size:cover;
     background-position: center center;
+    margin-top: -10px;
 }
 #login-bg{
   position:absolute; 
@@ -3455,7 +3483,17 @@ hr.object-list-header{
 
 .comment-avatar-cell{
   vertical-align: top;
-  width: 35px;
+  width: 35px !important;
+}
+.comment-main-cell{
+  padding: 10px;
+}
+
+.comment-row{
+  border-top: 1px solid #ddd;
+}
+.comment-vote{
+  padding-top: 10px;
 }
 
 .activity-item .avatar{
@@ -3530,6 +3568,7 @@ svg{
 
 .home-left-panel{
     position: fixed;
+    left: 0;
     overflow: show;
     width: 50px;
     height : 100vh;
@@ -3606,4 +3645,13 @@ svg{
 .spaced-bullets li{
   margin-top: 20px;
   margin-right: 20px;
+}
+
+.new-comment{
+  width: 100% !important;
+  margin-left: 10px;
+}
+
+.login-container{
+  margin-top: -10px;
 }

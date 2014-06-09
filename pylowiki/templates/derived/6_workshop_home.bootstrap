@@ -65,16 +65,33 @@
             <td class="well" style="padding: 10px;">
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
-                    <select name="objType" ng-model="objType">
-                      <option value="idea">Idea</option>
-                      <option value="discussion">Discussion</option>
-                      <option value="resource">Resource</option>
-                    </select>
-                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
-                    <input ng-show="objType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
-                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
-                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
-                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                    <div class="form-group">
+                      <select name="objType" ng-model="addObjType">
+                        % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                          <option value="idea">Idea</option>
+                        % endif
+                        <option value="discussion">Discussion</option>
+                        % if c.w['allowResources'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                          <option value="resource">Resource</option>
+                        % endif
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="newObjTitle">Title</label>
+                      <input type="text" class="form-control" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Enter title...">
+                    </div>
+                    <div class="form-group" ng-show="addObjType == 'resource'">
+                      <label for="newObjLink">Link</label>
+                      <input type="text" class="form-control" name="newObjLink" ng-model="newObjLink" placeholder="http://">
+                    </div>
+                    <div class="form-group">
+                      <label for="newObjText">Additional Info</label>
+                      <textarea class="form-control" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Enter additional info..."></textarea>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                      <button class="btn btn-default pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                    </div>
                 </form>
               % endif
             </td>
@@ -166,15 +183,15 @@
    <div class="col-sm-3">
       % if c.authuser:
         % if c.privs and not c.privs['provisional']:
-          <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{objType}}...</button>
+          <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
         % else:
-          <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
+          <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
         % endif
       % else:
-        <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{objType}}...</a>
+        <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
       % endif
 
-      <ul class="nav nav-pillsn workshop-menu">
+      <ul class="nav nav-pills workshop-menu">
         <li ng-class="{active: showSummary == true}">
           <a ng-click="toggleSummary()">Summary</a>
         </li>
@@ -218,11 +235,12 @@
     </script>
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
-    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/workshop_activity.js')}" type="text/javascript"></script>
 </%def>

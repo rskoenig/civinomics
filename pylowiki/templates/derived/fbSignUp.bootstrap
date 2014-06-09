@@ -1,20 +1,17 @@
 <%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
 <%def name="headScripts()">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
     <script src="/js/ng/signup_login.js" type="text/javascript"></script>
     <script src="/js/geo.js" type="text/javascript"></script>
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/CA_leg.jpg' alt="">
-    <div class="span8">
-        <p class="photoCredits">iStockphoto</p>
-    </div>
+<div id="splash-bg" style="background-image: url('${c.backgroundPhotoURL}');">
+    <div class="darkened-bg"></div>
 </div>
 
 <div id="fbSignUp" class="container">
@@ -50,24 +47,23 @@
                                 <input type="hidden" name="country" value="United States">
                                 <input type="hidden" name="memberType" value="professional">
                                 <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
-                                    <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Postal Code: </label>
+                                    <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
                                     <div class="controls">
                                         <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                                         <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
                                         <div id="postalCodeResult"></div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="span4 offset1">
-                                        <input type="hidden" name="chkTOS" id="chkTOS" value="true">
-                                        <small>By signing up, you agree to our <a href="/corp/terms" target="_blank" style="color: #075D00;">terms of use</a> and <a href="/corp/privacy" target="_blank" style="color: #075D00;">privacy policy</small>
+                                <div class="control-group">
+                                    <label class="control-label" for="terms">&nbsp;</label>
+                                    <div class="controls">
+                                        <span id="terms">&nbsp;</span>
                                     </div>
                                 </div>
                                 <div class="control-group">
+                                    <label class="control-label" for="submit">&nbsp;</label>
                                     <div class="controls">
-                                        <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Complete sign up</button>
-                                        <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Complete sign up</button>
-                                        
+                                        <button type="submit" name="submit" class="btn btn-success signup">Sign up</button>
                                     </div>
                                 </div>
                                 <!--<div class="btn-group two-up">-->
@@ -84,6 +80,8 @@
                                     </div>
                                 </div>
                             </form>
+                            <script src="/js/signup.js" type="text/javascript"></script>
+                            <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
                         </div>
                     % endif
                 </div>

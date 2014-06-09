@@ -103,7 +103,7 @@
                 <% questions= study['questions']%>
                 % for question in questions:
                 <p><em>${question['title']}</em></p>
-                    <ul class="thumbnails">
+                    <ul class="thumbnails unstyled">
                         <li class="span12">
                             <div class="thumbnail">
                                 <img class="centered" src="/images/corp/casestudies/${study['url']}/${question['image']}" alt="">

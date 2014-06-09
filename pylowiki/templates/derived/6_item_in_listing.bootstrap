@@ -105,7 +105,7 @@
                 <div class="col-xs-11 col-xs-offset-1">
                     <span class="share-icons right-space">
                         ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
-                        ${lib_6.emailShare(c.objectUrl, c.thing['urlCode'])}
+                        ${lib_6.mailToShare(c.thing, workshop=c.w)}
                     </span>
                     ${helpers.moderationPanel(c.thing)}
                     ${lib_6.revisionHistory(c.revisions, c.thing)}

@@ -30,6 +30,8 @@ class ActionlistController(BaseController):
         if c.conf['public.sitemap'] != "true": 
             h.check_if_login_required()
 
+    # function is depricated
+    '''
     def index( self, id ): # id is the action
     
         """Create a list of pages with the given action/option """
@@ -83,7 +85,8 @@ class ActionlistController(BaseController):
         else:
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
-    
+    '''
+
     def rss( self ):
         c.activity = getRecentActivity(30)
         feed = feedgenerator.Rss201rev2Feed(
@@ -147,6 +150,8 @@ class ActionlistController(BaseController):
 
         return feed.writeString('utf-8')
 
+    # function is depricated
+    '''
     def searchTags( self, id1 ):
         id1 = id1.replace("_", " ")
         c.title = c.heading = 'Search Workshops by Tag: ' + id1
@@ -169,5 +174,6 @@ class ActionlistController(BaseController):
         c.rssURL = "/activity/rss"
 
         return render('/derived/6_main_listing.bootstrap')
+    '''
 
 

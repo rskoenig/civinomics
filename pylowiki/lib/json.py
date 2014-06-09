@@ -19,6 +19,7 @@ import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.comment          as commentLib
+import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.fuzzyTime           as fuzzyTime   
 
@@ -160,25 +161,27 @@ def getJsonProperties(item):
         entry['vote'] = 'nvote'
 
     # votes
-    entry['voteCount'] = int(item['ups']) + int(item['downs'])
-    entry['ups'] = int(item['ups'])
-    entry['downs'] = int(item['downs'])
-    entry['netVotes'] = int(item['ups']) - int(item['downs'])
+    if 'ups' in item:
+        entry['voteCount'] = int(item['ups']) + int(item['downs'])
+        entry['ups'] = int(item['ups'])
+        entry['downs'] = int(item['downs'])
+        entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
-    #goal votes
-    if entry['voteCount'] < 100:
-        entry['goal'] = 100
-    elif 'goal' in item:
-        entry['goal'] = item['goal']
-    else:
-        entry['goal'] = 100
+        #goal votes
+        if entry['voteCount'] < 100:
+            entry['goal'] = 100
+        elif 'goal' in item:
+            entry['goal'] = item['goal']
+        else:
+            entry['goal'] = 100
 
     # comments
     discussion = discussionLib.getDiscussionForThing(item)
-    entry['discussion'] = discussion['urlCode']
-    entry['numComments'] = 0
-    if 'numComments' in item:
-        entry['numComments'] = item['numComments']
+    if discussion:    
+        entry['discussion'] = discussion['urlCode']
+        entry['numComments'] = 0
+        if 'numComments' in item:
+            entry['numComments'] = item['numComments']
 
     # author data
     # CCN - need to find a way to optimize this lookup
@@ -202,5 +205,18 @@ def getJsonProperties(item):
     elif 'initiativeCode' in item:
         entry['parentTitle'] = item['initiative_title']
         entry['parentObjType'] = 'initiative'
+
+    # special case for meetings
+    if item.objType == 'meeting':
+        aCount = meetingLib.getAgendaItems(item['urlCode'], 1)
+        dList = item['meetingDate'].split('-')
+        entry['meetingDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+        dList = item['agendaPostDate'].split('-')
+        entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+        entry['meetingTime'] = item['meetingTime']
+        entry['location'] = item['location']
+        entry['group'] = item['group']
+        entry['href'] += '/show'
+        entry['agendaItemCount'] = str(aCount)
 
     return entry

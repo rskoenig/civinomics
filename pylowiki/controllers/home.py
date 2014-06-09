@@ -28,6 +28,7 @@ import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
 import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
+import pylowiki.lib.db.meeting 			as meetingLib
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.json				as jsonLib
 import pylowiki.lib.fuzzyTime			as fuzzyTime	
@@ -62,23 +63,33 @@ class HomeController(BaseController):
         return render('/derived/6_home.bootstrap')
 
     def getFollowingInitiatives(self, offset=0, limit=0):
-		interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
-		# reverse list so most recent first
-		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+        if 'facilitatorInitiatives' in session:
+            facilitatorInitiativeCodes = session['facilitatorInitiatives']
+        else:
+            facilitatorInitiativeCodes = []
 
-		offset = int(offset)
-		limit = int(limit)
-		interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+        if 'bookmarkedInitiatives' in session:
+            bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
+        else:
+            bookmarkedInitiativeCodes = []
 
-		interestedInitiatives = []
-		for code in interestedInitiativeCodes:
-			log.info('%s' % code)
+        interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
+        # reverse list so most recent first
+        interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+        offset = int(offset)
+        limit = int(limit)
+        interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+        interestedInitiatives = []
+        for code in interestedInitiativeCodes:
+			#log.info('%s' % code)
 			i = initiativeLib.getInitiative(code)
 			interestedInitiatives.append(i)
 
-		if len(interestedInitiatives) == 0:
+        if len(interestedInitiatives) == 0:
 			return json.dumps({'statusCode':1})
-		else:
+        else:
 			result = []
 
 			myRatings = {}
@@ -158,20 +169,19 @@ class HomeController(BaseController):
 			return json.dumps({'statusCode':0, 'result': result})
 
 
-
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
-		# get recent activity and return it into json format
-		result = []
-		allActivity = []
+        #log.info("activity type is %s"%type)
+        # get recent activity and return it into json format
+        result = []
+        allActivity = []
+        
+        offset = int(offset)
+        commments = int(comments)
 
-		offset = int(offset)
-		commments = int(comments)
+        if type == 'all':
+		    recentActivity = activityLib.getRecentActivity(max, 0, offset)
 
-		if type == 'all':
-			recentActivity = activityLib.getRecentActivity(max, 0, offset)
-				
-
-		elif type == 'following' and c.authuser:
+        elif type == 'following' and c.authuser:
 			if c.privs['participant'] or c.privs['provisional']:
 				# combine the list of interested workshops
 				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
@@ -195,7 +205,7 @@ class HomeController(BaseController):
 				alertMsg = "You are not following any people, workshops or initiatives yet!"
 				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
-		elif type == 'geo' and c.authuser:
+        elif type == 'geo' and c.authuser:
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
@@ -208,23 +218,34 @@ class HomeController(BaseController):
 		    else:
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+		    	
+        elif type == 'meetings' and c.authuser:
+		    # try getting the activity of their area
+		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+		    scopeList = userScope.split('|')
+		    countyScope = scopeList[6]
+		    #log.info("countyScope is %s"%countyScope)
+		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
+		    if countyActivity:
+		    	recentActivity = countyActivity
+		    else:
+		    	alertMsg = "There are no upcoming meetings listed for your county yet."
+		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
-		elif type == 'initiatives':
+        elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
-		else:
+        else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 		
-
-		for item in recentActivity:
-			
+        for item in recentActivity:
 			entry = jsonLib.getJsonProperties(item)
-
 			result.append(entry)
 
-		if len(result) == 0:
+        if len(result) == 0:
 			return json.dumps({'statusCode':1})
-		return json.dumps({'statusCode':0, 'result': result})
+        return json.dumps({'statusCode':0, 'result': result})
 
 
 

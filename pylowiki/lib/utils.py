@@ -163,7 +163,7 @@ def getPublicScope(item):
                         scopeName  = scope[8].replace('-', ' ').title()
                         scopeString += ', City of %s' % scopeName
                         flag += '/cities/' + scope[8]
-                        log.info('The city flag url is %s' % flag)
+                        #log.info('The city flag url is %s' % flag)
                         href += '/' + scope[8]
                         if scope[9] != '0':
                             scopeLevel = 'postalCode'
@@ -213,7 +213,7 @@ def initiativeURL(thing):
         return "/initiative/%s/%s/resource/%s/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'], thing['url'])
     elif thing.objType == 'discussion' and thing['discType'] == 'update':
         returnURL =  "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
-        log.info("return URL is %s"%returnURL)
+        #log.info("return URL is %s"%returnURL)
         return "/initiative/%s/%s/updateShow/%s" %(thing['initiativeCode'], thing['initiative_url'], thing['urlCode'])
     else:
         return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])

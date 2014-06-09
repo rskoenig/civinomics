@@ -27,6 +27,7 @@ import pylowiki.lib.db.generic          as generic
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
 import pylowiki.lib.db.message          as messageLib
+import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.alerts              as alertsLib
 import pylowiki.lib.utils               as utils
 
@@ -66,6 +67,13 @@ class AdminController(BaseController):
                 userLib.setUserPrivs()
             elif c.thing.objType.replace("Unpublished", "") == 'initiative':
                 c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'meeting':
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
+            elif 'meetingCode' in c.thing:
+                parent = generic.getThing(c.thing['meetingCode'])
+                c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item
@@ -141,6 +149,12 @@ class AdminController(BaseController):
         
     def photos(self):
         c.list = photoLib.getAllPhotos()
+        if not c.list:
+            c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def meetings(self):
+        c.list = meetingLib.getAllMeetings()
         if not c.list:
             c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )
@@ -270,6 +284,7 @@ class AdminController(BaseController):
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType.replace("Unpublished", ""), thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
+        message = False
         title = '%s a post you made' %(action)
         text = '(This is an automated message)'
         extraInfo = action
@@ -293,9 +308,10 @@ class AdminController(BaseController):
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user)
 
 
-        eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
-        message = generic.linkChildToParent(message, thing)
-        dbHelpers.commit(message)
+        if message:
+            eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
+            message = generic.linkChildToParent(message, thing)
+            dbHelpers.commit(message)
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
@@ -382,6 +398,8 @@ class AdminController(BaseController):
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
         elif c.thing.objType.replace("Unpublished", "") == 'initiative':
             returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif 'meetingCode' in c.thing or c.thing.objType == 'meeting':
+            returnURL = "/meeting/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -413,6 +431,11 @@ class AdminController(BaseController):
             returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
         elif c.thing.objType.replace("Unpublished", "") == 'initiative':
             returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'meeting':
+            returnURL = "/meeting/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'agendaitem':
+            dparent = generic.getThing(c.thing['meetingCode'])
+            returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])

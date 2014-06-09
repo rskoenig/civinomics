@@ -2,7 +2,7 @@
     import time
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
     from pylowiki.lib.db.user import getUserByEmail
-    from pylowiki.lib.db.tag import getWorkshopTagCategories
+    from pylowiki.lib.db.tag import getTagCategories
     import pylowiki.lib.db.workshop         as workshopLib
 %>
 
@@ -205,7 +205,7 @@
                 </div><!-- span1 -->
                 <div class="col-sm-5">
                     <% 
-                        tagList = getWorkshopTagCategories()
+                        tagList = getTagCategories()
                     %>
                     <br />
                     <strong>Pick 1 or 2</strong> <span class="help-inline"><span class="label label-important">Required</span></span><br />

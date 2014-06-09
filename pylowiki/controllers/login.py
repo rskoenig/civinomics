@@ -30,6 +30,7 @@ from twython import Twython
 
 import requests
 import mechanize
+import pickle
 
 import base64
 import hashlib
@@ -223,10 +224,6 @@ class LoginController(BaseController):
             if user:
                 log.info("found user by facebook id")
 
-        #if user:
-        #    for thisKey in user.keys():
-        #        log.info("user %s == %s"%(thisKey, user[thisKey]))
-
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
@@ -308,6 +305,7 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
+                        log.info("fblogin handoff 1")
                         loginURL = LoginController.logUserIn(self, user)
                         return redirect(loginURL)
                 elif 'unactivatedTwitterAuthId' in user.keys():
@@ -346,6 +344,7 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
+            log.info("fblogin handoff 2")
             loginURL = LoginController.logUserIn(self, user)
             return redirect(loginURL)
         else:
@@ -370,6 +369,7 @@ class LoginController(BaseController):
                         user['email'] = email
                 commit(user)
                 #return redirect("/fbLoggingIn")
+                log.info("fblogin handoff 3")
                 loginURL = LoginController.logUserIn(self, user)
                 return redirect(loginURL)
             else:
@@ -549,12 +549,17 @@ class LoginController(BaseController):
         c.authuser = user
         
         # get and cache their ratings
-        ratings = ratingLib.getRatingsForUser()
+        if 'ratings' not in c.authuser:
+            ratings = ratingLib.getRatingsForUser()
+            c.authuser['ratings'] = str(pickle.dumps(ratings))
+            commit(c.authuser)
+        else:
+            ratings = pickle.loads(str(c.authuser["ratings"]))
+
         session["ratings"] = ratings
         session.save()
         
         # get their workshops and initiatives of interest
-        #log.info("start session cache")
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
         pMemberLib.setPrivateMemberWorkshopsInSession()
@@ -562,7 +567,6 @@ class LoginController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
-        #log.info("end session cache")
 
         #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
@@ -754,9 +758,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':
@@ -775,9 +776,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/login.bootstrap")
 
     def loginRedirects(self, page):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         afterLoginURL = ''
         if page == 'newWorkshop':
             afterLoginURL += "/workshop/display/create/form"

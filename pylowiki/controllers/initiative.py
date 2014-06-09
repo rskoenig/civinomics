@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import datetime
+import pickle
 
 from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -203,6 +204,11 @@ class InitiativeController(BaseController):
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
+        facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+        if c.initiative['urlCode'] not in facilitatorInitiatives:
+            facilitatorInitiatives.append(c.initiative['urlCode'])
+            c.authuser["facilitatorInitiatives"] = str(pickle.dumps(facilitatorInitiatives))
+            dbHelpers.commit(c.authuser)
         
         c.level = scope
 

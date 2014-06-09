@@ -20,7 +20,7 @@ def setup_app(command, conf, vars):
 
     # If test.ini drop all existing tables
     filename = os.path.split(conf.filename)[-1]
-    if filename == 'developmentTodd.ini':    
+    if filename == 'developmentMaria.ini' or filename == 'developmentTodd.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
         
@@ -51,9 +51,7 @@ def setup_app(command, conf, vars):
         postalCode = conf['admin.postalCode']
         country = 'United States'
         memberType = 'professional'
-
         if name != "" and passwd != ""  and email != "" and postalCode != "":
-            
             if filename != 'testToddNoReset.ini':
                 # Create the admin user
                 u = User( email, name, passwd, country, memberType, postalCode )

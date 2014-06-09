@@ -1,6 +1,6 @@
 <%!
     import pylowiki.lib.db.user         as userLib
-    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
     import misaka as m
@@ -264,7 +264,7 @@
 
 <%def name="editInitiative()">
     <% 
-        tagList = workshopLib.getWorkshopTagCategories()
+        tagList = tagLib.getTagCategories()
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""

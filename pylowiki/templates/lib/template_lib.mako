@@ -3,7 +3,7 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
-    import pylowiki.lib.db.workshop as workshopLib
+    import pylowiki.lib.db.tag      as tagLib
     from types import StringTypes
 %>
 
@@ -30,18 +30,21 @@
         
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/home">Explore</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    % if 'user' in session:
-                        <li>
-                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
-                        </li>
-                    % endif
-                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
-                </ul>
-            </li>
             % if c.authuser:
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        % if 'user' in session:
+                            <li>
+                                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                            </li>
+                        % endif
+                        <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                        % if int(c.authuser['accessLevel']) > 200:
+                            <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                        % endif
+                    </ul>
+                </li>
                 % if userLib.isAdmin(c.authuser.id):
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
@@ -94,7 +97,7 @@
 
 
 <%def name="oldNavbar()">
-    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+    <% tagCategories = tagLib.getTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -153,6 +156,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -166,6 +170,9 @@
                                         <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                                     </li>
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
                                 </ul>
                             </li>
 
@@ -183,7 +190,7 @@
                         <li class="dropdown ${pSelected}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" id="profileDropdown">
                                 <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
                                 % if c.authuser['activated'] == '1':
                                     <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
@@ -297,11 +304,11 @@
             <div class="row ">
                 <div class="col-sm-5 text-center">
                     <ul class="horizontal-list">
-                        <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/news">News</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="http://civinomics.storenvy.com" target="_blank">Gear Store</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         
                     </ul>
@@ -311,6 +318,7 @@
                 </div>
                 <div class="col-sm-5">
                     <ul class="horizontal-list">
+                        <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>
                         <li>© 2014 Civinomics, Inc. </li>
@@ -323,7 +331,7 @@
 
 <%def name="search_drawer()">
     <div id="search" class="collapse search_drawer">
-        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <% tagCategories = tagLib.getTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid searches">
             <div class="span3 offset1 small-show">
@@ -421,7 +429,7 @@
 <%def name="socialLogins()">
     <div class="row social-login centered">
         <div id="fbLoginButton2">
-            <a href="/fbLogin"><img src="/images/f-login.png"></a>
+            <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>

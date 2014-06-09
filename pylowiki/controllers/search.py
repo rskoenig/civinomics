@@ -14,6 +14,7 @@ import pylowiki.lib.fuzzyTime       as fuzzyTime
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.resource     as resourceLib
@@ -44,8 +45,6 @@ class SearchController(BaseController):
 
     def __before__(self, action, searchType = None, **kwargs):
         # need this for facebook login in modal
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
         c.baseUrl = utils.getBaseUrl()
         #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
         c.title = c.heading = "Civinomics Search"
@@ -194,7 +193,7 @@ class SearchController(BaseController):
         
     def getWorkshopCategoryTags(self):
         """ return a list of the categories available for search """
-        categories = workshopLib.getWorkshopTagCategories()
+        categories = tagLib.getTagCategories()
         iPhoneApp = utils.iPhoneRequestTest(request)
         response.headers['Content-type'] = 'application/json'
         if categories:
@@ -495,7 +494,7 @@ class SearchController(BaseController):
         if len(workshops) == 0:
             log.info("return len workshops 0")
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
         for w in workshops:
             entry = {}
             entry['title'] = w['title']
@@ -578,7 +577,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -682,7 +681,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -768,7 +767,7 @@ class SearchController(BaseController):
         if len(ideas) == 0:
             log.info("searchIdeas return len ideas == 0")
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -853,7 +852,7 @@ class SearchController(BaseController):
         if len(photos) == 0:
             return json.dumps({'statusCode':2})
             
-        colors = workshopLib.getWorkshopTagColouring()
+        colors = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:

@@ -109,6 +109,7 @@ t_thing = sa.Table( 'thing', meta.metadata,
     sa.Column('objType', sa.types.Unicode(100)),
     sa.Column('date', sa.types.DateTime, default = d.datetime.now),
     sa.Column('owner', sa.types.Unicode(100), default = 0),
+    sa.Column('sort', sa.types.Unicode(100), default = None)
     mysql_charset = 'utf8'
 )
 
