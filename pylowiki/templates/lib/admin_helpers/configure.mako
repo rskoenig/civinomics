@@ -58,108 +58,109 @@
             <div class="row">
                 <div class="col-sm-12" style="padding: 19px;">
                     <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" ng-cloak>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <h4>Workshop Name</h4>
-                                <input id = "inputTitle" type="text" name="title" size="50" maxlength="100" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="input-xxlarge editWorkshopName form-control"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <h4>Introduction</h4>
-                                <span class="muted">A one paragraph description why this matters.</span>
-                                <textarea rows="8" id = "inputDescription" name="description" size="50" class="col-sm-12 form-control">${c.w['description']}</textarea>
-                                <%
-                                    if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
-                                        yesChecked = 'checked'
-                                        noChecked = ''
-                                    elif 'allowIdeas' in c.w and c.w['allowIdeas'] == '0':
-                                        yesChecked = ''
-                                        noChecked = 'checked'
-                                    else:
-                                        yesChecked = 'checked'
-                                        noChecked = ''
-                                %>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="spacer"></div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <h4>Can participants add ideas</h4>
-                                <label class="radio">
-                                    <input type="radio" id="allowIdeas" name="allowIdeas" value="1" ${yesChecked}> Yes
-                                </label>
-                                
-                                <label class="radio">
-                                    <input type="radio" id="allowIdeas" name="allowIdeas" value="0" ${noChecked}> No
-                                </label>
-                                <% 
-                                    if 'allowResources' in c.w and c.w['allowResources'] == '1':
-                                        yesChecked = 'checked'
-                                        noChecked = ''
-                                    elif 'allowResources' in c.w and c.w['allowResources'] == '0':
-                                        yesChecked = ''
-                                        noChecked = 'checked'
-                                    else:
-                                        yesChecked = 'checked'
-                                        noChecked = ''
-                                %>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <h4>Can participants add information resource links?</h4>
-                                <label class="radio">
-                                    <input type="radio" id="allowResources" name="allowResources" value="1" ${yesChecked}> Yes
-                                </label>
-                                
-                                <label class="radio">
-                                    <input type="radio" id="allowResources" name="allowResources" value="0" ${noChecked}> No
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <h4>Goals</h4>
-                                ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
-                                <p class="muted">Double-click on an existing goal to edit.</p>
-                                <div ng-controller="GoalsCtrl">
-                                    <p> {{remaining()}} of {{goals.length}} remaining </p>
-                                    <ul class="unstyled goalList">
-                                        <li ng-repeat="goal in goals">
-                                            <span>
-                                            <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
-                                            <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
-                                            <form ng-submit="goalEditDone(goal)" class="inline">
-                                                <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="100" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
-                                            </form>
-                                            <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
-                                        </li>
-                                    </ul>
-                                    <form ng-submit="addGoal()" class="addGoal">
-                                        <div class="input-group">
-                                            <input type="text" ng-model="goalTitle" size="100" maxlength = "100" placeholder="New goal here" class="addGoal form-control" id="addGoal">
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-primary" type="submit" value="add">add</button>
-                                            </span>
-                                        </div>
-                                    </form>
-                                    <p class = "green">{{100 - goalTitle.length}}</p>
+                        <fieldset>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Workshop Name</h4>
+                                    <input id = "inputTitle" type="text" name="title" size="50" maxlength="100" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="input-xxlarge editWorkshopName form-control"/>
                                 </div>
                             </div>
-                        </div>
-                        <br>
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                % if not c.published:
-                                    <button type="submit" class="btn btn-warning btn-lg">Save Basic Info and Continue</button>
-                                % else:
-                                    <button type="submit" class="btn btn-warning btn-lg">Save Basic Info</button>
-                                % endif
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Introduction</h4>
+                                    <span class="muted">A one paragraph description why this matters.</span>
+                                    <textarea rows="8" id = "inputDescription" name="description" size="50" class="col-sm-12 form-control">${c.w['description']}</textarea>
+                                    <%
+                                        if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                        elif 'allowIdeas' in c.w and c.w['allowIdeas'] == '0':
+                                            yesChecked = ''
+                                            noChecked = 'checked'
+                                        else:
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                    %>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                            <br>
+                            <div class="spacer"></div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Can participants add ideas</h4>
+                                    <label class="radio">
+                                        <input type="radio" id="allowIdeas" name="allowIdeas" value="1" ${yesChecked}> Yes
+                                    </label>
+                                    
+                                    <label class="radio">
+                                        <input type="radio" id="allowIdeas" name="allowIdeas" value="0" ${noChecked}> No
+                                    </label>
+                                    <% 
+                                        if 'allowResources' in c.w and c.w['allowResources'] == '1':
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                        elif 'allowResources' in c.w and c.w['allowResources'] == '0':
+                                            yesChecked = ''
+                                            noChecked = 'checked'
+                                        else:
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                    %>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Can participants add information resource links?</h4>
+                                    <label class="radio">
+                                        <input type="radio" id="allowResources" name="allowResources" value="1" ${yesChecked}> Yes
+                                    </label>
+                                    
+                                    <label class="radio">
+                                        <input type="radio" id="allowResources" name="allowResources" value="0" ${noChecked}> No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Goals</h4>
+                                    ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
+                                    <p class="muted">Double-click on an existing goal to edit.</p>
+                                    <div ng-controller="GoalsCtrl">
+                                        <p> {{remaining()}} of {{goals.length}} remaining </p>
+                                        <ul class="unstyled goalList">
+                                            <li ng-repeat="goal in goals">
+                                                <span>
+                                                <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
+                                                <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
+                                                <form ng-submit="goalEditDone(goal)" class="inline">
+                                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="100" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
+                                                </form>
+                                                <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
+                                            </li>
+                                        </ul>
+                                        <form ng-submit="addGoal()" class="addGoal">
+                                            <div class="input-group">
+                                                <input type="text" ng-model="goalTitle" size="100" maxlength = "100" placeholder="New goal here" class="addGoal form-control" id="addGoal">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" value="add">add</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                        <p class = "green">{{100 - goalTitle.length}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+
+                            % if not c.published:
+                                <button type="submit" class="btn btn-warning btn-lg">Save Basic Info and Continue</button>
+                            % else:
+                                <button type="submit" class="btn btn-warning btn-lg">Save Basic Info</button>
+                            % endif
+
+                        </form>
+                    </fieldset>
                 </div><!-- col-sm-12 -->
             </div><!-- row -->
         </div><!-- browse -->
@@ -252,20 +253,27 @@
     <div class="section-wrapper wiki-well">
         <div class="browse">
             <h4 class="section-header smaller">Background</h4>
-            <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a>
-            <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
-               <textarea rows="10" id="data" name="data" class="col-sm-12">${c.page['data']}</textarea>
-               <div class="background-edit-wrapper">
-                    % if not c.published:
-                        <button type="submit" name="submit" class="btn btn-warning pull-right">Save Background and Continue</button>
-                    % else:
-                        <button type="submit" name="submit" class="btn btn-warning pull-right">Save Changes</button>
-                    % endif
-               </div><!-- text-align -->
-            </form>
-            <div class="preview-information-wrapper" id="live_preview">
-               hi
+            <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a><br>
+            <div class="row">
+                <div class="col-xs-12">
+                    <form name="workshop_background" id="workshop_background" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
+                        <div class="form-group">
+                            <textarea rows="10" id="data" name="data" class="col-sm-12 form-control">${c.page['data']}</textarea>
+                        </div>
+                       <div class="background-edit-wrapper form-group">
+                            % if not c.published:
+                                <button type="submit" name="submit" class="btn btn-warning pull-right">Save Background and Continue</button>
+                            % else:
+                                <button type="submit" name="submit" class="btn btn-warning pull-right">Save Changes</button>
+                            % endif
+                       </div><!-- text-align -->
+                    </form>
+                    <div class="preview-information-wrapper" id="live_preview">
+                       hi
+                    </div>
+                </div>
             </div>
+            
         </div><!-- browse -->
     </div><!-- sectio-wrapper -->
 </%def>
@@ -542,7 +550,7 @@
         <strong>Invite Participants</strong><br>
         <br>
         <span class="help-inline">Share this Link:  </span>
-        <input type="text" class="col-sm-9" value="${c.shareURL}"></input>
+        <input type="text" class="col-sm-9 form-control" value="${c.shareURL}"></input>
         <br>
         <!--
         <br>
@@ -580,14 +588,14 @@
 </%def>
 
 <%def name="emailInvite()">
-    <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-        <div class="row">
+    <form name="private" id="private" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+        <div class="form-group">
             <label for="newMember" class="help-inline">Enter the email addresses of people to invite, separated by commas or cut and paste from Excel.</label>
-            <textarea class="input-block-level" rows=1 name="newMember"/></textarea>
+            <textarea class="form-control" rows=1 name="newMember"/></textarea>
         </div><!-- row -->
-        <div class="row">
+        <div class="form-group">
             <label for="inviteMsg" class="help-inline">Add optional message to email invitation:</label>
-            <textarea class="input-block-level" rows=2 name="inviteMsg"/></textarea><br />
+            <textarea class="form-control" rows=2 name="inviteMsg"/></textarea><br />
             <!-- 
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
             -->

@@ -134,7 +134,8 @@ class HomeController(BaseController):
 				tags = []
 				tagList = []
 				if 'tags' in item:
-				    tagList = item['tags'].split('|')
+					if item['tags'] != None:
+						tagList = item['tags'].split('|')
 				for tag in tagList:
 				    if tag and tag != '':
 				        tags.append(tag)

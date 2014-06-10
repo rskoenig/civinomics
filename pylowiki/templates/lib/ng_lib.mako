@@ -236,7 +236,7 @@
                 <p><small>${metaData()}</small></p>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
-            <div class="col-xs-1 voteWrapper">
+            <div class="col-xs-1">
                 ${upDownVoteBlock()}
             </div>
         </div>
