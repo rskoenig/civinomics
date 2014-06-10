@@ -268,6 +268,9 @@ class User(object):
             if 'externalAuthSignup' in kwargs:
                 if kwargs['externalAuthSignup'] == False:
                     self.generateActivationHash(u)
+                else:
+                    self.generateActivationHash(u, 1)
+                    
             else:
                 self.generateActivationHash(u)
         commit(u)
@@ -287,12 +290,18 @@ class User(object):
     def hashPassword(self, password):
         return md5(password + config['app_conf']['auth.pass.salt'] ).hexdigest()
 
-    def generateActivationHash(self, u):
+    def generateActivationHash(self, u, noSendEmail = 0):
         """Return a system generated hash for account activation"""
         from string import letters, digits
         from random import choice
         pool, size = letters + digits, 20
         hash =  ''.join([choice(pool) for i in range(size)])
+        u['activationHash'] = hash
+        commit(u)
+        Revision(u, u)
+        if noSendEmail == 1:
+            log.info("Successful account creation (ext auth activated) for %s" %toEmail)
+            return
         
         toEmail = u['email']
         frEmail = c.conf['activation.email']
@@ -302,9 +311,7 @@ class User(object):
         if 'paste.testing_variables' in request.environ:
                 request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
        
-        u['activationHash'] = hash
-        commit(u)
-        Revision(u, u)
+
         
         # send the activation email
         if ('needs_password' in u):
