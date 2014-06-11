@@ -19,7 +19,7 @@
                     ${lib_6.workshopImage(c.w)}
                 </td>
             % endif
-            <td style="padding-left:10px;">
+            <td class="title-cell">
                 <h4>
                     <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="no-highlight bottom-space" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>{{workshopTitle}}</a>
                 </h4>

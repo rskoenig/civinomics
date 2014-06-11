@@ -750,6 +750,14 @@ h1.workshop-title{
    color:#fff;
 }
 
+.nav-logo{
+  height: 40px;
+  margin-top: 5px; 
+  margin-left: 5px;
+}
+
+
+
 .logo{
   background-image: url('/images/logo_white_myriad_med.png');
   height: 35px;
@@ -1454,6 +1462,10 @@ a.yesVote, a.noVote{
   padding-left: 40px;
   width: 165px;
   background-color:whitesmoke;
+}
+
+.well.greyWell{
+  background-color:whitesmoke; 
 }
 
 .search-listing .well.yesNoWell{
@@ -2334,6 +2346,7 @@ text-align: right;
 .thumbnail.med-flag{
   width: 64px; 
   margin-right: 10px;
+  display: inline;
 }
 
 .thumbnail.med-flag:hover{
@@ -3654,4 +3667,8 @@ svg{
 
 .login-container{
   margin-top: -10px;
+}
+
+.title-cell{
+  padding-left:10px;
 }

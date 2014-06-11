@@ -29,67 +29,71 @@
 <%def name="agenda_item_listing()">
     <div style="margin-top: 30px;"></div>
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
-        <div class="row" ng-controller="yesNoVoteCtrl">
-            <div class="well yesNoWell" ng-show="(canVote == 'checked')">
-                ${yesNoVoteBlock()}
+        <div class="row">
+            <div class="col-xs-12">
+                <h4 class="listed-item-title">{{item.title}}</h4>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
-            <h4 class="listed-item-title">{{item.title}}</h4>
-            <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div><!-- row -->
         <div class="row">
-            <div class="btn-group">
-                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
-                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
-            </div>
-            <div id="edit-{{urlCode}}" class="collapse">
-                <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
-                    <fieldset>
-                        <label>Item Title</label>
-                        <input type="text" name="agendaItemTitle" class="col-xs-6" value="{{item.title}}" class="col-xs-9" required>
-                        <label>Item Text</label>
-                        ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="agendaItemText" class="col-xs-9 form-control" required>{{item.text}}</textarea>
-                        <label class="checkbox">
-                        <input type="checkbox" name="agendaItemVote" ng-show="(canVote == '')">
-                        <input type="checkbox" name="agendaItemVote" checked ng-show="(canVote == 'checked')">
-                        People can vote on this
-                        </label>
-                        <label class="checkbox">
-                        <input type="checkbox" name="agendaItemComment" ng-show="(canComment == '')">
-                        <input type="checkbox" name="agendaItemComment" checked ng-show="(canComment == 'checked')">
-                        People can comment on this
-                        </label>
-                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
-                    </fieldset>
-                </form>
-            </div>
-            <div id="unpublish-{{urlCode}}" class="collapse" >
-                <div class="alert">
-                    <strong>Are you sure you want to send this meeting agenda item to the trash?</strong>
-                    <br />
-                    <a href="/unpublish/agendaitem/{{urlCode}}" class="btn btn-danger">Yes</a>
-                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
-                    <span id = "unpublish_{{urlCode}}"></span>
+            <div class="col-xs-12">
+                <div class="btn-group">
+                    <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                    <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
                 </div>
+                <div id="edit-{{urlCode}}" class="collapse">
+                    <form action="/agendaitem/{{urlCode}}/{{url}}/editHandler" method="POST">
+                        <fieldset>
+                            <label>Item Title</label>
+                            <input type="text" name="agendaItemTitle" class="col-xs-6" value="{{item.title}}" class="col-xs-9" required>
+                            <label>Item Text</label>
+                            ${lib_6.formattingGuide()}<br>
+                            <textarea rows="3" name="agendaItemText" class="col-xs-9 form-control" required>{{item.text}}</textarea>
+                            <label class="checkbox">
+                            <input type="checkbox" name="agendaItemVote" ng-show="(canVote == '')">
+                            <input type="checkbox" name="agendaItemVote" checked ng-show="(canVote == 'checked')">
+                            People can vote on this
+                            </label>
+                            <label class="checkbox">
+                            <input type="checkbox" name="agendaItemComment" ng-show="(canComment == '')">
+                            <input type="checkbox" name="agendaItemComment" checked ng-show="(canComment == 'checked')">
+                            People can comment on this
+                            </label>
+                            <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                        </fieldset>
+                    </form>
+                </div>
+                <div id="unpublish-{{urlCode}}" class="collapse" >
+                    <div class="alert">
+                        <strong>Are you sure you want to send this meeting agenda item to the trash?</strong>
+                        <br />
+                        <a href="/unpublish/agendaitem/{{urlCode}}" class="btn btn-danger">Yes</a>
+                        <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                        <span id = "unpublish_{{urlCode}}"></span>
+                    </div>
+                </div>
+                <div class="accordion" id="revisions">
+                    <div ng-repeat="rev in revisionList">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                                Revision: {{rev.date}}
+                                </a>
+                            </div><!-- accordian-heading -->
+                            <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    <h4>{{rev.title}}</h4>
+                                    <span ng-bind-html="rev.html"></span>
+                                </div><!-- accordian-inner -->
+                            </div><!-- accordian-body -->
+                        </div><!-- accordian-group -->
+                    </div><!-- ng-repeat -->
+                </div><!-- accordian -->
             </div>
-            <div class="accordion" id="revisions">
-                <div ng-repeat="rev in revisionList">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
-                            Revision: {{rev.date}}
-                            </a>
-                        </div><!-- accordian-heading -->
-                        <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                                <h4>{{rev.title}}</h4>
-                                <span ng-bind-html="rev.html"></span>
-                            </div><!-- accordian-inner -->
-                        </div><!-- accordian-body -->
-                    </div><!-- accordian-group -->
-                </div><!-- ng-repeat -->
-            </div><!-- accordian -->
         </div>
+        <div ng-controller="yesNoVoteCtrl" class="row" ng-show="(canVote == 'checked')">
+                ${yesNoVoteFooter()}
+            </div>
         <div class="row" ng-show="(canComment == 'checked')">
             ${actions()}
         </div>
@@ -301,7 +305,7 @@
                 -->
                 <div class="col-sm-12">
                     <small class="grey">
-                        {{totalVotes}} votes, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED </span>
+                        {{totalVotes}} votes<span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> </span>
                         <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
                     </small>
                 </div>
@@ -426,7 +430,7 @@
                                 <div id="edit-{{comment.urlCode}}" class="collapse">
                                     <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
                                         <form class="no-bottom" ng-submit="submitEditComment()">
-                                            <textarea class="span10" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                            <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
                                             <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                             <div ng-show="(comment.doCommentRole == 'yes')">
                                                 &nbsp;
@@ -494,25 +498,26 @@
                             <td class="col-xs-1 comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar topbar-avatar"></td>
                             <td class="col-xs-11" style="padding: 10px;">
                                 <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
-                                    <form class="no-bottom form-inline">
-                                        <div class="form-group col-sm-10">
-                                            <textarea rows="1" class="form-control" style="width:100%" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                            <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
-                                                <span class="radio inline no-top right-space">
-                                                    <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
-                                                </span>
-                                                <span class="radio inline no-top right-space">
-                                                    <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
-                                                </span>
-                                                <span class="radio inline no-top right-space">
-                                                    <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
-                                                </span>
-                                            </small>
-                                        </div>
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
-                                    </form>
+                                    <form class="no-bottom" ng-submit="submitEditComment()">
+                                            <div class="form-group">
+                                                <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                                <div ng-show="(comment.doCommentRole == 'yes')">
+                                                    &nbsp;
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                                    </label>
+                                                </div><!-- ng-show -->
+                                            </div>
+                                        </form>
                             </td>
                         % endif
                         <td></td>
@@ -563,8 +568,62 @@
                     <td style="padding: 10px;">
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
-                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>                   
-                  </td>
+                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>  
+                        <div class="accordion" id="revisions">
+                                <div ng-repeat="rev in comment.revisionList">
+                                    <div class="accordion-group">
+                                        <div class="accordion-heading">
+                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                                            Revision: {{rev.date}}
+                                            </a>
+                                        </div><!-- accordian-heading -->
+                                        <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                                            <div class="accordion-inner">
+                                                <p>Position: {{rev.role}}</p>
+                                                Comment: <span ng-bind-html="rev.html"></span>
+                                            </div><!-- accordian-inner -->
+                                        </div><!-- accordian-body -->
+                                    </div><!-- accordian-group -->
+                                </div><!-- ng-repeat -->
+                            </div><!-- accordian -->
+                            <div ng-show="(comment.canEdit == 'yes')">
+                                <div class="btn-group btn-group-xs">
+                                    <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
+                                    <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</a>
+                                </div><!-- btn-group -->
+                                <div id="edit-{{comment.urlCode}}" class="collapse">
+                                    <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
+                                        <form class="no-bottom" ng-submit="submitEditComment()">
+                                            <div class="form-group">
+                                                <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                                <div ng-show="(comment.doCommentRole == 'yes')">
+                                                    &nbsp;
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                                    </label>
+                                                </div><!-- ng-show -->
+                                            </div>
+                                        </form>
+                                    </div><!-- controller -->
+                                </div><!-- collapse -->
+                            </div><!-- ng-show -->
+                        </td>
+                        <td class="col-xs-1 comment-vote">
+                            <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
+                                <div ng-controller="yesNoVoteCtrl">
+                                    ${upDownVoteBlock()}
+                                </div>
+                            </div>
+                        </td>
                 </tr>
 
                 <tr ng-hide="newCommentLoading || commentsHidden">

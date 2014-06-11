@@ -1,9 +1,21 @@
-//var myApp = angular.module('myApp', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
-//myApp.factory('ThingData', function(){
-//	return {message:"I'm data from a service"}
-//});
 
-function showThingCtrl($scope, $http) {
+var app = angular.module('civ', ['ngSanitize', 'infinite-scroll']);
+
+app.factory('editService', function ($rootScope) {
+    var commentEdit = {};
+ 
+    commentEdit.prepBroadcast = function() {
+        this.sendBroadcast();
+    };   
+    commentEdit.sendBroadcast = function() {
+        $rootScope.$broadcast('editDone');
+    };
+    
+    return commentEdit;
+});
+
+
+function showThingCtrl($rootScope, $scope, $http, editService) {
 
 	//$scope.item = ThingData
 
@@ -126,6 +138,10 @@ function showThingCtrl($scope, $http) {
             $scope.commentText = '';
         });
 	};
+    
+    $scope.$on('editDone', function() {
+        $scope.getUpdatedComments();
+    });
 }
 
 
@@ -226,3 +242,18 @@ function yesNoVoteCtrl($scope) {
         $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
     }
 };
+
+function commentEditController($rootScope, $scope, $http, editService) {
+        $scope.submitEditComment = function(){
+        $scope.newCommentLoading = true;
+        var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
+        $scope.editCommentURL = '/comment/edit/handler';
+        $http.post($scope.editCommentURL, commentData).success(function(data){
+            editService.prepBroadcast();
+        });
+    };
+    
+}
+
+commentEditController.$inject = ['$rootScope', '$scope', '$http', 'editService'];
+showThingCtrl.$inject = ['$rootScope', '$scope', '$http', 'editService'];

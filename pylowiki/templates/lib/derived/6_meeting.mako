@@ -20,7 +20,7 @@
     <% scopeInfo = utils.getPublicScope(c.meeting['scope']) %>
     <div class="row">
         <h3>${meeting['title']}</h3>
-        <img src="${scopeInfo['flag']}" width="60" height="60"> ${scopeInfo['level']} of ${scopeInfo['name']}
+        <img src="${scopeInfo['flag']}" class="thumbnail med-flag"> ${scopeInfo['level']} of ${scopeInfo['name']}
     </div><!-- row -->
     <div class="spacer"></div>
     <div class="row"><div class="col-sm-2 text-right">Who is meeting:</div><div class="span9 text-left">${meeting['group']}</div></div>
@@ -382,24 +382,32 @@
         <div class="row">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Agenda Item</button>
             <div id="addItem" class="collapse">
-                <form action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
-                    <fieldset>
+                <form class="col-sm-6 " action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
+                    <div class="form-group">
                         <label>Item Title</label>
-                        <input type="text" name="agendaItemTitle" class="col-sm-6 form-control" required>
+                        <input type="text" name="agendaItemTitle" class="form-control" required>
+                    </div>
+                    <div class="form-group">
                         <label>Agenda Item Number</label>
-                        <input type="text" name="agendaItemNumber" class="col-sm-1 form-control" required>
+                        <input type="text" name="agendaItemNumber" class="col-xs-2 col-sm-2 col-md-2 form-control" required>
+                    </div>
+                    <div class="form-group">
                         <label>Item Text</label>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="agendaItemText" class="col-sm-6 form-control" required></textarea>
+                        <textarea rows="3" name="agendaItemText" class="form-control" required></textarea>
+                    </div>
+                    <div class="form-group">
                         <label class="checkbox">
                         <input type="checkbox" name="agendaItemVote" checked> People can vote on this
                         </label>
                         <label class="checkbox">
                         <input type="checkbox" name="agendaItemComment" checked> People can comment on this
                         </label>
+                    </div>
+                    <div class="form-group">
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
                         <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
-                    </fieldset>
+                    </div>
                 </form>
             </div>
         </div><!-- row -->

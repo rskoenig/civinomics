@@ -8,8 +8,18 @@
 	<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
 	<div ng-controller="showThingCtrl" ng-cloak>
 		<div class="row">
+			<table>
+				<tr>
+					<td><img ng-src="{{item.thumbnail}}"></td>
+					<td class="title-cell">
+						<h4><a class="no-highlight" ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></h4>
+						<h3 class="well-header" ng-cloak>${ng_lib.metaData()}</h3>
+					</td>
+				</tr>
+			</table>
+        </div>
+		<div class="row">
 			<div class="col-sm-9 well">
-				<h3 class="well-header" ng-cloak>${ng_lib.metaData()}</h3>
 				<h1 ng-cloak>{{item.title}}</h1>
 				<p>{{item.text}}</p>
 				<p>${ng_lib.authorPosting()}</p>
