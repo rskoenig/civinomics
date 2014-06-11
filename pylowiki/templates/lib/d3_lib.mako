@@ -34,6 +34,14 @@
 ##  }];
 ################################################################################
 <%def name="initiativeStats(**kwargs)">
+    <%
+        if 'loggedIn' in kwargs:
+            loggedIn = kwargs['loggedIn']
+        else:
+            loggedIn = 'true'
+
+        log.info(loggedIn)
+    %>
 
     <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
     <!-- NVD3 2.0.0 (development for v2) -->
@@ -75,28 +83,42 @@
     <!-- other charts ot consider: views/votes over time, how this compares with others in this area -->
 
     <script type="text/javascript">
-        yes = ${kwargs['yes'] | n};
-        no = ${kwargs['no'] | n};
-        views = ${kwargs['views'] | n};
-        numComments = ${kwargs['numComments'] | n};
-        myRating = ${kwargs['myRating'] | n};
-        totalVotes = yes + no;
-        
+        var loggedIn = ${loggedIn};
+        console.log('loggedIn: '+loggedIn);
+        var yesNoDataSample = [];
+        var viewsCommentsVotesDataSample = [];
+        var myRating = '0';
+
+        if (!loggedIn) {
+            console.log('not logged in 1');
+            yesNoDataSample = [{"label":"LOGIN", "value":50, "color":"#005d28"}, {"label":"         TO", "value":50, "color":"#ff0000"}];
+            viewsCommentsVotesDataSample = [{"label":"SEE", "value":30, "color":"#b2c2d1"}, {"label":"RATING", "value":30, "color":"#5c9dff"}, {"label":"CHARTS", "value":30, "color":"#ffd119"}];
+        } else {
+            console.log('logged in 2');
+            yes = ${kwargs['yes'] | n};
+            no = ${kwargs['no'] | n};
+            views = ${kwargs['views'] | n};
+            numComments = ${kwargs['numComments'] | n};
+            myRating = ${kwargs['myRating'] | n};
+            totalVotes = yes + no;
+            
+            yesNoDataSample = [{"label":"VOTE", "value":50, "color":"#005d28"}, {"label":"         TO", "value":50, "color":"#ff0000"}];
+            viewsCommentsVotesDataSample = [{"label":"SEE", "value":30, "color":"#b2c2d1"}, {"label":"RATING", "value":30, "color":"#5c9dff"}, {"label":"CHARTS", "value":30, "color":"#ffd119"}];    
+            
+            var yesNoData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"         NO", "value":no, "color":"#ff0000"}];
+            var viewsCommentsVotesData = [{"label":"VIEWS", "value":views, "color":"#b2c2d1"}, {"label":"COMMENTS  ", "value":numComments, "color":"#5c9dff"}, {"label":"VOTES", "value":totalVotes, "color":"#ffd119"}];    
+        }
+
         /*console.log('yes: '+yes);
         console.log('no: '+no);
         console.log('total: '+totalVotes);
         */
         console.log('me: '+myRating);
         
-        var yesNoDataSample = [{"label":"VOTE", "value":50, "color":"#005d28"}, {"label":"         TO", "value":50, "color":"#ff0000"}];
-        var viewsCommentsVotesDataSample = [{"label":"SEE", "value":30, "color":"#b2c2d1"}, {"label":"RATING", "value":30, "color":"#5c9dff"}, {"label":"CHARTS", "value":30, "color":"#ffd119"}];    
         
-        var yesNoData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"         NO", "value":no, "color":"#ff0000"}];
-        var viewsCommentsVotesData = [{"label":"VIEWS", "value":views, "color":"#b2c2d1"}, {"label":"COMMENTS  ", "value":numComments, "color":"#5c9dff"}, {"label":"VOTES", "value":totalVotes, "color":"#ffd119"}];    
-        
-        
+        console.log(yesNoDataSample);
+        console.log(viewsCommentsVotesDataSample);
 
-        
         var marginSm = {
           top: 4,
           right: 8,
@@ -126,6 +148,9 @@
         // .color(d3.scale.category10().range())
 
         function redrawYesNo(data) {
+            console.log('redrawYesNo');
+            console.log(data);
+
             nv.addGraph(function() {
 
                 yesNoChart = nv.models.pieChart()
@@ -155,16 +180,20 @@
             });
         }
 
-        if (myRating == 0) {
-            redrawYesNo(yesNoDataSample);
-        } else {
-            redrawYesNo(yesNoData);    
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawYesNo(yesNoDataSample);
+            } else {
+                redrawYesNo(yesNoData);
+            }
         }
         
 
         var yesNoChartSm;
 
         function redrawYesNoSm(data) {
+            console.log('redrawYesNoSm');
+            console.log(data);
             nv.addGraph(function() {
 
                 yesNoChartSm = nv.models.pieChart()
@@ -194,15 +223,23 @@
             });
         }
 
-        if (myRating == 0) {
-            redrawYesNoSm(yesNoDataSample);
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawYesNoSm(yesNoDataSample);
+            } else {
+                redrawYesNoSm(yesNoData);
+            }
         } else {
-            redrawYesNoSm(yesNoData);
+            // in this case, the person is not logged in so we draw the small sample chart
+            // with a different sample message
+            redrawYesNoSm(yesNoDataSample);   
         }
 
         var viewsCommentsVotesChart;
 
         function redrawViewsCommentsVotes(data) {
+            console.log('redrawViewsCommentsVotes');
+            console.log(data);
             nv.addGraph(function() {
 
                 viewsCommentsVotesChart = nv.models.pieChart()
@@ -230,15 +267,19 @@
             });
         }
 
-        if (myRating == 0) {
-            redrawViewsCommentsVotes(viewsCommentsVotesDataSample);
-        } else {
-            redrawViewsCommentsVotes(viewsCommentsVotesData);
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawViewsCommentsVotes(viewsCommentsVotesDataSample);
+            } else {
+                redrawViewsCommentsVotes(viewsCommentsVotesData);
+            }
         }
 
         var viewsCommentsVotesChartSm;
 
         function redrawViewsCommentsVotesSm(data) {
+            console.log('redrawViewsCommentsVotesSm');
+            console.log(data);
             nv.addGraph(function() {
 
                 viewsCommentsVotesChartSm = nv.models.pieChart()
@@ -266,17 +307,23 @@
             });
         }
 
-        if (myRating == 0) {
-            redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+            } else {
+                redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+            }
         } else {
-            redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+            // in this case, the person is not logged in so we draw the small sample chart
+            // with a different sample message
+            redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
         }
         
         
         // these changes are attempting to show what's happening on our server
         // when a person adds and rescinds their vote on the page
         function changePie(newValue) {
-            //console.log('new rating: '+newValue);
+            console.log('new rating: '+newValue);
             var newData = [];
             if (myRating == 0) {
                 //console.log('no vote previously');

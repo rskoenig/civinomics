@@ -137,6 +137,13 @@ class ResourceController(BaseController):
             c.scopeFlag = scopeProps['flag']
             c.scopeHref = scopeProps['href']
 
+            c.numComments = '0'
+            if 'numComments' in c.initiative:
+                c.numComments = c.initiative['numComments']
+
+            # nice to know if I've voted on this without having to do this in 6_lib.mako
+            c.initiative['myRating'] = utils.getMyRating(c.initiative)
+
             #if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
             #    c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
             #    c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])

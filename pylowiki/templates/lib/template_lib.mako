@@ -533,7 +533,7 @@
                 </div>
             </div>
             ${d3Lib.includeD3()}
-            ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating)}
+            ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating, loggedIn='true')}
         </div>
         <div class="modal-footer">
             <div class="row-fluid centered tcs">

@@ -218,13 +218,13 @@
                             <div class='span6'>
                                 <div>
                                     <h5>Vote distribution</h5>
-                                    <svg id="nvd3-sampleYesNo-chartSm" class="voteModalPieChart"></svg>
+                                    <svg id="nvd3-YesNo-chartSm" class="voteModalPieChart"></svg>
                                 </div>
                             </div>
                             <div class='span6'>
                                 <h5>Activity counts</h5>
                                 <div>
-                                    <svg id="nvd3-sampleViewsCommentsVotes-chartSm" class="voteModalPieChart"></svg>
+                                    <svg id="nvd3-ViewsCommentsVotes-chartSm" class="voteModalPieChart"></svg>
                                 </div>
                             </div>
                         </div>

@@ -611,6 +611,13 @@
          <% return %>
       % endif
       <% 
+        if 'myRating' in thing:
+            myRating = thing['myRating']
+        else:
+            if 'ratings' in session:
+                myRatings = session["ratings"]
+            else:
+                myRatings = {}
         rating = int(thing['ups']) - int(thing['downs']) 
         totalYes = int(thing['ups'])
         totalNo = int(thing['downs'])
@@ -619,20 +626,20 @@
         if totalVotes > 0:
           percentYes = int(float(totalYes)/float(totalVotes) * 100)
           percentNo = int(float(totalNo)/float(totalVotes) * 100)
-        if 'ratings' in session:
-            myRatings = session["ratings"]
-        else:
-            myRatings = {}
+            
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
-            thingCode = thing['urlCode']
-            #log.info("thingCode is %s"%thingCode)
-            if thingCode in myRatings:
-                myRating = myRatings[thingCode]
-                log.info("thingCode %s myRating %s"%(thingCode, myRating))
+            if 'myRating' in thing:
+                myRating = thing['myRating']
             else:
-                myRating = "0"
+                thingCode = thing['urlCode']
+                #log.info("thingCode is %s"%thingCode)
+                if thingCode in myRatings:
+                    myRating = myRatings[thingCode]
+                    log.info("thingCode %s myRating %s"%(thingCode, myRating))
+                else:
+                    myRating = '0'
                 
             if myRating == '1':
                 commentClass = 'voted yesVote'
