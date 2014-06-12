@@ -2357,6 +2357,7 @@ text-align: right;
   width:40px !important; 
   height: 27px;
   margin-bottom: 5px;
+  display: inline;
 }
 
 .flag.mini-flag{
@@ -3474,6 +3475,26 @@ hr.object-list-header{
 .message-table{
   width: 100%;
 }
+
+.info-table{
+  width: 100%
+}
+
+.info-table tr td{
+  padding-bottom: 10px; 
+}
+
+.info-table tr td.right{
+  width: 40%;
+  text-align: right;
+  font-weight: bold;
+}
+
+.info-table tr td.left{
+  width: 60%;
+  padding-right: 5px;
+}
+
 
 .activity-item, .message-table, .addNewObj{
   width: 100%;

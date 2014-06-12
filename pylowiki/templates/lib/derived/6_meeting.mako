@@ -17,32 +17,37 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showInfo(meeting, author)">
-    <% scopeInfo = utils.getPublicScope(c.meeting['scope']) %>
-    <div class="row">
-        <h3>${meeting['title']}</h3>
-        <img src="${scopeInfo['flag']}" class="thumbnail med-flag"> ${scopeInfo['level']} of ${scopeInfo['name']}
-    </div><!-- row -->
     <div class="spacer"></div>
-    <div class="row"><div class="col-sm-2 text-right">Who is meeting:</div><div class="span9 text-left">${meeting['group']}</div></div>
-    <div class="row"><div class="col-sm-2 text-right">Location:</div><div class="col-sm-9 text-left">${meeting['location']}</div></div>
-    <div class="row"><div class="col-sm-2 text-right">Meeting Date:</div><div class="col-sm-9 text-left">${meeting['meetingDate']}</div></div>
-    <div class="row"><div class="col-sm-2 text-right">Meeting Time:</div><div class="col-sm-9 text-left">${meeting['meetingTime']}</div></div>
-    <div class="row"><div class="col-sm-2 text-right">Meeting Category:</div><div class="col-sm-9 text-left">${meeting['tag']}</div></div>
-    % if meeting['agendaPostDate'] != '':
-        <div class="row"><div class="col-sm-2 text-right">Date Agenda Is Posted:</div><div class="col-sm-9 text-left">${meeting['agendaPostDate']}</div>
-    % endif
-
-    
-    <div class="row">
-        <div class="col-sm-9">
-            ${m.html(meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}
-        </div>
-    </div><!-- row -->
-    
-    <div class="row">
+    <table class="info-table">
+        <tr>
+            <td class="left">Meeting Date:</td>
+            <td class="right">${meeting['meetingDate']}</td>
+        </tr>
+        <tr>
+            <td class="left">Meeting Time:</td>
+            <td class="right">${meeting['meetingTime']}</td>
+        </tr>
+        <tr>
+            <td class="left">Location:</td>
+            <td class="right">${meeting['location']}</td>
+        </tr>
+        <tr>
+            <td class="left">Group Meeting:</td>
+            <td class="right">${meeting['group']}</td>
+        </tr>
+        <tr>
+            <td class="left">Meeting Category:</td>
+            <td class="right">${meeting['tag']}</td>
+        </tr>
+        % if meeting['agendaPostDate'] != '':
+            <tr>
+                <td class="left">Date Agenda is Posted:</td>
+                <td class="right">${meeting['agendaPostDate']}</td>
+            </tr>
+        % endif
+    </table>        
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
-    </div><!-- row -->
     % if c.meeting.objType == 'revision':
         <div class="alert alert-error">
             This is a revision dated ${c.meeting.date}
@@ -379,38 +384,36 @@
 
 <%def name="addAgendaItem(meeting, author)">
     % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
-        <div class="row">
-            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Agenda Item</button>
-            <div id="addItem" class="collapse">
-                <form class="col-sm-6 " action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
-                    <div class="form-group">
-                        <label>Item Title</label>
-                        <input type="text" name="agendaItemTitle" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Agenda Item Number</label>
-                        <input type="text" name="agendaItemNumber" class="col-xs-2 col-sm-2 col-md-2 form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Item Text</label>
-                        ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="agendaItemText" class="form-control" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="checkbox">
-                        <input type="checkbox" name="agendaItemVote" checked> People can vote on this
-                        </label>
-                        <label class="checkbox">
-                        <input type="checkbox" name="agendaItemComment" checked> People can comment on this
-                        </label>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
-                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div><!-- row -->
+        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem">New Agenda Item</button>
+        <div id="addItem" class="collapse">
+            <form class="col-sm-6 " action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
+                <div class="form-group">
+                    <label>Item Title</label>
+                    <input type="text" name="agendaItemTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Agenda Item Number</label>
+                    <input type="text" name="agendaItemNumber" class="col-xs-2 col-sm-2 col-md-2 form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Item Text</label>
+                    ${lib_6.formattingGuide()}<br>
+                    <textarea rows="3" name="agendaItemText" class="form-control" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox">
+                    <input type="checkbox" name="agendaItemVote" checked> People can vote on this
+                    </label>
+                    <label class="checkbox">
+                    <input type="checkbox" name="agendaItemComment" checked> People can comment on this
+                    </label>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                    <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
+                </div>
+            </form>
+        </div>
     % endif
 </%def>
 
@@ -422,23 +425,23 @@
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
-    <div class="btn-group">
+    <div class="btn-group btn-group-sm pull-right">
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
-            <a href="/meeting/${thing['urlCode']}/${thing['url']}/meetingEdit" class="btn btn-mini">Edit</a>
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">trash</a>
+            <a href="/meeting/${thing['urlCode']}/${thing['url']}/meetingEdit" class="btn btn-default">Edit</a>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">Trash</a>
         % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-xs accordion-toggle" data-toggle="collapse" data-target="#${publishID}">Publish</a>
             % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${publishID}">Publish</a>
             % endif
         % endif
         % if c.revisions:
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#revisions">Revisions (${len(c.revisions)})</a>
         % endif
 
         % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">Admin</a>
         % endif
     </div>
     

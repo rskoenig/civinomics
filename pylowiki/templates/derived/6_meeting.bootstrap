@@ -1,5 +1,6 @@
 <%!
     import misaka as m
+    import pylowiki.lib.utils           as utils
 %>
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace file="/lib/derived/6_meeting.mako" name="mhelpers" />
@@ -8,44 +9,60 @@
 <%namespace file="/lib/ng_lib.mako" name="ng_lib" />
 
 <% lib.return_to() %>
-${mhelpers.showInfo(c.meeting, c.author)}
 
-% if c.agendaitem:
-    <div class="media well search-listing initiative-listing">
-        <div class="row-fluid">
-            <div class="well yesNoWell">
-                Trashed Agenda Item
-            </div><!-- well -->
-            <h4 class="listed-item-title">${c.agendaitem['title']}</a></h4>
-            <p>${m.html(c.agendaitem['text'], render_flags=m.HTML_SKIP_HTML) | n}</p>
-        </div><!-- row-fluid -->
-    </div><!-- media-well -->
-% else:
-    ${mhelpers.meetingModeration(c.meeting)}
-    % if c.meeting.objType == 'meeting':
-        ${mhelpers.addAgendaItem(c.meeting, c.author)}
-    % endif
-    <div class="spacer"></div>
-    <div ng-init="url = '${c.meeting['url']}'; code = '${c.meeting['urlCode']}';">
-        <div ng-controller="meetingsController">
-        <div class="row-fluid">
-            <div class="span9">
-                <div class="centered" ng-show="loading" ng-cloak>
-                    <i class="icon-spinner icon-spin icon-4x"></i>
-                </div><!-- loading -->
-                <div ng-repeat="item in activity">
-                    <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
-                        <tr><td>
-                            ${ng_lib.agenda_item_listing()}
-                        </td></tr>
-                    </table>
-                </div><!-- ng-repeat -->
-            </div><!-- span9 -->
-        </div><!-- row-fluid -->
+<% scopeInfo = utils.getPublicScope(c.meeting['scope']) %>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="page-header">
+            <h2>${c.meeting['title']}</h2>
+            <img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"> ${scopeInfo['level']} of ${scopeInfo['name']}
         </div>
-    </div><!-- ng-init -->
-    <p>
-% endif
+        <p>${m.html(c.meeting['text'], render_flags=m.HTML_SKIP_HTML) | n}</p>
+        % if c.agendaitem:
+            <div class="media well search-listing initiative-listing">
+                <div class="row-fluid">
+                    <div class="well yesNoWell">
+                        Trashed Agenda Item
+                    </div><!-- well -->
+                    <h4 class="listed-item-title">${c.agendaitem['title']}</a></h4>
+                    <p>${m.html(c.agendaitem['text'], render_flags=m.HTML_SKIP_HTML) | n}</p>
+                </div><!-- row-fluid -->
+            </div><!-- media-well -->
+        % else:
+            % if c.meeting.objType == 'meeting':
+                ${mhelpers.addAgendaItem(c.meeting, c.author)}
+            % endif
+            ${mhelpers.meetingModeration(c.meeting)}
+            <div class="spacer"></div>
+            <div ng-init="url = '${c.meeting['url']}'; code = '${c.meeting['urlCode']}';">
+                <div ng-controller="meetingsController">
+                <div class="row-fluid">
+                    <div class="span9">
+                        <div class="centered" ng-show="loading" ng-cloak>
+                            <i class="icon-spinner icon-spin icon-4x"></i>
+                        </div><!-- loading -->
+                        <div ng-repeat="item in activity">
+                            <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                                <tr><td>
+                                    ${ng_lib.agenda_item_listing()}
+                                </td></tr>
+                            </table>
+                        </div><!-- ng-repeat -->
+                    </div><!-- span9 -->
+                </div><!-- row-fluid -->
+                </div>
+            </div><!-- ng-init -->
+            <p>
+        % endif
+
+    </div>
+    <div class="col-sm-3">
+        <div class="well greyWell">
+            ${mhelpers.showInfo(c.meeting, c.author)}
+        </div>
+    </div>
+
+
 
 <%def name="extraScripts2()">
     <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
