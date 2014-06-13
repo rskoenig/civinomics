@@ -1451,6 +1451,10 @@ td.scope-icon{
    position: absolute;
 }
 
+.voteWrapper .chevron-score{
+  margin-top: 7px;
+}
+
 a.yesVote, a.noVote{
    width: 85px;
    position: absolute;
@@ -2515,7 +2519,6 @@ p.description:first-letter {
 
 .well.initiative-panel{
   box-shadow: none;
-  margin-top: 5px;
 }
 
 a.search.toggle :active{
