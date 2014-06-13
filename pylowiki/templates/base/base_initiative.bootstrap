@@ -8,7 +8,6 @@
 
 <% lib.return_to() %>
 
-<span ng-app="civ"></span>
 <span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}'; initiativeTitle = '${c.initiative['title']}';"></span>
 <div class="container" ng-controller="showThingCtrl">
     <div class="row">

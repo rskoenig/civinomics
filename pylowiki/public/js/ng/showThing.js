@@ -6,9 +6,6 @@ function showThingCtrl($scope, $http) {
         }
     };
 
-    
-    $scope.test = "ya voll herr commandant"
-
     $scope.getUrl = '/' + $scope.objType + '/' + $scope.thingCode + '/' + $scope.thingUrl + '/json';
 
     $scope.getThingData = function(){
