@@ -133,6 +133,16 @@ class BallotController(BaseController):
             electionOfficialURL = request.params['electionOfficialURL']
         else:
             electionOfficialURL = ''
+            
+        if 'ballotSlate' in request.params:
+            ballotSlate = request.params['ballotSlate']
+        else:
+            ballotSlate = 'measures'
+            
+        if 'candidateMax' in request.params:
+            candidateMax = request.params['candidateMax']
+        else:
+            candidateMax = '0'
 
         if 'public' in request.params:
             public = request.params['public']
@@ -140,7 +150,7 @@ class BallotController(BaseController):
             public = ''
             
         #create the ballot
-        c.ballot = ballotLib.Ballot(c.authuser, title, text, scope, electionDate, electionOfficialURL, public)
+        c.ballot = ballotLib.Ballot(c.authuser, title, text, scope, electionDate, electionOfficialURL, ballotSlate, candidateMax, public)
         if 'ballot_counter' in c.authuser:
             ballot_counter = int(c.authuser['ballot_counter'])
         else:

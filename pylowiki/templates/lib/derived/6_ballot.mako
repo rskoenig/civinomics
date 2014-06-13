@@ -53,6 +53,11 @@
             text = c.ballot['text']
             electionDate = c.ballot['electionDate']
             electionOfficialURL = c.ballot['electionOfficialURL']
+            ballotSlate = c.ballot['ballotSlate']
+            if candidateMax in c.ballot:
+                candidateMax = c.ballot['candidateMax']
+            else:
+                candidateMax = '1'
             public = c.ballot['public']
             if public == 'on':
                 publicChecked = 'checked'
@@ -66,6 +71,8 @@
             text = ""
             electionDate = ""
             electionOfficialURL = ""
+            ballotSlate = ""
+            candidateMax = "1"
             public = ""
             publicChecked = ""
             
@@ -84,12 +91,23 @@
         ${c.saveMessage}
         </div>
     % endif
+    <script>
+        function Ctrl($scope) {
+            $scope.candidate = 0;
+            $scope.setCandidateYes = function() {
+                $scope.candidate = 1;
+            };
+            $scope.setCandidateNo = function() {
+                $scope.candidate = 0;
+            };
+        }
+    </script>
     <div class="row-fluid>
         <div class="span12">
             % if c.editBallot:
-                <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.ballot['urlCode']}/${c.ballot['url']}/ballotEditHandler">
+                <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.ballot['urlCode']}/${c.ballot['url']}/ballotEditHandler" ng-controller="Ctrl">
             % else:
-                <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.authuser['urlCode']}/${c.authuser['url']}/ballotNewHandler">
+                <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.authuser['urlCode']}/${c.authuser['url']}/ballotNewHandler" ng-controller="Ctrl">
             % endif
             <div class="row-fluid">
                 <h3>Ballot Information</h3>
@@ -129,6 +147,44 @@
                 <div class="span6">
                     <div class="alert alert-info">
                         The URL to the official election web site.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label>
+                    <label class="radio">
+                        <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();" required>
+                        Ballot measures
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();" value="candidates" required>
+                        Candidates for office
+                    </label>
+                    <div ng-show="candidate">
+                        <label for="candidateMax" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
+                        <select name="candidateMax">
+                            <% 
+                                voteMax = 20
+                                loop = 1
+                            %>
+                            % while loop < voteMax + 1:
+                                <%
+                                    if int(candidateMax) == loop:
+                                        selected = "selected"
+                                    else:
+                                        selected = ""
+                                %>
+                                <option ${selected}>${loop}</option>
+                                <% loop += 1 %>
+                            % endwhile
+                        </select>
+                    </div>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        The type of ballot slate. Ballot measures with yes/no vote per measure, or candidates with a maximum of N votes for the slate.
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->

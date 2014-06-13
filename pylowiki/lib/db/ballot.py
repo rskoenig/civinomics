@@ -29,10 +29,10 @@ def getAllBallots():
     except:
         return False
         
-def getBallotItem(code):
+def getBallotMeasure(code):
     try:
         return meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['ballotitem', 'ballotitemUnpublished']))\
+            .filter(Thing.objType.in_(['ballotmeasure', 'ballotmeasureUnpublished']))\
             .filter(Thing.data.any(wc('urlCode', code)))\
             .one()
     except:
@@ -47,10 +47,10 @@ def getBallotsForUser(code):
     except:
         return False
         
-def getBallotItems(code, count = 0, deleted = u'0'):
+def getBallotMeasures(code, count = 0, deleted = u'0'):
     try:
         q = meta.Session.query(Thing)\
-            .filter_by(objType = 'ballotitem')\
+            .filter_by(objType = 'ballotmeasure')\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('ballotCode', code)))\
             .order_by('sort')
@@ -84,7 +84,7 @@ def searchBallots( keys, values, deleted = u'0', public = '1', count = False):
         
 
 # Ballot Object
-def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, public):
+def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, ballotSlate, candidateMax, public):
     b = Thing('ballot', owner.id)
     generic.linkChildToParent(b, owner)
     commit(b)
@@ -95,6 +95,8 @@ def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, public)
     b['scope'] = scope
     b['electionDate'] = electionDate
     b['electionOfficialURL'] = electionOfficialURL
+    b['ballotSlate'] = ballotSlate
+    b['candidateMax'] = candidateMax
     b['deleted'] = u'0'
     b['disabled'] = u'0'
     b['public'] = public
@@ -104,8 +106,8 @@ def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, public)
     return b
 
 # Ballot item Object
-def Ballotitem(owner, ballot, title, number, text, ballotItemOfficialURL):
-    b = Thing('ballotitem', owner.id)
+def Ballotmeasure(owner, ballot, title, number, text, ballotMeasureOfficialURL):
+    b = Thing('ballotmeasure', owner.id)
     generic.linkChildToParent(b, owner)
     generic.linkChildToParent(b, ballot)
     commit(b)
@@ -113,7 +115,7 @@ def Ballotitem(owner, ballot, title, number, text, ballotItemOfficialURL):
     b['title'] = title
     b['url'] = utils.urlify(title[:20])
     b['text'] = text
-    b['ballotItemOfficialURL'] = ballotItemOfficialURL
+    b['ballotMeasureOfficialURL'] = ballotMeasureOfficialURL
     b['numComments'] = '0'
     b['deleted'] = u'0'
     b['disabled'] = u'0'
@@ -124,7 +126,7 @@ def Ballotitem(owner, ballot, title, number, text, ballotItemOfficialURL):
     b['downs'] = '0'
     b.sort = number
     commit(b)
-    d = discussionLib.Discussion(owner = owner, discType = 'ballotitem', attachedThing = b, title = title)
+    d = discussionLib.Discussion(owner = owner, discType = 'ballotmeasure', attachedThing = b, title = title)
     b['discussion_child'] = d.d['urlCode']
     commit(b)
     return b
