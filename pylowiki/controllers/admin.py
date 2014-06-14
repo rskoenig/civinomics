@@ -28,6 +28,7 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.meeting          as meetingLib
+import pylowiki.lib.db.ballot           as ballotLib
 import pylowiki.lib.alerts              as alertsLib
 import pylowiki.lib.utils               as utils
 
@@ -436,6 +437,9 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'agendaitem':
             dparent = generic.getThing(c.thing['meetingCode'])
             returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'ballotmeasure':
+            dparent = generic.getThing(c.thing['ballotCode'])
+            returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])

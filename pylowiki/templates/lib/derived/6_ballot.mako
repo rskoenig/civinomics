@@ -153,7 +153,7 @@
             
             <div class="row-fluid">
                 <%
-                    if c.ballot['ballotSlate'] == 'measures':
+                    if c.ballot and c.ballot['ballotSlate'] == 'measures':
                         measuresChecked = 'checked'
                         candidatesChecked = ''
                     else:

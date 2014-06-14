@@ -394,6 +394,11 @@
                         parentURL = item['meeting_url']
                         parentObjType = 'meeting'
                         parentLink = "/meeting/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'ballotCode' in item:
+                        parentCode = item['ballotCode']
+                        parentURL = item['ballot_url']
+                        parentObjType = 'ballot'
+                        parentLink = "/ballot/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
