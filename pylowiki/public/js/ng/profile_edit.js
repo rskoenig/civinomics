@@ -60,11 +60,15 @@ function profileController($scope, $http) {
     $scope.getActivityURL = '/getActivity/' + $scope.code + '/' + $scope.url
     $scope.getTrashURL = '/getTrash/' + $scope.code + '/' + $scope.url
     $scope.getMeetingsURL = '/getMeetings/' + $scope.code + '/' + $scope.url
+    $scope.getBallotsURL = '/getBallots/' + $scope.code + '/' + $scope.url
     if ($scope.trash){
         $scope.getActivityURL = $scope.getTrashURL
     }
     if ($scope.meetings){
         $scope.getActivityURL = $scope.getMeetingsURL
+    }
+    if ($scope.ballots){
+        $scope.getActivityURL = $scope.getBallotsURL
     }
 
     $scope.getActivity = function() {

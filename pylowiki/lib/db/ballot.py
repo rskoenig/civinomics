@@ -105,7 +105,7 @@ def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, ballotS
     commit(b)
     return b
 
-# Ballot item Object
+# Ballot Measure Object
 def Ballotmeasure(owner, ballot, title, number, text, ballotMeasureOfficialURL):
     b = Thing('ballotmeasure', owner.id)
     generic.linkChildToParent(b, owner)
@@ -127,6 +127,33 @@ def Ballotmeasure(owner, ballot, title, number, text, ballotMeasureOfficialURL):
     b.sort = number
     commit(b)
     d = discussionLib.Discussion(owner = owner, discType = 'ballotmeasure', attachedThing = b, title = title)
+    b['discussion_child'] = d.d['urlCode']
+    commit(b)
+    return b
+    
+# Ballot Candidate Object
+def Ballotcandidate(owner, ballot, title, number, text, ballotCandidateParty, ballotCandidateOfficialURL):
+    b = Thing('ballotcandidate', owner.id)
+    generic.linkChildToParent(b, owner)
+    generic.linkChildToParent(b, ballot)
+    commit(b)
+    b['urlCode'] = utils.toBase62(b)
+    b['title'] = title
+    b['url'] = utils.urlify(title[:20])
+    b['ballotCandidateParty'] = ballotCandidateParty
+    b['text'] = text
+    b['ballotCandidateOfficialURL'] = ballotCandidateOfficialURL
+    b['numComments'] = '0'
+    b['deleted'] = u'0'
+    b['disabled'] = u'0'
+    b['public'] = u'0'
+    b['archived'] = u'0'
+    b['views'] = '0'
+    b['ups'] = '0'
+    b['downs'] = '0'
+    b.sort = number
+    commit(b)
+    d = discussionLib.Discussion(owner = owner, discType = 'ballotcandidate', attachedThing = b, title = title)
     b['discussion_child'] = d.d['urlCode']
     commit(b)
     return b
