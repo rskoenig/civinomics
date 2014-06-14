@@ -54,7 +54,7 @@
             electionDate = c.ballot['electionDate']
             electionOfficialURL = c.ballot['electionOfficialURL']
             ballotSlate = c.ballot['ballotSlate']
-            if candidateMax in c.ballot:
+            if 'candidateMax' in c.ballot:
                 candidateMax = c.ballot['candidateMax']
             else:
                 candidateMax = '1'
@@ -152,14 +152,22 @@
             </div><!-- row-fluid -->
             
             <div class="row-fluid">
+                <%
+                    if c.ballot['ballotSlate'] == 'measures':
+                        measuresChecked = 'checked'
+                        candidatesChecked = ''
+                    else:
+                        measuresChecked = ''
+                        candidatesChecked = 'checked'
+                %>
                 <div class="span6">
                     <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label>
                     <label class="radio">
-                        <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();" required>
+                        <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();" ${measuresChecked} required>
                         Ballot measures
                     </label>
                     <label class="radio">
-                        <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();" value="candidates" required>
+                        <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();" ${candidatesChecked} value="candidates" required>
                         Candidates for office
                     </label>
                     <div ng-show="candidate">
@@ -355,22 +363,22 @@
     <br/>
 </%def>
 
-<%def name="addBallotItem(ballot, author)">
+<%def name="addBallotMeasure(ballot, author)">
     % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
         <div class="row-fluid">
-            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Item</button>
+            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Measure</button>
             <div id="addItem" class="collapse">
-                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotItemAddHandler" method="POST">
+                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotMeasureAddHandler" method="POST">
                     <fieldset>
-                        <label>Item Title</label>
-                        <input type="text" name="ballotItemTitle" class="span6" required>
-                        <label>Ballot Item Number</label>
-                        <input type="text" name="ballotItemNumber" class="span1" required>
-                        <label>Item Text</label>
+                        <label>Title</label>
+                        <input type="text" name="ballotMeasureTitle" class="span6" required>
+                        <label>Listing Order Number on Ballot</label>
+                        <input type="text" name="ballotMeasureNumber" class="span1" required>
+                        <label>Text</label>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="ballotItemText" class="span6" required></textarea>
-                        <label>Official Ballot Item Web Site</label>
-                        <input type="text" name="ballotItemOfficialURL" class="span1">
+                        <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
+                        <label>Official Ballot Measure Web Site</label>
+                        <input type="text" name="ballotMeasureOfficialURL" class="span6">
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
                         <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
                     </fieldset>

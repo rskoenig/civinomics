@@ -1,9 +1,9 @@
 function ballotsController($scope, $http) {
-    $scope.getBallotItemsURL = '/getBallotItems/' + $scope.code + '/' + $scope.url;
+    $scope.getBallotMeasuresURL = '/getBallotMeasures/' + $scope.code + '/' + $scope.url;
 
-    $scope.getBallotItems = function() {
+    $scope.getBallotMeasures = function() {
 		$scope.loading = true;
-		$http.get($scope.getBallotItemsURL).success(function(data){
+		$http.get($scope.getBallotMeasuresURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activity = [];
 				$scope.alertMsg = data.alertMsg;
@@ -16,6 +16,6 @@ function ballotsController($scope, $http) {
 		});
 	};
 
-	$scope.getBallotItems();
+	$scope.getBallotMeasures();
 }
 

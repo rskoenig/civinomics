@@ -423,10 +423,10 @@ def make_map():
     map.connect('/ballot/{id1}/{id2}/ballotEdit{end:/?}', controller = 'ballot', action = 'ballotEdit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballot/{id1}/{id2}/ballotEditHandler{end:/?}', controller = 'ballot', action = 'ballotEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballot/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/ballot/{id1}/{id2}/ballotitem/{id3}{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/ballot/{id1}/{id2}/ballotItemAddHandler{end:/?}', controller = 'ballot', action = 'ballotItemAddHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/ballotitem/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotitemEditHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/getBallotItems/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotItems', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotmeasure/{id3}{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/ballot/{id1}/{id2}/ballotMeasureAddHandler{end:/?}', controller = 'ballot', action = 'ballotMeasureAddHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballotmeasure/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotmeasureEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallotMeasures/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotMeasures', id1 = '{id1}', id2 = '{id2}')
 
     ###############
     # Initiatives #

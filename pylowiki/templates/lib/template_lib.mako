@@ -57,12 +57,12 @@
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Curate<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/csv">Upload</a></li>
                                     % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.user['urlCode']}/${c.user['url']}/meetings">My Meetings</a></li>
+                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/meetings">My Meetings</a></li>
                                     % endif
                                     % if 'ballot_counter' in c.authuser and c.authuser['ballot_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.user['urlCode']}/${c.user['url']}/ballots">My Ballots</a></li>
+                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/ballots">My Ballots</a></li>
                                     % endif
                                     <li><a tabindex="-1" href="/admin/users">All Users</a></li>
                                     <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>

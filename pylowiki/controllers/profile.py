@@ -391,10 +391,10 @@ class ProfileController(BaseController):
                 mCode = item['meetingCode']
                 mURL = item['meeting_url']
                 href = '/meeting/' + mCode + '/' + mURL + '/agendaitem/' + item['urlCode']
-            if entry['objType'] == 'ballotitem':
+            if entry['objType'] == 'ballotmeasure':
                 mCode = item['ballotCode']
                 mURL = item['ballot_url']
-                href = '/ballot/' + mCode + '/' + mURL + '/ballotitem/' + item['urlCode']
+                href = '/ballot/' + mCode + '/' + mURL + '/ballotmeasure/' + item['urlCode']
                 
             entry['href'] = href
                 
@@ -457,7 +457,7 @@ class ProfileController(BaseController):
             entry['scopeLevel'] = scopeInfo['level']
             entry['scopeHref'] = scopeInfo['href']
             entry['flag'] = scopeInfo['flag']
-            entry['href']= '/meeting/' + entry['urlCode'] + '/' + entry['url'] + '/show'
+            entry['href']= '/ballot/' + entry['urlCode'] + '/' + entry['url'] + '/show'
             result.append(entry)
             
         if len(result) == 0:

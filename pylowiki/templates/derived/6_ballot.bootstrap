@@ -22,8 +22,8 @@ ${bhelpers.showInfo(c.ballot, c.author)}
     </div><!-- media-well -->
 % else:
     ${bhelpers.ballotModeration(c.ballot)}
-    % if c.ballot.objType == 'ballot':
-        ${bhelpers.addBallotItem(c.ballot, c.author)}
+    % if c.ballot.objType == 'ballot' and c.ballot['ballotSlate'] == 'measures':
+        ${bhelpers.addBallotMeasure(c.ballot, c.author)}
     % endif
     <div class="spacer"></div>
     <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}';">
@@ -36,7 +36,7 @@ ${bhelpers.showInfo(c.ballot, c.author)}
                 <div ng-repeat="item in activity">
                     <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
                         <tr><td>
-                            ${ng_lib.ballot_item_listing()}
+                            ${ng_lib.ballot_measure_listing()}
                         </td></tr>
                     </table>
                 </div><!-- ng-repeat -->

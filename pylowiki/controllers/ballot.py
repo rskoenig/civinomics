@@ -31,7 +31,7 @@ class BallotController(BaseController):
         c.user = None
         c.ballot = None
         c.items = None
-        adminList = ['ballotNew', 'ballotNewHandler', 'ballotEdit', 'ballotEditHandler', 'ballotitemEditHandler']
+        adminList = ['ballotNew', 'ballotNewHandler', 'ballotEdit', 'ballotEditHandler', 'ballotmeasureEditHandler']
         if (action == 'ballotNew' or action == 'ballotNewHandler') and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             c.author = c.user
@@ -39,10 +39,10 @@ class BallotController(BaseController):
             if not c.user:
                 abort(404)
         elif id1 is not None and id2 is not None:
-            if action == 'ballotitemEditHandler':
-                c.ballotitem = ballotLib.getBallotItem(id1)
-                if c.ballotitem:
-                    c.ballot = ballotLib.getBallot(c.ballotitem['ballotCode'])
+            if action == 'ballotmeasureEditHandler':
+                c.ballotmeasure = ballotLib.getBallotMeasure(id1)
+                if c.ballotmeasure:
+                    c.ballot = ballotLib.getBallot(c.ballotmeasure['ballotCode'])
                 else:
                     abort(404)
             else:
@@ -53,8 +53,8 @@ class BallotController(BaseController):
                 if not c.ballot:
                     abort(404)
             if id3 is not None:
-                c.ballotitem = ballotLib.getBallotItem(id3)
-                if not c.ballotitem:
+                c.ballotmeasure = ballotLib.getBallotMeasure(id3)
+                if not c.ballotmeasure:
                     abort(404)
         else:
             abort(404)
@@ -245,6 +245,10 @@ class BallotController(BaseController):
             c.ballot.sort = c.ballot['electionDate']
         if 'electionOfficialURL' in request.params:
             c.ballot['electionOfficialURL'] = request.params['electionOfficialURL']
+        if 'ballotSlate' in request.params:
+            c.ballot['ballotSlate'] = request.params['ballotSlate']
+        if 'candidateMax' in request.params:
+            c.ballot['candidateMax'] = request.params['candidateMax']
         if 'public' in request.params:
             c.ballot['public'] = request.params['public']
         else:
@@ -340,86 +344,87 @@ class BallotController(BaseController):
 
         return render('/derived/6_ballot.bootstrap')
         
-    def ballotItemAddHandler(self):
-        if 'ballotItemTitle' in request.params:
-            title = request.params['ballotItemTitle']
+    def ballotMeasureAddHandler(self):
+        if 'ballotMeasureTitle' in request.params:
+            title = request.params['ballotMeasureTitle']
         else:
-            title = 'New ballot item'
+            title = 'New ballot measure (single yes/no vote)'
             
-        if 'ballotItemNumber' in request.params:
-            number = request.params['ballotItemNumber']
+        if 'ballotMeasureNumber' in request.params:
+            number = request.params['ballotMeasureNumber']
         else:
             number = '1'
         
-        if 'ballotItemText' in request.params:
-            text = request.params['ballotItemText']
+        if 'ballotMeasureText' in request.params:
+            text = request.params['ballotMeasureText']
         else:
-            text = 'New ballot item description'
+            text = 'New ballot measure description'
 
         
-        if 'ballotItemOfficialURL' in request.params:
-            link = request.params['ballotItemOfficialURL']
+        if 'ballotMeasureOfficialURL' in request.params:
+            link = request.params['ballotMeasureOfficialURL']
         else:
-            link = 'New ballot item description'
+            link = 'New ballot measure description'
 
             
-        ballotLib.Ballotitem(c.authuser, c.ballot, title, number, text, link)
+        ballotLib.Ballotmeasure(c.authuser, c.ballot, title, number, text, link)
         
         returnURL = '/ballot/%s/%s/show'%(c.ballot['urlCode'], c.ballot['url'])
             
         return redirect(returnURL)
         
-    def ballotitemEditHandler(self):
+    def ballotmeasureEditHandler(self):
         # make a revision first of the previous version
-        revisionLib.Revision(c.authuser, c.ballotitem)
+        revisionLib.Revision(c.authuser, c.ballotmeasure)
         
-        if 'ballotItemTitle' in request.params:
-            title = request.params['ballotItemTitle']
+        if 'ballotMeasureTitle' in request.params:
+            title = request.params['ballotMeasureTitle']
             if title and title != '':
-                c.ballotitem['title'] = title
+                c.ballotmeasure['title'] = title
                 
-        if 'ballotItemNumber' in request.params:
-            number = request.params['ballotItemNumber']
+        if 'ballotMeasureNumber' in request.params:
+            number = request.params['ballotMeasureNumber']
             if number and number != '':
-                c.ballotitem.sort = number
+                c.ballotmeasure.sort = number
         
-        if 'ballotItemText' in request.params:
-            text = request.params['ballotItemText']
+        if 'ballotMeasureText' in request.params:
+            text = request.params['ballotMeasureText']
             if text and text != '':
-                c.ballotitem['text'] = text
+                c.ballotmeasure['text'] = text
 
-        if 'ballotItemOfficialURL' in request.params:
-            c.ballotitem['ballotItemOfficialURL'] = request.params['ballotItemOfficialURL']
+        if 'ballotMeasureOfficialURL' in request.params:
+            c.ballotmeasure['ballotMeasureOfficialURL'] = request.params['ballotMeasureOfficialURL']
         else:
-            c.ballotitem['ballotItemOfficialURL'] = ''
+            c.ballotmeasure['ballotMeasureOfficialURL'] = ''
             
-        dbHelpers.commit(c.ballotitem)
+        dbHelpers.commit(c.ballotmeasure)
         
         returnURL = '/ballot/%s/%s/show'%(c.ballot['urlCode'], c.ballot['url'])
             
         return redirect(returnURL)
         
-    def getBallotItems(self, id1, id2):
-        c.ballotItems = ballotLib.getBallotItems(id1)
-        if not c.ballotItems:
-            c.ballotItems = []
+    def getBallotMeasures(self, id1, id2):
+        c.ballotMeasures = ballotLib.getBallotMeasures(id1)
+        if not c.ballotMeasures:
+            c.ballotMeasures = []
             
         result = []
         myRatings = {}
         if 'ratings' in session:
 		    myRatings = session['ratings']
-        for item in c.ballotItems:
+        for item in c.ballotMeasures:
             entry = {}
             if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
             else:
                 entry['canEdit'] = 'no'
-            entry['objType'] = 'ballotitem'
+            entry['objType'] = 'ballotmeasure'
             entry['url']= item['url']
             entry['urlCode']=item['urlCode']
             entry['title'] = item['title']
             entry['text'] = item['text']
-            entry['ballotItemOfficialURL'] = item['ballotItemOfficialURL']
+            entry['number'] = item.sort
+            entry['ballotMeasureOfficialURL'] = item['ballotMeasureOfficialURL']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
@@ -460,14 +465,14 @@ class BallotController(BaseController):
                     date = str(rev.date)
                     title = rev['title']
                     text = rev['text']
-                    officialURL = rev['ballotItemOfficialURL']
+                    officialURL = rev['ballotMeasureOfficialURL']
                     html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
                     revision['date'] = date
                     revision['urlCode'] = code
                     revision['title'] = title
                     revision['text'] = text
                     revision['html'] = html
-                    revision['ballotItemOfficialURL'] = officialURL
+                    revision['ballotMeasureOfficialURL'] = officialURL
                     entry['revisionList'].append(revision)
                     
             result.append(entry)

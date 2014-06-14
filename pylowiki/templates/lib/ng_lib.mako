@@ -113,15 +113,15 @@
     </div><!-- media-well -->
 </%def>
 
-<%def name="ballot_item_listing()">
+<%def name="ballot_measure_listing()">
     <div style="margin-top: 30px;"></div>
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="well yesNoWell" ng-show="(canVote == 'checked')">
                 ${yesNoVoteBlock()}
             </div>
-            <h4 class="listed-item-title">{{item.title}}</h4>
-            <p ng-show="(item.ballotItemOfficialURL != '')">Official Web Site: {{ballotItemOfficialURL}}</p>
+            <h4 class="listed-measure-title">{{item.title}}</h4>
+            <p ng-show="(item.ballotMeasureOfficialURL != '')">Official Web Site: {{ballotMeasureOfficialURL}}</p>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div><!-- row-fluid -->
         <div class="row-fluid">
@@ -130,24 +130,26 @@
                 <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
             </div>
             <div id="edit-{{urlCode}}" class="collapse">
-                <form action="/ballotitem/{{urlCode}}/{{url}}/editHandler" method="POST">
+                <form action="/ballotmeasure/{{urlCode}}/{{url}}/editHandler" method="POST">
                     <fieldset>
-                        <label>Item Title</label>
-                        <input type="text" name="ballotItemTitle" class="span6" value="{{item.title}}" class="span9" required>
-                        <label>Item Official Website URL</label>
-                        <input type="text" name="ballotItemOfficialURL" class="span6" value="{{item.ballotItemOfficialURL}}" class="span9">
-                        <label>Item Text</label>
+                        <label>Title</label>
+                        <input type="text" name="ballotMeasureTitle" class="span6" value="{{item.title}}" class="span9" required>
+                        <label>Listing Order Number on Ballot</label>
+                        <input type="text" name="ballotMeasureNumber" value="{{item.number}}" class="span1" required>
+                        <label>Official Website URL</label>
+                        <input type="text" name="ballotMeasureOfficialURL" class="span6" value="{{item.ballotMeasureOfficialURL}}" class="span9">
+                        <label>Text</label>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="ballotItemText" class="span6" class="span9" required>{{item.text}}</textarea>
+                        <textarea rows="3" name="ballotMeasureText" class="span6" class="span9" required>{{item.text}}</textarea>
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
                     </fieldset>
                 </form>
             </div>
             <div id="unpublish-{{urlCode}}" class="collapse" >
                 <div class="alert">
-                    <strong>Are you sure you want to send this ballot item to the trash?</strong>
+                    <strong>Are you sure you want to send this ballot measure to the trash?</strong>
                     <br />
-                    <a href="/unpublish/ballotitem/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a href="/unpublish/ballotmeasure/{{urlCode}}" class="btn btn-danger">Yes</a>
                     <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
                     <span id = "unpublish_{{urlCode}}"></span>
                 </div>
