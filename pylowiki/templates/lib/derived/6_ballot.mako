@@ -15,7 +15,33 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showInfo(ballot, author)">
+<%def name="showElectionInfo(election, author)">
+    <% scopeInfo = utils.getPublicScope(c.election['scope']) %>
+    <div class="row-fluid">
+        <h3>${election['title']}</h3>
+        <img src="${scopeInfo['flag']}" width="60" height="60"> ${scopeInfo['level']} of ${scopeInfo['name']}
+    </div><!-- row-fluid -->
+    <div class="spacer"></div>
+    <div class="row-fluid"><div class="span2 text-right">Election Date:</div><div class="span9 text-left">${election['electionDate']}</div></div>
+    
+    <div class="row-fluid">
+        <div class="span9">
+            ${m.html(election['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        </div>
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        <span class="grey">Posted by: </span>
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+    </div><!-- row-fluid -->
+    % if c.election.objType == 'revision':
+        <div class="alert alert-error">
+            This is a revision dated ${c.election.date}
+        </div>
+    % endif
+</%def>
+
+<%def name="showBallotInfo(ballot, author)">
     <% scopeInfo = utils.getPublicScope(c.ballot['scope']) %>
     <div class="row-fluid">
         <h3>${ballot['title']}</h3>
@@ -494,6 +520,31 @@
     <br/>
 </%def>
 
+<%def name="addBallot(election, author)">
+    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+        <div class="row-fluid">
+            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot</button>
+            <div id="addItem" class="collapse">
+                <form action="/election/${election['urlCode']}/${election['url']}/ballotNewHandler" method="POST">
+                    <fieldset>
+                        <label>Title</label>
+                        <input type="text" name="ballotMeasureTitle" class="span6" required>
+                        <label>Listing Order Number on Ballot</label>
+                        <input type="text" name="ballotMeasureNumber" class="span1" required>
+                        <label>Text</label>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
+                        <label>Official Ballot Measure Web Site</label>
+                        <input type="text" name="ballotMeasureOfficialURL" class="span6">
+                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div><!-- row-fluid -->
+    % endif
+</%def>
+
 <%def name="addBallotMeasure(ballot, author)">
     % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
         <div class="row-fluid">
@@ -518,6 +569,62 @@
         </div><!-- row-fluid -->
     % endif
 </%def>
+
+<%def name="electionModeration(thing)">
+    <%
+        if 'user' not in session or thing.objType == 'revision' or c.privs['provisional']:
+            return
+        adminID = 'admin-%s' % thing['urlCode']
+        publishID = 'publish-%s' % thing['urlCode']
+        unpublishID = 'unpublish-%s' % thing['urlCode']
+    %>
+    <div class="btn-group">
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'electionUnpublished':
+            <a href="/election/${thing['urlCode']}/${thing['url']}/electionEdit" class="btn btn-mini">Edit</a>
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">trash</a>
+        % elif thing.objType == 'electionUnpublished' and thing['unpublished_by'] != 'parent':
+            % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % endif
+        % endif
+        % if c.revisions:
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
+        % endif
+
+        % if userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+    </div>
+    
+    % if thing['disabled'] == '0':
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            % if thing.objType == 'electionUnpublished':
+                ${lib_6.publishThing(thing)}
+            % else:
+                ${lib_6.unpublishThing(thing)}
+            % endif
+            % if userLib.isAdmin(c.authuser.id):
+                ${lib_6.adminThing(thing)}
+            % endif
+        % endif
+    % else:
+        % if userLib.isAdmin(c.authuser.id):
+            ${lib_6.adminThing(thing)}
+        % endif
+    % endif
+    % if c.revisions:
+        <div id="revisions" class="collapse">
+            <ul class="unstyled">
+            % for revision in c.revisions:
+                <li>Revision: <a href="/election/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>
+            % endfor
+            </ul>
+        </div>
+    % endif
+</%def>
+
 
 <%def name="ballotModeration(thing)">
     <%

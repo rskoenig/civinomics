@@ -32,17 +32,23 @@ class BallotController(BaseController):
         c.ballot = None
         c.items = None
         adminList = ['electionNew', 'electionNewHandler', 'electionEdit', 'electionEditHandler', 'ballotNew', 'ballotNewHandler', 'ballotEdit', 'ballotEditHandler', 'ballotmeasureEditHandler']
-        if (action == 'ballotNew' or action == 'ballotNewHandler' or action == 'electionNew' or action == 'electionNewHandler') and id1 is not None and id2 is not None:
+        if (action == 'electionNew' or action == 'electionNewHandler') and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             c.author = c.user
             c.edit = False
             if not c.user:
                 abort(404)
         elif id1 is not None and id2 is not None:
-            if action == 'electionEditHandler':
+            if action == 'electionEditHandler' or action == 'ballotNewHandler':
                 c.election = ballotLib.getElection(id1)
                 if not c.election:
                     abort(404)
+            elif action == 'electionShow':
+                c.election = ballotLib.getElection(id1)
+                if not c.election:
+                    c.election = revisionLib.getRevisionByCode(id1)
+                    if not c.election:
+                        abort(404)
             elif action == 'ballotmeasureEditHandler':
                 c.ballotmeasure = ballotLib.getBallotMeasure(id1)
                 if c.ballotmeasure:
@@ -198,22 +204,19 @@ class BallotController(BaseController):
         c.edit = True
        
         return render('/derived/6_election.bootstrap')
+        
+    def electionShow(self):
+
+        c.revisions = revisionLib.getRevisionsForThing(c.election)
+        c.author = userLib.getUserByCode(c.election['userCode'])
+        
+        if c.election.objType != 'revision' and 'views' in c.election:
+            views = int(c.election['views']) + 1
+            c.election['views'] = str(views)
+            dbHelpers.commit(c.election)
+
+        return render('/derived/6_election.bootstrap')
     
-        
-    def ballotNew(self):
-        
-        # initialize the scope dropdown selector in the edit template
-        c.states = geoInfoLib.getStateList('United-States')
-        c.country = "0"
-        c.state = "0"
-        c.county = "0"
-        c.city = "0"
-        c.postal = "0"
-        
-        c.editBallot = False
-       
-        return render('/derived/6_ballot_edit.bootstrap')
-        
     def ballotNewHandler(self):
         if 'ballotTitle' in request.params:
             title = request.params['ballotTitle']
@@ -225,48 +228,6 @@ class BallotController(BaseController):
         else:
             text = 'New ballot description'
             
-        if 'geoTagCountry' in request.params:
-            if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
-                geoTagCountry = request.params['geoTagCountry']
-            else:
-                geoTagCountry = "0"
-                
-            if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
-                geoTagState = request.params['geoTagState']
-            else:
-                geoTagState = "0"
-                
-            if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
-                geoTagCounty = request.params['geoTagCounty']
-            else:
-                geoTagCounty = "0"
-                
-            if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
-                geoTagCity = request.params['geoTagCity']
-            else:
-                geoTagCity = "0"
-                
-            if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
-                geoTagPostal = request.params['geoTagPostal']
-            else:
-                geoTagPostal = "0"
-
-            # assemble the scope string 
-            # ||country||state||county||city|zip
-            scope = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-        else:
-            scope = '0|0|united-states|0|0|0|0|0|0|0'
-            
-        if 'electionDate' in request.params:
-            electionDate = request.params['electionDate']
-        else:
-            electionDate = ''
-            
-        if 'electionOfficialURL' in request.params:
-            electionOfficialURL = request.params['electionOfficialURL']
-        else:
-            electionOfficialURL = ''
-            
         if 'ballotSlate' in request.params:
             ballotSlate = request.params['ballotSlate']
         else:
@@ -277,13 +238,8 @@ class BallotController(BaseController):
         else:
             candidateMax = '0'
 
-        if 'public' in request.params:
-            public = request.params['public']
-        else:
-            public = ''
-            
         #create the ballot
-        c.ballot = ballotLib.Ballot(c.authuser, title, text, scope, electionDate, electionOfficialURL, ballotSlate, candidateMax, public)
+        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, text, scope, electionDate, electionOfficialURL, ballotSlate, candidateMax, public)
         if 'ballot_counter' in c.authuser:
             ballot_counter = int(c.authuser['ballot_counter'])
         else:
@@ -292,39 +248,9 @@ class BallotController(BaseController):
         c.authuser['ballot_counter'] = str(ballot_counter)
         dbHelpers.commit(c.authuser)
 
-        c.level = scope
-
-        # now that the edits have been commited, update the scopeProps for the template to use:
-        scopeProps = utils.getPublicScope(c.ballot)
-        scopeName = scopeProps['name'].title()
-        scopeLevel = scopeProps['level'].title()
-        if scopeLevel == 'Earth':
-            c.scopeTitle = scopeName
-        else:
-            c.scopeTitle = scopeLevel + ' of ' + scopeName
-        c.scopeFlag = scopeProps['flag']
-        c.scopeHref = scopeProps['href']
-
-        # initialize the scope dropdown selector in the edit template
-        c.states = geoInfoLib.getStateList('United-States')
-        # ||country||state||county||city|zip
-        if c.ballot['scope'] != '':
-            geoTags = c.ballot['scope'].split('|')
-            c.country = utils.geoDeurlify(geoTags[2])
-            c.state = utils.geoDeurlify(geoTags[4])
-            c.county = utils.geoDeurlify(geoTags[6])
-            c.city = utils.geoDeurlify(geoTags[8])
-            c.postal = utils.geoDeurlify(geoTags[9])
-        else:
-            c.country = "0"
-            c.state = "0"
-            c.county = "0"
-            c.city = "0"
-            c.postal = "0"
-
-        c.editBallot = True
+        c.edit = True
        
-        return render('/derived/6_ballot.bootstrap')
+        return render('/derived/6_election.bootstrap')
     
 
     def ballotEdit(self):

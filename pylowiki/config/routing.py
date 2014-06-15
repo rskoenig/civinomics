@@ -419,15 +419,14 @@ def make_map():
     map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')
     
     ####################################################################
-    # Election, Ballots, Ballot Measures and Candidates for Office     #
+    # Elections, Ballots, Ballot Measures and Candidates for Office     #
     ####################################################################
     map.connect('/election/{id1}/{id2}/electionNew{end:/?}', controller = 'ballot', action = 'electionNew', id1 = '{id1}', id2 = '{id2}')
     map.connect('/election/{id1}/{id2}/electionNewHandler{end:/?}', controller = 'ballot', action = 'electionNewHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/election/{id1}/{id2}/electionEdit{end:/?}', controller = 'ballot', action = 'electionEdit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/election/{id1}/{id2}/electionEditHandler{end:/?}', controller = 'ballot', action = 'electionEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/election/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'electionShow', id1 = '{id1}', id2 = '{id2}')    
-    map.connect('/ballot/{id1}/{id2}/ballotNew{end:/?}', controller = 'ballot', action = 'ballotNew', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/ballot/{id1}/{id2}/ballotNewHandler{end:/?}', controller = 'ballot', action = 'ballotNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/election/{id1}/{id2}/ballotNewHandler{end:/?}', controller = 'ballot', action = 'ballotNewHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballot/{id1}/{id2}/ballotEdit{end:/?}', controller = 'ballot', action = 'ballotEdit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballot/{id1}/{id2}/ballotEditHandler{end:/?}', controller = 'ballot', action = 'ballotEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballot/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}')
