@@ -385,7 +385,7 @@ class ProfileController(BaseController):
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
             href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
-            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot':
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot' or entry['objType'] == 'election':
                 href += '/show'
             if entry['objType'] == 'agendaitem':
                 mCode = item['meetingCode']
@@ -434,6 +434,37 @@ class ProfileController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result': result})
+        
+    def showUserElections(self, id1, id2):
+        return render("/derived/6_profile_elections.bootstrap")
+        
+    def getUserElections(self, id1, id2):
+        c.elections = ballotLib.getElectionsForUser(id1)
+        if not c.elections:
+            c.elections = []
+            
+        result = []
+        for item in c.elections:
+            entry = {}
+            entry['objType'] = 'election'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['electionDate'] = item['electionDate']
+            
+            scopeInfo = utils.getPublicScope(item['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
+            entry['href']= '/election/' + entry['urlCode'] + '/' + entry['url'] + '/show'
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
+        
         
     def showUserBallots(self, id1, id2):
         return render("/derived/6_profile_ballots.bootstrap")

@@ -44,6 +44,13 @@ def linkChildToParent(child, parent):
     if 'meetingCode' in parent and 'meeting_url' in parent and child.objType != 'rating':
         child['meetingCode'] = parent['meetingCode']
         child['meeting_url'] = parent['meeting_url']
+    if parent.objType == 'election':
+        child['election_url'] = parent['url']
+        child['election_public'] = parent['election_public']
+    if 'electionCode' in parent and 'election_url' in parent and child.objType != 'rating':
+        child['electionCode'] = parent['electionCode']
+        child['election_url'] = parent['election_url']
+        child['election_public'] = parent['election_public']
     if parent.objType == 'ballot':
         child['ballot_url'] = parent['url']
     if 'ballotCode' in parent and 'ballot_url' in parent and child.objType != 'rating':

@@ -97,7 +97,8 @@ class HomeController(BaseController):
 
 			for item in interestedInitiatives:
 				entry = {}
-				#entry['urlCode'] = item
+				if not item:
+				    continue
 				entry['title'] = item['title']
 				entry['urlCode'] = item['urlCode']
 				entry['url'] = item['url']

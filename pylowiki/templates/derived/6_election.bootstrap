@@ -1,0 +1,45 @@
+<%!
+    import misaka as m
+%>
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace file="/lib/derived/6_ballot.mako" name="bhelpers" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/ng_lib.mako" name="ng_lib" />
+
+<% lib.return_to() %>
+${bhelpers.showElectionInfo(c.election, c.author)}
+
+${bhelpers.electionModeration(c.election)}
+${bhelpers.addBallot(c.election, c.author)}
+    
+<div class="spacer"></div>
+<div ng-init="url = '${c.election['url']}'; code = '${c.election['urlCode']}';">
+    <div ng-controller="electionsController">
+        <div class="row-fluid">
+            <div class="span9">
+                <div class="centered" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x"></i>
+                </div><!-- loading -->
+                <div ng-repeat="item in activity">
+                    <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                        <tr><td>
+                            ${ng_lib.ballot_listing()}
+                        </td></tr>
+                    </table>
+                </div><!-- ng-repeat -->
+            </div><!-- span9 -->
+        </div><!-- row-fluid -->
+    </div><!-- ng-controller -->
+</div><!-- ng-init -->
+<p>
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/ballots.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+</%def>

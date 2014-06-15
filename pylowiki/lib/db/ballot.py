@@ -12,6 +12,33 @@ import pylowiki.lib.db.discussion   as discussionLib
 
 log = logging.getLogger(__name__)
 
+def getElection(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['election', 'electionUnpublished']))\
+            .filter(Thing.data.any(wc('urlCode', code)))\
+            .one()
+    except:
+        return False
+        
+def getElectionsForUser(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'election')\
+            .filter(Thing.data.any(wc('userCode', code)))\
+            .all()
+    except:
+        return False
+        
+def getBallotsForElection(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['ballot', 'ballotUnpublished']))\
+            .filter(Thing.data.any(wc('electionCode', code)))\
+            .one()
+    except:
+        return False
+        
 def getBallot(code):
     try:
         return meta.Session.query(Thing)\
@@ -81,11 +108,10 @@ def searchBallots( keys, values, deleted = u'0', public = '1', count = False):
     except Exception as e:
         log.error(e)
         return False
-        
 
-# Ballot Object
-def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, ballotSlate, candidateMax, public):
-    b = Thing('ballot', owner.id)
+# Election Object
+def Election(owner, title, text, scope, electionDate, electionOfficialURL, public):
+    b = Thing('election', owner.id)
     generic.linkChildToParent(b, owner)
     commit(b)
     b['urlCode'] = utils.toBase62(b)
@@ -95,21 +121,39 @@ def Ballot(owner, title, text, scope, electionDate, electionOfficialURL, ballotS
     b['scope'] = scope
     b['electionDate'] = electionDate
     b['electionOfficialURL'] = electionOfficialURL
+    b['deleted'] = u'0'
+    b['disabled'] = u'0'
+    b['election_public'] = public
+    b['archived'] = u'0'
+    b['views'] = '0'
+    commit(b)
+    return b
+
+# Ballot Object
+def Ballot(owner, election, title, text, ballotSlate, candidateMax):
+    b = Thing('ballot', owner.id)
+    generic.linkChildToParent(b, owner)
+    generic.linkChildToParent(b, election)
+    commit(b)
+    b['urlCode'] = utils.toBase62(b)
+    b['title'] = title
+    b['url'] = utils.urlify(title[:20])
+    b['text'] = text
     b['ballotSlate'] = ballotSlate
     b['candidateMax'] = candidateMax
     b['deleted'] = u'0'
     b['disabled'] = u'0'
-    b['public'] = public
     b['archived'] = u'0'
     b['views'] = '0'
     commit(b)
     return b
 
 # Ballot Measure Object
-def Ballotmeasure(owner, ballot, title, number, text, ballotMeasureOfficialURL):
+def Ballotmeasure(owner, election, ballot, title, number, text, ballotMeasureOfficialURL):
     b = Thing('ballotmeasure', owner.id)
     generic.linkChildToParent(b, owner)
     generic.linkChildToParent(b, ballot)
+    generic.linkChildToParent(b, election)
     commit(b)
     b['urlCode'] = utils.toBase62(b)
     b['title'] = title
@@ -132,10 +176,11 @@ def Ballotmeasure(owner, ballot, title, number, text, ballotMeasureOfficialURL):
     return b
     
 # Ballot Candidate Object
-def Ballotcandidate(owner, ballot, title, number, text, ballotCandidateParty, ballotCandidateOfficialURL):
+def Ballotcandidate(owner, election, ballot, title, number, text, ballotCandidateParty, ballotCandidateOfficialURL):
     b = Thing('ballotcandidate', owner.id)
     generic.linkChildToParent(b, owner)
     generic.linkChildToParent(b, ballot)
+    generic.linkChildToParent(b, election)
     commit(b)
     b['urlCode'] = utils.toBase62(b)
     b['title'] = title

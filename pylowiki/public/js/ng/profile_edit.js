@@ -57,25 +57,29 @@ function profileController($scope, $http) {
     }
     
     
-    $scope.getActivityURL = '/getActivity/' + $scope.code + '/' + $scope.url
-    $scope.getTrashURL = '/getTrash/' + $scope.code + '/' + $scope.url
-    $scope.getMeetingsURL = '/getMeetings/' + $scope.code + '/' + $scope.url
-    $scope.getBallotsURL = '/getBallots/' + $scope.code + '/' + $scope.url
+    $scope.getActivityURL = '/getActivity/' + $scope.code + '/' + $scope.url;
+    $scope.getTrashURL = '/getTrash/' + $scope.code + '/' + $scope.url;
+    $scope.getMeetingsURL = '/getMeetings/' + $scope.code + '/' + $scope.url;
+    $scope.getElectionsURL = '/getElections/' + $scope.code + '/' + $scope.url;
+    $scope.getBallotsURL = '/getBallots/' + $scope.code + '/' + $scope.url;
     if ($scope.trash){
-        $scope.getActivityURL = $scope.getTrashURL
+        $scope.getActivityURL = $scope.getTrashURL;
     }
     if ($scope.meetings){
-        $scope.getActivityURL = $scope.getMeetingsURL
+        $scope.getActivityURL = $scope.getMeetingsURL;
     }
     if ($scope.ballots){
-        $scope.getActivityURL = $scope.getBallotsURL
+        $scope.getActivityURL = $scope.getBallotsURL;
+    }
+    if ($scope.elections){
+        $scope.getActivityURL = $scope.getElectionsURL;
     }
 
     $scope.getActivity = function() {
 		$scope.loading = true;
 		$http.get($scope.getActivityURL).success(function(data){
 			if (data.statusCode == 1){
-				$scope.activity = []
+				$scope.activity = [];
 				$scope.alertMsg = data.alertMsg;
 				$scope.alertType = data.alertType;
 			} 

@@ -41,6 +41,138 @@
     % endif
 </%def>
 
+<%def name="editElection()">
+    <% 
+        postalCodeSelected = ""
+        citySelected = ""
+        countySelected = ""
+        if c.election:
+            eScope = c.election['scope']
+            title = c.election['title']
+            text = c.election['text']
+            electionDate = c.election['electionDate']
+            electionOfficialURL = c.election['electionOfficialURL']
+            if public == 'on':
+                publicChecked = 'checked'
+            else:
+                publicChecked = ""
+        else:
+            eScope = "0|0|0|0|0|0|0|0|0|0"
+            title = ""
+            group = ""
+            tag = ""
+            text = ""
+            electionDate = ""
+            electionOfficialURL = ""
+            public = ""
+            publicChecked = ""
+            
+        scopeList = eScope.split('|')
+        if scopeList[9] == '0' and scopeList[8] == '0':
+            countySelected = "selected"
+        elif scopeList[9] == '0' and scopeList[8] != '0':
+            citySelected = "selected"
+        else:
+            postalCodeSelected = "selected"
+
+    %>
+    % if c.saveMessage and c.saveMessage != '':
+        <div class="alert ${c.saveMessageClass}">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        ${c.saveMessage}
+        </div>
+    % endif
+    <div class="row-fluid>
+        <div class="span12">
+            % if c.edit:
+                <form method="POST" name="edit_election" id="edit_ballot" action="/election/${c.election['urlCode']}/${c.election['url']}/electionEditHandler">
+            % else:
+                <form method="POST" name="edit_election" id="edit_ballot" action="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNewHandler">
+            % endif
+            <div class="row-fluid">
+                <h3>Election Information</h3>
+            </div><!-- row-fluid -->
+            <br>
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="title" class="control-label" required><strong>Election Title:</strong></label>
+                    <input type="text" name="electionTitle" class="span12" value="${title}" required>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Keep it short and descriptive.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="title" class="control-label" required><strong>Election Date:</strong></label>
+                    <input type="text" name="electionDate" id="electionDate" class="span6" value="${electionDate}" required>
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Date of the election.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            
+            <div class="row-fluid">
+                <div class="span6">
+                    <label for="title" class="control-label" required><strong>Official Election URL:</strong></label>
+                    <input type="text" name="electionOfficialURL" id="electionOfficialURL" class="span6" value="${electionOfficialURL}">
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        The URL to the official election web site.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            
+            <div class="row-fluid spacer">
+                <div class="span6">
+                    <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label>
+                    ${geoSelect()}
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        The region or legal jurisdiction associated with the election.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+
+            <div class="row-fluid spacer">
+                <div class="span6">
+                    <label for="text" class="control-label" required><strong>Election Description:</strong></label>
+                    ${lib_6.formattingGuide()}
+                </div>
+                <div class="span6">
+                    <div class="alert alert-info">
+                        A short description about the ballot or election.
+                    </div>
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            <textarea rows="10" id="electionText" name="electionText" class="span12" required>${text}</textarea>
+            
+            <div class="row-fluid spacer">
+                <div class="span6">            
+                    <input type="checkbox" name="public" ${publicChecked}> Publish this election
+                </div><!-- span6 -->
+                <div class="span6">
+                    <div class="alert alert-info">
+                        Makes the election viewable by members and the public, with members able to comment and vote.
+                    </div><!-- alert -->
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+
+            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
+        </form>
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+</%def>
+
 
 <%def name="editBallot()">
     <% 
@@ -240,7 +372,6 @@
 </%def>
 
 <%def name="geoSelect()">
-    <!-- need to get the c.initiative['scope'] and update the selects accordingly -->
     <% 
         countrySelected = ""
         countyMessage = ""

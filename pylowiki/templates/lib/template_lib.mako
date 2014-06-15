@@ -61,6 +61,9 @@
                                     % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
                                         <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/meetings">My Meetings</a></li>
                                     % endif
+                                    % if 'election_counter' in c.authuser and c.authuser['election_counter'] != '0':
+                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/elections">My Elections</a></li>
+                                    % endif
                                     % if 'ballot_counter' in c.authuser and c.authuser['ballot_counter'] != '0':
                                         <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/ballots">My Ballots</a></li>
                                     % endif
@@ -76,6 +79,7 @@
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
+                                    <li><a tabindex="-1" href="/admin/elections">All Elections</a></li>
                                     <li><a tabindex="-1" href="/admin/meetings">All Ballots</a></li>
                                 </ul>
                             </li>
@@ -92,7 +96,7 @@
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                                     % if int(c.authuser['accessLevel']) > 200:
                                         <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
-                                        <li><a href="/ballot/${c.authuser['urlCode']}/${c.authuser['url']}/ballotNew"><i class="icon-ok"></i> New Ballot</a></li>
+                                        <li><a href="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNew"><i class="icon-ok"></i> New Election</a></li>
                                     % endif
                                 </ul>
                             </li>
