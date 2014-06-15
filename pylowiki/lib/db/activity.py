@@ -10,12 +10,9 @@ log = logging.getLogger(__name__)
 
 def getMemberPosts(user, unpublished = '0'):
     if unpublished == '1':
-        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished']
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished']
     else:
-        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
-    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
-    keys = ['deleted']
-    values = ['0']
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative', 'meeting', 'agendaitem', 'ballot', 'ballotmeasure']
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\

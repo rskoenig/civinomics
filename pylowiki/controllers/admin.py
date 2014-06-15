@@ -401,6 +401,14 @@ class AdminController(BaseController):
             returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         elif 'meetingCode' in c.thing or c.thing.objType == 'meeting':
             returnURL = "/meeting/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType == 'agendaitem':
+            dparent = generic.getThing(c.thing['meetingCode'])
+            returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType == 'ballotmeasure':
+            dparent = generic.getThing(c.thing['ballotCode'])
+            returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType == 'ballot':
+            returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -440,6 +448,8 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'ballotmeasure':
             dparent = generic.getThing(c.thing['ballotCode'])
             returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'ballot':
+            returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])

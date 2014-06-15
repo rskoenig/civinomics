@@ -334,14 +334,22 @@
                             'idea': 'posed the idea',
                             'photo': 'added the picture',
                             'initiative': 'launched the initiative',
-                            'comment': 'commented on a'}
+                            'comment': 'commented on a',
+                            'meeting': 'posted a meeting',
+                            'agendaitem': 'posted an agenda item to a meeting',
+                            'ballot': 'posted a ballot',
+                            'ballotmeasure': 'posted a ballot measure to a ballot'}
 
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
                             'photo':'photo',
                             'initiative':'initiative',
-                            'comment':'comment'}
+                            'comment':'comment',
+                            'meeting':'meeting',
+                            'agendaitem':'agenda item',
+                            'ballot':'ballot',
+                            'ballotmeasure':'ballot measure'}
     %>
     <table class="table table-hover table-condensed">
         <tbody>
@@ -412,6 +420,11 @@
                         parentURL = item['initiative_url']
                         parentObjType = 'initiative'
                         title = lib_6.ellipsisIZE(item['title'], 40)
+                elif objType == 'agendaitem' and 'meetingCode' in item:
+                        parentCode = item['meetingCode']
+                        parentURL = item['meeting_url']
+                        parentObjType = 'meeting'
+                        title = lib_6.ellipsisIZE(item['title'], 40)
                 else:
                     parentCode = False
                     title = lib_6.ellipsisIZE(item['title'], 40)
@@ -431,6 +444,24 @@
                 <% 
                     link = "/initiative/" + item['urlCode'] + "/" + item['url'] + "/show"
                     activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'meeting':
+                <% 
+                    link = "/meeting/" + item['urlCode'] + "/" + item['url'] + "/show"
+                    activityStr = "posted the meeting <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'agendaitem':
+                <% 
+                    link = "/meeting/" + parentCode + "/" + parentURL + "/show"
+                    activityStr = "posted an agenda item to a meeting <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
                 % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
@@ -505,12 +536,20 @@
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
                             'photo': 'added the picture',
-                            'comment': 'commented on a'}
+                            'comment': 'commented on a',
+                            'ballot': 'posted a ballot',
+                            'ballotmeasure': 'posted a ballot measure to a ballot',
+                            'meeting': 'posted a meeting',
+                            'agendaitem': 'posted an agenda item to a meeting'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
                             'photo':'photo',
-                            'comment':'comment'}
+                            'comment':'comment',
+                            'meeting':'meeting',
+                            'agendaitem':'agendaitem',
+                            'ballot':'ballot',
+                            'ballotmeasure':'ballotmeasure'}
     %>
     <table class="table table-hover table-condensed">
         <tbody>
