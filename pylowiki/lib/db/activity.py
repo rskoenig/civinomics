@@ -23,7 +23,7 @@ def getMemberPosts(user, unpublished = '0'):
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
-            else:                
+            else:
                 finalActivityList.append(activity)
         return finalActivityList
     except:

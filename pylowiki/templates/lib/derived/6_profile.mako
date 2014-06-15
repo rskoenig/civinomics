@@ -359,6 +359,7 @@
                 origObjType = item.objType
                 objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
+                log.info("objType is %s"%objType)
                 
                 if 'workshopCode' in item:
                     workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
@@ -455,7 +456,7 @@
                     activityStr = "posted the meeting <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
-                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
+                % if (item['deleted'] == '0' and item['public'] == 'on') or 'Unpublished' in origObjType:
                     <tr><td>${activityStr | n}</td></tr>
                 % endif
             % elif objType == 'agendaitem':
