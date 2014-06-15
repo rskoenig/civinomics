@@ -30,7 +30,9 @@ class BallotController(BaseController):
     def __before__(self, action, id1 = None, id2 = None, id3 = None):
         c.user = None
         c.ballot = None
+        c.election = None
         c.items = None
+        log.info('action is %s'%action)
         adminList = ['electionNew', 'electionNewHandler', 'electionEdit', 'electionEditHandler', 'ballotNew', 'ballotNewHandler', 'ballotEdit', 'ballotEditHandler', 'ballotmeasureEditHandler']
         if (action == 'electionNew' or action == 'electionNewHandler') and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
@@ -39,7 +41,7 @@ class BallotController(BaseController):
             if not c.user:
                 abort(404)
         elif id1 is not None and id2 is not None:
-            if action == 'electionEditHandler' or action == 'ballotNewHandler':
+            if action == 'electionEditHandler' or action == 'ballotNewHandler' or action == 'getBallots':
                 c.election = ballotLib.getElection(id1)
                 if not c.election:
                     abort(404)
@@ -402,6 +404,58 @@ class BallotController(BaseController):
             dbHelpers.commit(c.ballot)
 
         return render('/derived/6_ballot.bootstrap')
+        
+    def getBallots(self, id1, id2):
+        c.ballots = ballotLib.getBallotsForElection(c.election['urlCode'])
+        if not c.ballots:
+            c.ballots = []
+            
+        result = []
+        for item in c.ballots:
+            entry = {}
+            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+                entry['canEdit'] = 'yes'
+            else:
+                entry['canEdit'] = 'no'
+            entry['objType'] = 'ballot'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['number'] = item.sort
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+
+            # get revisions
+            revisions = revisionLib.getRevisionsForThing(item)
+            if revisions:
+                entry['revisions'] = 'yes'
+            else:
+                entry['revisions'] = 'no'
+            entry['revisionList'] = []
+            if revisions:
+                for rev in revisions:
+                    revision = {}
+                    code = rev['urlCode'] 
+                    date = str(rev.date)
+                    title = rev['title']
+                    text = rev['text']
+                    html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
+                    revision['date'] = date
+                    revision['urlCode'] = code
+                    revision['title'] = title
+                    revision['text'] = text
+                    revision['html'] = html
+                    entry['revisionList'].append(revision)
+                    
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+            
+        return json.dumps({'statusCode':0, 'result': result})
+        
         
     def ballotMeasureAddHandler(self):
         if 'ballotMeasureTitle' in request.params:

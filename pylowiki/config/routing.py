@@ -433,6 +433,7 @@ def make_map():
     map.connect('/ballot/{id1}/{id2}/ballotmeasure/{id3}{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/ballot/{id1}/{id2}/ballotMeasureAddHandler{end:/?}', controller = 'ballot', action = 'ballotMeasureAddHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballotmeasure/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotmeasureEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallots/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallots', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getBallotMeasures/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotMeasures', id1 = '{id1}', id2 = '{id2}')
 
     ###############
