@@ -85,6 +85,7 @@
             eScope = c.election['scope']
             title = c.election['title']
             text = c.election['text']
+            public = c.election['election_public']
             electionDate = c.election['electionDate']
             electionOfficialURL = c.election['electionOfficialURL']
             if public == 'on':
@@ -94,22 +95,12 @@
         else:
             eScope = "0|0|0|0|0|0|0|0|0|0"
             title = ""
-            group = ""
             tag = ""
             text = ""
             electionDate = ""
             electionOfficialURL = ""
             public = ""
             publicChecked = ""
-            
-        scopeList = eScope.split('|')
-        if scopeList[9] == '0' and scopeList[8] == '0':
-            countySelected = "selected"
-        elif scopeList[9] == '0' and scopeList[8] != '0':
-            citySelected = "selected"
-        else:
-            postalCodeSelected = "selected"
-
     %>
     % if c.saveMessage and c.saveMessage != '':
         <div class="alert ${c.saveMessageClass}">

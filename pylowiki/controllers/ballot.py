@@ -41,7 +41,7 @@ class BallotController(BaseController):
             if not c.user:
                 abort(404)
         elif id1 is not None and id2 is not None:
-            if action == 'electionEditHandler' or action == 'ballotNewHandler' or action == 'getBallots':
+            if action == 'electionEdit' or action == 'electionEditHandler' or action == 'ballotNewHandler' or action == 'getBallots':
                 c.election = ballotLib.getElection(id1)
                 if not c.election:
                     abort(404)
@@ -216,8 +216,94 @@ class BallotController(BaseController):
             views = int(c.election['views']) + 1
             c.election['views'] = str(views)
             dbHelpers.commit(c.election)
-
+            
         return render('/derived/6_election.bootstrap')
+            
+
+    def electionEdit(self):
+        c.states = geoInfoLib.getStateList('United-States')
+        if c.election['scope'] != '':
+            geoTags = c.election['scope'].split('|')
+            c.country = utils.geoDeurlify(geoTags[2])
+            c.state = utils.geoDeurlify(geoTags[4])
+            c.county = utils.geoDeurlify(geoTags[6])
+            c.city = utils.geoDeurlify(geoTags[8])
+            c.postal = utils.geoDeurlify(geoTags[9])
+        else:
+            c.country = "0"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
+            c.postal = "0"
+        
+        c.edit = True
+
+        return render('/derived/6_election_edit.bootstrap')
+        
+    def electionEditHandler(self):
+        if 'electionTitle' in request.params:
+            c.election['title'] = request.params['electionTitle']
+
+        if 'electionText' in request.params:
+            c.election['text'] = request.params['electionText']
+
+        if 'geoTagCountry' in request.params:
+            if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+                geoTagCountry = request.params['geoTagCountry']
+            else:
+                geoTagCountry = "0"
+                
+            if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+                geoTagState = request.params['geoTagState']
+            else:
+                geoTagState = "0"
+                
+            if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+                geoTagCounty = request.params['geoTagCounty']
+            else:
+                geoTagCounty = "0"
+                
+            if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+                geoTagCity = request.params['geoTagCity']
+            else:
+                geoTagCity = "0"
+                
+            if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+                geoTagPostal = request.params['geoTagPostal']
+            else:
+                geoTagPostal = "0"
+
+            # assemble the scope string 
+            # ||country||state||county||city|zip
+            c.election['scope'] = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
+
+            
+        if 'electionDate' in request.params:
+            c.election['electionDate'] = request.params['electionDate']
+
+        if 'electionOfficialURL' in request.params:
+            c.election['electionOfficialURL'] = request.params['electionOfficialURL']
+
+        if 'ballotSlate' in request.params:
+            c.election['ballotSlate'] = request.params['ballotSlate']
+
+        if 'candidateMax' in request.params:
+            c.election['candidateMax'] = request.params['candidateMax']
+
+        if 'public' in request.params:
+            public = request.params['public']
+            if public == 'on':
+                c.election['election_public'] = '1'
+            else:
+                c.election['election_public'] = '0'
+                
+        dbHelpers.commit(c.election)
+                
+        returnURL = "/election/%s/%s/show"%(c.election['urlCode'], c.election['url'])
+        
+        return redirect(returnURL)
+
+        
     
     def ballotNewHandler(self):
         if 'ballotTitle' in request.params:
