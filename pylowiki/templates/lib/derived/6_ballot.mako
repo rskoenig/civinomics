@@ -42,17 +42,20 @@
 </%def>
 
 <%def name="showBallotInfo(ballot, author)">
-    <% scopeInfo = utils.getPublicScope(c.ballot['scope']) %>
     <div class="row-fluid">
         <h3>${ballot['title']}</h3>
-        <img src="${scopeInfo['flag']}" width="60" height="60"> ${scopeInfo['level']} of ${scopeInfo['name']}
     </div><!-- row-fluid -->
     <div class="spacer"></div>
-    <div class="row-fluid"><div class="span2 text-right">Election Date:</div><div class="span9 text-left">${ballot['electionDate']}</div></div>
-    
+
     <div class="row-fluid">
         <div class="span9">
             ${m.html(ballot['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        </div>
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        <div class="span9">
+            ${m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
     </div><!-- row-fluid -->
     
@@ -522,22 +525,55 @@
 
 <%def name="addBallot(election, author)">
     % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+        <script>
+            function Ctrl($scope) {
+                $scope.candidate = 0;
+                $scope.setCandidateYes = function() {
+                    $scope.candidate = 1;
+                };
+                $scope.setCandidateNo = function() {
+                    $scope.candidate = 0;
+                };
+            }
+        </script>
         <div class="row-fluid">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot</button>
             <div id="addItem" class="collapse">
-                <form action="/election/${election['urlCode']}/${election['url']}/ballotNewHandler" method="POST">
+                <form action="/election/${election['urlCode']}/${election['url']}/ballotNewHandler" method="POST" ng-controller="Ctrl">
                     <fieldset>
                         <label>Title</label>
-                        <input type="text" name="ballotMeasureTitle" class="span6" required>
-                        <label>Listing Order Number on Ballot</label>
-                        <input type="text" name="ballotMeasureNumber" class="span1" required>
-                        <label>Text</label>
+                        <input type="text" name="ballotTitle" class="span6" required>
+                        <label>Listing Order Number in Election</label>
+                        <input type="text" name="ballotNumber" class="span1" required>
+                        <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label>
+                        <label class="radio">
+                            <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();"  required>
+                            Ballot measures
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();"  value="candidates" required>
+                            Candidates for office
+                        </label>
+                        <div ng-show="candidate">
+                            <label for="candidateMax" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
+                            <select name="candidateMax">
+                                <% 
+                                    voteMax = 20
+                                    loop = 1
+                                %>
+                                % while loop < voteMax + 1:
+                                    <option>${loop}</option>
+                                    <% loop += 1 %>
+                                % endwhile
+                            </select>
+                        </div><!-- ng-show -->
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
-                        <label>Official Ballot Measure Web Site</label>
-                        <input type="text" name="ballotMeasureOfficialURL" class="span6">
-                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
-                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
+                        <label>Text</label>
+                        <textarea rows="3" name="ballotText" class="span6" required></textarea>
+                        <label>Instructions</label>
+                        <textarea rows="3" name="ballotInstructions" class="span6" required></textarea>
+                        <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
                     </fieldset>
                 </form>
             </div>
@@ -553,16 +589,15 @@
                 <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotMeasureAddHandler" method="POST">
                     <fieldset>
                         <label>Title</label>
-                        <input type="text" name="ballotMeasureTitle" class="span6" required>
-                        <label>Listing Order Number on Ballot</label>
-                        <input type="text" name="ballotMeasureNumber" class="span1" required>
+                        <input type="text" name="ballotTitle" class="span6" required>
+                        <label>Listing Order Number in Election</label>
+                        <input type="text" name="ballotNumber" class="span1" required>
                         <label>Text</label>
                         ${lib_6.formattingGuide()}<br>
                         <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
-                        <label>Official Ballot Measure Web Site</label>
-                        <input type="text" name="ballotMeasureOfficialURL" class="span6">
-                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
-                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
+                        
+                        <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
                     </fieldset>
                 </form>
             </div>

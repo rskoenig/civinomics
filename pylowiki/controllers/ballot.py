@@ -230,6 +230,11 @@ class BallotController(BaseController):
         else:
             text = 'New ballot description'
             
+        if 'ballotInstructions' in request.params:
+            instructions = request.params['ballotInstructions']
+        else:
+            instructions = 'New ballot instructions'
+            
         if 'ballotSlate' in request.params:
             ballotSlate = request.params['ballotSlate']
         else:
@@ -241,7 +246,7 @@ class BallotController(BaseController):
             candidateMax = '0'
 
         #create the ballot
-        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, text, scope, electionDate, electionOfficialURL, ballotSlate, candidateMax, public)
+        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, text, instructions, ballotSlate, candidateMax)
         if 'ballot_counter' in c.authuser:
             ballot_counter = int(c.authuser['ballot_counter'])
         else:
@@ -251,6 +256,7 @@ class BallotController(BaseController):
         dbHelpers.commit(c.authuser)
 
         c.edit = True
+        c.author = c.authuser
        
         return render('/derived/6_election.bootstrap')
     
@@ -420,6 +426,7 @@ class BallotController(BaseController):
             entry['objType'] = 'ballot'
             entry['url']= item['url']
             entry['urlCode']=item['urlCode']
+            entry['href'] = '/ballot/' + item['urlCode'] +'/' + item['url'] + '/show'
             entry['title'] = item['title']
             entry['text'] = item['text']
             entry['number'] = item.sort
@@ -427,28 +434,6 @@ class BallotController(BaseController):
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 
-            # get revisions
-            revisions = revisionLib.getRevisionsForThing(item)
-            if revisions:
-                entry['revisions'] = 'yes'
-            else:
-                entry['revisions'] = 'no'
-            entry['revisionList'] = []
-            if revisions:
-                for rev in revisions:
-                    revision = {}
-                    code = rev['urlCode'] 
-                    date = str(rev.date)
-                    title = rev['title']
-                    text = rev['text']
-                    html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
-                    revision['date'] = date
-                    revision['urlCode'] = code
-                    revision['title'] = title
-                    revision['text'] = text
-                    revision['html'] = html
-                    entry['revisionList'].append(revision)
-                    
             result.append(entry)
             
         if len(result) == 0:

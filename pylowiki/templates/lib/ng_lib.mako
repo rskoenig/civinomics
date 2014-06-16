@@ -117,14 +117,9 @@
 <%def name="ballot_listing()">
     <div class="media well search-listing">
         <div class="row-fluid">
-            <div class="span2"><img src="{{item.flag}}" width="60" height="60"></div><div class="span9">{{item.scopeLevel}} of {{item.scopeName}}</div>
-        </div><!-- row-fluid -->
-        <div class="row-fluid">
-            <div class="span2">
-                <strong>{{item.electionDate}}</strong>
-            </div>
             <div class="span9">
                 <a href="{{item.href}}">{{item.title}}</a>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
             </div>
         </div><!-- row-fluid -->

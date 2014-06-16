@@ -35,7 +35,7 @@ def getBallotsForElection(code):
         return meta.Session.query(Thing)\
             .filter(Thing.objType.in_(['ballot', 'ballotUnpublished']))\
             .filter(Thing.data.any(wc('electionCode', code)))\
-            .one()
+            .all()
     except:
         return False
         
@@ -130,7 +130,7 @@ def Election(owner, title, text, scope, electionDate, electionOfficialURL, publi
     return b
 
 # Ballot Object
-def Ballot(owner, election, title, text, ballotSlate, candidateMax):
+def Ballot(owner, election, title, text, instructions, ballotSlate, candidateMax):
     b = Thing('ballot', owner.id)
     generic.linkChildToParent(b, owner)
     generic.linkChildToParent(b, election)
@@ -139,6 +139,7 @@ def Ballot(owner, election, title, text, ballotSlate, candidateMax):
     b['title'] = title
     b['url'] = utils.urlify(title[:20])
     b['text'] = text
+    b['instructions'] = instructions
     b['ballotSlate'] = ballotSlate
     b['candidateMax'] = candidateMax
     b['deleted'] = u'0'

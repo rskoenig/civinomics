@@ -8,7 +8,7 @@
 <%namespace file="/lib/ng_lib.mako" name="ng_lib" />
 
 <% lib.return_to() %>
-${bhelpers.showInfo(c.ballot, c.author)}
+${bhelpers.showBallotInfo(c.ballot, c.author)}
 
 % if c.ballotitem:
     <div class="media well search-listing initiative-listing">
