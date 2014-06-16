@@ -257,8 +257,6 @@ class User(object):
             u['user_source'] = "Survey App"
             u['needs_password'] = '1'
             u['poll_name'] = kwargs['poll']
-        
-            log.info(u['poll_name'])
 
         commit(u)
         u['urlCode'] = toBase62(u)
@@ -274,7 +272,10 @@ class User(object):
 
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
-        
+       
+        if 'needsPassword' in kwargs:
+            c.currentUserId = u.id
+
         # update any pmembers and listeners
         updateList = genericLib.getThingsByEmail(email)
         for uItem in updateList:

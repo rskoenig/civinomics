@@ -111,12 +111,15 @@ def makeOrChangeRating(thing, user, amount, ratingType):
       
     commit(ratingObj)
     commit(thing)
-    if 'ratings' in session:
-        myRatings = session["ratings"]
-    else:
-        myRatings = {}
-    thingCode = thing['urlCode']
-    myRatings[thingCode] = str(ratingObj['amount'])
-    session["ratings"] = myRatings
-    session.save()
+    if c.personalRatings:
+        if 'ratings' in session:
+            log.info("user rating")
+            myRatings = session["ratings"]
+        else:
+            log.info("not user rating")
+            myRatings = {}
+        thingCode = thing['urlCode']
+        myRatings[thingCode] = str(ratingObj['amount'])
+        session["ratings"] = myRatings
+        session.save()
     return ratingObj
