@@ -130,7 +130,7 @@ def Election(owner, title, text, scope, electionDate, electionOfficialURL, publi
     return b
 
 # Ballot Object
-def Ballot(owner, election, title, text, instructions, ballotSlate, candidateMax):
+def Ballot(owner, election, title, number, text, instructions, ballotSlate, candidateMax):
     b = Thing('ballot', owner.id)
     generic.linkChildToParent(b, owner)
     generic.linkChildToParent(b, election)
@@ -146,6 +146,7 @@ def Ballot(owner, election, title, text, instructions, ballotSlate, candidateMax
     b['disabled'] = u'0'
     b['archived'] = u'0'
     b['views'] = '0'
+    b.sort = number
     commit(b)
     return b
 

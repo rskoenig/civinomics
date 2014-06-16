@@ -225,6 +225,11 @@ class BallotController(BaseController):
         else:
             title = 'New Ballot'
             
+        if 'ballotNumber' in request.params:
+            number = request.params['ballotNumber']
+        else:
+            number = '1'
+            
         if 'ballotText' in request.params:
             text = request.params['ballotText']
         else:
@@ -246,7 +251,7 @@ class BallotController(BaseController):
             candidateMax = '0'
 
         #create the ballot
-        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, text, instructions, ballotSlate, candidateMax)
+        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, number, text, instructions, ballotSlate, candidateMax)
         if 'ballot_counter' in c.authuser:
             ballot_counter = int(c.authuser['ballot_counter'])
         else:
@@ -262,23 +267,6 @@ class BallotController(BaseController):
     
 
     def ballotEdit(self):
-        # initialize the scope dropdown selector in the edit template
-        c.states = geoInfoLib.getStateList('United-States')
-        # ||country||state||county||city|zip
-        if c.ballot['scope'] != '':
-            geoTags = c.ballot['scope'].split('|')
-            c.country = utils.geoDeurlify(geoTags[2])
-            c.state = utils.geoDeurlify(geoTags[4])
-            c.county = utils.geoDeurlify(geoTags[6])
-            c.city = utils.geoDeurlify(geoTags[8])
-            c.postal = utils.geoDeurlify(geoTags[9])
-        else:
-            c.country = "0"
-            c.state = "0"
-            c.county = "0"
-            c.city = "0"
-            c.postal = "0"
-
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.ballot['public'] == '0':
                 c.ballot['public'] = '1'
@@ -307,94 +295,21 @@ class BallotController(BaseController):
                 c.ballot['url'] = utils.urlify(c.ballot['title'])
         if 'ballotText' in request.params:
             c.ballot['text'] = request.params['ballotText']
-        if 'electionDate' in request.params:
-            c.ballot['electionDate'] = request.params['electionDate']
-            c.ballot.sort = c.ballot['electionDate']
-        if 'electionOfficialURL' in request.params:
-            c.ballot['electionOfficialURL'] = request.params['electionOfficialURL']
+        if 'ballotInstructions' in request.params:
+            c.ballot['instructions'] = request.params['ballotInstructions']
         if 'ballotSlate' in request.params:
             c.ballot['ballotSlate'] = request.params['ballotSlate']
         if 'candidateMax' in request.params:
             c.ballot['candidateMax'] = request.params['candidateMax']
-        if 'public' in request.params:
-            c.ballot['public'] = request.params['public']
-        else:
-            c.ballot['public'] = ''
-
-
-        # update the scope based on info in the scope dropdown selector, if they're in the submitted form
-        if 'geoTagCountry' in request.params:
-            if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
-                geoTagCountry = request.params['geoTagCountry']
-            else:
-                geoTagCountry = "0"
-                
-            if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
-                geoTagState = request.params['geoTagState']
-            else:
-                geoTagState = "0"
-                
-            if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
-                geoTagCounty = request.params['geoTagCounty']
-            else:
-                geoTagCounty = "0"
-                
-            if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
-                geoTagCity = request.params['geoTagCity']
-            else:
-                geoTagCity = "0"
-                
-            if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
-                geoTagPostal = request.params['geoTagPostal']
-            else:
-                geoTagPostal = "0"
-
-            # assemble the scope string 
-            # ||country||state||county||city|zip
-            geoTagString = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-            if c.ballot['scope'] != geoTagString:
-                c.ballot['scope'] = geoTagString
-
-                wchanges = 1
+        if 'ballotNumber' in request.params:
+            c.ballot.sort = request.params['ballotNumber']
 
         dbHelpers.commit(c.ballot)
         revisionLib.Revision(c.authuser, c.ballot)
 
-        # now that the ballot edits have been commited, update the scopeProps for the template to use:
-        scopeProps = utils.getPublicScope(c.ballot)
-        scopeName = scopeProps['name'].title()
-        scopeLevel = scopeProps['level'].title()
-        if scopeLevel == 'Earth':
-            c.scopeTitle = scopeName
-        else:
-            c.scopeTitle = scopeLevel + ' of ' + scopeName
-        c.scopeFlag = scopeProps['flag']
-        c.scopeHref = scopeProps['href']
+        c.saveMessage = "Changes saved."
 
-        # initialize the scope dropdown selector in the edit template
-        c.states = geoInfoLib.getStateList('United-States')
-        # ||country||state||county||city|zip
-        if c.ballot['scope'] != '':
-            geoTags = c.ballot['scope'].split('|')
-            c.country = utils.geoDeurlify(geoTags[2])
-            c.state = utils.geoDeurlify(geoTags[4])
-            c.county = utils.geoDeurlify(geoTags[6])
-            c.city = utils.geoDeurlify(geoTags[8])
-            c.postal = utils.geoDeurlify(geoTags[9])
-        else:
-            c.country = "0"
-            c.state = "0"
-            c.county = "0"
-            c.city = "0"
-            c.postal = "0"
-
-        if c.error:
-            c.saveMessageClass = 'alert-error'
-            c.saveMessage = errorMessage
-        else:
-            c.saveMessage = "Changes saved."
-
-        c.editBallot = True
+        c.edit = True
         returnURL = "/ballot/%s/%s/show"%(c.ballot['urlCode'], c.ballot['url'])
         
         return redirect(returnURL)

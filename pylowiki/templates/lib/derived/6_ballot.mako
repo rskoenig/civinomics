@@ -42,8 +42,13 @@
 </%def>
 
 <%def name="showBallotInfo(ballot, author)">
-    <div class="row-fluid">
-        <h3>${ballot['title']}</h3>
+    <div class="row-fluid spacer">
+        <div class="span9">
+            <h3>${ballot['title']}</h3>
+        </div>
+        <div class="span3">
+            <a href="/election/${ballot['electionCode']}/${ballot['election_url']}/show">Back to Election</a>
+        </div>
     </div><!-- row-fluid -->
     <div class="spacer"></div>
 
@@ -55,6 +60,7 @@
     
     <div class="row-fluid">
         <div class="span9">
+            <p><strong>Instructions</strong></p>
             ${m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
     </div><!-- row-fluid -->
@@ -205,46 +211,15 @@
 
 <%def name="editBallot()">
     <% 
-        postalCodeSelected = ""
-        citySelected = ""
-        countySelected = ""
-        if c.ballot:
-            bScope = c.ballot['scope']
-            title = c.ballot['title']
-            text = c.ballot['text']
-            electionDate = c.ballot['electionDate']
-            electionOfficialURL = c.ballot['electionOfficialURL']
-            ballotSlate = c.ballot['ballotSlate']
-            if 'candidateMax' in c.ballot:
-                candidateMax = c.ballot['candidateMax']
-            else:
-                candidateMax = '1'
-            public = c.ballot['public']
-            if public == 'on':
-                publicChecked = 'checked'
-            else:
-                publicChecked = ""
+        title = c.ballot['title']
+        number = c.ballot.sort
+        text = c.ballot['text']
+        instructions = c.ballot['instructions']
+        ballotSlate = c.ballot['ballotSlate']
+        if 'candidateMax' in c.ballot:
+            candidateMax = c.ballot['candidateMax']
         else:
-            bScope = "0|0|0|0|0|0|0|0|0|0"
-            title = ""
-            group = ""
-            tag = ""
-            text = ""
-            electionDate = ""
-            electionOfficialURL = ""
-            ballotSlate = ""
-            candidateMax = "1"
-            public = ""
-            publicChecked = ""
-            
-        scopeList = bScope.split('|')
-        if scopeList[9] == '0' and scopeList[8] == '0':
-            countySelected = "selected"
-        elif scopeList[9] == '0' and scopeList[8] != '0':
-            citySelected = "selected"
-        else:
-            postalCodeSelected = "selected"
-
+            candidateMax = '1'
     %>
     % if c.saveMessage and c.saveMessage != '':
         <div class="alert ${c.saveMessageClass}">
@@ -265,11 +240,7 @@
     </script>
     <div class="row-fluid>
         <div class="span12">
-            % if c.editBallot:
-                <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.ballot['urlCode']}/${c.ballot['url']}/ballotEditHandler" ng-controller="Ctrl">
-            % else:
-                <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.authuser['urlCode']}/${c.authuser['url']}/ballotNewHandler" ng-controller="Ctrl">
-            % endif
+            <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.ballot['urlCode']}/${c.ballot['url']}/ballotEditHandler" ng-controller="Ctrl">
             <div class="row-fluid">
                 <h3>Ballot Information</h3>
             </div><!-- row-fluid -->
@@ -289,25 +260,12 @@
             
             <div class="row-fluid">
                 <div class="span6">
-                    <label for="title" class="control-label" required><strong>Election Date:</strong></label>
-                    <input type="text" name="electionDate" id="electionDate" class="span6" value="${electionDate}" required>
+                    <label for="title" class="control-label" required><strong>Ballot Number in Election:</strong></label>
+                    <input type="text" name="ballotNumber" class="span2" value="${number}" required>
                 </div><!-- span6 -->
                 <div class="span6">
                     <div class="alert alert-info">
-                        Date of the election.
-                    </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
-            
-            
-            <div class="row-fluid">
-                <div class="span6">
-                    <label for="title" class="control-label" required><strong>Official Election URL:</strong></label>
-                    <input type="text" name="electionOfficialURL" id="electionOfficialURL" class="span6" value="${electionOfficialURL}">
-                </div><!-- span6 -->
-                <div class="span6">
-                    <div class="alert alert-info">
-                        The URL to the official election web site.
+                        The order in which the ballot is listed in the election.
                     </div><!-- alert -->
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
@@ -358,22 +316,11 @@
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
 
+            ${lib_6.formattingGuide()}
             <div class="row-fluid spacer">
                 <div class="span6">
-                    <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label>
-                    ${geoSelect()}
-                </div><!-- span6 -->
-                <div class="span6">
-                    <div class="alert alert-info">
-                        The region or legal jurisdiction associated with the election.
-                    </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
-
-            <div class="row-fluid spacer">
-                <div class="span6">
-                    <label for="text" class="control-label" required><strong>Ballot/Election Description:</strong></label>
-                    ${lib_6.formattingGuide()}
+                    <label for="text" class="control-label" required><strong>Ballot Description:</strong></label>
+                    
                 </div>
                 <div class="span6">
                     <div class="alert alert-info">
@@ -384,17 +331,18 @@
             <textarea rows="10" id="ballotText" name="ballotText" class="span12" required>${text}</textarea>
             
             <div class="row-fluid spacer">
-                <div class="span6">            
-                    <input type="checkbox" name="public" ${publicChecked}> Publish this ballot
-                </div><!-- span6 -->
+                <div class="span6">
+                    <label for="text" class="control-label" required><strong>Ballot Instructions:</strong></label>
+                </div>
                 <div class="span6">
                     <div class="alert alert-info">
-                        Makes the ballot viewable by members and the public, with members able to comment and vote.
-                    </div><!-- alert -->
+                        Instructions to guide the user in filling out the ballot.
+                    </div>
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
-
-            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
+            <textarea rows="10" id="ballotInstructions" name="ballotInstructions" class="span12" required>${instructions}</textarea>
+            
+            <p><button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button></p>
         </form>
         </div><!-- span12 -->
     </div><!-- row-fluid -->
