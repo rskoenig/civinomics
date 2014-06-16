@@ -1049,15 +1049,17 @@ class ProfileController(BaseController):
         log.info("in create ratings")
         for rating in ratings:
             thing = initiativeLib.getInitiative(rating['code'])
-            ratingType = 'binary'
-            if rating['rating'] == 'yes':
-                amount = 1
-            elif rating['rating'] == 'no':
-	            amount = -1
-            else:
-                amount = 0
-            ratingLib.makeOrChangeRating(thing, user, amount, ratingType)
-        c.personalRatings = True
+            log.info(thing)
+            if thing:
+                ratingType = 'binary'
+                if rating['rating'] == 'yes':
+                    amount = 1
+                elif rating['rating'] == 'no':
+	                amount = -1
+                else:
+                    amount = 0
+                ratingLib.makeOrChangeRating(thing, user, amount, ratingType)
+            c.personalRatings = True
             
             
     @h.login_required
