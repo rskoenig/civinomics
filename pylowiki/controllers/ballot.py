@@ -77,6 +77,8 @@ class BallotController(BaseController):
                 abort(404)
         if c.ballot:
             c.author = userLib.getUserByCode(c.ballot['userCode'])
+            if not c.election:
+                c.election = ballotLib.getElection(c.ballot['electionCode'])
             
         log.info("done with before, action is %s"%action)
             
@@ -241,6 +243,10 @@ class BallotController(BaseController):
         return render('/derived/6_election_edit.bootstrap')
         
     def electionEditHandler(self):
+        
+        # save a copy of the election before editing     
+        revisionLib.Revision(c.authuser, c.election)
+        
         if 'electionTitle' in request.params:
             c.election['title'] = request.params['electionTitle']
 
@@ -296,7 +302,7 @@ class BallotController(BaseController):
                 c.election['election_public'] = '1'
             else:
                 c.election['election_public'] = '0'
-                
+
         dbHelpers.commit(c.election)
                 
         returnURL = "/election/%s/%s/show"%(c.election['urlCode'], c.election['url'])
@@ -330,14 +336,21 @@ class BallotController(BaseController):
             ballotSlate = request.params['ballotSlate']
         else:
             ballotSlate = 'measures'
-            
-        if 'candidateMax' in request.params:
-            candidateMax = request.params['candidateMax']
+        
+        if ballotSlate == 'measures':    
+            if 'slateInfoMeasures' in request.params:
+                slateInfo = request.params['slateInfoMeasures']
         else:
-            candidateMax = '0'
+            slateInfo = 'Ballot Measures'
+            
+        if ballotSlate == 'candidates':    
+            if 'slateInfoCandidates' in request.params:
+                slateInfo = request.params['slateInfoCandidates']
+        else:
+            slateInfo = '1'
 
         #create the ballot
-        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, number, text, instructions, ballotSlate, candidateMax)
+        c.ballot = ballotLib.Ballot(c.authuser, c.election, title, number, text, instructions, ballotSlate, slateInfo)
         if 'ballot_counter' in c.authuser:
             ballot_counter = int(c.authuser['ballot_counter'])
         else:
@@ -466,7 +479,7 @@ class BallotController(BaseController):
             link = 'New ballot measure description'
 
             
-        ballotLib.Ballotmeasure(c.authuser, c.ballot, title, number, text, link)
+        ballotLib.Ballotmeasure(c.authuser, c.election, c.ballot, title, number, text, link)
         
         returnURL = '/ballot/%s/%s/show'%(c.ballot['urlCode'], c.ballot['url'])
             

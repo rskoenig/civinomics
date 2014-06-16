@@ -130,7 +130,7 @@ def Election(owner, title, text, scope, electionDate, electionOfficialURL, publi
     return b
 
 # Ballot Object
-def Ballot(owner, election, title, number, text, instructions, ballotSlate, candidateMax):
+def Ballot(owner, election, title, number, text, instructions, ballotSlate, slateInfo):
     b = Thing('ballot', owner.id)
     generic.linkChildToParent(b, owner)
     generic.linkChildToParent(b, election)
@@ -140,8 +140,12 @@ def Ballot(owner, election, title, number, text, instructions, ballotSlate, cand
     b['url'] = utils.urlify(title[:20])
     b['text'] = text
     b['instructions'] = instructions
+    # currently, one of 'measures' for ballot measures with a yes/no vote 
+    # and 'candidates' for candidate slates running for office
     b['ballotSlate'] = ballotSlate
-    b['candidateMax'] = candidateMax
+    # additional slate specific info. If 'measures' the term used to reference the measure in the UI.
+    # If candidates, the max number of candidates in the slate which can be voted for
+    b['slateInfo'] = slateInfo
     b['deleted'] = u'0'
     b['disabled'] = u'0'
     b['archived'] = u'0'

@@ -207,10 +207,10 @@
         text = c.ballot['text']
         instructions = c.ballot['instructions']
         ballotSlate = c.ballot['ballotSlate']
-        if 'candidateMax' in c.ballot:
-            candidateMax = c.ballot['candidateMax']
+        if 'slateInfo' in c.ballot:
+            slateInfo = c.ballot['slateInfo']
         else:
-            candidateMax = '1'
+            slateInfo = '1'
     %>
     % if c.saveMessage and c.saveMessage != '':
         <div class="alert ${c.saveMessageClass}">
@@ -276,20 +276,24 @@
                         <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();" ${measuresChecked} required>
                         Ballot measures
                     </label>
+                    <div ng-show="measures">
+                        <label for="slateInfo" class="control-label" required><strong>The term used to refer to the ballot measure. (Initiative, Proposition, etc):</strong></label>
+                        <input type="text" name="slateInfo" class="span2" value="${slateInfo}" required>
+                    </div>
                     <label class="radio">
                         <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();" ${candidatesChecked} value="candidates" required>
                         Candidates for office
                     </label>
                     <div ng-show="candidate">
-                        <label for="candidateMax" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
-                        <select name="candidateMax">
+                        <label for="slateInfo" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
+                        <select name="slateInfo">
                             <% 
                                 voteMax = 20
                                 loop = 1
                             %>
                             % while loop < voteMax + 1:
                                 <%
-                                    if int(candidateMax) == loop:
+                                    if int(slateInfo) == loop:
                                         selected = "selected"
                                     else:
                                         selected = ""
@@ -489,13 +493,17 @@
                             <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();"  required>
                             Ballot measures
                         </label>
+                        <div ng-show="!candidate">
+                            <label for="slateInfo" class="control-label" required><strong>The term used to refer to the ballot measure. (Initiative, Proposition, etc):</strong></label>
+                            <input type="text" name="slateInfoMeasures" class="span2" value="" required>
+                        </div>
                         <label class="radio">
                             <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();"  value="candidates" required>
                             Candidates for office
                         </label>
                         <div ng-show="candidate">
-                            <label for="candidateMax" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
-                            <select name="candidateMax">
+                            <label for="slateInfo" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
+                            <select name="slateInfoCandidates">
                                 <% 
                                     voteMax = 20
                                     loop = 1
@@ -524,13 +532,15 @@
     % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
         <div class="row-fluid">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Measure</button>
-            <div id="addItem" class="collapse">
+            <div id="addItem" class="collapse spacer">
                 <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotMeasureAddHandler" method="POST">
                     <fieldset>
                         <label>Title</label>
-                        <input type="text" name="ballotTitle" class="span6" required>
+                        <input type="text" name="ballotMeasureTitle" class="span6" required>
+                        <label>Official Web Site URL</label>
+                        <input type="text" name="ballotMeasureOfficialURL" class="span6" required>
                         <label>Listing Order Number in Election</label>
-                        <input type="text" name="ballotNumber" class="span1" required>
+                        <input type="text" name="ballotMeasureNumber" class="span1" required>
                         <label>Text</label>
                         ${lib_6.formattingGuide()}<br>
                         <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
