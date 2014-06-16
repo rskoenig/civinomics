@@ -130,11 +130,11 @@
     <div style="margin-top: 30px;"></div>
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
-            <div class="well yesNoWell" ng-show="(canVote == 'checked')">
+            <div class="well yesNoWell">
                 ${yesNoVoteBlock()}
             </div>
             <h4 class="listed-measure-title">{{item.title}}</h4>
-            <p ng-show="(item.ballotMeasureOfficialURL != '')">Official Web Site: {{ballotMeasureOfficialURL}}</p>
+            <p ng-show="(item.ballotMeasureOfficialURL != '')">Official Web Site: <a href="{{ballotMeasureOfficialURL}}" target="_blank">{{ballotMeasureOfficialURL}}</a></p>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
         </div><!-- row-fluid -->
         <div class="row-fluid">
