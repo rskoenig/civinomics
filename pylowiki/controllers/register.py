@@ -21,6 +21,7 @@ import pylowiki.lib.db.photo      as photoLib
 import pylowiki.lib.sort          as sort
 import pylowiki.lib.db.user       as userLib
 import re
+import pickle
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -84,6 +85,31 @@ class RegisterController(BaseController):
             
         return render("/derived/splash.bootstrap")
 
+    def initiatizeUser(self, user):
+    
+        # set up the session for the feeds
+        empty = []
+        user['ratings'] = str(pickle.dumps(empty))
+        user['listenerWorkshops'] = str(pickle.dumps(empty)) 
+        user['bookmarkedWorkshops'] = str(pickle.dumps(empty))
+        user['privateWorkshops'] = str(pickle.dumps(empty))
+        user['facilitatorWorkshops'] = str(pickle.dumps(empty))
+        user['facilitatorInitiatives'] = str(pickle.dumps(empty))
+        user['bookmarkedInitiatives'] = str(pickle.dumps(empty))
+        user['followingUsers'] = str(pickle.dumps(empty))
+        commit(user)
+        
+        session['ratings'] = []
+        session['listenerWorkshops'] = [] 
+        session['bookmarkedWorkshops'] = [] 
+        session['privateWorkshops'] = []
+        session['facilitatorWorkshops'] = []
+        session['facilitatorInitiatives'] = []
+        session['bookmarkedInitiatives'] = []
+        session['followingUsers'] = []
+        session.save()
+                    
+                    
     def signupNoExtAuthDisplay(self):
 
         # todo - clear splash message if this came from /fbSignUp
@@ -337,6 +363,7 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
+                    self.initiatizeUser(user)
                     mailLib.sendWelcomeMail(user)
 
                     log.info( "guest activation via twitter - " + email )
@@ -635,6 +662,7 @@ class RegisterController(BaseController):
                 log.info('%s logged in %s' % (user['name'], loginTime))
                 c.authuser = user
                 mailLib.sendWelcomeMail(user)
+                self.initiatizeUser(user)
                 if c.w:
                     # if they are a guest signing up, activate and log them in
                     log.info( "Successful guest activation via facebook - " + email )
@@ -684,6 +712,7 @@ class RegisterController(BaseController):
                         log.info('session of user: %s' % session['user'])
                         log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
+                        self.initiatizeUser(user)
                         if c.w:
                             log.info("c.w")
                             log.info( "Successful guest activation with credentials - " + email )
@@ -862,16 +891,7 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
-                    
-                    # set up their session for the feeds
-                    session['listenerWorkshops'] = [] 
-                    session['bookmarkedWorkshops'] = [] 
-                    session['privateWorkshops'] = []
-                    session['facilitatorWorkshops'] = []
-                    session['facilitatorInitiatives'] = []
-                    session['bookmarkedInitiatives'] = []
-                    session['followingUsers'] = []
-                    session.save()
+                    self.initiatizeUser(user)
                         
                     # if they are a guest signing up, activate them   
                     if c.w:
