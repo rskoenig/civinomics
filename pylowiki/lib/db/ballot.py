@@ -21,6 +21,14 @@ def getElection(code):
     except:
         return False
         
+def getAllElections():
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['election', 'electionUnpublished']))\
+            .all()
+    except:
+        return False
+        
 def getElectionsForUser(code):
     try:
         return meta.Session.query(Thing)\

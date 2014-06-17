@@ -432,6 +432,8 @@ class BallotController(BaseController):
             
         result = []
         for item in c.ballots:
+            if item.objType == 'ballotUnpublished':
+                continue
             entry = {}
             if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'

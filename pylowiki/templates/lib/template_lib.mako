@@ -80,7 +80,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
                                     <li><a tabindex="-1" href="/admin/elections">All Elections</a></li>
-                                    <li><a tabindex="-1" href="/admin/meetings">All Ballots</a></li>
+                                    <li><a tabindex="-1" href="/admin/ballots">All Ballots</a></li>
                                 </ul>
                             </li>
                         % endif

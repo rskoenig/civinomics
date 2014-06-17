@@ -80,6 +80,12 @@
             % else:
                 <li><a href="/admin/meetings">All Meetings</a></li>
             % endif
+            
+            % if itemType == 'election':
+                <li class="active"><a href="/admin/elections">All Elections</a></li>
+            % else:
+                <li><a href="/admin/elections">All Elections</a></li>
+            % endif
         </ul>
     </div><!--/.span3-->
 
@@ -137,6 +143,10 @@
                             <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
                         % elif itemType == 'meeting' or itemType == 'meetingUnpublished':
                             <td><a href="/meeting/${item['urlCode']}/${item['url']}/show/">${item['meetingDate']} ${item['title']}</a></td>
+                        % elif itemType == 'election' or itemType == 'electionUnpublished':
+                            <td><a href="/election/${item['urlCode']}/${item['url']}/show/">${item['electionDate']} ${item['title']}</a></td>
+                        % elif itemType == 'ballot' or itemType == 'ballotUnpublished':
+                            <td><a href="/ballot/${item['urlCode']}/${item['url']}/show/">${item['title']}</a></td>
                         % elif itemType == 'initiative':
                             <% 
                                 if 'directoryNum_photos' in item:
