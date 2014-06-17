@@ -1028,6 +1028,8 @@ class ProfileController(BaseController):
                         # Processing ratings:
                         # If there's any rating, we create an array of rating dictionaries to send after creating user.
                         u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'], **kwargs)
+                    else:
+                        u = userLib.getUserByEmail(csvUser['email'])
                         if csvUser['num_ratings'] > 0:
                             ratings = []
                             for i in range(0, int(csvUser['num_ratings'])):
@@ -1059,7 +1061,9 @@ class ProfileController(BaseController):
                 else:
                     amount = 0
                 ratingLib.makeOrChangeRating(thing, user, amount, ratingType)
-            c.personalRatings = True
+        c.personalRatings = True
+        log.info("This is the value of personal ratings")
+        log.info(c.personalRatings)
             
             
     @h.login_required
