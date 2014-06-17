@@ -111,6 +111,8 @@ def makeOrChangeRating(thing, user, amount, ratingType):
       
     commit(ratingObj)
     commit(thing)
+    
+    #This allows creating rating objects independently of the logged in user
     if c.personalRatings:
         if 'ratings' in session:
             log.info("user rating")
