@@ -76,6 +76,32 @@
     % endif
 </%def>
 
+<%def name="showBallotmeasureInfo(ballotmeasure, author)">
+    <div class="row-fluid spacer">
+        <div class="span9">
+            <h3>${ballotmeasure['title']}</h3>
+        </div>
+    </div><!-- row-fluid -->
+    <div class="spacer"></div>
+
+    <div class="row-fluid">
+        <div class="span9">
+            ${m.html(ballotmeasure['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        </div>
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        <span class="grey">Posted by: </span>
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+    </div><!-- row-fluid -->
+    % if ballotmeasure.objType == 'revision':
+        <div class="alert alert-error">
+            This is a revision dated ${ballotmeasure.date}
+        </div>
+    % endif
+</%def>
+
+
 <%def name="editElection()">
     <% 
         postalCodeSelected = ""

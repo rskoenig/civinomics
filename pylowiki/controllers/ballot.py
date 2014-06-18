@@ -57,6 +57,15 @@ class BallotController(BaseController):
                     c.ballot = ballotLib.getBallot(c.ballotmeasure['ballotCode'])
                 else:
                     abort(404)
+            elif action == 'ballotmeasureShow':
+                c.ballotmeasure = ballotLib.getBallotMeasure(id1)
+                if not c.ballotmeasure:
+                    c.ballotmeasure = revisionLib.getRevisionByCode(id1)
+                    
+                if c.ballotmeasure:
+                    c.ballot = ballotLib.getBallot(c.ballotmeasure['ballotCode'])
+                else:
+                    abort(404)
             else:
                 c.ballot = ballotLib.getBallot(id1)
                 if not c.ballot:
@@ -576,6 +585,7 @@ class BallotController(BaseController):
                 for rev in revisions:
                     revision = {}
                     code = rev['urlCode'] 
+                    url = rev['url']
                     date = str(rev.date)
                     title = rev['title']
                     text = rev['text']
@@ -583,6 +593,7 @@ class BallotController(BaseController):
                     html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
                     revision['date'] = date
                     revision['urlCode'] = code
+                    revision['url'] = url
                     revision['title'] = title
                     revision['text'] = text
                     revision['html'] = html
@@ -595,6 +606,12 @@ class BallotController(BaseController):
             return json.dumps({'statusCode':1})
             
         return json.dumps({'statusCode':0, 'result': result})
-        
 
+    # this is sort of a goofy case, it is only to show previous revisions        
+    def ballotmeasureShow(self):
+
+        log.info("c.ballotmeasure is %s"%c.ballotmeasure)
+        c.author = userLib.getUserByCode(c.ballotmeasure['userCode'])
+
+        return render('/derived/6_ballot.bootstrap')
         

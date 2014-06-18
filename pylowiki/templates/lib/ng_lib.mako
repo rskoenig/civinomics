@@ -168,23 +168,11 @@
                     <span id = "unpublish_{{urlCode}}"></span>
                 </div>
             </div>
-            <div class="accordion" id="revisions">
-                <div ng-repeat="rev in revisionList">
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
-                            Revision: {{rev.date}}
-                            </a>
-                        </div><!-- accordian-heading -->
-                        <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
-                            <div class="accordion-inner">
-                                <h4>{{rev.title}}</h4>
-                                <span ng-bind-html="rev.html"></span>
-                            </div><!-- accordian-inner -->
-                        </div><!-- accordian-body -->
-                    </div><!-- accordian-group -->
-                </div><!-- ng-repeat -->
-            </div><!-- accordian -->
+            <ul class="unstyled">
+            <div ng-repeat="rev in revisionList">
+                <li><a href="/ballotmeasure/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+            </div><!-- ng-repeat -->
+            </ul>
         </div>
         <div class="row-fluid">
             ${actions()}
