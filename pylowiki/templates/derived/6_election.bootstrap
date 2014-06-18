@@ -10,28 +10,31 @@
 <% lib.return_to() %>
 ${bhelpers.showElectionInfo(c.election, c.author)}
 
-${bhelpers.electionModeration(c.election)}
-${bhelpers.addBallot(c.election, c.author)}
-    
-<div class="spacer"></div>
-<div ng-init="url = '${c.election['url']}'; code = '${c.election['urlCode']}';">
-    <div ng-controller="electionsController">
-        <div class="row-fluid">
-            <div class="span9">
-                <div class="centered" ng-show="loading" ng-cloak>
-                    <i class="icon-spinner icon-spin icon-4x"></i>
-                </div><!-- loading -->
-                <div ng-repeat="item in activity">
-                    <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
-                        <tr><td>
-                            ${ng_lib.ballot_listing()}
-                        </td></tr>
-                    </table>
-                </div><!-- ng-repeat -->
-            </div><!-- span9 -->
-        </div><!-- row-fluid -->
-    </div><!-- ng-controller -->
-</div><!-- ng-init -->
+% if c.election.objType != 'revision':
+    ${bhelpers.electionModeration(c.election)}
+    ${bhelpers.addBallot(c.election, c.author)}
+
+    <div class="spacer"></div>
+
+    <div ng-init="url = '${c.election['url']}'; code = '${c.election['urlCode']}';">
+        <div ng-controller="electionsController">
+            <div class="row-fluid">
+                <div class="span9">
+                    <div class="centered" ng-show="loading" ng-cloak>
+                        <i class="icon-spinner icon-spin icon-4x"></i>
+                    </div><!-- loading -->
+                    <div ng-repeat="item in activity">
+                        <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                            <tr><td>
+                                ${ng_lib.ballot_listing()}
+                            </td></tr>
+                        </table>
+                    </div><!-- ng-repeat -->
+                </div><!-- span9 -->
+            </div><!-- row-fluid -->
+        </div><!-- ng-controller -->
+    </div><!-- ng-init -->
+% endif
 <p>
 
 <%def name="extraScripts2()">

@@ -243,7 +243,11 @@ class HomeController(BaseController):
         if 'ratings' in session:
 			myRatings = session['ratings']
 
+       	skipDiscussions = ['ballot', 'election', 'ballotmeasure']
         for item in recentActivity:
+            		if item.objType == 'discussion' and item['discType'] in skipDiscussions:
+                		continue
+            
 			entry = {}
 			# item attributes
 			entry['title'] = item['title']

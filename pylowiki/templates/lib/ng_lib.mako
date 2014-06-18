@@ -107,6 +107,7 @@
             </div>
             <div class="span9">
                 <a href="{{item.href}}">{{item.title}}</a>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
             </div>
         </div><!-- row-fluid -->

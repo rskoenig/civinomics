@@ -45,6 +45,7 @@ import pylowiki.lib.utils               as utils
 import time, datetime
 import simplejson as json
 import copy as copy
+import misaka as m
 
 
 log = logging.getLogger(__name__)
@@ -450,6 +451,8 @@ class ProfileController(BaseController):
             entry['url']= item['url']
             entry['urlCode']=item['urlCode']
             entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['electionDate'] = item['electionDate']
             
             scopeInfo = utils.getPublicScope(item['scope'])
