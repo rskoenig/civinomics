@@ -129,7 +129,7 @@
 
 <%def name="ballot_measure_listing()">
     <div style="margin-top: 30px;"></div>
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
         <div class="row-fluid" ng-controller="yesNoVoteCtrl">
             <div class="well yesNoWell">
                 ${yesNoVoteBlock()}
@@ -521,7 +521,7 @@
                                 <form class="no-bottom" ng-submit="submitComment()">
                                     <textarea class="span10" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                    <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem'">
+                                    <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem' || type == 'ballotmeasure'">
                                         <label class="radio inline">
                                             <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro
                                         </label>
@@ -548,7 +548,7 @@
                                     <textarea class="span10" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                 </a>
-                                <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem' ">
+                                <div ng-show="type == 'initiative' || type == 'idea' || type == 'agendaitem' || type == 'ballotmeasure'">
                                     <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
                                         <label class="radio inline">
                                             <input type="radio"> Pro

@@ -547,6 +547,7 @@ class BallotController(BaseController):
             entry['title'] = item['title']
             entry['text'] = item['text']
             entry['number'] = item.sort
+            entry['views'] = item['views']
             entry['ballotMeasureOfficialURL'] = item['ballotMeasureOfficialURL']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')

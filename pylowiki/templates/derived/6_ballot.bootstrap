@@ -20,7 +20,7 @@
             ${bhelpers.addBallotMeasure(c.ballot, c.author)}
 
             <div class="spacer"></div>
-            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}';">
+            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ">
                 <div ng-controller="ballotsController">
                 <div class="row-fluid">
                     <div class="span9">
