@@ -23,13 +23,13 @@
 ########################################################################
 <%def name="comments(thing, discussion, **kwargs)">
     <%
-        #if 'user' in session and discussion.objType != 'comment' and not c.privs['provisional']:
-        #    if thing['disabled'] != '1':
-        addCommentToDiscussion(thing, discussion)
-        #elif 'user' not in session and discussion.objType != 'comment':
-        #        loginToAddComment(thing)
-        #elif c.privs['provisional']:
-        #        activateToAddComment(thing)
+        if 'user' in session and discussion.objType != 'comment' and not c.privs['provisional']:
+            if thing['disabled'] != '1':
+                addCommentToDiscussion(thing, discussion)
+        elif 'user' not in session and discussion.objType != 'comment':
+                loginToAddComment(thing)
+        elif c.privs['provisional']:
+                activateToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
 </%def>

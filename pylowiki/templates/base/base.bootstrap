@@ -41,6 +41,14 @@
     <body ${self.bodyTag_extras()}>
         ${template_lib.mainNavbar()}
         ${next.body()}
+
+        % if c.authuser and c.privs:
+            % if c.privs['provisional']:
+                ${template_lib.activateAccountModal()}
+            % endif
+        % endif
+        ${template_lib.signupLoginModal()}
+        
    
         <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
         <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
