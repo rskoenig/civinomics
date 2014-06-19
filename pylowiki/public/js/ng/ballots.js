@@ -1,9 +1,14 @@
 function ballotsController($scope, $http) {
-    $scope.getBallotMeasuresURL = '/getBallotMeasures/' + $scope.code + '/' + $scope.url;
+    
+    if ($scope.ballotSlate == 'measures') {
+        $scope.getBallotItemsURL = '/getBallotMeasures/' + $scope.code + '/' + $scope.url;
+    } else {
+        $scope.getBallotItemsURL = '/getBallotCandidates/' + $scope.code + '/' + $scope.url;
+    }
 
-    $scope.getBallotMeasures = function() {
+    $scope.getBallotItems = function() {
 		$scope.loading = true;
-		$http.get($scope.getBallotMeasuresURL).success(function(data){
+		$http.get($scope.getBallotItemsURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activity = [];
 				$scope.alertMsg = data.alertMsg;
@@ -16,6 +21,6 @@ function ballotsController($scope, $http) {
 		});
 	};
 
-	$scope.getBallotMeasures();
+	$scope.getBallotItems();
 }
 

@@ -20,7 +20,7 @@
             ${bhelpers.addBallotMeasure(c.ballot, c.author)}
 
             <div class="spacer"></div>
-            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ">
+            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ballotSlate = 'measures';">
                 <div ng-controller="ballotsController">
                 <div class="row-fluid">
                     <div class="span9">
@@ -38,11 +38,11 @@
                 </div><!-- row-fluid -->
                 </div>
             </div><!-- ng-init -->
-        % elif c.ballotobjType == 'ballot' and c.ballot['ballotSlate'] == 'candidates':
+        % elif c.ballot.objType == 'ballot' and c.ballot['ballotSlate'] == 'candidates':
             ${bhelpers.addBallotCandidate(c.ballot, c.author)}
 
             <div class="spacer"></div>
-            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ">
+            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ballotSlate = 'candidates';">
                 <div ng-controller="ballotsController">
                 <div class="row-fluid">
                     <div class="span9">

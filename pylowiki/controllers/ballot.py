@@ -444,6 +444,7 @@ class BallotController(BaseController):
             entry['title'] = item['title']
             entry['text'] = item['text']
             entry['number'] = item.sort
+            entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
@@ -657,7 +658,7 @@ class BallotController(BaseController):
             text = 'New ballot candidate description'
 
         if 'ballotCandidateParty' in request.params:
-            party = request.params['ballotCandidatePartyL']
+            party = request.params['ballotCandidateParty']
         else:
             party = 'no party specified'
             
@@ -717,7 +718,8 @@ class BallotController(BaseController):
         myRatings = {}
         if 'ratings' in session:
 		    myRatings = session['ratings']
-        for item in c.ballotCandidatess:
+		    
+        for item in c.ballotCandidates:
             entry = {}
             if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
