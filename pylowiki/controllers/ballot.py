@@ -422,6 +422,63 @@ class BallotController(BaseController):
         
         return redirect(returnURL)
         
+    def getBallots(self, id1, id2):
+        log.info("inside getBallots")
+        c.ballots = ballotLib.getBallotsForElection(c.election['urlCode'])
+        if not c.ballots:
+            c.ballots = []
+            
+        result = []
+
+        for item in c.ballots:
+
+            entry = {}
+            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+                entry['canEdit'] = 'yes'
+            else:
+                entry['canEdit'] = 'no'
+                
+            entry['objType'] = 'ballot'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['number'] = item.sort
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+
+            # get revisions
+
+            revisions = revisionLib.getRevisionsForThing(item)
+            if revisions:
+                entry['revisions'] = 'yes'
+            else:
+                entry['revisions'] = 'no'
+                
+            entry['revisionList'] = []
+            
+            if revisions:
+                for rev in revisions:
+                    revision = {}
+                    code = rev['urlCode'] 
+                    date = str(rev.date)
+                    title = rev['title']
+                    text = rev['text']
+                    html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
+                    revision['date'] = date
+                    revision['urlCode'] = code
+                    revision['title'] = title
+                    revision['text'] = text
+                    revision['html'] = html
+                    entry['revisionList'].append(revision)
+                    
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+       
     def ballotShow(self):
 
         c.revisions = revisionLib.getRevisionsForThing(c.ballot)
@@ -433,40 +490,7 @@ class BallotController(BaseController):
             dbHelpers.commit(c.ballot)
 
         return render('/derived/6_ballot.bootstrap')
-        
-    def getBallots(self, id1, id2):
-        c.ballots = ballotLib.getBallotsForElection(c.election['urlCode'])
-        if not c.ballots:
-            c.ballots = []
-            
-        result = []
-        for item in c.ballots:
-            if item.objType == 'ballotUnpublished':
-                continue
-            entry = {}
-            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
-                entry['canEdit'] = 'yes'
-            else:
-                entry['canEdit'] = 'no'
-            entry['objType'] = 'ballot'
-            entry['url']= item['url']
-            entry['urlCode']=item['urlCode']
-            entry['href'] = '/ballot/' + item['urlCode'] +'/' + item['url'] + '/show'
-            entry['title'] = item['title']
-            entry['text'] = item['text']
-            entry['number'] = item.sort
-            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
-            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
-            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 
-            result.append(entry)
-            
-        if len(result) == 0:
-            return json.dumps({'statusCode':1})
-            
-        return json.dumps({'statusCode':0, 'result': result})
-        
-        
     def ballotMeasureAddHandler(self):
         if 'ballotMeasureTitle' in request.params:
             title = request.params['ballotMeasureTitle']
@@ -615,4 +639,158 @@ class BallotController(BaseController):
         c.author = userLib.getUserByCode(c.ballotmeasure['userCode'])
 
         return render('/derived/6_ballot.bootstrap')
+        
+    def ballotCandidateAddHandler(self):
+        if 'ballotCandidateTitle' in request.params:
+            title = request.params['ballotCandidateTitle']
+        else:
+            title = 'New ballot candidate'
+            
+        if 'ballotCandidateNumber' in request.params:
+            number = request.params['ballotCandidateNumber']
+        else:
+            number = '1'
+        
+        if 'ballotCandidateText' in request.params:
+            text = request.params['ballotCandidateText']
+        else:
+            text = 'New ballot candidate description'
+
+        if 'ballotCandidateParty' in request.params:
+            party = request.params['ballotCandidatePartyL']
+        else:
+            party = 'no party specified'
+            
+        if 'ballotCandidateOfficialURL' in request.params:
+            link = request.params['ballotCandidateOfficialURL']
+        else:
+            link = 'New ballot measure description'
+
+            
+        ballotLib.Ballotcandidate(c.authuser, c.election, c.ballot, title, number, text, party, link)
+        
+        returnURL = '/ballot/%s/%s/show'%(c.ballot['urlCode'], c.ballot['url'])
+            
+        return redirect(returnURL)
+        
+    def ballotcandidateEditHandler(self):
+        # make a revision first of the previous version
+        revisionLib.Revision(c.authuser, c.ballotcandidate)
+        
+        if 'ballotCandidateTitle' in request.params:
+            title = request.params['ballotCandidateTitle']
+            if title and title != '':
+                c.ballotcandidate['title'] = title
+                
+        if 'ballotCandidateNumber' in request.params:
+            number = request.params['ballotCandidateNumber']
+            if number and number != '':
+                c.ballotcandidate.sort = number
+        
+        if 'ballotCandidateText' in request.params:
+            text = request.params['ballotCandidateText']
+            if text and text != '':
+                c.ballotcandidate['text'] = text
+                
+        if 'ballotCandidateParty' in request.params:
+            c.ballotcandidate['ballotCandidateParty'] = request.params['ballotCandidateParty']
+        else:
+            c.ballotcandidate['ballotCandidateOfficialURL'] = ''
+            
+        if 'ballotCandidateOfficialURL' in request.params:
+            c.ballotcandidate['ballotCandidateOfficialURL'] = request.params['ballotCandidateOfficialURL']
+        else:
+            c.ballotcandidate['ballotCandidateOfficialURL'] = ''
+            
+        dbHelpers.commit(c.ballotcandidate)
+        
+        returnURL = '/ballot/%s/%s/show'%(c.ballot['urlCode'], c.ballot['url'])
+            
+        return redirect(returnURL)
+        
+    def getBallotCandidates(self, id1, id2):
+        c.ballotCandidates = ballotLib.getBallotCandidates(id1)
+        if not c.ballotCandidates:
+            c.ballotCandidates = []
+            
+        result = []
+        myRatings = {}
+        if 'ratings' in session:
+		    myRatings = session['ratings']
+        for item in c.ballotCandidatess:
+            entry = {}
+            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+                entry['canEdit'] = 'yes'
+            else:
+                entry['canEdit'] = 'no'
+            entry['objType'] = 'ballotcandidate'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['number'] = item.sort
+            entry['views'] = item['views']
+            entry['ballotCandidateParty'] = item['ballotCandidateParty']
+            entry['ballotCandidateOfficialURL'] = item['ballotCandidateOfficialURL']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+
+			# user rating
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
+            else:
+                entry['rated'] = 0
+                entry['vote'] = 'nvote'
+
+            entry['vote'] = 'nvote'
+            entry['voteCount'] = int(item['ups']) + int(item['downs'])
+            entry['ups'] = int(item['ups'])
+            entry['downs'] = int(item['downs'])
+            entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+            # comments
+            discussion = discussionLib.getDiscussionForThing(item)
+            entry['discussion'] = discussion['urlCode']
+
+            entry['numComments'] = '0'
+            if 'numComments' in item:
+                entry['numComments'] = discussion['numComments']
+                
+            # get revisions
+            revisions = revisionLib.getRevisionsForThing(item)
+            if revisions:
+                entry['revisions'] = 'yes'
+            else:
+                entry['revisions'] = 'no'
+            entry['revisionList'] = []
+            if revisions:
+                for rev in revisions:
+                    revision = {}
+                    code = rev['urlCode'] 
+                    url = rev['url']
+                    date = str(rev.date)
+                    title = rev['title']
+                    text = rev['text']
+                    party = rev['ballotCandidateParty']
+                    officialURL = rev['ballotCandidateOfficialURL']
+                    html = m.html(rev['text'], render_flags=m.HTML_SKIP_HTML)
+                    revision['date'] = date
+                    revision['urlCode'] = code
+                    revision['url'] = url
+                    revision['title'] = title
+                    revision['text'] = text
+                    revision['html'] = html
+                    revision['ballotMeasureParty'] = party
+                    revision['ballotMeasureOfficialURL'] = officialURL
+                    entry['revisionList'].append(revision)
+                    
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+            
+        return json.dumps({'statusCode':0, 'result': result})
+
         

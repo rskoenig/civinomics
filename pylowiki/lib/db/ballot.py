@@ -96,6 +96,20 @@ def getBallotMeasures(code, count = 0, deleted = u'0'):
     except:
         return False
         
+def getBallotCandidates(code, count = 0, deleted = u'0'):
+    try:
+        q = meta.Session.query(Thing)\
+            .filter_by(objType = 'ballotcandidate')\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('ballotCode', code)))\
+            .order_by('sort')
+        if count:
+            return q.count()
+        else:
+            return q.all()
+    except:
+        return False
+        
 def searchBallots( keys, values, deleted = u'0', public = '1', count = False):
     try:
         if type(keys) != type([]):

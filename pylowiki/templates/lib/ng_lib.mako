@@ -180,6 +180,61 @@
     </div>
 </%def>
 
+<%def name="ballot_candidate_listing()">
+    <div style="margin-top: 30px;"></div>
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotCandidateParty = item.ballotCandidateParty; ballotCandidateOfficialURL = item.ballotCandidateOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
+        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+            <div class="well yesNoWell">
+                ${yesNoVoteBlock()}
+            </div>
+            <h4 class="listed-candidate-title">{{item.title}}</h4>
+            <p ng-show="(item.ballotCandateParty != '')">Party: {{ballotCandidateParty}}</p>
+            <p ng-show="(item.ballotCandidateOfficialURL != '')">Official Web Site: <a href="{{ballotCandidateOfficialURL}}" target="_blank">{{ballotCandidateOfficialURL}}</a></p>
+            <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+        </div><!-- row-fluid -->
+        <div class="row-fluid">
+            <div class="btn-group">
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
+            </div>
+            <div id="edit-{{urlCode}}" class="collapse">
+                <form action="/ballotcandidate/{{urlCode}}/{{url}}/editHandler" method="POST">
+                    <fieldset>
+                        <label>Title</label>
+                        <input type="text" name="ballotCandidateTitle" class="span6" value="{{item.title}}" class="span9" required>
+                        <label>Listing Order Number on Ballot</label>
+                        <input type="text" name="ballotCandidateNumber" value="{{item.number}}" class="span1" required>
+                        <label>Party</label>
+                        <input type="text" name="ballotCandidateParty" class="span6" value="{{item.ballotCandidateParty}}" class="span9">
+                        <label>Official Website URL</label>
+                        <input type="text" name="ballotCandidateOfficialURL" class="span6" value="{{item.ballotCandidateOfficialURL}}" class="span9">
+                        <label>Text</label>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="ballotCandidateText" class="span6" class="span9" required>{{item.text}}</textarea>
+                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                    </fieldset>
+                </form>
+            </div>
+            <div id="unpublish-{{urlCode}}" class="collapse" >
+                <div class="alert">
+                    <strong>Are you sure you want to send this ballot candidate to the trash?</strong>
+                    <br />
+                    <a href="/unpublish/ballotcandidate/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                    <span id = "unpublish_{{urlCode}}"></span>
+                </div>
+            </div>
+            <ul class="unstyled">
+            <div ng-repeat="rev in revisionList">
+                <li><a href="/ballotcandidate/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+            </div><!-- ng-repeat -->
+            </ul>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
+</%def>
 
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType;">

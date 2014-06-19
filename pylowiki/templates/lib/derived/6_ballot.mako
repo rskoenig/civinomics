@@ -82,8 +82,17 @@
             <h3>${ballotmeasure['title']}</h3>
         </div>
     </div><!-- row-fluid -->
+    
     <div class="spacer"></div>
-
+    
+    % if ballotmeasure['ballotMeasureOfficialURL'] != '':
+        <div class="row-fluid">
+            <div class="span9">
+                Official Web Site: <a href="${ballotmeasure['ballotMeasureOfficialURL']}" target="_blank">${ballotmeasure['ballotMeasureOfficialURL']}</a>
+            </div>
+        </div><!-- row-fluid -->
+    % endif
+    
     <div class="row-fluid">
         <div class="span9">
             ${m.html(ballotmeasure['text'], render_flags=m.HTML_SKIP_HTML) | n}
@@ -101,6 +110,46 @@
     % endif
 </%def>
 
+<%def name="showBallotcandidateInfo(ballotcandidate, author)">
+    <div class="row-fluid spacer">
+        <div class="span9">
+            <h3>${ballotcandidate['title']}</h3>
+        </div>
+    </div><!-- row-fluid -->
+    <div class="spacer"></div>
+
+    % if ballotcandidate['ballotCandidateParty'] != '':
+        <div class="row-fluid">
+            <div class="span9">
+                Party: <a href="${ballotcandidate['ballotCandidateParty']}" target="_blank">${ballotcandidate['ballotCandidateParty']}</a>
+            </div>
+        </div><!-- row-fluid -->
+    % endif
+    
+    % if ballotcandidate['ballotCandidateOfficialURL'] != '':
+        <div class="row-fluid">
+            <div class="span9">
+                Official Web Site: <a href="${ballotcandidate['ballotCandidateOfficialURL']}" target="_blank">${ballotcandidate['ballotCandidateOfficialURL']}</a>
+            </div>
+        </div><!-- row-fluid -->
+    % endif
+
+    <div class="row-fluid">
+        <div class="span9">
+            ${m.html(ballotcandidate['text'], render_flags=m.HTML_SKIP_HTML) | n}
+        </div>
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid">
+        <span class="grey">Posted by: </span>
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+    </div><!-- row-fluid -->
+    % if ballotmeasure.objType == 'revision':
+        <div class="alert alert-error">
+            This is a revision dated ${ballotcandidate.date}
+        </div>
+    % endif
+</%def>
 
 <%def name="editElection()">
     <% 
@@ -520,15 +569,15 @@
                             Ballot measures
                         </label>
                         <div ng-show="!candidate">
-                            <label for="slateInfo" class="control-label" required><strong>The term used to refer to the ballot measure. (Initiative, Proposition, etc):</strong></label>
-                            <input type="text" name="slateInfoMeasures" class="span2" value="" required>
+                            <label for="slateInfo" class="control-label"<strong>The term used to refer to the ballot measure. (Initiative, Proposition, etc):</strong></label>
+                            <input type="text" name="slateInfoMeasures" class="span2" value="">
                         </div>
                         <label class="radio">
                             <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();"  value="candidates" required>
                             Candidates for office
                         </label>
                         <div ng-show="candidate">
-                            <label for="slateInfo" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
+                            <label for="slateInfo" class="control-label"><strong>Can vote for max of how many candidates on slate:</strong></label>
                             <select name="slateInfoCandidates">
                                 <% 
                                     voteMax = 20
@@ -565,11 +614,39 @@
                         <input type="text" name="ballotMeasureTitle" class="span6" required>
                         <label>Official Web Site URL</label>
                         <input type="text" name="ballotMeasureOfficialURL" class="span6" required>
-                        <label>Listing Order Number in Election</label>
+                        <label>Listing Order Number in Ballot</label>
                         <input type="text" name="ballotMeasureNumber" class="span1" required>
                         <label>Text</label>
                         ${lib_6.formattingGuide()}<br>
                         <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
+                        
+                        <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                        <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
+                    </fieldset>
+                </form>
+            </div>
+        </div><!-- row-fluid -->
+    % endif
+</%def>
+
+<%def name="addBallotCandidate(ballot, author)">
+    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+        <div class="row-fluid">
+            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Candidate</button>
+            <div id="addItem" class="collapse spacer">
+                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotCandidateAddHandler" method="POST">
+                    <fieldset>
+                        <label>Title</label>
+                        <input type="text" name="ballotCandidateTitle" class="span6" required>
+                        <label>Party</label>
+                        <input type="text" name="ballotCandidateParty" class="span6">
+                        <label>Official Web Site URL</label>
+                        <input type="text" name="ballotCandidateOfficialURL" class="span6" required>
+                        <label>Listing Order Number in Ballot</label>
+                        <input type="text" name="ballotCandidateNumber" class="span1" required>
+                        <label>Text</label>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="ballotCandidateText" class="span6" required></textarea>
                         
                         <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
                         <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
