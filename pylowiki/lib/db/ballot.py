@@ -95,6 +95,15 @@ def getBallotMeasures(code, count = 0, deleted = u'0'):
             return q.all()
     except:
         return False
+
+def getBallotCandidate(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['ballotcandidate', 'ballotcandidateUnpublished']))\
+            .filter(Thing.data.any(wc('urlCode', code)))\
+            .one()
+    except:
+        return False
         
 def getBallotCandidates(code, count = 0, deleted = u'0'):
     try:

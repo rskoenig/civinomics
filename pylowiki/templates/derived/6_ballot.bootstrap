@@ -11,6 +11,8 @@
 
 % if c.ballotmeasure:
     ${bhelpers.showBallotmeasureInfo(c.ballotmeasure, c.author)}
+% elif c.ballotcandidate:
+    ${bhelpers.showBallotcandidateInfo(c.ballotcandidate, c.author)}
 % else:
     ${bhelpers.showBallotInfo(c.ballot, c.author)}
 

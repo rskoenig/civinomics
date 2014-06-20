@@ -66,6 +66,21 @@ class BallotController(BaseController):
                     c.ballot = ballotLib.getBallot(c.ballotmeasure['ballotCode'])
                 else:
                     abort(404)
+            elif action == 'ballotcandidateEditHandler':
+                c.ballotcandidate = ballotLib.getBallotCandidate(id1)
+                if c.ballotcandidate:
+                    c.ballot = ballotLib.getBallot(c.ballotcandidate['ballotCode'])
+                else:
+                    abort(404)
+            elif action == 'ballotcandidateShow':
+                c.ballotcandidate = ballotLib.getBallotCandidate(id1)
+                if not c.ballotcandidate:
+                    c.ballotcandidate = revisionLib.getRevisionByCode(id1)
+                    
+                if c.ballotcandidate:
+                    c.ballot = ballotLib.getBallot(c.ballotcandidate['ballotCode'])
+                else:
+                    abort(404)
             else:
                 c.ballot = ballotLib.getBallot(id1)
                 if not c.ballot:
@@ -794,5 +809,13 @@ class BallotController(BaseController):
             return json.dumps({'statusCode':1})
             
         return json.dumps({'statusCode':0, 'result': result})
+        
+
+    # this is sort of a goofy case, it is only to show previous revisions        
+    def ballotcandidateShow(self):
+
+        c.author = userLib.getUserByCode(c.ballotcandidate['userCode'])
+
+        return render('/derived/6_ballot.bootstrap')
 
         

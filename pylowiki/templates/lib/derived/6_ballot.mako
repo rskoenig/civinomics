@@ -121,7 +121,7 @@
     % if ballotcandidate['ballotCandidateParty'] != '':
         <div class="row-fluid">
             <div class="span9">
-                Party: <a href="${ballotcandidate['ballotCandidateParty']}" target="_blank">${ballotcandidate['ballotCandidateParty']}</a>
+                Party: ${ballotcandidate['ballotCandidateParty']}
             </div>
         </div><!-- row-fluid -->
     % endif
@@ -144,7 +144,7 @@
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
     </div><!-- row-fluid -->
-    % if ballotmeasure.objType == 'revision':
+    % if ballotcandidate.objType == 'revision':
         <div class="alert alert-error">
             This is a revision dated ${ballotcandidate.date}
         </div>
