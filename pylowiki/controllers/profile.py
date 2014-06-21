@@ -484,13 +484,9 @@ class ProfileController(BaseController):
             entry['url']= item['url']
             entry['urlCode']=item['urlCode']
             entry['title'] = item['title']
-            entry['electionDate'] = item['electionDate']
-            
-            scopeInfo = utils.getPublicScope(item['scope'])
-            entry['scopeName'] = scopeInfo['name']
-            entry['scopeLevel'] = scopeInfo['level']
-            entry['scopeHref'] = scopeInfo['href']
-            entry['flag'] = scopeInfo['flag']
+            entry['text'] = item['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+
             entry['href']= '/ballot/' + entry['urlCode'] + '/' + entry['url'] + '/show'
             result.append(entry)
             
