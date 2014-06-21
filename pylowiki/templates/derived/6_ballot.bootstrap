@@ -1,0 +1,80 @@
+<%!
+    import misaka as m
+    import logging
+    log = logging.getLogger(__name__)
+%>
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace file="/lib/derived/6_ballot.mako" name="bhelpers" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/ng_lib.mako" name="ng_lib" />
+
+<% lib.return_to() %>
+
+% if c.ballotmeasure:
+    ${bhelpers.showBallotmeasureInfo(c.ballotmeasure, c.author)}
+% elif c.ballotcandidate:
+    ${bhelpers.showBallotcandidateInfo(c.ballotcandidate, c.author)}
+% else:
+    ${bhelpers.showBallotInfo(c.ballot, c.author)}
+
+    % if c.ballot.objType != 'revision':
+        ${bhelpers.ballotModeration(c.ballot)}
+        % if c.ballot.objType == 'ballot' and c.ballot['ballotSlate'] == 'measures':
+            ${bhelpers.addBallotMeasure(c.ballot, c.author)}
+
+            <div class="spacer"></div>
+            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ballotSlate = 'measures';">
+                <div ng-controller="ballotsController">
+                <div class="row-fluid">
+                    <div class="span9">
+                        <div class="centered" ng-show="loading" ng-cloak>
+                            <i class="icon-spinner icon-spin icon-4x"></i>
+                        </div><!-- loading -->
+                        <div ng-repeat="item in activity">
+                            <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                                <tr><td>
+                                    ${ng_lib.ballot_measure_listing()}
+                                </td></tr>
+                            </table>
+                        </div><!-- ng-repeat -->
+                    </div><!-- span9 -->
+                </div><!-- row-fluid -->
+                </div>
+            </div><!-- ng-init -->
+        % elif c.ballot.objType == 'ballot' and c.ballot['ballotSlate'] == 'candidates':
+            ${bhelpers.addBallotCandidate(c.ballot, c.author)}
+
+            <div class="spacer"></div>
+            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ballotSlate = 'candidates';">
+                <div ng-controller="ballotsController">
+                <div class="row-fluid">
+                    <div class="span9">
+                        <div class="centered" ng-show="loading" ng-cloak>
+                            <i class="icon-spinner icon-spin icon-4x"></i>
+                        </div><!-- loading -->
+                        <div ng-repeat="item in activity">
+                            <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                                <tr><td>
+                                    ${ng_lib.ballot_candidate_listing()}
+                                </td></tr>
+                            </table>
+                        </div><!-- ng-repeat -->
+                    </div><!-- span9 -->
+                </div><!-- row-fluid -->
+                </div>
+            </div><!-- ng-init -->
+        % endif
+    % endif
+    <p>
+% endif
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/ballots.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+</%def>
