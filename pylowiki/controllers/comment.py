@@ -95,7 +95,7 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
-            elif thing.objType == 'photo' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or 'initiativeCode' in thing:
+            elif thing.objType == 'photo' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate' or 'initiativeCode' in thing:
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
@@ -124,7 +124,7 @@ class CommentController(BaseController):
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
@@ -132,7 +132,7 @@ class CommentController(BaseController):
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
-            if parentAuthor != c.authuser and thing.objType != 'agendaitem' and thing.objType != 'ballotmeasure':
+            if parentAuthor != c.authuser and thing.objType != 'agendaitem' and thing.objType != 'ballotmeasure' or thing.objType != 'ballotcandidate':
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'

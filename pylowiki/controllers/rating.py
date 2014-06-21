@@ -55,6 +55,8 @@ class RatingController(BaseController):
             thing = meetingLib.getAgendaItem(code)
         elif action == 'rateBallotMeasure':
             thing = ballotLib.getBallotMeasure(code)
+        elif action == 'rateBallotCandidate':
+            thing = ballotLib.getBallotCandidate(code)
         
         if thing['disabled'] == '1':
             # Should only get triggered when the user posts directly and bypasses the UI
@@ -114,6 +116,10 @@ class RatingController(BaseController):
         
     @h.login_required
     def rateBallotMeasure(self, code, amount):
+        return redirect(session['return_to'])
+        
+    @h.login_required
+    def rateBallotCandidate(self, code, amount):
         return redirect(session['return_to'])
         
     ########################################################################

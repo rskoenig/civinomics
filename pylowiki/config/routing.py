@@ -255,6 +255,7 @@ def make_map():
     map.connect('/rate/initiative/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateInitiative', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/agendaitem/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateAgendaItem', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/ballotmeasure/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateBallotMeasure', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/ballotcandidate/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateBallotCandidate', code = '{code}', url = '{url}', amount = '{amount}')
         
     # Disable/enable/delete/edit/flag Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
