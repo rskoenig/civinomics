@@ -386,7 +386,7 @@ class ProfileController(BaseController):
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
             href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
-            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot' or entry['objType'] == 'election':
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot' or entry['objType'] == 'election' or entry['objType'] == 'ballotcandidate':
                 href += '/show'
             if entry['objType'] == 'agendaitem':
                 mCode = item['meetingCode']
