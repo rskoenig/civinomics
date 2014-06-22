@@ -46,7 +46,7 @@
             ${bhelpers.addBallotCandidate(c.ballot, c.author)}
 
             <div class="spacer"></div>
-            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ballotSlate = 'candidates';">
+            <div ng-init="url = '${c.ballot['url']}'; code = '${c.ballot['urlCode']}'; ballotSlate = 'candidates'; candidateMax = '${c.ballot['slateInfo']}';">
                 <div ng-controller="ballotsController">
                 <div class="row-fluid">
                     <div class="span9">

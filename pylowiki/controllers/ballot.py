@@ -448,6 +448,8 @@ class BallotController(BaseController):
         result = []
 
         for item in c.ballots:
+            if item.objType == 'ballotUnpublished':
+                continue
 
             entry = {}
             if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
@@ -730,12 +732,15 @@ class BallotController(BaseController):
         c.ballotCandidates = ballotLib.getBallotCandidates(id1)
         if not c.ballotCandidates:
             c.ballotCandidates = []
-            
+  
         result = []
         myRatings = {}
         if 'ratings' in session:
 		    myRatings = session['ratings']
-		    
+		 
+        mycandidateVotes = {}
+        totalcandidateVotes = {}
+        candidateMax = c.ballot['slateInfo']
         for item in c.ballotCandidates:
             entry = {}
             if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
@@ -756,18 +761,26 @@ class BallotController(BaseController):
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 
 			# user rating
+            code = item['urlCode']
             if entry['urlCode'] in myRatings:
                 entry['rated'] = myRatings[entry['urlCode']]
                 entry['vote'] = 'voted'
+                if entry['rated'] == '1':
+                    mycandidateVotes[code] = 'voted'
+                else:
+                    mycandidateVotes[code] = 'nvote'
             else:
                 entry['rated'] = 0
                 entry['vote'] = 'nvote'
+                mycandidateVotes[code] = 'nvote'
 
             entry['vote'] = 'nvote'
             entry['voteCount'] = int(item['ups']) + int(item['downs'])
             entry['ups'] = int(item['ups'])
             entry['downs'] = int(item['downs'])
             entry['netVotes'] = int(item['ups']) - int(item['downs'])
+            totalcandidateVotes[code] = item['ups']
+            
 
             # comments
             discussion = discussionLib.getDiscussionForThing(item)
@@ -810,7 +823,7 @@ class BallotController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
             
-        return json.dumps({'statusCode':0, 'result': result})
+        return json.dumps({'statusCode':0, 'result': result, 'mycandidateVotes': mycandidateVotes, 'totalcandidateVotes': totalcandidateVotes, 'candidateMax': candidateMax})
         
 
     # this is sort of a goofy case, it is only to show previous revisions        
