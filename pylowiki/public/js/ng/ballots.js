@@ -28,7 +28,7 @@ function ballotsController($scope, $http) {
                 }
             }
             if (totalVotes >= $scope.candidateMax) {
-                alert("You have already voted for the maximum number of items on this ballot.");
+                alert("You have already voted for the maximum number of " + $scope.candidateMax + " items on this ballot.");
             } else {
                 $scope.mycandidateVotes[code] = 'voted';
                 totalVotes = parseInt($scope.totalcandidateVotes[code]);
