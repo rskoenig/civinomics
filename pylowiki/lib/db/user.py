@@ -257,6 +257,8 @@ class User(object):
             u['user_source'] = "Survey App"
             u['needs_password'] = '1'
             u['poll_name'] = kwargs['poll']
+            u['gender'] = kwargs['gender']
+            u['dob'] = kwargs['dob']
 
         commit(u)
         u['urlCode'] = toBase62(u)

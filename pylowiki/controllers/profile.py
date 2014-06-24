@@ -1022,7 +1022,7 @@ class ProfileController(BaseController):
                 if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
                     if (not userLib.getUserByEmail(csvUser['email'])):
                         memberType = 100
-                        kwargs = {"needsPassword":"1", "poll":csvUser['poll']}
+                        kwargs = {"needsPassword":"1", "poll":csvUser['poll'], "dob":csvUser['dob'], "gender":csvUser['gender']}
                         password = "changeThis"
                         country = "United States"
                         # Processing ratings:

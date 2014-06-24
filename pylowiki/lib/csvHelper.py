@@ -1,6 +1,6 @@
 import os, shutil, logging, re
 from PIL import Image
-from time import time
+import time
 from hashlib import md5
 import csv as helper
 
@@ -12,10 +12,17 @@ log = logging.getLogger(__name__)
 
 # Constants for parsing CSV fields
 
+#Basic info
 EMAIL = 'Email'
 NAME = 'Full Name'
 ZIP_CODE = 'Zip Code'
 POLL = 'Poll Name'
+
+#Demographics
+DOB = 'Date of birth'
+GENDER = 'Gender'
+
+#Rating objects
 NUM_RATINGS = '#ratings'
 RATING_CODE = 'Code'
 RATING_VALUE = 'Rating'
@@ -66,6 +73,9 @@ def parseCsv(filepath):
             user['email'] = row[EMAIL]
             user['zip'] = row[ZIP_CODE]
             user['poll'] = row[POLL]
+            user['dob'] = time.mktime(time.strptime(row[DOB], '%m/%d/%Y'))
+            log.info(user['dob'])
+            user['gender'] = row[GENDER]
             if row[NUM_RATINGS] > 0:
                 user['num_ratings'] = row[NUM_RATINGS]
                 for i in range(0, int(row[NUM_RATINGS])):
