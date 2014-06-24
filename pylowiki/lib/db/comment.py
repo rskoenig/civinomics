@@ -177,9 +177,9 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
-            
+    
     thisComment = generic.linkChildToParent(thisComment, owner)
-            
+    
     thisComment = generic.linkChildToParent(thisComment, discussion)
     if attachedThing is not None:
         thisComment = generic.linkChildToParent(thisComment, attachedThing)
@@ -195,6 +195,7 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
             thisComment['profileCode'] = profileOwner['urlCode']
             thisComment['profile_url'] = profileOwner['url']
+            
     thisComment['disabled'] = '0'
     thisComment['deleted'] = '0'
     thisComment['pending'] = '0'

@@ -111,7 +111,7 @@ class CommentController(BaseController):
                     return redirect(session['return_to'])
                 elif json.loads(request.body):
                     return json.dumps({'statusCode':1})
-                    
+             
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
@@ -132,7 +132,7 @@ class CommentController(BaseController):
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
-            if parentAuthor != c.authuser and thing.objType != 'agendaitem' and thing.objType != 'ballotmeasure' or thing.objType != 'ballotcandidate':
+            if parentAuthor != c.authuser and thing.objType != 'agendaitem' and thing.objType != 'ballotmeasure' and thing.objType != 'ballotcandidate':
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
