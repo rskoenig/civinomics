@@ -79,6 +79,10 @@ class AdminController(BaseController):
             elif c.thing.objType.replace("Unpublished", "") == 'election':
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
+            elif 'ballotCode' in c.thing:
+                parent = generic.getThing(c.thing['ballotCode'])
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
             elif 'meetingCode' in c.thing:
                 parent = generic.getThing(c.thing['electionCode'])
                 c.user = generic.getThing(parent['userCode'])
@@ -424,7 +428,7 @@ class AdminController(BaseController):
         elif c.thing.objType == 'agendaitem':
             dparent = generic.getThing(c.thing['meetingCode'])
             returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
-        elif c.thing.objType == 'ballotmeasure':
+        elif c.thing.objType == 'ballotmeasure' or c.thing.objType == 'ballotcandidate':
             dparent = generic.getThing(c.thing['ballotCode'])
             returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
         elif c.thing.objType == 'ballot':
@@ -467,7 +471,7 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'agendaitem':
             dparent = generic.getThing(c.thing['meetingCode'])
             returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
-        elif c.thing.objType.replace("Unpublished", "") == 'ballotmeasure':
+        elif c.thing.objType.replace("Unpublished", "") == 'ballotmeasure' or c.thing.objType.replace("Unpublished", "") == 'ballotcandidate':
             dparent = generic.getThing(c.thing['ballotCode'])
             returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
         elif c.thing.objType.replace("Unpublished", "") == 'ballot':
