@@ -31,6 +31,12 @@
 
 <%def name="facebookDialogShare2(**kwargs)">
     <%
+        ####################################################################################
+        # function facebookDialogShare2:
+        #  
+        #
+        #
+        #####################################################################################
         shareOk = False
         shareOn = False
         if c.facebookShare:
@@ -52,21 +58,15 @@
 
                 # in order to prevent the javascript for these buttons from being included multiple
                 # times, these kwargs are now used to activate either or both of the buttons
+                shareOnWall = False
                 if 'shareOnWall' in kwargs:
                     if kwargs['shareOnWall'] is True:
                         shareOnWall = True
-                    else:
-                        shareOnWall = False
-                else:
-                    shareOnWall = False
 
+                sendMessage = False
                 if 'sendMessage' in kwargs:
                     if kwargs['sendMessage'] is True:
                         sendMessage = True
-                    else:
-                        sendMessage = False
-                else:
-                    sendMessage = False
                 
 
                 title = c.facebookShare.title
@@ -82,51 +82,22 @@
                 
                 shareOk = c.facebookShare.shareOk
 
+                facebookAuthId = 0
+                if 'facebookAuthId' in session.keys():
+                    facebookAuthId = session['facebookAuthId']
     %>
 
     % if shareOk and shareOn:
         <div id="fb-root"></div>
         <script src="/js/extauth.js" type="text/javascript"></script>
         <script>
-            // activate facebook javascript sdk
-            var fbAuthId = '';
-            
-            window.fbAsyncInit = function() {
-                FB.init({
-                    appId      : "${facebookAppId}", // App ID
-                    channelUrl : "${channelUrl}", // Channel File
-                    status     : true, // check login status
-                    cookie     : false, // enable cookies to allow the server to access the session
-                    xfbml      : true  // parse XFBML
-                });
-                FB.Event.subscribe('auth.authResponseChange', function(response) {
-                // Here we specify what we do with the response anytime this event occurs.
-                console.log('above response tree');
-                if (response.status === 'connected') {
-                    console.log('calling fb connected');
-                    fbAuthId = response.authResponse.userID;
-                } else if (response.status === 'not_authorized') {
-                    console.log('not authd');                
-                    //FB.login();
-                } else {
-                    console.log('else');
-                    //FB.login();
-                }
-                });
-            };
-            
-            // Load the SDK asynchronously
-            (function(d){
-                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-                if (d.getElementById(id)) {return;}
-                js = d.createElement('script'); js.id = id; js.async = true;
-                js.src = "//connect.facebook.net/en_US/all.js";
-                ref.parentNode.insertBefore(js, ref);
-            }(document));
-
+            // facebook javascript sdk already activated
+            var fbAuthId = ${facebookAuthId};
             function shareOnWall() {
                 // grab checked value of checkbox IF it's on the page. add to description.
                 //var shareChecked = $("#shareVote").is(':checked');
+                // for the case that there's a modal onscreen, it will be hidden once this button is activated
+                $('#voteShareModal').modal('hide');
                 
                 var shareChecked = false;
                 var shareText = '';
@@ -189,10 +160,14 @@
             };
 
             function messageFriends() {
+
                 // there is no callback for messages sent
                 // we can simply record that the message dialog was brought up
                 // grab checked value of checkbox IF it's on the page. add to description.
                 
+                // for the case that there's a modal onscreen, it will be hidden once this button is activated
+                $('#voteShareModal').modal('hide');
+
                 var thingCode = "${thingCode}";
                 var link = "${link}";
                 var userCode = fbAuthId;
@@ -202,7 +177,8 @@
                 //console.log('wc mf: '+parentCode);
                           
                 result = postShared("no response", thingCode, link, '0', userCode, parentCode, 'facebook-message');
-                console.log("3");
+                //console.log("3");
+
                 FB.ui(
                     {
                       method: 'send',
@@ -218,7 +194,7 @@
         <div class="btn-group facebook">
           % if 'btn' in kwargs:
             <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
-              <i class="icon-facebook icon-light right-space"></i> | Share
+              <i class="icon-facebook icon-light right-space"></i> Share
             </a>
           % else:
             <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
@@ -226,15 +202,18 @@
             </a>
           % endif
           <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            % if shareOnWall:
+                <li>
+                    <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+                </li>
+            % endif
+            % if sendMessage:
+                <li>
+                    <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+                </li>
+            % endif
             <li>
-              % if shareOnWall:
-                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
-              % endif
-            </li>
-            <li>
-              % if sendMessage:
-                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
-              % endif
+                <div class="fb-likesSharesComments"></div>
             </li>
           </ul>
         </div>
@@ -647,6 +626,13 @@
          <% return %>
       % endif
       <% 
+        if 'myRating' in thing:
+            myRating = thing['myRating']
+        else:
+            if 'ratings' in session:
+                myRatings = session["ratings"]
+            else:
+                myRatings = {}
         rating = int(thing['ups']) - int(thing['downs']) 
         totalYes = int(thing['ups'])
         totalNo = int(thing['downs'])
@@ -655,20 +641,20 @@
         if totalVotes > 0:
           percentYes = int(float(totalYes)/float(totalVotes) * 100)
           percentNo = int(float(totalNo)/float(totalVotes) * 100)
-        if 'ratings' in session:
-            myRatings = session["ratings"]
-        else:
-            myRatings = {}
+            
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
-            thingCode = thing['urlCode']
-            #log.info("thingCode is %s"%thingCode)
-            if thingCode in myRatings:
-                myRating = myRatings[thingCode]
-                log.info("thingCode %s myRating %s"%(thingCode, myRating))
+            if 'myRating' in thing:
+                myRating = thing['myRating']
             else:
-                myRating = "0"
+                thingCode = thing['urlCode']
+                #log.info("thingCode is %s"%thingCode)
+                if thingCode in myRatings:
+                    myRating = myRatings[thingCode]
+                    log.info("thingCode %s myRating %s"%(thingCode, myRating))
+                else:
+                    myRating = '0'
                 
             if myRating == '1':
                 commentClass = 'voted yesVote'
