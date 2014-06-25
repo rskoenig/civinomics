@@ -35,22 +35,24 @@
                 </form>
                 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/home">Explore</a></li>
+                    <li><a href="/home">Home</a></li>
                     % if c.authuser:
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                % if 'user' in session:
-                                    <li>
-                                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
-                                    </li>
-                                % endif
-                                <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
-                                % if int(c.authuser['accessLevel']) > 200:
-                                    <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
-                                % endif
-                            </ul>
-                        </li>
+                        % if c.authuser['activated'] == '1':
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    % if 'user' in session:
+                                        <li>
+                                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                                        </li>
+                                    % endif
+                                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
+                                </ul>
+                            </li>
+                        % endif
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
