@@ -249,7 +249,7 @@ class LoginController(BaseController):
         # the login page.
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
@@ -381,7 +381,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Linking account with Facebook Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
 
         try:
@@ -440,7 +440,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Linking account with Twitter Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         try:
             email = session['twtEmail']
@@ -625,7 +625,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
 
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -707,7 +707,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Forgot Password"
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         email = request.params["email"].lower()
         user = userLib.getUserByEmail( email ) 

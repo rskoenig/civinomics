@@ -114,7 +114,7 @@ class RegisterController(BaseController):
     def fbNewAccount( self ):
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
@@ -175,7 +175,7 @@ class RegisterController(BaseController):
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         #if  'password' not in request.params:
         #    log.info('password missing')
@@ -466,7 +466,7 @@ class RegisterController(BaseController):
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         #if  'password' not in request.params:
         #    log.info('password missing')
@@ -734,7 +734,7 @@ class RegisterController(BaseController):
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         if  'password' not in request.params:
             log.info('password missing')

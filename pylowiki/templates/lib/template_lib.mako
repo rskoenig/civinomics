@@ -416,11 +416,13 @@
         % endif
         ${fields_alert()}
         % if c.splashMsg:
-            <% message = c.splashMsg %>
-            <div class="alert alert-${message['type']}">
-                <button data-dismiss="alert" class="close">x</button>
-                <strong>${message['title']}</strong> ${message['content']}
-            </div> 
+            <div class="col-xs-12">
+                <% message = c.splashMsg %>
+                <div class="alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div> 
+            </div>
         % endif
       ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
