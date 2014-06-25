@@ -1006,6 +1006,7 @@ ul.activity > li {
 .wrap-photo{
     box-shadow: 0 0px 4px #111;
     border: 1px solid #005d28;
+    width: 100%;
 }
 
 .wrap-voting-group{

@@ -33,15 +33,15 @@
                         %>
                         
                         % if photo['disabled'] == '0' and photo['deleted'] == '0':
-                            <div class="row-fluid">
-                                <div class="span1">
+                            <div class="row">
+                                <div class="col-xs-1">
                                     ${lib_6.upDownVote(photo)}
-                                </div><!-- span1 -->
-                                <div class="span3">
+                                </div><!-- col-xs-1 -->
+                                <div class="col-xs-3">
                                     <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
                                     <img src="${imgSrc}" class="wrap-photo">
-                                </div><!-- span3 -->
-                                <div class="span8">
+                                </div><!-- col-xs-3 -->
+                                <div class="col-xs-8">
                                     <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
                                     <% tags = photo['tags'].split('|') %>
                                     Tags: 
@@ -55,8 +55,8 @@
                                     <br />
                                     Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
                                     <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">View or Add Comments (${numComments})</a>
-                                </div><!-- span8 -->
-                            </div><!-- row-fluid -->
+                                </div><!-- col-xs-8 -->
+                            </div><!-- row -->
                         % elif photo['disabled'] == '1' and photo['deleted'] == '0':
                             <div class="accordion" id="item-${photo['urlCode']}">
                                 <div class="accordion-group no-border">
@@ -71,16 +71,16 @@
                                             <small>This item has been disabled by ${lib_6.userLink(disabler)} because: ${reason}</small>
                                         </div><!-- collapsed-item-header -->
                                         <div class="accordion-body collapse" id="item-body-${photo['urlCode']}">
-                                            <div class="row-fluid list-item">
-                                                <div class="span1">
+                                            <div class="row list-item">
+                                                <div class="col-xs-1">
                                                     ${lib_6.upDownVote(photo)}
-                                                </div><!-- span1 -->
-                                                <div class="span3">
+                                                </div><!-- col-xs-1 -->
+                                                <div class="col-xs-3">
                                                     <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
                                                     <img src="${imgSrc}" class="wrap-photo">
                                                     <div class="spacer"></div>
-                                                </div><!-- span3 -->
-                                                <div class="span8">
+                                                </div><!-- col-xs-3 -->
+                                                <div class="col-xs-8">
                                                     <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
                                                     Tags: {{photo.tags}}
                                                     <br />
@@ -88,7 +88,7 @@
                                                     <br />
                                                     Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
                                                     <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">View or Add Comments (${numComments})</a>
-                                                </div><!-- span8 -->
+                                                </div><!-- col-xs-8 -->
                                             </div><!-- row-fluid -->
                                         </div><!-- accordian-body-collapse -->
                                     </div><!-- accordian-heading -->
