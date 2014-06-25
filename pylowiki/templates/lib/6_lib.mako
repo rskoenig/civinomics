@@ -243,6 +243,47 @@
     % endif
 </%def>
 
+<%def name="fbDialogShare2Buttons(**kwargs)">
+    <%
+        shareOnWall = False
+        if 'shareOnWall' in kwargs:
+            if kwargs['shareOnWall'] is True:
+                shareOnWall = True
+
+        sendMessage = False
+        if 'sendMessage' in kwargs:
+            if kwargs['sendMessage'] is True:
+                sendMessage = True
+    %>
+    <div class="btn-group facebook">
+        % if 'btn' in kwargs:
+            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+                <i class="icon-facebook icon-light right-space"></i> Share
+            </a>
+        % else:
+            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+                <i class="icon-facebook-sign icon-2x"></i>
+            </a>
+        % endif
+        <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            % if shareOnWall:
+                <li>
+                    <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+                </li>
+            % endif
+            % if sendMessage:
+                <li>
+                    <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+                
+                </li>
+            % endif
+            <li>
+                <div class="fb-likesSharesComments"></div>
+            </li>
+        </ul>
+    </div>
+</%def>
+
 <%def name="facebookDialogShare(link, picture, **kwargs)">
     <%
         # link: direct url to item being shared

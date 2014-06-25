@@ -547,6 +547,9 @@ class InitiativeController(BaseController):
         
         c.initiativeHome = True
 
+        # nice to know if I've voted on this without having to do this in 6_lib.mako
+        c.initiative['myRating'] = utils.getMyRating(c.initiative)
+        
         return render('/derived/6_initiative_home.bootstrap')
 
 

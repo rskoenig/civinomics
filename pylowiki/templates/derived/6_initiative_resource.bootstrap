@@ -21,6 +21,12 @@
                     ${itemHelpers.moderationPanel(c.thing)}
                     <div class="spacer"></div>
                     ${comments(c.thing, c.discussion)}
+                    % if 'user' in session:
+                        ${helpers.voteShareModal()}
+                    % else:
+                        ${d3Lib.includeD3()}
+                        ${d3Lib.initiativeStats(yes='1', no='1', views='1', numComments='1', myRating='0', loggedIn='false')}
+                    % endif
                 % endif
             </div><!-- span11 -->
         </div><!-- row-fluid -->

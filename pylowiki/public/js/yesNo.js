@@ -1,6 +1,21 @@
 /*global $:true, jQuery:true */
 $(document).ready(function()
-{
+{   
+    $('#voteShareModal').modal({ show: false})
+    function activateVoteShareModal(data) {
+        // only activates if vote is cast
+        //console.log(data);
+        var json = JSON.parse(data);
+        console.log(json);
+        if (json.statusCode == 0) {
+            changePie(json.result);
+            if (json.result != 0) {
+                $('#voteShareModal').modal('show');
+            }
+        } else {
+            console.log("error activateVoteShareModal, something didn't work");
+        }
+    }
     // images for the Yes No icons are set by CSS - the javascript just adds or removes the 'voted' class
     $(".noVote").click(function(event)
     {
@@ -71,7 +86,10 @@ $(document).ready(function()
                 $(this).siblings(".yesVote").children(".ynScoreWrapper").attr("class", "ynScoreWrapper");
             }
         }
-        $.post($(this).attr('href'));
+        //$.post($(this).attr('href'));
+        $.post( $(this).attr('href'), function( data ) {
+            activateVoteShareModal(data);
+        });
     });
     
     $(".yesVote").click(function(event)
@@ -142,6 +160,9 @@ $(document).ready(function()
                 $(this).children(".ynScoreWrapper").attr("class", "ynScoreWrapper");
             }
         }
-        $.post($(this).attr('href'));
+        //$.post($(this).attr('href'));
+        $.post($(this).attr('href'), function( data ) {
+            activateVoteShareModal(data);
+        });
     });
 });
