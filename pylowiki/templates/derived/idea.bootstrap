@@ -21,7 +21,7 @@
 		<div class="row">
 			<div class="col-sm-9 well">
 				<h1 ng-cloak>{{item.title}}</h1>
-				<p>{{item.text}}</p>
+				<p><span ng-bind-html="item.html"></span></p>
 				<p>${ng_lib.authorPosting()}</p>
 				<div class="row">
 
