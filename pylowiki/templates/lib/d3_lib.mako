@@ -148,9 +148,11 @@
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
     <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
-    <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
-        <div class="pull-left workshop-metrics metrics-large">
-            Results
+    <div class='row' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+        <div class="col-xs-6">
+            <div class="pull-left workshop-metrics metrics-large">
+                Results
+            </div>
         </div>
         <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
             <span> 
@@ -162,7 +164,7 @@
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'> 
+    <div class='row'> 
         <!--  
         <div class='span4' id='dc-gender-chart'> 
             <h4>Gender
@@ -174,23 +176,23 @@
             </h4>
         </div>
         -->
-        <div class='span6'>
+        <div class='col-sm-6'>
             <p class="lead">76% of attendees came with at least one family member, 54% came with two or more.</p>
             <p><small>Question: "Did you come with your family? If so, how many family members are with you?"</small></p>
         </div>
-        <div class='span6' id='dc-withFamily-chart'>
+        <div class='col-sm-6' id='dc-withFamily-chart'>
             (click to filter results)
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:withFamilyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-sm-6">
             <p class="lead">50% of attendees were 41-62 years of age.</p>
             <p><small>Question: "How old are you?"</small></p>
         </div>
-        <div class='span6' id='dc-age-chart'>
+        <div class='col-sm-6' id='dc-age-chart'>
             <span>
                 <br />(click to filter results)
                 <a href="#dc-data-top" class="reset"
@@ -199,12 +201,12 @@ onclick="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;"
         </div>
     </div>
     <hr>
-    <div class='row-fluid'> 
-        <div class="span6">
+    <div class='row'> 
+        <div class="col-sm-6">
             <p class="lead">25% of attendees heard about the event through word of mouth, 30% heard about it through the newspaper, 19% heard about it through email or social media.</p>
             <p><small>Question: "How did you hear about today's event?"</small></p>
         </div>
-        <div class='span6' id='dc-howDidYouHearAboutThis-chart'> 
+        <div class='col-sm-6' id='dc-howDidYouHearAboutThis-chart'> 
             <a href="#howDidYouHearAboutThis1">see descriptions</a>
             <span>
                 <br />(click to filter results)
@@ -214,12 +216,12 @@ onclick="javascript:howDidYouHearAboutThisChart.filterAll();dc.redrawAll();" sty
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-sm-6">
             <p class="lead">Most people came just to hang out and experience the event rather than any particular activities.</p>
             <p><small>Question: "What drew you to today's event?"</small></p>
         </div>
-        <div class='span6' id='dc-whatDrewYou-chart'>
+        <div class='col-sm-6' id='dc-whatDrewYou-chart'>
             <a href="#whatDrewYou1">see descriptions</a>
             <span>
                 <br />(click to filter results)
@@ -229,12 +231,12 @@ onclick="javascript:whatDrewYouChart.filterAll();dc.redrawAll();" style="display
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-sm-6">
             <p class="lead">81% of attendees biked or walked to the event. Only 13% drove.</p>
             <p><small>Question: "How did you arrive at today's event?"</small></p>
         </div>
-        <div class='span6' id='dc-howYouArrive-chart'>
+        <div class='col-sm-6' id='dc-howYouArrive-chart'>
             <a href="#howYouArrive1">see descriptions</a>
             <span>
                 <br />(click to filter results)
@@ -245,12 +247,12 @@ onclick="javascript:howYouArriveChart.filterAll();dc.redrawAll();" style="displa
     </div>
     </hr>
     <hr>
-    <div class='row-fluid'>  
-        <div class="span6">
+    <div class='row'>  
+        <div class="col-sm-6">
             <p class="lead">Of the people who drove, 90% found the parking satisfactory.</p>
             <p><small>Question: "Was the available parking satisfactory?"</small></p>
         </div>
-        <div class='span6' id='dc-parkingGood-chart'> 
+        <div class='col-sm-6' id='dc-parkingGood-chart'> 
             <span>(click to filter results)
                 <a href="#dc-data-top" class="reset"
 onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
@@ -258,12 +260,12 @@ onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-sm-6">
             <p class="lead">32% of attendees live in Capitola.</p>
             <p><small>Question: "Where do you live?"</small></p>
         </div>
-        <div class='span6' id='dc-whereLive-chart'>
+        <div class='col-sm-6' id='dc-whereLive-chart'>
             <a href="#whereLive1">see descriptions</a>
             <span>
                 <br />(click to filter results)
@@ -273,12 +275,12 @@ onclick="javascript:whereLiveChart.filterAll();dc.redrawAll();" style="display: 
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class='span6'>
+    <div class="row">
+        <div class='col-sm-6'>
             <p class="lead">Nearly everyone who respondend to the survey would like to see Open Streets happen again.</p>
             <p><small>Question: "Would you like to see this event happen again?"</small></p>
         </div>
-        <div class="span6" id='dc-wantHappenAgain-chart'>
+        <div class="col-sm-6" id='dc-wantHappenAgain-chart'>
             <span>
                 (click to filter results)
                 <a href="#dc-data-top" class="reset"
@@ -287,12 +289,12 @@ onclick="javascript:wantHappenAgainChart.filterAll();dc.redrawAll();" style="dis
         </div>
     </div>
     <hr>
-    <div class='row-fluid'>   
-        <div class='span6' id='dc-wantHappenAgain-chart'>
+    <div class='row'>   
+        <div class='col-sm-6' id='dc-wantHappenAgain-chart'>
             <p class="lead">89% of attendees said they would spend more time in Capitola Village if it regularly held Open Streets.</p>
             <p><small>Question: "Would you spend more time in Capitola Village if the Esplanade was periodically closed to car traffic?"</small></p>
         </div>
-        <div class='span6' id='dc-spendMoreTimeIfTrafficFree-chart'> 
+        <div class='col-sm-6' id='dc-spendMoreTimeIfTrafficFree-chart'> 
             <span>(click to filter results)
                 <a href="#dc-data-top" class="reset"
 onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
@@ -300,12 +302,12 @@ onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();"
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class='span6'>
+    <div class="row">
+        <div class='col-sm-6'>
             <p class="lead">44% of attendees anticipated spending more than $25. An additional 31% said they would probably spend $10-$25.</p>
             <p><small>Question: "How much money have you spent, or do you expect to spend at the Capitola Village today?"</small></p>
         </div>
-        <div class='span6' id='dc-howMuchSpendingToday-chart'>
+        <div class='col-sm-6' id='dc-howMuchSpendingToday-chart'>
             <span>
                 <br />(click to filter results)
                 <a href="#dc-data-top" class="reset"
@@ -314,12 +316,12 @@ onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style
         </div>
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class='span6'>
+    <div class="row">
+        <div class='col-sm-6'>
             <p class="lead">Half of all attendees reported discovering a new store thanks to the event.</p>
             <p><small>Question: "Did you learn about any new Capitola Village businesses that you weren't aware of before?"</small></p>
         </div>
-        <div class='span6' id='dc-learnAboutNewBusinesses-chart'>
+        <div class='col-sm-6' id='dc-learnAboutNewBusinesses-chart'>
             <span>
                 <br />(click to filter results)
                 <a href="#dc-data-top" class="reset"
@@ -333,15 +335,15 @@ onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" st
     <br>
     <p class="lead">Many attendees suggested increasing the number of booths including more music, food vendors, crafts and existing Capitola Village businesses. Other suggestions mentioned better incorporation of the beach through a surf competition, kids games, and continuing the kite flying event. Lots of respondents commented that they would like to see this event happen more frequently.</p>
     <p><small>Question: "Do you have any suggestions for future events? General comments?"</small></p>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <div id="suggestionsComments"></div>
         </div>
     </div>
 
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row-'> 
+        <div class='col-xs-12'>
             <h4 name='howDidYouHearAboutThis1'>Further input on question:
                 <a href="#dc-howDidYouHearAboutThis-chart"><br />"How did you hear about today's event?"</a>
             </h4>
@@ -350,8 +352,8 @@ onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" st
     </div>
 
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='whatDrewYou1'>Further input on question:
                 <a href="#dc-whatDrewYou-chart"><br />"What drew you to today's event?"</a>
             </h4>
@@ -360,8 +362,8 @@ onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" st
     </div>
 
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='howYouArrive1'>Further input on question:
                 <a href="#dc-howYouArrive-chart"><br />"How did you arrive at today's event?"</a>
             </h4>
@@ -370,8 +372,8 @@ onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" st
     </div>
 
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='whereLive1'>Further input on question:
                 <a href="#dc-whereLive-chart"><br />"Where do you live?"</a>
             </h4>
@@ -1576,7 +1578,7 @@ onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="dis
     <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
     <div class='row' name="dc-data-top">
-        <div class="pull-left workshop-metrics metrics-large">
+        <div class="pull-left workshop-metrics metrics-large col-xs-6">
             Results
         </div>
         <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
@@ -1591,127 +1593,164 @@ onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="dis
 
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <div class='row'>   
-        <div class='span4' id='dc-familiarDtProgram-chart'>
-            <h4>How familiar are you with the Downtown Hospitality Program?
+        <div class='col-sm-6'>
+            <p class="lead">80% of respondents where very or somewhat familiar with the Host Program.</p>
+            <h4>Question: How familiar are you with the Downtown Hospitality Program?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-familiarDtProgram-chart'>
                 <span>
-                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class="span8">
-            <p class="lead"><em>"The Downtown Hospitality Program was created and paid for by downtown business and property owners to maintain a safe and friendly environment. "Hosts" can be contacted as an alternative to police to help with aggressive panhandling and other forms of anti-social behavior. They also serve as an additional resource for visitors and downtown shoppers, and provide a visible presence in downtown to observe, report and prevent street disorder. The program is overseen by the Downtown Management Corporation (DMC), which also contributes funding for the downtown trolley."</em></p> 
-        </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
     <div class="row">
-        <div class='span4' id='dc-feelSafeWorkingDt-chart'>
-            <h4>In general, do you feel safe working downtown?
-                <span>
-                    
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-believeDtProgramMakesSafer-chart'>
-            <h4>In general, do you believe the Downtown Hospitality Program makes downtown safer?
-                <span>
-                    
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-howEffectiveResolveBehavior-chart'>
-            <h4>In your opinion, how effective is the program at addressing and resolving anti-social behavior?
-                <span>
-                    
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+        <div class="col-sm-12">
+            <h4>"The Downtown Hospitality Program was created and paid for by downtown business and property owners to maintain a safe and friendly environment. "Hosts" can be contacted as an alternative to police to help with aggressive panhandling and other forms of anti-social behavior. They also serve as an additional resource for visitors and downtown shoppers, and provide a visible presence in downtown to observe, report and prevent street disorder. The program is overseen by the Downtown Management Corporation (DMC), which also contributes funding for the downtown trolley."</h4> 
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">A large majority of respondents feel safe working downtown.</p>
+            <h4>Question: In general, do you feel safe working downtown?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-feelSafeWorkingDt-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">A large majority of respondents feel the program makes downtown safer.</p>
+            <h4>Question: In general, do you believe the Downtown Hospitality Program makes downtown safer?</h4>
+        </div>
+        <div class="col-sm-6" id='dc-believeDtProgramMakesSafer-chart'>
+            <span>
+                
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Half of respondents beleive the program is somewhat effective. 22% think it is very effective and roughly the same amount think it is not very effective.</p>
+            <h4>Question: In your opinion, how effective is the program at addressing and resolving anti-social behavior?
+        </div>
+        <div class='col-sm-6' id='dc-howEffectiveResolveBehavior-chart'>
+            <span>  
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+
     <hr>
     <div class='row'>
-        <div class='span4' id='dc-everWitnessedProgramHost-chart'>
-            <h4>Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
-                <br /><a href="#everWitnessedProgramHostDescription">see descriptions</a>
+        <div class='col-sm-6'>
+            <p class="lead">2/3 of repondents had contacted or had seen a coworker contact a host.</p>
+            <h4>Question: Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
+        </div>
+        <div class="col-sm-6" id='dc-everWitnessedProgramHost-chart'>    
                 <span>
-                    
+                    <a href="#everWitnessedProgramHostDescription">see descriptions</a><br>
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-hostApproachable-chart'>
-            <h4>In your opinion, how approachable are the downtown hospitality hosts?
-                <span>
-                    
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">All respondents agree that the hosts are approachable, with most stating that they are "very" approachable.</p>
+            <h4>Question: In your opinion, how approachable are the downtown hospitality hosts?</h4>
         </div>
-        <div class='span4' id='dc-howOftenSeeHost-chart'>
-            <h4>How often do you see a downtown hospitality host?
-                <span>
-                    
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
+        <div class="col-sm-6" id='dc-hostApproachable-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">75% of respondents see a host every day with 50% seeing one multiple times a day.</p> 
+            <h4>Question: How often do you see a downtown hospitality host?</h4>
+        </div>
+        <div class="col-sm-6" id='dc-howOftenSeeHost-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+
     <hr>
     <div class='row'>
-        <div class='span4' id='dc-howOftenInteractWithPeople-chart'>
-            <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
-                <br /><a href="#additionalServicesSuggestions">see service suggestions</a>
+        <div class='col-sm-6'>
+            <p class="lead">Most respondents see the hosts interacting with visitors as well as attending to anti-social behavior.</p>
+            <h4>Question: When you see a hospitality host, how often are they interacting with visitors and shoppers?
+        </div>
+        <div class="col-sm-6" id='dc-howOftenInteractWithPeople-chart'>
                 <span>
-                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
     </div><!-- row -->
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    
     <hr>
     <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Respondents are roughly split in thirds regarding the priorities of the host program.</p>
+            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?</h4>
+        </div>
         <div class='col-sm-6' id='dc-opinionFirstPriorityForServices-chart'>
-            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
-                <br /><a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
+                <a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
                 <span>
-                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Cleaning, particularly the removal of waste, is seen by respondents as the DMC's top priority.</p>
+            <h4>Out of the following additional services the DMC could provide, which would be the most important to you?</h4>
+        </div>    
         <div class='col-sm-6' id='dc-mostImportantAboutHosts-chart'>
-            <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
                 <br /><a href="#mostImportantAboutHosts1">see further input</a>
                 <span>
                     
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
     </div>
+    
     <hr>
     <div class="workshop-metrics metrics-large">
         Demographics / Business Type
     </div>
     <hr>
     <div class="row">
-        <div class='span4' id='dc-whatDescribesYourBusiness-chart'>
+        <div class='col-sm-4' id='dc-whatDescribesYourBusiness-chart'>
             <h4>Which of the following best describes your business or working environment?
                 <span>
                     
@@ -1720,7 +1759,7 @@ onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" 
                 </span>
             </h4>
         </div>
-        <div class='span4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
+        <div class='col-sm-4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
             <h4>What is your role in the business?
                 <br /><a href="#yourRoleInBusiness1">see further comments</a>
                 <span>
@@ -1730,7 +1769,7 @@ onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc-gender-chart'>
+        <div class='col-sm-4' id='dc-gender-chart'>
             <h4>Gender
                 <span>
                     
@@ -1742,7 +1781,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     </div>
     <hr>
     <div class='row'>
-        <div class='span4' id='dc-ageLower-chart'> 
+        <div class='col-sm-4' id='dc-ageLower-chart'> 
             <h4>Age of respondents
                 <span>
                     (drag sliders to filter results)
@@ -1752,7 +1791,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     </div>
     <hr>
     <div class='row'> 
-        <div class='span12'>
+        <div class='col-xs-12'>
             <h4 name='everWitnessedProgramHostDescription'>Can you please briefly describe your experience? Was it positive?
                 <a href="#dc-everWitnessedProgramHost-chart"><br />Responses to question: "Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?"</a>
             </h4>
@@ -1760,7 +1799,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <div class='row'> 
-        <div class='span12'>
+        <div class='col-xs-12'>
             <h4 name='howOftenInteractWithPeople'>Additional services suggested for:
                 <a href="#dc-everWitnessedProgramHost-chart"><br />"When you see a hospitality host, how often are they interacting with visitors and shoppers?"</a>
             </h4>
@@ -1768,7 +1807,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <div class='row'> 
-        <div class='span12'>
+        <div class='col-xs-12'>
             <h4 name='mostImportantAboutHosts1'>Further input on question: 
                 <a href="#dc-mostImportantAboutHosts-chart"><br />"Out of the following additional services the DMC could provide, which would be the most important to you?"</a>
             </h4>
@@ -1777,7 +1816,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <div class='row'> 
-        <div class='span12'>
+        <div class='col-xs-12'>
             <h4 name='opinionFirstPriorityForServices1'>Additional suggestions for:
                 <a href="#dc-opinionFirstPriorityForServices-chart"><br />"In your opinion, what should be the DMC's first priority in terms of downtown programing and services?"</a>
             </h4>
@@ -1785,7 +1824,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <div class='row'> 
-        <div class='span12'>
+        <div class='col-xs-12'>
             <h4 name='improvementsForYourSafety1'>Additional suggestions for:
                 <a href="#dc-improvementsForYourSafety-chart"><br />"What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)"</a>
             </h4>
@@ -1793,7 +1832,7 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <div class='row'> 
-        <div class='span12'>
+        <div class='col-xs-12'>
             <h4 name='whatDescribesYourBusiness1'>Additional input from:
                 <a href="#dc-whatDescribesYourBusiness-chart"><br />"Which of the following best describes your business or working environment?"</a>
             </h4>
