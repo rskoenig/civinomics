@@ -42,15 +42,21 @@ def getWorkshopFollows( user, disabled = '0'):
     except:
         return False
 
-def setWorkshopFollowsInSession(fwdisabled = '0'):        
-    bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
-    if bookmarked:
-        bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+def setWorkshopFollowsInSession(fwdisabled = '0'):
+    if 'bookmarkedWorkshops' not in c.authuser:
+        bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
+        if bookmarked:
+            bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+        else:
+            bookmarkedWorkshops = []
+        c.authuser['bookmarkedWorkshops'] = str(pickle.dumps(bookmarkedWorkshops))
+        commit(c.authuser)
     else:
-        bookmarkedWorkshops = []
+        bookmarkedWorkshops = pickle.loads(str(c.authuser['bookmarkedWorkshops']))
+        
     session["bookmarkedWorkshops"] = bookmarkedWorkshops
     session.save()
-        
+
 # Which initiatives is the user following
 def getInitiativeFollows( user, disabled = '0'):
     try:
@@ -63,19 +69,26 @@ def getInitiativeFollows( user, disabled = '0'):
         return False
         
 def setInitiativeFollowsInSession(idisabled = '0'):
+    if 'bookmarkedInitiatives' not in c.authuser:
         bookmarkedInitiatives = []
-        iwatching = getInitiativeFollows(c.authuser)
-        if iwatching:
-            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in iwatching ]
+        bookmarked = getInitiativeFollows(c.authuser)
+        if bookmarked:
+            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in bookmarked ]
             for i in initiativeList:
                 if i.objType == 'initiative':
                     if i['public'] == '1':
                         if i['deleted'] != '1':
                             bookmarkedInitiatives.append(i['urlCode'])
-                            
-        session["bookmarkedInitiatives"] = bookmarkedInitiatives
-        session.save()
-
+        else:
+            bookmarkedInitiatives = []
+        c.authuser['bookmarkedInitiatives'] = str(pickle.dumps(bookmarkedInitiatives))
+        commit(c.authuser)
+    else:
+        bookmarkedInitiatives = pickle.loads(str(c.authuser['bookmarkedInitiatives']))
+        
+    session["bookmarkedInitiatives"] = bookmarkedInitiatives
+    session.save()
+    
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):
     try:

@@ -22,7 +22,6 @@ import pylowiki.lib.db.workshop     	as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
-import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 
 # twython imports
