@@ -68,15 +68,16 @@
           <div id="myCarousel" class="carousel slide centered" style="background-color:#000000;">
               <!-- Carousel items -->
               <div class="carousel-inner"> 
-              <% pictures= study['pictures']%>
-              
-              <% picture = pictures[0] %>
-                <div class="active item"><img class="centered civ-carousel" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
-                            <div class="carousel-caption">
-                                <h4>${picture['title']}</h4>
-                                <div style="color:#ffffff;">${picture['caption']}</div>
-                            </div>
-                        </div>  
+                    <% pictures= study['pictures']%>
+                  
+                    <% picture = pictures[0] %>
+                    <div class="active item">
+                        <img class="centered civ-carousel" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
+                        <div class="carousel-caption">
+                            <h4>${picture['title']}</h4>
+                            <div style="color:#ffffff;">${picture['caption']}</div>
+                        </div>
+                    </div>  
               
                     <% assclownpics = pictures[1:] %>
                         % for picture in assclownpics:
@@ -89,8 +90,12 @@
                         % endfor
                 </div>
               <!-- Carousel nav -->
-              <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-              <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+              <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+              </a>
+              <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+              </a>
            </div>
       % endif
 </%def>
