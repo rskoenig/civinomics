@@ -722,7 +722,7 @@ div.unread-message:hover {
   padding-bottom: 8px;
 }
 
-.icon-listing-row{
+.iconListing-row{
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -732,6 +732,7 @@ div.unread-message:hover {
   font-size: .85em;
   font-weight: 500;
 }
+
 
 img.workshop-listing{
    width:100%;
@@ -2294,6 +2295,7 @@ li.thumbnail-gallery{
 
 .well.search-listing{
   margin-bottom: 8px;
+  padding-bottom: 0;
 }
 
 .table.plain{
@@ -3569,6 +3571,9 @@ hr.object-list-header{
 table.activity-comments{
   width: 100%;
   background-color: whitesmoke;
+}
+div.activity-comments{
+    padding-bottom:19px;
 }
 
 .date{

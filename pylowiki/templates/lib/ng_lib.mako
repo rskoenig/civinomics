@@ -368,17 +368,18 @@
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
             <div ng-controller="commentsController">
                 <div class="row">
-                    <div class="col-xs-12 icon-listing-row">
+                    <div class="col-xs-12 iconListing-row">
                         <ul class="horizontal-list iconListing">
                             <li>
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
-                            <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
+                            <li><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
                         </ul>
                     </div>
                 </div>
                 ### Comments
+                <div class="activity-comments">
                 <table class="activity-comments">
 
 
@@ -524,6 +525,7 @@
                     </tr>
                     
                 </table>
+                </div><!-- activity comments -->
             </div>
         </div>
     % endif
@@ -532,6 +534,7 @@
 <%def name="actions2()">
     
             ### Comments
+            <div class="activity-comments">
             <table class="activity-comments">
 
                 <tr class="actions-links">
@@ -689,4 +692,6 @@
                 </tr>
                 
             </table>
+            </div>
+            
 </%def>
