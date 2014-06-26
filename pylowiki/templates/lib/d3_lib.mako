@@ -2277,136 +2277,216 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
       </span>
     </div>
   </div>
-  <div class='row'>   
-    <div class='span4' id='dc-commuteDuration-chart'>
-        <h4>How much time do you spend each day commuting over the hill and back?</h4> 
+  
+    <div class='row'>   
+        <div class='col-sm-6'>
+            <p class="lead">Most respondents spend 2 or more hours a day commuting.</p>
+            <h4>Question: How much time do you spend each day commuting over the hill and back?</h4> 
+        </div>
+        <div class='col-sm-6' id='dc-commuteDuration-chart'></div>
     </div>
-    <div class='span4' id='dc-commuteType-chart'>
-      <h4>How do you get to work over the hill?
-        <span>
-          <a class="reset" href="#dc-data-top" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4> 
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">The study was evenly split between people who ride a company bus and those that commute via car.</p>
+            <h4>Question: How do you get to work over the hill?</h4>
+        </div>
+        
+        <div class="col-sm-6" id='dc-commuteType-chart'>
+            <span>
+              <a class="reset" href="#dc-data-top" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-commuteActivity-chart'>
-      <h4>What do you primarily do on the bus during your commute?
-        <span>
-          
-          <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-  </div><!-- row -->
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Bus commuters primarily spend their commutes working with wifi.</p>
+            <h4>Question: What do you primarily do on the bus during your commute?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-commuteActivity-chart'>
+            <span>
+              <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div><!-- row -->
+    
   <hr>
   <div class="row">
-    <div class='span4' id='dc-employmentType-chart'>
-      <h4>What is your functional employment area at your current job?
-        <span>
-          <a class="reset" href="#dc-data-count" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
-        </span>
-      </h4>
+        <div class="col-sm-6">
+            <p class="lead">57% of all commuters interviewed work in software or some other kind of engineering.</p>
+            <h4>Question: What is your functional employment area at your current job?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-employmentType-chart'>
+            <span>
+              <a class="reset" href="#dc-data-count" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-employmentDuration-chart'>
-        <h4>How long have you been with your current employer?</h4> 
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">20% of commuters are Director level or above. The majority or team members or managers</p>
+            <h4>Question: What is your position or level of seniority?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-senority-chart'>
+            <span>
+              <a class="reset" href="#dc-data-count" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-senority-chart'>
-      <h4>What is your position or level of seniority?
-        <span>
-          <a class="reset" href="#dc-data-count" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">The majority of bus commuters have been with their employer for 2 years or less where as car commuters have mostly been with their employer 5 years or more.</p>
+            <h4>Question: How long have you been with your current employer?</h4> 
+        </div>
+        <div class='col-sm-6' id='dc-employmentDuration-chart'>
+        </div>
     </div>
-  </div><!-- row -->
-  <hr>
-  <div class="row">
-    <div class='span4' id='dc-salary-chart'> 
-      <h4>Salary Range
-        <span>
-            (drag sliders to filter results)
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">The average salary of respondents was $153,000</p>
+            <h4>Question: What is your salary?</h4>
+        </div>
+        
+        <div class='col-sm-6' id='dc-salary-chart'> 
+            <span>
+                (drag sliders to filter results)
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-whyCommute-chart'>
-      <h4>Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).
-        <span>
-            <br>
-            <a class="reset" href="#dc-data-count" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">While salary is an important factor in choosing to work over the hill, equal number of respondents also cited job availability and company of interest.</p>
+            <h4>Question: Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).</h4>  
+        </div>
+        <div class='col-sm-6' id='dc-whyCommute-chart'>
+            <span>
+                <br>
+                <a class="reset" href="#dc-data-count" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-whyLiveInSc-chart'>
-      <h4>Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).
-        <span>
-          <br>
-          <a class="reset" href="#dc-data-count" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Lifestyle was cited 5 times more than the next most popular reason for living in Santa Cruz.</p>
+            <h4>Question: Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).</h4>
+        </div>
+    
+        <div class='col-sm-6' id='dc-whyLiveInSc-chart'>
+            <a class="reset" href="#dc-data-count" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </div>
+    </div><!-- row -->
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Less than 20% of respondents attended school in Santa Cruz.</p>
+            <h4>Question: Did you go to college in Santa Cruz?</h4>  
+        </div>
+        
+        <div class='col-sm-6' id='dc-college-chart'>
+            <span>
+              <br>
+              <a class="reset" href="#dc-data-count" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-  </div><!-- row -->
-  <hr>
-  <div class="row">
-    <div class='span4' id='dc-college-chart'>
-      <h4>Did you go to college in Santa Cruz?
-        <span>
-          <br>
-          <a class="reset" href="#dc-data-count" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4> 
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">50% of commuters have lived in Santa Cruz for over 10 years. Respondents who had lived in Santa Cruz for less years tended to be bus commuters.</p>
+            <h4>Question: How long have you lived in Santa Cruz?</h4>
+        </div>
+        <div class="col-sm-6" id='dc-residenceDuration-chart'>
+            <span>
+              <br />(drag to filter results)
+              <a class="reset" href="#dc-data-count" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-residenceDuration-chart'>
-      <h4>How long have you lived in Santa Cruz?
-        <span>
-          <br />(drag to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Roughly half of respondents had worked in Santa Cruz at one time.</p>
+            <h4>Question: Have you ever worked in Santa Cruz?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-workedInSc-chart'>
+            <span>
+                
+                <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-workedInSc-chart'>
-      <h4>Have you ever worked in Santa Cruz?
-        <span>
-            
-            <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">57% of respondents who stopped working in Santa Cruz did so because of better opportunities over the hill. Company closures or relocation accounted for just 21% of relocations.</p>
+            <h4>Question: Why did you stop working in Santa Cruz?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-whyNotWorkInSc-chart'>
+            <span>
+              <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-  </div><!-- row -->
-  <hr>
-  <div class="row">
-    <div class='span4' id='dc-whyNotWorkInSc-chart'>
-      <h4>Why did you stop working in Santa Cruz?
-        <span>
-          
-          <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Most bus commuters would need equal salary compensation to choose to work in Santa Cruz. Car commuters more frequently would accept 70-80% of their current salary.</p>
+            <h4>Question: Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-salaryNeeded-chart'>
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-salaryNeeded-chart'>
-      <h4>Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?
-        <span>
-          
-          <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Half of respondents had heard a lot or some about Santa Cruz start-up activity while half had heard little to none.</p>
+            <h4>Question: How much have you heard about recent start-up activity in Santa Cruz?</h4> 
+        </div>
+        <div class="col-sm-6" id='dc-heardOfStartupNewsHere-chart'>
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div><!-- row -->
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">75% of respondents were interested in job openings in Santa Cruz.</p>
+            <h4>Question: Have you considered exploring job openings with any Santa Cruz tech companies or startups?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-consideredJobsInSantaCruz-chart'>
+            <span>
+              <br>
+              <a class="reset" href="#dc-data-count" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-heardOfStartupNewsHere-chart'>
-      <h4>How much have you heard about recent start-up activity in Santa Cruz?
-        <span>
-          
-          <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-  </div><!-- row -->
-  <hr>
-  <div class="row">
-    <div class='span4' id='dc-consideredJobsInSantaCruz-chart'>
-      <h4>Have you considered exploring job openings with any Santa Cruz tech companies or startups?
-        <span>
-          <br>
-          <a class="reset" href="#dc-data-count" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
+    
     <!--
     <div class='span4' id='dc-techEventsInSantaCruz-chart'>
       <h4>Which of the following Santa Cruz tech-community events have you attended?
@@ -2417,41 +2497,47 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
       </h4>
     </div>
     -->
-    <div class='span8' id='dc-age-chart'>
-      <h4>Age of Respondents
-        <span>
-            (drag sliders to filter results)
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="workshop-metrics metrics-large">
+        Demographics
     </div>
-  </div><!-- row -->
-  <hr>
-  <div class="row">
-    <div class='span4' id='dc-maritalStatus-chart'>
-      <h4>Marital status
-        <span>
-          
-          <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-    <div class='span4' id='dc-children-chart'>
-      <h4>Do you have children 17 years of age or younger living in the household?
-        <span>
-          
-          <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-    <div class='span4' id='dc-rentOrOwn-chart'>
-      <h4>Do you rent or own your home?
-        <span>
-          
-          <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-  </div><!-- row -->
+    <div class="row">
+        <div class='col-sm-4' id='dc-age-chart'>
+          <h4>Age of Respondents
+            <span>
+                (drag sliders to filter results)
+            </span>
+          </h4>
+        </div>
+        <div class='col-sm-4' id='dc-maritalStatus-chart'>
+          <h4>Marital status
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+          </h4>
+        </div>
+        <div class='col-sm-4' id='dc-children-chart'>
+          <h4>Do you have children in household?
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+          </h4>
+        </div>
+    </div><!-- row -->
+    
+    <div class="row">
+        <div class='col-sm-4' id='dc-rentOrOwn-chart'>
+          <h4>Do you rent or own your home?
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+          </h4>
+        </div>
+    </div><!-- row -->
   <!-- removing table for now
   <hr>
    <div class='row'> 
@@ -2470,9 +2556,10 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <table class='table table-hover' style="width: 100%;" id='dc-table-graph'> 
     </table>
   </div> -->
+  
   <hr>
   <div class='row'> 
-    <div class='span12' id='dc-commentsOrSuggestions-chart'>
+    <div class='col-xs-12' id='dc-commentsOrSuggestions-chart'>
       <h4>Comments and Suggestions</h4>
       <div id="commentsOrSuggestionsContainer">
       </div>
