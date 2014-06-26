@@ -29,6 +29,7 @@ import pylowiki.lib.db.activity   	    as activityLib
 import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
 import pylowiki.lib.db.meeting 			as meetingLib
+import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.fuzzyTime			as fuzzyTime	
 import misaka as m
@@ -255,9 +256,13 @@ class HomeController(BaseController):
 			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
 			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
 			if 'views' in item:
-				entry['views'] = str(item['views'])
+				views = int(item['views'])
 			else:
-				entry['views'] = '0'
+				views = 1
+			views += 1
+			item['views'] = str(views)
+			dbHelpers.commit(item)
+			entry['views'] = item['views']
 
 			# attributes that vary accross items
 			entry['text'] = ''

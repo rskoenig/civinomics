@@ -933,7 +933,7 @@ class WorkshopController(BaseController):
         # note: should we update the facebook share url to be this rss url?
         # could always try, but I don't think linking to an xml feed on fb is gonna do much
         
-        activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity",
             link=u"http://www.civinomics.com",
@@ -984,6 +984,11 @@ class WorkshopController(BaseController):
             views = int(c.w['views']) + 1
             c.w['views'] = str(views)
             dbHelpers.commit(c.w)
+            
+        c.numIdeas = workshopLib.getIdeaCountForWorkshop(workshopCode)
+        c.numAdopted = workshopLib.getIdeaCountForWorkshop(workshopCode, 1)
+        c.numResources = workshopLib.getResourceCountForWorkshop(workshopCode)
+        c.numDiscussions = workshopLib.getDiscussionCountForWorkshop(workshopCode)
 
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -1030,7 +1035,7 @@ class WorkshopController(BaseController):
         c.information = pageLib.getInformation(c.w)
         
         if not iPhoneApp:
-            c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+            c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
         
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
@@ -1166,7 +1171,7 @@ class WorkshopController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
 
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
         c.adminPanel = False
@@ -1180,7 +1185,7 @@ class WorkshopController(BaseController):
         c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/publicStats')
         c.listingType = 'publicStats'
 
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
         
         c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
 
@@ -1446,6 +1451,7 @@ class WorkshopController(BaseController):
                 entry['discussion'] = discussion['urlCode']
             else:
                 entry['discussion'] = 0
+                
             if 'views' in idea:
                 entry['views'] = str(idea['views'])
             else:
@@ -1461,9 +1467,6 @@ class WorkshopController(BaseController):
             entry['authorName'] = entry['user_name'] = idea['user_name']
             entry['workshopCode'] = workshopCode
             entry['workshopURL'] = workshopURL
-            entry['views'] = '0'
-            if 'views' in idea:
-                entry['views'] = str(idea['views'])
 
             result.append(entry)
         numIdeas = len(ideas) - disabled
@@ -1486,7 +1489,7 @@ class WorkshopController(BaseController):
         else:
             sort = 0
 
-        workshopActivity = activityLib.getActivityForWorkshop(c.w['urlCode'], sort)
+        workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort)
         
         myRatings = {}
         if 'ratings' in session:
@@ -1519,9 +1522,13 @@ class WorkshopController(BaseController):
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
             entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
             if 'views' in item:
-                entry['views'] = str(item['views'])
+                views = int(item['views'])
             else:
-                entry['views'] = '0'
+                views = 1
+            views += 1
+            item['views'] = str(views)
+            dbHelpers.commit(item)
+            entry['views'] = item['views']
 
             # attributes that vary accross items
             entry['text'] = '0'
@@ -1622,5 +1629,5 @@ class WorkshopController(BaseController):
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})
-        return json.dumps({'statusCode':0, 'result': result[offset:max + offset], 'numItems': numItems, 'numAdopted': numAdopted, 'numIdeas': numIdeas, 'numDiscussions': numDiscussions, 'numResources':numResources})
+        return json.dumps({'statusCode':0, 'result':  result})
 

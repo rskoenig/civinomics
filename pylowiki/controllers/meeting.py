@@ -448,6 +448,12 @@ class MeetingController(BaseController):
             entry['text'] = item['text']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['views'] = item['views']
+            views = int(entry['views'])
+            views += 1
+            item['views'] = str(views)
+            dbHelpers.commit(item)
+			
             if item['canVote'] == 'on':
                 entry['canVote'] = 'checked'
             else:
