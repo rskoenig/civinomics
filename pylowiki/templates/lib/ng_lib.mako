@@ -21,6 +21,7 @@
                 <p>{{item.location}}</p>
                 <p ng-show="(item.agendaItemCount != '0')"><a href="{{item.href}}">View, vote and comment on agenda items.</a></p>
                 <p ng-show="(item.agendaItemCount == '0' && item.agendaPostDate != '')">Agenda posted: {{item.agendaPostDate}}</p>
+                <i class="icon-eye-open"></i> Views ({{item.views}})
             </div>
         </div><!-- row-fluid -->
     </div><!-- media-well -->
@@ -35,6 +36,7 @@
             </div>
             <h4 class="listed-item-title">{{item.title}}</h4>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+            <i class="icon-eye-open"></i> Views ({{item.views}})
         </div><!-- row-fluid -->
         <div class="row-fluid">
             <div class="btn-group">

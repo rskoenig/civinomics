@@ -550,19 +550,19 @@
         <tr>
           <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
             <span class="workshop-metrics">Ideas</span><br>
-              <strong ng-cloak>{{numIdeas}}</strong>
+              <strong ng-cloak>${c.numIdeas}</strong>
           </td>
           <td class="clickable" ng-click="toggleAdopted()">
             <span class="workshop-metrics">Adopted</span><br>
-              <strong ng-cloak>{{numAdopted}}</strong>
+              <strong ng-cloak>${c.numAdopted}</strong>
           </td>
           <td class="clickable" ng-click="toggleDiscussions()">
             <span class="workshop-metrics">discussions</span><br>
-              <strong ng-cloak>{{numDiscussions}}</strong>
+              <strong ng-cloak>${c.numDiscussions}</strong>
           </td>
           <td class="clickable" ng-click="toggleResources()">
             <span class="workshop-metrics">Resources</span><br>
-              <strong ng-cloak>{{numResources}}</strong>
+              <strong ng-cloak>${c.numResources}</strong>
           </td>
 
           <!--

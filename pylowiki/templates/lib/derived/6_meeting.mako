@@ -41,7 +41,7 @@
     
     <div class="row-fluid">
         <span class="grey">Posted by: </span>
-        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)} <i class="icon-eye-open"></i> Views (${meeting['views']})
     </div><!-- row-fluid -->
     % if c.meeting.objType == 'revision':
         <div class="alert alert-error">
