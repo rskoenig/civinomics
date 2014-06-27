@@ -1546,8 +1546,8 @@
                 else:
                     neutralChecked = 'checked'
     %>
-    <div class="row-fluid collapse" id="${editID}">
-        <div class="span11 offset1">
+    <div class="row collapse" id="${editID}">
+        <div class="col-xs-11 col-xs-offset-1">
             <div class="spacer"></div>
             <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
                 <fieldset>
@@ -1572,9 +1572,9 @@
                     <textarea class="comment-reply col-sm-10 form-control" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
                     <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
+                    <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
                 % elif thing.objType == 'discussion':
                     <label>Topic title</label>
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
@@ -1601,7 +1601,7 @@
             return
         adminID = 'admin-%s' % thing['urlCode']
     %>
-    <div class="row-fluid collapse" id="${adminID}">
+    <div class="row collapse" id="${adminID}">
         <div class="col-sm-11 col-sm-offset-1 alert">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs">
@@ -1615,45 +1615,46 @@
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
                     % endif
                 </ul>
+                <div class="spacer"></div>
                 <div class="tab-content">
                     <div class="tab-pane active" id="disable-${adminID}">
                         <form class="form-inline" action = ${disableThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
-                                <label>Reason:</label>
-                                <input type="text" name="reason" class="col-sm-8 form-control">
-                                <button type="submit" name="submit" class="btn disableButton" ${disableThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                            <div class="form-group">
+                                <label for="reason">Reason:</label>
+                                <input type="text" name="reason" class="form-control">
+                                <button type="submit" name="submit" class="btn btn-default disableButton" ${disableThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="disableResponse-${thing['urlCode']}"></span>
                     </div>
                     <div class="tab-pane" id="enable-${adminID}">
                         <form class="form-inline" action = ${enableThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="col-sm-8 form-control">
-                                <button type="submit" name = "submit" class="btn enableButton" ${enableThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button type="submit" name = "submit" class="btn btn-default enableButton" ${enableThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="enableResponse-${thing['urlCode']}"></span>
                     </div>
                     <div class="tab-pane" id="immunify-${adminID}">
                         <form class="form-inline" action = ${immunifyThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="col-sm-8 form-control">
-                                <button type="submit" name = "submit" class="btn immunifyButton" ${immunifyThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button type="submit" name = "submit" class="btn btn-default immunifyButton" ${immunifyThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="immunifyResponse-${thing['urlCode']}"></span>
                     </div>
                     % if thing.objType == 'idea':
                     <div class="tab-pane" id="adopt-${adminID}">
                         <form class="form-inline" action = ${adoptThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="col-sm-8 form-control">
-                                <button class="btn adoptButton" type="submit" name="submit" ${adoptThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button class="btn btn-default adoptButton" type="submit" name="submit" ${adoptThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="adoptResponse-${thing['urlCode']}"></span>
                     </div>
@@ -1661,11 +1662,11 @@
                     % if c.privs['admin']:
                     <div class="tab-pane" id="delete-${adminID}">
                         <form class="form-inline" action = ${deleteThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="col-sm-8 form-control">
-                                <button class="btn deleteButton" type="submit" name="submit" ${deleteThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button class="btn btn-default deleteButton" type="submit" name="submit" ${deleteThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="deleteResponse-${thing['urlCode']}"></span>
                     </div>

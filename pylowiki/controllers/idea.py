@@ -252,6 +252,7 @@ class IdeaController(BaseController):
 
     def getIdeaJson(self, ideaCode, ideaURL):
         idea = ideaLib.getIdea(ideaCode)
+        c.thing = idea
         if not idea:
             idea = revisionLib.getRevisionByCode(ideaCode)
             if not idea:
