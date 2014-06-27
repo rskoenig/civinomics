@@ -351,7 +351,8 @@
     <small>
         <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
         <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
-        <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</span></a>
+        <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
+        <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
     </small>
 </%def>
 
