@@ -1,4 +1,9 @@
 function adminlistController($scope, $http){
+/*
+	Not sure what this does yet, so I'll unlock it line by line.
+	I want basic functionality first
+	-----
+	
 	$scope.listingType = 'activity';
 	$scope.activityType = '/all';
 	$scope.activityLoading = true;
@@ -7,21 +12,23 @@ function adminlistController($scope, $http){
 	$scope.busy = false;
 	$scope.sliceSize = 7;
 	$scope.offset = $scope.sliceSize;
+*/
+	$scope.activityType = '/users';
 
 	$scope.getActivity = function() {
-		$scope.alertMsg = ''
+		$scope.alertMsg = '';
 		$scope.activityLoading = true;
-		$http.get('/getSiteActivity' + $scope.activityType).success(function(data){
+		$http.get('/getAdminList' + $scope.activityType).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
-				$scope.activity = []
+				$scope.list = []
 				$scope.alertMsg = data.alertMsg;
 				$scope.alertType = data.alertType;
 			} 
 			else if (data.statusCode === 0){
 				$scope.activityNoResult = false;
 				$scope.noMoreSlices = false;
-				$scope.activity = data.result;
+				$scope.list = data.result;
 				
 			}
 			$scope.activityLoading = false;
@@ -30,6 +37,7 @@ function adminlistController($scope, $http){
 	
 	$scope.getActivity();
 	
+/*
 	$scope.getAllActivity = function(){
 		$scope.activityType = '/all';
 		$scope.getActivity();
@@ -53,6 +61,7 @@ function adminlistController($scope, $http){
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
+*/
 
 	$scope.getActivitySlice = function() {
 		if ($scope.busy || $scope.noMoreSlices) return;
@@ -75,5 +84,9 @@ function adminlistController($scope, $http){
 			$scope.offset += $scope.sliceSize;
 		})
 	};
+	
+	$scope.render = function(e) {
+    return $(e).html();
+    }
 	
 }

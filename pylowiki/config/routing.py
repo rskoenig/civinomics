@@ -31,7 +31,7 @@ def make_map():
     map.connect('/systemAdmin/{handler:handler/?}', controller = 'systemAdmin', action = 'handler')
     map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin')
     map.connect('/getAdminList{end:/?}' , controller = 'admin', action = 'getList')
-    map.connect('/getAdminList{type}{end:/?}' , controller = 'admin', action = 'getList', type = '{type}')
+    map.connect('/getAdminList/{type}{end:/?}' , controller = 'admin', action = 'getList', type = '{type}')
     
     ########################################################################################################
     # 

@@ -7,6 +7,8 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
+from hashlib import md5
+
 import pylowiki.lib.helpers as h
 
 import pylowiki.lib.db.activity         as activityLib
@@ -131,9 +133,60 @@ class AdminController(BaseController):
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
                 
+
+    def getList(self, type = 'auto', offset = 0, max = 7):
+        # get recent activity and return it into json format
+        
+        log.info("Admin - getList")
+        result = []
+        allActivity = []
+        offset = int(offset)
+        
+        if type == 'users':
+            allObjects = userLib.getAllUsers()
+            
+#         elif type = 'usersNotActivated':
+#             allObjects = userLib.getNotActivatedUsers()
+#             
+
+        for o in allObjects:
+            log.info(o)
+            entry = {}
+            entry['id'] = o.id
+            entry['date'] = str(o.date)
+            entry['objType'] = 'user'
+            entry['name'] = o['name']
+            entry['image'] = _userImageSource(o, className ='avatar small-avatar') 
+            entry['link'] = userLink(o)
+            entry['urlCode'] = o['urlCode']
+            entry['url'] = o['url']
+            if 'owner' in o:
+                entry['owner'] = 'Something'
+            else:
+                entry['owner'] = 'None'
+            if 'poll_name' in o:
+                entry['poll_name'] = o['poll_name']
+                entry['source'] = 'Survey App'
+            else:
+                entry['poll_name'] = 'None'
+                entry['source'] = 'Online'
+            if 'activated' in o and o['activated'] == "1":
+                entry['activated'] = 1
+            elif 'activated' in o and o['activated'] == "0":
+                entry['activated'] = 0
+            if 'disabled' in o:
+                entry['disabled'] = o['disabled']
+            elif 'deleted' in o:
+                entry['disabled'] = o['deleted']
+            
+            result.append(entry)
+        
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0,'result':result})
+
     def users(self):
-        c.list = userLib.getAllUsers()
-        return render( "/derived/6_list_all_items.bootstrap" )
+        return render( "/derived/6_list_all_items_ng.bootstrap" )
         
     def usersNotActivated(self):
         c.list = userLib.getNotActivatedUsers()
@@ -484,3 +537,95 @@ class AdminController(BaseController):
         dbHelpers.commit(user)
         result = "Activated"
         return json.dumps({'code':thingCode, 'result':result})
+        
+        
+        
+##---------HELPER FUNCTIONS THAT I'M GONNA MOVE SOMEWHERE ELSE--------
+def userLink(user, **kwargs):
+    if type(user) == type(1L):
+        user = userLib.getUserByID(user)
+    elif type(user) == type(u''):
+        user = userLib.getUserByCode(user)
+    if user.objType == 'facilitator':
+        user = userLib.getUserByID(user.owner)
+    if user.objType == 'listener':
+        user = userLib.getUserByEmail(user['email'])
+    if 'raw' in kwargs:
+        if kwargs['raw']:
+            return '/profile/%s/%s/' %(user['urlCode'], user['url'])
+    thisLink = "<a href='/profile/%s/%s/'" %(user['urlCode'], user['url'])
+    if 'className' in kwargs:
+        thisLink += ' class = "' + kwargs['className'] + '"'
+    thisLink += '>'
+    if 'title' in kwargs:
+        thisTitle = kwargs['title']
+    else:
+        thisTitle = user['name']
+    if 'maxChars' in kwargs:
+        thisTitle = ellipsisIZE(thisTitle, kwargs['maxChars'])
+    thisLink += thisTitle
+    if 'image' in kwargs:
+        if kwargs['image'] == True:
+            thisLink += userImage(user)
+    thisLink += "</a>"
+    #return thisLink
+    return '/profile/%s/%s/' %(user['urlCode'], user['url'])
+    
+def _userImageSource(user, **kwargs):
+    # Assumes 'user' is a Thing.
+    # Defaults to a gravatar source
+    # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+    #                          we return a source based on the value given here (civ/gravatar)
+    source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+    large = False
+    gravatar = True
+
+    if 'className' in kwargs:
+        if 'avatar-large' in kwargs['className']:
+            large = True
+    if 'forceSource' in kwargs:
+        if kwargs['forceSource'] == 'civ':
+            gravatar = False
+            if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            else:
+                source = '/images/hamilton.png'
+        elif kwargs['forceSource'] == 'facebook':
+            if large:
+                source = user['facebookProfileBig']
+            else:
+                source = user['facebookProfileSmall']
+        elif kwargs['forceSource'] == 'twitter':
+            source = user['twitterProfilePic']
+
+    else:
+        if 'avatarSource' in user.keys():
+            if user['avatarSource'] == 'civ':
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                    gravatar = False
+            elif user['avatarSource'] == 'facebook':
+                gravatar = False
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+            elif user['avatarSource'] == 'twitter':
+                gravatar = False
+                source = user['twitterProfilePic']
+
+        elif 'extSource' in user.keys():
+            # this is needed untl we're sure all facebook connected users have properly 
+            # functioning profile pics - the logic here is now handled 
+            # with the above user['avatarSource'] == 'facebook': ..
+            if 'facebookSource' in user.keys():
+                if user['facebookSource'] == u'1':
+                    gravatar = False
+                    # NOTE - when to provide large or small link?
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+    if large and gravatar:
+        source += '&s=200'
+    return source
