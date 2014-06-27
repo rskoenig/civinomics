@@ -143,14 +143,14 @@ class AdminController(BaseController):
         offset = int(offset)
         
         if type == 'users':
-            allObjects = userLib.getAllUsers()
+            allObjects = userLib.getUsers(offset)
             
 #         elif type = 'usersNotActivated':
 #             allObjects = userLib.getNotActivatedUsers()
 #             
 
         for o in allObjects:
-            log.info(o)
+            log.info(o['name'])
             entry = {}
             entry['id'] = o.id
             entry['date'] = str(o.date)

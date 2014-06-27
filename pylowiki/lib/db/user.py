@@ -57,6 +57,16 @@ def getAllUsers(disabled = '0', deleted = '0'):
     except:
         return False
 
+def getUsers(offset = '0',disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+			.offset(offset)\
+            .all()
+    except:
+        return False
+
 def getUserByEmail(email, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email.lower()))).filter(Thing.data.any(wc('disabled', disabled))).one()

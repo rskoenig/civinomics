@@ -13,80 +13,24 @@ function adminlistController($scope, $http){
 	$scope.sliceSize = 7;
 	$scope.offset = $scope.sliceSize;
 */
+
+	$scope.sliceSize = 10;
+	$scope.offset=0;
+	$scope.activityLoading = false;
+	$scope.list = [];
 	$scope.activityType = '/users';
 
 	$scope.getActivity = function() {
-		$scope.alertMsg = '';
+		if ($scope.activityLoading) return;
 		$scope.activityLoading = true;
-		$http.get('/getAdminList' + $scope.activityType).success(function(data){
-			if (data.statusCode == 1){
-				$scope.activityNoResult = true;
-				$scope.list = []
-				$scope.alertMsg = data.alertMsg;
-				$scope.alertType = data.alertType;
-			} 
-			else if (data.statusCode === 0){
-				$scope.activityNoResult = false;
-				$scope.noMoreSlices = false;
-				$scope.list = data.result;
-				
-			}
-			$scope.activityLoading = false;
+		alert('/getAdminList' + $scope.activityType + '/' + $scope.offset);
+		$http.get('/getAdminList' + $scope.activityType + '/' + $scope.offset).success(function(data){	
+	      var items = data.result;
+	      for (var i = 0; i < items.length; i++) {
+	        $scope.list.push(items[i].data);
+	      }
+	      $scope.offset = items.length;
+	      $scope.activityLoading = false;
 		})
 	};
-	
-	$scope.getActivity();
-	
-/*
-	$scope.getAllActivity = function(){
-		$scope.activityType = '/all';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-
-	$scope.getFollowingActivity = function(){
-		$scope.activityType = '/following';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-
-	$scope.getGeoActivity = function(){
-		$scope.activityType = '/geo';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-
-	$scope.browseInitiatives = function(){
-		$scope.activityType = '/initiatives';
-		$scope.getActivity();
-		$scope.offset = $scope.sliceSize;
-	};
-*/
-
-	$scope.getActivitySlice = function() {
-		if ($scope.busy || $scope.noMoreSlices) return;
-		$scope.busy = true;
-		$scope.alertMsg = ''
-		$scope.activitySliceLoading = true;
-		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
-			if (data.statusCode == 1){
-				$scope.noMoreSlices = true;
-			} 
-			else if (data.statusCode === 0){
-				activitySlice = data.result;
-				for (var i = 0; i < activitySlice.length; i++) {
-				    $scope.activity.push(activitySlice[i]);
-				}
-				$scope.noMoreSlices = false;
-			}
-			$scope.activitySliceLoading = false;
-			$scope.busy = false;
-			$scope.offset += $scope.sliceSize;
-		})
-	};
-	
-	$scope.render = function(e) {
-    return $(e).html();
-    }
-	
 }
