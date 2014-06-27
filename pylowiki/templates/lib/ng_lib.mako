@@ -293,7 +293,7 @@
             </div>
         % endif
         % if not 'noStats' in kwargs:
-            <div class="row text-center" style="margin: 0 19px;">
+            <div class="row text-center" style="margin: 0 19px; height:35px">
                 <!-- multi-colored progress bar test
                 <div class="progress col-sm-8">
                     <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
