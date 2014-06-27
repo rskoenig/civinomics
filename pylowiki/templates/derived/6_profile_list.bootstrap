@@ -4,8 +4,8 @@
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 
 <div class="spacer"></div>
-<div class="row-fluid" ng-controller="profileController">
-    <div class="span8">
+<div class="row" ng-controller="profileController">
+    <div class="col-sm-8">
     <%
         if c.listingType == 'discussions' or c.listingType == 'resources' or c.listingType == 'ideas':
             if c.listingType == 'discussions':
@@ -19,9 +19,9 @@
                 helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
     %>
     </div>
-    <div class="span4">
+    <div class="col-sm-4">
         ${dashboard.profileDashboard()}
-    </div><!--/.span4-->
+    </div><!--/.col-sm-4-->
 </div>
 
 <%def name="extraScripts()">

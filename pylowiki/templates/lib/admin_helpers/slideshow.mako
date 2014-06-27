@@ -18,11 +18,13 @@
             ${add_slides(c.w)}
             ${edit_slideshow()}
             % if c.w['startTime'] == '0000-00-00':
-                <div class="row-fluid">
-                    <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
-                    <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
-                    </form>
-                </div><!-- row-fluid -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+                        <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
+                        </form>
+                    </div>
+                </div><!-- row -->
             % endif
         </div><!-- browse -->
     </div><!-- section-wrapper -->
@@ -32,8 +34,8 @@
     <!-- The file upload form used as target for the file upload widget -->
     <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-    <div class="row-fluid">
-        <div class="span7 fileupload-buttonbar">
+    <div class="row">
+        <div class="col-sm-7 fileupload-buttonbar">
             <!-- The fileinput-button span is used to style the file input field as button -->
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
@@ -48,24 +50,24 @@
                 <i class="icon-ban-circle icon-white"></i>
                 <span>Cancel upload</span>
             </button>
-        </div><!-- span7 -->
-        <div class="span4">
+        </div><!-- col-sm-7 -->
+        <div class="col-sm-4">
             <!-- The global progress bar -->
             <div class="progress progress-success progress-striped active fade">
                 <div class="bar" style="width:0%;"></div>
             </div><!-- progress -->
-        </div><!-- span4 -->
-    </div><!-- row-fluid -->
-    <div class="row-fluid">
-        <div class="span12">
+        </div><!-- col-sm-4 -->
+    </div><!-- row -->
+    <div class="row">
+        <div class="col-sm-12">
             <!-- The loading indicator is shown during image processing -->
             <div class="fileupload-loading"></div>
             <br>
             <!-- The table listing the files available for upload/download -->
             <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
             <br />
-        </div><!-- span12 -->
-    </div><!-- row-fluid -->
+        </div><!-- col-sm-12 -->
+    </div><!-- row- -->
 
     <!-- modal-gallery is the modal dialog used for the image gallery -->
     <div id="modal-gallery" class="modal modal-gallery hide fade">
@@ -160,54 +162,56 @@
 </%def>
 
 <%def name="edit_slideshow()">
-    <div class="row-fluid">
-        <p><strong>Edit Slideshow</strong></p>
-        <ul>
-            <li>Click and drag to rearrange images</li>
-            <li>Add captions</li>
-            <li>Drag images to Trash to delete</li>
-        </ul>
-        % if c.w['startTime'] == '0000-00-00':
-            <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
-                <button type="submit" class="btn btn-warning" name="continueToNext">Save Slideshow and Continue</button>
-            </form>
-        % endif
-        <div class="demo">
-            <div class="column" id="published">
-                <h4 class="centered">Published slides</h4 >
-                <div id="num_published_slides" rel="${str(len(c.published_slides))}"></div>
-                % for slide in c.published_slides:
-                    % if int(slide['deleted']) == 0:
-                        <div class="portlet" id = "portlet_${slide.id}">
-                            <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
-                            <div class = "portlet-image">
-                                % if slide['pictureHash'] == 'supDawg':
-                                    <img src = "/images/slide/thumbnail/supDawg.thumbnail">
-                                % else:
-                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.png" class="image-thumbnail">
-                                % endif
-                            </div><!-- portlet-image -->
-                        </div><!-- portlet -->
-                    % endif
-                % endfor
-            </div><!-- column -->
-            <div class="column trashbasket" id="unpublished">
-                <h4 class="unsortable centered">Trash</h4>
-                % for slide in c.deleted_slides:
-                    % if int(slide['deleted']) == 1:
-                        <div class="portlet" id = "portlet_${slide.id}">
-                            <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
-                            <div class = "portlet-image">
-                                % if slide['pictureHash'] == 'supDawg':
-                                    <img src = "/images/slide/thumbnail/supDawg.thumbnail">
-                                % else:
-                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
-                                % endif
-                            </div><!-- portlet-image -->
-                        </div><!-- portlet -->
-                    % endif
-                % endfor
-            </div><!-- column -->
-        </div><!-- End demo -->
-    </div><!-- row-fluid -->
+    <div class="row">
+        <div class="col-sm-12">
+            <p><strong>Edit Slideshow</strong></p>
+            <ul>
+                <li>Click and drag to rearrange images</li>
+                <li>Add captions</li>
+                <li>Drag images to Trash to delete</li>
+            </ul>
+            % if c.w['startTime'] == '0000-00-00':
+                <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+                    <button type="submit" class="btn btn-warning" name="continueToNext">Save Slideshow and Continue</button>
+                </form>
+            % endif
+            <div class="demo">
+                <div class="column" id="published">
+                    <h4 class="centered">Published slides</h4 >
+                    <div id="num_published_slides" rel="${str(len(c.published_slides))}"></div>
+                    % for slide in c.published_slides:
+                        % if int(slide['deleted']) == 0:
+                            <div class="portlet" id = "portlet_${slide.id}">
+                                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                                <div class = "portlet-image">
+                                    % if slide['pictureHash'] == 'supDawg':
+                                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                                    % else:
+                                        <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.png" class="image-thumbnail">
+                                    % endif
+                                </div><!-- portlet-image -->
+                            </div><!-- portlet -->
+                        % endif
+                    % endfor
+                </div><!-- column -->
+                <div class="column trashbasket" id="unpublished">
+                    <h4 class="unsortable centered">Trash</h4>
+                    % for slide in c.deleted_slides:
+                        % if int(slide['deleted']) == 1:
+                            <div class="portlet" id = "portlet_${slide.id}">
+                                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                                <div class = "portlet-image">
+                                    % if slide['pictureHash'] == 'supDawg':
+                                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                                    % else:
+                                        <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
+                                    % endif
+                                </div><!-- portlet-image -->
+                            </div><!-- portlet -->
+                        % endif
+                    % endfor
+                </div><!-- column -->
+            </div><!-- End demo -->
+        </div>
+    </div><!-- row -->
 </%def>

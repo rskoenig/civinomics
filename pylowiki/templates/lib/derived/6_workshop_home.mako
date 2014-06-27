@@ -84,7 +84,7 @@
                 <h3 id="invite${person['urlCode']}Label">Invite ${person['name']} to Listen</h3>
             </div><!-- modal-header -->
             <div class="modal-body"> 
-              <div class="row-fluid">
+              <div class="well">
                 <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${person['urlCode']}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
                 <div class="alert" ng-show="emailListenerShow">{{emailListenerResponse}}</div>
                 Add a personalized message to the listener invitation:<br />
@@ -95,7 +95,7 @@
                 <button type="submit" class="btn btn-success">Send Invitation</button>
                 <br />
                 </form>
-              </div><!-- row-fluid -->
+              </div><!-- well -->
             </div><!-- modal-footer -->
         </div><!-- modal -->
       % endif
@@ -153,11 +153,11 @@
 <%def name="watchButton(w, **kwargs)">
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <button class="btn btn-default pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
             <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn pull-right followButton" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <button class="btn btn-default pull-right followButton" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
              <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -166,17 +166,17 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="btn pull-right followButton" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"> 
+   <a class="btn btn-default pull-right followButton" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"> 
     <span><strong style="letter-spacing: normal;"> Admin </strong></span>
   </a>
 </%def>
 
 <%def name="previewButton()">
-  <a class="btn btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
+  <a class="btn btn-default pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
 </%def>
 
 <%def name="viewButton()">
-  <a class="btn pull-right left-space" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><strong>View</strong></a>
+  <a class="btn btn-default pull-right left-space" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><strong>View</strong></a>
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">
@@ -268,35 +268,37 @@
     images = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w))
     count = 0
   %>
-  <ul class="gallery thumbnails no-bottom">
-    % for image in images:
-      <% 
-        imageFormat = 'jpg'
-        if 'format' in image.keys():
-          imageFormat = image['format']
+  <div class="row">
+    <ul class="gallery thumbnails no-bottom">
+      % for image in images:
+        <% 
+          imageFormat = 'jpg'
+          if 'format' in image.keys():
+            imageFormat = image['format']
 
-        spanX = 'noShow'
-        if count <= 5:
-          spanX = 'span4'
-      %>
-      % if image['deleted'] != '1':
-        <li class="${spanX} slideListing">
-          % if image['pictureHash'] == 'supDawg':
-             <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
-                <img src="/images/slide/slideshow/${image['pictureHash']}.slideshow"/>
-             </a>
-          % else:
-            <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
-              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
-              <div class="slide-preview" style="background-image:url('/images/slide/${image['directoryNum']}/slideshow/${image['pictureHash']}.${imageFormat}');"/>
-              </div>
-            </a>
-          % endif
-        </li>
-      % endif
-      <% count += 1 %>
-    % endfor
-  </ul>
+          spanX = 'noShow'
+          if count <= 5:
+            spanX = 'col-xs-4'
+        %>
+        % if image['deleted'] != '1':
+          <li class="${spanX} slideListing">
+            % if image['pictureHash'] == 'supDawg':
+               <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+                  <img src="/images/slide/slideshow/${image['pictureHash']}.slideshow"/>
+               </a>
+            % else:
+              <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+                <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+                <div class="slide-preview" style="background-image:url('/images/slide/${image['directoryNum']}/slideshow/${image['pictureHash']}.${imageFormat}');"/>
+                </div>
+              </a>
+            % endif
+          </li>
+        % endif
+        <% count += 1 %>
+      % endfor
+    </ul>
+  </row>
 </%def>
 
 
@@ -306,7 +308,7 @@
         slideNum = 0
         spanX = ""
         if 'hero' in args:
-          spanX = "span8"
+          spanX = "col-xs-8"
     %>
     <div class="${spanX}">
         <ul class="gallery thumbnails no-bottom" data-clearing>
@@ -323,7 +325,7 @@
     </div>
     % if 'hero' in args:
         <% infoHref = lib_6.workshopLink(c.w, embed = True, raw = True) + '/information' %>
-        <div class="span4">
+        <div class="col-xs-4">
           <p class="description" style="color: #FFF; padding-top: 15px;">
             ${lib_6.ellipsisIZE(c.w['description'], 285)}
             <a href="${infoHref}">read more</a>
@@ -335,7 +337,7 @@
 <%def name="_slideListing(showSlide, slideNum, *args)">
     <%
       if slideNum == 0:
-          spanX = "span12"
+          spanX = "col-xs-12"
       else:
           spanX = "noShow"
       slideFormat = 'jpg'
@@ -362,7 +364,7 @@
       % endif
       </li>
     % elif not slideNum >= 6:
-      <li class="span4 slideListing">
+      <li class="col-xs-4 slideListing">
         % if showSlide['pictureHash'] == 'supDawg':
            <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
               <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${showSlide['title']}"/>
@@ -397,11 +399,11 @@
       else:
          if slideNum <= 3:
             if numSlides == 2:
-               spanX = "span4 offset4 thumbnail-gallery"
+               spanX = "col-xs-4 col-xs-offset-4 thumbnail-gallery"
             elif numSlides == 3:
-               spanX = "span4 offset1 thumbnail-gallery"
+               spanX = "col-xs-4 col-xs-offset-1 thumbnail-gallery"
             elif numSlides >= 4:
-               spanX = "span4 thumbnail-gallery"
+               spanX = "col-xs-4 thumbnail-gallery"
          else:
             spanX = "noShow"
    %>
@@ -511,9 +513,9 @@
 
 
 <%def name="workshopHero()">
-  <div class="row-fluid well workshop-hero">
+  <div class="well well workshop-hero">
     <div class="workshop-hero-image" style="background-image: url(${c.backgroundImage})">
-      <div class="row-fluid">
+      <div>
         <span class="link-span med-gradient-workshop"></span><!-- used to make entire div a link -->
         
         <div class="workshop-title-group">
