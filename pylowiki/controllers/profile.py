@@ -1030,16 +1030,16 @@ class ProfileController(BaseController):
                         u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'], **kwargs)
                     else:
                         u = userLib.getUserByEmail(csvUser['email'])
-                        if csvUser['num_ratings'] > 0:
-                            ratings = []
-                            for i in range(0, int(csvUser['num_ratings'])):
-                                rating = {}
-                                rating['code'] = csvUser['code'+str(i)]
-                                rating['rating'] = csvUser['rating'+str(i)]
-                                ratings.append(rating)
-                            user = userLib.getUserByEmail(csvUser['email'])
-                            self.createRatingsForUser(user, ratings)
-                            log.info("I'M DONE")
+                    if csvUser['num_ratings'] > 0:
+                        ratings = []
+                        for i in range(0, int(csvUser['num_ratings'])):
+                            rating = {}
+                            rating['code'] = csvUser['code'+str(i)]
+                            rating['rating'] = csvUser['rating'+str(i)]
+                            ratings.append(rating)
+                        user = userLib.getUserByEmail(csvUser['email'])
+                        self.createRatingsForUser(user, ratings)
+                        log.info("I'M DONE")
                                               
             return render("/derived/6_profile_csv.bootstrap")
         else:

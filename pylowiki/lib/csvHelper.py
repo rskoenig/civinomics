@@ -74,9 +74,10 @@ def parseCsv(filepath):
             user['zip'] = row[ZIP_CODE]
             user['poll'] = row[POLL]
             user['dob'] = time.mktime(time.strptime(row[DOB], '%m/%d/%Y'))
-            log.info(user['dob'])
             user['gender'] = row[GENDER]
+            log.info(row[NUM_RATINGS])
             if row[NUM_RATINGS] > 0:
+                log.info("YES")
                 user['num_ratings'] = row[NUM_RATINGS]
                 for i in range(0, int(row[NUM_RATINGS])):
                     auxCode = "code" + str(i)
