@@ -5,6 +5,7 @@
 html, body {
     margin:0px;
     background-color: #ffffff;
+    /*background-image: url('/images/splash/extra_clean_paper.png');*/
     background-repeat: repeat;
     background-position: top left;
 }

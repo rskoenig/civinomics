@@ -281,7 +281,7 @@ class WorkshopController(BaseController):
             weventMsg += ' See your changes by clicking on the preview button above.'
 
         if werror:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()
@@ -348,7 +348,7 @@ class WorkshopController(BaseController):
             werrMsg = "No changes submitted."
 
         if werror:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()
@@ -445,7 +445,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'No changes submitted.'
             session['alert'] = alert
             session.save()
@@ -607,7 +607,7 @@ class WorkshopController(BaseController):
             session.save()
         else:
             if werror:
-                alert = {'type':'error'}
+                alert = {'type':'danger'}
                 alert['title'] = werrMsg
                 session['alert'] = alert
                 session.save()
@@ -666,7 +666,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configureStartWorkshopHandler(self, workshopCode, workshopURL):
         if not self.checkPreferences():
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'Workshop not started'
             alert['content'] = ' !'
             session['alert'] = alert
@@ -773,7 +773,7 @@ class WorkshopController(BaseController):
                 c.coupon = request.params['coupon']
             
         if pError: 
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'Error.' + pErrorMsg
             session['alert'] = alert
             session.save()
@@ -912,7 +912,7 @@ class WorkshopController(BaseController):
            dbHelpers.commit(c.w)
            
         if werror:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()

@@ -3,13 +3,13 @@
         <p>There does not seem to be anything here!</p>
     % else:
         % for study in studies:
-            <div class="span12 well" style="margin-left:0;">
-                <div class="span2">
+            <div class="row well" style="margin-left:0;">
+                <div class="col-sm-3">
                     <a href="/corp/caseStudies/${study['url']}">
                         <div class="i-photo" style="background-image:url('/images/corp/casestudies/${study['url']}/${study['image']}');"/></div> 
                     </a>
                 </div>
-                <div class="span10">
+                <div class="col-sm-9">
                     <h4 class="no-top"><a class="no-highlight"href="/corp/surveys/${study['url']}">${study['title']}</a></h4>
                     <p>
                         ${study['description']}
@@ -138,7 +138,7 @@
 </%def>
 
 <%def name="text_svBagBan()">
-    <p class="lead">
+    <p>
         This opinion poll was conducted via door-door interviews by Civinomics staff and volunteers over a two week period. Respondents were randomly selected from the list of registered voters in the City of Scotts Valley. Data was tabulated via iPad. The results are statistically accurate with a 95% confidence level and 5% margin of error.
     </p>
 </%def>
