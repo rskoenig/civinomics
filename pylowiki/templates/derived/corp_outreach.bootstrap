@@ -1,0 +1,53 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
+<%def name="display_body_right_content()">
+    <div class="rowfluid">
+
+
+        <div class="row">
+            <h2 style="padding-left:45px">Better Data, Faster</h2>
+            <div class="span4" style="width:420px;">
+                <img src="/images/fluid1_images/ipad_demos3.png">
+            </div>
+            <div class="span5">
+                <div style="padding-left:60px;">
+                    </br>
+                    <p class="lead">Lose the clip-board, with the Civinomics iPad app your data is now just a click away. You'll get stats on the most effective outreach locations, times of day and more.  As a result, your campaign will be more flexible and responsive.</p>
+                    </br>
+                    <img src="/images/fluid1_images/pdf_icon.png">
+                    <a href="/downloads/EastsideReport_2.22.12.pdf" target="_blank" style="padding-left:10px">Download sample data</a>
+                </div>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+            <h2 style="padding-left:45px">Contact Us</h2>
+            </br>
+            <div class="span8 offset1">
+                    
+                    </br>
+                    <div class="pull-right" style="padding-right: 30px;">
+                        <div class="divButton">
+                            ${mako.formatEmail("info@civinomics.com", "Request a Quote", 2)}
+                        </div>  
+                    </div>
+                    <div class="span5" style="text-align: left;">
+                        <p>Civinomics reserves the right to decline any campaign that does not increase public awareness with factual information and lead to greater transparency in the civic decision making process.</p>
+                        </br>
+                        </br>
+                        </br>
+                        </br>
+                    </div>      
+            </div><!--/.span8-->
+        </div><!--/ row-->      
+</div><!--/ span 9-->    
+
+    
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>
