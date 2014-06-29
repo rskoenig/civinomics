@@ -21,7 +21,6 @@ import pylowiki.lib.db.photo      as photoLib
 import pylowiki.lib.sort          as sort
 import pylowiki.lib.db.user       as userLib
 import re
-import pickle
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -34,7 +33,6 @@ class plaintextForm(formencode.Schema):
 class RegisterController(BaseController):
 
     def __before__(self):
-        c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
@@ -42,6 +40,7 @@ class RegisterController(BaseController):
         c.title = config['custom.titlebar']
 
         c.backgroundPhoto = {'title': 'City Council Meeting'}
+        c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
         c.backgroundAuthor = 'unknown'
 
         #c.photos = photoLib.getAllPhotos()
@@ -85,31 +84,6 @@ class RegisterController(BaseController):
             
         return render("/derived/splash.bootstrap")
 
-    def initiatizeUser(self, user):
-    
-        # set up the session for the feeds
-        empty = []
-        user['ratings'] = str(pickle.dumps(empty))
-        user['listenerWorkshops'] = str(pickle.dumps(empty)) 
-        user['bookmarkedWorkshops'] = str(pickle.dumps(empty))
-        user['privateWorkshops'] = str(pickle.dumps(empty))
-        user['facilitatorWorkshops'] = str(pickle.dumps(empty))
-        user['facilitatorInitiatives'] = str(pickle.dumps(empty))
-        user['bookmarkedInitiatives'] = str(pickle.dumps(empty))
-        user['followingUsers'] = str(pickle.dumps(empty))
-        commit(user)
-        
-        session['ratings'] = []
-        session['listenerWorkshops'] = [] 
-        session['bookmarkedWorkshops'] = [] 
-        session['privateWorkshops'] = []
-        session['facilitatorWorkshops'] = []
-        session['facilitatorInitiatives'] = []
-        session['bookmarkedInitiatives'] = []
-        session['followingUsers'] = []
-        session.save()
-                    
-                    
     def signupNoExtAuthDisplay(self):
 
         # todo - clear splash message if this came from /fbSignUp
@@ -140,7 +114,7 @@ class RegisterController(BaseController):
     def fbNewAccount( self ):
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'danger'
+        splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
@@ -201,7 +175,7 @@ class RegisterController(BaseController):
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
-        splashMsg['type'] = 'danger'
+        splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
         #if  'password' not in request.params:
         #    log.info('password missing')
@@ -363,7 +337,6 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
-                    self.initiatizeUser(user)
                     mailLib.sendWelcomeMail(user)
 
                     log.info( "guest activation via twitter - " + email )
@@ -493,7 +466,7 @@ class RegisterController(BaseController):
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
-        splashMsg['type'] = 'danger'
+        splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
         #if  'password' not in request.params:
         #    log.info('password missing')
@@ -662,7 +635,6 @@ class RegisterController(BaseController):
                 log.info('%s logged in %s' % (user['name'], loginTime))
                 c.authuser = user
                 mailLib.sendWelcomeMail(user)
-                self.initiatizeUser(user)
                 if c.w:
                     # if they are a guest signing up, activate and log them in
                     log.info( "Successful guest activation via facebook - " + email )
@@ -712,7 +684,6 @@ class RegisterController(BaseController):
                         log.info('session of user: %s' % session['user'])
                         log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
-                        self.initiatizeUser(user)
                         if c.w:
                             log.info("c.w")
                             log.info( "Successful guest activation with credentials - " + email )
@@ -757,13 +728,20 @@ class RegisterController(BaseController):
             returnJson = False
 
         returnPage = "/signup"
+        if 'afterLoginURL' in session:
+        # look for accelerator cases: workshop home, item listing, item home
+            returnPage = session['afterLoginURL']
+            if 'loginResetPassword' in returnPage:
+                returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
         name = False
         password = False
         postalCode = False
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
-        splashMsg['type'] = 'danger'
+        splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
         if  'password' not in request.params:
             log.info('password missing')
@@ -891,7 +869,16 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
-                    self.initiatizeUser(user)
+                    
+                    # set up their session for the feeds
+                    session['listenerWorkshops'] = [] 
+                    session['bookmarkedWorkshops'] = [] 
+                    session['privateWorkshops'] = []
+                    session['facilitatorWorkshops'] = []
+                    session['facilitatorInitiatives'] = []
+                    session['bookmarkedInitiatives'] = []
+                    session['followingUsers'] = []
+                    session.save()
                         
                     # if they are a guest signing up, activate them   
                     if c.w:
@@ -909,6 +896,14 @@ class RegisterController(BaseController):
                             return redirect(returnPage)
                             
                     returnPage = "/"
+                    
+                    if 'afterLoginURL' in session:
+                    # look for accelerator cases: workshop home, item listing, item home
+                        returnPage = session['afterLoginURL']
+                        if 'loginResetPassword' in returnPage:
+                            returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                            session.pop('afterLoginURL')
+                            session.save()
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
