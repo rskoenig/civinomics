@@ -8,8 +8,8 @@
 <div class="spacer"></div>
 <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">View All Photos</a>
 <div class="spacer"></div>
-<div class="row-fluid">
-    <div class="span8">
+<div class="row">
+    <div class="col-sm-8">
         ${photo.showPhoto()}
         <!-- recreate this function, in doing so I'll find the bug point -->
         <span class="share-icons right-space">
@@ -33,9 +33,9 @@
             % endif
         % endif
     </div>
-    <div class="span4" ng-controller="profileController">
+    <div class="col-sm-4" ng-controller="profileController">
         ${dashboard.profileDashboard()}
-    </div><!--/.span4-->
+    </div><!--/.col-sm-4 -->
 </div>
 
 

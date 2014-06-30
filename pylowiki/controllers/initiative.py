@@ -18,6 +18,7 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.json            as jsonLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.helpers         as h
@@ -34,7 +35,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -682,5 +683,9 @@ class InitiativeController(BaseController):
             goal = 1000
             
         return goal
+
+    def getJson(self):
+        entry = jsonLib.getJsonProperties(c.initiative)
+        return json.dumps({'statusCode':1, 'thing': entry})
         
             

@@ -47,15 +47,6 @@ class ActivateController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
-        
-        #session['listenerWorkshops'] = []
-        #session['bookmarkedWorkshops'] = [] 
-        #session['privateWorkshops'] = []
-        #session['facilitatorWorkshops'] = []
-        #session['facilitatorInitiatives'] = [] 
-        #session['bookmarkedInitiatives'] = []
-        #session['followingUsers'] = []
-        #session.save()
 
     def index(self, id):
         hash, sep, email = id.partition('__')

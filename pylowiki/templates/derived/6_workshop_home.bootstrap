@@ -8,8 +8,9 @@
 <% import pylowiki.lib.graphData       as graphData %>
 
 
+<div class="spacer"></div>
 <% numIdeas = str(len(c.ideas)) %>
-    <div class="span9">
+    <div class="col-sm-9">
 
       ${helpers.workshopHero()}
 
@@ -64,20 +65,33 @@
             <td class="well" style="padding: 10px;">
               % if c.privs and not c.privs['provisional']:
                 <form class="no-bottom" ng-submit="submitNewObj()">
-                    <select name="objType" ng-model="addObjType">
-                      % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
-                        <option value="idea">Idea</option>
-                      % endif
-                      <option value="discussion">Discussion</option>
-                      % if c.w['allowResources'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
-                        <option value="resource">Resource</option>
-                      % endif
-                    </select>
-                    <input type="text" class="span12" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Title...">
-                    <input ng-show="addObjType == 'resource'" type="text" class="span10" name="newObjTitle" ng-model="newObjLink" placeholder="http://">
-                    <textarea class="span12" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Additional Info..."></textarea>
-                    <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
-                    <button class="btn pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                    <div class="form-group">
+                      <select name="objType" ng-model="addObjType">
+                        % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                          <option value="idea">Idea</option>
+                        % endif
+                        <option value="discussion">Discussion</option>
+                        % if c.w['allowResources'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                          <option value="resource">Resource</option>
+                        % endif
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="newObjTitle">Title</label>
+                      <input type="text" class="form-control" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Enter title...">
+                    </div>
+                    <div class="form-group" ng-show="addObjType == 'resource'">
+                      <label for="newObjLink">Link</label>
+                      <input type="text" class="form-control" name="newObjLink" ng-model="newObjLink" placeholder="http://">
+                    </div>
+                    <div class="form-group">
+                      <label for="newObjText">Additional Info</label>
+                      <textarea class="form-control" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Enter additional info..."></textarea>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                      <button class="btn btn-default pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                    </div>
                 </form>
               % endif
             </td>
@@ -87,22 +101,22 @@
     
       <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
-      <div class="row-fluid" ng-show="!showStats" ng-cloak>
-        <div class="span12">
+      <div class="row" ng-show="!showStats" ng-cloak>
+        <div class="col-xs-12">
           <table>
             <tr>
               <td style="vertical-align: middle;">
                 <span class="lead grey expl-phrase right-indent" style="text-transform: capitalize;"><span ng-if="showSummary">All Activity</span><span ng-if="!showSummary">{{objType}}s</span></span>
               </td>
-              <td>
-                <ul class="nav nav-pills civ-search-tools messages inline" ng-cloak>
+              <td style="padding-bottom: 10px;">
+                <ul class="nav nav-pills" ng-cloak>
                   <li ng-class="{active : orderProp == ''}"><a ng-click="orderProp = ''">Recent</a></li>
                   <li ng-class="{active : orderProp == '-netVotes'}"><a ng-click="orderProp = '-netVotes'">Top Rated</a></li>
                   <li ng-class="{active : orderProp == '-voteCount'}"><a ng-click="orderProp = '-voteCount'">Most Votes</a></li>
                   <li ng-class="{active : orderProp == '-numComments'}"><a ng-click="orderProp = '-numComments'">Most Comments</a></li>
                   <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Status <b class="caret green"></b>
+                        Status <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li ng-class="{active : query2 = {status:'proposed'}">
@@ -135,20 +149,6 @@
 
       <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
         <tr>
-          <td class="avatar-cell" rowspan="3"><img class="avatar" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}"></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>
-            <div class="activity-item-content-header">
-              <small>
-                <a href="{{item.authorHref}}" class="no-highlight"><strong>{{item.authorName}}</strong></a> 
-                <span class="date">{{item.fuzzyTime}} ago</span>
-              </small>
-            </div>
-          </td>
-        </tr>
-        <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
           </td>
@@ -178,20 +178,20 @@
 
     </div><!-- infinite-scroll -->
 
-   </div> <!-- /.span8 -->
+   </div> <!-- /.col-sm-8 -->
 
-   <div class="span3">
+   <div class="col-sm-3">
       % if c.authuser:
         % if c.privs and not c.privs['provisional']:
-          <button class="btn btn-large btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
+          <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
         % else:
-          <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+          <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
         % endif
       % else:
-        <a class="btn btn-large btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+        <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
       % endif
 
-      <ul class="nav nav-tabs nav-stacked" style="margin-top: 10px; margin-bottom: 10px; margin-right:0; width: 100%">
+      <ul class="nav nav-pills workshop-menu">
         <li ng-class="{active: showSummary == true}">
           <a ng-click="toggleSummary()">Summary</a>
         </li>
@@ -214,7 +214,7 @@
             ${helpers.showFacilitators()}
             ${helpers.whoListening()}
          </div> <!--/.browse-->
-   </div> <!-- /.span3 -->
+   </div> <!-- /.col-sm-3 -->
 
 
 <%def name="extraScripts2()">

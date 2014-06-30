@@ -11,7 +11,7 @@
 %>
 ##<div ng-app="ngUploadApp">
     <!-- inline style kludge to handle fixed nav bar -->
-    <div class="spacer">
+    <div class="spacer"></div>
     <% 
         if 'alert' in session:
             message = session['alert']
@@ -28,8 +28,8 @@
     % endif
     
         
-    <div class="row-fluid" ng-controller="profileController">
-        <div class="span8">
+    <div class="row" ng-controller="profileController">
+        <div class="col-sm-8">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
@@ -92,10 +92,10 @@
                     </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
-        </div><!-- span8 -->
-        <div class="span4">
+        </div><!-- col-sm-8 -->
+        <div class="col-sm-4">
             ${dashboard.profileDashboard()}
-        </div><!--/.span4-->
+        </div><!--/.col-sm-4 -->
     </div>
 ##</div>
 

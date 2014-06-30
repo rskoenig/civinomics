@@ -112,16 +112,16 @@ def makeOrChangeRating(thing, user, amount, ratingType):
       
     commit(ratingObj)
     commit(thing)
-    if 'ratings' in c.authuser:
-        myRatings = pickle.loads(str(c.authuser["ratings"]))
+    if 'ratings' in user:
+        myRatings = pickle.loads(str(user["ratings"]))
     else:
         myRatings = {}
     thingCode = thing['urlCode']
     myRatings[thingCode] = str(ratingObj['amount'])
-    c.authuser["ratings"] = str(pickle.dumps(myRatings))
-    commit(c.authuser)
+    user["ratings"] = str(pickle.dumps(myRatings))
+    commit(user)
     session["ratings"] = myRatings
     session.save()
-    
+
     return ratingObj
     
