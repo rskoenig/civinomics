@@ -101,6 +101,175 @@
     </div>
 </%def>
 
+<%def name="election_listing()">
+    <div class="media well search-listing">
+        <div class="row" style="margin-top:19px;">
+            <div class="col-xs-2"><img src="{{item.flag}}" width="60" height="60"></div>
+            <div class="col-xs-9 no-left">{{item.scopeLevel}} of {{item.scopeName}}</div>
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-xs-2">
+                <strong>{{item.electionDate}}</strong>
+            </div>
+            <div class="col-xs-9 no-left">
+                <a href="{{item.href}}">{{item.title}}</a>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
+            </div>
+        </div><!-- row -->
+    </div><!-- media-well -->
+</%def>
+
+<%def name="ballot_listing()">
+    <div class="media well search-listing">
+        <div class="row" style="margin-top:19px;">
+            <div class="col-xs-9">
+                <a href="{{item.href}}">{{item.title}}</a>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
+            </div><!-- col-xs-9 -->
+        </div><!-- row -->
+    </div><!-- media-well -->
+</%def>
+
+<%def name="ballot_measure_listing()">
+    <div style="margin-top: 30px;"></div>
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; objType = 'ballotmeasure'; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
+        <div class="row" ng-controller="yesNoVoteCtrl">
+            <div class="well yesNoWell">
+                ${yesNoVoteBlock()}
+            </div>
+            <h4 class="listed-measure-title">{{item.title}}</h4>
+            <p ng-show="(item.ballotMeasureOfficialURL != '')">Official Web Site: <a href="{{ballotMeasureOfficialURL}}" target="_blank">{{ballotMeasureOfficialURL}}</a></p>
+            <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+        </div><!-- row -->
+        <div class="row">
+            <div class="btn-group">
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
+            </div>
+            <div id="edit-{{urlCode}}" class="collapse">
+                <form action="/ballotmeasure/{{urlCode}}/{{url}}/editHandler" role="form" method="POST">
+                    <div class="row form-group spacer">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label for="ballotMeasureTitle" >Title</label>
+                        </div><!-- col-xs-3 -->
+                        <div class="col-xs-6">
+                            <input type="text" name="ballotMeasureTitle" class="form-control" value="{{item.title}}" required>
+                        </div><!-- col-xs-6 -->
+                    </div><!-- form-group -->
+                    <div class="row form-group">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label for="ballotMeasureNumber">Listing Order Number on Ballot</label>
+                        </div><!-- col-xs-3 -->
+                        <div class="col-xs-6">
+                            <input type="text" name="ballotMeasureNumber" class="form-control" value="{{item.number}}" required>
+                        </div><!-- col-xs-6 -->
+                    </div><!-- form-group -->
+                    <div class="row form-group">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label for="ballotMeasureOfficialURL">Official Website URL</label>
+                        </div><!-- col-xs-3 -->
+                        <div class="col-xs-6">
+                            <input type="text" name="ballotMeasureOfficialURL" class="form-control" value="{{item.ballotMeasureOfficialURL}}">
+                        </div><!-- col-xs-6 -->
+                    </div><!-- form-group -->
+                    <div class="row form-group">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <label for="ballotMeasureText">Text</label>
+                        </div><!-- col-xs-3 -->
+                        <div class="col-xs-6">
+                            ${lib_6.formattingGuide()}<br>
+                            <textarea rows="3" name="ballotMeasureText" class="form-control" required>{{item.text}}</textarea>
+                        </div><!-- col-xs-6 -->
+                    </div><!-- form-group -->
+                    <div class="row form-group">
+                        <div class="col-xs-3 col-xs-offset-1">
+                            <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                        </div><!-- col-xs-3 -->
+                    </div><!-- form-group -->
+                </form>
+            </div>
+            <div id="unpublish-{{urlCode}}" class="collapse" >
+                <div class="alert">
+                    <strong>Are you sure you want to send this ballot measure to the trash?</strong>
+                    <br />
+                    <a href="/unpublish/ballotmeasure/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                    <span id = "unpublish_{{urlCode}}"></span>
+                </div>
+            </div>
+            <ul class="unstyled">
+            <div ng-repeat="rev in revisionList">
+                <li><a href="/ballotmeasure/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+            </div><!-- ng-repeat -->
+            </ul>
+        </div>
+        <div class="row">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+
+<%def name="ballot_candidate_listing()">
+    <div style="margin-top: 30px;"></div>
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotCandidateParty = item.ballotCandidateParty; ballotCandidateOfficialURL = item.ballotCandidateOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; objType = 'ballotcandidate'; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit;">
+        <div class="row-fluid">
+            <div class="well yesNoWell">
+                ${candidateVoteBlock()}
+            </div>
+            <h4 class="listed-candidate-title">{{item.title}}</h4>
+            <p ng-show="(item.ballotCandateParty != '')">Party: {{ballotCandidateParty}}</p>
+            <p ng-show="(item.ballotCandidateOfficialURL != '')">Official Web Site: <a href="{{ballotCandidateOfficialURL}}" target="_blank">{{ballotCandidateOfficialURL}}</a></p>
+            <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+        </div><!-- row-fluid -->
+        <div class="row-fluid">
+            <div class="btn-group">
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
+            </div>
+            <div id="edit-{{urlCode}}" class="collapse">
+                <form action="/ballotcandidate/{{urlCode}}/{{url}}/editHandler" method="POST">
+                    <fieldset>
+                        <label>Title</label>
+                        <input type="text" name="ballotCandidateTitle" class="span6" value="{{item.title}}" class="span9" required>
+                        <label>Listing Order Number on Ballot</label>
+                        <input type="text" name="ballotCandidateNumber" value="{{item.number}}" class="span1" required>
+                        <label>Party</label>
+                        <input type="text" name="ballotCandidateParty" class="span6" value="{{item.ballotCandidateParty}}" class="span9">
+                        <label>Official Website URL</label>
+                        <input type="text" name="ballotCandidateOfficialURL" class="span6" value="{{item.ballotCandidateOfficialURL}}" class="span9">
+                        <label>Text</label>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="ballotCandidateText" class="span6" class="span9" required>{{item.text}}</textarea>
+                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                    </fieldset>
+                </form>
+            </div>
+            <div id="unpublish-{{urlCode}}" class="collapse" >
+                <div class="alert">
+                    <strong>Are you sure you want to send this ballot candidate to the trash?</strong>
+                    <br />
+                    <a href="/unpublish/ballotcandidate/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                    <span id = "unpublish_{{urlCode}}"></span>
+                </div>
+                </div>
+            </div>
+            <ul class="unstyled">
+            <div ng-repeat="rev in revisionList">
+                <li><a href="/ballotcandidate/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+            </div><!-- ng-repeat -->
+            </ul>
+        </div>
+        <div class="row-fluid">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+                        
+
+
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
