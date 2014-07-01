@@ -17,23 +17,29 @@
 
 <%def name="showElectionInfo(election, author)">
     <% scopeInfo = utils.getPublicScope(c.election['scope']) %>
-    <div class="row-fluid">
+    <div class="row">
         <h3>${election['title']}</h3>
-        <img src="${scopeInfo['flag']}" width="60" height="60"> ${scopeInfo['level']} of ${scopeInfo['name']}
-    </div><!-- row-fluid -->
-    <div class="spacer"></div>
-    <div class="row-fluid"><div class="span2 text-right">Election Date:</div><div class="span9 text-left">${election['electionDate']}</div></div>
-    
-    <div class="row-fluid">
-        <div class="span9">
+    </div>
+    <div class="row spacer">
+        <div class="col-xs-2">
+            <img src="${scopeInfo['flag']}" width="60" height="60"> 
+        </div>
+        <div class="col-xs-9 text-left">
+            <p>${scopeInfo['level']} of ${scopeInfo['name']}</p>
+            <p>Election Date: ${election['electionDate']}</p>
+        </div>
+    </div><!-- row -->
+
+    <div class="row spacer">
+        <div class="col-xs-11 text-left">
             ${m.html(election['text'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     
-    <div class="row-fluid">
+    <div class="row spacer">
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     % if c.election.objType == 'revision':
         <div class="alert alert-error">
             This is a revision dated ${c.election.date}
@@ -42,30 +48,29 @@
 </%def>
 
 <%def name="showBallotInfo(ballot, author)">
-    <div class="row-fluid spacer">
-        <div class="span9">
+    <div class="row spacer">
+        <div class="col-xs-9 text-left">
             <h3>${ballot['title']}</h3>
         </div>
-        <div class="span3">
+        <div class="col-xs-3 text-right">
             <a href="/election/${ballot['electionCode']}/${ballot['election_url']}/show">Back to Election</a>
         </div>
-    </div><!-- row-fluid -->
-    <div class="spacer"></div>
+    </div><!-- row -->
 
-    <div class="row-fluid">
-        <div class="span9">
+    <div class="row spacer">
+        <div class="col-xs-9 text-left">
             ${m.html(ballot['text'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     
-    <div class="row-fluid">
-        <div class="span9">
+    <div class="row">
+        <div class="col-xs-9 text-left">
             <p><strong>Instructions</strong></p>
             ${m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     
-    <div class="row-fluid">
+    <div class="row">
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
     </div><!-- row-fluid -->
@@ -77,32 +82,30 @@
 </%def>
 
 <%def name="showBallotmeasureInfo(ballotmeasure, author)">
-    <div class="row-fluid spacer">
-        <div class="span9">
+    <div class="row spacer">
+        <div class="col-xs-9 text-left">
             <h3>${ballotmeasure['title']}</h3>
         </div>
-    </div><!-- row-fluid -->
-    
-    <div class="spacer"></div>
+    </div><!-- row -->
     
     % if ballotmeasure['ballotMeasureOfficialURL'] != '':
-        <div class="row-fluid">
-            <div class="span9">
+        <div class="row spacer">
+            <div class="col-xs-9 text-left">
                 Official Web Site: <a href="${ballotmeasure['ballotMeasureOfficialURL']}" target="_blank">${ballotmeasure['ballotMeasureOfficialURL']}</a>
             </div>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
     % endif
     
-    <div class="row-fluid">
-        <div class="span9">
+    <div class="row spacer">
+        <div class="col-xs-9 text-left">
             ${m.html(ballotmeasure['text'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     
-    <div class="row-fluid">
+    <div class="row spacer">
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
-    </div><!-- row-fluid -->
+    </div><!-- row-->
     % if ballotmeasure.objType == 'revision':
         <div class="alert alert-error">
             This is a revision dated ${ballotmeasure.date}
@@ -111,39 +114,38 @@
 </%def>
 
 <%def name="showBallotcandidateInfo(ballotcandidate, author)">
-    <div class="row-fluid spacer">
-        <div class="span9">
+    <div class="row spacer">
+        <div class="col-xs-9 text-left">
             <h3>${ballotcandidate['title']}</h3>
         </div>
-    </div><!-- row-fluid -->
-    <div class="spacer"></div>
-
+    </div><!-- row -->
+    
     % if ballotcandidate['ballotCandidateParty'] != '':
-        <div class="row-fluid">
-            <div class="span9">
+        <div class="row spacer">
+            <div class="col-xs-9 text-left">
                 Party: ${ballotcandidate['ballotCandidateParty']}
             </div>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
     % endif
     
     % if ballotcandidate['ballotCandidateOfficialURL'] != '':
-        <div class="row-fluid">
-            <div class="span9">
+        <div class="row spacer">
+            <div class="col-xs-9 text-left">
                 Official Web Site: <a href="${ballotcandidate['ballotCandidateOfficialURL']}" target="_blank">${ballotcandidate['ballotCandidateOfficialURL']}</a>
             </div>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
     % endif
 
-    <div class="row-fluid">
-        <div class="span9">
+    <div class="row spacer">
+        <div class="col-xs-9 text-left">
             ${m.html(ballotcandidate['text'], render_flags=m.HTML_SKIP_HTML) | n}
         </div>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     
-    <div class="row-fluid">
+    <div class="row spacer">
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     % if ballotcandidate.objType == 'revision':
         <div class="alert alert-error">
             This is a revision dated ${ballotcandidate.date}
@@ -183,95 +185,95 @@
         ${c.saveMessage}
         </div>
     % endif
-    <div class="row-fluid>
-        <div class="span12">
+    <div class="row spacer>
+        <div class="col-xs-12 text-left">
             % if c.edit:
-                <form method="POST" name="edit_election" id="edit_ballot" action="/election/${c.election['urlCode']}/${c.election['url']}/electionEditHandler">
+                <form method="POST" name="edit_election" role="form" id="edit_ballot" action="/election/${c.election['urlCode']}/${c.election['url']}/electionEditHandler">
             % else:
-                <form method="POST" name="edit_election" id="edit_ballot" action="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNewHandler">
+                <form method="POST" name="edit_election" role="form" id="edit_ballot" action="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNewHandler">
             % endif
-            <div class="row-fluid">
+            <div class="row">
                 <h3>Election Information</h3>
             </div><!-- row-fluid -->
             <br>
             
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-xs-6 text-left">
                     <label for="title" class="control-label" required><strong>Election Title:</strong></label>
-                    <input type="text" name="electionTitle" class="span12" value="${title}" required>
-                </div><!-- span6 -->
-                <div class="span6">
+                    <input type="text" name="electionTitle"  value="${title}" required>
+                </div><!-- col-xs-6 -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         Keep it short and descriptive.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
             
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-xs-6 text-left">
                     <label for="title" class="control-label" required><strong>Election Date:</strong></label>
-                    <input type="text" name="electionDate" id="electionDate" class="span6" value="${electionDate}" required>
-                </div><!-- span6 -->
-                <div class="span6">
+                    <input type="text" name="electionDate" id="electionDate" value="${electionDate}" required>
+                </div><!-- col-xs-6 text-left -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         Date of the election.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
             
             
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-xs-6 text-left">
                     <label for="title" class="control-label" required><strong>Official Election URL:</strong></label>
-                    <input type="text" name="electionOfficialURL" id="electionOfficialURL" class="span6" value="${electionOfficialURL}">
-                </div><!-- span6 -->
-                <div class="span6">
+                    <input type="text" name="electionOfficialURL" id="electionOfficialURL" value="${electionOfficialURL}">
+                </div><!-- col-xs-6 text-left -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         The URL to the official election web site.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
             
             <div class="row-fluid spacer">
-                <div class="span6">
+                <div class="col-xs-6 text-left">
                     <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label>
                     ${geoSelect()}
-                </div><!-- span6 -->
-                <div class="span6">
+                </div><!-- col-xs-6 text-left -->
+                <div class=col-xs-6 text-left>
                     <div class="alert alert-info">
                         The region or legal jurisdiction associated with the election.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
 
-            <div class="row-fluid spacer">
-                <div class="span6">
+            <div class="row spacer">
+                <div class="col-xs-6 text-left">
                     <label for="text" class="control-label" required><strong>Election Description:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
-                <div class="span6">
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         A short description about the ballot or election.
                     </div>
-                </div><!-- span6 -->
+                </div><!-- col-xs-6 text-left -->
             </div><!-- row-fluid -->
-            <textarea rows="10" id="electionText" name="electionText" class="span12" required>${text}</textarea>
+            <textarea rows="10" id="electionText" name="electionText" required>${text}</textarea>
             
-            <div class="row-fluid spacer">
-                <div class="span6">            
+            <div class="row spacer">
+                <div class="col-xs-6 text-left">            
                     <input type="checkbox" name="public" ${publicChecked}> Publish this election
-                </div><!-- span6 -->
-                <div class="span6">
+                </div><!-- col-xs-6 text-left -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         Makes the election viewable by members and the public, with members able to comment and vote.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
 
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
-        </div><!-- span12 -->
-    </div><!-- row-fluid -->
+        </div><!-- col-xs-12 text-left -->
+    </div><!-- row -->
 </%def>
 
 
@@ -304,39 +306,39 @@
             };
         }
     </script>
-    <div class="row-fluid>
-        <div class="span12">
-            <form method="POST" name="edit_ballot" id="edit_ballot" action="/ballot/${c.ballot['urlCode']}/${c.ballot['url']}/ballotEditHandler" ng-controller="Ctrl">
-            <div class="row-fluid">
+    <div class="row spacer>
+        <div class="col-xs-12">
+            <form method="POST" name="edit_ballot" id="edit_ballot" role="form" action="/ballot/${c.ballot['urlCode']}/${c.ballot['url']}/ballotEditHandler" ng-controller="Ctrl">
+            <div class="row">
                 <h3>Ballot Information</h3>
-            </div><!-- row-fluid -->
+            </div><!-- ro -->
             <br>
             
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-xs-6 text-left">
                     <label for="title" class="control-label" required><strong>Ballot Title:</strong></label>
-                    <input type="text" name="ballotTitle" class="span12" value="${title}" required>
-                </div><!-- span6 -->
-                <div class="span6">
+                    <input type="text" name="ballotTitle" value="${title}" required>
+                </div><!-- col-xs-6 text-left -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         Keep it short and descriptive.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left-->
+            </div><!-- row -->
             
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row spacer">
+                <div class="col-xs-6 text-left">
                     <label for="title" class="control-label" required><strong>Ballot Number in Election:</strong></label>
-                    <input type="text" name="ballotNumber" class="span2" value="${number}" required>
-                </div><!-- span6 -->
-                <div class="span6">
+                    <input type="text" name="ballotNumber" value="${number}" required>
+                </div><!-- col-xs-6 text-left -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         The order in which the ballot is listed in the election.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
             
-            <div class="row-fluid">
+            <div class="row">
                 <%
                     if c.ballot and c.ballot['ballotSlate'] == 'measures':
                         measuresChecked = 'checked'
@@ -345,7 +347,7 @@
                         measuresChecked = ''
                         candidatesChecked = 'checked'
                 %>
-                <div class="span6">
+                <div class="col-xs-6 text-left">
                     <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label>
                     <label class="radio">
                         <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();" ${measuresChecked} required>

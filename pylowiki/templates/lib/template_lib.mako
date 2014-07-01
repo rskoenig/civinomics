@@ -49,6 +49,7 @@
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
                                     % if int(c.authuser['accessLevel']) > 200:
                                         <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                        <li><a href="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNew"><i class="icon-ok"></i> New Election</a></li>
                                     % endif
                                 </ul>
                             </li>
@@ -192,21 +193,6 @@
                             </li>
                         % endif
                         % if c.authuser['activated'] == '1':
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    Create <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li>
-                                        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
-                                    </li>
-                                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
-                                    % if int(c.authuser['accessLevel']) > 200:
-                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
-                                        <li><a href="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNew"><i class="icon-ok"></i> New Election</a></li>
-                                    % endif
-                                </ul>
-                            </li>
 
                             <li class="${mSelected}">
                                 <%
