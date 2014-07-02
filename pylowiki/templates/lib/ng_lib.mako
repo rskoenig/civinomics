@@ -222,28 +222,38 @@
             <p ng-show="(item.ballotCandateParty != '')">Party: {{ballotCandidateParty}}</p>
             <p ng-show="(item.ballotCandidateOfficialURL != '')">Official Web Site: <a href="{{ballotCandidateOfficialURL}}" target="_blank">{{ballotCandidateOfficialURL}}</a></p>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-        </div><!-- row-fluid -->
-        <div class="row-fluid">
+        </div><!-- row -->
+        <div class="row">
             <div class="btn-group">
                 <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
                 <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
             </div>
             <div id="edit-{{urlCode}}" class="collapse">
-                <form action="/ballotcandidate/{{urlCode}}/{{url}}/editHandler" method="POST">
-                    <fieldset>
-                        <label>Title</label>
-                        <input type="text" name="ballotCandidateTitle" class="span6" value="{{item.title}}" class="span9" required>
-                        <label>Listing Order Number on Ballot</label>
-                        <input type="text" name="ballotCandidateNumber" value="{{item.number}}" class="span1" required>
-                        <label>Party</label>
-                        <input type="text" name="ballotCandidateParty" class="span6" value="{{item.ballotCandidateParty}}" class="span9">
-                        <label>Official Website URL</label>
-                        <input type="text" name="ballotCandidateOfficialURL" class="span6" value="{{item.ballotCandidateOfficialURL}}" class="span9">
-                        <label>Text</label>
+                <form action="/ballotcandidate/{{urlCode}}/{{url}}/editHandler" role="form" method="POST">
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateTitle">Title</label><br>
+                        <input type="text" name="ballotCandidateTitle" class="form-control" value="{{item.title}}" required>
+                    </div><!-- form-group -->
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateNumber">Listing Order Number on Ballot</label><br>
+                        <input type="text" name="ballotCandidateNumber" value="{{item.number}}" class="col-xs-1" required>
+                    </div><!-- form-group -->
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateParty">Party</label><br>
+                        <input type="text" name="ballotCandidateParty" class="form-control" value="{{item.ballotCandidateParty}}">
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateOfficialURL">Official Website URL</label><br>
+                        <input type="text" name="ballotCandidateOfficialURL" class="form-control" value="{{item.ballotCandidateOfficialURL}}">
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateText">Text</label><br>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="ballotCandidateText" class="span6" class="span9" required>{{item.text}}</textarea>
+                        <textarea rows="3" name="ballotCandidateText" class="form-control" required>{{item.text}}</textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group">
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
-                    </fieldset>
+                    </div><!-- form-group -->
                 </form>
             </div>
             <div id="unpublish-{{urlCode}}" class="collapse" >
@@ -535,8 +545,6 @@
         </div>
     % endif
 </%def>
-
-
 
 <%def name="moreLess()">
     <a class="green green-hover" ng-show="item.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>

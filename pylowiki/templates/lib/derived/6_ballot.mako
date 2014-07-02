@@ -620,23 +620,33 @@
         <div class="row-fluid">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Candidate</button>
             <div id="addItem" class="collapse spacer">
-                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotCandidateAddHandler" method="POST">
-                    <fieldset>
-                        <label>Title</label>
-                        <input type="text" name="ballotCandidateTitle" class="span6" required>
-                        <label>Party</label>
-                        <input type="text" name="ballotCandidateParty" class="span6">
-                        <label>Official Web Site URL</label>
-                        <input type="text" name="ballotCandidateOfficialURL" class="span6" required>
-                        <label>Listing Order Number in Ballot</label>
-                        <input type="text" name="ballotCandidateNumber" class="span1" required>
-                        <label>Text</label>
+                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotCandidateAddHandler" role="form" method="POST">
+                    <div class="form-group">
+                        <label for="ballotCandidateTitle">Title</label><br>
+                        <input type="text" name="ballotCandidateTitle" class="form-control" required>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateParty">Party</label><br>
+                        <input type="text" name="ballotCandidateParty" class="form-control">
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateOfficialURL">Official Web Site URL</label><br>
+                        <input type="text" name="ballotCandidateOfficialURL" class="form-control" required>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateNumber">Listing Order Number in Ballot</label><br>
+                        <input type="text" name="ballotCandidateNumber" class="col-xs-1" required>
+                    </div><!-- form-group -->
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateText">Text</label><br>
                         ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="ballotCandidateText" class="span6" required></textarea>
+                        <textarea rows="3" name="ballotCandidateText" class="form-control" required></textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group">
                         
                         <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
                         <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
-                    </fieldset>
+                    </div><!-- form-group -->
                 </form>
             </div>
         </div><!-- row-fluid -->
