@@ -214,7 +214,7 @@
 <%def name="ballot_candidate_listing()">
     <div style="margin-top: 30px;"></div>
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotCandidateParty = item.ballotCandidateParty; ballotCandidateOfficialURL = item.ballotCandidateOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; objType = 'ballotcandidate'; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit;">
-        <div class="row-fluid">
+        <div class="row">
             <div class="well yesNoWell">
                 ${candidateVoteBlock()}
             </div>
@@ -508,6 +508,35 @@
     </div>
     <br>
 </%def>
+
+<%def name="candidateVoteBlock()">
+    % if 'user' in session:
+        <a ng-click="updateCandidateVote(urlCode, url)" class="yesVote {{mycandidateVotes[urlCode]}}">
+            <div class="vote-icon yes-icon detail"></div>
+        </a>
+        <br>
+        <br>
+        <div class="totalVotesWrapper">
+            <span class="grey pull-left">Votes:</span>
+            <strong class="pull-right">
+                <span class="totalVotes">{{totalcandidateVotes[urlCode]}}</span>
+            </strong>
+        </div>
+    % else:
+        <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
+            <div class="vote-icon yes-icon"></div>
+        </a>
+        <br>
+        <div class="totalVotesWrapper">
+            <small class="grey pull-left">Votes:</small>
+            <strong class="pull-right">
+                <span class="totalVotes">{{totalVotes}}</span>
+            </strong>
+        </div>
+    % endif
+</%def>
+
+
 
 <%def name="moreLess()">
     <a class="green green-hover" ng-show="item.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>

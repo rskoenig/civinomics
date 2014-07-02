@@ -500,15 +500,12 @@ class BallotController(BaseController):
         return json.dumps({'statusCode':0, 'result': result})
        
     def ballotShow(self):
-
         c.revisions = revisionLib.getRevisionsForThing(c.ballot)
         c.author = userLib.getUserByCode(c.ballot['userCode'])
         
         if c.ballot.objType != 'revision' and 'views' in c.ballot:
             views = int(c.ballot['views']) + 1
             c.ballot['views'] = str(views)
-            dbHelpers.commit(c.ballot)
-
         return render('/derived/6_ballot.bootstrap')
 
     def ballotMeasureAddHandler(self):

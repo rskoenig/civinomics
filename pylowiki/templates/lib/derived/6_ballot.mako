@@ -73,7 +73,7 @@
     <div class="row">
         <span class="grey">Posted by: </span>
         ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     % if c.ballot.objType == 'revision':
         <div class="alert alert-error">
             This is a revision dated ${c.ballot.date}
@@ -194,80 +194,51 @@
             % endif
             <div class="row">
                 <h3>Election Information</h3>
-            </div><!-- row-fluid -->
+            </div><!-- row -->
             <br>
             
             <div class="row">
-                <div class="col-xs-6 text-left">
-                    <label for="title" class="control-label" required><strong>Election Title:</strong></label>
-                    <input type="text" name="electionTitle"  value="${title}" required>
-                </div><!-- col-xs-6 -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        Keep it short and descriptive.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
+                <div class="form-group">
+                    <label for="electionTitle" class="control-label" required><strong>Election Title:</strong></label><br>
+                    <input type="text" name="electionTitle" class="form-control" value="${title}"  required>
+                </div><!-- form-group -->
             </div><!-- row -->
             
             <div class="row">
-                <div class="col-xs-6 text-left">
-                    <label for="title" class="control-label" required><strong>Election Date:</strong></label>
-                    <input type="text" name="electionDate" id="electionDate" value="${electionDate}" required>
-                </div><!-- col-xs-6 text-left -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        Date of the election.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
+                <div class="form-group">
+                    <label for="electionDate" class="control-label" required><strong>Election Date:</strong></label><br>
+                    <input type="text" name="electionDate" class="col-xs-3" id="electionDate" value="${electionDate}" required>
+                </div><!-- form-group -->
             </div><!-- row -->
             
             
-            <div class="row">
-                <div class="col-xs-6 text-left">
-                    <label for="title" class="control-label" required><strong>Official Election URL:</strong></label>
-                    <input type="text" name="electionOfficialURL" id="electionOfficialURL" value="${electionOfficialURL}">
-                </div><!-- col-xs-6 text-left -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        The URL to the official election web site.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
+            <div class="row spacer">
+                <div class="form-group">
+                    <label for="title" class="control-label" required><strong>Official Election URL:</strong></label><br>
+                    <input type="text" name="electionOfficialURL" class="form-control" id="electionOfficialURL" value="${electionOfficialURL}">
+                </div><!-- form-group -->
             </div><!-- row -->
             
-            <div class="row-fluid spacer">
-                <div class="col-xs-6 text-left">
-                    <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label>
+            <div class="row spacer">
+                <div class="form-group">
+                    <label for="scope" class="control-label" required><strong>Public Jurisdiction:</strong></label><br>
                     ${geoSelect()}
-                </div><!-- col-xs-6 text-left -->
-                <div class=col-xs-6 text-left>
-                    <div class="alert alert-info">
-                        The region or legal jurisdiction associated with the election.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
+                </div><!-- form-group -->
             </div><!-- row -->
 
             <div class="row spacer">
-                <div class="col-xs-6 text-left">
+                <div class="form-group">
                     <label for="text" class="control-label" required><strong>Election Description:</strong></label>
-                    ${lib_6.formattingGuide()}
+                    ${lib_6.formattingGuide()}<br>
+                    <textarea rows="10" class="form-control" id="electionText" name="electionText" required>${text}</textarea>
                 </div>
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        A short description about the ballot or election.
-                    </div>
-                </div><!-- col-xs-6 text-left -->
-            </div><!-- row-fluid -->
-            <textarea rows="10" id="electionText" name="electionText" required>${text}</textarea>
+            </div><!-- row -->
+            
             
             <div class="row spacer">
-                <div class="col-xs-6 text-left">            
+                <div class="form-group">            
                     <input type="checkbox" name="public" ${publicChecked}> Publish this election
-                </div><!-- col-xs-6 text-left -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        Makes the election viewable by members and the public, with members able to comment and vote.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
+                </div><!-- form-group -->
             </div><!-- row -->
 
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
@@ -380,44 +351,43 @@
                             % endwhile
                         </select>
                     </div>
-                </div><!-- span6 -->
-                <div class="span6">
+                </div><!-- col-xs-6 text-left -->
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         The type of ballot slate. Ballot measures with yes/no vote per measure, or candidates with a maximum of N votes for the slate.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
 
             ${lib_6.formattingGuide()}
-            <div class="row-fluid spacer">
-                <div class="span6">
+            <div class="row spacer">
+                <div class="col-xs-6 text-left">
                     <label for="text" class="control-label" required><strong>Ballot Description:</strong></label>
-                    
                 </div>
-                <div class="span6">
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         A short description about the ballot or election.
                     </div>
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
             <textarea rows="10" id="ballotText" name="ballotText" class="span12" required>${text}</textarea>
             
-            <div class="row-fluid spacer">
-                <div class="span6">
+            <div class="row spacer">
+                <div class="col-xs-6 text-left">
                     <label for="text" class="control-label" required><strong>Ballot Instructions:</strong></label>
                 </div>
-                <div class="span6">
+                <div class="col-xs-6 text-left">
                     <div class="alert alert-info">
                         Instructions to guide the user in filling out the ballot.
                     </div>
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-xs-6 text-left -->
+            </div><!-- row -->
             <textarea rows="10" id="ballotInstructions" name="ballotInstructions" class="span12" required>${instructions}</textarea>
             
             <p><button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button></p>
         </form>
-        </div><!-- span12 -->
-    </div><!-- row-fluid -->
+        </div><!-- col-xs-12  -->
+    </div><!-- row -->
 </%def>
 
 <%def name="geoSelect()">
@@ -433,28 +403,29 @@
             countyMessage = "Leave 'State' blank if the election jurisdiction applies to the entire country."
         endif
     %>
-    <div class="row-fluid"><span id="planetSelect">
-        <div class="span3">Planet:</div>
-        <div class="span8">
+    <div class="row"><span id="planetSelect">
+        <div class="col-xs-3 text-left">Planet:</div>
+        <div class="col-xs-8 text-left">
             <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
                 <option value="0">Earth</option>
             </select>
-        </div><!-- span8 -->
+        </div><!-- col-xs-8 text-left -->
     </span><!-- countrySelect -->
-    </div><!-- row-fluid -->     
-    <div class="row-fluid"><span id="countrySelect">
-        <div class="span3">Country:</div>
-        <div class="span8">
+    </div><!-- row -->     
+    <div class="row"><span id="countrySelect">
+        <div class="col-xs-3 text-left">Country:</div>
+        <div class="col-xs-8 text-left">
             <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
                 <option value="0">Select a country</option>
                 <option value="United States" ${countrySelected}>United States</option>
             </select>
-        </div><!-- span8 -->
+        </div><!-- col-xs-8 text-left -->
     </span><!-- countrySelect -->
-    </div><!-- row-fluid -->
-    <div class="row-fluid"><span id="stateSelect">
+    </div><!-- row -->
+    <div class="row"><span id="stateSelect">
         % if c.country != "0":
-            <div class="span3">State:</div><div class="span8">
+            <div class="col-xs-3 text-left">State:</div>
+            <div class="col-xs-8 text-left">
             <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
             <option value="0">Select a state</option>
             % for state in states:
@@ -468,16 +439,17 @@
                 % endif
             % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-xs-8 text-left -->
         % else:
             Leave 'Country' blank if the election jurisdiction applies to the entire planet.
         % endif
-    </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="countySelect">
+    </span></div><!-- row -->
+    <div class="row"><span id="countySelect">
         % if c.state != "0":
             <% counties = getCountyList("united-states", c.state) %>
             <% cityMessage = "Leave blank 'County' blank if the election jurisdiction applies to the entire state." %>
-            <div class="span3">County:</div><div class="span8">
+            <div class="col-xs-3 text-left">County:</div>
+            <div class="col-xs-8 text-left">
             <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
                 <option value="0">Select a county</option>
                 % for county in counties:
@@ -489,17 +461,18 @@
                     <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
                 % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-xs-8 text-left -->
         % else:
             <% cityMessage = "" %>
             ${countyMessage}
         % endif
     </span></div><!-- row -->
-    <div class="row-fluid"><span id="citySelect">
+    <div class="row"><span id="citySelect">
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
             <% postalMessage = "Leave 'City' blank if the election jurisdiction applies to the entire county." %>
-            <div class="span3">City:</div><div class="span8">
+            <div class="col-xs-3 text-left">City:</div>
+            <div class="col-xs-8 text-left">
             <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
             <option value="0">Select a city</option>
                 % for city in cities:
@@ -511,17 +484,18 @@
                     <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
                 % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-xs-8 text-left -->
         % else:
             <% postalMessage = "" %>
             ${cityMessage}
         % endif
-        </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="postalSelect">
+        </span></div><!-- row -->
+    <div class="row"><span id="postalSelect">
         % if c.city != "0":
             <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
             <% underPostalMessage = "or leave blank if your the election jurisdiction is specific to the entire city." %>
-            <div class="span3">Zip Code:</div><div class="span8">
+            <div class="col-xs-3 text-left">Zip Code:</div>
+            <div class="col-xs-8 text-left8">
             <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
             <option value="0">Select a zip code</option>
                 % for pCode in postalCodes:
@@ -533,12 +507,12 @@
                     <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
                 % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-xs-8 text-left -->
         % else:
             <% underPostalMessage = "" %>
             ${postalMessage}
         % endif
-        </span></div><!-- row-fluid -->
+        </span></div><!-- row -->
     <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
     <br/>
 </%def>
@@ -556,15 +530,19 @@
                 };
             }
         </script>
-        <div class="row-fluid">
+        <div class="row">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot</button>
             <div id="addItem" class="collapse">
-                <form action="/election/${election['urlCode']}/${election['url']}/ballotNewHandler" method="POST" ng-controller="Ctrl">
-                    <fieldset>
-                        <label>Title</label>
-                        <input type="text" name="ballotTitle" class="span6" required>
-                        <label>Listing Order Number in Election</label>
-                        <input type="text" name="ballotNumber" class="span1" required>
+                <form action="/election/${election['urlCode']}/${election['url']}/ballotNewHandler" role="form" method="POST" ng-controller="Ctrl">
+                    <div class="form-group spacer">
+                        <label for="ballotTitle">Title</label><br>
+                        <input type="text" name="ballotTitle" class="form-control" required>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotNumber">Listing Order Number in Election</label><br>
+                        <input type="text" name="ballotNumber" class="col-xs-1" required><br>
+                    </div><!-- form-group -->
+                    <div class="form-group spacer">
                         <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label>
                         <label class="radio">
                             <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();"  required>
@@ -591,26 +569,32 @@
                                 % endwhile
                             </select>
                         </div><!-- ng-show -->
-                        ${lib_6.formattingGuide()}<br>
-                        <label>Text</label>
-                        <textarea rows="3" name="ballotText" class="span6" required></textarea>
-                        <label>Instructions</label>
-                        <textarea rows="3" name="ballotInstructions" class="span6" required></textarea>
+                    </div><!-- form-group -->
+                    ${lib_6.formattingGuide()}
+                    <div class="form-group spacer">
+                        <label for="ballotText">Text</label><br>
+                        <textarea rows="3" name="ballotText" class="form-control" required></textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotInstructions" >Instructions</label>
+                        <textarea rows="3" name="ballotInstructions" class="form-control" required></textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group">
                         <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
                         <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
-                    </fieldset>
+                    </div><!-- form-group -->
                 </form>
             </div>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
     % endif
 </%def>
 
 <%def name="addBallotMeasure(ballot, author)">
     % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
-        <div class="row-fluid">
+        <div class="row">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Measure</button>
             <div id="addItem" class="collapse spacer">
-                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotMeasureAddHandler" method="POST">
+                <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotMeasureAddHandler" role="form" method="POST">
                     <fieldset>
                         <label>Title</label>
                         <input type="text" name="ballotMeasureTitle" class="span6" required>
@@ -627,7 +611,7 @@
                     </fieldset>
                 </form>
             </div>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
     % endif
 </%def>
 
