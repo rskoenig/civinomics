@@ -80,11 +80,7 @@
     <div class="span10" ng-controller = "adminlistController">
     <br/>
        	<input type="search" ng-model="userFilter" placeholder="Filter users" />
-       	<div ng-if="activityLoading == false">
-       		Hello I'm showing
-	      <pagination page="currentPage" total-items="maxSize"></pagination>
-	   </div>
-        <table class="table table-striped" infinite-scroll="getActivity()" infinite-scroll-disabled="activityLoading" infinite-scroll-distance="1">
+        <table class="table table-striped" infinite-scroll="getActivity()" infinite-scroll-disabled="activityLoading" infinite-scroll-distance="7">
             <thead>
                 <tr>
                     <th>id</th>
@@ -97,7 +93,7 @@
                 </tr>
             </thead>
             <tbody>
-				<tr data-ng-repeat="item in filteredList | filter: userFilter">
+				<tr data-ng-repeat="item in list | filter: userFilter">
 				   <td>{{item.id}}</td>
 				   <td>{{item.owner}} </td>
 				   <td>{{item.date}}</td>

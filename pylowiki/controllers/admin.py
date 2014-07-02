@@ -142,8 +142,9 @@ class AdminController(BaseController):
         allActivity = []
         offset = int(offset)
         
+        log.info("Offset is %d", offset)
         if type == 'users':
-            allObjects = userLib.getUsers(offset)
+            allObjects = userLib.getUsers(max, offset)
             
 #         elif type = 'usersNotActivated':
 #             allObjects = userLib.getNotActivatedUsers()

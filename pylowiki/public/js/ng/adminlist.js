@@ -23,13 +23,14 @@ function adminlistController($scope, $http){
 	$scope.getActivity = function() {
 		if ($scope.activityLoading) return;
 		$scope.activityLoading = true;
-		alert('/getAdminList' + $scope.activityType + '/' + $scope.offset);
+		//alert('/getAdminList' + $scope.activityType + '/' + $scope.offset);
 		$http.get('/getAdminList' + $scope.activityType + '/' + $scope.offset).success(function(data){	
 	      var items = data.result;
 	      for (var i = 0; i < items.length; i++) {
-	        $scope.list.push(items[i].data);
+	        $scope.list.push(items[i]);
 	      }
-	      $scope.offset = items.length;
+	      $scope.offset += 7;
+	      //alert($scope.offset);
 	      $scope.activityLoading = false;
 		})
 	};
