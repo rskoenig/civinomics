@@ -126,7 +126,7 @@
             <div class="col-xs-9">
                 <a href="{{item.href}}">{{item.title}}</a>
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
+                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a> &nbsp; &nbsp; <i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</p>
             </div><!-- col-xs-9 -->
         </div><!-- row -->
     </div><!-- media-well -->
@@ -135,10 +135,7 @@
 <%def name="ballot_measure_listing()">
     <div style="margin-top: 30px;"></div>
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; objType = 'ballotmeasure'; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
-        <div class="row" ng-controller="yesNoVoteCtrl">
-            <div class="well yesNoWell">
-                ${yesNoVoteBlock()}
-            </div>
+        <div class="row">
             <h4 class="listed-measure-title">{{item.title}}</h4>
             <p ng-show="(item.ballotMeasureOfficialURL != '')">Official Web Site: <a href="{{ballotMeasureOfficialURL}}" target="_blank">{{ballotMeasureOfficialURL}}</a></p>
             <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
@@ -205,7 +202,8 @@
             </div><!-- ng-repeat -->
             </ul>
         </div>
-        <div class="row">
+        <div ng-controller="yesNoVoteCtrl" class="row">
+            ${yesNoVoteFooter()}
             ${actions()}
         </div>
     </div>
@@ -582,7 +580,7 @@
                                 <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                                 <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
-                            <li><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
+                            <li ng-show="(item.objType != 'ballotmeasure' && item.objType != 'ballotcandidate')"><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
                         </ul>
                     </div>
                 </div>
@@ -680,7 +678,7 @@
                                             <textarea class="form-control" style="width: 100%;" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea></a>
                                         % endif
 
-                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
+                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate'">
                                             <span class="radio inline no-top right-space">
                                                 <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
                                             </span>

@@ -424,8 +424,16 @@ class BallotController(BaseController):
             c.ballot['instructions'] = request.params['ballotInstructions']
         if 'ballotSlate' in request.params:
             c.ballot['ballotSlate'] = request.params['ballotSlate']
-        if 'candidateMax' in request.params:
-            c.ballot['candidateMax'] = request.params['candidateMax']
+            if c.ballot['ballotSlate'] == 'measures':
+                if 'slateInfo1' in request.params:
+                    c.ballot['slateInfo'] = request.params['slateInfo1']
+                else:
+                    c.ballot['slateInfo'] = 'ballot measure'
+            else:
+                if 'slateInfo2' in request.params:
+                    c.ballot['slateInfo'] = request.params['slateInfo2']
+                else:
+                    c.ballot['slateInfo'] = 'candidate'
         if 'ballotNumber' in request.params:
             c.ballot.sort = request.params['ballotNumber']
 
@@ -463,6 +471,7 @@ class BallotController(BaseController):
             entry['title'] = item['title']
             entry['text'] = item['text']
             entry['number'] = item.sort
+            entry['views'] = item['views']
             entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
@@ -588,6 +597,10 @@ class BallotController(BaseController):
             entry['title'] = item['title']
             entry['text'] = item['text']
             entry['number'] = item.sort
+            views = int(item['views'])
+            views += 1
+            item['views'] = str(views)
+            dbHelpers.commit(item)
             entry['views'] = item['views']
             entry['ballotMeasureOfficialURL'] = item['ballotMeasureOfficialURL']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
@@ -750,6 +763,10 @@ class BallotController(BaseController):
             entry['title'] = item['title']
             entry['text'] = item['text']
             entry['number'] = item.sort
+            views = int(item['views'])
+            views += 1
+            item['views'] = str(views)
+            dbHelpers.commit(item)
             entry['views'] = item['views']
             entry['ballotCandidateParty'] = item['ballotCandidateParty']
             entry['ballotCandidateOfficialURL'] = item['ballotCandidateOfficialURL']

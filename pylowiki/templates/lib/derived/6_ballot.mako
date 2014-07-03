@@ -72,7 +72,7 @@
     
     <div class="row">
         <span class="grey">Posted by: </span>
-        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)}
+        ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)} &nbsp;&nbsp; <i class="glyphicon glyphicon-eye-open"></i> Views (${ballot['views']})
     </div><!-- row -->
     % if c.ballot.objType == 'revision':
         <div class="alert alert-error">
@@ -271,9 +271,11 @@
             $scope.candidate = 0;
             $scope.setCandidateYes = function() {
                 $scope.candidate = 1;
+                $scope.measures = 0;
             };
             $scope.setCandidateNo = function() {
                 $scope.candidate = 0;
+                $scope.measures = 1;
             };
         }
     </script>
@@ -285,31 +287,15 @@
             </div><!-- ro -->
             <br>
             
-            <div class="row">
-                <div class="col-xs-6 text-left">
-                    <label for="title" class="control-label" required><strong>Ballot Title:</strong></label>
-                    <input type="text" name="ballotTitle" value="${title}" required>
-                </div><!-- col-xs-6 text-left -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        Keep it short and descriptive.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left-->
-            </div><!-- row -->
-            
+            <div class="form-group">
+                <label for="title" class="control-label" required><strong>Ballot Title:</strong></label><br>
+                <input type="text" name="ballotTitle" class="form-control" value="${title}" required>
+            </div><!-- form-group -->
             <div class="row spacer">
-                <div class="col-xs-6 text-left">
-                    <label for="title" class="control-label" required><strong>Ballot Number in Election:</strong></label>
-                    <input type="text" name="ballotNumber" value="${number}" required>
-                </div><!-- col-xs-6 text-left -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        The order in which the ballot is listed in the election.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
-            </div><!-- row -->
-            
-            <div class="row">
+                <label for="ballotNumber" class="control-label" required><strong>Ballot Number in Election:</strong></label><br>
+                <input type="text" name="ballotNumber" class="col-xs-1" value="${number}" required>
+             </div><!-- row -->
+            <div class="row spacer">
                 <%
                     if c.ballot and c.ballot['ballotSlate'] == 'measures':
                         measuresChecked = 'checked'
@@ -318,73 +304,53 @@
                         measuresChecked = ''
                         candidatesChecked = 'checked'
                 %>
-                <div class="col-xs-6 text-left">
-                    <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label>
-                    <label class="radio">
-                        <input type="radio" name="ballotSlate" id="ballotSlate1" value="measures" ng-click="setCandidateNo();" ${measuresChecked} required>
-                        Ballot measures
-                    </label>
-                    <div ng-show="measures">
-                        <label for="slateInfo" class="control-label" required><strong>The term used to refer to the ballot measure. (Initiative, Proposition, etc):</strong></label>
-                        <input type="text" name="slateInfo" class="span2" value="${slateInfo}" required>
-                    </div>
-                    <label class="radio">
-                        <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();" ${candidatesChecked} value="candidates" required>
-                        Candidates for office
-                    </label>
-                    <div ng-show="candidate">
-                        <label for="slateInfo" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
-                        <select name="slateInfo">
-                            <% 
-                                voteMax = 20
-                                loop = 1
+                <label for="ballotSlate" class="control-label" required><strong>Ballot Slate Type:</strong></label><br>
+                <label class="radio">
+                    <input type="radio" name="ballotSlate" id="ballotSlate1" ng-model="ballotSlate1" value="measures" ng-click="setCandidateNo();" ${measuresChecked} required>
+                    Ballot measures
+                </label>
+                <div ng-show="measures">
+                    <label for="slateInfo1" class="control-label" required><strong>The term used to refer to the ballot measure. (Initiative, Proposition, etc):</strong></label>
+                    <input type="text" name="slateInfo1" class="form-control" value="${slateInfo}" required>
+                </div>
+                <label class="radio">
+                    <input type="radio" name="ballotSlate" id="ballotSlate2" ng-model="ballotSlate2" ng-click="setCandidateYes();" ${candidatesChecked} value="candidates" required>
+                    Candidates for office
+                </label>
+                <div ng-show="candidate">
+                    <label for="slateInfo2" class="control-label" required><strong>Can vote for max of how many candidates on slate:</strong></label>
+                    <select name="slateInfo2">
+                        <% 
+                            voteMax = 20
+                            loop = 1
+                        %>
+                        % while loop < voteMax + 1:
+                            <%
+                                if slateInfo == str(loop):
+                                    selected = "selected"
+                                else:
+                                    selected = ""
                             %>
-                            % while loop < voteMax + 1:
-                                <%
-                                    if int(slateInfo) == loop:
-                                        selected = "selected"
-                                    else:
-                                        selected = ""
-                                %>
-                                <option ${selected}>${loop}</option>
-                                <% loop += 1 %>
-                            % endwhile
-                        </select>
-                    </div>
-                </div><!-- col-xs-6 text-left -->
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        The type of ballot slate. Ballot measures with yes/no vote per measure, or candidates with a maximum of N votes for the slate.
-                    </div><!-- alert -->
-                </div><!-- col-xs-6 text-left -->
+                            <option ${selected}>${loop}</option>
+                            <% loop += 1 %>
+                        % endwhile
+                    </select>
+                </div>
             </div><!-- row -->
 
-            ${lib_6.formattingGuide()}
-            <div class="row spacer">
-                <div class="col-xs-6 text-left">
-                    <label for="text" class="control-label" required><strong>Ballot Description:</strong></label>
-                </div>
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        A short description about the ballot or election.
-                    </div>
-                </div><!-- col-xs-6 text-left -->
-            </div><!-- row -->
-            <textarea rows="10" id="ballotText" name="ballotText" class="span12" required>${text}</textarea>
             
-            <div class="row spacer">
-                <div class="col-xs-6 text-left">
-                    <label for="text" class="control-label" required><strong>Ballot Instructions:</strong></label>
-                </div>
-                <div class="col-xs-6 text-left">
-                    <div class="alert alert-info">
-                        Instructions to guide the user in filling out the ballot.
-                    </div>
-                </div><!-- col-xs-6 text-left -->
-            </div><!-- row -->
-            <textarea rows="10" id="ballotInstructions" name="ballotInstructions" class="span12" required>${instructions}</textarea>
-            
-            <p><button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button></p>
+            <div class="form-group spacer">
+                <label for="text" class="control-label" required><strong>Ballot Description:</strong></label><br>
+                ${lib_6.formattingGuide()}<br>
+                <textarea rows="10" id="ballotText" name="ballotText" class="form-control" required>${text}</textarea>
+            </div><!-- form-group -->
+            <div class="form-group">
+                <label for="text" class="control-label" required><strong>Ballot Instructions:</strong></label><br>
+                <textarea rows="10" id="ballotInstructions" name="ballotInstructions" class="form-control" required>${instructions}</textarea>
+            </div><!-- form-group -->
+            <div class="form-group">            
+                <p><button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button></p>
+            </div><!-- form-group -->
         </form>
         </div><!-- col-xs-12  -->
     </div><!-- row -->
@@ -524,9 +490,11 @@
                 $scope.candidate = 0;
                 $scope.setCandidateYes = function() {
                     $scope.candidate = 1;
+                    $scope.measures = 0;
                 };
                 $scope.setCandidateNo = function() {
                     $scope.candidate = 0;
+                    $scope.measures = 1;
                 };
             }
         </script>
