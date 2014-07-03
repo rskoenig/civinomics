@@ -124,3 +124,4 @@ def makeOrChangeRating(thing, user, amount, ratingType):
     session.save()
 
     return ratingObj
+    
