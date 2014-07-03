@@ -96,7 +96,7 @@
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
-                js.src = "//connect.facebook.net/en_US/sdk.js";
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.0";
                 fjs.parentNode.insertBefore(js, fjs);
             }(document, 'script', 'facebook-jssdk'));
             
@@ -207,6 +207,9 @@
                     
                     FB.Event.subscribe('auth.login', login_event);
                     FB.Event.subscribe('auth.logout', logout_event);
+
+                    getLikesThisPage();
+
                     // mark no fb button press yet
                     if (${userLoggedIn}) {
                         console.log('user logged in');
@@ -234,7 +237,30 @@
               }
               console.log(out);
             }*/
+            function getLikesThisPage() {
+                console.log('get Likes This Page: ' + window.location);
+                FB.api(
+                    {
+                        method: 'fql.query',
+                        query: 'SELECT share_count, like_count, comment_count, total_count FROM link_stat WHERE url="' + window.location + '"'
+                    },
+                    function(countResponse) {
+                        console.log(countResponse[0].like_count);
+                        var likesSharesComments = '<div class="right-space left-space" style="font-size: 0.8em;">Likes <span class="label blue-tag" style="color: #222;">' + countResponse[0].like_count + '</span> Shares <span class="label blue-tag" style="color: #222;">' + countResponse[0].share_count + '</span> Comments  <span class="label blue-tag" style="color: #222;">' + countResponse[0].comment_count + '</span></div>';
+                        $('.fb-likesSharesComments').html(likesSharesComments);
+                        // good spot to ping the server with an updated share count?
+                        // lib/db: getShareByUserAndCode(user, code)
+                        // if false, we create a share object for this user and this thing,
+                        // else we update the total shares, likes and comments for this object?
 
+                        /*share_count = countResponse[0].share_count;
+                        like_count = countResponse[0].like_count;
+                        comment_count = countResponse[0].comment_count;
+                        total_count = countResponse[0].total_count;*/
+                    }
+                );
+            }
+            
             function fbConnected(response) {
                 // this person has given us permission to work with their facebook identity.
                 // there are two scenarios possible now:

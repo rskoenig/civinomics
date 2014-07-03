@@ -3,6 +3,8 @@
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
 <%namespace file="/lib/6_comments.mako" import="comments" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+<%namespace name="d3Lib" file="/lib/d3_lib.mako" />
 
 <% lib.return_to() %>
     <h4 class="initiative-title">Summary</h4>
@@ -34,5 +36,11 @@
             <hr>
             <h4 class="initiative-title">Comments</h4>
             ${comments(c.initiative, c.discussion)}
+            % if 'user' in session:
+                ${helpers.voteShareModal()}
+            % else:
+                ${d3Lib.includeD3()}
+                ${d3Lib.initiativeStats(yes='1', no='1', views='1', numComments='1', myRating='0', loggedIn='false')}
+            % endif
         % endif
     % endif

@@ -172,6 +172,25 @@
                     % endif 
                 </div><!-- section-wrapper -->
                 <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
+                    % if 'user' not in session:
+                        <h4>Login to see this initiative's charts:</h4>
+                    % endif 
+                    <div class='row centered'>   
+                        <div class='col-sm-6'>
+                            <div>
+                                <h5>Voting</h5>
+                                <svg id="nvd3-yesNo-chartSm" class="voteModalPieChart"></svg>
+                            </div>
+                        </div>
+                        <div class='col-sm-6'>
+                            <h5>Activity</h5>
+                            <div>
+                                <svg id="nvd3-viewsCommentsVotes-chartSm" class="voteModalPieChart"></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                     ${ihelpers.showAuthor(c.initiative)}
                 </div>  
                 <!--

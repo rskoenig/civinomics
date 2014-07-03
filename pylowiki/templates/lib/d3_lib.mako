@@ -11,6 +11,388 @@
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
 </%def>
 
+################################################################################
+## initiativeStats
+##   - displays d3 charts corresponding to the data avialable on initial load of 
+## an initiative
+##      :VARS:
+## yes              - the number of yes votes for this object
+## no               - " " " no votes " " "
+## views            - number of views 
+## numComments      - number of comments
+## myRating         - this info available in the session if this user has made a rating.
+##                      if not, this is 0, if so, 1=yes and -1=no
+##
+## structure of data for the charts:
+## data = [
+##  {
+##      "label":"YES", 
+##      "value":yes
+##  }, {
+##      "label":"NO", 
+##      "value":no
+##  }];
+################################################################################
+<%def name="initiativeStats(**kwargs)">
+    <%
+        if 'loggedIn' in kwargs:
+            loggedIn = kwargs['loggedIn']
+        else:
+            loggedIn = 'true'
+
+        log.info(loggedIn)
+    %>
+
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+    <!-- NVD3 2.0.0 (development for v2) -->
+    <!--link href='/js/vendor/nvd3-2.0.0/nv.d3.min.css' rel='stylesheet' type='text/css'>
+    <script src="/js/vendor/nvd3-2.0.0/nv.d3.js"></script-->
+    <!-- /NVD3 2.0.0 -->
+
+    <!-- NVD3 1.1.15 beta (current version everyone gets) -->
+    <link href='/js/vendor/nvd3-1.1.15b/nv.d3.min.css' rel='stylesheet' type='text/css'>
+    <script src="/js/vendor/nvd3-1.1.15b/nv.d3.min.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/models/legend.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/models/pie.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/models/pieChart.js"></script>
+    <script src="/js/vendor/nvd3-1.1.15b/src/utils.js"></script>
+    <!-- /NVD3 1.1.15 beta -->
+    
+    <div class='row-fluid'>   
+        <div class='span6'>
+            <div class='row-fluid'>   
+                <div class='span9 offset3'>
+                    <h4>Voting</h4>
+                </div>
+            </div>
+            <div class='row-fluid'>
+                <svg id="nvd3-yesNo-chart" class="voteModalPieChart"></svg>
+            </div>
+        </div>
+        <div class='span6'>
+            <div class='row-fluid'>   
+                <div class='span9 offset3'>
+                    <h4>Activity</h4>
+                </div> 
+            </div>
+            <div class='row-fluid'>
+                <svg id="nvd3-viewsCommentsVotes-chart" class="voteModalPieChart"></svg>
+            </div>
+        </div>
+    </div>
+    <!-- other charts ot consider: views/votes over time, how this compares with others in this area -->
+
+    <script type="text/javascript">
+        var loggedIn = ${loggedIn};
+        console.log('loggedIn: '+loggedIn);
+        var yesNoDataSample = [];
+        var viewsCommentsVotesDataSample = [];
+        var myRating = '0';
+
+        if (!loggedIn) {
+            console.log('not logged in 1');
+            yesNoDataSample = [{"label":"LOGIN", "value":50, "color":"#005d28"}, {"label":"         TO", "value":50, "color":"#ff0000"}];
+            viewsCommentsVotesDataSample = [{"label":"SEE", "value":30, "color":"#b2c2d1"}, {"label":"RATING", "value":30, "color":"#5c9dff"}, {"label":"CHARTS", "value":30, "color":"#ffd119"}];
+        } else {
+            console.log('logged in 2');
+            yes = ${kwargs['yes'] | n};
+            no = ${kwargs['no'] | n};
+            views = ${kwargs['views'] | n};
+            numComments = ${kwargs['numComments'] | n};
+            myRating = ${kwargs['myRating'] | n};
+            totalVotes = yes + no;
+            
+            yesNoDataSample = [{"label":"VOTE", "value":50, "color":"#005d28"}, {"label":"         TO", "value":50, "color":"#ff0000"}];
+            viewsCommentsVotesDataSample = [{"label":"SEE", "value":30, "color":"#b2c2d1"}, {"label":"RATING", "value":30, "color":"#5c9dff"}, {"label":"CHARTS", "value":30, "color":"#ffd119"}];    
+            
+            var yesNoData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"         NO", "value":no, "color":"#ff0000"}];
+            var viewsCommentsVotesData = [{"label":"VIEWS", "value":views, "color":"#b2c2d1"}, {"label":"COMMENTS  ", "value":numComments, "color":"#5c9dff"}, {"label":"VOTES", "value":totalVotes, "color":"#ffd119"}];    
+        }
+
+        /*console.log('yes: '+yes);
+        console.log('no: '+no);
+        console.log('total: '+totalVotes);
+        */
+        console.log('me: '+myRating);
+        
+        
+        console.log(yesNoDataSample);
+        console.log(viewsCommentsVotesDataSample);
+
+        var marginSm = {
+          top: 4,
+          right: 8,
+          bottom: 20,
+          left: 2
+        }; 
+        var widthSm = 150 - marginSm.left - marginSm.right;
+        var heightSm = 150 - marginSm.top - marginSm.bottom;
+        radiusSm = 70;                   //radius
+        
+        var widthMed = 160 - marginSm.left - marginSm.right;
+        var heightMed = 170 - marginSm.top - marginSm.bottom;
+        radiusMed = 90;                   //radius
+
+        var margin = {
+          top: 20, 
+          right: 40, 
+          bottom: 10, 
+          left: 10
+        }; 
+        var width = 300 - margin.left - margin.right;
+        var height = 300 - margin.top - margin.bottom;
+        radius = 100;                   //radius
+
+        var yesNoChart;
+        // .color(function(d){ return d.color })
+        // .color(d3.scale.category10().range())
+
+        function redrawYesNo(data) {
+            console.log('redrawYesNo');
+            console.log(data);
+
+            nv.addGraph(function() {
+
+                yesNoChart = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .showLabels(true)
+                    .color(function(d){ return d.data.color })
+                    .tooltips(true)
+                    .width(width)
+                    .height(height);
+
+                yesNoChart.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-yesNo-chart")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', width)
+                    .attr('height', height)
+                    .call(yesNoChart);
+
+                yesNoChart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return yesNoChart;
+            });
+        }
+
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawYesNo(yesNoDataSample);
+            } else {
+                redrawYesNo(yesNoData);
+            }
+        }
+        
+
+        var yesNoChartSm;
+
+        function redrawYesNoSm(data) {
+            console.log('redrawYesNoSm');
+            console.log(data);
+            nv.addGraph(function() {
+
+                yesNoChartSm = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .color(function(d){ return d.data.color })
+                    .showLabels(true)
+                    .tooltips(true)
+                    .width(widthSm)
+                    .height(heightSm);
+
+                yesNoChartSm.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-yesNo-chartSm")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', widthSm)
+                    .attr('height', heightSm)
+                    .call(yesNoChartSm);
+
+                yesNoChartSm.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return yesNoChartSm;
+            });
+        }
+
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawYesNoSm(yesNoDataSample);
+            } else {
+                redrawYesNoSm(yesNoData);
+            }
+        } else {
+            // in this case, the person is not logged in so we draw the small sample chart
+            // with a different sample message
+            redrawYesNoSm(yesNoDataSample);   
+        }
+
+        var viewsCommentsVotesChart;
+
+        function redrawViewsCommentsVotes(data) {
+            console.log('redrawViewsCommentsVotes');
+            console.log(data);
+            nv.addGraph(function() {
+
+                viewsCommentsVotesChart = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .color(function(d){ return d.data.color })
+                    .width(width)
+                    .height(height);
+
+                viewsCommentsVotesChart.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-viewsCommentsVotes-chart")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', width)
+                    .attr('height', height)
+                    .call(viewsCommentsVotesChart);
+
+                viewsCommentsVotesChart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return viewsCommentsVotesChart;
+            });
+        }
+
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawViewsCommentsVotes(viewsCommentsVotesDataSample);
+            } else {
+                redrawViewsCommentsVotes(viewsCommentsVotesData);
+            }
+        }
+
+        var viewsCommentsVotesChartSm;
+
+        function redrawViewsCommentsVotesSm(data) {
+            console.log('redrawViewsCommentsVotesSm');
+            console.log(data);
+            nv.addGraph(function() {
+
+                viewsCommentsVotesChartSm = nv.models.pieChart()
+                    .x(function(d) { return d.label })
+                    .y(function(d) { return d.value })
+                    .color(function(d){ return d.data.color })
+                    .width(widthMed)
+                    .height(heightMed);
+
+                viewsCommentsVotesChartSm.pie
+                    .valueFormat(d3.format('d'))
+                    .pieLabelsOutside(false)
+                    .labelType("percent");
+
+                d3.select("#nvd3-viewsCommentsVotes-chartSm")
+                    .datum(data)
+                  .transition().duration(1200)
+                    .attr('width', widthMed)
+                    .attr('height', heightMed)
+                    .call(viewsCommentsVotesChartSm);
+
+                viewsCommentsVotesChartSm.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
+                return viewsCommentsVotesChartSm;
+            });
+        }
+
+        if (loggedIn) {
+            if (myRating == 0) {
+                redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+            } else {
+                redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+            }
+        } else {
+            // in this case, the person is not logged in so we draw the small sample chart
+            // with a different sample message
+            redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+        }
+        
+        
+        // these changes are attempting to show what's happening on our server
+        // when a person adds and rescinds their vote on the page
+        function changePie(newValue) {
+            console.log('new rating: '+newValue);
+            var newData = [];
+            if (myRating == 0) {
+                //console.log('no vote previously');
+                // if the previous rating was 0 (no vote), then the new value can 
+                // only be a vote (+/-1)
+                if (newValue > 0) {
+                    //console.log('add 1 to yes');
+                    yes = yes + 1;
+                } else {
+                    //console.log('add 1 to no');
+                    no = no + 1;
+                }
+            } else {
+                console.log('previous rating ' + myRating);
+                // if the previous rating was +/-1 (a vote), then the new value can 
+                // either be 0 (no vote) or +/-1 (a vote for the other side)
+                if (newValue == 0) {
+                    // vote has been rescinded
+                    //console.log('vote has been rescinded');
+                    if (myRating > 0) {
+                        //console.log('removed my yes vote');
+                        yes = yes - 1;
+                    } else {
+                        //console.log('removed my no vote');
+                        no = no - 1;
+                    }
+                } else {
+                    // a different vote has been cast
+                    //console.log('vote has been changed to the other');
+                    if (newValue > 0) {
+                        //console.log('yes instead of no');
+                        yes = yes + 1;
+                        no = no - 1;
+                    } else {
+                        //console.log('no instead of yes');
+                        yes = yes - 1;
+                        no = no + 1;
+                    }
+                }
+            }
+            newData = [{"label":"YES", "value":yes, "color":"#005d28"}, {"label":"NO", "value":no, "color":"#ff0000"}];
+            if (newValue != 0) {
+                console.log('new val not 0');
+                redrawYesNo(newData);
+                redrawYesNoSm(newData);
+                redrawViewsCommentsVotes(viewsCommentsVotesData);
+                redrawViewsCommentsVotesSm(viewsCommentsVotesData);
+            } else {
+                console.log('new val is 0');
+                redrawYesNo(yesNoDataSample);
+                redrawYesNoSm(yesNoDataSample);
+                redrawViewsCommentsVotes(viewsCommentsVotesDataSample);
+                redrawViewsCommentsVotesSm(viewsCommentsVotesDataSample);
+            }
+            
+            myRating = newValue;
+            //console.log(newData);
+
+            /*console.log('yesN: '+yes);
+            console.log('noN: '+no);
+            totalVotes = yes + no;
+            console.log('totalN: '+totalVotes);
+            console.log('meN: '+myRating);*/
+
+        }
+        
+    </script>
+</%def>
+
 ######################################
 ## reduceAddRemoveInitial
 ##  * HANDY EXAMPLE HERE
