@@ -246,6 +246,7 @@ class User(object):
         u['deleted'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
+        log.info('postalCode5 expect number: %s'%postalCode)
         u['country'] =  country
         u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
