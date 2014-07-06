@@ -1,5 +1,5 @@
 <%!
-    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
@@ -21,137 +21,149 @@
                 <br />1/3 size thumbnail
                 <div class="spacer"></div>
             % endif
-            <fieldset>
-            <label for="title" class="control-label" required>Title:</label>
-            <input type="text" name="title" value="${c.photoTitle}">
-            <label for="description" class="control-label" required>Description:</label>
-            <textarea name="description">${c.description}</textarea>
-
-            <label for="scope" class="control-label" required>Where was picture taken:</label>
-            <% 
-                countyMessage = ""
-                cityMessage = ""
-                postalMessage = ""
-                underPostalMessage = ""
-            %>
-            <div class="row"><span id="countrySelect">
-                <div class="span1"></div>
-                <div class="span2">Country:</div>
-                <div class="span9">
-                    <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry" onChange="geoTagCountryChange(); return 1;">
-                    <option value="0" selected>Select a country</option>
-                    % if c.country == '0':
-                        <option value="United States">United States</option>
-                    % else:
-                        <option value="United States" selected>United States</option>
-                    % endif
-                    </select>
-                </div><!-- span9 -->
-                </span><!-- countrySelect -->
-            </div><!-- row -->
-            <div class="row"><span id="stateSelect">
-                % if c.country != "0":
-                    <% states = geoLib.getStateList(c.country) %>
-                    <div class="span1"></div>
-                    <div class="span2">State:</div>
-                    <div class="span9">
-                        <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
-                        <option value="0">Select a state</option>
-                        % for state in states:
-                            % if state != 'District of Columbia':
-                                % if c.state == state['StateFullName']:
-                                    <% stateSelected = "selected" %>
-                                % else:
-                                    <% stateSelected = "" %>
+            <div class="form-group">
+                <label for="title" class="control-label" required>Title:</label>
+                <input type="text" name="title" class="form-control" value="${c.photoTitle}">
+            </div>
+            <div class="form-group">
+                <label for="description" class="control-label" required>Description:</label>
+                <textarea name="description" class="form-control">${c.description}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="scope" class="control-label" required>Where was picture taken:</label>
+                <% 
+                    countyMessage = ""
+                    cityMessage = ""
+                    postalMessage = ""
+                    underPostalMessage = ""
+                %>
+                <div class="row"><span id="countrySelect">
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-2">Country:</div>
+                    <div class="col-xs-9">
+                        <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry" onChange="geoTagCountryChange(); return 1;">
+                        <option value="0" selected>Select a country</option>
+                        % if c.country == '0':
+                            <option value="United States">United States</option>
+                        % else:
+                            <option value="United States" selected>United States</option>
+                        % endif
+                        </select>
+                    </div><!-- col-xs-9 -->
+                    </span><!-- countrySelect -->
+                </div><!-- row -->
+                <div class="row"><span id="stateSelect">
+                    % if c.country != "0":
+                        <% states = geoLib.getStateList(c.country) %>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-2">State:</div>
+                        <div class="col-xs-9">
+                            <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+                            <option value="0">Select a state</option>
+                            % for state in states:
+                                % if state != 'District of Columbia':
+                                    % if c.state == state['StateFullName']:
+                                        <% stateSelected = "selected" %>
+                                    % else:
+                                        <% stateSelected = "" %>
+                                    % endif
+                                    <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
                                 % endif
-                                <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
-                            % endif
-                        % endfor
-                        </select>
-                    </div><!-- span9 -->
-                % else:
-                    or leave blank if your photo is specific to the entire planet.
-                % endif
-            </span></div><!-- row -->
-            <div class="row"><span id="countySelect">
-                % if c.state != "0":
-                    <% counties = geoLib.getCountyList("united-states", c.state) %>
-                    <% cityMessage = "or leave blank if your photo is specific to the entire state." %>
-                    <div class="span1"></div>
-                    <div class="span2">County:</div>
-                    <div class="span9">
-                        <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
-                        <option value="0">Select a county</option>
-                        % for county in counties:
-                            % if c.county == county['County'].title():
-                                <% countySelected = "selected" %>
-                            % else:
-                                <% countySelected = "" %>
-                            % endif
-                            <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
-                        % endfor
-                        </select>
-                    </div><!-- span9 -->
-                % else:
-                    <% cityMessage = "" %>
-                    ${countyMessage}
-                % endif
-            </span></div><!-- row -->
-            <div class="row"><span id="citySelect">
-                % if c.county != "0":
-                    <% cities = geoLib.getCityList("united-states", c.state, c.county) %>
-                    <% postalMessage = "or leave blank if your photo is specific to the entire county." %>
-                    <div class="span1"></div>
-                    <div class="span2">City:</div>
-                    <div class="span9">
-                        <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
-                        <option value="0">Select a city</option>
-                        % for city in cities:
-                            % if c.city == city['City'].title():
-                                <% citySelected = "selected" %>
-                            % else:
-                                <% citySelected = "" %>
-                            % endif
-                            <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
-                        % endfor
-                        </select>
-                    </div><!-- span9 -->
-                % else:
-                    <% postalMessage = "" %>
-                    ${cityMessage}
-                % endif
-            </span></div><!-- row -->
-            <div class="row"><span id="postalSelect">
-                % if c.city != "0":
-                    <% postalCodes = geoLib.getPostalList("united-states", c.state, c.county, c.city) %>
-                    <% underPostalMessage = "or leave blank if your photo is specific to the entire city." %>
-                    <div class="span1"></div>
-                    <div class="span2">Postal Code:</div>
-                    <div class="span9">
-                        <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal">
-                        <option value="0">Select a postal code</option>
-                        % for pCode in postalCodes:
-                            % if c.postal == str(pCode['ZipCode']):
-                                <% postalSelected = "selected" %>
-                            % else:
-                                <% postalSelected = "" %>
-                            % endif
-                            <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
-                        % endfor
-                        </select>
-                    </div><!-- span9 -->
-                % else:
-                    <% underPostalMessage = "" %>
-                    ${postalMessage}
-                % endif
-            </span></div><!-- row -->
+                            % endfor
+                            </select>
+                        </div><!-- col-xs-9 -->
+                    % else:
+                        <div class="col-xs-12">
+                            or leave blank if your photo is specific to the entire planet.
+                        </div>
+                    % endif
+                </span></div><!-- row -->
+                <div class="row"><span id="countySelect">
+                    % if c.state != "0":
+                        <% counties = geoLib.getCountyList("united-states", c.state) %>
+                        <% cityMessage = "or leave blank if your photo is specific to the entire state." %>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-2">County:</div>
+                        <div class="col-xs-9">
+                            <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                            <option value="0">Select a county</option>
+                            % for county in counties:
+                                % if c.county == county['County'].title():
+                                    <% countySelected = "selected" %>
+                                % else:
+                                    <% countySelected = "" %>
+                                % endif
+                                <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
+                            % endfor
+                            </select>
+                        </div><!-- col-xs-9 -->
+                    % else:
+                        <div class="col-xs-12">
+                            <% cityMessage = "" %>
+                            ${countyMessage}
+                        </div>
+                    % endif
+                </span></div><!-- row -->
+                <div class="row"><span id="citySelect">
+                    % if c.county != "0":
+                        <% cities = geoLib.getCityList("united-states", c.state, c.county) %>
+                        <% postalMessage = "or leave blank if your photo is specific to the entire county." %>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-2">City:</div>
+                        <div class="col-xs-9">
+                            <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                            <option value="0">Select a city</option>
+                            % for city in cities:
+                                % if c.city == city['City'].title():
+                                    <% citySelected = "selected" %>
+                                % else:
+                                    <% citySelected = "" %>
+                                % endif
+                                <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                            % endfor
+                            </select>
+                        </div><!-- col-xs-9 -->
+                    % else:
+                        <div class="col-xs-12">
+                            <% postalMessage = "" %>
+                            ${cityMessage}
+                        </div>
+                    % endif
+                </span></div><!-- row -->
+                <div class="row"><span id="postalSelect">
+                    % if c.city != "0":
+                        <% postalCodes = geoLib.getPostalList("united-states", c.state, c.county, c.city) %>
+                        <% underPostalMessage = "or leave blank if your photo is specific to the entire city." %>
+                        <div class="col-xs-1"></div>
+                        <div class="col-xs-2">Postal Code:</div>
+                        <div class="col-xs-9">
+                            <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal">
+                            <option value="0">Select a postal code</option>
+                            % for pCode in postalCodes:
+                                % if c.postal == str(pCode['ZipCode']):
+                                    <% postalSelected = "selected" %>
+                                % else:
+                                    <% postalSelected = "" %>
+                                % endif
+                                <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
+                            % endfor
+                            </select>
+                        </div><!-- col-xs-9 -->
+                    % else:
+                        <div class="col-xs-12">
+                            <% underPostalMessage = "" %>
+                            ${postalMessage}
+                        </div>
+                    % endif
+                </span></div><!-- row -->
+            </div><!-- form-group -->
             <div class="row">
                 <span id="underPostal">${underPostalMessage}</span><br />
             </div><!-- row -->
         </fieldset>
         </div><!-- col-sm-8 -->
         <div class="col-sm-4">
-            <% tagList = workshopLib.getWorkshopTagCategories() %>
+            <% tagList = tagLib.getTagCategories() %>
             <fieldset>
             Category Tags
             % for tag in tagList:
@@ -199,14 +211,17 @@
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
                             <script type="text/javascript">
-                                function setAction(imageHash) {
+                                function setAction() {
+                                    imageHash = document.getElementById('fileuploadButton').value;
                                     actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
                                     document.getElementById('fileupload').action = actionURL;
                                 }
                             </script>
                             ${editPhoto()}
                             <div class="row">
-                                <button class="btn btn-success" type="Submit" onClick="setAction('{{file.image_hash}}'); return 1;">Save Changes</button>
+                                <div class="col-xs-12">
+                                    <button class="btn btn-success" id="fileuploadButton" type="Submit" value="{{file.image_hash}}" onClick="setAction(); return 1;">Save Changes</button>
+                                </div>
                             </div><!-- row -->
                             </form>
                         </div><!-- preview -->
@@ -241,24 +256,24 @@
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
-    <div class="btn-group">
+    <div class="btn-group btn-group-xs">
         % if thing['disabled'] == '0' and thing.objType != 'photoUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'photoUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
         % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'photoUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
         % elif thing.objType == 'photoUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % endif
         % endif
         % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
 
     </div>

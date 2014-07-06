@@ -49,7 +49,6 @@
                         Initiatives (${c.numInitiatives})
                     </a>
                 </li>
-                <!--
                 <li ng-class="showingWorkshops.class">
                     <a href="#workshops" data-toggle="tab" ng-click="searchWorkshops()">
                         Workshops (${c.numWorkshops})
@@ -89,7 +88,6 @@
                         </li>
                     </ul>
                 </li>
-                -->
                 <li>
                     <a class="accordion-toggle" href="#sortOptions" data-toggle="collapse">
                         Search tools
@@ -100,15 +98,15 @@
                 <li class="pull-right" ng-show="showingWorkshops.create" ng-cloak>
                     % if c.searchType != 'region':
                         % if not c.privs['provisional']:
-                            <button class="btn btn-civ" href="/workshop/display/create/form" >
-                                <i class="icon-plus"></i> Start Workshop
-                            </button>
+                            <a class="btn btn-default" href="/workshop/display/create/form" >
+                                Start Workshop
+                            </a>
                         % endif
                     % else:
                         % if not c.privs['provisional']:
                             <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
                                 <input type="hidden" name="geoString" value="${c.geoString}">
-                                <button class="btn btn-civ" type="submit" name="createPublic"><i class="icon-plus"></i> Start Workshop</button>
+                                <button class="btn btn-default" type="submit" name="createPublic">Start Workshop</button>
                             </form>
                         % endif
                     % endif
@@ -117,9 +115,9 @@
                     % if 'user' in session:
                         % if c.searchType != 'region':
                             % if not c.privs['provisional']:
-                                <button class="btn btn-default" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
+                                <a class="btn btn-default" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative">
                                     Start Initiative
-                                </button>
+                                </a>
                             % endif
                         % else:
                             % if not c.privs['provisional']:
@@ -199,7 +197,7 @@
                                         <div style="height:100px; background-image:url('{{w.imageURL}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
                                     </a>
                                 </div>
-                                <div class="col-sm-3 media-body">
+                                <div class="col-sm-9 media-body">
                                     <h4 class="media-heading"><a class="listed-item-title" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
                                     <p class="grey"><small>{{w.description}}</small></p>
                                     <ul class="horizontal-list iconListing">

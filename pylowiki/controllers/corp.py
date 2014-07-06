@@ -29,7 +29,7 @@ class CorpController(BaseController):
         client={}
         client['name']="San Francisco Public Utilities Commission"
         client['logo']="sfpuc_small.jpg"
-        client['url']='SSIP'
+        client['url']='sfpuc_ssip'
         c.clients.append(client)
         client={}
         client['name']="Soquel Creek Water District"
@@ -59,6 +59,19 @@ class CorpController(BaseController):
 
 
         c.studies=[]
+
+        study={}
+        study["title"]="Open Streets - Capitola"
+        study["description"]="Event attendees survey and feedback."
+        study["image"]="openStreetsCover.jpg"
+        study["url"]="open_streets_capitola"
+        study['date']="5.4.14"
+        study['stats']='openStreetsCap1'
+        study['respondents'] = 428
+        study['partnerLogo']='openStreetsLogo.gif'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
 
         study={}
         study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
@@ -92,7 +105,7 @@ class CorpController(BaseController):
         study["title"]="Santa Cruz Tech Commuters"
         study["description"]="Measuring Santa Cruz County's daily tech worker brain drain and awareness, opportunity and feedback on the emerging Santa Cruz tech ecosystem."
         study["image"]="techCommuter.png"
-        study["url"]="techCommuter"
+        study["url"]="tech_commuter"
         study['date']="3.25.14"
         study['stats']='dcCommuterSurvey'
         study['respondents'] = 102
@@ -106,9 +119,8 @@ class CorpController(BaseController):
         study["title"]="Sewer System Improvement Program"
         study["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
         study["image"]="ssipCover.png"
-        study["url"]="SSIP"
+        study["url"]="sfpuc_ssip"
         study['date']="3.4.13"
-        study['stats']='dcCommuterSurvey'
         study['respondents'] = 1200
         study['clientLogo']='sfpucLogo.png'
         study['clientName']='San Francisco Public Utilities Commission'
@@ -118,7 +130,7 @@ class CorpController(BaseController):
         study["title"]="Eastside Recycled Water Project"
         study["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
         study["image"]="eastsideProject.png"
-        study["url"]="eastsideProject"
+        study["url"]="eastside_project"
         study['date']="10.10.12"
         study['respondents'] = 934
         study['clientLogo']='sfpucLogo.png'
@@ -460,8 +472,8 @@ class CorpController(BaseController):
             study["questions"]=questions
 
 
-        elif casestudyname =="eastsideProject":
-            study["url"]="eastsideProject"
+        elif casestudyname =="eastside_project" or casestudyname =="eastsideProject" or casestudyname =="eastsideproject":
+            study["url"]="eastside_project"
             study["title"]="Eastside Recycled Water Project"
             study["image"]="eastsideProject.png"
             study["statusType"]="success"
@@ -530,8 +542,8 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="SSIP":
-            study["url"]="SSIP"
+        elif casestudyname =="sfpuc_ssip" or casestudyname =="SSIP" or casestudyname =="ssip":
+            study["url"]="sfpuc_ssip"
             study["title"]="Sewer System Improvement Program"
             study["image"]="ssipCover.png"
             study["statusType"]="success"
@@ -568,8 +580,8 @@ class CorpController(BaseController):
             c.video='<iframe width="560" height="315" src="http://www.youtube.com/embed/m4039IQU7BM" frameborder="0" allowfullscreen></iframe></p>'
 
 
-        elif casestudyname =="techCommuter":
-            study["url"]="techCommuter"
+        elif casestudyname =="tech_commuter" or casestudyname =="techCommuter" or casestudyname =="techcommuter":
+            study["url"]="tech_commuter"
             study["title"]="Santa Cruz Tech Commuter Survey"
             study["image"]="techCommuter.png"
             study["statusType"]="danger"
@@ -687,6 +699,46 @@ class CorpController(BaseController):
 
             questions=[]
             study["questions"]=questions
+
+        elif casestudyname =="open_streets_capitola" or casestudyname == "openStreetsCapitola" or casestudyname == "openstreetscapitola":
+            study["url"]="open_streets_capitola"
+            study["title"]="Open Streets - Capitola"
+            study["image"]="openStreetsCover.jpg"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 5-12-2014"
+            study["background"]=""
+            study["solution"]=""
+            study["results"]=""
+            study["text"]='openStreetsCapitola'
+            study["nextSteps"]=""
+            study['stats']='openStreetsCap1'
+            study['link']= 'http://surveys.civinomics.com/open-streets-capitola-participant-survey-questions'
+
+            study['respondents'] = 428
+            study['partnerLogo']='openStreetsLogo.gif'
+            study['partnerName']=''
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']=""
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
             
             
             
@@ -698,7 +750,7 @@ class CorpController(BaseController):
     def displayCareer(self, id):
         careername=id
         career={}
-        if careername=="engfrontend":
+        if careername=="eng_frontend":
             career["title"]="Software Engineer - Front End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
             career["description"]="Make this site beautiful. We need someone who is going to transform Civinomics into a clean, modern web app. Doing so will require more than a few photoshop mockups. Ideally you have already used bootstrap, angular JS and know some python. You can't make the front end fun unless you know the basics of passing data around. Show us that you know way more than us about composing clean, snappy CSS. If you have experience with iOS to boot, that rocks."
@@ -727,7 +779,7 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
-        if careername=="engbackend":
+        if careername=="eng_backend":
             career["title"]="Software Engineer - Back End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
             career["description"]="Make Civinomics faster, more secure and self-sustaining. We're looking for someone who can help us quickly materialize revenue opportunities on the platform, refine our architecture, internationalize and scale. Experience managing a team is a huge plus."
@@ -766,7 +818,7 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
-        if careername=="prgmManager":
+        if careername=="prgm_manager":
             career["title"]="Program Manager"
             career["commitment location"]="Fulll time - Santa Cruz, CA"
             career["description"]="Implement best practices to help Civinomics customers get the most out of their usage. Make vital product recommendations based on customer feedback. Facilitate cutting edge online interaction paradigm."
@@ -801,7 +853,7 @@ class CorpController(BaseController):
             recommendeds=[]
             career["recommendeds"]=recommendeds
 
-        if careername=="acctManager":
+        if careername=="acct_manager":
             career["title"]="Account Manager"
             career["commitment location"]="Full time - Santa Cruz and San Francisco, CA"
             career["description"]="We need a meticulous go getter who can keep clients happy and grow business. Existing clients range from government, to non-profit organizations, to political candidates, to sponsors.  Demonstrated passion for social causes through previous work or serious personal projects is a must. Amazing talent with CRM and PowerPoint / Keynote required. Prove to us that you can listen to what a client needs and work with a team to over-deliver on tight deadlines."
@@ -833,21 +885,21 @@ class CorpController(BaseController):
         engfrontend={}
         engfrontend["title"]="Software Engineer - Front End"
         engfrontend["department"]="Engineering"
-        engfrontend["url"]="engfrontend"
+        engfrontend["url"]="eng_frontend"
         c.careers.append(engfrontend)
         engbackend={}
         engbackend["title"]="Software Engineer - Back End"
         engbackend["department"]="Engineering"
-        engbackend["url"]="engbackend"
+        engbackend["url"]="eng_backend"
         c.careers.append(engbackend)
         career={}
         #career["title"]="Program Manager"
         #career["department"]="Operations"
-        #career["url"]="prgmManager"
+        #career["url"]="prgm_manager"
         #c.careers.append(career)
         career["title"]="Account Manager"
         career["department"]="Sales"
-        career["url"]="acctManager"
+        career["url"]="acct_manager"
         c.careers.append(career)
         prep={}
         prep["title"]="Public Outreach Representative"
@@ -870,8 +922,17 @@ class CorpController(BaseController):
         toddAnderson['title']='Lead Mobile Engineer'
         toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
         toddAnderson['photo']='todd_585.jpg'
-        toddAnderson['photoHover']='todd_silly_585.jpg'
+        toddAnderson['photoHover']='todd_585.jpg'
         c.team.append(toddAnderson)
+        
+        seanCampbell={}
+        seanCampbell["name"]="Sean Campbell"
+        seanCampbell['title']='CFO'
+        seanCampbell['bio']="An MBA with a passion for startups and government, Sean is excited to develop the infrastructure behind Civinomics. Sean spent three years as an accountant and finance manager at Ticketfly, the social ticketing platform. Previously he worked with a wide variety of small businesses and startups in San Francisco. While at UCSC Sean co-owned Slug Books Co-op, which for ten years provided discount textbooks to thousands of UCSC students at low margins while employing hundreds. Sean currently serves on the Santa Cruz Public Library Joint Powers Board as a Citizen Member."
+        seanCampbell['photo']='sean_campbell.jpg'
+        seanCampbell['photoHover']='sean_campbell.jpg'
+        c.team.append(seanCampbell)
+        
         juanPabloD={}
         juanPabloD["name"]="Juan Pablo Duvanced"
         juanPabloD['title']='Account Executive'
@@ -891,21 +952,21 @@ class CorpController(BaseController):
         estherKim['title']='Marketing Manager'
         estherKim['bio']="My name is Esther Kim, I'm a recent graduate from UCSC in Business Management & Economics. I am an avid blogger, amateur videographer, and a work hard play hard advocate. I fell in love with Santa Cruz when I started surfing and mountain biking and I don't plan on leaving anytime soon. At Civinomics, I hope to bring in a specialized skillset of what I call 'grassroots' marketing to help set a structured brand goal of being a community leader."
         estherKim['photo']='esther_585.jpg'
-        estherKim['photoHover']='esther_silly_585.jpg'
+        estherKim['photoHover']='esther_585.jpg'
         c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
         manuK['title']='Founder & CEO'
         manuK['bio']="Manu makes sure Civinomics runs on time. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford."
         manuK['photo']='manu_585.jpg'
-        manuK['photoHover']='manu_silly_585.jpg'
+        manuK['photoHover']='manu_585.jpg'
         c.team.append(manuK)
         chrisN={}
         chrisN["name"]="Chris Neklason"
         chrisN['title']='Product Management'
         chrisN['bio']="Chris Neklason has been involved with community networking since 1984, before the Internet, and has decades of experience as a UNIX software engineer and as co-founder of Cruzio, one of the oldest ongoing independent ISPs in the United States."
         chrisN['photo']='chris_585.jpg'
-        chrisN['photoHover']='chris_silly_585.jpg'
+        chrisN['photoHover']='chris_585.jpg'
         c.team.append(chrisN)
         derroldP={}
         derroldP["name"]="Derrold Purifoy"
@@ -919,14 +980,14 @@ class CorpController(BaseController):
         robertS['title']='Founder & CMO'
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
         robertS['photo']='robert_585.jpg'
-        robertS['photoHover']='robert_silly_585.jpg'
+        robertS['photoHover']='robert_585.jpg'
         c.team.append(robertS)
         russellSterten={}
         russellSterten["name"]="Russell Sterten"
         russellSterten['title']='Program Manager '
         russellSterten['bio']="Hi, my name is Russell and it's good to be on board with Civinomics.  I am excited about the prospect of leveraging cutting edge communications and Web 2.0 technologies to dramatically increase people's engagement on issues facing their community. Before joining Civinomics I worked as a grassroots campaign organizer - most recently on a San Rafael city councilman's successful bid for the State Assembly - and have also been a substitute teacher in the East Bay and Marin.  Now I am looking forward to working with Civinomics and empowering people to help change the world."
         russellSterten['photo']='russell_585.jpg'
-        russellSterten['photoHover']='russell_silly_585.jpg'
+        russellSterten['photoHover']='russell_585.jpg'
         c.team.append(russellSterten)
 
         c.advisors=[]

@@ -3,33 +3,35 @@
 <%namespace name="mako" file="/lib/mako_lib.mako" />
 
 <%def name="display_body_right_content()">
-    <div class="row-fluid">
+    <div class="row">
         <h1>About</h1>
         </br>
+        <!--
         <p class="lead centered">Our vision</p>
-        <div class="row-fluid">
-            <div class="row-fluid">
-                <div class="span3 centered">
+        <div class="row">
+            <div class="row">
+                <div class="col-sm-3 col-sm-offset-1 centered">
                     <h3><i class="icon-group"></i> Build a Community</h3>
                     <p>Grow a network of civicially engaged people worldwide. This community develops and shares policy ideas to improve our cities, states and countries.</p>
                 </div> 
-                <div class="span1 centered" style="margin-top: 30px;">
+                <div class="col-sm-1 centered" style="margin-top: 30px;">
                     <i class="icon-arrow-right icon-3x"></i>
                 </div>
-                <div class="span3 centered">
+                <div class="col-sm-3 centered">
                     <h3><i class="icon-building"></i> Vote in Our Hometowns</h3>
                     <p>Transition to online voting for local policy decisions. Implement and track the effects of public initiatives developed online.</p>
                 </div>  
-                <div class="span1 centered" style="margin-top: 30px;">
+                <div class="col-sm-1 centered" style="margin-top: 30px;">
                     <i class="icon-arrow-right icon-3x"></i>
                 </div> 
-                <div class="span3 centered">
+                <div class="col-sm-3 centered">
                     <h3><i class="icon-flag"></i> Renew Our Nations</h2>
                     <p>Directly vote on vital reforms for our country. In every country. Government of, by, and for the people is reborn.</p>
                 </div>                 
             </div>
         </div>
         <hr>
+        -->
         <p class="lead centered">How it works</p>
         <div class="centered">
             <img class="plain" src="/images/corp/howitworks.png" alt="">

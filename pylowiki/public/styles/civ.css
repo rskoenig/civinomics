@@ -3,7 +3,7 @@ html,body{
    font-weight: 300;
    font-size: 16px; 
    height: 100%;
-   padding-top: 20px;
+   padding-top: 30px;
    background-color: #e9eaed;
 }
 
@@ -59,6 +59,10 @@ a, .clickable{
 
 /* h */
 
+.well-header{
+  margin-top:0;
+}
+
 h1,h2,h3,h4,h5{
   font-weight: 500;
 }
@@ -89,6 +93,10 @@ h5.h45, h4.h45{
   /* Negative indent footer by it's height */
   margin:auto;
   background-color: #2a2a2a;
+}
+
+#wrap.splash {
+  background-color: #fff;
 }
 
 /* Set the fixed height of the footer here */
@@ -167,6 +175,7 @@ h5.h45, h4.h45{
 @media(min-width: 767px){
   .container.splash-container{
     min-width: 940px;
+    background-color: #fff;
   }
 }
 
@@ -607,10 +616,10 @@ padding: 0;
 }
 
 .workshop-tag{
-    margin-left:5px;
+    margin-right:3px;
 }
 
-.green-tag, .Outdoors, .Land, .Environment, .Animals{
+.green-tag, .Outdoors, .Land, .Environment, .Animals, .Parks, .Parks_and_Rec{
     background-color: #075D00;
 }
 .orange-tag, .Arts, .Entertainment, .Sports, .Community, .Other{
@@ -713,13 +722,17 @@ div.unread-message:hover {
   padding-bottom: 8px;
 }
 
+.iconListing-row{
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .horizontal-list.iconListing{
   margin-left: 0px;
-  margin-top:15px;
-  margin-bottom: 0px;
   font-size: .85em;
   font-weight: 500;
 }
+
 
 img.workshop-listing{
    width:100%;
@@ -738,17 +751,25 @@ h1.workshop-title{
    color:#fff;
 }
 
+.nav-logo{
+  height: 40px;
+  margin-top: 5px; 
+  margin-left: 5px;
+}
+
+
+
 .logo{
   background-image: url('/images/logo_white_myriad_med.png');
   height: 35px;
-  width: 185px;
+  width: 40px;
   background-repeat: none;
 }
 
 .logo.logo-lg{
-  background-image: url('/images/logo_white_myriad_medlg.png');
+  background-image: url('/images/logo_simple_medlg.png');
   height: 40px;
-  width: 210px;
+  width: 45px;
   background-repeat: none;
 }
 
@@ -985,6 +1006,7 @@ ul.activity > li {
 .wrap-photo{
     box-shadow: 0 0px 4px #111;
     border: 1px solid #005d28;
+    width: 100%;
 }
 
 .wrap-voting-group{
@@ -1431,6 +1453,10 @@ td.scope-icon{
    position: absolute;
 }
 
+.voteWrapper .chevron-score{
+  margin-top: 7px;
+}
+
 a.yesVote, a.noVote{
    width: 85px;
    position: absolute;
@@ -1442,6 +1468,10 @@ a.yesVote, a.noVote{
   padding-left: 40px;
   width: 165px;
   background-color:whitesmoke;
+}
+
+.well.greyWell{
+  background-color:whitesmoke; 
 }
 
 .search-listing .well.yesNoWell{
@@ -1610,6 +1640,12 @@ ul.goals li.finished {
 .goalList{
     margin-top:-10px;
 }
+
+ul.unstyled, ol.unstyled {
+  margin-left: 0;
+  list-style: none;
+}
+
 .goalList li .deleteGoal{
   display:none;
   width:15px;
@@ -1632,6 +1668,15 @@ ul.listeners > li {
 }
 .no-border{
     border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+a.no-border:hover{
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
 }
 .no-bottom{
     padding-bottom:0;
@@ -1930,6 +1975,11 @@ li.thumbnail-gallery{
 }
 
 
+.spaced-bullets li{
+  text-align: left;
+  margin: 20px auto;
+}
+
   /* guiders */
   
   .guider {
@@ -2179,7 +2229,7 @@ li.thumbnail-gallery{
   color: #90ccaa;
 }
 
-.icon-chevron-sign-up.yesVoted{
+.icon-chevron-sign-up.yesVoted, .icon-chevron-sign-up.voted{
   color: #00903e;
 }
 
@@ -2187,7 +2237,7 @@ li.thumbnail-gallery{
   color: #d1979b
 }
 
-.icon-chevron-sign-down.noVoted{
+.icon-chevron-sign-down.noVoted, .icon-chevron-sign-down.voted{
   color: #90000a;
 }
 
@@ -2246,6 +2296,7 @@ li.thumbnail-gallery{
 
 .well.search-listing{
   margin-bottom: 8px;
+  padding-bottom: 0;
 }
 
 .table.plain{
@@ -2302,6 +2353,7 @@ text-align: right;
 .thumbnail.med-flag{
   width: 64px; 
   margin-right: 10px;
+  display: inline;
 }
 
 .thumbnail.med-flag:hover{
@@ -2312,6 +2364,7 @@ text-align: right;
   width:40px !important; 
   height: 27px;
   margin-bottom: 5px;
+  display: inline;
 }
 
 .flag.mini-flag{
@@ -2789,7 +2842,7 @@ button.signup, button.login{
   padding-right: 10px;
   width: 450px;*/
   color: #fff;
-  margin-top: 250px;
+  margin-top: 220px;
   margin-left: auto;
   margin-right: auto;
   top: auto;
@@ -2812,6 +2865,10 @@ button.signup, button.login{
 }
 .slogan2 img{
   min-height: 175px;
+}
+
+.row-fluid.client-logos div.span2{
+  margin-left: 2.1%;
 }
 
 @media (max-width: 1250px){
@@ -2898,6 +2955,7 @@ button.signup, button.login{
     width: 91.6%;
     margin-left: 4.2%;
   }
+
   .footer-civ.condensed{
     position: relative !important;
     margin-top: 100px;
@@ -3018,6 +3076,7 @@ button.close{
     height:425px; 
     background-size:cover;
     background-position: center center;
+    margin-top: -10px;
 }
 #login-bg{
   position:absolute; 
@@ -3423,6 +3482,26 @@ hr.object-list-header{
   width: 100%;
 }
 
+.info-table{
+  width: 100%
+}
+
+.info-table tr td{
+  padding-bottom: 10px; 
+}
+
+.info-table tr td.right{
+  width: 40%;
+  text-align: right;
+  font-weight: bold;
+}
+
+.info-table tr td.left{
+  width: 60%;
+  padding-right: 5px;
+}
+
+
 .activity-item, .message-table, .addNewObj{
   width: 100%;
   margin-bottom: 5px;
@@ -3444,7 +3523,17 @@ hr.object-list-header{
 
 .comment-avatar-cell{
   vertical-align: top;
-  width: 35px;
+  width: 35px !important;
+}
+.comment-main-cell{
+  padding: 10px;
+}
+
+.comment-row{
+  border-top: 1px solid #ddd;
+}
+.comment-vote{
+  padding-top: 10px;
 }
 
 .activity-item .avatar{
@@ -3484,6 +3573,9 @@ table.activity-comments{
   width: 100%;
   background-color: whitesmoke;
 }
+div.activity-comments{
+    padding-bottom:19px;
+}
 
 .date{
   color:grey;
@@ -3519,6 +3611,7 @@ svg{
 
 .home-left-panel{
     position: fixed;
+    left: 0;
     overflow: show;
     width: 50px;
     height : 100vh;
@@ -3595,4 +3688,17 @@ svg{
 .spaced-bullets li{
   margin-top: 20px;
   margin-right: 20px;
+}
+
+.new-comment{
+  width: 100% !important;
+  margin-left: 10px;
+}
+
+.login-container{
+  margin-top: -10px;
+}
+
+.title-cell{
+  padding-left:10px;
 }

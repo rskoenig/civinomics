@@ -331,18 +331,18 @@
     <div id="${collapseID}" class="${thisClass}">
         <div class="panel-body">
             <div class="row">
-                <div class="col-sm-1">
+                <div class="col-xs-1">
                     <%
                         if c.thing['disabled'] == '0':
                             lib_6.upDownVote(comment)
                     %>
-                </div> <!--/.col-sm-1-->
-                <div class="col-sm-11 comment-data">
+                </div> <!--/.col-xs-1-->
+                <div class="col-xs-11 comment-data">
                     ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK, render_flags = misaka.HTML_SKIP_IMAGES) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif
-                </div> <!--/.col-sm-11-->
+                </div> <!--/.col-xs-11-->
             </div> <!--/.row-->
             <%
                 if c.thing['disabled'] == '0':

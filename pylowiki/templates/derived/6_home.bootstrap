@@ -1,14 +1,16 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
 <%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+<% 
+   lib.return_to()
+%>
 
 <div class="container-fluid" ng-controller = "activityController">
-
-
     ###
     ### Zip Lookup
     ###
@@ -34,8 +36,8 @@
                       <p>Look up a zip code</p>
                       <form class="form-inline" name="zipForm">
                         <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                            <input class="input-small" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                            <button class="btn btn-primary" ng-click="lookup()">Search</button><br>
+                            <input class="input-small form-control" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                            <button class="btn btn-primary top-space" ng-click="lookup()">Search</button><br>
                             <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
                         </div>
                       </form>
@@ -44,8 +46,8 @@
                 </div>
                 
             </div><!-- ng-controller -->
-        </div>
-    </div>
+        </div><!-- ng-init -->
+    </div><!-- home-left-panel -->
   
   ###
   ### Activity Feed
@@ -59,11 +61,12 @@
       <div class="row">
         <div class="col-xs-12" style="margin-top: 5px; margin-bottom: 10px;">
           <ul class="nav nav-pills">
-            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
             <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
+            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
             % if c.authuser:
               <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
               <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> County Activity</a></li>
+              <li ng-class="{'active' : activityType == '/meetings'}"><a ng-click="getMeetingActivity()"> Upcoming Meetings </a></li>
             % endif
           </ul>
         </div>
@@ -80,6 +83,10 @@
         <tr>
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
+          </td>
+          
+          <td ng-if="item.objType == 'meeting'">
+            ${ng_helpers.meeting_listing()}
           </td>
 
           <td ng-if="item.objType == 'idea'">
@@ -104,7 +111,6 @@
       <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
-
     </div><!-- infinite-scroll -->
 
   </div><!-- /span8 -->
@@ -196,7 +202,7 @@
             </div>
         % endif
       </div><!-- infinite-scroll -->
-    </div>
+    </div><!-- follow-controller -->
 
   </div><!-- /span4 -->
 </div><!-- /row -->
@@ -208,6 +214,7 @@
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/following.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/follow_unfollow.js')}"></script>
+  <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="extraScripts()">

@@ -1,6 +1,6 @@
 <%!
     import pylowiki.lib.db.user         as userLib
-    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
     import misaka as m
@@ -264,7 +264,7 @@
 
 <%def name="editInitiative()">
     <% 
-        tagList = workshopLib.getWorkshopTagCategories()
+        tagList = tagLib.getTagCategories()
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
@@ -289,7 +289,7 @@
     % endif
     <div class="row edit-initiative" id="basics">
         <div class="col-sm-12">
-        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
+        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="showThingCtrl" ng-init="cost = '${c.initiative['cost']}'">
             <div class="row">
                 <h3 class="initiative-title edit no-top">1. Basics</h3>
             </div><!-- row -->

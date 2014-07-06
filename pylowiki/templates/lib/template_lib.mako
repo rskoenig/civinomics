@@ -3,98 +3,110 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
-    import pylowiki.lib.db.workshop as workshopLib
+    import pylowiki.lib.db.tag      as tagLib
     from types import StringTypes
 %>
 
 !
 <%def name="mainNavbar()">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container-fluid">
-        <ul class="nav navbar-nav navbar-left">
-            <li>
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 % if 'user' in session:
-                    <a style="padding: 5px 0 0 0;" href="/home"><img style="height:40px;" src="/images/civ_logo_simple.png"></a>
+                    <a href="/home"><img class="nav-logo" src="/images/civ_logo_simple.png"></a>
                 % else:
-                    <a style="padding: 5px 0 0 0;" href="/splash"><img style="height:40px;" src="/images/civ_logo_simple.png"></a>
+                    <a href="/splash"><img class="nav-logo" src="/images/civ_logo_simple.png"></a>
                 % endif
-            </li>
-        </ul>
-        
-        <form class="navbar-form navbar-left" action="/search">
-          <div class="form-group">
-            <input type="text" class="form-control" name="searchQuery" placeholder="Search">
-          </div>
-          <button type="submit" class="btn btn-default">Submit</button>
-        </form>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="/home">Explore</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    % if 'user' in session:
-                        <li>
-                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
-                        </li>
-                    % endif
-                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
-                </ul>
-            </li>
-            % if c.authuser:
-                % if userLib.isAdmin(c.authuser.id):
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                            <li><a tabindex="-1" href="/admin/users">All Users</a></li>
-                            <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
-                            <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
-                            <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
-                            <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
-                            <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
-                            <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
-                            <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
-                            <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
-                            <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
-                            <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-                        </ul>
-                    </li>
-                % endif
-                <li>
-                    <%
-                        messageCount = ''
-                        numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
-                        if numMessages:
-                            if numMessages > 0:
-                                messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
-                    %>
-                    <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
-                        % if c.authuser['activated'] == '1':
-                            <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
-                        % endif
-                        <li><a href="/help">Help</a></li>
-                        <li class="divider"></li>
-                        <li><a tabindex="-1" href="/login/logout">Logout</a></li>
-                    </ul>
-                </li>
-            % else:
-                <li><a href="/login">Login</a></li>
-                <li><a href="/signup">Signup</a></li>
-            % endif
+            </div>
 
-        </ul>
-      </div>
+            <div class="collapse navbar-collapse">
+
+                <form class="navbar-form navbar-left" action="/search">
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="searchQuery" placeholder="Search">
+                  </div>
+                  <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/home">Home</a></li>
+                    % if c.authuser:
+                        % if c.authuser['activated'] == '1':
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    % if 'user' in session:
+                                        <li>
+                                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                                        </li>
+                                    % endif
+                                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
+                                </ul>
+                            </li>
+                        % endif
+                        % if userLib.isAdmin(c.authuser.id):
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                    <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                </ul>
+                            </li>
+                        % endif
+                        <li>
+                            <%
+                                messageCount = ''
+                                numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
+                                if numMessages:
+                                    if numMessages > 0:
+                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                            %>
+                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                                % if c.authuser['activated'] == '1':
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                                % endif
+                                <li><a href="/help">Help</a></li>
+                                <li class="divider"></li>
+                                <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    % else:
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/signup">Signup</a></li>
+                    % endif
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- container fluid -->
     </nav>
 </%def>
 
 
 <%def name="oldNavbar()">
-    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+    <% tagCategories = tagLib.getTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -153,6 +165,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -166,6 +179,9 @@
                                         <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                                     </li>
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
                                 </ul>
                             </li>
 
@@ -183,7 +199,7 @@
                         <li class="dropdown ${pSelected}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" id="profileDropdown">
                                 <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
                                 % if c.authuser['activated'] == '1':
                                     <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
@@ -297,11 +313,11 @@
             <div class="row ">
                 <div class="col-sm-5 text-center">
                     <ul class="horizontal-list">
-                        <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/team">Team</a></li>
                         <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/news">News</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="http://civinomics.storenvy.com" target="_blank">Gear Store</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         
                     </ul>
@@ -311,6 +327,7 @@
                 </div>
                 <div class="col-sm-5">
                     <ul class="horizontal-list">
+                        <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>
                         <li>© 2014 Civinomics, Inc. </li>
@@ -323,7 +340,7 @@
 
 <%def name="search_drawer()">
     <div id="search" class="collapse search_drawer">
-        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <% tagCategories = tagLib.getTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid searches">
             <div class="span3 offset1 small-show">
@@ -399,11 +416,13 @@
         % endif
         ${fields_alert()}
         % if c.splashMsg:
-            <% message = c.splashMsg %>
-            <div class="alert alert-${message['type']}">
-                <button data-dismiss="alert" class="close">x</button>
-                <strong>${message['title']}</strong> ${message['content']}
-            </div> 
+            <div class="col-xs-12">
+                <% message = c.splashMsg %>
+                <div class="alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div> 
+            </div>
         % endif
       ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
@@ -421,7 +440,7 @@
 <%def name="socialLogins()">
     <div class="row social-login centered">
         <div id="fbLoginButton2">
-            <a href="/fbLogin"><img src="/images/f-login.png"></a>
+            <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
