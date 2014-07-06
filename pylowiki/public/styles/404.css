@@ -1,0 +1,14 @@
+.unfound{
+	background-color:#0000cc;
+	font-family:monospace;
+}
+
+.unfound-title{
+	color:#330033;
+	background-color:#C0C0C0;
+}
+
+.unfound-message{
+	color:#ffffff;
+	text-align:center;
+}
