@@ -30,6 +30,8 @@ def make_map():
     map.connect('/{systemAdmin:systemAdmin/?}', controller = 'systemAdmin', action = 'index')
     map.connect('/systemAdmin/{handler:handler/?}', controller = 'systemAdmin', action = 'handler')
     map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin')
+    map.connect('/getAdminList{end:/?}' , controller = 'admin', action = 'getList')
+    map.connect('/getAdminList/{type}/{offset}{end:/?}' , controller = 'admin', action = 'getList', type = '{type}', offset='{offset}')
     
     ########################################################################################################
     # 
