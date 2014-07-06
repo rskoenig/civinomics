@@ -20,7 +20,7 @@ def setup_app(command, conf, vars):
 
     # If test.ini drop all existing tables
     filename = os.path.split(conf.filename)[-1]
-    if filename == 'developmentMaria.ini' or filename == 'developmentTodd.ini':    
+    if filename == 'developmentTodd.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
         
@@ -42,7 +42,6 @@ def setup_app(command, conf, vars):
 
     # Try to create admin account and homepage
     try:
-
         #user, passwd, email = conf['admin.user'], conf['admin.pass'], conf['admin.email']
         # Edolfo
         name = conf['admin.name']
@@ -51,8 +50,9 @@ def setup_app(command, conf, vars):
         postalCode = conf['admin.postalCode']
         country = 'United States'
         memberType = 'professional'
+        log.info('Aaaaaaaaaaaaaaaaa FILENAME IS %s', filename)
         if name != "" and passwd != ""  and email != "" and postalCode != "":
-            if filename != 'testToddNoReset.ini':
+            if filename != 'developmentMaria.ini':
                 # Create the admin user
                 u = User( email, name, passwd, country, memberType, postalCode )
                 u = getUserByEmail(email)

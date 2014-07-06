@@ -57,6 +57,18 @@ def getAllUsers(disabled = '0', deleted = '0'):
     except:
         return False
 
+def getUsers(limit, offset = '0',disabled = '0', deleted = '0'):
+    q = meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+		.offset(offset)
+    if limit:
+        postList = q.limit(limit)
+    else: 
+        postList = q.all()
+    return postList
+
+
 def getUserByEmail(email, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email.lower()))).filter(Thing.data.any(wc('disabled', disabled))).one()
@@ -234,6 +246,7 @@ class User(object):
         u['deleted'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
+        log.info('postalCode5 expect number: %s'%postalCode)
         u['country'] =  country
         u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
@@ -258,8 +271,8 @@ class User(object):
             u['user_source'] = "Survey App"
             u['needs_password'] = '1'
             u['poll_name'] = kwargs['poll']
-        
-            log.info(u['poll_name'])
+            u['gender'] = kwargs['gender']
+            u['dob'] = kwargs['dob']
 
         commit(u)
         u['urlCode'] = toBase62(u)
@@ -278,7 +291,10 @@ class User(object):
 
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
-        
+       
+        if 'needsPassword' in kwargs:
+            c.currentUserId = u.id
+
         # update any pmembers and listeners
         updateList = genericLib.getThingsByEmail(email)
         for uItem in updateList:
