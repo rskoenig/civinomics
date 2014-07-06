@@ -51,6 +51,7 @@
             <div id="progressbar"></div >
 			</div>
             </div><!--file_accepted-->
+            
             <span class="btn btn-success pull-right">
                         <i class="icon-plus icon-white"></i>
                         <span>CSV</span>
