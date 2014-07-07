@@ -1,4 +1,5 @@
 import logging
+import pickle
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -11,6 +12,15 @@ import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.mail            as mailLib
 
+import pylowiki.lib.db.follow       	as followLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.pmember      	as pMemberLib
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.initiative   	as initiativeLib
+import pylowiki.lib.db.rating           as ratingLib
+import simplejson as json
+
 import time
 
 log = logging.getLogger(__name__)
@@ -18,14 +28,25 @@ log = logging.getLogger(__name__)
 class ActivateController(BaseController):
     
     def setSession(self):
-        session['listenerWorkshops'] = []
-        session['bookmarkedWorkshops'] = [] 
-        session['privateWorkshops'] = []
-        session['facilitatorWorkshops'] = []
-        session['facilitatorInitiatives'] = [] 
-        session['bookmarkedInitiatives'] = []
-        session['followingUsers'] = []
+        # get and cache their ratings
+        if 'ratings' not in c.authuser:
+            ratings = ratingLib.getRatingsForUser()
+            c.authuser['ratings'] = str(pickle.dumps(ratings))
+            commit(c.authuser)
+        else:
+            ratings = pickle.loads(str(c.authuser["ratings"]))
+            
+        session["ratings"] = ratings
         session.save()
+        
+        # get their workshops and initiatives of interest
+        followLib.setWorkshopFollowsInSession()
+        followLib.setUserFollowsInSession()
+        pMemberLib.setPrivateMemberWorkshopsInSession()
+        listenerLib.setListenersForUserInSession()
+        facilitatorLib.setFacilitatorsByUserInSession()
+        initiativeLib.setInitiativesForUserInSession()
+        followLib.setInitiativeFollowsInSession()
 
     def index(self, id):
         hash, sep, email = id.partition('__')
@@ -142,10 +163,14 @@ class ActivateController(BaseController):
         user = userLib.getUserByCode(userCode)
         if not user:
             abort(404)
+        # ugly hack to prevent this from being called twice by the javascript
+        if 'resendActivation' in session:
+            session.pop('resendActivation')
+            return json.dumps({'statusCode':1})
+        
+        session['resendActivation'] = '1'
+        session.save()
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
         mailLib.sendActivationMail(user['email'], url)
-        
-        
-        
-        
+        return json.dumps({'statusCode':1})

@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
@@ -55,12 +56,17 @@ def getPrivateMemberWorkshops(user, deleted = '0'):
     return retlist
 
 def setPrivateMemberWorkshopsInSession(pwdeleted = '0'):
-    privateWorkshops = []
-    privateList = getPrivateMemberWorkshops(c.authuser, deleted = pwdeleted)
-    if privateList:
-        pmemberWorkshops = [genericLib.getThing(pMemberObj['workshopCode']) for pMemberObj in privateList]
-        privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
-        privateWorkshops += [w['urlCode'] for w in privateList]
+    if 'privateWorkshops' in c.authuser:
+        privateWorkshops = pickle.loads(str(c.authuser["privateWorkshops"]))   
+    else:
+        privateWorkshops = []
+        privateList = getPrivateMemberWorkshops(c.authuser, deleted = pwdeleted)
+        if privateList:
+            pmemberWorkshops = [genericLib.getThing(pMemberObj['workshopCode']) for pMemberObj in privateList]
+            privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+            privateWorkshops += [w['urlCode'] for w in privateList]
+        c.authuser["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+        commit(c.authuser)
         
     session["privateWorkshops"] = privateWorkshops
     session.save()
@@ -78,6 +84,23 @@ def PMember(workshopCode, email, type, owner, user = None):
     p['urlCode'] = toBase62(p)
     commit(p)
     if user:
+        privateWorkshops = []
         p = genericLib.linkChildToParent(p, user)
+        if 'privateWorkshops' in user:
+            privateWorkshops = pickle.loads(str(user["privateWorkshops"]))
+        else:
+            privateList = getPrivateMemberWorkshops(user)
+            if privateList:
+                pmemberWorkshops = [genericLib.getThing(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                privateList = [w for w in pmemberWorkshops if w['public_private'] != 'public']
+                privateWorkshops += [w['urlCode'] for w in privateList]
+                log.info('privateWorkshops is %s'%privateWorkshops)
+                user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+                commit(user)
+
+        if workshopCode not in privateWorkshops:
+            privateWorkshops.append(workshopCode)
+            user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+            commit(user)
 
     return p

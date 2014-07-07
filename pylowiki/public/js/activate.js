@@ -21,7 +21,7 @@ $('button.resendActivateEmailButton').click(function(e){
     $button = $(this);
     var urlList = $button.attr('data-URL-list').split(/_/);
     var urlString = '/activateResend/' + urlList[1];
-    $.ajax({
+    var result = $.ajax({
         type : 'POST',
         async : false,
         url  : urlString

@@ -46,7 +46,7 @@
                     return
         %>
         <div class="media-body">
-            <span class="label label-inverse">Initiative</span> <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            <span class="label label-info">Initiative</span> <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
@@ -65,7 +65,7 @@
 
 <%def name="showWorkshop(workshop, **kwargs)">
     <div class="media profile-workshop">
-        <a class="pull-left" ${lib_6.workshopLink(workshop)}>
+        <a class="pull-left" href="${lib_6.workshopLink(workshop)}">
           <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${lib_6.workshopImage(workshop, raw=True) | n}); background-size: cover; background-position: center center;"></div>
         </a>
         <%
@@ -78,8 +78,8 @@
                 role = ''
         %>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)} class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
-            <span class="label label-inverse pull-right">${role}</span>
+            <a href="${lib_6.workshopLink(workshop)}" class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
+            <span class="label label-info pull-right">${role}</span>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     % if role == 'Facilitating':
@@ -96,27 +96,27 @@
                                 if 'digest' in f and f['digest'] == '1':
                                     digestChecked = 'checked'
                             %>
-                            <div class="row-fluid" ng-controller="facilitatorController">
-                                <div class="span3">Email when:</div>
-                                <div class="span3">
+                            <div class="row" ng-controller="facilitatorController">
+                                <div class="col-sm-3">Email when:</div>
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         New Items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                                <div class="span3">
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         New Flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
                                         <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                                <div class="span3">
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                            </div><!-- row-fluid -->
+                                </div><!-- col-sm-3 -->
+                            </div><!-- row -->
                         </div><!-- margin-top -->
                     % endif
                     % if role == 'Listening':
@@ -125,26 +125,27 @@
                                 l = listenerLib.getListener(c.user['email'], workshop)
                                 itemsChecked = ''
                                 digestChecked = ''
-                                if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                                    itemsChecked = 'checked'
-                                if 'digest' in l and l['digest'] == '1':
-                                    digestChecked = 'checked'
+                                if l:
+                                    if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                                    if 'digest' in l and l['digest'] == '1':
+                                        digestChecked = 'checked'
                             %>
-                            <div class="row-fluid" ng-controller="listenerController">
-                                <div class="span3">Email when:</div>
-                                <div class="span3">
+                            <div class="row" ng-controller="listenerController">
+                                <div class="col-sm-3">Email when:</div>
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                                <div class="span3">
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                            </div><!-- row-fluid -->
+                                </div><!-- col-sm-3 -->
+                            </div><!-- row -->
                         </div><!-- margin-top -->
                     % endif
                     % if role == 'Bookmarked': 
@@ -159,21 +160,21 @@
                                     if 'digest' in f and f['digest'] == '1':
                                         digestChecked = 'checked'
                                 %>
-                                <div class="row-fluid" ng-controller="followerController">
-                                    <div class="span3">Email when:</div>
-                                    <div class="span3">
+                                <div class="row" ng-controller="followerController">
+                                    <div class="col-sm-3">Email when:</div>
+                                    <div class="col-sm-3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                             New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                             <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                         </form>
-                                    </div><!-- span3 -->
-                                    <div class="span3">
+                                    </div><!-- col-sm-3 -->
+                                    <div class="col-sm-3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                             Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                             <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                         </form>
-                                    </div><!-- span3 -->
-                                </div><!-- row-fluid -->
+                                    </div><!-- col-sm-3 -->
+                                </div><!-- row -->
                             </div><!-- margin-top -->
                         % endif
                     % endif
@@ -188,21 +189,21 @@
                                 if 'digest' in p and p['digest'] == '1':
                                         digestChecked = 'checked'
                             %>
-                            <div class="row-fluid" ng-controller="pmemberController">
-                                <div class="span3">Email when:</div>
-                                <div class="span3">
+                            <div class="row" ng-controller="pmemberController">
+                                <div class="col-sm-3">Email when:</div>
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                                <div class="span3">
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
                                         <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
                                     </form>
-                                </div><!-- span3 -->
-                            </div><!-- row-fluid -->
+                                </div><!-- col-sm-3 -->
+                            </div><!-- row -->
                         </div><!-- margin-top -->
                     % endif
                 % endif
@@ -283,7 +284,7 @@
                                 % endif
                                 %if thing.objType == 'workshop':
                                     ${showWorkshop(thing, imageOnly = True)}
-                                    <span class="label label-inverse">Workshop</span> <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
+                                    <span class="label label-info">Workshop</span> <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
                                     <br />
                                     Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
                                 % elif thing.objType == 'initiative':
@@ -311,7 +312,7 @@
 <%def name="followButton(user)">
     % if c.conf['read_only.value'] == 'true':
           <% pass %>
-    % elif not c.privs['provisional']:
+    % else:
         <span class="button_container">
         % if c.isFollowing:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn pull-right followButton following">
@@ -347,6 +348,7 @@
         
         % for item in activity:
             <% 
+                origObjType = item.objType
                 objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
                 
@@ -387,11 +389,17 @@
                         parentURL = item['parent_url']
                         parentObjType = 'initiative'
                         parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'meetingCode' in item:
+                        parentCode = item['meetingCode']
+                        parentURL = item['meeting_url']
+                        parentObjType = 'meeting'
+                        parentLink = "/meeting/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
                         log.info("no parentObjType item is %s"%item.keys())
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+                        
                     title = lib_6.ellipsisIZE(item['data'], 40)
                     itemLink = parentLink + '?comment=' + item['urlCode']
                 elif objType == 'resource' and 'initiativeCode' in item:
@@ -420,7 +428,7 @@
                     activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
-                % if item['deleted'] == '0' and item['public'] == '1':
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
                     <tr><td>${activityStr | n}</td></tr>
                 % endif
             % elif objType == 'resource' and 'initiativeCode' in item:
@@ -445,9 +453,18 @@
                         activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
                         activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
                 %>
-                % if item['deleted'] == '0' and item['initiative_public'] == '1':
+                % if item['deleted'] == '0' and ('initiative_public' in item and item['initiative_public'] == '1'):
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
+            % elif objType == 'comment' and 'meetingCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">meeting agenda item</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"

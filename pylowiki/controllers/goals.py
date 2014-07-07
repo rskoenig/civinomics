@@ -49,8 +49,6 @@ class GoalsController(BaseController):
         if 'title' not in payload:
             abort(404)
         title = payload['title'].strip()
-        if len(title) > 60:
-            title = title[:60]
         status = u'0' # as in 0 percent.  Binary at the moment...either 0 or 100.
         goal = goalLib.Goal(title, status, c.w, c.authuser)
         return self._returnGoal(goal, done = False)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -26,7 +27,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
-        adminList = ['listenerNotificationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
+        adminList = ['listenerNotificationHandler', 'listenerAddHandler', 'listenerToggleHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -105,32 +106,45 @@ class ListenerController(BaseController):
         return "Updated Listener."
             
     @h.login_required
-    def listenerDisableHandler(self):
+    def listenerToggleHandler(self):
         payload = json.loads(request.body)
         if 'lReason' not in payload:
-            return "Error no lReason"
+            return '{"state":"Error", "errorMessage":"Error no lReason"}'
         if 'urlCode' not in payload:
-            return "Error no urlCode"
+            return '{"state":"Error", "errorMessage":"Error no urlCode"}'
+        if 'toggleState' not in payload:
+            return '{"state":"Error", "errorMessage":"Error no toggle state"}'
+            
         lReason = payload['lReason']
         urlCode = payload['urlCode']
-        if not lReason or not urlCode:
-            return "Please enter complete information"
-        # make sure not already a listener for this workshop
+        toggleState = payload['toggleState']
+        
+        if not lReason or not urlCode or not toggleState:
+            return '{"state":"Error", "errorMessage":"Please enter complete information"}'
+            
+        # get the listener object
         listener = listenerLib.getListenerByCode(urlCode)
 
         if not listener:
-            return 'No such Listener!'
+            return '{"state":"Error", "errorMessage":"No such Listener!"}'
+            
+        # toggle the listener
         if listener['disabled'] == '1':
             listener['disabled'] = '0';
             dbHelpers.commit(listener)
             returnMsg = "Listener Enabled!"
-        if listener['disabled'] == '0':
+        elif listener['disabled'] == '0':
             listener['disabled'] = '1';
             dbHelpers.commit(listener)
             returnMsg = "Listener Disabled!"
-            
+        
         if 'userCode' in listener:
             user = userLib.getUserByCode(listener['userCode'])
+            if 'listenerWorkshops' in user:
+                listenerWorkshops = pickle.loads(str(user["listenerWorkshops"]))
+            else:
+                listenerWorkshops = []
+                
             lKey = 'listener_counter'
             if lKey in user:
                 lValue = int(user[lKey])
@@ -143,10 +157,22 @@ class ListenerController(BaseController):
                     lValue = 1
                 else:
                     lValue = 0
+            
+            if toggleState == 'Enable':
+                if listener['workshopCode'] not in listenerWorkshops:
+                    listenerWorkshops.append(listener['workshopCode'])
+            else:
+                if listener['workshopCode'] in listenerWorkshops:
+                    listenerWorkshops.remove(listener['workshopCode'])
+                    
             user[lKey] = str(lValue)
+            user['listenerWorkshops'] = str(pickle.dumps(listenerWorkshops))
+            session['listenerWorkshops'] = listenerWorkshops
+            session.save()
             dbHelpers.commit(user)
             
         eventLib.Event(returnMsg, '%s by %s'%(returnMsg, c.authuser['name']), listener, user = c.authuser)
+        return returnMsg
             
     @h.login_required
     def listenerEmailHandler(self):   
@@ -194,7 +220,7 @@ class ListenerController(BaseController):
         activeDisabled = []
         pendingDisabled = []
         
-        log.info('listenerListHandler')
+        #log.info('listenerListHandler')
         enabled = listenerLib.getListenersForWorkshop(c.w)
         for l in enabled:
             if 'userCode' in l:
@@ -232,7 +258,7 @@ class ListenerController(BaseController):
             user = userLib.getUserByCode(l['userCode'])
             userImage = generic.userImageSource(user)
             profileLink = "/profile/" + user['urlCode'] + "/" + user['url']
-            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Active"}'
+            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Active Disabled"}'
             comma = ','
 
         if not activeEnabled and not pendingEnabled and not activeDisabled:
@@ -240,7 +266,7 @@ class ListenerController(BaseController):
         userImage = "/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"
         profileLink = ''
         for l in pendingDisabled:
-            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Pending"}'
+            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Pending Disabled"}'
             comma = ','
         jsonReturn += "]}"
         

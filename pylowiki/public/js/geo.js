@@ -54,7 +54,7 @@ function geoTagCityChange(){
         var gobj = jQuery.parseJSON(postalList);
         if (gobj.result != "0") {
             var postalCodes = gobj.result.split(/\|/);
-            var postalMenu = "<div class=\"span3\">Zip Code:</div><div class=\"span8\">  <select id=\"geoTagPost\" name=\"geoTagPostal\" class=\"geoTagPostal\" onChange=\"geoTagPostalChange(); return 1;\"><option value=\"0\">Select a Zip Code</option>";
+            var postalMenu = "<div class=\"col-xs-3\">Zip Code:</div><div class=\"col-xs-8\">  <select id=\"geoTagPost\" name=\"geoTagPostal\" class=\"geoTagPostal\" onChange=\"geoTagPostalChange(); return 1;\"><option value=\"0\">Select a Zip Code</option>";
             for(var i = 0;i < postalCodes.length;i++){
                 if (postalCodes[i] !== "") {
                     postalMenu = postalMenu + "<option value=\"" + postalCodes[i] + "\">" + postalCodes[i] + "</option>";
@@ -92,7 +92,7 @@ function geoTagCountyChange(){
         var gobj = jQuery.parseJSON(cityList);
         if (gobj.result != "0") {
             var cities = gobj.result.split(/\|/);
-            var cityMenu = "<div class=\"span3\">City:</div><div class=\"span8\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"0\">Select a city</option>";
+            var cityMenu = "<div class=\"col-xs-3\">City:</div><div class=\"col-xs-8\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"0\">Select a city</option>";
             for(var i = 0;i < cities.length;i++){
                 if (cities[i] !== "") {
                     cityMenu = cityMenu + "<option value=\"" + cities[i] + "\">" + cities[i] + "</option>";
@@ -129,7 +129,7 @@ function geoTagStateChange(){
         var gobj = jQuery.parseJSON(countyList);
         if (gobj.result != "0") {
             var counties = gobj.result.split(/\|/);
-            var countyMenu = "<div class=\"span3\">County:</div><div class=\"span8\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"0\">Select a county</option>";
+            var countyMenu = "<div class=\"col-xs-3\">County:</div><div class=\"col-xs-8\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"0\">Select a county</option>";
             for(var i = 0;i < counties.length;i++){
                 if (counties[i] !== "") {
                     countyMenu = countyMenu + "<option value=\"" + counties[i] + "\">" + counties[i] + "</option>";
@@ -163,7 +163,7 @@ function geoTagCountryChange(){
         var gobj = jQuery.parseJSON(stateList);
         if (gobj.result != "0") {
             var states = gobj.result.split(/\|/);
-            var stateMenu = "<div class=\"span3\">State:</div><div class=\"span8\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
+            var stateMenu = "<div class=\"col-xs-3\">State:</div><div class=\"col-xs-8\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
             for(var i = 0;i < states.length;i++){
                 if (states[i] !== "") {
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
@@ -199,7 +199,7 @@ $('.geoTagCountry').change(function(e){
         var gobj = jQuery.parseJSON(stateList);
         if (gobj.result != "0") {
             var states = gobj.result.split(/\|/);
-            var stateMenu = "<div class=\"span3\">State:</div><div class=\"span8\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
+            var stateMenu = "<div class=\"col-sm-3\">State:</div><div class=\"col-xs-8\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
             for(var i = 0;i < states.length;i++){
                 if (states[i] !== "") {
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
