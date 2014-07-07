@@ -108,6 +108,7 @@ class SlideshowController(BaseController):
             session['alert'] = alert
             session.save()
             """
+                note: these entries end up saved on the server as .png
                 Return a JSON-encoded string of the following format:
                 
                 [

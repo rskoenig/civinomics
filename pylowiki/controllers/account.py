@@ -73,7 +73,7 @@ class AccountController(BaseController):
             billingEmail = ''
             
         if not billingName and not billingEmail:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'No information submitted.'
             alert['content'] = ''
             session['alert'] = alert
@@ -109,7 +109,7 @@ class AccountController(BaseController):
             eventLib.Event(title, data, c.account)
             return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")
         else:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'No information submitted.'
             alert['content'] = ''
             session['alert'] = alert

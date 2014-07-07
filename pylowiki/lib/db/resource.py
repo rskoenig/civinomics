@@ -271,4 +271,6 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
     else:
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
+    a['discussion_child'] = d.d['urlCode']
+    commit(a)
     return a

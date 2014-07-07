@@ -6,11 +6,11 @@
 <%def name="page_specific_css()">
 </%def>
 <%def name="display_body_right_content()">
-  <div class="row-fluid">
-      <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('/images/corp/casestudies/${c.study['url']}/${c.study['image']}'); background-position: center center; background-size: cover;"></div>
+  <div class="row">
+      <div class="thumbnail i-main-photo survey-main-photo" style="height: 300px; color: #fff; background-image:url('/images/corp/casestudies/${c.study['url']}/${c.study['image']}'); background-position: center center; background-size: cover;"></div>
   </div>
-  <div class="row-fluid">
-    <div class="span12">
+  <div class="row">
+    <div class="col-xs-12">
         <h2>${c.study['title']}</h2>
         <table id="metrics">
           <tr>
@@ -42,12 +42,27 @@
                   <img style="width: 80px;" src="/images/corp/casestudies/${c.study['url']}/${c.study['sponsorLogo']}">
               </td>
           % endif
+          % if 'link' in c.study:
+            <td>
+                <span class="workshop-metrics">Permalink</span><br>
+                <a href="${c.study['link']}">${c.study['link']}</a>
+            </td>
+            % endif
           </tr>
         </table>
+        % if c.study['url'] == 'dmc':
+            ${corpLib.text_dmcSurvey()}
+            <hr>
+        % endif
         % if 'pressRelease' in c.study:
           % if c.study['pressRelease'] == 'techCommuters':
             ${corpLib.pressRelease_techCommuters()}
           % endif
+        % elif 'text' in c.study:
+            <hr>
+            % if c.study['text'] == 'svBagBan':
+                ${corpLib.text_svBagBan()}
+            % endif
         % else:
           <h3 class="initiative-title">Problem</h3>
               <div>${helpers.background(c.study)}</div>
@@ -69,13 +84,19 @@
         % if 'stats' in c.study:
           ${d3Lib.includeD3()}
           <!-- $ - { d3Lib.dcExample()} -->
-          % if c.study['stats'] == 'dcCommuterSurvey':
-            ${d3Lib.dcCommuterSurvey()}
+          % if c.study['stats'] == 'openStreetsCap1':
+              ${d3Lib.dcOpenStreetsCap1()}
+          % elif c.study['stats'] == 'plasticBagBan':
+              ${d3Lib.dcPlasticBagSurvey()}
+          % elif c.study['stats'] == 'dcDmcSurvey':
+              ${d3Lib.dcDmcSurvey()}
+          % elif c.study['stats'] == 'dcCommuterSurvey':
+              ${d3Lib.dcCommuterSurvey()}
           % elif c.study['stats'] == 'eastsideStats':
-            ${d3Lib.eastsideStats()}
+              ${d3Lib.eastsideStats()}
           % endif
         % endif
-    </div><!-- span12 -->
-  </div><!-- row-fluid -->
+    </div><!-- col-xs-12 -->
+  </div><!-- row -->
 </%def>
 

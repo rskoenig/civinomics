@@ -9,11 +9,11 @@
 
     % if c.resource:
         <h4 class="initiative-title">Resource</h4>
-        <div class="row-fluid">
-            <div class="span1">
+        <div class="row">
+            <div class="col-xs-1">
                 ${lib_6.upDownVote(c.thing)}
-            </div><!-- span1 -->
-            <div class="span11">
+            </div><!-- col-xs-1 -->
+            <div class="col-xs-11">
                 ${ihelpers.showResource()}
                 ${itemHelpers.showItemOwner(c.thing)}
                 % if c.resource.objType != 'revision':
@@ -22,10 +22,9 @@
                     <div class="spacer"></div>
                     ${comments(c.thing, c.discussion)}
                 % endif
-            </div><!-- span11 -->
-        </div><!-- row-fluid -->
+            </div><!-- col-xs-11 -->
+        </div><!-- row -->
     % else:
-        <h4 class="initiative-title">Add New Resource</h4>
         ${ihelpers.editResource()}
     % endif
 
