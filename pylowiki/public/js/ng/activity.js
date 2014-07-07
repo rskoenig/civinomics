@@ -1,6 +1,8 @@
 function activityController($scope, $http) {
 	$scope.listingType = 'activity';
-	$scope.activityType = '/all';
+	if ($scope.activityType == undefined) {
+	    $scope.activityType = '/all';
+	}
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
@@ -48,6 +50,18 @@ function activityController($scope, $http) {
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
+	
+	$scope.getMeetingActivity = function(){
+		$scope.activityType = '/meetings';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+
+	$scope.browseInitiatives = function(){
+		$scope.activityType = '/initiatives';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
 
 	$scope.getActivitySlice = function() {
 		if ($scope.busy || $scope.noMoreSlices) return;
@@ -73,61 +87,3 @@ function activityController($scope, $http) {
 
 }
 
-function commentsController($scope, $http) {
-	$scope.commentsLoading = false;
-	$scope.commentsHidden = true;
-	$scope.newCommentLoading = false;
-
-	$scope.getComments = function(){
-		if ($scope.commentsHidden == true){
-			$scope.commentsLoading = true	
-			$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
-				if (data.statusCode == 1){
-					$scope.commentsResult = true;
-				} 
-				else if (data.statusCode === 0){
-					$scope.commentsResult = false;
-					$scope.comments = data.result;
-				}
-				$scope.commentsLoading = false;
-				$scope.commentsHidden = false;
-			})
-		} else {
-			$scope.commentsHidden = true
-		}
-	};
-
-	$scope.getUpdatedComments = function(){
-		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
-			if (data.statusCode == 1){
-				$scope.commentsResult = true;
-				$scope.comments = data.result;
-			} 
-			else if (data.statusCode === 0){
-				$scope.commentsResult = false;
-				$scope.comments = data.result;
-			}
-			$scope.newCommentLoading = false
-			
-		})
-	};
-
-	$scope.showAddComments = function(){
-		if ($scope.commentsHidden == true){
-			$scope.commentsHidden = false;
-		} else{
-			$scope.commentsHidden = true;
-		}
-	};
-
-	$scope.submitComment = function(){
-		$scope.newCommentLoading = true
-		var commentData = {'type':$scope.type, 'thingCode': $scope.thingCode, 'discussionCode': $scope.discussionCode, 'parentCode': $scope.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
-		$http.post('/comment/add/handler', commentData).success(function(data){
-			$scope.numComments = Number($scope.numComments) + 1;
-            $scope.getUpdatedComments();
-            $scope.commentRole = '';
-            $scope.commentText = '';
-        });
-	};
-}

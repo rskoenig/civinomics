@@ -57,6 +57,18 @@ def getAllUsers(disabled = '0', deleted = '0'):
     except:
         return False
 
+def getUsers(limit, offset = '0',disabled = '0', deleted = '0'):
+    q = meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+		.offset(offset)
+    if limit:
+        postList = q.limit(limit)
+    else: 
+        postList = q.all()
+    return postList
+
+
 def getUserByEmail(email, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email.lower()))).filter(Thing.data.any(wc('disabled', disabled))).one()
@@ -251,7 +263,16 @@ class User(object):
         u['follower_counter'] = '0'
         u['bookmark_counter'] = '0'
         u['photo_counter'] = '0'
+        u['meeting_counter'] = '0'
         u['accessLevel'] = 0
+        u['user_source'] = "Online"
+        if 'needsPassword' in kwargs:
+            u['user_source'] = "Survey App"
+            u['needs_password'] = '1'
+            u['poll_name'] = kwargs['poll']
+            u['gender'] = kwargs['gender']
+            u['dob'] = kwargs['dob']
+
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
@@ -259,6 +280,9 @@ class User(object):
             if 'externalAuthSignup' in kwargs:
                 if kwargs['externalAuthSignup'] == False:
                     self.generateActivationHash(u)
+                else:
+                    self.generateActivationHash(u, 1)
+                    
             else:
                 self.generateActivationHash(u)
         commit(u)
@@ -266,7 +290,10 @@ class User(object):
 
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
-        
+       
+        if 'needsPassword' in kwargs:
+            c.currentUserId = u.id
+
         # update any pmembers and listeners
         updateList = genericLib.getThingsByEmail(email)
         for uItem in updateList:
@@ -278,12 +305,18 @@ class User(object):
     def hashPassword(self, password):
         return md5(password + config['app_conf']['auth.pass.salt'] ).hexdigest()
 
-    def generateActivationHash(self, u):
+    def generateActivationHash(self, u, noSendEmail = 0):
         """Return a system generated hash for account activation"""
         from string import letters, digits
         from random import choice
         pool, size = letters + digits, 20
         hash =  ''.join([choice(pool) for i in range(size)])
+        u['activationHash'] = hash
+        commit(u)
+        Revision(u, u)
+        if noSendEmail == 1:
+            log.info("Successful account creation (ext auth activated) for %s" %toEmail)
+            return
         
         toEmail = u['email']
         frEmail = c.conf['activation.email']
@@ -293,12 +326,16 @@ class User(object):
         if 'paste.testing_variables' in request.environ:
                 request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
        
-        u['activationHash'] = hash
-        commit(u)
-        Revision(u, u)
+
         
         # send the activation email
-        mailLib.sendActivationMail(u['email'], url)
+        if ('needs_password' in u):
+            password = generatePassword() 
+            changePassword( u, password )
+            commit( u ) # commit database change
+            mailLib.sendActivationMailWithPassword(u['email'], url, password)
+        else:
+            mailLib.sendActivationMail(u['email'], url)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
     

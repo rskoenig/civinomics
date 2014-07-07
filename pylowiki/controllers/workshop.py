@@ -140,8 +140,17 @@ class WorkshopController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
-        log.info("workshop before")
+        #log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '"/images/slide/slichow/supDawg.slideshow"'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
+
+
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
         
@@ -272,7 +281,7 @@ class WorkshopController(BaseController):
             weventMsg += ' See your changes by clicking on the preview button above.'
 
         if werror:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()
@@ -339,7 +348,7 @@ class WorkshopController(BaseController):
             werrMsg = "No changes submitted."
 
         if werror:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()
@@ -436,7 +445,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'No changes submitted.'
             session['alert'] = alert
             session.save()
@@ -533,8 +542,18 @@ class WorkshopController(BaseController):
                     if pTest:
                         pTest['deleted'] = '1'
                         dbHelpers.commit(pTest)
-                        # see if they have the workshop bookmarked
+                        
                         user = userLib.getUserByEmail(pTest['email'])
+                        if 'privateWorkshops' in user:
+                            privateWorkshops = pickle.loads(str(user["privateWorkshops"]))
+                            if privateWorkshops and workshopCode in privateWorkshops:
+                                privateWorkshops.remove(workshopCode)
+                                if not privateWorkshops:
+                                    privateWorkshops = []
+                                user["privateWorkshops"] = str(pickle.dumps(privateWorkshops))
+                                dbHelpers.commit(user)
+                                
+                        # see if they have the workshop bookmarked
                         follow = followLib.getFollow(user, c.w)
                         if follow:
                             follow['disabled'] = '1'
@@ -588,7 +607,7 @@ class WorkshopController(BaseController):
             session.save()
         else:
             if werror:
-                alert = {'type':'error'}
+                alert = {'type':'danger'}
                 alert['title'] = werrMsg
                 session['alert'] = alert
                 session.save()
@@ -647,7 +666,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configureStartWorkshopHandler(self, workshopCode, workshopURL):
         if not self.checkPreferences():
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'Workshop not started'
             alert['content'] = ' !'
             session['alert'] = alert
@@ -754,7 +773,7 @@ class WorkshopController(BaseController):
                 c.coupon = request.params['coupon']
             
         if pError: 
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = 'Error.' + pErrorMsg
             session['alert'] = alert
             session.save()
@@ -893,7 +912,7 @@ class WorkshopController(BaseController):
            dbHelpers.commit(c.w)
            
         if werror:
-            alert = {'type':'error'}
+            alert = {'type':'danger'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()
@@ -914,7 +933,7 @@ class WorkshopController(BaseController):
         # note: should we update the facebook share url to be this rss url?
         # could always try, but I don't think linking to an xml feed on fb is gonna do much
         
-        activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity",
             link=u"http://www.civinomics.com",
@@ -952,6 +971,25 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+
+        # use function getWorkshopActivity() instead
+        # c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
+
+        # broken currently incrementing by 2-3
+        if 'views' not in c.w:
+            c.w['views'] = u'0'
+        
+        if c.w.objType != 'revision':    
+            views = int(c.w['views']) + 1
+            c.w['views'] = str(views)
+            dbHelpers.commit(c.w)
+            
+        c.numIdeas = workshopLib.getIdeaCountForWorkshop(workshopCode)
+        c.numAdopted = workshopLib.getIdeaCountForWorkshop(workshopCode, 1)
+        c.numResources = workshopLib.getResourceCountForWorkshop(workshopCode)
+        c.numDiscussions = workshopLib.getDiscussionCountForWorkshop(workshopCode)
+
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
@@ -994,11 +1032,10 @@ class WorkshopController(BaseController):
         if not iPhoneApp:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         
-        # not used
-        #c.information = pageLib.getInformation(c.w)
+        c.information = pageLib.getInformation(c.w)
         
         if not iPhoneApp:
-            c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+            c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
         
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
@@ -1134,7 +1171,7 @@ class WorkshopController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
 
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
         c.adminPanel = False
@@ -1148,7 +1185,7 @@ class WorkshopController(BaseController):
         c.facebookShare.updateUrl(utils.workshopURL(c.w) + '/publicStats')
         c.listingType = 'publicStats'
 
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
         
         c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56)
 
@@ -1414,6 +1451,7 @@ class WorkshopController(BaseController):
                 entry['discussion'] = discussion['urlCode']
             else:
                 entry['discussion'] = 0
+                
             if 'views' in idea:
                 entry['views'] = str(idea['views'])
             else:
@@ -1429,9 +1467,6 @@ class WorkshopController(BaseController):
             entry['authorName'] = entry['user_name'] = idea['user_name']
             entry['workshopCode'] = workshopCode
             entry['workshopURL'] = workshopURL
-            entry['views'] = '0'
-            if 'views' in idea:
-                entry['views'] = str(idea['views'])
 
             result.append(entry)
         numIdeas = len(ideas) - disabled
@@ -1439,4 +1474,160 @@ class WorkshopController(BaseController):
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
 
+
+    def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
+        #log.info("offset is %s"%str(offset))
+        # get recent activity and return it into json format
+        result = []
+
+        offset = int(offset)
+        commments = int(comments)
+
+        #recentActivity = activityLib.getRecentActivity(max)
+        if c.w['allowIdeas'] == '0':
+            sort = 1
+        else:
+            sort = 0
+
+        workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort)
+        
+        myRatings = {}
+        if 'ratings' in session:
+            myRatings = session['ratings']
+
+        numItems = 0
+        numAdopted = 0
+        numDiscussions = 0
+        numIdeas = 0
+        numResources = 0
+        for item in workshopActivity:
+            entry = {}
+            # item attributes
+            entry['title'] = item['title']
+            entry['objType'] = item.objType
+            if item.objType == 'discussion':
+                numDiscussions += 1
+            if item.objType == 'idea':
+                numIdeas += 1
+                entry['status'] = 'proposed'
+                if item['adopted'] == '1':
+                    entry['status'] = 'adopted'
+                    numAdopted += 1
+                elif item['disabled'] == '1':
+                    entry['status'] = 'disabled'
+            if item.objType == 'resource':
+                numResources += 1
+            entry['urlCode'] = item['urlCode']
+            entry['url'] = item['url']
+            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+            if 'views' in item:
+                views = int(item['views'])
+            else:
+                views = 1
+            views += 1
+            item['views'] = str(views)
+            dbHelpers.commit(item)
+            entry['views'] = item['views']
+
+            # attributes that vary accross items
+            entry['text'] = '0'
+            if 'text' in item:
+                entry['text'] = item['text']
+            elif 'description' in item:
+                entry['text'] = item['description']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            if 'link' in item:
+                entry['link'] = item['link']
+            else:
+                entry['link'] = '0'
+            if 'cost' in item:
+                entry['cost'] = item['cost']
+            else:
+                entry['cost'] = ''           
+
+            # href
+            entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
+            entry['href'] = entry['parentHref'] + '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+            entry['parentTitle'] = item['workshop_title']
+            entry['parentObjType'] = 'workshop'
+
+            entry['mainPhoto'] = '0'
+            entry['thumbnail'] = '0'
+
+            #tags
+            tags = []
+            tagList = []
+            if 'tags' in item:
+                tagList = item['tags'].split('|')
+            elif 'initiative_tags' in item:
+                tagList = item['initiative_tags'].split('|')
+            elif 'workshop_category_tags' in item:
+                tagList = item['workshop_category_tags'].split('|')
+            for tag in tagList:
+                if tag and tag != '':
+                    tags.append(tag)
+            entry['tags'] = tags
+
+            # user rating
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+                entry['vote'] = 'voted'
+            else:
+                entry['rated'] = 0
+                entry['vote'] = 'nvote'
+
+            # votes
+            entry['voteCount'] = int(item['ups']) + int(item['downs'])
+            entry['ups'] = int(item['ups'])
+            entry['downs'] = int(item['downs'])
+            entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+            # comments
+            if item.objType == 'discussion':
+                entry['discussion'] = item['urlCode']
+            else:
+                if 'discussion_child' in item:
+                    entry['discussion'] = item['discussion_child']
+                else:
+                    log.info('no discussion child for item of objType %s'%item.objType)
+                    discussion = discussionLib.getDiscussionForThing(item)
+                    entry['discussion'] = discussion['urlCode']
+                
+            entry['numComments'] = 0
+            if 'numComments' in item:
+                entry['numComments'] = item['numComments']
+
+            # author data
+            # CCN - need to find a way to optimize this lookup
+            if 'user_name' not in item or 'user_avatar' not in item:
+                author = userLib.getUserByID(item.owner)
+                entry['authorName'] = author['name']
+                entry['authorPhoto'] = utils._userImageSource(author)
+                entry['authorCode'] = author['urlCode']
+                entry['authorURL'] = author['url']
+            else:
+                entry['authorName'] = item['user_name']
+                entry['authorPhoto'] = item['user_avatar']
+                entry['authorCode'] = item['userCode']
+                entry['authorURL'] = item['user_url']
+                
+            entry['authorHref'] = '/profile/' + entry['authorCode'] + '/' + entry['authorURL']
+
+            entry['parentTitle'] = ''
+            entry['parentObjType'] = ''
+            entry['article'] = 'a'
+            if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
+                entry['article'] = 'an'
+
+            entry['parentTitle'] = item['workshop_title']
+            entry['parentObjType'] = 'workshop'
+            
+            numItems += 1
+
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result':  result})
 

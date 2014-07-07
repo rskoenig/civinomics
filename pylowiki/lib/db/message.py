@@ -9,7 +9,7 @@ import pylowiki.lib.db.discussion as discussionLib
 
 log = logging.getLogger(__name__)
 
-def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', count = False):
+def getMessages_count(user, deleted = u'0', disabled = u'0', read = u'all', count = False):
     try:
         query = meta.Session.query(Thing).filter_by(objType = 'message')\
                 .filter_by(owner = user.id)\
@@ -21,6 +21,40 @@ def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', count = Fa
         if count:
             return query.count()
         return query.order_by('-date').all()
+    except:
+        return False
+
+def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', limit = None, comments = 0, offset = 0, count = False):
+    
+    try:
+        if read == u'all':
+            q = meta.Session.query(Thing).filter_by(objType = 'message')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .order_by('-date')\
+                .offset(offset)
+        elif read != u'all':
+            q = meta.Session.query(Thing).filter_by(objType = 'message')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('read', read)))\
+                .order_by('-date')\
+                .offset(offset)
+        if count:
+            return query.count()
+        if limit:
+            postList = q.limit(limit)
+        else:
+            postList = q.all()
+
+        if postList:
+            #log.info('there is a list of results')
+            return postList
+        else:
+            #log.info('there is not a list of results')
+            return []
     except:
         return False
 

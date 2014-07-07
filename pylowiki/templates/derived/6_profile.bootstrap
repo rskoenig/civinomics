@@ -1,27 +1,53 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
 <%!
     from pylowiki.lib.db.user import isAdmin
+    from pylons import session
 %>
 ##<div ng-app="ngUploadApp">
     <!-- inline style kludge to handle fixed nav bar -->
-    <div class="spacer">
-    <div class="row-fluid" ng-controller="ProfileEditController">
-        <div class="span8">
+    <div class="spacer"></div>
+    <% 
+        if 'alert' in session:
+            message = session['alert']
+            session.pop('alert')
+            session.save()
+        else:
+            message = ''
+    %>
+    % if message != '':
+        <div class="alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong>${message}</strong>
+        </div>
+    % endif
+    
+        
+    <div class="row" ng-controller="profileController">
+        <div class="col-sm-8">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">My Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
-                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">My Unpublished</a></li>
+                    % if 'user' in session and (c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id)):
+                        % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
+                            <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/meetings">My Meetings</a></li>
+                        % endif
+                    % endif
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives"><i class="icon-trash"></i> Trash</i></a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
+                            	% if c.user['accessLevel'] > '200':
+                                	<li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
+                                % endif
                                 <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                             % endif
                         % else:
@@ -74,10 +100,10 @@
                     </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
-        </div><!-- span8 -->
-        <div class="span4">
+        </div><!-- col-sm-8 -->
+        <div class="col-sm-4">
             ${dashboard.profileDashboard()}
-        </div><!--/.span4-->
+        </div><!--/.col-sm-4 -->
     </div>
 ##</div>
 

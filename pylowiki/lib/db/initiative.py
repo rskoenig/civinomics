@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
@@ -22,20 +23,22 @@ def getInitiative(initiativeCode):
 
 def getInitiativesForUser(user):
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
     except:
         return False
 
 def setInitiativesForUserInSession():        
-    # initiatives
+    # initiatives - these are a little odd in that we have to regenerate them every login because the session is set
+    # both here and in the facilitator initialization.
     if 'facilitatorInitiatives' in session:
         facilitatorInitiatives = session['facilitatorInitiatives']
     else:
         facilitatorInitiatives = []
-            
     initiativeList = getInitiativesForUser(c.authuser)
     facilitatorInitiatives += [initiative['urlCode'] for initiative in initiativeList if initiative['urlCode'] not in facilitatorInitiatives]
 
+    c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+    commit(c.authuser)
     session["facilitatorInitiatives"] = facilitatorInitiatives
     session.save()
         
@@ -109,14 +112,13 @@ def updateInitiativeChildren(initiative, initiativeKey):
         
 
 # Object
-def Initiative(owner, title, description, scope, workshop = None):
+def Initiative(owner, title, description, scope, goal = None, workshop = None):
     i = Thing('initiative', owner.id)
     generic.linkChildToParent(i, owner)
     if workshop is not None:
         generic.linkChildToParent(i, workshop)
     commit(i)
     i['urlCode'] = utils.toBase62(i)
-       
     i['title'] = title
     i['url'] = utils.urlify(title[:20])
     i['description'] = description
@@ -131,8 +133,12 @@ def Initiative(owner, title, description, scope, workshop = None):
     i['public'] = u'0'
     i['ups'] = '0'
     i['downs'] = '0'
+    i['views'] = '0'
+    i['goal'] = goal
     commit(i)
     d = discussionLib.Discussion(owner = owner, discType = 'initiative', attachedThing = i, title = title)
+    i['discussion_child'] = d.d['urlCode']
+    commit(i)
     return i
 
 def isPublic(initiative):

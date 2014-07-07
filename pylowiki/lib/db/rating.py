@@ -6,6 +6,7 @@ from dbHelpers import with_characteristic as wc, with_key as wk
 from pylons import session, tmpl_context as c
 
 import logging
+import pickle
 log = logging.getLogger(__name__)
 
 def getRatingByID(id):
@@ -26,7 +27,7 @@ def getRatingForThing(user, thing):
      
 def getRatingsForUser():
     userRatings = {}
-    itemTypes = {"commentCode" : "1", "ideaCode" : "1", "resourceCode" : "1", "photoCode" : "1", "initiativeCode" : "1"}
+    itemTypes = {"commentCode" : "1", "ideaCode" : "1", "resourceCode" : "1", "photoCode" : "1", "initiativeCode" : "1", "agendaitemCode" : "1"}
     if c.authuser:
         ratings = meta.Session.query(Thing)\
             .filter_by(objType = 'rating')\
@@ -111,12 +112,17 @@ def makeOrChangeRating(thing, user, amount, ratingType):
       
     commit(ratingObj)
     commit(thing)
-    if 'ratings' in session:
-        myRatings = session["ratings"]
+    if 'ratings' in user:
+        myRatings = pickle.loads(str(user["ratings"]))
     else:
         myRatings = {}
     thingCode = thing['urlCode']
-    myRatings[thingCode] = str(amount)
-    session["ratings"] = myRatings
-    session.save()
+    myRatings[thingCode] = str(ratingObj['amount'])
+    user["ratings"] = str(pickle.dumps(myRatings))
+    commit(user)
+    if c.personalRatings:
+        session["ratings"] = myRatings
+        session.save()
+
     return ratingObj
+    

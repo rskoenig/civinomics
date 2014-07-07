@@ -2,7 +2,7 @@
     import time
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
     from pylowiki.lib.db.user import getUserByEmail
-    from pylowiki.lib.db.tag import getWorkshopTagCategories
+    from pylowiki.lib.db.tag import getTagCategories
     import pylowiki.lib.db.workshop         as workshopLib
 %>
 
@@ -14,11 +14,11 @@
                 ## good char: x
                 <button data-dismiss="alert" class="close">x</button>
                 % if 'upgrade to a Professional' in alert['title']:
-                    <div class="row-fluid">
-                        <div class="span8">
+                    <div class="row">
+                        <div class="col-sm-8">
                             <strong>${alert['title']}</strong>
                         </div>
-                        <div class="span4">
+                        <div class="col-sm-4">
                             <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST" class="no-bottom">
                                 <button type="submit" class="btn btn-large btn-civ pull-right">Upgrade to Pro</button>
                             </form>
@@ -55,90 +55,114 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Basic Info</h4>
-            <div class="row-fluid">
-                <div class="span6 offset1">
+            <div class="row">
+                <div class="col-sm-12" style="padding: 19px;">
                     <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" ng-cloak>
                         <fieldset>
-                            <legend>Settings</legend>
-                            <label>Workshop Name</label>
-                            <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
-                            <label>Introduction</label>
-                            <span class="muted">A one paragraph description why this matters.
-                            <textarea rows="8" id = "inputDescription" name="description" size="50" class="editWorkshopDescription">${c.w['description']}</textarea>
-                            <%
-                                if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
-                                    yesChecked = 'checked'
-                                    noChecked = ''
-                                elif 'allowIdeas' in c.w and c.w['allowIdeas'] == '0':
-                                    yesChecked = ''
-                                    noChecked = 'checked'
-                                else:
-                                    yesChecked = 'checked'
-                                    noChecked = ''
-                            %>
-                            <label>Participants can add ideas</label>
-                            <label class="radio">
-                                <input type="radio" id="allowIdeas" name="allowIdeas" value="1" ${yesChecked}> Yes
-                            </label>
-                            
-                            <label class="radio">
-                                <input type="radio" id="allowIdeas" name="allowIdeas" value="0" ${noChecked}> No
-                            </label>
-                            <% 
-                                if 'allowResources' in c.w and c.w['allowResources'] == '1':
-                                    yesChecked = 'checked'
-                                    noChecked = ''
-                                elif 'allowResources' in c.w and c.w['allowResources'] == '0':
-                                    yesChecked = ''
-                                    noChecked = 'checked'
-                                else:
-                                    yesChecked = 'checked'
-                                    noChecked = ''
-                            %>
-                            <label>Participants can add information resource links</label>
-                            <label class="radio">
-                                <input type="radio" id="allowResources" name="allowResources" value="1" ${yesChecked}> Yes
-                            </label>
-                            
-                            <label class="radio">
-                                <input type="radio" id="allowResources" name="allowResources" value="0" ${noChecked}> No
-                            </label>
+
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Workshop Name</h4>
+                                    <input id = "inputTitle" type="text" name="title" size="50" maxlength="100" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="input-xxlarge editWorkshopName form-control"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Introduction</h4>
+                                    <span class="muted">A one paragraph description why this matters.</span>
+                                    <textarea rows="8" id = "inputDescription" name="description" size="50" class="col-sm-12 form-control">${c.w['description']}</textarea>
+                                    <%
+                                        if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                        elif 'allowIdeas' in c.w and c.w['allowIdeas'] == '0':
+                                            yesChecked = ''
+                                            noChecked = 'checked'
+                                        else:
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                    %>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="spacer"></div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Can participants add ideas</h4>
+                                    <label class="radio">
+                                        <input type="radio" id="allowIdeas" name="allowIdeas" value="1" ${yesChecked}> Yes
+                                    </label>
+                                    
+                                    <label class="radio">
+                                        <input type="radio" id="allowIdeas" name="allowIdeas" value="0" ${noChecked}> No
+                                    </label>
+                                    <% 
+                                        if 'allowResources' in c.w and c.w['allowResources'] == '1':
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                        elif 'allowResources' in c.w and c.w['allowResources'] == '0':
+                                            yesChecked = ''
+                                            noChecked = 'checked'
+                                        else:
+                                            yesChecked = 'checked'
+                                            noChecked = ''
+                                    %>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Can participants add information resource links?</h4>
+                                    <label class="radio">
+                                        <input type="radio" id="allowResources" name="allowResources" value="1" ${yesChecked}> Yes
+                                    </label>
+                                    
+                                    <label class="radio">
+                                        <input type="radio" id="allowResources" name="allowResources" value="0" ${noChecked}> No
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <h4>Goals</h4>
+                                    ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
+                                    <p class="muted">Double-click on an existing goal to edit.</p>
+                                    <div ng-controller="GoalsCtrl">
+                                        <p> {{remaining()}} of {{goals.length}} remaining </p>
+                                        <ul class="unstyled goalList">
+                                            <li ng-repeat="goal in goals">
+                                                <span>
+                                                <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
+                                                <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
+                                                <form ng-submit="goalEditDone(goal)" class="inline">
+                                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="100" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
+                                                </form>
+                                                <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
+                                            </li>
+                                        </ul>
+                                        <form ng-submit="addGoal()" class="addGoal">
+                                            <div class="input-group">
+                                                <input type="text" ng-model="goalTitle" size="100" maxlength = "100" placeholder="New goal here" class="addGoal form-control" id="addGoal">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" value="add">add</button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                        <p class = "green">{{100 - goalTitle.length}}</p>
+                                    </div>
+                                </div>
+                            </div>
                             <br>
 
-                        <legend>Goals <span class="label label-important">Required</span></span></legend>
-                        ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
-                        <p class="muted">Double-click on an existing goal to edit.</p>
-                        <div ng-controller="GoalsCtrl">
-                            <p> {{remaining()}} of {{goals.length}} remaining </p>
-                            <ul class="unstyled goalList">
-                                <li ng-repeat="goal in goals">
-                                    <span>
-                                    <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
-                                    <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
-                                    <form ng-submit="goalEditDone(goal)" class="inline">
-                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
-                                    </form>
-                                    <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
-                                </li>
-                            </ul>
-                            <form ng-submit="addGoal()" class="addGoal">
-                                <div class="input-append">
-                                    <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal" id="addGoal">
-                                    <button class="btn btn-primary" type="submit" value="add">add</button>
-                                </div>
-                            </form>
-                            <p class = "green">{{60 - goalTitle.length}}</p>
-                        </div>
+                            % if not c.published:
+                                <button type="submit" class="btn btn-warning btn-lg">Save Basic Info and Continue</button>
+                            % else:
+                                <button type="submit" class="btn btn-warning btn-lg">Save Basic Info</button>
+                            % endif
 
-                        % if not c.published:
-                            <button type="submit" class="btn btn-warning">Save Basic Info and Continue</button>
-                        % else:
-                            <button type="submit" class="btn btn-warning">Save Basic Info</button>
-                        % endif
+                        </form>
                     </fieldset>
-                </form>
+                </div><!-- col-sm-12 -->
             </div><!-- row -->
-        </div>
         </div><!-- browse -->
     </div><!-- section wrapper -->
 </%def>
@@ -177,12 +201,12 @@
             <h4 class="section-header smaller">Tags</h4>
             Tags are descriptive key words used to categorize your workshop.<br />
             <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
-            <div class="row-fluid">
-                <div class="span1">
+            <div class="row">
+                <div class="col-sm-1">
                 </div><!-- span1 -->
-                <div class="span5">
+                <div class="col-sm-5">
                     <% 
-                        tagList = getWorkshopTagCategories()
+                        tagList = getTagCategories()
                     %>
                     <br />
                     <strong>Pick 1 or 2</strong> <span class="help-inline"><span class="label label-important">Required</span></span><br />
@@ -200,11 +224,11 @@
                     </fieldset>
                     <br />
                     % if not c.published:
-                        <button type="submit" class="btn btn-warning">Save Tags and Continue</button>
+                        <button type="submit" class="btn btn-warning btn-lg">Save Tags and Continue</button>
                     % else:
-                        <button type="submit" class="btn btn-warning">Save Tags</button>
+                        <button type="submit" class="btn btn-warning btn-lg">Save Tags</button>
                     % endif
-                </div><!-- span5 -->
+                </div><!-- col-sm-5 -->
             </div><!-- row -->
             </form>
         </div><!-- browse -->
@@ -226,29 +250,36 @@
 
 
 <%def name="edit_background()">
-    <div class="section-wrapper">
+    <div class="section-wrapper wiki-well">
         <div class="browse">
             <h4 class="section-header smaller">Background</h4>
-            <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a>
-            <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
-               <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
-               <div class="background-edit-wrapper">
-                    % if not c.published:
-                        <button type="submit" name="submit" class="btn btn-warning pull-right">Save Background and Continue</button>
-                    % else:
-                        <button type="submit" name="submit" class="btn btn-warning pull-right">Save Changes</button>
-                    % endif
-               </div><!-- text-align -->
-            </form>
-            <div class="preview-information-wrapper" id="live_preview">
-               hi
+            <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a><br>
+            <div class="row">
+                <div class="col-xs-12">
+                    <form name="workshop_background" id="workshop_background" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
+                        <div class="form-group">
+                            <textarea rows="10" id="data" name="data" class="col-sm-12 form-control">${c.page['data']}</textarea>
+                        </div>
+                       <div class="background-edit-wrapper form-group">
+                            % if not c.published:
+                                <button type="submit" name="submit" class="btn btn-warning pull-right">Save Background and Continue</button>
+                            % else:
+                                <button type="submit" name="submit" class="btn btn-warning pull-right">Save Changes</button>
+                            % endif
+                       </div><!-- text-align -->
+                    </form>
+                    <div class="preview-information-wrapper" id="live_preview">
+                       hi
+                    </div>
+                </div>
             </div>
+            
         </div><!-- browse -->
     </div><!-- sectio-wrapper -->
 </%def>
 
 <%def name="change_scope()">
-    <div class="span3"><strong>Current Scope:</strong></div>
+    <div class="col-sm-3"><strong>Current Scope:</strong></div>
         <%
             if c.w['public_private'] == 'public':
                 currentScope = 'Public'
@@ -258,8 +289,8 @@
                 newScope = 'Public'
         %>
         <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure${newScope}WorkshopHandler" enctype="multipart/form-data" method="post" >
-            <div class="row-fluid">
-                <div class="span2">
+            <div class="row">
+                <div class="col-sm-2">
                     <label class="radio">
                         <input type="radio" name="optionsRadios" id="optionsRadios1" value="Private" 
                         % if currentScope == 'Private':
@@ -269,7 +300,7 @@
                         Private  <i class="icon-group set-scope-icon"></i>
                     </label>
                 </div>
-                <div class="span2">
+                <div class="col-sm-2">
                     <label class="radio">
                     % if c.w['type'] == 'professional':
                         <input type="radio" name="optionsRadios" id="optionsRadios2" value="Public"
@@ -286,7 +317,7 @@
                     % endif
                     </label>
                 </div>
-                <div class="span3">
+                <div class="col-sm-3">
                     % if c.w['type'] == 'professional':
                         <button type="submit" class="btn btn-warning" name="changeScope">Change Scope</button>
                     % else:
@@ -323,7 +354,7 @@
                 </tr>
             </table>
             <hr>
-            <div class="row-fluid">
+            <div class="row">
                 <strong>Add People</strong><br>
                     ${emailInvite()}
                     <br>
@@ -352,7 +383,7 @@
                             <br>
                         </form>
                     % endif
-            </div><!-- row-fluid -->
+            </div><!-- row -->
         </div><!-- container-fluid -->
     % endif
     </form>
@@ -400,28 +431,28 @@
             endif
         %>
         <form name="scope" id="scope" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePublicWorkshopHandler" enctype="multipart/form-data" method="post" >  
-        <div class="row-fluid"><span id="planetSelect">
-            <div class="span1"></div><div class="span2">Planet:</div>
-            <div class="span9">
+        <div class="row"><span id="planetSelect">
+            <div class="col-sm-1"></div><div class="col-sm-2">Planet:</div>
+            <div class="col-sm-9">
                 <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
                     <option value="0">Earth</option>
                 </select>
-            </div><!-- span9 -->
+            </div><!-- col-sm-9 -->
         </span><!-- countrySelect -->
-        </div><!-- row-fluid -->     
-        <div class="row-fluid"><span id="countrySelect">
-            <div class="span1"></div><div class="span2">Country:</div>
-            <div class="span9">
+        </div><!-- row -->     
+        <div class="row"><span id="countrySelect">
+            <div class="col-sm-1"></div><div class="col-sm-2">Country:</div>
+            <div class="col-sm-9">
                 <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
                     <option value="0">Select a country</option>
                     <option value="United States" ${countrySelected}>United States</option>
                 </select>
-            </div><!-- span9 -->
+            </div><!-- col-sm-9 -->
         </span><!-- countrySelect -->
-        </div><!-- row-fluid -->
-        <div class="row-fluid"><span id="stateSelect">
+        </div><!-- row -->
+        <div class="row"><span id="stateSelect">
             % if c.country != "0":
-                <div class="span1"></div><div class="span2">State:</div><div class="span9">
+                <div class="col-sm-1"></div><div class="col-sm-2">State:</div><div class="col-sm-9">
                 <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
                 <option value="0">Select a state</option>
                 % for state in states:
@@ -435,16 +466,16 @@
                     % endif
                 % endfor
                 </select>
-                </div><!-- span9 -->
+                </div><!-- col-sm-9 -->
             % else:
                 or leave blank if your workshop is specific to the entire planet.
             % endif
-        </span></div><!-- row-fluid -->
-        <div class="row-fluid"><span id="countySelect">
+        </span></div><!-- row -->
+        <div class="row"><span id="countySelect">
             % if c.state != "0":
                 <% counties = getCountyList("united-states", c.state) %>
                 <% cityMessage = "or leave blank if your workshop is specific to the entire state." %>
-                <div class="span1"></div><div class="span2">County:</div><div class="span9">
+                <div class="col-sm-1"></div><div class="col-sm-2">County:</div><div class="col-sm-9">
                 <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
                     <option value="0">Select a county</option>
                     % for county in counties:
@@ -456,17 +487,17 @@
                         <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
                     % endfor
                 </select>
-                </div><!-- span9 -->
+                </div><!-- col-sm-9 -->
             % else:
                 <% cityMessage = "" %>
                 ${countyMessage}
             % endif
         </span></div><!-- row -->
-        <div class="row-fluid"><span id="citySelect">
+        <div class="row"><span id="citySelect">
             % if c.county != "0":
                 <% cities = getCityList("united-states", c.state, c.county) %>
                 <% postalMessage = "or leave blank if your workshop is specific to the entire county." %>
-                <div class="span1"></div><div class="span2">City:</div><div class="span9">
+                <div class="col-sm-1"></div><div class="col-sm-2">City:</div><div class="col-sm-9">
                 <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
                 <option value="0">Select a city</option>
                     % for city in cities:
@@ -478,17 +509,17 @@
                         <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
                     % endfor
                 </select>
-                </div><!-- span9 -->
+                </div><!-- col-sm-9 -->
             % else:
                 <% postalMessage = "" %>
                 ${cityMessage}
             % endif
-            </span></div><!-- row-fluid -->
-        <div class="row-fluid"><span id="postalSelect">
+            </span></div><!-- row -->
+        <div class="row"><span id="postalSelect">
             % if c.city != "0":
                 <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
                 <% underPostalMessage = "or leave blank if your workshop is specific to the entire city." %>
-                <div class="span1"></div><div class="span2">Postal Code:</div><div class="span9">
+                <div class="col-sm-1"></div><div class="col-sm-2">Postal Code:</div><div class="col-sm-9">
                 <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
                 <option value="0">Select a postal code</option>
                     % for pCode in postalCodes:
@@ -500,18 +531,18 @@
                         <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
                     % endfor
                 </select>
-                </div><!-- span9 -->
+                </div><!-- col-sm-9 -->
             % else:
                 <% underPostalMessage = "" %>
                 ${postalMessage}
             % endif
-            </span></div><!-- row-fluid -->
-        <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
+            </span></div><!-- row -->
+        <div class="row"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
         <br />
         <% 
             buttonMsg = "Save Geographic Area"
         %>
-        <div class="row-fluid">
+        <div class="row">
                 <button type="submit" class="btn btn-warning">${buttonMsg}</button>
         </div><!-- row -->
         </form>
@@ -519,14 +550,14 @@
         <strong>Invite Participants</strong><br>
         <br>
         <span class="help-inline">Share this Link:  </span>
-        <input type="text" class="span9" value="${c.shareURL}"></input>
+        <input type="text" class="col-sm-9 form-control" value="${c.shareURL}"></input>
         <br>
         <!--
         <br>
         <strong>Share on Facebook; Tweet</strong>
         <br> -->
         <br>
-        <div class="row-fluid centered"><strong><em>OR</em></strong></div>
+        <div class="row centered"><strong><em>OR</em></strong></div>
         <br>
         ${emailInvite()}
     </div>
@@ -537,19 +568,19 @@
     % if not c.started and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig and c.participantsConfig:
         <div>
             <form name="edit_issue" id="edit_issue" class="left form-inline no-bottom" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
-            <button type="submit" class="btn btn-warning btn-block btn-large" name="startWorkshop" value="Start" >Publish Workshop</button>
+            <button type="submit" class="btn btn-warning btn-block btn-lg" name="startWorkshop" value="Start" >Publish Workshop</button>
             </form>
         </div>
 
     % elif c.w['startTime'] == '0000-00-00':
-        <button class="btn btn-warning btn-block btn-large disabled publishButton" rel="tooltip" data-placement="bottom" data-original-title="You must complete all steps before publishing your workshop">Publish Workshop</button>
+        <button class="btn btn-warning btn-block btn-lg disabled publishButton" rel="tooltip" data-placement="bottom" data-original-title="You must complete all steps before publishing your workshop">Publish Workshop</button>
 
     % else:
         <form class="no-bottom" action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST>
             % if workshopLib.isPublished(c.w):
-                <button type="submit" class="btn btn-warning btn-block btn-large publishButton" value="unpublish" rel="tooltip" data-placement="bottom" data-original-title="This will temporarily unpublish your workshop, removing it from listings and activity streams.">Unpublish Workshop</button>
+                <button type="submit" class="btn btn-warning btn-block btn-lg publishButton" value="unpublish" rel="tooltip" data-placement="bottom" data-original-title="This will temporarily unpublish your workshop, removing it from listings and activity streams.">Unpublish Workshop</button>
             % else:
-                <button type="submit" class="btn btn-warning btn-block btn-large publishButton" value="publish" rel="tooltip" data-placement="bottom" data-original-title="Republishes your workshop, making it visible in listings and activity streams.">Publish Workshop</button>
+                <button type="submit" class="btn btn-warning btn-block btn-lg publishButton" value="publish" rel="tooltip" data-placement="bottom" data-original-title="Republishes your workshop, making it visible in listings and activity streams.">Publish Workshop</button>
             % endif
         </form>
 
@@ -557,18 +588,18 @@
 </%def>
 
 <%def name="emailInvite()">
-    <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-        <div class="row-fluid">
+    <form name="private" id="private" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+        <div class="form-group">
             <label for="newMember" class="help-inline">Enter the email addresses of people to invite, separated by commas or cut and paste from Excel.</label>
-            <textarea class="input-block-level" rows=1 name="newMember"/></textarea>
-        </div><!-- row-fluid -->
-        <div class="row-fluid">
+            <textarea class="form-control" rows=1 name="newMember"/></textarea>
+        </div><!-- row -->
+        <div class="form-group">
             <label for="inviteMsg" class="help-inline">Add optional message to email invitation:</label>
-            <textarea class="input-block-level" rows=2 name="inviteMsg"/></textarea><br />
+            <textarea class="form-control" rows=2 name="inviteMsg"/></textarea><br />
             <!-- 
             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
             -->
-        </div><!-- row-fluid -->
+        </div><!-- row -->
         <br /><button type="submit" class="btn btn-primary" name="addMember"><i class="icon-envelope icon-white"></i> Send Invites</button>
     </form>
 </%def>
