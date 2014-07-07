@@ -153,7 +153,7 @@
 
 <%def name="admin_listeners()">
     % if c.w['public_private'] != 'trial':
-        <div ng-controller="listenerController" ng-init="user='${c.authuser['urlCode']}'; code='${c.w['urlCode']}'; url='${c.w['url']}'; getList()">
+        <div ng-controller="listenerController" ng-init="user='${c.authuser['urlCode']}'; code='${c.w['urlCode']}'; url='${c.w['url']}'; testString=''; getList()">
         <table class="table table-bordered">
         <thead>
         <tr><th>Officials 
@@ -181,9 +181,10 @@
             <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" id="toggleButton{{listener.urlCode}}" data-target="#disableListener{{listener.urlCode}}">
             {{listener.button}}</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener{{listener.urlCode}}">
             Edit</button></div><!-- btn-group -->
+            {{testString}}
             <div id="disableListener{{listener.urlCode}}" class="collapse">
-                <form id="toggleForm{{listener.urlCode}}" ng-submit="toggleListener('{{listener.urlCode}}')" class="form-inline" name="toggleForm{{listener.urlCode}}">
-                <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
+                <form id="toggleForm{{listener.urlCode}}" ng-submit="toggleListener(listener.urlCode, listener.button)" class="form-inline" name="toggleForm{{listener.urlCode}}">
+                <input type="text" id="lReason{{listener.urlCode}}" name="lReason{{listener.urlCode}}" placeholder="Reason" required>
                 <button type="submit" class="btn btn-warning" id="toggleSubmit{{listener.urlCode}}">{{listener.button}} Listener</button>
                 <br />
                 <span id="toggleListenerResponse{{listener.urlCode}}"></span>

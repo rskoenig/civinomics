@@ -1,6 +1,8 @@
 function activityController($scope, $http) {
 	$scope.listingType = 'activity';
-	$scope.activityType = '/all';
+	if ($scope.activityType == undefined) {
+	    $scope.activityType = '/all';
+	}
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
@@ -48,6 +50,18 @@ function activityController($scope, $http) {
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
+	
+	$scope.getMeetingActivity = function(){
+		$scope.activityType = '/meetings';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+
+	$scope.browseInitiatives = function(){
+		$scope.activityType = '/initiatives';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
 
 	$scope.getActivitySlice = function() {
 		if ($scope.busy || $scope.noMoreSlices) return;
@@ -72,3 +86,4 @@ function activityController($scope, $http) {
 	};
 
 }
+

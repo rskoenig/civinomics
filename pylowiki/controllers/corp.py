@@ -23,13 +23,13 @@ class CorpController(BaseController):
 
     def caseStudies(self):
         c.pagetype="caseStudies"  
-        c.title="Case Studies"
+        c.title="Surveys"
 
         c.clients=[]
         client={}
         client['name']="San Francisco Public Utilities Commission"
         client['logo']="sfpuc_small.jpg"
-        client['url']='SSIP'
+        client['url']='sfpuc_ssip'
         c.clients.append(client)
         client={}
         client['name']="Soquel Creek Water District"
@@ -59,41 +59,118 @@ class CorpController(BaseController):
 
 
         c.studies=[]
-        SSIP={}
-        SSIP["title"]="Sewer System Improvement Program"
-        SSIP["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
-        SSIP["image"]="SSIP.001.jpg"
-        SSIP["url"]="SSIP"
-        SSIP['date']="3.4.13"
-        c.studies.append(SSIP)
-        eastsideProject={}
-        eastsideProject["title"]="Eastside Recycled Water Project"
-        eastsideProject["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
-        eastsideProject["image"]="eastsideProject.001.jpg"
-        eastsideProject["url"]="eastsideProject"
-        eastsideProject['date']="10.10.12"
-        c.studies.append(eastsideProject)
-        cap2={}
-        cap2["title"]="Santa Cruz Climate Action Plan"
-        cap2["description"]="Implenting the City's plan to reduce carbon emissions 30% by 2020"
-        cap2["image"]="CAP2.001.jpg"
-        cap2["url"]="cap2"
-        cap2['date']="9.11.12"
-        c.studies.append(cap2)
-        landtrust={}
-        landtrust["title"]="Campaign for 10,000 Acres"
-        landtrust["description"]="Collecting ideas on how to save Santa Cruz County's highest priority conservation land"
-        landtrust["image"]="Landtrust_2.001.png"
-        landtrust["url"]="landtrust"
-        landtrust['date']="7.2.12"
-        c.studies.append(landtrust)
-        scwd2={}
-        scwd2["title"]="Santa Cruz and Soquel Creek Water Planning"
-        scwd2["description"]="Raising awareness about the regions' water shortage and a proposed desalination plant"
-        scwd2["image"]="scwd2_splash_1.26.001.png"
-        scwd2["url"]="scwd2"
-        scwd2['date']="4.10.12"
-        c.studies.append(scwd2)
+
+        study={}
+        study["title"]="Open Streets - Capitola"
+        study["description"]="Event attendees survey and feedback."
+        study["image"]="openStreetsCover.jpg"
+        study["url"]="open_streets_capitola"
+        study['date']="5.4.14"
+        study['stats']='openStreetsCap1'
+        study['respondents'] = 428
+        study['partnerLogo']='openStreetsLogo.gif'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+        study["description"]="Conducted via door-to-door interviews of registered voters."
+        study["image"]="bagCreek.jpg"
+        study["url"]="svbagban"
+        study['date']="4.9.14"
+        study['stats']='plasticBagBan'
+        study['respondents'] = 397
+        study['partnerLogo']='sosLogo.jpg'
+        study['partnerName']='Save Our shores'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+        study["description"]="A survey of Pacific Ave. business owners regarding the efficacy of the Host Program at creating a safe environment downtown."
+        study["image"]="hostPic.png"
+        study["url"]="dmc"
+        study['date']="4.8.14"
+        study['stats']='dcDmcSurvey'
+        study['respondents'] = 183
+        study['clientLogo']='dmcLogo.png'
+        study['cientName']='Downtown Management Corporation of Santa Cruz'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Santa Cruz Tech Commuters"
+        study["description"]="Measuring Santa Cruz County's daily tech worker brain drain and awareness, opportunity and feedback on the emerging Santa Cruz tech ecosystem."
+        study["image"]="techCommuter.png"
+        study["url"]="tech_commuter"
+        study['date']="3.25.14"
+        study['stats']='dcCommuterSurvey'
+        study['respondents'] = 102
+        study['partnerLogo']='ssvLogo.png'
+        study['partnerName']='South Swell Ventures'
+        study['scope'] = ''
+        study['tag'] = ''
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Sewer System Improvement Program"
+        study["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
+        study["image"]="ssipCover.png"
+        study["url"]="sfpuc_ssip"
+        study['date']="3.4.13"
+        study['respondents'] = 1200
+        study['clientLogo']='sfpucLogo.png'
+        study['clientName']='San Francisco Public Utilities Commission'
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Eastside Recycled Water Project"
+        study["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
+        study["image"]="eastsideProject.png"
+        study["url"]="eastside_project"
+        study['date']="10.10.12"
+        study['respondents'] = 934
+        study['clientLogo']='sfpucLogo.png'
+        study['clientName']='San Francisco Public Utilities Commission'
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Santa Cruz Climate Action Plan"
+        study["description"]="Implenting the City's plan to reduce carbon emissions 30% by 2020"
+        study["image"]="CAP.png"
+        study["url"]="cap2"
+        study['date']="9.11.12"
+        study['respondents'] = 500
+        study['clientLogo']='scCAP.jpg'
+        study['clientName']='City of Santa Cruz Climate Action Plan'
+        study['sponsorLogo']='allterraSolar.jpg'
+        study['sponsorName']='Allterra Solar'
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Campaign for 10,000 Acres"
+        study["description"]="Collecting ideas on how to save Santa Cruz County's highest priority conservation land"
+        study["image"]="landTrust.png"
+        study["url"]="landtrust"
+        study['respondents'] = 500
+        study['clientLogo']='landTrustLogo.jpg'
+        study['clientName']='City of Santa Cruz Climate Action Plan'
+        study['date']="7.2.12"
+        c.studies.append(study)
+
+        study={}
+        study["title"]="Santa Cruz and Soquel Creek Water Planning"
+        study["description"]="Raising awareness about the regions' water shortage and a proposed desalination plant"
+        study["image"]="scwd2Cover.png"
+        study["url"]="scwd2"
+        study['date']="4.10.12"
+        study['respondents'] = 1538
+        study['clientLogo']='soquelCreek.gif'
+        study['clientName']='Soquel Creek Water District'
+        c.studies.append(study)
 
         return render("/derived/corp_listStudies.bootstrap")
 
@@ -127,7 +204,7 @@ class CorpController(BaseController):
 
     def displayCaseStudy(self, id):
         c.pagetype="caseStudies"  
-        c.title="Case Studies"
+        c.title="Surveys"
 
         casestudyname=id
         study={}
@@ -138,13 +215,16 @@ class CorpController(BaseController):
             study["image"]="scwd2_splash_1.26.001.png"
             study["statusType"]="important"
             study["statusMessage"]="Closed"
-            study["ipadRespondents"]="1,538"
-            study["dates"]="9-13-2011 to 3-25-2012"
+            study["date"]="3-25-2012"
             study["background"]="The City of Santa Cruz and the Soquel Creek Water District each face a long-term water shortage. Over-pumped groundwater reserves and a federal mandate to reduce intake from streams and rivers to protect fish habitat require the two agencies to improve conservation and develop new supply sources."
             study["solution"]="Civinomics interviewed more than 1,500 residents using iPads to determine base-level awareness of the shortage and get feedback on potential solutions, including conservation and desalination."
             study["results"]="Respondents were enthusiastic about conservation, and 20% signed up for a free home water efficiency audit. Seventy-five percent said that they supported continued study of desalination, but indicated that they would need more information to be sure. Slightly less than 20% (283) of all respondents signed up for continued agency updates on the issue."
             study["nextSteps"]="Civinomics will host an online workshop enabling the community to suggest and refine potential solutions to the region's water shortage. Additional public outreach will take place after the Environmental Impact Report for a regional desalination plant is completed, at which point comprehensive discussion of all options will be possible."
-        
+            study['respondents'] = 1538
+            study['clientLogo']='soquelCreek.gif'
+            study['clientName']='Soquel Creek Water District'
+
+
             partners=[]
             partner={}
             partner['name']="Santa Cruz Water District"
@@ -242,16 +322,19 @@ class CorpController(BaseController):
         elif casestudyname=="landtrust":
             study["url"]="landtrust"
             study["title"]="Campaign for 10,000 Acres"
-            study["image"]="Landtrust_2.001.png"
+            study["image"]="landTrust.png"
             study["statusType"]="important"
             study["statusMessage"]="Closed"
-            study["ipadRespondents"]="500"
-            study["dates"]="4-21-2012 to 6-20-2012"
+            study["date"]="6-20-2012"
             study["background"]="The Land Trust of Santa Cruz County completed its Conservation Blueprint at the beginning of 2012. This document outlines the most important land in the county to protect based on biodiversity, irreplaceable water resources, and greatest risk for development. The Land Trust currently has the opportunity to acquire the first two major parcels outlined in the Blueprint, CEMEX Redwoods and Star Creek Ranch, and it needs to raise public awareness to get local residents involved in securing these acquisitions."
             study["solution"]="In a pilot outreach campaign, Civinomics interviewed 500 residents using iPads to raise awareness about the Conservation Blueprint and get public input on the managing documents for the new parcels. The outreach did not include fundraising and was purely educational in nature."
             study["results"]="Almost all (98%) of respondents indicated that protecting open space in Santa Cruz County is important to them, with 67% indicating that it is very important. As proof of this, 47% of all respondents opted in with a home address or email address to continue to follow the Land Trust."
             study["nextSteps"]="Civinomics will host an online workshop enabling the community to suggest edits to the new parcels' Conservation Easements - the managing documents for these pieces of conservation land."
             study["videoURL"]="http://player.vimeo.com/video/42731448"
+            study['respondents'] = 500
+            study['clientLogo']='landTrustLogo.jpg'
+            study['clientName']='Land Trust of Santa Cruz County'
+
 
             partners=[]
             partner={}
@@ -291,11 +374,15 @@ class CorpController(BaseController):
         elif casestudyname=="cap2":
             study["url"]="cap2"
             study["title"]="Santa Cruz Climate Action Plan"
-            study["image"]="CAP2.001.jpg"
+            study["image"]="CAP.png"
             study["statusType"]="important"
             study["statusMessage"]="Closed"
-            study["ipadRespondents"]="500"
-            study["dates"]="4-21-12 to 9-1-12"
+            study['respondents'] = 500
+            study['clientLogo']='scCAP.jpg'
+            study['clientName']='City of Santa Cruz Climate Action Plan'
+            study['sponsorLogo']='allterraSolar.jpg'
+            study['sponsorName']='Allterra Solar'
+            study["date"]="9-1-12"
             study["background"]="The Santa Cruz Climate Action Plan was officially adopted by the Santa Cruz City Council in June 2012 - but with no money available for implementation or marketing, it didn't look likely to change things anytime soon. While the plan lays out a detailed roadmap to increase bike commuting and residential solar, it can't possibly have an effect if people aren't aware that it exists."
             study["solution"]="Civinomics worked with the City's Climate Action Coordinator, Ross Clark, to design an outreach survey funded by local sustainable businesses. The pilot project set out to prove that: 1) the City could raise awareness about its Climate Action Plan without spending city money; 2) City residents would be interested in participating; and 3) Civinomics could help develop public policy that would allow the City to reach its emissions reduction targets."
             study["results"]="Civinomics conducted 500 interviews with Santa Cruz residents. Allterra Solar, a Santa Cruz-based solar installer, sponsored the outreach. The study revealed that 80% of residents had NOT heard about the Climate Action Plan, suggesting that more awareness programs are needed. Nevertheless, 65% of respondents were willing to pay between $1 and $5 per month to see the Climate Action Plan implemented. Civinomics specifically polled about Community Choice Aggregation - a new mechanism that allows counties or cities to create a regional power authority to buy and sell local renewable energy. It found that 90% of respondents would support such a program."
@@ -385,18 +472,21 @@ class CorpController(BaseController):
             study["questions"]=questions
 
 
-        elif casestudyname =="eastsideProject":
-            study["url"]="eastsideProject"
+        elif casestudyname =="eastside_project" or casestudyname =="eastsideProject" or casestudyname =="eastsideproject":
+            study["url"]="eastside_project"
             study["title"]="Eastside Recycled Water Project"
-            study["image"]="eastsideProject.001.jpg"
+            study["image"]="eastsideProject.png"
             study["statusType"]="success"
             study["statusMessage"]="Open"
-            study["ipadRespondents"]="934"
-            study["dates"]="started 2-24-2012"
+            study["respondents"]="934"
+            study["date"]="6-24-2012"
             study["background"]="The San Francisco Public Utilities Commission (SFPUC) has a goal to provide 4 million gallons per day of recycled water to the City of San Francisco. In order to reach this goal it is building three new recycled water facilities, including one serving Golden Gate Park and one serving the City's downtown, or 'Eastside.' Before selecting a location for the Eastside facility, the SFPUC wants to collect substantial public input. However, it has proven extremely difficult to get the public to show up to in-person forums and workshops."
             study["solution"]="Civinomics created an iPad survey for use in street outreach that discusses the basic principles behind recycled water and its use in San Francisco. The survey then presents each of the potential facility sites, asking respondents to indicate which they prefer, which they oppose and what comments they wish to make. Respondents also supply feedback on whether they prefer a minimal facility or one that includes community space or recreational amenities."
             study["results"]="With Civinomics' help, the SFPUC has been able to collect substantially more public input than ever before. The iPad survey is particularly effective for reaching residents in affected neighborhoods where household access to personal computers or the internet is not a given. Results will be published upon completion of the outreach."
             study["nextSteps"]=""
+
+            study['clientLogo']='sfpucLogo.png'
+            study['clientName']='San Francisco Public Utilities Commission'
 
             partners=[]
             partner={}
@@ -452,18 +542,21 @@ class CorpController(BaseController):
             questions=[]
             study["questions"]=questions
 
-        elif casestudyname =="SSIP":
-            study["url"]="SSIP"
+        elif casestudyname =="sfpuc_ssip" or casestudyname =="SSIP" or casestudyname =="ssip":
+            study["url"]="sfpuc_ssip"
             study["title"]="Sewer System Improvement Program"
-            study["image"]="SSIP.001.jpg"
+            study["image"]="ssipCover.png"
             study["statusType"]="success"
             study["statusMessage"]="Open"
-            study["ipadRespondents"]="1158"
-            study["dates"]="started 7-20-2012"
+            study["respondents"]="1200"
+            study["date"]=" 11-25-2012"
             study["background"]="The San Francisco Public Utilities Commission (SFPUC) is undertaking the multi-billion-dollar Sewer System Improvement Program (SSIP) to modernize the City's infrastructure and ensure the system functions in the event of a major earthquake. These improvements require construction in every neighborhood of the City as well as significant rate increases for residents. A substantial amount of public input is required before and during the project, however, it has proven historically difficult to get the public to show up for in-person forums and workshops."
             study["solution"]="Civinomics created an iPad survey for use in street outreach that provides residents an overview of the SSIP and gauges their support for its different elements. Respondents report sewer related problems, indicate their priorities for the overall project (minimizing costs, reducing odors, creating jobs, etc.) and indicate what they believe to be a reasonable rate increase to cover the cost of the improvements. The surveys are being conducted in the eight watersheds throughout the city."
             study["results"]="Results will be published upon completion of the outreach."
             study["nextSteps"]=""
+
+            study['clientLogo']='sfpucLogo.png'
+            study['clientName']='San Francisco Public Utilities Commission'
 
             partners=[]
             partner={}
@@ -487,13 +580,177 @@ class CorpController(BaseController):
             c.video='<iframe width="560" height="315" src="http://www.youtube.com/embed/m4039IQU7BM" frameborder="0" allowfullscreen></iframe></p>'
 
 
+        elif casestudyname =="tech_commuter" or casestudyname =="techCommuter" or casestudyname =="techcommuter":
+            study["url"]="tech_commuter"
+            study["title"]="Santa Cruz Tech Commuter Survey"
+            study["image"]="techCommuter.png"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 3-25-2014"
+            study["background"]="The San Francisco Public Utilities Commission (SFPUC) is undertaking the multi-billion-dollar Sewer System Improvement Program (SSIP) to modernize the City's infrastructure and ensure the system functions in the event of a major earthquake. These improvements require construction in every neighborhood of the City as well as significant rate increases for residents. A substantial amount of public input is required before and during the project, however, it has proven historically difficult to get the public to show up for in-person forums and workshops."
+            study["solution"]="Civinomics created an iPad survey for use in street outreach that provides residents an overview of the SSIP and gauges their support for its different elements. Respondents report sewer related problems, indicate their priorities for the overall project (minimizing costs, reducing odors, creating jobs, etc.) and indicate what they believe to be a reasonable rate increase to cover the cost of the improvements. The surveys are being conducted in the eight watersheds throughout the city."
+            study["results"]=""
+            study["pressRelease"]='techCommuters'
+            study["nextSteps"]=""
+            study['stats']='dcCommuterSurvey'
+
+            study['respondents'] = 102
+            study['partnerLogo']='ssvLogo.png'
+            study['partnerName']='South Swell Ventures'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="South Swell Ventures"
+            partner['url']="http://sfwater.org/bids/projectDetail.aspx?prj_id=311"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
+        elif casestudyname =="dmc":
+            study["url"]="dmc"
+            study["title"]="Downtown Management Corporation - Customer Feedback Survey"
+            study["image"]="hostPic.png"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-9-2014"
+            study["background"]="Downtown SC is gnarly, we asked how the help's doing."
+            study["solution"]="Civinomics created an iPad survey for use in street outreach that.."
+            study["results"]=""
+            study["pressRelease"]='dmc'
+            study["nextSteps"]=""
+            study['stats']='dcDmcSurvey'
+            study['link']= 'http://surveys.civinomics.com/dmc'
+            study["text"]='dmc'
+
+            study['respondents'] = 183
+            study['clientLogo']='dmcLogo.png'
+            study['clientName']='Downtown Management Corporation'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss DMC"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
+        elif casestudyname =="svbagban":
+            study["url"]="svbagban"
+            study["title"]="Scotts Valley Plastic Bag Ban Opinion Poll"
+            study["image"]="bagCreek.jpg"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 4-8-2014"
+            study["background"]="Plastic Bags are bad."
+            study["solution"]="Plastic Bag Fees ain't so bad."
+            study["results"]=""
+            study["text"]='svBagBan'
+            study["nextSteps"]=""
+            study['stats']='plasticBagBan'
+            study['link']= 'http://surveys.civinomics.com/svbagban'
+
+            study['respondents'] = 397
+            study['partnerLogo']='sosLogo.jpg'
+            study['partnerName']='Save Our Shores'
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']="Boss plasticBagBan"
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+
+        elif casestudyname =="open_streets_capitola" or casestudyname == "openStreetsCapitola" or casestudyname == "openstreetscapitola":
+            study["url"]="open_streets_capitola"
+            study["title"]="Open Streets - Capitola"
+            study["image"]="openStreetsCover.jpg"
+            study["statusType"]="danger"
+            study["statusMessage"]="Closed"
+            study["date"]=" 5-12-2014"
+            study["background"]=""
+            study["solution"]=""
+            study["results"]=""
+            study["text"]='openStreetsCapitola'
+            study["nextSteps"]=""
+            study['stats']='openStreetsCap1'
+            study['link']= 'http://surveys.civinomics.com/open-streets-capitola-participant-survey-questions'
+
+            study['respondents'] = 428
+            study['partnerLogo']='openStreetsLogo.gif'
+            study['partnerName']=''
+            study['scope'] = ''
+            study['tag'] = ''
+
+            partners=[]
+            partner={}
+            partner['name']=""
+            partner['url']="http://www.civ.io"
+            partners.append(partner)
+            study["partners"]=partners
+
+            sponsors=[]
+            study["sponsors"]=sponsors
+
+            publications=[]
+            study["publications"]=publications
+
+            pictures=[]
+            study["pictures"]=pictures
+
+            questions=[]
+            study["questions"]=questions
+            
+            
+            
+
+
         return render("/derived/corp_casestudy.bootstrap")
 
 
     def displayCareer(self, id):
         careername=id
         career={}
-        if careername=="engfrontend":
+        if careername=="eng_frontend":
             career["title"]="Software Engineer - Front End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
             career["description"]="Make this site beautiful. We need someone who is going to transform Civinomics into a clean, modern web app. Doing so will require more than a few photoshop mockups. Ideally you have already used bootstrap, angular JS and know some python. You can't make the front end fun unless you know the basics of passing data around. Show us that you know way more than us about composing clean, snappy CSS. If you have experience with iOS to boot, that rocks."
@@ -522,7 +779,7 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
-        if careername=="engbackend":
+        if careername=="eng_backend":
             career["title"]="Software Engineer - Back End"
             career["commitment location"]="Fulltime - Santa Cruz, CA"
             career["description"]="Make Civinomics faster, more secure and self-sustaining. We're looking for someone who can help us quickly materialize revenue opportunities on the platform, refine our architecture, internationalize and scale. Experience managing a team is a huge plus."
@@ -561,7 +818,7 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
-        if careername=="prgmManager":
+        if careername=="prgm_manager":
             career["title"]="Program Manager"
             career["commitment location"]="Fulll time - Santa Cruz, CA"
             career["description"]="Implement best practices to help Civinomics customers get the most out of their usage. Make vital product recommendations based on customer feedback. Facilitate cutting edge online interaction paradigm."
@@ -596,7 +853,7 @@ class CorpController(BaseController):
             recommendeds=[]
             career["recommendeds"]=recommendeds
 
-        if careername=="acctManager":
+        if careername=="acct_manager":
             career["title"]="Account Manager"
             career["commitment location"]="Full time - Santa Cruz and San Francisco, CA"
             career["description"]="We need a meticulous go getter who can keep clients happy and grow business. Existing clients range from government, to non-profit organizations, to political candidates, to sponsors.  Demonstrated passion for social causes through previous work or serious personal projects is a must. Amazing talent with CRM and PowerPoint / Keynote required. Prove to us that you can listen to what a client needs and work with a team to over-deliver on tight deadlines."
@@ -628,21 +885,21 @@ class CorpController(BaseController):
         engfrontend={}
         engfrontend["title"]="Software Engineer - Front End"
         engfrontend["department"]="Engineering"
-        engfrontend["url"]="engfrontend"
+        engfrontend["url"]="eng_frontend"
         c.careers.append(engfrontend)
         engbackend={}
         engbackend["title"]="Software Engineer - Back End"
         engbackend["department"]="Engineering"
-        engbackend["url"]="engbackend"
+        engbackend["url"]="eng_backend"
         c.careers.append(engbackend)
         career={}
         #career["title"]="Program Manager"
         #career["department"]="Operations"
-        #career["url"]="prgmManager"
+        #career["url"]="prgm_manager"
         #c.careers.append(career)
         career["title"]="Account Manager"
         career["department"]="Sales"
-        career["url"]="acctManager"
+        career["url"]="acct_manager"
         c.careers.append(career)
         prep={}
         prep["title"]="Public Outreach Representative"
@@ -665,28 +922,51 @@ class CorpController(BaseController):
         toddAnderson['title']='Lead Mobile Engineer'
         toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
         toddAnderson['photo']='todd_585.jpg'
-        toddAnderson['photoHover']='todd_silly_585.jpg'
+        toddAnderson['photoHover']='todd_585.jpg'
         c.team.append(toddAnderson)
+        
+        seanCampbell={}
+        seanCampbell["name"]="Sean Campbell"
+        seanCampbell['title']='CFO'
+        seanCampbell['bio']="An MBA with a passion for startups and government, Sean is excited to develop the infrastructure behind Civinomics. Sean spent three years as an accountant and finance manager at Ticketfly, the social ticketing platform. Previously he worked with a wide variety of small businesses and startups in San Francisco. While at UCSC Sean co-owned Slug Books Co-op, which for ten years provided discount textbooks to thousands of UCSC students at low margins while employing hundreds. Sean currently serves on the Santa Cruz Public Library Joint Powers Board as a Citizen Member."
+        seanCampbell['photo']='sean_campbell.jpg'
+        seanCampbell['photoHover']='sean_campbell.jpg'
+        c.team.append(seanCampbell)
+        
+        juanPabloD={}
+        juanPabloD["name"]="Juan Pablo Duvanced"
+        juanPabloD['title']='Account Executive'
+        juanPabloD['bio']="Juan Pablo's strives to increase social awareness of individual responsibility as well as the need for effective collaboration that can alleviate suffering and promote quality of life. As an Account Executive at Civinomics he helps ensure quality service delivery to non-profit and educational clients. His past experience includes Consulting for Family Services & Advocacy Projects with San Francisco school districts and acting as Family Support Coordinator for the Mission Learning Center (also in San Francisco). Previously he was a Senior Research Assistant at the Public Research Institute at San Francisco Sate University."
+        juanPabloD['photo']='juanPablo_duvanced_285.jpg'
+        juanPabloD['photoHover']='juanPablo_duvanced_285.jpg'
+        c.team.append(juanPabloD)
+        kelseyG={}
+        kelseyG["name"]="Kelsey Grimsley"
+        kelseyG['title']='Outreach Representative'
+        kelseyG['bio']="Kelsey gained valuable experience with diverse constituents as Congressman Henry Waxman's intern for his D.C. office (summer, 2012) and for Congressman Sam Farr in his local Santa Cruz office (spring, 2013). She campaigned in three states for Obama for America (2012), and helped coordinate successful regional environmental campaigns including Ban-the-Bag in Santa Cruz, CA. "
+        kelseyG['photo']='kelsey_grimsley_585.jpg'
+        kelseyG['photoHover']='kelsey_grimsley_585.jpg'
+        c.team.append(kelseyG)
         estherKim={}
         estherKim["name"]="Esther Kim"
         estherKim['title']='Marketing Manager'
         estherKim['bio']="My name is Esther Kim, I'm a recent graduate from UCSC in Business Management & Economics. I am an avid blogger, amateur videographer, and a work hard play hard advocate. I fell in love with Santa Cruz when I started surfing and mountain biking and I don't plan on leaving anytime soon. At Civinomics, I hope to bring in a specialized skillset of what I call 'grassroots' marketing to help set a structured brand goal of being a community leader."
         estherKim['photo']='esther_585.jpg'
-        estherKim['photoHover']='esther_silly_585.jpg'
+        estherKim['photoHover']='esther_585.jpg'
         c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
         manuK['title']='Founder & CEO'
         manuK['bio']="Manu makes sure Civinomics runs on time. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford."
         manuK['photo']='manu_585.jpg'
-        manuK['photoHover']='manu_silly_585.jpg'
+        manuK['photoHover']='manu_585.jpg'
         c.team.append(manuK)
         chrisN={}
         chrisN["name"]="Chris Neklason"
         chrisN['title']='Product Management'
         chrisN['bio']="Chris Neklason has been involved with community networking since 1984, before the Internet, and has decades of experience as a UNIX software engineer and as co-founder of Cruzio, one of the oldest ongoing independent ISPs in the United States."
         chrisN['photo']='chris_585.jpg'
-        chrisN['photoHover']='chris_silly_585.jpg'
+        chrisN['photoHover']='chris_585.jpg'
         c.team.append(chrisN)
         derroldP={}
         derroldP["name"]="Derrold Purifoy"
@@ -700,14 +980,14 @@ class CorpController(BaseController):
         robertS['title']='Founder & CMO'
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
         robertS['photo']='robert_585.jpg'
-        robertS['photoHover']='robert_silly_585.jpg'
+        robertS['photoHover']='robert_585.jpg'
         c.team.append(robertS)
         russellSterten={}
         russellSterten["name"]="Russell Sterten"
         russellSterten['title']='Program Manager '
         russellSterten['bio']="Hi, my name is Russell and it's good to be on board with Civinomics.  I am excited about the prospect of leveraging cutting edge communications and Web 2.0 technologies to dramatically increase people's engagement on issues facing their community. Before joining Civinomics I worked as a grassroots campaign organizer - most recently on a San Rafael city councilman's successful bid for the State Assembly - and have also been a substitute teacher in the East Bay and Marin.  Now I am looking forward to working with Civinomics and empowering people to help change the world."
         russellSterten['photo']='russell_585.jpg'
-        russellSterten['photoHover']='russell_silly_585.jpg'
+        russellSterten['photoHover']='russell_585.jpg'
         c.team.append(russellSterten)
 
         c.advisors=[]

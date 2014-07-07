@@ -3,13 +3,110 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
-    import pylowiki.lib.db.workshop as workshopLib
+    import pylowiki.lib.db.tag      as tagLib
     from types import StringTypes
 %>
 
 !
 <%def name="mainNavbar()">
-    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                % if 'user' in session:
+                    <a href="/home"><img class="nav-logo" src="/images/civ_logo_simple.png"></a>
+                % else:
+                    <a href="/splash"><img class="nav-logo" src="/images/civ_logo_simple.png"></a>
+                % endif
+            </div>
+
+            <div class="collapse navbar-collapse">
+
+                <form class="navbar-form navbar-left" action="/search">
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="searchQuery" placeholder="Search">
+                  </div>
+                  <button type="submit" class="btn btn-default">Submit</button>
+                </form>
+                
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/home">Home</a></li>
+                    % if c.authuser:
+                        % if c.authuser['activated'] == '1':
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    % if 'user' in session:
+                                        <li>
+                                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
+                                        </li>
+                                    % endif
+                                    <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
+                                </ul>
+                            </li>
+                        % endif
+                        % if userLib.isAdmin(c.authuser.id):
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                    <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                </ul>
+                            </li>
+                        % endif
+                        <li>
+                            <%
+                                messageCount = ''
+                                numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
+                                if numMessages:
+                                    if numMessages > 0:
+                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                            %>
+                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                                % if c.authuser['activated'] == '1':
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                                % endif
+                                <li><a href="/help">Help</a></li>
+                                <li class="divider"></li>
+                                <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    % else:
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/signup">Signup</a></li>
+                    % endif
+
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- container fluid -->
+    </nav>
+</%def>
+
+
+<%def name="oldNavbar()">
+    <% tagCategories = tagLib.getTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
@@ -68,6 +165,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -81,6 +179,9 @@
                                         <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
                                     </li>
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
+                                    % if int(c.authuser['accessLevel']) > 200:
+                                        <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
+                                    % endif
                                 </ul>
                             </li>
 
@@ -98,7 +199,7 @@
                         <li class="dropdown ${pSelected}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" id="profileDropdown">
                                 <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
                                 % if c.authuser['activated'] == '1':
                                     <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
@@ -137,6 +238,7 @@
             </ul>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/corp/surveys" class="nav-item">Surveys</a></li>
                 <li class="nav-item"><a href="/browse/initiatives" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="http://civinomics.wordpress.com" target="_blank" class="nav-item">Blog</a></li>
                 <!-- <li class="nav-item"><a href="/corp/about" class="nav-item">Create</a></li> -->
@@ -173,8 +275,8 @@
     </div><!-- kludge for case of missing close div tag -->
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer well">
-                <div class="span8 no-left">
+            <div class="row footer rounded well">
+                <div class="col-sm-8 no-left">
                     <ul class="horizontal-list">
                         <li><a class="green green-hover" href="/corp/about">About</a></li> 
                         <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
@@ -184,7 +286,7 @@
                         <li><a class="green green-hover" href="/help">Help</a></li>
                         <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
                     </ul>
-                </div><!-- span8 -->
+                </div><!-- col-sm-8 -->
                 <div class="span pull-right">
                   © 2014 Civinomics
                 </div><!-- span pull-right -->
@@ -196,7 +298,7 @@
 <%def name="copyright()">
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer well">
+            <div class="row footer rounded well">
                 <div class="span pull-right">
                   © 2014 Civinomics
                 </div>
@@ -206,56 +308,31 @@
 </%def>
 
 <%def name="condensedFooter()">
-    <div class="footer-civ condensed">
+    <div class="footer">
         <div class="container-fluid" >
-            <div class="row-fluid pretty">
-                <div class="span5">
-                    <div class="pull-right">
-                        © 2014 Civinomics, Inc. 
-                        <ul class="horizontal-list">
-                            <li><a href="/corp/terms">Terms</a></li>
-                            <li><a href="/corp/privacy">Privacy</a></li>
-                            <li><a href="/corp/news">News</a></li>
-                            <li><a href="/corp/contact">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="span2 centered">
-                    <img src="/images/logo_white_simple.png">
-                </div>
-                <div class="span5">
+            <div class="row ">
+                <div class="col-sm-5 text-center">
                     <ul class="horizontal-list">
-                        <li><a href="/corp/careers">Careers</a></li>
                         <li><a href="/corp/team">Team</a></li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/news">News</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="http://civinomics.storenvy.com" target="_blank">Gear Store</a></li>
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
+                        
                     </ul>
                 </div>
-            </div>
-            <div class="row-fluid simple">
-                <div class="span10">
+                <div class="col-sm-2 centered">
+                    <img src="/images/logo_white_simple.png">
+                </div>
+                <div class="col-sm-5">
                     <ul class="horizontal-list">
+                        <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>
-                        <li><a href="/corp/news">News</a></li>
-                        <li><a href="/corp/contact">Contact</a></li>
-                        <li><a href="/corp/careers">Careers</a></li>
-                        <li><a href="/corp/team">Team</a></li>
-                        <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
-                        <li><a href="/corp/caseStudies">Case Studies</a></li>
                         <li>© 2014 Civinomics, Inc. </li>
                     </ul>
                 </div>
-                <div class="span2 centered">
-                    <img src="/images/logo_white_simple.png">
-                </div>
-            </div>
-            <div class="row-fluid">
-		% if not isinstance(c.backgroundAuthor, StringTypes):
-			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${lib_6.userLink(c.backgroundAuthor)} ${lib_6.userImage(c.backgroundAuthor, className="avatar topbar-avatar", noLink=True)} </em>
-		% else:
-			<em class="photo-cred">Cover photo: "${c.backgroundPhoto['title']}", Author: ${c.backgroundAuthor}</em>
-		% endif
             </div>
         </div>
     </div>
@@ -263,7 +340,7 @@
 
 <%def name="search_drawer()">
     <div id="search" class="collapse search_drawer">
-        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <% tagCategories = tagLib.getTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid searches">
             <div class="span3 offset1 small-show">
@@ -333,17 +410,19 @@
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
         % if 'title' in args:
-            <h2 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h2>
-            <h2 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h2>
-            <h2 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h2>
+            <h2 ng-show="showTitle == 'sTitle'" class="no-top centered" ng-cloak>Sign up</h2>
+            <h2 ng-show="showTitle == 'lTitle'" class="no-top centered" ng-cloak>Log in</h2>
+            <h2 ng-show="showTitle == 'pTitle'" class="no-top centered" ng-cloak>Forgot Password</h2>
         % endif
         ${fields_alert()}
         % if c.splashMsg:
-            <% message = c.splashMsg %>
-            <div class="alert alert-${message['type']}">
-                <button data-dismiss="alert" class="close">x</button>
-                <strong>${message['title']}</strong> ${message['content']}
-            </div> 
+            <div class="col-xs-12">
+                <% message = c.splashMsg %>
+                <div class="alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div> 
+            </div>
         % endif
       ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
@@ -359,9 +438,9 @@
 </%def>
 
 <%def name="socialLogins()">
-    <div class="row-fluid social-login centered">
+    <div class="row social-login centered">
         <div id="fbLoginButton2">
-            <a onclick="facebookLogin()"><img src="/images/f-login.png"></a>
+            <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
         </div>
         <div id="twtLoginButton1">
             <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
@@ -373,48 +452,47 @@
 </%def>
 
 <%def name="signupForm()">
-        <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
-            <input type="hidden" name="country" value="United States">
+        <form id="sign_in" action="/signup/handler" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST" role="form">
+            <input type="hidden"  name="country" value="United States">
             <input type="hidden" name="memberType" value="professional">
 
-            <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
-                <label class="control-label" for="name"> Full name: </label>
-                <div class="controls">
-                    <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+            <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
+                <label class="col-sm-3 control-label" for="name"> Full name: </label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
                     <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="email"> Email: </label>
-                <div class="controls">
-                    <input type="email" name="email" id="email" ng-model="email" required>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="email"> Email: </label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="email" name="email" id="email" ng-model="email" required>
                     <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="passphrase"> Password: </label>
-                <div class="controls">
-                    <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                 </div>
             </div>
-            <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
-                <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
-                <div class="controls">
-                    <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
                     <div id="postalCodeResult"></div>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="terms">&nbsp;</label>
-                <div class="controls">
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="terms">&nbsp;</label>
+                <div class="col-sm-8">
                     <span id="terms">&nbsp;</span>
                 </div>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="submit">&nbsp;</label>
-                <div class="controls">
-                    <button type="submit" name="submit" class="btn btn-success signup">Sign up</button>
+            <div class="form-group text-center">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <button type="submit" name="submit" class="btn btn-success btn-block btn-lg">Sign up</button>
                 </div>
             </div>
         </form>
@@ -423,23 +501,23 @@
 </%def>
 
 <%def name="loginForm()">
-    <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
-        <div class="control-group">
-            <label class="control-label" for="email"> Email: </label>
-            <div class="controls">
-                <input type="email" name="email" id="email" required>
+    <form id="sign_in" action="/loginHandler" class="form-horizontal" method="post">
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="email"> Email: </label>
+            <div class="col-sm-8">
+                <input class="form-control" type="email" name="email" id="email" required>
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="passphrase"> Password: </label>
-            <div class="controls">
-                <input type="password" name="password" id="password"><br>
+        <div class="form-group">
+            <label class="col-sm-3  control-label" for="passphrase"> Password: </label>
+            <div class="col-sm-8">
+                <input class="form-control" type="password" name="password" id="password"><br>
                 <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-civ login"> Log in </button>
+        <div class="form-group">
+            <div class="col-sm-6 col-sm-offset-3">
+                <button type="submit" class="btn btn-success btn-lg btn-block"> Log in </button>
             </div>
         </div>
     </form>
@@ -486,44 +564,50 @@
         alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
-
-    <div id="signupLoginModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 ng-show="showTitle == 'sTitle'" class="login top centered" ng-cloak>Sign up</h3>
-        <h3 ng-show="showTitle == 'lTitle'" class="login top centered" ng-cloak>Log in</h3>
-        <h3 ng-show="showTitle == 'pTitle'" class="login top centered" ng-cloak>Forgot Password</h3>
-      </div>
-      <div class="modal-body">
-        ${tabbableSignupLogin()}
-      </div>
-      <div class="modal-footer">
-        <div class="row-fluid centered tcs">
-          <div class="span10 offset1">
-            <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
-          </div>
+    <div class="modal fade" id="signupLoginModal" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3 ng-show="showTitle == 'sTitle'" class="modal-title login top centered" ng-cloak>Sign up</h3>
+                    <h3 ng-show="showTitle == 'lTitle'" class="modal-title login top centered" ng-cloak>Log in</h3>
+                    <h3 ng-show="showTitle == 'pTitle'" class="modal-title login top centered" ng-cloak>Forgot Password</h3>
+                </div>
+                <div class="modal-body">
+                    ${tabbableSignupLogin()}
+                </div>
+                <div class="modal-footer">
+                    <div class="row centered tcs">
+                      <div class="col-sm-10 col-sm-offset-1">
+                        <p class="sc-font-light tcs">By joining, or logging in via Facebook or Twitter, you agree to Civinomics' <a href="/corp/terms" target="_blank" class="green">terms of use</a> and <a href="/corp/privacy" target="_blank" class="green">privacy policy</a></p>
+                      </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 </%def>
 
 
 <%def name="activateAccountModal()">
-    <div id="activateAccountModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="activateAccountModal" aria-hidden="true">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>Activate Your Account</h3>
-      </div>
-      <div class="modal-body">
-        <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
+    <div class="modal fade" id="activateAccountModal" tabindex="-1" role="dialog" aria-labelledby="activateAccountModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="no-top">Activate Your Account <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></h3>
+                </div>
+                <div class="modal-body">
+                    <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
 
-        <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
-        <div class="top-space green" id="resendMessage"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-        <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
-      </div>
+                    <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
+                    <div class="top-space green" id="resendMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-success resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
 </%def>

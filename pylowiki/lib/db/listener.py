@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
@@ -52,14 +53,18 @@ def getListenersForUser(user, disabled = 0):
         return False
 
 def setListenersForUserInSession(lwdisabled = 0):
-    listenerWorkshops = []
-    listenerList = getListenersForUser(c.authuser, disabled = lwdisabled)
-    if listenerList:
-        listenerWorkshops += [lw['workshopCode'] for lw in listenerList]      
+    if 'listenerWorkshops' not in c.authuser:
+        listenerWorkshops = []
+        listenerList = getListenersForUser(c.authuser, disabled = lwdisabled)
+        if listenerList:
+            listenerWorkshops += [lw['workshopCode'] for lw in listenerList]
+        c.authuser["listenerWorkshops"] = str(pickle.dumps(listenerWorkshops))
+        commit(c.authuser)
+    else:
+        listenerWorkshops = pickle.loads(str(c.authuser["listenerWorkshops"]))
 
     session["listenerWorkshops"] = listenerWorkshops
     session.save()
-        
 
 def Listener(name, title, email, workshop, pending = 1):
     # recycle existing disabled listener objects for this user and this workshop

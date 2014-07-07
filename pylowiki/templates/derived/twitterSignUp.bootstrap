@@ -5,18 +5,11 @@
 </%def>
 
 <%def name="headScripts()">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
     <script src="/js/ng/signup_login.js" type="text/javascript"></script>
     <script src="/js/geo.js" type="text/javascript"></script>
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/CA_leg.jpg' alt="">
-    <div class="span8">
-        <p class="photoCredits">iStockphoto</p>
-    </div>
-</div>
-
+<div id="login-bg"></div>
 <div id="fbSignUp" class="container">
     <div class="row">
         % if c.success:
