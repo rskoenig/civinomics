@@ -37,21 +37,23 @@ class RegisterController(BaseController):
             h.check_if_login_required()
 
     def splashDisplay(self):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-	c.title = config['custom.titlebar']
+        c.title = config['custom.titlebar']
 
-        c.photos = photoLib.getAllPhotos()
-        if c.photos and len(c.photos) != 0:
-            c.photos = sort.sortBinaryByTopPop(c.photos)
-            p = c.photos[0]
-            c.backgroundPhoto = p
-            c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
-            c.backgroundAuthor = userLib.getUserByID(p.owner)
-        else: 
-            c.backgroundPhoto = {'title': 'Santa Cruz Beach Boardwalk'}
-            c.backgroundPhotoURL = '/images/splash/sc_boardwalk.jpg'
-            c.backgroundAuthor = 'Ester Kim'
+        c.backgroundPhoto = {'title': 'City Council Meeting'}
+        c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
+        c.backgroundAuthor = 'unknown'
+
+        #c.photos = photoLib.getAllPhotos()
+        #if c.photos and len(c.photos) != 0:
+        #    c.photos = sort.sortBinaryByTopPop(c.photos)
+        #    p = c.photos[0]
+        #    c.backgroundPhoto = p
+        #    c.backgroundPhotoURL = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+        #    c.backgroundAuthor = userLib.getUserByID(p.owner)
+        #else: 
+        #    c.backgroundPhoto = {'title': 'Santa Cruz Beach Boardwalk'}
+        #    c.backgroundPhotoURL = '/images/splash/shasta_blur.jpg'
+        #    c.backgroundAuthor = 'Ester Kim'
 
         self.noQuery = False
         c.searchType = "browse"
@@ -110,9 +112,6 @@ class RegisterController(BaseController):
         return render("/derived/signupNoExtAuth.bootstrap")
 
     def fbNewAccount( self ):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
@@ -729,6 +728,13 @@ class RegisterController(BaseController):
             returnJson = False
 
         returnPage = "/signup"
+        if 'afterLoginURL' in session:
+        # look for accelerator cases: workshop home, item listing, item home
+            returnPage = session['afterLoginURL']
+            if 'loginResetPassword' in returnPage:
+                returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
         name = False
         password = False
         postalCode = False
@@ -890,6 +896,14 @@ class RegisterController(BaseController):
                             return redirect(returnPage)
                             
                     returnPage = "/"
+                    
+                    if 'afterLoginURL' in session:
+                    # look for accelerator cases: workshop home, item listing, item home
+                        returnPage = session['afterLoginURL']
+                        if 'loginResetPassword' in returnPage:
+                            returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                            session.pop('afterLoginURL')
+                            session.save()
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'

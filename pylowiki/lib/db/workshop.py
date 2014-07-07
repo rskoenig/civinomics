@@ -161,6 +161,41 @@ def getWorkshopPostsSince(code, url, memberDatetime):
 
         return returnList
         
+def getIdeaCountForWorkshop(code, adopted = 0, deleted = 0):
+    try:
+        q = meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))
+        if adopted == 1:
+            q = q.filter(Thing.data.any(wc('adopted', '1')))
+        
+        return q.count()
+    except:
+        return False
+        
+def getResourceCountForWorkshop(code, deleted = 0):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .count()
+    except:
+        return False
+        
+def getDiscussionCountForWorkshop(code, deleted = 0):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'discussion')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('discType', 'general')))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .count()
+    except:
+        return False
+    
+        
 def updateWorkshopChildren(workshop, workshopKey):
     code = workshop['urlCode']        
     key = '%s%s' %(workshop.objType, 'Code')
@@ -175,6 +210,11 @@ def updateWorkshopChildren(workshop, workshopKey):
             if workshopKey == "workshop_title":
                 item[workshopKey] = workshop["title"]
                 item['workshop_url'] = workshop['url']
+            elif workshopKey == "workshop_searchable":
+                if 'discType' in item and (item['discType'] != 'general' and item['discType'] != 'general'):
+                    item[workshopKey] = '0'
+                else:
+                    item[workshopKey] = workshop[workshopKey]
             else:
                 item[workshopKey] = workshop[workshopKey]
             commit(item)
@@ -193,75 +233,6 @@ def updateWorkshopChildren(workshop, workshopKey):
                     commit(comment)                            
     except Exception as e:
         return False
-        
-
-def getWorkshopTagCategories():
-    workshopTags = []
-    #workshopTags.append('Animals')
-    workshopTags.append('Arts')
-    workshopTags.append('Business')
-    workshopTags.append('Civil Rights')
-    workshopTags.append('Community')
-    workshopTags.append('Economy')
-    workshopTags.append('Education')
-    #workshopTags.append('Employment')
-    #workshopTags.append('Entertainment')
-    workshopTags.append('Environment')
-    #workshopTags.append('Family')
-    workshopTags.append('Government')
-    workshopTags.append('Health')
-    workshopTags.append('Housing')
-    #workshopTags.append('Infrastructure')
-    #workshopTags.append('Justice')
-    workshopTags.append('Land Use')
-    workshopTags.append('Municipal Services')
-    #workshopTags.append('NonProfit')
-    workshopTags.append('Parks and Rec')
-    #workshopTags.append('Policy')
-    workshopTags.append('Safety')
-    #workshopTags.append('Sports')
-    workshopTags.append('Transportation')
-    workshopTags.append('Water')
-    workshopTags.append('Other')
-    return workshopTags
-
-    
-def getWorkshopTagColouring():
-    mapping = { 'Civil Rights':         'red-tag',
-                'Health' :              'red-tag',
-                'Safety' :              'red-tag',
-                'Justice':              'red-tag',
-                'Animals':              'green-tag',
-                'Land Use':             'green-tag',
-                'Environment':          'green-tag',
-                'Outdoors':             'green-tag',
-                'Arts':                 'orange-tag',
-                'Entertainment':        'orange-tag',
-                'Sports':               'orange-tag',
-                'Family':               'orange-tag',
-                'Community':            'orange-tag',
-                'Other':                'orange-tag',
-                'Business':             'black-tag',
-                'Economy':              'black-tag',
-                'Employment':           'black-tag',
-                'Education':            'black-tag',
-                'Housing':              'black-tag',
-                'Transportation':       'blue-tag',
-                'Infrastructure':       'blue-tag',
-                'Water':                'blue-tag',
-                'Municipal Services':   'blue-tag',
-                'Government':           'grey-tag',
-                'NonProfit':            'grey-tag',
-                'Policy':               'grey-tag'}
-    
-    #mapping = { 'red-tag': ['Civil Rights', 'Health', 'Safety', 'Justice'],
-    #            'green-tag': ['Land Use', 'Environment'],
-    #            'orange-tag':['Arts', 'Entertainment', 'Sports', 'Family', 'Community', 'Other'],
-    #            'black-tag': ['Business', 'Economy', 'Employment', 'Education', 'Housing'],
-    #            'blue-tag': ['Transportation', 'Infrastructure', 'Municipal Services'],
-    #            'grey-tag': ['Government', 'NonProfit', 'Policy']
-    #            }
-    return mapping
 
 
 def isGuest(workshop):

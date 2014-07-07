@@ -262,6 +262,7 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     a['deleted'] = '0'
     a['ups'] = '0'
     a['downs'] = '0'
+    a['views'] = '0'
     a = generic.addedItemAs(a, privs, role)
     commit(a)
     a['urlCode'] = toBase62(a)
@@ -270,4 +271,6 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
     else:
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
+    a['discussion_child'] = d.d['urlCode']
+    commit(a)
     return a

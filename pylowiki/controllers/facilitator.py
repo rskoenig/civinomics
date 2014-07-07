@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import pickle
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -160,6 +161,20 @@ class FacilitatorController(BaseController):
             if doF and 'acceptInvite' in request.params:
                   doF['pending'] = '0'
                   eAction = "Accepted"
+                  # this is an odd place to do this, but here we go
+                  if 'workshopCode' in doF:
+                    facilitatorWorkshops = pickle.loads(str(c.authuser["facilitatorWorkshops"]))
+                    facilitatorWorkshops.append(doF['workshopCode'])
+                    c.authuser['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+                    session['facilitatorWorkshops'] = facilitatorWorkshops
+                  elif 'initiativeCode' in doF:
+                    facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+                    facilitatorInitiatives.append(doF['initiativeCode'])
+                    c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+                    session['facilitatorInitiatives'] = facilitatorInitiatives
+                  dbhelpersLib.commit(c.authuser)
+                  session.save()
+                      
                   
             if doF and 'declineInvite' in request.params:
                   doF['pending'] = '0'
@@ -237,6 +252,21 @@ class FacilitatorController(BaseController):
            alert['title'] = 'Success. CoFacilitation resignation successful.'
            session['alert'] = alert
            session.save()
+           if 'workshopCode' in doF:
+                facilitatorWorkshops = pickle.loads(str(c.authuser["facilitatorWorkshops"]))
+                if doF['workshopCode'] in facilitatorWorkshops:
+                    facilitatorWorkshops.remove(doF['workshopCode'])
+                    c.authuser['facilitatorWorkshops'] = str(pickle.dumps(facilitatorWorkshops))
+                    session['facilitatorWorkshops'] = facilitatorWorkshops
+           elif 'initiativeCode' in doF:
+                facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+                if doF['initiativeCode'] in facilitatorInitiatives:
+                    facilitatorInitiatives.remove(doF['initiativeCode'])
+                    c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+                    session['facilitatorInitiatives'] = facilitatorInitiatives
+           dbhelpersLib.commit(c.authuser)
+           session.save()
+                      
            return redirect("/workshop/%s/%s"%(code, url))
 
         alert = {'type':'error'}
@@ -266,6 +296,13 @@ class FacilitatorController(BaseController):
             f['disabled'] = '1'
             f['pending'] = '1'
             dbhelpersLib.commit(f)
+            facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+            if f['initiativeCode'] in facilitatorInitiatives:
+                facilitatorInitiatives.remove(f['initiativeCode'])
+                c.authuser['facilitatorInitiatives'] = str(pickle.dumps(facilitatorInitiatives))
+                dbhelpersLib.commit(c.authuser)
+                session['facilitatorInitiatives'] = facilitatorInitiatives
+                session.save()
 
             if 'resign' in request.params:
               # the coauthor is resigning, he should be redirected away from the edit page

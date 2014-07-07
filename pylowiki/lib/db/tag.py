@@ -35,33 +35,34 @@ def countTags(searchString, disabled = '0'):
     except:
         return False
 
-def getWorkshopTagCategories():
-    workshopTags = []
-    workshopTags.append('Arts')
-    workshopTags.append('Business')
-    workshopTags.append('Civil Rights')
-    workshopTags.append('Community')
-    workshopTags.append('Economy')
-    workshopTags.append('Education')
-    workshopTags.append('Environment')
-    workshopTags.append('Government')
-    workshopTags.append('Health')
-    workshopTags.append('Housing')
-    workshopTags.append('Land Use')
-    workshopTags.append('Municipal Services')
-    workshopTags.append('Parks and Rec')
-    workshopTags.append('Safety')
-    workshopTags.append('Transportation')
-    workshopTags.append('Water')
-    workshopTags.append('Other')
-    return workshopTags
+def getTagCategories():
+    tags = []
+    tags.append('Arts')
+    tags.append('Business')
+    tags.append('Civil Rights')
+    tags.append('Community')
+    tags.append('Economy')
+    tags.append('Education')
+    tags.append('Environment')
+    tags.append('Government')
+    tags.append('Health')
+    tags.append('Housing')
+    tags.append('Land Use')
+    tags.append('Municipal Services')
+    tags.append('Parks and Rec')
+    tags.append('Safety')
+    tags.append('Transportation')
+    tags.append('Water')
+    tags.append('Other')
+    return tags
 
-def getWorkshopTagColouring():
+def getTagColouring():
     mapping = { 'Civil Rights':         'red-tag',
                 'Health' :              'red-tag',
                 'Safety' :              'red-tag',
                 'Justice':              'red-tag',
                 'Land Use':             'green-tag',
+                'Parks and Rec':        'green-tag',
                 'Environment':          'green-tag',
                 'Arts':                 'orange-tag',
                 'Entertainment':        'orange-tag',
@@ -92,7 +93,7 @@ def getWorkshopTagColouring():
     return mapping
 
 def getCategoryTagCount():
-    categories = getWorkshopTagCategories()
+    categories = getTagCategories()
     tagDict = dict()
     for category in categories:
         tagDict[category] = countTags(category)

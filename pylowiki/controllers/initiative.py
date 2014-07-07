@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+import datetime
+import pickle
 
 from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -16,6 +18,7 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.json            as jsonLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.helpers         as h
@@ -32,7 +35,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -166,8 +169,11 @@ class InitiativeController(BaseController):
         # the scope if initiative is created from a geoSearch page
         if 'initiativeRegionScope' in request.params:
             scope = request.params['initiativeRegionScope']
+            
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
+            
+        goal = self.getInitiativeGoal(scope)
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
@@ -194,7 +200,16 @@ class InitiativeController(BaseController):
         
             
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
+        
+        session['facilitatorInitiatives'].append(c.initiative['urlCode'])
+        facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+        if c.initiative['urlCode'] not in facilitatorInitiatives:
+            facilitatorInitiatives.append(c.initiative['urlCode'])
+            c.authuser["facilitatorInitiatives"] = str(pickle.dumps(facilitatorInitiatives))
+            dbHelpers.commit(c.authuser)
+        
         c.level = scope
 
         # now that the initiative edits have been commited, update the scopeProps for the template to use:
@@ -271,10 +286,17 @@ class InitiativeController(BaseController):
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.initiative['public'] == '0':
                 c.initiative['public'] = '1'
+                startTime = datetime.datetime.now(None)
+                c.initiative['publishDate'] = startTime
+                c.initiative['unpublishDate'] = u'0000-00-00'
+                dbHelpers.commit(c.initiative)
                 c.saveMessage = "Your initiative is now live! It is publicly viewable."
         elif 'public' in request.params and request.params['public'] == 'unpublish':
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
+                endTime = datetime.datetime.now(None)
+                c.initiative['unpublishDate'] = endTime
+                dbHelpers.commit(c.initiative)
                 c.saveMessage = "Your initiative has been unpublished. It is no longer publicy viewable."
 
         c.editInitiative = True
@@ -344,6 +366,11 @@ class InitiativeController(BaseController):
                 c.initiative['scope'] = geoTagString
                 # need to come back and add 'updateInitiativeChildren' when it is written
                 #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
+                
+                # update the goal vote number based on new scope
+                c.initiative['goal'] = self.getInitiativeGoal(geoTagString)
+                log.info('%s' % c.initiative['goal'])
+                
                 wchanges = 1
                 
         for key in iKeys:
@@ -504,10 +531,14 @@ class InitiativeController(BaseController):
         if c.initiative.objType == 'initiative' and 'views' not in c.initiative:
             c.initiative['views'] = u'0'
         
-        if c.initiative.objType != 'revision':    
+        if c.initiative.objType != 'revision' and 'views' in c.initiative:
             views = int(c.initiative['views']) + 1
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
+
+        c.numComments = 0
+        if 'numComments' in c.initiative:
+            c.numComments = c.initiative['numComments']
 
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
@@ -599,4 +630,62 @@ class InitiativeController(BaseController):
         
         jsonReturn = '{"state":"Success", "updateCode":"' + d.d['urlCode'] + '","updateURL":"' + d.d['url'] + '"}'
         return jsonReturn
+       
+        
+    def getInitiativeGoal(self, scope):
+        geoScope = scope.split('|') 
+        if geoScope[2] == '0':
+            #earth
+            population = 7172450000
+            
+        elif geoScope[4] == '0':
+            # country
+            geoInfo = geoInfoLib.getCountryInfo(geoScope[2]) 
+            if geoInfo:
+                population = geoInfo['Country_population']
+            
+        elif geoScope[6] == '0':
+            #state
+            geoInfo = geoInfoLib.getStateInfo(geoScope[4], geoScope[2]) 
+            if geoInfo:
+                population = geoInfo['Population']
+            
+        elif geoScope[8] == '0':
+            #county
+            county = geoInfoLib.geoDeurlify(geoScope[6])
+            geoInfo = geoInfoLib.getCountyInfo(county, geoScope[4], geoScope[2])
+            if geoInfo:
+                population = geoInfo['Population']
+
+        elif geoScope[9] == '0':
+            #city
+            city = geoInfoLib.geoDeurlify(geoScope[8])
+            geoInfo = geoInfoLib.getCityInfo(city, geoScope[4], geoScope[2]) 
+            if geoInfo:
+                population = geoInfo['Population']
+
+        else:
+            #zip
+            geoInfo = geoInfoLib.getPostalInfo(geoScope[9]) 
+            if geoInfo:
+                population = geoInfo['Population']
+        
+        percentVoters = 0.35
+        percentSigsNeeded = 0.10
+        goalPercent = percentVoters * percentSigsNeeded
+        
+        if population:
+            population = int(population)
+            goal = int(population * goalPercent)
+        else:
+            population = 0
+            log.info('no population data found')
+            goal = 1000
+            
+        return goal
+
+    def getJson(self):
+        entry = jsonLib.getJsonProperties(c.initiative)
+        return json.dumps({'statusCode':1, 'thing': entry})
+        
             
