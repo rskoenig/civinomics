@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import datetime
+import pickle
 
 from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -17,6 +18,7 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.json            as jsonLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.helpers         as h
@@ -33,7 +35,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -202,6 +204,11 @@ class InitiativeController(BaseController):
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
+        facilitatorInitiatives = pickle.loads(str(c.authuser["facilitatorInitiatives"]))
+        if c.initiative['urlCode'] not in facilitatorInitiatives:
+            facilitatorInitiatives.append(c.initiative['urlCode'])
+            c.authuser["facilitatorInitiatives"] = str(pickle.dumps(facilitatorInitiatives))
+            dbHelpers.commit(c.authuser)
         
         c.level = scope
 
@@ -676,5 +683,9 @@ class InitiativeController(BaseController):
             goal = 1000
             
         return goal
+
+    def getJson(self):
+        entry = jsonLib.getJsonProperties(c.initiative)
+        return json.dumps({'statusCode':1, 'thing': entry})
         
             

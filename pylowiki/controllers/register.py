@@ -728,6 +728,13 @@ class RegisterController(BaseController):
             returnJson = False
 
         returnPage = "/signup"
+        if 'afterLoginURL' in session:
+        # look for accelerator cases: workshop home, item listing, item home
+            returnPage = session['afterLoginURL']
+            if 'loginResetPassword' in returnPage:
+                returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
         name = False
         password = False
         postalCode = False
@@ -889,6 +896,14 @@ class RegisterController(BaseController):
                             return redirect(returnPage)
                             
                     returnPage = "/"
+                    
+                    if 'afterLoginURL' in session:
+                    # look for accelerator cases: workshop home, item listing, item home
+                        returnPage = session['afterLoginURL']
+                        if 'loginResetPassword' in returnPage:
+                            returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                            session.pop('afterLoginURL')
+                            session.save()
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'

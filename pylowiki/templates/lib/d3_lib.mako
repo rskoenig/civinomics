@@ -9,20 +9,150 @@
 
 <%def name="includeD3()">
   <script src="/js/vendor/d3.v3.min.js" charset="utf-8"></script>
-  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 </%def>
 
-<%def name="dcPlasticBagSurvey()">
-
+######################################
+## reduceAddRemoveInitial
+##  * HANDY EXAMPLE HERE
+##  * multiple choice answers end up giving us a unique situation. We
+##  need to create a count of the occurrences for all the answers, but
+##  at the same time we need to map how many people have picked any one answer.
+##   refs:
+## http://stackoverflow.com/questions/17524627/is-there-a-way-to-tell-crossfilter-to-treat-elements-of-array-as-separate-record/17529113#17529113
+## http://stackoverflow.com/questions/16767231/what-are-the-reduceadd-reducesum-reduceremove-functions-in-crossfilter-how-s
+## https://github.com/square/crossfilter/wiki/API-Reference
+## AND SINCE WE NEED TO ID CUSTOM ATTRIBUTES:
+## https://github.com/square/crossfilter/issues/102#issuecomment-31570749
+######################################
+<%def name="reduceAddRemoveInitial()">
     <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3reduceAddRemoveInitial.css' rel='stylesheet' type='text/css'>
 
-    <hr>
-    <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
-        <div class="pull-left workshop-metrics metrics-large">
-            Results
+    <div id="chart"></div>
+    <div id="piechart"></div>
+    <div id="chart2"></div>
+
+    <script>
+        
+
+        function reduceAdd(p, v) {
+            if (v.topics[0] === "") return p;    // skip empty values
+            v.topics.forEach (function(val, idx) {
+                p[val] = (p[val] || 0) + 1; //increment counts
+            });
+            return p;
+        }
+
+        function reduceRemove(p, v) {
+            if (v.topics[0] === "") return p;    // skip empty values
+            v.topics.forEach (function(val, idx) {
+                p[val] = (p[val] || 0) - 1; //decrement counts
+            });
+            return p;
+           
+        }
+
+        function reduceInitial() {
+            return {};  
+        }
+
+        var data = [
+            {"key":"KEY-1","state":"CA", "topics":["Technology", "Science", "Automotive"], "date":new Date("10/02/2012")},
+            {"key":"KEY-2","state":"CA", "topics":["Health"], "date": new Date("10/05/2012")},
+            {"key":"KEY-3","state":"OR", "topics":["Science"], "date":new Date("10/08/2012")},
+            {"key":"KEY-4","state":"WA", "topics":["Automotive", "Science"], "date":new Date("10/09/2012")},
+            {"key":"KEY-5","state":"WA", "topics":["Science"], "date":new Date("10/09/2012")}
+        ];
+
+        var cf = crossfilter(data);
+
+        var topicsDim = cf.dimension(function(d){ return d.topics;});
+        var topicsGroup = topicsDim.groupAll().reduce(reduceAdd, reduceRemove, reduceInitial).value();
+        // hack to make dc.js charts work
+        topicsGroup.all = function() {
+          var newObject = [];
+          for (var key in this) {
+            if (this.hasOwnProperty(key) && key != "all") {
+              newObject.push({
+                key: key,
+                value: this[key]
+              });
+            }
+          }
+          return newObject;
+        };
+
+        var dates = cf.dimension(function(d){ return d.date;});
+        var datesGroup = dates.group();
+
+        var states = cf.dimension(function(d){ return d.state;});
+        var stateGroup = states.group();
+
+        var pieChart = dc.pieChart("#piechart");
+        pieChart.height(75).width(75).dimension(states).group(stateGroup);
+
+        var barChart = dc.rowChart("#chart");
+            
+        barChart
+            .renderLabel(true)
+            .height(200)
+            .dimension(topicsDim)
+            .group(topicsGroup)
+            .xAxis().ticks(3);
+
+        barChart.filterHandler (function (dimension, filters) {
+                dimension.filter(null);   
+                if (filters.length === 0)
+                    dimension.filter(null);
+                else
+                    dimension.filter(function (d) {
+                        for (var i=0; i < d.length; i++) {
+                            if (filters.indexOf(d[i]) >= 0) return true;
+                        }
+                        return false;
+                    });
+            return filters; 
+            }
+        );
+
+        var chart2 = dc.barChart("#chart2");
+
+        chart2
+            .width(500)
+            .height(200)
+            .transitionDuration(800)
+            .margins({top: 10, right: 50, bottom: 30, left: 40})
+            .dimension(dates)
+            .group(datesGroup)  
+            .x(d3.time.scale().domain([new Date(2012, 9, 1), new Date(2012, 9, 11)]))
+            .xUnits(d3.time.days)
+            .centerBar(true)
+            .renderHorizontalGridLines(true)       
+            .brushOn(true);    
+            
+        chart2.xAxis()
+            .tickFormat(d3.time.format('%b %d'));
+            
+        dc.renderAll();
+
+    </script>
+</%def>
+
+<%def name="dcOpenStreetsCap1()">
+    <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
+    <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
+    <div class='row' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+        <div class="col-xs-6">
+            <div class="pull-left workshop-metrics metrics-large">
+                Results
+            </div>
         </div>
         <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
             <span> 
@@ -34,168 +164,969 @@
         </div>
     </div>
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-heardOfBagBans-chart'> 
-            <h4>Have you heard about the plastic bag bans in Santa Cruz County?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-impressionOfBagBans-chart'>
-            <h4>What is your impression of the Santa Cruz plastic bag bans?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-proposedBagBan-chart'>
-            <h4>Have you heard about the proposed Plastic Bag Ban for Scotts Valley?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class='row-fluid'>   
-        <div class='span6' id='dc-voteInFavor-chart'> 
-            <h4>If the vote were held today on the Plastic Bag Ban, would you vote "yes" in favor of it or "no" to oppose it?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:voteInFavorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-        <div class='span6' id='dc-includeFeeVoteYes-chart'>
-            <h4>How about if the Plastic Bag Ban included a fee of $0.10 on paper bags? Would you vote "yes" or "no" on this measure?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:includeFeeVoteYesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <p class="lead"><em>
-        "Next, you will read a few of the reasons that some people and organizations may give for being in favor of the measure to implement a Plastic Bag Ban and an accompanying Fee for Paper Bags. Please indicate if each one makes you much more likely to favor the measure, somewhat more likely to favor it, or if the statement makes no difference to you one way or the other."
-    </em></p>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class='row-fluid'>   
-        <div class='span6' id='dc-bagsFoundDecreased-chart'>
-            <h4>Save Our Shores reports that the number of plastic bags collected during beach cleanups has decreased 80% since the passage of the Santa Cruz bans. Does this make you...
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:bagsFoundDecreasedChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span6' id='dc-trenchHasBags-chart'> 
-            <h4>The Monterey Bay Aquarium Research Institute has observed thousands of pieces of trash in our marine sanctuary's deep sea trench with plastic bags being the most common type of trash. Does this make you...
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:trenchHasBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class="row-fluid">
-        <div class='span6' id='dc-carmelDoesntFee-chart'>
-            <h4>The only region that didn't include a fee along with their plastic bag ban (Carmel) saw NO increase in reusable bag usage. (Compared to a 28% increase in regions that did include a fee). Does this make you..
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span6' id='dc-highCostsPlasticBags-chart'>
-            <h4>The high environmental and energy costs of producing paper bags is well documented by the scientific community. For this reason, proponents of reusable bags say we cannot simply substitute paper for plastic. Does this make you...
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:highCostsPlasticBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class="row-fluid">
-        <div class='span6' id='dc-everyOtherCityFees-chart'> 
-            <h4>Every other City in the County of Santa Cruz has implemented a plastic bag ban and accompanying fee. Does this make you...
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:everyOtherCityFeesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
-        </div>
-    </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <hr>
-    <div class="workshop-metrics metrics-large">
-        Demographics / Population Segments
-    </div>
-    <hr>
-    <div class="row-fluid">
-        <div class='span4' id='dc-localMerchant-chart'>
-            <h4>Are you a local merchant?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-    onclick="javascript:localMerchantChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-ageLower-chart'> 
-            <h4>Age
-                <span>
-                    <br />(drag sliders to filter results)
-                </span>
-            </h4>
-        </div>
-        <div class='span4' id='dc-gender-chart'>
+    <div class='row'> 
+        <!--  
+        <div class='span4' id='dc-gender-chart'> 
             <h4>Gender
                 <span>
                     <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
+            </h4>
+        </div>
+        -->
+        <div class='col-sm-6'>
+            <p class="lead">76% of attendees came with at least one family member, 54% came with two or more.</p>
+            <p><small>Question: "Did you come with your family? If so, how many family members are with you?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-withFamily-chart'>
+            (click to filter results)
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:withFamilyChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">50% of attendees were 41-62 years of age.</p>
+            <p><small>Question: "How old are you?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-age-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:ageChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row'> 
+        <div class="col-sm-6">
+            <p class="lead">25% of attendees heard about the event through word of mouth, 30% heard about it through the newspaper, 19% heard about it through email or social media.</p>
+            <p><small>Question: "How did you hear about today's event?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-howDidYouHearAboutThis-chart'> 
+            <a href="#howDidYouHearAboutThis1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howDidYouHearAboutThisChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Most people came just to hang out and experience the event rather than any particular activities.</p>
+            <p><small>Question: "What drew you to today's event?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-whatDrewYou-chart'>
+            <a href="#whatDrewYou1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:whatDrewYouChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">81% of attendees biked or walked to the event. Only 13% drove.</p>
+            <p><small>Question: "How did you arrive at today's event?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-howYouArrive-chart'>
+            <a href="#howYouArrive1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howYouArriveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    </hr>
+    <hr>
+    <div class='row'>  
+        <div class="col-sm-6">
+            <p class="lead">Of the people who drove, 90% found the parking satisfactory.</p>
+            <p><small>Question: "Was the available parking satisfactory?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-parkingGood-chart'> 
+            <span>(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:parkingGoodChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">32% of attendees live in Capitola.</p>
+            <p><small>Question: "Where do you live?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-whereLive-chart'>
+            <a href="#whereLive1">see descriptions</a>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:whereLiveChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Nearly everyone who respondend to the survey would like to see Open Streets happen again.</p>
+            <p><small>Question: "Would you like to see this event happen again?"</small></p>
+        </div>
+        <div class="col-sm-6" id='dc-wantHappenAgain-chart'>
+            <span>
+                (click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:wantHappenAgainChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row'>   
+        <div class='col-sm-6' id='dc-wantHappenAgain-chart'>
+            <p class="lead">89% of attendees said they would spend more time in Capitola Village if it regularly held Open Streets.</p>
+            <p><small>Question: "Would you spend more time in Capitola Village if the Esplanade was periodically closed to car traffic?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-spendMoreTimeIfTrafficFree-chart'> 
+            <span>(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:spendMoreTimeIfTrafficFreeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">44% of attendees anticipated spending more than $25. An additional 31% said they would probably spend $10-$25.</p>
+            <p><small>Question: "How much money have you spent, or do you expect to spend at the Capitola Village today?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-howMuchSpendingToday-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howMuchSpendingTodayChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Half of all attendees reported discovering a new store thanks to the event.</p>
+            <p><small>Question: "Did you learn about any new Capitola Village businesses that you weren't aware of before?"</small></p>
+        </div>
+        <div class='col-sm-6' id='dc-learnAboutNewBusinesses-chart'>
+            <span>
+                <br />(click to filter results)
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:learnAboutNewBusinessesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="pull-left workshop-metrics metrics-large">Comments</div>
+    <br>
+    <br>
+    <p class="lead">Many attendees suggested increasing the number of booths including more music, food vendors, crafts and existing Capitola Village businesses. Other suggestions mentioned better incorporation of the beach through a surf competition, kids games, and continuing the kite flying event. Lots of respondents commented that they would like to see this event happen more frequently.</p>
+    <p><small>Question: "Do you have any suggestions for future events? General comments?"</small></p>
+    <div class='row'> 
+        <div class='col-xs-12'>
+            <div id="suggestionsComments"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row-'> 
+        <div class='col-xs-12'>
+            <h4 name='howDidYouHearAboutThis1'>Further input on question:
+                <a href="#dc-howDidYouHearAboutThis-chart"><br />"How did you hear about today's event?"</a>
+            </h4>
+            <div id="howDidYouHearAboutThis1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row'> 
+        <div class='col-xs-12'>
+            <h4 name='whatDrewYou1'>Further input on question:
+                <a href="#dc-whatDrewYou-chart"><br />"What drew you to today's event?"</a>
+            </h4>
+            <div id="whatDrewYou1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row'> 
+        <div class='col-xs-12'>
+            <h4 name='howYouArrive1'>Further input on question:
+                <a href="#dc-howYouArrive-chart"><br />"How did you arrive at today's event?"</a>
+            </h4>
+            <div id="howYouArrive1"></div>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row'> 
+        <div class='col-xs-12'>
+            <h4 name='whereLive1'>Further input on question:
+                <a href="#dc-whereLive-chart"><br />"Where do you live?"</a>
+            </h4>
+            <div id="whereLive1"></div>
+        </div>
+    </div>
+
+
+    <script>
+        // Create the dc.js chart objects & link to div
+        var genderChart = dc.rowChart("#dc-gender-chart");
+        var withFamilyChart = dc.rowChart("#dc-withFamily-chart");
+        var ageChart = dc.rowChart("#dc-age-chart");
+        var howDidYouHearAboutThisChart = dc.rowChart("#dc-howDidYouHearAboutThis-chart");
+        var whatDrewYouChart = dc.rowChart("#dc-whatDrewYou-chart");
+        var howYouArriveChart = dc.rowChart("#dc-howYouArrive-chart");
+        var parkingGoodChart = dc.pieChart("#dc-parkingGood-chart");
+        var whereLiveChart = dc.rowChart("#dc-whereLive-chart");
+        var wantHappenAgainChart = dc.pieChart("#dc-wantHappenAgain-chart");
+        var spendMoreTimeIfTrafficFreeChart = dc.pieChart("#dc-spendMoreTimeIfTrafficFree-chart");
+        var howMuchSpendingTodayChart = dc.rowChart("#dc-howMuchSpendingToday-chart");
+        var learnAboutNewBusinessesChart = dc.pieChart("#dc-learnAboutNewBusinesses-chart");
+        var enterRaffleFamilyCyclingChart = dc.pieChart("#dc-enterRaffleFamilyCycling-chart");
+        var likeContactAboutChart = dc.rowChart("#dc-likeContactAbout-chart");
+
+        var NO_ANSWER = "No answer";
+
+        function capitalize(s) {
+            return s[0].toUpperCase() + s.slice(1);
+        }
+        d3.csv("/surveys/OpenStreetsCapitolaResults1.csv", function(error, data) {
+            //console.log(error);
+            //console.log(data);
+            var genderValues = {};
+            var withFamilyValues = {};
+            var ageValues = {};
+            var howYouArriveValues = {};
+            var whereLiveValues = {};
+            var howMuchSpendingTodayValues = {};
+            var likeContactAboutValues = {};
+
+            i = 0;
+            data.forEach(function(d) {
+                i++;
+                var allGender = d.gender + d.gender1;
+                if (allGender == "") {
+                    genderValues[allGender] = '4^' + NO_ANSWER;
+                } else {
+                    switch(allGender) {
+                        case "Female":
+                            genderValues[allGender] = '1^' + allGender;
+                            break;
+                        case "Male":
+                            genderValues[allGender] = '2^' + allGender;
+                            break;
+                        default:
+                            genderValues[allGender] = '3^' + allGender;
+                            break;
+                    }
+                }
+                if (d.withFamily == "") {
+                    withFamilyValues[d.withFamily] = '6^' + NO_ANSWER;
+                } else {
+                    switch(d.withFamily) {
+                        case "I did not come with my family": 
+                            withFamilyValues[d.withFamily] = '0^' + d.withFamily;
+                            break;
+                        case "1":
+                            withFamilyValues[d.withFamily] = '1^' + d.withFamily;
+                            break;
+                        case "2":
+                            withFamilyValues[d.withFamily] = '2^' + d.withFamily;
+                            break;
+                        case "3":
+                            withFamilyValues[d.withFamily] = '3^' + d.withFamily;
+                            break;
+                        case "4":
+                            withFamilyValues[d.withFamily] = '4^' + d.withFamily;
+                            break;
+                        case "5+":
+                            withFamilyValues[d.withFamily] = '5^' + d.withFamily;
+                            break;
+                        default:
+                            withFamilyValues[d.withFamily] = '6^' + NO_ANSWER;
+                            break;
+                    }
+                }
+                if (d.age == "") {
+                    ageValues[d.age] = '4^' + NO_ANSWER;
+                } else {
+                    switch(d.age) {
+                        case "0-17": 
+                            ageValues[d.age] = '0^' + d.age;
+                            break;
+                        case "18-40":
+                            ageValues[d.age] = '1^' + d.age;
+                            break;
+                        case "41-62":
+                            ageValues[d.age] = '2^' + d.age;
+                            break;
+                        case "63+":
+                            ageValues[d.age] = '3^' + d.age;
+                            break;
+                        default:
+                            ageValues[d.age] = '4^' + NO_ANSWER;
+                            break;
+                    }
+                    
+                }
+                if (d.howDidYouHearAboutThis1 != "") {
+                    $('#howDidYouHearAboutThis1').append('<p>* ' + capitalize(d.howDidYouHearAboutThis1) + '</p>');
+                }
+                if (d.whatDrewYou1 != "") {
+                    $('#whatDrewYou1').append('<p>* ' + capitalize(d.whatDrewYou1) + '</p>');
+                }
+                if (d.howYouArrive == "") {
+                    howYouArriveValues[d.howYouArrive] = i + '^' + NO_ANSWER;
+                } else {
+                    howYouArriveValues[d.howYouArrive] = i + '^' + d.howYouArrive;
+                }
+                if (d.howYouArrive1 != "") {
+                    $('#howYouArrive1').append('<p>* ' + capitalize(d.howYouArrive1) + '</p>');
+                }
+                if (d.whereLive == "") {
+                    whereLiveValues[d.whereLive] = i + '^' + NO_ANSWER;
+                } else {
+                    whereLiveValues[d.whereLive] = i + '^' + d.whereLive;
+                }
+                if (d.whereLive1 != "") {
+                    $('#whereLive1').append('<p>* ' + capitalize(d.whereLive1) + '</p>');
+                }
+                if (d.suggestionsComments != "") {
+                    $('#suggestionsComments').append('<p>* ' + capitalize(d.suggestionsComments) + '</p>');
+                }
+                if (d.howMuchSpendingToday == "") {
+                    howMuchSpendingTodayValues[d.howMuchSpendingToday] = '7^' + NO_ANSWER;
+                } else {
+                    switch(d.howMuchSpendingToday) {
+                        case "$1-10":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '1^' + d.howMuchSpendingToday;
+                            break;
+                        case "$11-25":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '2^' + d.howMuchSpendingToday;
+                            break;
+                        case "$26-50":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '3^' + d.howMuchSpendingToday;
+                            break;
+                        case "$51-100":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '4^' + d.howMuchSpendingToday;
+                            break;
+                        case "$100+":
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '5^' + d.howMuchSpendingToday;
+                            break;
+                        default:
+                            howMuchSpendingTodayValues[d.howMuchSpendingToday] = '6^' + d.howMuchSpendingToday;
+                            break;
+                    }
+                }
+
+                if (d.likeContactAbout == "") {
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + NO_ANSWER;
+                } else {
+                    likeContactAboutValues[d.likeContactAbout] = i + '^' + d.likeContactAbout;
+                }
+            });
+
+            // Run the data through crossfilter and load our 'facts'
+            var facts = crossfilter(data);
+
+            // reset all button - this includes all facts
+            var all = facts.groupAll();
+
+            // reset all button - count all the facts
+            dc.dataCount(".dc-data-count") 
+                .dimension(facts) 
+                .group(all);
+
+            /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+            var gender = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);
+                var allGender = d.gender + d.gender1;               
+                return genderValues[allGender];
+            });
+            var genderGroup = gender.group();
+            
+            var withFamily = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);               
+                return withFamilyValues[d.withFamily];
+            });
+            var withFamilyGroup = withFamily.group();
+
+            var age = facts.dimension(function (d) {
+                // for row charts, we return a predefined string: "#.string"
+                //console.log(d.withFamily);               
+                return ageValues[d.age];
+            });
+            var ageGroup = age.group();            
+
+            function reduceAddAttr(attr) {
+                return function(p, v) {
+                    if (v[attr] === "") {
+                        p[NO_ANSWER] = (p[NO_ANSWER] || 0) + 1;
+                        return p; // replace empty values with 'No Answer'
+                    } else {
+                        // convert v.howDidYouHearAboutThis into an array
+                        var allAnswers = v[attr].split("|");
+                        //console.log(allAnswers);
+                        answersArray = [];
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            answersArray.push(answer);
+                            //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                        answersArray.forEach(function(val, idx) {
+                            p[val] = (p[val] || 0) + 1; //increment counts
+                        });
+                        return p;
+                    }
+                };
+            }
+
+            function reduceRemoveAttr(attr) {
+                return function(p, v) {
+                    if (v[attr] === "") {
+                        p[NO_ANSWER] = (p[NO_ANSWER] || 0) - 1;
+                        return p; // replace empty values with 'No Answer'
+                    } else {
+                        var allAnswers = v[attr].split("|");
+                        //console.log(allAnswers);
+                        answersArray = [];
+                        for (var j = 0; j < allAnswers.length; j++) {
+                            //console.log(allAnswers[j]);
+                            i++;
+                            var answer = capitalize(allAnswers[j].trim());
+                            //console.log(answer);
+                            answersArray.push(answer);
+                            //howDidYouHearAboutThisValues[answer] = (answer == "") ? i + '^' + 'No answer' : i + '^' + answer;
+                        }
+                        answersArray.forEach(function(val, idx) {
+                            p[val] = (p[val] || 0) - 1; //decrement counts
+                        });
+                        return p;
+                    }
+                };
+            }
+
+            function reduceInitial() {
+                return {};  
+            }
+
+            // hack to make dc.js charts work
+            function groupAllKludge(thisGroup) {
+                var newObject = [];
+                for (var key in thisGroup) {
+                    if (thisGroup.hasOwnProperty(key) && key != "all") {
+                        newObject.push({
+                            key: key,
+                            value: thisGroup[key]
+                        });
+                    }
+                }
+                return newObject;
+            }
+
+            var howDidYouHearAboutThis = facts.dimension(function(d){ return d.howDidYouHearAboutThis;});
+            var howDidYouHearAboutThisGroup = howDidYouHearAboutThis.groupAll().reduce(reduceAddAttr('howDidYouHearAboutThis'), reduceRemoveAttr('howDidYouHearAboutThis'), reduceInitial).value();
+            howDidYouHearAboutThisGroup.all = function() { return groupAllKludge(this); };
+
+            var whatDrewYou = facts.dimension(function(d) {return d.whatDrewYou;});
+            var whatDrewYouGroup = whatDrewYou.groupAll().reduce(reduceAddAttr('whatDrewYou'), reduceRemoveAttr('whatDrewYou'), reduceInitial).value();
+            whatDrewYouGroup.all = function() { return groupAllKludge(this); };
+
+            var howYouArrive = facts.dimension(function (d) {
+                return howYouArriveValues[d.howYouArrive];
+            });
+            var howYouArriveGroup = howYouArrive.group();
+
+            var parkingGood = facts.dimension(function (d) { 
+                if (d.parkingGood == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.parkingGood;
+                }
+            });
+            var parkingGoodGroup = parkingGood.group();
+
+            var whereLive = facts.dimension(function (d) {
+                return whereLiveValues[d.whereLive];
+            });
+            var whereLiveGroup = whereLive.group();
+
+            var wantHappenAgain = facts.dimension(function (d) { 
+                if (d.wantHappenAgain == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.wantHappenAgain;
+                }
+            });
+            var wantHappenAgainGroup = wantHappenAgain.group();
+            
+            var spendMoreTimeIfTrafficFree = facts.dimension(function (d) { 
+                if (d.spendMoreTimeIfTrafficFree == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.spendMoreTimeIfTrafficFree;
+                }
+            });
+            var spendMoreTimeIfTrafficFreeGroup = spendMoreTimeIfTrafficFree.group();
+
+            var howMuchSpendingToday = facts.dimension(function (d) {
+                return howMuchSpendingTodayValues[d.howMuchSpendingToday];
+            });
+            var howMuchSpendingTodayGroup = howMuchSpendingToday.group();
+
+            var learnAboutNewBusinesses = facts.dimension(function (d) { 
+                if (d.learnAboutNewBusinesses == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.learnAboutNewBusinesses;
+                }
+            });
+            var learnAboutNewBusinessesGroup = learnAboutNewBusinesses.group();
+
+            var enterRaffleFamilyCycling = facts.dimension(function (d) { 
+                if (d.enterRaffleFamilyCycling == "") {
+                    return NO_ANSWER;
+                } else {
+                    return d.enterRaffleFamilyCycling;
+                }
+            });
+            var enterRaffleFamilyCyclingGroup = enterRaffleFamilyCycling.group();
+
+            var likeContactAbout = facts.dimension(function (d) {
+                return likeContactAboutValues[d.likeContactAbout];
+            });
+            var likeContactAboutGroup = likeContactAbout.group();
+
+            var peopleFormatter = function(d) {
+                if (d > 1)
+                    return d + " people";
+                else if (d == 1)
+                    return d + " person";
+                else
+                    return d;
+            }
+
+            var piePercentage = function(d, sumgroup) {
+                //var percent = d.data.key;
+                var fraction = d.value / _.reduce(sumgroup.all(), function(memo, d){ return memo + d.value; }, 0);
+                var percent = Math.round(fraction * 100);
+                var phrase = "";
+                if (d.data) {
+                    phrase = d.data.key + "  " + percent + "%";    
+                } else {
+                    phrase = percent + "%";    
+                }
+                return phrase;
+            }
+            var yearsFormatter = function(d) {
+                var yearText = (d == 0 ? d : d + " years");
+                return yearText;
+            }
+
+            genderChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(gender) 
+                .group(genderGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, genderGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+            
+            withFamilyChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(withFamily) 
+                .group(withFamilyGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, withFamilyGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            ageChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(age) 
+                .group(ageGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, ageGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            howDidYouHearAboutThisChart
+                .width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .colors(d3.scale.category20b())
+                .dimension(howDidYouHearAboutThis)
+                .group(howDidYouHearAboutThisGroup)
+                .title(function(d){return piePercentage(d, howDidYouHearAboutThisGroup);})
+                .xAxis().ticks(4);
+
+            whatDrewYouChart
+                .width(300)
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .colors(d3.scale.category20b())
+                .dimension(whatDrewYou)
+                .group(whatDrewYouGroup)
+                .title(function(d){return piePercentage(d, whatDrewYouGroup);})
+                .xAxis().ticks(4);
+
+            howYouArriveChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(howYouArrive) 
+                .group(howYouArriveGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howYouArriveGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+            
+            parkingGoodChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(parkingGood) 
+                .group(parkingGoodGroup)
+                .label(function(d){return piePercentage(d, parkingGoodGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            whereLiveChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(whereLive) 
+                .group(whereLiveGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, whereLiveGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);  
+
+            wantHappenAgainChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(wantHappenAgain) 
+                .group(wantHappenAgainGroup)
+                .label(function(d){return piePercentage(d, wantHappenAgainGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            spendMoreTimeIfTrafficFreeChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(spendMoreTimeIfTrafficFree) 
+                .group(spendMoreTimeIfTrafficFreeGroup)
+                .label(function(d){return piePercentage(d, spendMoreTimeIfTrafficFreeGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            howMuchSpendingTodayChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(howMuchSpendingToday) 
+                .group(howMuchSpendingTodayGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, howMuchSpendingTodayGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);  
+
+            learnAboutNewBusinessesChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(learnAboutNewBusinesses) 
+                .group(learnAboutNewBusinessesGroup)
+                .label(function(d){return piePercentage(d, learnAboutNewBusinessesGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            enterRaffleFamilyCyclingChart.width(300) 
+                .height(220) 
+                .radius(100) 
+                .innerRadius(30) 
+                .dimension(enterRaffleFamilyCycling) 
+                .group(enterRaffleFamilyCyclingGroup)
+                .label(function(d){return piePercentage(d, enterRaffleFamilyCyclingGroup);})
+                .title(function(d){return d.data.key + ", " + peopleFormatter(d.value);});  
+
+            likeContactAboutChart.width(300) 
+                .height(220)
+                .margins({top: 5, right: 1, bottom: 20, left: 6})
+                .dimension(likeContactAbout) 
+                .group(likeContactAboutGroup)
+                .colors(d3.scale.category20b())
+                .label(function (d){
+                  return d.key.split('^')[1];
+                  })
+                .title(function(d){return d.key.split('^')[1] + ", " + piePercentage(d, likeContactAboutGroup);})
+                .xAxis()
+                .tickFormat(function(d) { return d; })
+                .ticks(4);
+
+            // Render the Charts
+            dc.renderAll();
+
+        });
+
+    </script>
+
+</%def>
+
+<%def name="dcPlasticBagSurvey()">
+
+    <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+    <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
+    <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
+    <hr>
+    <div class='row' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+        <div class="col-sm-12">
+            <div class="pull-left workshop-metrics metrics-large">
+                Results
+            </div>
+            <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
+                <span> 
+                    <span class="filter-count"></span>
+                    selected out of
+                    <span class="total-count"></span> 
+                    records | <a href="#dc-data-top" name="dc-data-count" onclick="javascript:dc.filterAll(); dc.renderAll();">Reset</a>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class='row'>   
+        <div class='col-sm-6'>
+            <p class="lead">The majority of Scotts Valley residents are aware of the other plastic bag bans in Santa Cruz County.</p>
+            <h4>Question: "Have you heard about the plastic bag bans in Santa Cruz County?"</h4>
+        </div>
+        <div class='col-sm-6' id='dc-heardOfBagBans-chart'> 
+                <span>
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:heardOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div><!-- row --> 
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">About half of respondents (48%) believe the existing bag bans have had a positive effect. 15% believe they've had no effect or a negative effect.</p>
+            <h4>Question: "What is your impression of the Santa Cruz plastic bag bans?"</h4>
+        </div>
+        <div class='col-sm-6' id='dc-impressionOfBagBans-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:impressionOfBagBansChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">32% of respondents were aware that a bag ban had been proposed for the City of Scotts Valley</p>
+            <h4>Question: "Have you heard about the proposed Plastic Bag Ban for Scotts Valley?"</h4>
+        </div>
+        <div class='col-sm-6' id='dc-proposedBagBan-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:proposedBagBanChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class='row'>   
+        <div class='col-sm-6'> 
+            <p class="lead">72% of Scotts Valley residents would vote "YES" for a City of Scotts Valley plastic bag ban.</p>
+            <h4>Question: "If the vote were held today on the Plastic Bag Ban, would you vote 'YES' in favor of it or 'NO' to oppose it?"</h4>
+        </div>
+        <div class="col-sm-6" id='dc-voteInFavor-chart'>
+            <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:voteInFavorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">64% of residents would still support a Plastic Bag Ban if it had a $0.10 fee.</p>
+            <h4>Question: "How about if the Plastic Bag Ban included a fee of $0.10 on paper bags? Would you vote "yes" or "no" on this measure?"</h4>
+        </div>
+        <div class='col-sm-6' id='dc-includeFeeVoteYes-chart'>
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:includeFeeVoteYesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div>
+    <hr>
+    <h4>
+        "Next, you will read a few of the reasons that some people and organizations may give for being in favor of the measure to implement a Plastic Bag Ban and an accompanying Fee for Paper Bags. Please indicate if each one makes you much more likely to favor the measure, somewhat more likely to favor it, or if the statement makes no difference to you one way or the other."
+    </h4>
+    <hr>
+    <div class='row'>   
+        <div class="col-sm-6">
+            <p class="lead">82% of respondents who indicated that they would vote "Probably No" on a Bag Ban, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "Save Our Shores reports that the number of plastic bags collected during beach cleanups has decreased 80% since the passage of the Santa Cruz bans. Does this make you..."</h4>
+        </div>
+        <div class='col-sm-6' id='dc-bagsFoundDecreased-chart'>
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:bagsFoundDecreasedChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">88% of respondents who indicated that they would vote "Probably No" on a Bag Ban, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "The Monterey Bay Aquarium Research Institute has observed thousands of pieces of trash in our marine sanctuary's deep sea trench with plastic bags being the most common type of trash. Does this make you..."</h4>
+        </div>
+        <div class='col-sm-6' id='dc-trenchHasBags-chart'> 
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:trenchHasBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">49% of respondents who indicated that they would vote "Probably No" on a Bag Ban with a $0.10 fee, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "The only region that didn't include a fee along with their plastic bag ban (Carmel) saw NO increase in reusable bag usage. (Compared to a 28% increase in regions that did include a fee). Does this make you.."</h4>
+
+        </div>
+        <div class='col-sm-6' id='dc-carmelDoesntFee-chart'>
+            <span>
+                
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:carmelDoesntFeeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">49% of respondents who indicated that they would vote "Probably No" on a Bag Ban with a $0.10 fee, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "The high environmental and energy costs of producing paper bags is well documented by the scientific community. For this reason, proponents of reusable bags say we cannot simply substitute paper for plastic. Does this make you..."</h4>
+        </div class="col-sm-6">
+        <div class='col-sm-6' id='dc-highCostsPlasticBags-chart'>
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:highCostsPlasticBagsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">34% of respondents who indicated that they would vote "Probably No" on a Bag Ban with a $0.10 fee, indicated that they were "somewhat" to "much more likely to supprot a ban" with this information.</p>
+            <h4>Question: "Every other City in the County of Santa Cruz has implemented a plastic bag ban and accompanying fee. Does this make you..."</h4>
+        </div>
+        <div class='col-sm-6' id='dc-everyOtherCityFees-chart'> 
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:everyOtherCityFeesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+        </div>
+    </div>
+    <hr>
+    <div class="workshop-metrics metrics-large">
+        Demographics / Population Segments
+    </div>
+    <hr>
+    <div class="row">
+        <div class='col-sm-4' id='dc-localMerchant-chart'>
+            <h4>Are you a local merchant?
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:localMerchantChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
             </h4> 
         </div>
-    </div><!-- row-fluid -->
+        <div class='col-sm-4' id='dc-ageLower-chart'> 
+            <h4>Age
+                <span>
+                    <br />(drag sliders to filter results)
+                </span>
+            </h4>
+        </div>
+        <div class='col-sm-4' id='dc-gender-chart'>
+            <h4>Gender
+                <span>
+                    
+                    <a href="#dc-data-top" class="reset"
+    onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+                </span>
+            </h4> 
+        </div>
+    </div><!-- row -->
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
     <hr>
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-childrenInHome-chart'>
+    <div class='row'>   
+        <div class='col-sm-4' id='dc-childrenInHome-chart'>
             <h4>Are there any children, 17 years of age or younger, living in your household?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:childrenInHomeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-howLongInSC-chart'>
+        <div class='col-sm-4' id='dc-howLongInSC-chart'>
             <h4>For about how long have you lived in Santa Cruz County?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:howLongInSCChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -208,8 +1139,8 @@
         Comments and Suggestions
     </div>
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12' id='dc-commentsOrSuggestions-chart'>
+    <div class='row'> 
+        <div class='col-xs-12' id='dc-commentsOrSuggestions-chart'>
           <div id="commentsOrSuggestionsContainer">
           </div>
         </div>
@@ -644,9 +1575,10 @@
     <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
     <script src='/js/vendor/underscore-min.js' type='text/javascript'></script>
     <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+    <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
 
-    <div class='row-fluid' name="dc-data-top">
-        <div class="pull-left workshop-metrics metrics-large">
+    <div class='row' name="dc-data-top">
+        <div class="pull-left workshop-metrics metrics-large col-xs-6">
             Results
         </div>
         <div class="dc-data-count well" data-spy="affix" data-offset-top="650" style="float: right; margin-top: 0;"> 
@@ -660,150 +1592,187 @@
     </div>
 
     <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
-    <div class='row-fluid'>   
-        <div class='span4' id='dc-familiarDtProgram-chart'>
-            <h4>How familiar are you with the Downtown Hospitality Program?
+    <div class='row'>   
+        <div class='col-sm-6'>
+            <p class="lead">80% of respondents where very or somewhat familiar with the Host Program.</p>
+            <h4>Question: How familiar are you with the Downtown Hospitality Program?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-familiarDtProgram-chart'>
                 <span>
-                    <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:familiarDtProgramChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class="span8">
-            <p class="lead"><em>"The Downtown Hospitality Program was created and paid for by downtown business and property owners to maintain a safe and friendly environment. "Hosts" can be contacted as an alternative to police to help with aggressive panhandling and other forms of anti-social behavior. They also serve as an additional resource for visitors and downtown shoppers, and provide a visible presence in downtown to observe, report and prevent street disorder. The program is overseen by the Downtown Management Corporation (DMC), which also contributes funding for the downtown trolley."</em></p> 
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-12">
+            <h4>"The Downtown Hospitality Program was created and paid for by downtown business and property owners to maintain a safe and friendly environment. "Hosts" can be contacted as an alternative to police to help with aggressive panhandling and other forms of anti-social behavior. They also serve as an additional resource for visitors and downtown shoppers, and provide a visible presence in downtown to observe, report and prevent street disorder. The program is overseen by the Downtown Management Corporation (DMC), which also contributes funding for the downtown trolley."</h4> 
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+
     <hr>
-    <div class="row-fluid">
-        <div class='span4' id='dc-feelSafeWorkingDt-chart'>
-            <h4>In general, do you feel safe working downtown?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">A large majority of respondents feel safe working downtown.</p>
+            <h4>Question: In general, do you feel safe working downtown?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-feelSafeWorkingDt-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
 onclick="javascript:feelSafeWorkingDtChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-believeDtProgramMakesSafer-chart'>
-            <h4>In general, do you believe the Downtown Hospitality Program makes downtown safer?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
-        </div>
-        <div class='span4' id='dc-howEffectiveResolveBehavior-chart'>
-            <h4>In your opinion, how effective is the program at addressing and resolving anti-social behavior?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+            </span>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    
     <hr>
-    <div class='row-fluid'>
-        <div class='span4' id='dc-everWitnessedProgramHost-chart'>
-            <h4>Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
-                <br /><a href="#everWitnessedProgramHostDescription">see descriptions</a>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">A large majority of respondents feel the program makes downtown safer.</p>
+            <h4>Question: In general, do you believe the Downtown Hospitality Program makes downtown safer?</h4>
+        </div>
+        <div class="col-sm-6" id='dc-believeDtProgramMakesSafer-chart'>
+            <span>
+                
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:believeDtProgramMakesSaferChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Half of respondents beleive the program is somewhat effective. 22% think it is very effective and roughly the same amount think it is not very effective.</p>
+            <h4>Question: In your opinion, how effective is the program at addressing and resolving anti-social behavior?
+        </div>
+        <div class='col-sm-6' id='dc-howEffectiveResolveBehavior-chart'>
+            <span>  
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howEffectiveResolveBehaviorChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row'>
+        <div class='col-sm-6'>
+            <p class="lead">2/3 of repondents had contacted or had seen a coworker contact a host.</p>
+            <h4>Question: Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?
+        </div>
+        <div class="col-sm-6" id='dc-everWitnessedProgramHost-chart'>    
                 <span>
-                    <br />(click to filter results)
+                    <a href="#everWitnessedProgramHostDescription">see descriptions</a><br>
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:everWitnessedProgramHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4> 
         </div>
-        <div class='span4' id='dc-hostApproachable-chart'>
-            <h4>In your opinion, how approachable are the downtown hospitality hosts?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4> 
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">All respondents agree that the hosts are approachable, with most stating that they are "very" approachable.</p>
+            <h4>Question: In your opinion, how approachable are the downtown hospitality hosts?</h4>
         </div>
-        <div class='span4' id='dc-howOftenSeeHost-chart'>
-            <h4>How often do you see a downtown hospitality host?
-                <span>
-                    <br />(click to filter results)
-                    <a href="#dc-data-top" class="reset"
-onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-                </span>
-            </h4>
+        <div class="col-sm-6" id='dc-hostApproachable-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:hostApproachableChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
         </div>
     </div>
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    
     <hr>
-    <div class='row-fluid'>
-        <div class='span4' id='dc-howOftenInteractWithPeople-chart'>
-            <h4>When you see a hospitality host, how often are they interacting with visitors and shoppers?
-                <br /><a href="#additionalServicesSuggestions">see service suggestions</a>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">75% of respondents see a host every day with 50% seeing one multiple times a day.</p> 
+            <h4>Question: How often do you see a downtown hospitality host?</h4>
+        </div>
+        <div class="col-sm-6" id='dc-howOftenSeeHost-chart'>
+            <span>
+                <a href="#dc-data-top" class="reset"
+onclick="javascript:howOftenSeeHostChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div>
+
+    <hr>
+    <div class='row'>
+        <div class='col-sm-6'>
+            <p class="lead">Most respondents see the hosts interacting with visitors as well as attending to anti-social behavior.</p>
+            <h4>Question: When you see a hospitality host, how often are they interacting with visitors and shoppers?
+        </div>
+        <div class="col-sm-6" id='dc-howOftenInteractWithPeople-chart'>
                 <span>
-                    <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:howOftenInteractWithPeopleChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
-    </div><!-- row-fluid -->
-    <!-- ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^  -->
+    </div><!-- row -->
+    
     <hr>
-    <div class="row-fluid">
-        <div class='span6' id='dc-opinionFirstPriorityForServices-chart'>
-            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?
-                <br /><a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Respondents are roughly split in thirds regarding the priorities of the host program.</p>
+            <h4>In your opinion, what should be the DMC's first priority in terms of downtown programing and services?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-opinionFirstPriorityForServices-chart'>
+                <a href="#opinionFirstPriorityForServices1">see additional suggestions</a>
                 <span>
-                    <br />(click to filter results)
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:opinionFirstPriorityForServicesChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
-        <div class='span6' id='dc-mostImportantAboutHosts-chart'>
-            <h4>Out of the following additional services the DMC could provide, which would be the most important to you?
+    </div>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">Cleaning, particularly the removal of waste, is seen by respondents as the DMC's top priority.</p>
+            <h4>Out of the following additional services the DMC could provide, which would be the most important to you?</h4>
+        </div>    
+        <div class='col-sm-6' id='dc-mostImportantAboutHosts-chart'>
                 <br /><a href="#mostImportantAboutHosts1">see further input</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
     onclick="javascript:mostImportantAboutHostsChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
-            </h4>
         </div>
     </div>
+    
     <hr>
     <div class="workshop-metrics metrics-large">
         Demographics / Business Type
     </div>
     <hr>
-    <div class="row-fluid">
-        <div class='span4' id='dc-whatDescribesYourBusiness-chart'>
+    <div class="row">
+        <div class='col-sm-4' id='dc-whatDescribesYourBusiness-chart'>
             <h4>Which of the following best describes your business or working environment?
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:whatDescribesYourBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
-        <div class='span4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
+        <div class='col-sm-4' name='dc-yourRoleInBusiness-chart' id='dc-yourRoleInBusiness-chart'>
             <h4>What is your role in the business?
                 <br /><a href="#yourRoleInBusiness1">see further comments</a>
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:yourRoleInBusinessChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
             </h4>
         </div>
-        <div class='span4' id='dc-gender-chart'>
+        <div class='col-sm-4' id='dc-gender-chart'>
             <h4>Gender
                 <span>
-                    <br />(click to filter results)
+                    
                     <a href="#dc-data-top" class="reset"
 onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
                 </span>
@@ -811,8 +1780,8 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <hr>
-    <div class='row-fluid'>
-        <div class='span4' id='dc-ageLower-chart'> 
+    <div class='row'>
+        <div class='col-sm-4' id='dc-ageLower-chart'> 
             <h4>Age of respondents
                 <span>
                     (drag sliders to filter results)
@@ -821,24 +1790,24 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
         </div>
     </div>
     <hr>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='everWitnessedProgramHostDescription'>Can you please briefly describe your experience? Was it positive?
                 <a href="#dc-everWitnessedProgramHost-chart"><br />Responses to question: "Have you ever contacted, or witnessed a coworker/employee contact a downtown hospitality host?"</a>
             </h4>
             <div id="everWitnessedProgramHostDescription"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='howOftenInteractWithPeople'>Additional services suggested for:
                 <a href="#dc-everWitnessedProgramHost-chart"><br />"When you see a hospitality host, how often are they interacting with visitors and shoppers?"</a>
             </h4>
             <div id="additionalServicesSuggestions"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='mostImportantAboutHosts1'>Further input on question: 
                 <a href="#dc-mostImportantAboutHosts-chart"><br />"Out of the following additional services the DMC could provide, which would be the most important to you?"</a>
             </h4>
@@ -846,24 +1815,24 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
             <div id="mostImportantAboutHosts2"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='opinionFirstPriorityForServices1'>Additional suggestions for:
                 <a href="#dc-opinionFirstPriorityForServices-chart"><br />"In your opinion, what should be the DMC's first priority in terms of downtown programing and services?"</a>
             </h4>
             <div id="opinionFirstPriorityForServices1"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='improvementsForYourSafety1'>Additional suggestions for:
                 <a href="#dc-improvementsForYourSafety-chart"><br />"What improvements, if any, could be made to improve your feeling of safety in the downtown area? (check all that apply)"</a>
             </h4>
             <div id="improvementsForYourSafety1"></div>
         </div>
     </div>
-    <div class='row-fluid'> 
-        <div class='span12'>
+    <div class='row'> 
+        <div class='col-xs-12'>
             <h4 name='whatDescribesYourBusiness1'>Additional input from:
                 <a href="#dc-whatDescribesYourBusiness-chart"><br />"Which of the following best describes your business or working environment?"</a>
             </h4>
@@ -1293,7 +2262,12 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
 </%def>
 
 <%def name="dcCommuterSurvey()">
-  <div class='row-fluid' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
+  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
+  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
+  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
+  <link href='/styles/d3Custom.css' rel='stylesheet' type='text/css'>
+
+  <div class='row' name="dc-data-top" data-spy="affix" data-offset-top="1150" >
     <div class="dc-data-count well" style="float: left; margin-top: 0;"> 
       <span> 
           <span class="filter-count"></span>
@@ -1303,136 +2277,216 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
       </span>
     </div>
   </div>
-  <div class='row-fluid'>   
-    <div class='span4' id='dc-commuteDuration-chart'>
-        <h4>How much time do you spend each day commuting over the hill and back?</h4> 
+  
+    <div class='row'>   
+        <div class='col-sm-6'>
+            <p class="lead">Most respondents spend 2 or more hours a day commuting.</p>
+            <h4>Question: How much time do you spend each day commuting over the hill and back?</h4> 
+        </div>
+        <div class='col-sm-6' id='dc-commuteDuration-chart'></div>
     </div>
-    <div class='span4' id='dc-commuteType-chart'>
-      <h4>How do you get to work over the hill?
-        <span>
-          <a class="reset" href="#dc-data-top" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4> 
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">The study was evenly split between people who ride a company bus and those that commute via car.</p>
+            <h4>Question: How do you get to work over the hill?</h4>
+        </div>
+        
+        <div class="col-sm-6" id='dc-commuteType-chart'>
+            <span>
+              <a class="reset" href="#dc-data-top" onclick="javascript:commuteTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-commuteActivity-chart'>
-      <h4>What do you primarily do on the bus during your commute?
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-  </div><!-- row-fluid -->
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Bus commuters primarily spend their commutes working with wifi.</p>
+            <h4>Question: What do you primarily do on the bus during your commute?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-commuteActivity-chart'>
+            <span>
+              <a class="reset" href="#dc-data-top" onclick="javascript:commuteActivityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div><!-- row -->
+    
   <hr>
-  <div class="row-fluid">
-    <div class='span4' id='dc-employmentType-chart'>
-      <h4>What is your functional employment area at your current job?
-        <span>
-          <a class="reset" href="#dc-data-count" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
-        </span>
-      </h4>
+  <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">57% of all commuters interviewed work in software or some other kind of engineering.</p>
+            <h4>Question: What is your functional employment area at your current job?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-employmentType-chart'>
+            <span>
+              <a class="reset" href="#dc-data-count" onclick="javascript:employmentTypeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a>
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-employmentDuration-chart'>
-        <h4>How long have you been with your current employer?</h4> 
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">20% of commuters are Director level or above. The majority or team members or managers</p>
+            <h4>Question: What is your position or level of seniority?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-senority-chart'>
+            <span>
+              <a class="reset" href="#dc-data-count" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-senority-chart'>
-      <h4>What is your position or level of seniority?
-        <span>
-          <a class="reset" href="#dc-data-count" onclick="javascript:senorityChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">The majority of bus commuters have been with their employer for 2 years or less where as car commuters have mostly been with their employer 5 years or more.</p>
+            <h4>Question: How long have you been with your current employer?</h4> 
+        </div>
+        <div class='col-sm-6' id='dc-employmentDuration-chart'>
+        </div>
     </div>
-  </div><!-- row-fluid -->
-  <hr>
-  <div class="row-fluid">
-    <div class='span4' id='dc-salary-chart'> 
-      <h4>Salary Range
-        <span>
-            (drag sliders to filter results)
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">The average salary of respondents was $153,000</p>
+            <h4>Question: What is your salary?</h4>
+        </div>
+        
+        <div class='col-sm-6' id='dc-salary-chart'> 
+            <span>
+                (drag sliders to filter results)
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-whyCommute-chart'>
-      <h4>Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).
-        <span>
-            <br>
-            <a class="reset" href="#dc-data-count" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">While salary is an important factor in choosing to work over the hill, equal number of respondents also cited job availability and company of interest.</p>
+            <h4>Question: Why do you choose to work over the hill? (Pick the MOST IMPORTANT reason).</h4>  
+        </div>
+        <div class='col-sm-6' id='dc-whyCommute-chart'>
+            <span>
+                <br>
+                <a class="reset" href="#dc-data-count" onclick="javascript:whyCommuteChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-whyLiveInSc-chart'>
-      <h4>Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).
-        <span>
-          <br>
-          <a class="reset" href="#dc-data-count" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Lifestyle was cited 5 times more than the next most popular reason for living in Santa Cruz.</p>
+            <h4>Question: Why do you choose to live in Santa Cruz? (Pick the MOST IMPORTANT reason).</h4>
+        </div>
+    
+        <div class='col-sm-6' id='dc-whyLiveInSc-chart'>
+            <a class="reset" href="#dc-data-count" onclick="javascript:whyLiveInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+        </div>
+    </div><!-- row -->
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Less than 20% of respondents attended school in Santa Cruz.</p>
+            <h4>Question: Did you go to college in Santa Cruz?</h4>  
+        </div>
+        
+        <div class='col-sm-6' id='dc-college-chart'>
+            <span>
+              <br>
+              <a class="reset" href="#dc-data-count" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-  </div><!-- row-fluid -->
-  <hr>
-  <div class="row-fluid">
-    <div class='span4' id='dc-college-chart'>
-      <h4>Did you go to college in Santa Cruz?
-        <span>
-          <br>
-          <a class="reset" href="#dc-data-count" onclick="javascript:collegeChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4> 
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">50% of commuters have lived in Santa Cruz for over 10 years. Respondents who had lived in Santa Cruz for less years tended to be bus commuters.</p>
+            <h4>Question: How long have you lived in Santa Cruz?</h4>
+        </div>
+        <div class="col-sm-6" id='dc-residenceDuration-chart'>
+            <span>
+              <br />(drag to filter results)
+              <a class="reset" href="#dc-data-count" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-residenceDuration-chart'>
-      <h4>How long have you lived in Santa Cruz?
-        <span>
-          <br />(drag to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:residenceDurationChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Roughly half of respondents had worked in Santa Cruz at one time.</p>
+            <h4>Question: Have you ever worked in Santa Cruz?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-workedInSc-chart'>
+            <span>
+                
+                <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-workedInSc-chart'>
-      <h4>Have you ever worked in Santa Cruz?
-        <span>
-            <br />(click to filter results)
-            <a class="reset" href="#dc-data-count" onclick="javascript:workedInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class='col-sm-6'>
+            <p class="lead">57% of respondents who stopped working in Santa Cruz did so because of better opportunities over the hill. Company closures or relocation accounted for just 21% of relocations.</p>
+            <h4>Question: Why did you stop working in Santa Cruz?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-whyNotWorkInSc-chart'>
+            <span>
+              <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-  </div><!-- row-fluid -->
-  <hr>
-  <div class="row-fluid">
-    <div class='span4' id='dc-whyNotWorkInSc-chart'>
-      <h4>Why did you stop working in Santa Cruz?
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:whyNotWorkInScChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Most bus commuters would need equal salary compensation to choose to work in Santa Cruz. Car commuters more frequently would accept 70-80% of their current salary.</p>
+            <h4>Question: Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-salaryNeeded-chart'>
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-salaryNeeded-chart'>
-      <h4>Within what percentage of your current total compensation (salary, stock options, health and benefits, job position) would a Santa Cruz opportunity have to come for you to forgo your current job and commute?
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:salaryNeededChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">Half of respondents had heard a lot or some about Santa Cruz start-up activity while half had heard little to none.</p>
+            <h4>Question: How much have you heard about recent start-up activity in Santa Cruz?</h4> 
+        </div>
+        <div class="col-sm-6" id='dc-heardOfStartupNewsHere-chart'>
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
+    </div><!-- row -->
+    
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <p class="lead">75% of respondents were interested in job openings in Santa Cruz.</p>
+            <h4>Question: Have you considered exploring job openings with any Santa Cruz tech companies or startups?</h4>
+        </div>
+        <div class='col-sm-6' id='dc-consideredJobsInSantaCruz-chart'>
+            <span>
+              <br>
+              <a class="reset" href="#dc-data-count" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+        </div>
     </div>
-    <div class='span4' id='dc-heardOfStartupNewsHere-chart'>
-      <h4>How much have you heard about recent start-up activity in Santa Cruz?
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:heardOfStartupNewsHereChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-  </div><!-- row-fluid -->
-  <hr>
-  <div class="row-fluid">
-    <div class='span4' id='dc-consideredJobsInSantaCruz-chart'>
-      <h4>Have you considered exploring job openings with any Santa Cruz tech companies or startups?
-        <span>
-          <br>
-          <a class="reset" href="#dc-data-count" onclick="javascript:consideredJobsInSantaCruzChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
+    
     <!--
     <div class='span4' id='dc-techEventsInSantaCruz-chart'>
       <h4>Which of the following Santa Cruz tech-community events have you attended?
@@ -1443,44 +2497,50 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
       </h4>
     </div>
     -->
-    <div class='span8' id='dc-age-chart'>
-      <h4>Age of Respondents
-        <span>
-            (drag sliders to filter results)
-        </span>
-      </h4>
+    
+    <hr>
+    <div class="workshop-metrics metrics-large">
+        Demographics
     </div>
-  </div><!-- row-fluid -->
-  <hr>
-  <div class="row-fluid">
-    <div class='span4' id='dc-maritalStatus-chart'>
-      <h4>Marital status
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-    <div class='span4' id='dc-children-chart'>
-      <h4>Do you have children 17 years of age or younger living in the household?
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-    <div class='span4' id='dc-rentOrOwn-chart'>
-      <h4>Do you rent or own your home?
-        <span>
-          <br />(click to filter results)
-          <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
-        </span>
-      </h4>
-    </div>
-  </div><!-- row-fluid -->
+    <div class="row">
+        <div class='col-sm-4' id='dc-age-chart'>
+          <h4>Age of Respondents
+            <span>
+                (drag sliders to filter results)
+            </span>
+          </h4>
+        </div>
+        <div class='col-sm-4' id='dc-maritalStatus-chart'>
+          <h4>Marital status
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:maritalStatusChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+          </h4>
+        </div>
+        <div class='col-sm-4' id='dc-children-chart'>
+          <h4>Do you have children in household?
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:childrenChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+          </h4>
+        </div>
+    </div><!-- row -->
+    
+    <div class="row">
+        <div class='col-sm-4' id='dc-rentOrOwn-chart'>
+          <h4>Do you rent or own your home?
+            <span>
+              
+              <a class="reset" href="#dc-data-count" onclick="javascript:rentOrOwnChart.filterAll();dc.redrawAll();" style="display: none;"> reset</a> 
+            </span>
+          </h4>
+        </div>
+    </div><!-- row -->
   <!-- removing table for now
   <hr>
-   <div class='row-fluid'> 
+   <div class='row'> 
     <div class='span12'>
       <div class='dc-data-count2'>
         <span> 
@@ -1496,19 +2556,16 @@ onclick="javascript:genderChart.filterAll();dc.redrawAll();" style="display: non
     <table class='table table-hover' style="width: 100%;" id='dc-table-graph'> 
     </table>
   </div> -->
+  
   <hr>
-  <div class='row-fluid'> 
-    <div class='span12' id='dc-commentsOrSuggestions-chart'>
+  <div class='row'> 
+    <div class='col-xs-12' id='dc-commentsOrSuggestions-chart'>
       <h4>Comments and Suggestions</h4>
       <div id="commentsOrSuggestionsContainer">
       </div>
     </div>
   </div>
 
-  <script src='/js/vendor/crossfilter111.min.js' type='text/javascript'></script>
-  <script src='/js/vendor/dc130.min.js' type='text/javascript'></script>
-  <link href='/styles/vendor/dc.css' rel='stylesheet' type='text/css'>
-  
   <script>
       // Create the dc.js chart objects & link to div
       var salaryChart = dc.barChart("#dc-salary-chart");

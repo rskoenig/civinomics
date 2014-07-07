@@ -1,6 +1,6 @@
 <%!
     import pylowiki.lib.db.user         as userLib
-    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
     import misaka as m
@@ -124,11 +124,11 @@
 <%def name="watchButton(i, **kwargs)">
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-civ pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
-            <span><i class="icon-bookmark btn-height icon-light"></i><strong> Following </strong></span>
+            <button class="btn btn-default pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
+            <span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
+            <button class="btn btn-default pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
              <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -144,7 +144,7 @@
             elif not c.privs['provisional']:
                 printStr = '<a href="#signupLoginModal" data-toggle="modal"'
 
-            printStr += ' title="Click to add a resource to this initiative" class="btn btn-success btn-mini pull-right right-space"><i class="icon icon-plus"></i></a>'
+            printStr += ' title="Click to add a resource to this initiative" class="btn btn-default btn-sm pull-right"><i class="icon icon-plus"></i></a>'
             
             if 'user' in session and c.privs['provisional']:
                 printStr = ''
@@ -155,8 +155,8 @@
 
 <%def name="listResources()">
     % if len(c.resources) <= 0:
-        <div class="alert alert-info">
-            There are no resources yet! Be the first to add one.
+        <div class="alert alert-info top-space-md">
+            There are no links yet! Be the first to add one.
         </div>
     % else:
         % for item in c.resources:
@@ -173,18 +173,18 @@
                 endif
                 rURL = "/initiative/" + c.initiative['urlCode'] + "/" + c.initiative['url'] + "/resource/" + item['urlCode'] + "/" + item['url']
             %>
-            <div class="row-fluid bottom-space-med">
-                <div class="span1">
+            <div class="row bottom-space-med">
+                <div class="col-sm-1">
                         <i class="${iconClass} icon-3x"></i>
-                </div><!-- span1 -->
-                <div class="span11">
+                </div><!-- col-sm-1 -->
+                <div class="col-sm-11">
                     <h5 class="no-bottom no-top">
                     <% itemTitle = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, lib_6.ellipsisIZE(item['title'], 150)) %>
                     ${itemTitle | n}
                     </h5>
                     <a href="${item['link']}" target="_blank">${lib_6.ellipsisIZE(item['link'], 150)}</a>
-                </div><!-- span10 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-sm-10 -->
+            </div><!-- row -->
         % endfor
     % endif
 </%def>
@@ -228,7 +228,7 @@
         <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
         </a>
         <div class="media-body">
-            <div class="span10">
+            <div class="col-sm-10">
                 <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
                 <br>
                 <span class="grey">Initiative for</span> ${lib_6.showScope(item) | n}
@@ -249,12 +249,12 @@
             % else:
                 % if 'user' in session:
                     % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-                        <div class="row-fluid" ng-controller="followerController">
-                            <div class="span9"></div>
-                            <div class="span3">
-                                <a class="btn pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
-                            </div><!-- span3 -->
-                        </div><!-- row-fluid -->
+                        <div class="row" ng-controller="followerController">
+                            <div class="col-sm-9"></div>
+                            <div class="col-sm-3">
+                                <a class="btn btn-default pull-right" href="/initiative/${item['urlCode']}/${item['url']}/edit"><strong>Edit Initiative</strong></a> &nbsp;
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
                     % endif
                 % endif
             % endif
@@ -264,7 +264,7 @@
 
 <%def name="editInitiative()">
     <% 
-        tagList = workshopLib.getWorkshopTagCategories()
+        tagList = tagLib.getTagCategories()
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
@@ -287,40 +287,40 @@
         ${c.saveMessage}
         </div>
     % endif
-    <div class="row-fluid edit-initiative" id="basics">
-        <div class="span12">
-        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="initiativeCtrl" ng-init="cost = '${c.initiative['cost']}'">
-            <div class="row-fluid">
+    <div class="row edit-initiative" id="basics">
+        <div class="col-sm-12">
+        <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="showThingCtrl" ng-init="cost = '${c.initiative['cost']}'">
+            <div class="row">
                 <h3 class="initiative-title edit no-top">1. Basics</h3>
-            </div><!-- row-fluid -->
+            </div><!-- row -->
             <br>
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Initiative Title:</strong></label>
-                    <input type="text" name="title" class="span12" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-click="clearTitle()" ng-cloak>
-                </div><!-- span6 -->
-                <div class="span6">
+                    <input type="text" name="title" class="col-sm-12 form-control" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-click="clearTitle()" ng-cloak>
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
                     <div class="alert alert-info">
                         Keep it short and descriptive. 10 words or less.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span6">
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Geographic Region:</strong></label>
                     ${geoSelect()}
-                </div><!-- span6 -->
-                <div class="span6">
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
                     <div class="alert alert-info">
                         The region or legal jurisdiction associated with your initiative.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span6">
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="tag" class="control-label" required><strong>Initiative category:</strong></label>
-                    <div class="span3"></div>
-                    <div class="span8 no-left">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-8 no-left">
                         <select name="tag" id="tag">
                         % if c.initiative['public'] == '0':
                             <option value="">Choose one</option>
@@ -334,94 +334,98 @@
                             <option value="${tag}" ${selected}/> ${tag}</option>
                         % endfor
                         </select>
-                    </div><!-- span8 -->
-                </div><!-- span6 -->
-                <div class="span6">
+                    </div><!-- col-sm-8 -->
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
                     <div class="alert alert-info">
                         The topic area associated with your initiative.
                     </div><!-- alert -->
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid" id="summary">
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            <div class="row" id="summary">
                 <h3 class="initiative-title edit">2. Summary</h3>
-            </div><!-- row-fluid -->
+            </div><!-- row -->
             <br>
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="description" class="control-label" required><strong>Summary:</strong></label>
-                    <textarea rows="8" type="text" name="description" class="span12">${c.initiative['description']}</textarea>
+                    <textarea rows="8" type="text" name="description" class="col-sm-12 form-control">${c.initiative['description']}</textarea>
                 </div>
-                <div class="span6">
+                <div class="col-sm-6">
                     <div class="alert alert-info">
                         Used in search listings and displayed at the top of your initiative.
                     </div>
                 </div>
             </div>
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="funding_summary" class="control-label" required><strong>Estimate Net Fiscal Impact:</strong></label>
-                    <textarea rows="8" type="text" name="funding_summary" class="span12">${c.initiative['funding_summary']}</textarea>
+                    <textarea rows="8" type="text" name="funding_summary" class="col-sm-12 form-control">${c.initiative['funding_summary']}</textarea>
                 </div>
-                <div class="span6">
+                <div class="col-sm-6">
                     <label class="control-label"></label>
                     <div class="alert alert-info">
                         What are the costs and benefits of your intiative? What will you have to spend money on? What will the fiscal impacts be for the associated region? For example, if your intiative will lead to increased tax revenues for your City, mention that here.
                     </div>
                 </div>
             </div>
-            <div class="row-fluid">
-                <div class="span6">
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>
-                    <div class="input-prepend input-append">
-                      <span class="add-on">$</span>
-                      <input type="text" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
-                      <span class="add-on">.00</span>
+                    <div class="input-group" ng-cloak>
+                      <span class="input-group-addon">$</span>
+                      <input type="text" class="form-control" name="cost" value="{{cost}}" ng-model="cost" ng-pattern="costRegex">
+                      <span class="input-group-addon">.00</span>
                     </div>
                     <span class="error help-text" ng-show="edit_initiative_summary.cost.$error.pattern" ng-cloak>Invalid cost value</span>
                 </div>
-                <div class="span6">
+                <div class="col-sm-6">
                     <label class="control-label"></label>
                     <div class="alert alert-info">
                         Acceptable formats include: 500,000  or  500000.
                     </div>
                 </div>
             </div>
-            <div class="row-fluid" id="detail">
+            <div class="row" id="detail">
                 <h3 class="initiative-title edit">3. Detail</h3>
-            </div><!-- row-fluid -->
+            </div><!-- row -->
 
-            <div class="row-fluid">
-                <div class="span3">
+            <div class="row">
+                <div class="col-sm-4">
                     <label for="background" class="control-label" required><strong>Background:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
-                <div class="span9">
+                <div class="col-sm-8">
                     <div class="alert alert-info">
                         What are the conditions that make this initaitive needed? Cite statistics and existing policies or programs in the effected region wherever possible.
                     </div>
                 </div>
             </div>
-            <textarea rows="10" id="background" name="background" class="span12">${c.initiative['background']}</textarea>
+            <textarea rows="10" id="background" name="background" class="col-sm-12 form-control bottom-space-md">${c.initiative['background']}</textarea>
 
-            <div class="row-fluid">
-                <div class="span3">
+            <div class="row">
+                <div class="col-sm-4">
                     <label for="proposal" class="control-label" required><strong>Proposal:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
-                <div class="span9">
+                <div class="col-sm-8">
                     <div class="alert alert-info">
                         What are the details of your initiative? How will it work? What will it do? What won't it do? Address the financial impacts as well.
                     </div>
                 </div>
             </div>
-            <textarea rows="10" id="proposal" name="proposal" class="span12">${c.initiative['proposal']}</textarea>
-            <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
+            <textarea rows="10" id="proposal" name="proposal" class="col-sm-12 form-control bottom-space-md">${c.initiative['proposal']}</textarea>
+            <div class="row">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
+                </div>
+            </div>
         </form>
-        <div class="row-fluid" id="photo">
+        <div class="row" id="photo">
             <h3 class="initiative-title edit">4. Photo</h3>
-        </div><!-- row-fluid -->
+        </div><!-- row -->
         <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
-            <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
+            <div id="fileinput-button-div">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
                     <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos']) %>
@@ -432,23 +436,20 @@
                 % else:
                     <span class="pull-left">Upload a Picture (Required)</span>
                 % endif
-                <span class="btn btn-success btn-large fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
-                <i class="icon-plus icon-white"></i>
-                <span>Picture</span>
-                <input type="file" name="files[]">
+                <input class="fileinput-button pull-right" type="file" name="files[]">
                 </span>
                 <!-- The loading indicator is shown during file processing -->
                 <div class="fileupload-loading"></div>
                 <!-- The global progress information -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+            </div><!-- row -->
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 fade" data-ng-class="{true: 'in'}[!!active()]">
                     <!-- The global progress bar -->
                     <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
                     <!-- The extended global progress information -->
                     <div class="progress-extended">&nbsp;</div>
-                </div><!-- span10 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-sm-10 -->
+            </div><!-- row -->
             <!-- The table listing the files available for upload/download -->
             <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
                 <tbody><tr data-ng-repeat="file in queue">
@@ -460,11 +461,11 @@
                                     document.getElementById('fileupload').action = actionURL;
                                 }
                             </script>
-                            <div class="row-fluid">
+                            <div class="row">
                                 <img src="{{file.thumbnail_url}}">
                                 New Picture Uploaded and Saved
                                 <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</a>
-                            </div><!-- row-fluid -->
+                            </div><!-- row -->
                             </form>
 
                         </div><!-- preview -->
@@ -489,7 +490,7 @@
             </form>
 
         ${coAuthorInvite()}
-    </div><!-- span12 -->
+    </div><!-- col-sm-12 -->
 </div>
 </%def>
 
@@ -504,23 +505,23 @@
     %>
     <div class="btn-group">
         % if thing['disabled'] == '0' and thing.objType != 'initiativeUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initiativeUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+            <a class="btn btn-default  btn-sm accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
         % elif thing.objType == 'initiativeUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+                <a class="btn btn-default  btn-sm accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
             % endif
         % endif
         % if c.revisions:
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#revisions">revisions (${len(c.revisions)})</a>
         % endif
 
         % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
     </div>
     
@@ -570,23 +571,23 @@
         <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
             <fieldset>
                 <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+                <input type="text" class="input-block-level form-control" name="title" ng-model="title" maxlength = "120" required>
                 <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
             </fieldset>
             <fieldset>
                 <label>Resource URL</label>
-                <input type="url" class="input-block-level" name="link" ng-model="link" placeholder="http://" required>
+                <input type="url" class="input-block-level form-control" name="link" ng-model="link" placeholder="http://" required>
                 <span ng-show="addResourceURLShow"><div class="alert alert-danger" ng-cloak>{{addResourceURLResponse}}</div></span>
             </fieldset>
             <fieldset>
                 <label><strong>Additional information</strong><br>
                 <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text"></textarea>
+                <textarea name="text" rows="3" class="input-block-level form-control" ng-model="text"></textarea>
                 <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
             </fieldset>
             <span ng-show="addResourceShow">{{addResourceResponse}}</span>
             <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+                <button class="btn btn-large btn-default pull-right" type="submit" name="submit">Submit</button>
             </fieldset>
         </form>
     % endif
@@ -639,28 +640,28 @@
             countyMessage = "Leave 'State' blank if your initiative applies to the entire country."
         endif
     %>
-    <div class="row-fluid"><span id="planetSelect">
-        <div class="span3">Planet:</div>
-        <div class="span8">
+    <div class="row"><span id="planetSelect">
+        <div class="col-sm-3">Planet:</div>
+        <div class="col-sm-8">
             <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
                 <option value="0">Earth</option>
             </select>
-        </div><!-- span8 -->
+        </div><!-- col-sm-8 -->
     </span><!-- countrySelect -->
-    </div><!-- row-fluid -->     
-    <div class="row-fluid"><span id="countrySelect">
-        <div class="span3">Country:</div>
-        <div class="span8">
+    </div><!-- row -->     
+    <div class="row"><span id="countrySelect">
+        <div class="col-sm-3">Country:</div>
+        <div class="col-sm-8">
             <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
                 <option value="0">Select a country</option>
                 <option value="United States" ${countrySelected}>United States</option>
             </select>
-        </div><!-- span8 -->
+        </div><!-- col-sm-8 -->
     </span><!-- countrySelect -->
-    </div><!-- row-fluid -->
-    <div class="row-fluid"><span id="stateSelect">
+    </div><!-- row -->
+    <div class="row"><span id="stateSelect">
         % if c.country != "0":
-            <div class="span3">State:</div><div class="span8">
+            <div class="col-sm-3">State:</div><div class="col-sm-8">
             <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
             <option value="0">Select a state</option>
             % for state in states:
@@ -674,16 +675,16 @@
                 % endif
             % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-sm-8 -->
         % else:
             Leave 'Country' blank if your initiative applies to the entire planet.
         % endif
-    </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="countySelect">
+    </span></div><!-- row -->
+    <div class="row"><span id="countySelect">
         % if c.state != "0":
             <% counties = getCountyList("united-states", c.state) %>
             <% cityMessage = "Leave blank 'County' blank if your initiative applies to the entire state." %>
-            <div class="span3">County:</div><div class="span8">
+            <div class="col-sm-3">County:</div><div class="col-sm-8">
             <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
                 <option value="0">Select a county</option>
                 % for county in counties:
@@ -695,17 +696,17 @@
                     <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
                 % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-sm-8 -->
         % else:
             <% cityMessage = "" %>
             ${countyMessage}
         % endif
     </span></div><!-- row -->
-    <div class="row-fluid"><span id="citySelect">
+    <div class="row"><span id="citySelect">
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
             <% postalMessage = "Leave 'City' blank if your initiative applies to the entire county." %>
-            <div class="span3">City:</div><div class="span8">
+            <div class="col-sm-3">City:</div><div class="col-sm-8">
             <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
             <option value="0">Select a city</option>
                 % for city in cities:
@@ -717,17 +718,17 @@
                     <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
                 % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-sm-8 -->
         % else:
             <% postalMessage = "" %>
             ${cityMessage}
         % endif
-        </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="postalSelect">
+        </span></div><!-- row -->
+    <div class="row"><span id="postalSelect">
         % if c.city != "0":
             <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
             <% underPostalMessage = "or leave blank if your initiative is specific to the entire city." %>
-            <div class="span3">Zip Code:</div><div class="span8">
+            <div class="col-sm-3">Zip Code:</div><div class="col-sm-8">
             <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
             <option value="0">Select a zip code</option>
                 % for pCode in postalCodes:
@@ -739,13 +740,13 @@
                     <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
                 % endfor
             </select>
-            </div><!-- span8 -->
+            </div><!-- col-sm-8 -->
         % else:
             <% underPostalMessage = "" %>
             ${postalMessage}
         % endif
-        </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
+        </span></div><!-- row -->
+    <div class="row"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
     <br/>
 </%def>
 
@@ -757,35 +758,37 @@
             cost = cost * -1
             currency = '- $'
     %>
-    <h4 class="initiative-title">
-        <div class="span6 pull-left">
-            Cost Estimate
-        </div>
-        <div class="span6">
-            <table class="pull-right">
-                <tr>
-                    <td>${currency}</td>
-                    <td>${locale.format("%d", cost, grouping=True)}</td>
-                <tr>
-            </table>
-        </div>
-    </h4>
+    <div class="row">
+        <h4 class="initiative-title">
+            <div class="col-sm-6 pull-left">
+                Cost Estimate
+            </div>
+            <div class="col-sm-6">
+                <table class="pull-right">
+                    <tr>
+                        <td>${currency}</td>
+                        <td>${locale.format("%d", cost, grouping=True)}</td>
+                    <tr>
+                </table>
+            </div>
+        </h4>
+    </div>
 </%def>
 
 <%def name="coAuthorInvite()">
-    <div class="row-fluid" id="coauthors">
+    <div class="row" id="coauthors">
         <h3 class="initiative-title edit">5. Coauthors</h3>
-    </div><!-- row-fluid -->
+    </div><!-- row -->
     <strong>Invite CoAuthors:</strong>
     % if 'user' in session and c.authuser:
         <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}'; authuserCode = '${c.authuser['urlCode']}'">
             <div ng-controller="userLookupCtrl">
-                <div class="row-fluid">
-                    <form ng-submit="lookup()">
-                        <div class="input-append">
-                          <input type="text" ng-submit="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
-                          <button type="submit" class="btn"><i class="icon-search"></i></button>
+                <div class="row">
+                    <form class="form-inline" ng-submit="lookup()">
+                        <div class="form-group">
+                            <input class="form-control col-sm-8" type="text" ng-submit="lookup()" name="userValue" ng-model="userValue" placeholder="Type a user's name...">
                         </div>
+                        <button type="submit" class="btn btn-default"><i class="icon-search"></i></button>
                     </form>
                         <table class="table-striped full-width" ng-cloak>
                             <tr ng-repeat="user in users | limitTo:10">
@@ -794,13 +797,13 @@
                                         <img class="media-object avatar med-avatar" ng-src="{{user.photo}}" alt="{{user.name}}" title="{{user.name}}">
                                     </a>
                                 </td>
-                                <td class="span8 grey"><a class="green green-hover" href="/profile/{{user.urlCode}}/{{user.url}}">{{user.name}}</a> from <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
+                                <td class="col-sm-8 grey"><a class="green green-hover" href="/profile/{{user.urlCode}}/{{user.url}}">{{user.name}}</a> from <a href="{{user.cityURL}}">{{user.cityTitle}}</a>, <a href="{{user.stateURL}}">{{user.stateTitle}}</a></td>
                                 <td>
                                     <button ng-click="submitInvite(user.urlCode)" class="btn btn-primary pull-right">Invite to Coauthor</button>
                                 </td>
                             </tr>
                         </table>
-                </div><!-- row-fluid -->
+                </div><!-- row -->
                 <div ng-if="alertMsg != ''" class="alert alert-{{alertType}} {{alertDisplay}}" ng-cloak>
                     <button type="button" class="close" ng-click="hideShowAlert()">&times;</button>
                     {{alertMsg}}
@@ -811,7 +814,7 @@
                 <div class="centered" ng-show="loading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x" style="color: #333333"></i>
                 </div>
-                <div class="row-fluid" ng-show="!loading"> -->
+                <div class="row" ng-show="!loading"> -->
                     <table class="table-striped full-width" ng-cloak>
                         <tr>
                             <td>

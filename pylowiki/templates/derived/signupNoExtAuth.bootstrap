@@ -1,4 +1,4 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_splash.bootstrap"/>
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
@@ -9,14 +9,8 @@
     <script src="/js/geo.js" type="text/javascript"></script>
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/CA_leg.jpg' alt="">
-    <div class="span8">
-        <p class="photoCredits">iStockphoto</p>
-    </div>
-</div>
-
-<div class="container">
+<div id="login-bg"></div>
+<div id="fbSignUp" class="container">
     <div class="row">
         % if c.success:
             <div class="span6 offset3" style="padding-top:150px;">
