@@ -14,6 +14,7 @@ import pylowiki.lib.fuzzyTime       as fuzzyTime
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.resource     as resourceLib
@@ -23,6 +24,7 @@ import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.json            as jsonLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
@@ -192,7 +194,7 @@ class SearchController(BaseController):
         
     def getWorkshopCategoryTags(self):
         """ return a list of the categories available for search """
-        categories = workshopLib.getWorkshopTagCategories()
+        categories = tagLib.getTagCategories()
         iPhoneApp = utils.iPhoneRequestTest(request)
         response.headers['Content-type'] = 'application/json'
         if categories:
@@ -493,7 +495,7 @@ class SearchController(BaseController):
         if len(workshops) == 0:
             log.info("return len workshops 0")
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
         for w in workshops:
             entry = {}
             entry['title'] = w['title']
@@ -576,7 +578,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -680,7 +682,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -766,7 +768,7 @@ class SearchController(BaseController):
         if len(ideas) == 0:
             log.info("searchIdeas return len ideas == 0")
             return json.dumps({'statusCode':2})
-        titleToColourMapping = workshopLib.getWorkshopTagColouring()
+        titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -851,7 +853,7 @@ class SearchController(BaseController):
         if len(photos) == 0:
             return json.dumps({'statusCode':2})
             
-        colors = workshopLib.getWorkshopTagColouring()
+        colors = tagLib.getTagColouring()
 
         myRatings = {}
         if 'ratings' in session:
@@ -918,95 +920,16 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(initiatives) == 0:
             return json.dumps({'statusCode':2})
-
-        myRatings = {}
-        if 'ratings' in session:
-           myRatings = session['ratings']
             
         for initiative in initiatives:
             i = initiative
-            # u = generic.getThing(i['userCode'])
-            # for some reason above wasn't working for new initiatives, replaced with get author routine used in 6_lib
-            u = i.owner
-            if type(u) == type(1L):
-                u = userLib.getUserByID(u)
-            elif type(u) == type(u''):
-                u = userLib.getUserByCode(u)
-                
             if i['deleted'] != u'0' or i['disabled'] != u'0':
                 continue
             if i['public'] == '0':
                 continue
-            entry = {}
-            entry['title'] = i['title']
-            entry['text'] = i['description']
-            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
-            entry['cost'] = i['cost']
-            entry['objType'] = 'initiative'
-            tags = []
-            tagList = i['tags'].split('|')
-            for tag in tagList:
-                if tag and tag != '':
-                    tags.append(tag)
-            entry['tags'] = tags
-            entry['date'] = i.date.strftime('%Y-%m-%dT%H:%M:%S')
-            entry['fuzzyTime'] = fuzzyTime.timeSince(i.date)
-            entry['urlCode'] = i['urlCode']
-            entry['url'] = i['url']
 
-            scopeInfo = utils.getPublicScope(i)
-            entry['flag'] = scopeInfo['flag']
-            entry['scopeName'] = scopeInfo['name']
-            entry['scopeLevel'] = scopeInfo['level'].title()
-            entry['location'] = scopeInfo['scopeString']
-            entry['geoHref'] = scopeInfo['href']
+            entry = jsonLib.getJsonProperties(i)
 
-            entry['voteCount'] = int(i['ups']) + int(i['downs'])
-            entry['ups'] = int(i['ups'])
-            entry['downs'] = int(i['downs'])
-
-            # user ratings
-            if entry['urlCode'] in myRatings:
-                entry['rated'] = myRatings[entry['urlCode']]
-                entry['vote'] = 'voted'
-            else:
-                entry['rated'] = 0
-                entry['vote'] = 'nvote'
-
-            # author data
-            # CCN - need to find a way to optimize this lookup
-            author = userLib.getUserByID(i.owner)
-            entry['authorName'] = author['name']
-            entry['authorPhoto'] = utils._userImageSource(author)
-            entry['authorCode'] = author['urlCode']
-            entry['authorURL'] = author['url']
-            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-
-            # comments
-            entry['numComments'] = 0
-            if 'numComments' in i:
-                entry['numComments'] = i['numComments']
-            discussion = discussionLib.getDiscussionForThing(i)
-            if discussion:
-                entry['discussion'] = discussion['urlCode']
-            else:
-                entry['discussion'] = 0
-            if 'views' in i:
-                entry['views'] = str(i['views'])
-            else:
-                entry['views'] = '0'
-
-            entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
-            entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(i['directoryNum_photos'], i['pictureHash_photos'])
-            entry['href'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
-            try:
-                entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
-            except:
-                entry['numComments'] = 0
-            entry['authorCode'] = u['urlCode']
-            entry['authorURL'] = u['url']
-            entry['authorName'] = u['name']
-            entry['authorHash'] = md5(u['email']).hexdigest()
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})

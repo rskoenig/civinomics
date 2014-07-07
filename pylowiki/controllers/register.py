@@ -172,6 +172,7 @@ class RegisterController(BaseController):
         returnPage = "/signup"
         name = False
         postalCode = False
+        log.info('postalCode1 expect false: %s'%postalCode)
         checkTOS = False
         c.title = c.heading = "Registration"
         splashMsg = {}
@@ -207,6 +208,7 @@ class RegisterController(BaseController):
             log.info('postalCode missing')
         else:
             postalCode = request.params['postalCode']
+            log.info('postalCode2 expect number: %s'%postalCode)
         if  'country' not in request.params:
             log.info('country missing')
         else:
@@ -248,6 +250,7 @@ class RegisterController(BaseController):
                 session.save()
             if postalCode:
                 pInfo = getPostalInfo(postalCode)
+                log.info('postalCode3 expect number after pInfo: %s'%postalCode)
                 if pInfo == None:
                     log.info("Error: Bad Postal Code")
                     errorFound = True
@@ -291,6 +294,7 @@ class RegisterController(BaseController):
                 password = hash.lower()
                 # if they are a guest signing up, we will activate and log them in, externalAuthSignup=True 
                 # skips sending an activation email
+                log.info('postalCode4 expect number: %s'%postalCode)
                 if c.w:
                     u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
                 else:
@@ -303,6 +307,7 @@ class RegisterController(BaseController):
                 log.info( message )
                 
                 user = u.u
+                log.info('postalCode6 expect number: %s'%user['postalCode'])
                 if 'laston' in user:
                     t = time.localtime(float(user['laston']))
                     user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
@@ -326,6 +331,7 @@ class RegisterController(BaseController):
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                     commit(user)
+                    log.info('postalCode7 expect number: %s'%user['postalCode'])
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = "You now have an identity to use on our site."
@@ -351,6 +357,7 @@ class RegisterController(BaseController):
                     user['unactivatedTwitterAuthId'] = twitterId
                     user['activated'] = u'0'
                     commit(user)
+                    log.info('postalCode8 expect number: %s'%user['postalCode'])
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
@@ -396,6 +403,7 @@ class RegisterController(BaseController):
                         user['unactivatedTwitterAuthId'] = twitterId
                         user['activatedFacebookNotTwitter'] = u'0'
                         commit(user)
+                        log.info('postalCode9 expect number: %s'%user['postalCode'])
                         self.generateTwitterActivationHash(user)
                         splashMsg['type'] = 'success'
                         splashMsg['title'] = 'Success'
@@ -728,6 +736,13 @@ class RegisterController(BaseController):
             returnJson = False
 
         returnPage = "/signup"
+        if 'afterLoginURL' in session:
+        # look for accelerator cases: workshop home, item listing, item home
+            returnPage = session['afterLoginURL']
+            if 'loginResetPassword' in returnPage:
+                returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
         name = False
         password = False
         postalCode = False
@@ -889,6 +904,14 @@ class RegisterController(BaseController):
                             return redirect(returnPage)
                             
                     returnPage = "/"
+                    
+                    if 'afterLoginURL' in session:
+                    # look for accelerator cases: workshop home, item listing, item home
+                        returnPage = session['afterLoginURL']
+                        if 'loginResetPassword' in returnPage:
+                            returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
+                            session.pop('afterLoginURL')
+                            session.save()
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'

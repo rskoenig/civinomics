@@ -50,10 +50,10 @@ def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', limit = No
             postList = q.all()
 
         if postList:
-            log.info('there is a list of results')
+            #log.info('there is a list of results')
             return postList
         else:
-            log.info('there is not a list of results')
+            #log.info('there is not a list of results')
             return []
     except:
         return False
