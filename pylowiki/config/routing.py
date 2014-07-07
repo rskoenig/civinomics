@@ -74,11 +74,15 @@ def make_map():
     # Geo stuff
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
+    map.connect('/geo/stateListJSON/{id1}', controller = 'geo', action = 'geoStateHandlerJSON', id1 = '{id1}')
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/geo/countyListJSON/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandlerJSON', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/geo/cityListJSON/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandlerJSON', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/cityStateCountry/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateCountryHandler', id1 = '{id1}')
     map.connect('/geo/cityStateCountryLink/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateCountryLinkHandler', id1 = '{id1}')
     map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/geo/postalListJSON/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandlerJSON', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
 
     # Geo rss stuff
     map.connect('/workshops/rss/earth{end:/?}', controller = 'geo', action = 'rss')
@@ -421,6 +425,7 @@ def make_map():
     ###############
     # Initiatives #
     ###############
+    map.connect('/create/initiative{end:/?}', controller = 'create', action = 'showCreateForm')
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)
