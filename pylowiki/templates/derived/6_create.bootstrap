@@ -1,0 +1,119 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<div  ng-controller="createController">
+<h1>Create New {{thing}}</h1>
+% if c.authuser:
+    <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
+%endif
+<div ng-init="test = '1 2 3 4'"></div>
+<div class="row-fluid">
+    <div class="well span8">
+            <!--{{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}{{date}}-->
+            <span>Create: </span>
+            <select ng-model="thing">
+				<option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
+			</select>
+			<br/><br/>
+            <form ng-submit="createNew()">
+                <div>
+                    <input class="col-sm-12 input-large" type="text" ng-model="title" placeholder="Title" required></input>    
+                </div>
+                <div>
+                    <textarea class="col-sm-12 input-large" rows="4" type="text" ng-model="description" placeholder="Description"></textarea>        
+                </div>
+                <br/>
+                  
+                <hr>
+                <div>
+                <p class="lead">Upload a photo</p>
+                <h4>{{thing}} Photo</h4>
+				        <input type='file' id="imgAvatar" />
+				        <img id="avatar" src="#" alt="your {{thing}} image" />
+                <h4>Cover Photo</h4>
+				        <input type='file' id="imgCover" />
+				        <img id="cover" src="#" alt="your cover image" />
+				</div>
+                <hr>
+                <div>
+                    <select ng-model="tag">
+                        <option value="">Tags</option>
+                        % for tag in c.tagList:
+                            <option value="${tag}"> ${tag}</option>
+                        % endfor
+                    </select>
+                    
+                    <select ng-model="objType">
+                        <option value="">Type</option>        
+                        <option value="initiative">Initiative</option>        
+                        <option value="ballot_measure">Ballot Measure</option>        
+                        <option value="candidate">Candidate</option>        
+                    </select>
+                </div>
+                <div>
+                    <hr>
+                    <p class="lead">Additional Fields</p>
+                    <h4>Deadline</h4>
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <p class="input-group">
+                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                              <span class="input-group-btn">
+                                <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
+                              </span>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                <div ng-show="objType == 'candidate'" ng-cloak>
+                    <hr>
+                    <p class="lead">Additional Fields</p>
+                    <label>What position is this candidate running for?</label>
+                    <input class="span6 input-large" type="text" ng-model="positionTitle" placeholder="Position Title"></input>
+                    
+                </div>
+                <div>
+                    ${ng_lib.ngGeoSelect()}
+                </div>
+                <button type="submit" class="btn btn-large btn-success pull-right">Submit</button>
+        </form>
+        <a ng-href="/initiative/{{newObjCode}}/{{newObjUrl}}/show" target="_blank" ng-cloak>{{newObjUrl}}</a>
+    </div>
+</div>
+</div>
+<%def name="extraScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/create.js')}" type="text/javascript"></script>
+    <script>
+	    function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#avatar').attr('src', e.target.result);
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    function readURL2(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#cover').attr('src', e.target.result);
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    $("#imgAvatar").change(function(){
+	        readURL(this);
+	    });
+	    $("#imgCover").change(function(){
+	        readURL2(this);
+	    });
+    </script>
+</%def>
