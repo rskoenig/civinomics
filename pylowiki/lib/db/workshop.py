@@ -161,6 +161,41 @@ def getWorkshopPostsSince(code, url, memberDatetime):
 
         return returnList
         
+def getIdeaCountForWorkshop(code, adopted = 0, deleted = 0):
+    try:
+        q = meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))
+        if adopted == 1:
+            q = q.filter(Thing.data.any(wc('adopted', '1')))
+        
+        return q.count()
+    except:
+        return False
+        
+def getResourceCountForWorkshop(code, deleted = 0):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .count()
+    except:
+        return False
+        
+def getDiscussionCountForWorkshop(code, deleted = 0):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'discussion')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('discType', 'general')))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .count()
+    except:
+        return False
+    
+        
 def updateWorkshopChildren(workshop, workshopKey):
     code = workshop['urlCode']        
     key = '%s%s' %(workshop.objType, 'Code')

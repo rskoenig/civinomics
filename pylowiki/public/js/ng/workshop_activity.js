@@ -1,25 +1,35 @@
 
 function activityWorkshopController($scope, $http) {
+    $scope.addObjType = 'idea';
+    if ($scope.allowIdeas == '0') {
+        $scope.addObjType = 'discussion';
+    }
+    if ($scope.allowResources == '0' && $scope.allowIdeas == '0') {
+        $scope.addObjType = 'discussion';
+    }
 	$scope.listingType = 'activity';
-	$scope.objType = 'idea'
+	$scope.objType = 'idea';
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
 	$scope.busy = false;
 	$scope.sliceSize = 7;
-	$scope.numAdopted = 0
-	$scope.numIdeas = 0
-	$scope.numDiscussions = 0
+	$scope.numAdopted = 0;
+	$scope.numIdeas = 0;
+	$scope.numDiscussions = 0;
 	$scope.numResources = 0;
+	if ($scope.offset == undefined) {
+	    $scope.offset = 0;
+	}
 
 	$scope.getActivity = function() {
-		$scope.alertMsg = ''
+		$scope.alertMsg = '';
 		$scope.activityLoading = true;
 		$http.get('/workshop/' + $scope.code + '/' + $scope.url + '/getActivity').success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
-				$scope.activity = []
-				$scope.alertMsg = "There are no ideas, resources or discussions yet. Be the first to add one!"
+				$scope.activity = [];
+				$scope.alertMsg = "There are no ideas, resources or discussions yet. Be the first to add one!";
 				$scope.alertType = data.alertType;
 			} 
 			else if (data.statusCode === 0){
@@ -62,11 +72,11 @@ function activityWorkshopController($scope, $http) {
 
 
 	// Add a new object
-	$scope.objType = 'idea'
+	$scope.objType = $scope.addObjType;
 	$scope.submitNewObj = function(){
 		$scope.showAddNew = false;
 		var newObjData = {'submit':'submit', 'title': $scope.newObjTitle, 'text': $scope.newObjText, 'link': $scope.newObjLink};
-		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.objType + '/handler';
+		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.addObjType + '/handler';
 		$http.post($scope.newObjURL, newObjData).success(function(data){
 			//$scope.numComments = Number($scope.numComments) + 1;
             $scope.getActivity();
@@ -97,7 +107,12 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = '';
 		$scope.query2 = '!disabled';
-		$scope.objType = 'idea'
+		$scope.objType = 'idea';
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'idea';
+        }
 	}
 
 	$scope.toggleInfo= function(){
@@ -111,7 +126,12 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
 		$scope.query2 = '';
-		$scope.objType = 'resource'
+		$scope.objType = 'resource';
+		if ($scope.allowResources == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'resource';
+        }
 	}
 
 	$scope.toggleStats= function(){
@@ -138,6 +158,11 @@ function activityWorkshopController($scope, $http) {
 		$scope.query = {objType:'idea'};
 		$scope.query2 = '!disabled';
 		$scope.objType = 'idea'
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'idea';
+        }
 	}
 	$scope.toggleAdopted= function(){
 		$scope.showSummary = false;
@@ -164,7 +189,8 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
 		$scope.query2 = '';
-		$scope.objType = 'discussion'
+		$scope.objType = 'discussion';
+		$scope.addObjType = 'discussion';
 	};
 
 	$scope.toggleResources= function(){
@@ -178,7 +204,12 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
 		$scope.query2 = '';
-		$scope.objType = 'resource'
+		$scope.objType = 'resource';
+		if ($scope.allowResources == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'resource';
+        }
 	};
 
 	$scope.toggleAddNew= function(){

@@ -1,6 +1,6 @@
 import os, shutil, logging, re
 from PIL import Image
-from time import time
+import time
 from hashlib import md5
 import csv as helper
 
@@ -10,11 +10,31 @@ from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
 log = logging.getLogger(__name__)
 
+# Constants for parsing CSV fields
+
+#Basic info
 EMAIL = 'Email'
 NAME = 'Full Name'
 ZIP_CODE = 'Zip Code'
+POLL = 'Poll Name'
 
+#Demographics
+DOB = 'Date of birth'
+GENDER = 'Gender'
 
+#Rating objects
+NUM_RATINGS = '#ratings'
+RATING_CODE = 'Code'
+RATING_VALUE = 'Rating'
+
+# End of constants
+
+#
+# saveCsv (void)
+# Saves a copy of the file in the temporal directory to process it in a future.
+# 
+# input: fileitem
+#
 def saveCsv(fileitem):
     pathname = "pylowiki/public/temp"
     if not os.path.exists(pathname):
@@ -32,6 +52,17 @@ def saveCsv(fileitem):
         log.error('Unable to save')
         return False
 
+#
+# parseCsv (list of users[dict])
+#
+# From the file path, parses the fields into user dictionaries.
+# If the number of user ratings is greater than zero, 
+# it parses the different ratings with the code and the rating.
+#
+# input: path to the file
+#
+
+
 def parseCsv(filepath):
     with open(filepath, 'rU') as f:
         r = helper.DictReader(f)
@@ -41,6 +72,19 @@ def parseCsv(filepath):
             user['name'] = row[NAME]
             user['email'] = row[EMAIL]
             user['zip'] = row[ZIP_CODE]
+            user['poll'] = row[POLL]
+            user['dob'] = time.mktime(time.strptime(row[DOB], '%m/%d/%Y'))
+            user['gender'] = row[GENDER]
+            log.info(row[NUM_RATINGS])
+            if row[NUM_RATINGS] > 0:
+                log.info("YES")
+                user['num_ratings'] = row[NUM_RATINGS]
+                for i in range(0, int(row[NUM_RATINGS])):
+                    auxCode = "code" + str(i)
+                    auxRating = "rating" + str(i)
+                    user[auxCode] = row[RATING_CODE + str(i+1)]
+                    user[auxRating] = row[RATING_VALUE + str(i+1)]
+#                    log.info("contents of " + auxCode + " are " + user[auxCode])
             users.append(user)
         log.info(users)
     return users

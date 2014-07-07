@@ -140,37 +140,26 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
     except:
        return False  
 
-def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
-    """
-        Activity inside a single workshop
-        Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
-    """
-    objTypes = ['resource', 'discussion', 'idea']
-    codes = ['resourceCode', 'ideaCode', 'discussionCode']
-    keys = ['deleted', 'disabled']
-    values = [deleted, disabled]
-    finalActivityList = []
-    try:
-        initialActivityList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(objTypes))\
-            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
-            .filter(Thing.data.any(wc('deleted', deleted)))\
-            .order_by('-date')\
-            .all()
-        # Messy
-        for activity in initialActivityList:
-            if activity.objType == 'discussion' and activity['discType'] != 'general':
-                continue
-            #elif activity.objType == 'comment':
-                #parentCode = [i for i in codes if i in activity.keys()]
-                #thing = generic.getThing(activity[parentCode[0]], keys, values)
-                #if thing:
-                    #finalActivityList.append(activity)
-            else:                
-                finalActivityList.append(activity)
-        return finalActivityList
-    except:
-        return False
+def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0', deleted = '0'):
+    objectList = ['idea', 'resource', 'discussion', 'initiative']
+    q = meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(objectList))\
+        .filter(Thing.data.any(wc('disabled', u'0')))\
+        .filter(Thing.data.any(wc('deleted', u'0')))\
+        .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+        .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
+        .order_by('-date')\
+        .offset(offset)
+    if limit:
+        postList = q.limit(limit)
+    else:
+        postList = q.all()
+
+    if postList:
+        return postList
+    else:
+        return []
+
         
 def getActivityCountForWorkshop(workshopCode, disabled = '0', deleted = '0'):
     """
@@ -284,7 +273,9 @@ def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
     
 def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
     now = datetime.datetime.now()
-    SQLtoday = now.strftime("%Y-%m-%d")
+    twodays = datetime.timedelta(days=2)
+    mdate = now - twodays
+    SQLtoday = mdate.strftime("%Y-%m-%d")
     postList = []
     objectList = ['meeting']
 

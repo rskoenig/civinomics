@@ -35,6 +35,8 @@ import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.mail                as mailLib
+import pylowiki.lib.db.rating           as ratingLib
+import pylowiki.lib.db.user             as userLib
 
 from pylowiki.lib.facebook              import FacebookShareObject
 import pylowiki.lib.csvHelper           as csv
@@ -54,6 +56,11 @@ class ProfileController(BaseController):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
                 c.user = userLib.getUserByCode(id1)
+                if not c.user:
+                    abort(404)
+            elif action == 'unsubscribe':
+                hash, sep, email = id1.partition('__')
+                c.user = userLib.getUserByEmail(email)
                 if not c.user:
                     abort(404)
             else:
@@ -1043,33 +1050,7 @@ class ProfileController(BaseController):
         else:
             abort(404)
             
-    @h.login_required
-    def addUser(csvUser):
-        csvUser['memberType'] = 100
-        csvUser['password'] = "changeThis"
-        csvUser['country'] = "United States"
-        u = User(csvUser['email'], csvUser['name'], csvUser['password'], csvUser['country'], csvUser['memberType'], csvUser['zip'])
-        user = u.u
-        if 'laston' in user:
-            t = time.localtime(float(user['laston']))
-            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
-        user['laston'] = time.time()
-        #user['activated'] = u'1'
-        loginTime = time.localtime(float(user['laston']))
-        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-        commit(user)
-        baseURL = c.conf['activation.url']
-        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
-        mailLib.sendActivationMail(user['email'], url)
-        
-    @h.login_required
-    def checkUser(csvUser):
-        if (csvUser['email'] is None or csvUser['name'] is None or csvUser['zip'] is None):
-            return false
-        else:
-            return true
- 
-        
+            
     @h.login_required
     def csvUploadHandler(self, id1, id2):
         if (c.authuser.id != c.user.id) or c.privs['provisional']:
@@ -1085,37 +1066,52 @@ class ProfileController(BaseController):
             csvFile = csv.saveCsv(file)
             c.csv = csv.parseCsv(csvFile.fullpath)
             for csvUser in c.csv:
-                log.info(csvUser)
                 if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
                     if (not userLib.getUserByEmail(csvUser['email'])):
-                        memberType = 50
+                        memberType = 100
+                        kwargs = {"needsPassword":"1", "poll":csvUser['poll'], "dob":csvUser['dob'], "gender":csvUser['gender']}
                         password = "changeThis"
                         country = "United States"
-                        u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'])
-#                     user = u.u
-#                     if 'laston' in user:
-#                         t = time.localtime(float(user['laston']))
-#                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)        
-#                     user['laston'] = time.time()
-#                     #user['activated'] = u'1'
-#                     loginTime = time.localtime(float(user['laston']))
-#                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-#                     commit(user)
-#                     baseURL = c.conf['activation.url']
-#                     url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
-#                     mailLib.sendActivationMail(user['email'], url)
-            jsonResponse =  {'files': [
-                                {
-                                    'name':filename,
-                                    'path':csvFile.fullpath
-                                }
-                            ]}
-            json.dumps(jsonResponse)
+                        # Processing ratings:
+                        # If there's any rating, we create an array of rating dictionaries to send after creating user.
+                        u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'], **kwargs)
+                    else:
+                        u = userLib.getUserByEmail(csvUser['email'])
+                    if csvUser['num_ratings'] > 0:
+                        ratings = []
+                        for i in range(0, int(csvUser['num_ratings'])):
+                            rating = {}
+                            rating['code'] = csvUser['code'+str(i)]
+                            rating['rating'] = csvUser['rating'+str(i)]
+                            ratings.append(rating)
+                        user = userLib.getUserByEmail(csvUser['email'])
+                        self.createRatingsForUser(user, ratings)
+                        log.info("I'M DONE")
+                                              
             return render("/derived/6_profile_csv.bootstrap")
         else:
             abort(404)
+       
+    @h.login_required
+    def createRatingsForUser(self, user, ratings, **kwargs):
+        c.personalRatings = False;
+        log.info("in create ratings")
+        for rating in ratings:
+            thing = initiativeLib.getInitiative(rating['code'])
+            log.info(thing)
+            if thing:
+                ratingType = 'binary'
+                if rating['rating'] == 'yes':
+                    amount = 1
+                elif rating['rating'] == 'no':
+	                amount = -1
+                else:
+                    amount = 0
+                ratingLib.makeOrChangeRating(thing, user, amount, ratingType)
+        c.personalRatings = True
+        log.info("This is the value of personal ratings")
+        log.info(c.personalRatings)
             
- ######################################## ########################################            
             
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
@@ -1195,6 +1191,13 @@ class ProfileController(BaseController):
             return json.dumps({"statusCode": 1})
         c.user['avatarSource'] = source
         dbHelpers.commit(c.user)
+        
+        # update in authored objects
+        cList = genericLib.getChildrenOfParent(c.user)
+        for child in cList:
+            if child.objType in ['idea', 'resource', 'discussion', 'comment', 'photo']:
+                child['user_avatar'] = utils._userImageSource(c.user)
+                dbHelpers.commit(child)
         return json.dumps({"statusCode": 0})
         
     @h.login_required
@@ -1395,5 +1398,17 @@ class ProfileController(BaseController):
             session.save()
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+        
+    def unsubscribe(self, id1):
+        hash, sep, email = id1.partition('__')
+        if c.user['activationHash'] == hash:
+            c.user['newsletter_unsubscribe'] = '1'
+            dbHelpers.commit(c.user)
+            alert = 'You are unsubscribed from the weekly Civinomics newsletter.'
+            session['alert'] = alert
+            session.save()
+            
+        returnURL = '/profile/%s/%s'%(c.user['urlCode'], c.user['url'])
+        return redirect(returnURL)
 
 

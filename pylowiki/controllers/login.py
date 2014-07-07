@@ -22,7 +22,6 @@ import pylowiki.lib.db.workshop     	as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
-import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 
 # twython imports
@@ -30,6 +29,7 @@ from twython import Twython
 
 import requests
 import mechanize
+import pickle
 
 import base64
 import hashlib
@@ -248,7 +248,7 @@ class LoginController(BaseController):
         # the login page.
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
@@ -304,6 +304,7 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
+                        log.info("fblogin handoff 1")
                         loginURL = LoginController.logUserIn(self, user)
                         return redirect(loginURL)
                 elif 'unactivatedTwitterAuthId' in user.keys():
@@ -342,6 +343,7 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
+            log.info("fblogin handoff 2")
             loginURL = LoginController.logUserIn(self, user)
             return redirect(loginURL)
         else:
@@ -366,6 +368,7 @@ class LoginController(BaseController):
                         user['email'] = email
                 commit(user)
                 #return redirect("/fbLoggingIn")
+                log.info("fblogin handoff 3")
                 loginURL = LoginController.logUserIn(self, user)
                 return redirect(loginURL)
             else:
@@ -377,7 +380,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Linking account with Facebook Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
 
         try:
@@ -436,7 +439,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Linking account with Twitter Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         try:
             email = session['twtEmail']
@@ -545,12 +548,17 @@ class LoginController(BaseController):
         c.authuser = user
         
         # get and cache their ratings
-        ratings = ratingLib.getRatingsForUser()
+        if 'ratings' not in c.authuser:
+            ratings = ratingLib.getRatingsForUser()
+            c.authuser['ratings'] = str(pickle.dumps(ratings))
+            commit(c.authuser)
+        else:
+            ratings = pickle.loads(str(c.authuser["ratings"]))
+
         session["ratings"] = ratings
         session.save()
         
         # get their workshops and initiatives of interest
-        #log.info("start session cache")
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
         pMemberLib.setPrivateMemberWorkshopsInSession()
@@ -558,7 +566,6 @@ class LoginController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
-        #log.info("end session cache")
 
         #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
@@ -617,7 +624,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
 
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -699,7 +706,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Forgot Password"
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         email = request.params["email"].lower()
         user = userLib.getUserByEmail( email ) 

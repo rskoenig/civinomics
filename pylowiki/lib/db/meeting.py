@@ -47,13 +47,17 @@ def getMeetingsForUser(code):
     except:
         return False
         
-def getAgendaItems(code, deleted = u'0',):
+def getAgendaItems(code, count = 0, deleted = u'0'):
     try:
-        return meta.Session.query(Thing)\
+        q = meta.Session.query(Thing)\
             .filter_by(objType = 'agendaitem')\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('meetingCode', code)))\
-            .all()
+            .order_by('sort')
+        if count:
+            return q.count()
+        else:
+            return q.all()
     except:
         return False
         
@@ -105,7 +109,7 @@ def Meeting(owner, title, text, scope, group, location, meetingDate, meetingTime
     return m
 
 # Object
-def Agendaitem(owner, meeting, title, text, canVote, canComment):
+def Agendaitem(owner, meeting, title, number, text, canVote, canComment):
     a = Thing('agendaitem', owner.id)
     generic.linkChildToParent(a, owner)
     generic.linkChildToParent(a, meeting)
@@ -124,8 +128,11 @@ def Agendaitem(owner, meeting, title, text, canVote, canComment):
     a['views'] = '0'
     a['ups'] = '0'
     a['downs'] = '0'
+    a.sort = number
     commit(a)
     d = discussionLib.Discussion(owner = owner, discType = 'agendaitem', attachedThing = a, title = title)
+    a['discussion_child'] = d.d['urlCode']
+    commit(a)
     return a
 def isPublic(agenda):
     if agenda['public'] == '1':

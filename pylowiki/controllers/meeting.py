@@ -364,6 +364,11 @@ class MeetingController(BaseController):
             title = request.params['agendaItemTitle']
         else:
             title = 'New agenda item'
+            
+        if 'agendaItemNumber' in request.params:
+            number = request.params['agendaItemNumber']
+        else:
+            number = '1'
         
         if 'agendaItemText' in request.params:
             text = request.params['agendaItemText']
@@ -380,7 +385,7 @@ class MeetingController(BaseController):
         else:
             canComment = ''
             
-        meetingLib.Agendaitem(c.authuser, c.meeting, title, text, canVote, canComment)
+        meetingLib.Agendaitem(c.authuser, c.meeting, title, number, text, canVote, canComment)
         
         returnURL = '/meeting/%s/%s/show'%(c.meeting['urlCode'], c.meeting['url'])
             
@@ -394,6 +399,11 @@ class MeetingController(BaseController):
             title = request.params['agendaItemTitle']
             if title and title != '':
                 c.agendaitem['title'] = title
+                
+        if 'agendaItemNumber' in request.params:
+            number = request.params['agendaItemNumber']
+            if number and number != '':
+                c.agendaitem.sort = number
         
         if 'agendaItemText' in request.params:
             text = request.params['agendaItemText']
@@ -438,6 +448,12 @@ class MeetingController(BaseController):
             entry['text'] = item['text']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
             entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+            entry['views'] = item['views']
+            views = int(entry['views'])
+            views += 1
+            item['views'] = str(views)
+            dbHelpers.commit(item)
+			
             if item['canVote'] == 'on':
                 entry['canVote'] = 'checked'
             else:
