@@ -4,8 +4,10 @@ function createController($scope, $http) {
 	
 	$scope.createNew = function() {
 		$scope.createUrl = '/create/' + $scope.thing + '/' + $scope.authorCode + '/' + $scope.authorUrl;	
-        var createData = {'submit':'submit', 'initiativeTitle': $scope.title, 'initiativeDescription': $scope.description, 'initiativeRegionScope': $scope.scope, 'tags': $scope.tag, 'deadline': $scope.date};
-		//$scope.newObjURL = '/add/' + $scope.objType + '/handler';
+        var createData = {'submit':'submit', 'initiativeTitle':$scope.title, 'initiativeDescription':$scope.description, 'initiativeRegionScope':$scope.scope, 'tags':$scope.tag, 'deadline':$scope.date};
+        console.log(createData);
+        
+		
 		$http.post($scope.createUrl, createData).success(function(data){
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl
