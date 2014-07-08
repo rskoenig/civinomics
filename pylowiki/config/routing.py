@@ -423,6 +423,12 @@ def make_map():
     
 
     ###############
+    # Create #
+    ###############
+    map.connect('/create{end:/?}', controller = 'create', action = 'showCreateForm')
+    map.connect('/create/{id1}/{id2}/{id3}', controller = 'create', action = 'createThing', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+
+    ###############
     # Initiatives #
     ###############
     map.connect('/create/initiative{end:/?}', controller = 'create', action = 'showCreateForm')

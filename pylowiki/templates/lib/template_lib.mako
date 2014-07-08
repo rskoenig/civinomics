@@ -41,6 +41,9 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
+                                	<li>
+	                                	<a href="/create"><i class="icon-file-text"></i> New "thing"</a>
+									</li>
                                     % if 'user' in session:
                                         <li>
                                             <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>

@@ -1,9 +1,10 @@
 function createController($scope, $http) {
 
-	$scope.createUrl = '/profile/' + $scope.authorCode + '/' + $scope.authorUrl + '/createInitiative';
+	
 	
 	$scope.createNew = function() {
-        var createData = {'submit':'submit', 'title': $scope.title, 'description': $scope.description, 'scope': $scope.scope, 'tags': $scope.tag, 'deadline': $scope.date};
+		$scope.createUrl = '/create/' + $scope.thing + '/' + $scope.authorCode + '/' + $scope.authorUrl;	
+        var createData = {'submit':'submit', 'initiativeTitle': $scope.title, 'initiativeDescription': $scope.description, 'initiativeRegionScope': $scope.scope, 'tags': $scope.tag, 'deadline': $scope.date};
 		//$scope.newObjURL = '/add/' + $scope.objType + '/handler';
 		$http.post($scope.createUrl, createData).success(function(data){
             $scope.success = true
@@ -16,6 +17,8 @@ function createController($scope, $http) {
 	$scope.thing = "Thing"
 	
 	$scope.thingList = ['Initiative', 'Workshop']
+	$scope.id1 = ""
+	$scope.id2 = ""
     $scope.planet = "0"
 	$scope.country = "united-states"
 	$scope.state = "0"
