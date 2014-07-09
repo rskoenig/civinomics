@@ -21,7 +21,7 @@ function yesNoVoteCtrl($scope) {
     }
 
     $scope.updateYesVote = function(){
-
+        activateVoteShareModal();
         if ($scope.voted == ''){
             // the user is voting yes from a neutral vote; the score goes up by one
             $scope.totalVotes += 1;
@@ -63,6 +63,7 @@ function yesNoVoteCtrl($scope) {
     }
 
     $scope.updateNoVote = function(){
+        activateVoteShareModal();
         if ($scope.voted == ''){
             // the user is voting no from a neutral vote; the score goes down by one
             $scope.totalVotes += 1;
@@ -101,5 +102,24 @@ function yesNoVoteCtrl($scope) {
         } else {
             $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
         }
+    }
+
+    function activateVoteShareModal() {
+        // this should be executed on page load: $('#voteShareModal').modal({ show: false})
+        // only activates if vote is cast
+        //console.log(data);
+
+        // var json = JSON.parse(data);
+        // console.log(json);
+        console.log("ahh modal");
+        $('#voteShareModal').modal({show:true});
+        // if (json.statusCode == 0) {
+        //     changePie(json.result);
+        //     if (json.result != 0) {
+        //         $('#voteShareModal').modal({show:true});
+        //     }
+        // } else {
+        //     console.log("error activateVoteShareModal, something didn't work");
+        // }
     }
 };

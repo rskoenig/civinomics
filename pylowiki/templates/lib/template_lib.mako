@@ -609,59 +609,63 @@
         body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
     %>
     <!-- Vote Sharing Modal -->
-    <div id="voteShareModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="voteShareModal" aria-hidden="true">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3 class="login top centered">Thanks for voting!</h3>
-        </div>
-        <div class="modal-body">
-            <div class='row-fluid'>
-                <div class='span11 offset1'>   
-                    <p>Now that you've voted, would you like to share this initiative with others?</p>
+    <div id="voteShareModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">Thanks for voting!</h4>
+                </div>
+                <div class="modal-body">
                     <div class='row-fluid'>
-                        % if c.initiative['public'] == '1':
-                            <div class="span2 offset1">
-                                <div class="top-space">
-                                    <div class="fb-like" data-href="${c.facebookShare.url}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
-                                </div>
-                            </div>
-                            <div class='span2 offset1'>
-                                ${lib_6.fbDialogShare2Buttons(shareOnWall=True, sendMessage=True, btn=True)}
-                            </div>
-                            % if not c.privs['provisional']:
-                                <div class='span4 offset1'>
-                                    <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> Email</i></a>
-                                </div>
-                            % endif
+                        <div class='span11 offset1'>   
+                            <p>Now that you've voted, would you like to share this initiative with others?</p>
+                            <div class='row-fluid'>
+                                % if c.initiative['public'] == '1':
+                                    <div class="span2 offset1">
+                                        <div class="top-space">
+                                            <div class="fb-like" data-href="${c.facebookShare.url}" data-layout="button_count" data-action="like" data-show-faces="true" data-share="false"></div>
+                                        </div>
+                                    </div>
+                                    <div class='span2 offset1'>
+                                        ${lib_6.fbDialogShare2Buttons(shareOnWall=True, sendMessage=True, btn=True)}
+                                    </div>
+                                    % if not c.privs['provisional']:
+                                        <div class='span4 offset1'>
+                                            <a class="btn btn-primary" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope right-space"></i> Email</i></a>
+                                        </div>
+                                    % endif
 
-                            <!-- % if c.initiative['public'] == '1':
-                                <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-                            #%endif -->
+                                    <!-- % if c.initiative['public'] == '1':
+                                        <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+                                    #%endif -->
 
-                        % else:
-                            <div class='span2 offset4'>
-                                <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
-                                    <i class="icon-facebook icon-light right-space"></i> Share
-                                </a>
+                                % else:
+                                    <div class='span2 offset4'>
+                                        <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
+                                            <i class="icon-facebook icon-light right-space"></i> Share
+                                        </a>
+                                    </div>
+                                    <div class='span4 offset1'>
+                                        <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> Email</i></a>
+                                    </div>
+                                % endif
                             </div>
-                            <div class='span4 offset1'>
-                                <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> Email</i></a>
-                            </div>
-                        % endif
+                        </div>
+                    </div>
+                    ${d3Lib.includeD3()}
+                    ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating, loggedIn='true')}
+                </div>
+                <div class="modal-footer">
+                    <div class="row-fluid centered tcs">
+                        <div class="span10 offset1">
+                            <p class="sc-font-light tcs">These charts are available for view by clicking the Charts tab on the right side of this page.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            ${d3Lib.includeD3()}
-            ${d3Lib.initiativeStats(yes=yes, no=no, views=views, numComments=numComments, myRating=myRating, loggedIn='true')}
-        </div>
-        <div class="modal-footer">
-            <div class="row-fluid centered tcs">
-                <div class="span10 offset1">
-                    <p class="sc-font-light tcs">These charts are available for view by clicking the Charts tab on the right side of this page.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </%def>
 
 <%def name="activateAccountModal()">

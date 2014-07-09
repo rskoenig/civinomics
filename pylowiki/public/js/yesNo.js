@@ -7,10 +7,11 @@ $(document).ready(function()
         //console.log(data);
         var json = JSON.parse(data);
         console.log(json);
+        console.log("ahh json");
         if (json.statusCode == 0) {
             changePie(json.result);
             if (json.result != 0) {
-                $('#voteShareModal').modal('show');
+                $('#voteShareModal').modal({show:true});
             }
         } else {
             console.log("error activateVoteShareModal, something didn't work");
@@ -20,6 +21,7 @@ $(document).ready(function()
     $(".noVote").click(function(event)
     {
         event.preventDefault();
+        console.log("ahh ha");
         if ($(this).hasClass('voted'))
         {
             // removing a noVote, we will bring the score back up
