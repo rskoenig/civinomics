@@ -42,6 +42,11 @@ def linkChildToParent(child, parent):
         child['initiative_tags'] = parent['initiative_tags']
         child['initiative_scope'] = parent['initiative_scope']
         child['initiative_title'] = parent['initiative_title']
+    if parent.objType == 'meeting':
+        child['meeting_url'] = parent['url']
+    if 'meetingCode' in parent and 'meeting_url' in parent and child.objType != 'rating':
+        child['meetingCode'] = parent['meetingCode']
+        child['meeting_url'] = parent['meeting_url']
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:
@@ -63,6 +68,7 @@ def linkChildToParent(child, parent):
     if parent.objType == 'user':
         child['user_name'] = parent['name']
         child['user_url'] = parent['url']
+        child['user_avatar'] = userImageSource(parent)
         #parentUser = getUserByCode(parent['urlCode'])
         #child['user_avatar'] = userImageSource(parentUser)
         if child.objType in counters:

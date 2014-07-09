@@ -11,6 +11,9 @@ from pylowiki.lib.utils import urlify
 import pylowiki.lib.helpers as h
 from pylons import config
 
+from pylowiki.lib.db.user import User
+from pylowiki.lib.db.dbHelpers import commit
+
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
@@ -29,9 +32,14 @@ import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
+import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.fuzzyTime           as fuzzyTime
+import pylowiki.lib.mail                as mailLib
+import pylowiki.lib.db.rating           as ratingLib
+import pylowiki.lib.db.user             as userLib
 
 from pylowiki.lib.facebook              import FacebookShareObject
+import pylowiki.lib.csvHelper           as csv
 import pylowiki.lib.images              as imageLib
 import pylowiki.lib.utils               as utils
 
@@ -49,6 +57,11 @@ class ProfileController(BaseController):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
                 c.user = userLib.getUserByCode(id1)
+                if not c.user:
+                    abort(404)
+            elif action == 'unsubscribe':
+                hash, sep, email = id1.partition('__')
+                c.user = userLib.getUserByEmail(email)
                 if not c.user:
                     abort(404)
             else:
@@ -359,7 +372,7 @@ class ProfileController(BaseController):
         if photos:
             c.photos = photos
             c.photos.reverse()
-            
+
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
@@ -373,8 +386,10 @@ class ProfileController(BaseController):
             
         result = []
         for item in c.unpublishedActivity:
+            objType = item.objType.replace("Unpublished", "")
+            if objType == 'discussion' and item['discType'] != 'general':
+                continue
             entry = {}
-            entry['objType'] = item.objType.replace("Unpublished", "")
             entry['objType'] = item.objType.replace("Unpublished", "")
             if entry['objType'] != 'comment':
                 entry['url']= item['url']
@@ -387,8 +402,47 @@ class ProfileController(BaseController):
             if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
-            entry['href']= '/' + entry['objType'] + '/' + entry['url'] + '/' + entry['urlCode']
+            href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting':
+                href += '/show'
+            if entry['objType'] == 'agendaitem':
+                mCode = item['meetingCode']
+                mURL = item['meeting_url']
+                href = '/meeting/' + mCode + '/' + mURL + '/agendaitem/' + item['urlCode']
+                
+            entry['href'] = href
+                
             entry['unpublishedBy'] = item['unpublished_by']
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
+    def showUserMeetings(self, id1, id2):
+        return render("/derived/6_profile_meetings.bootstrap")
+        
+    def getUserMeetings(self, id1, id2):
+        c.meetings = meetingLib.getMeetingsForUser(id1)
+        if not c.meetings:
+            c.meetings = []
+            
+        result = []
+        for item in c.meetings:
+            entry = {}
+            entry['objType'] = 'meeting'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['meetingDate'] = item['meetingDate']
+            entry['group'] = item['group']
+            
+            scopeInfo = utils.getPublicScope(item['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
+            entry['href']= '/meeting/' + entry['urlCode'] + '/' + entry['url'] + '/show'
             result.append(entry)
             
         if len(result) == 0:
@@ -633,6 +687,24 @@ class ProfileController(BaseController):
                 c.admin = False
                 
             return render('/derived/6_profile_edit.bootstrap')
+        else:
+            abort(404)
+
+    @h.login_required
+    def csv(self, id1, id2):
+        c.events = eventLib.getParentEvents(c.user)
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id and not c.privs['provisional']:
+            c.title = 'Edit Profile'
+            if 'confTab' in session:
+                c.tab = session['confTab']
+                session.pop('confTab')
+                session.save()
+            if userLib.isAdmin(c.authuser.id):
+                c.admin = True
+            else:
+                c.admin = False
+                
+            return render('/derived/6_profile_csv.bootstrap')
         else:
             abort(404)
 
@@ -995,6 +1067,69 @@ class ProfileController(BaseController):
         else:
             abort(404)
             
+            
+    @h.login_required
+    def csvUploadHandler(self, id1, id2):
+        if (c.authuser.id != c.user.id) or c.privs['provisional']:
+            abort(404)
+        
+        requestKeys = request.params.keys()
+        
+        if 'files[]' in requestKeys:
+            file = request.params['files[]']
+            filename = file.filename
+            fileitem = file.file
+            log.info(file.filename)
+            csvFile = csv.saveCsv(file)
+            c.csv = csv.parseCsv(csvFile.fullpath)
+            for csvUser in c.csv:
+                if (not (csvUser['email'] == '' or csvUser['zip'] == '')):
+                    if (not userLib.getUserByEmail(csvUser['email'])):
+                        memberType = 100
+                        kwargs = {"needsPassword":"1", "poll":csvUser['poll'], "dob":csvUser['dob'], "gender":csvUser['gender']}
+                        password = "changeThis"
+                        country = "United States"
+                        # Processing ratings:
+                        # If there's any rating, we create an array of rating dictionaries to send after creating user.
+                        u = User(csvUser['email'], csvUser['name'], password, country, memberType, csvUser['zip'], **kwargs)
+                    else:
+                        u = userLib.getUserByEmail(csvUser['email'])
+                    if csvUser['num_ratings'] > 0:
+                        ratings = []
+                        for i in range(0, int(csvUser['num_ratings'])):
+                            rating = {}
+                            rating['code'] = csvUser['code'+str(i)]
+                            rating['rating'] = csvUser['rating'+str(i)]
+                            ratings.append(rating)
+                        user = userLib.getUserByEmail(csvUser['email'])
+                        self.createRatingsForUser(user, ratings)
+                        log.info("I'M DONE")
+                                              
+            return render("/derived/6_profile_csv.bootstrap")
+        else:
+            abort(404)
+       
+    @h.login_required
+    def createRatingsForUser(self, user, ratings, **kwargs):
+        c.personalRatings = False;
+        log.info("in create ratings")
+        for rating in ratings:
+            thing = initiativeLib.getInitiative(rating['code'])
+            log.info(thing)
+            if thing:
+                ratingType = 'binary'
+                if rating['rating'] == 'yes':
+                    amount = 1
+                elif rating['rating'] == 'no':
+	                amount = -1
+                else:
+                    amount = 0
+                ratingLib.makeOrChangeRating(thing, user, amount, ratingType)
+        c.personalRatings = True
+        log.info("This is the value of personal ratings")
+        log.info(c.personalRatings)
+            
+            
     @h.login_required
     def photoUpdateHandler(self, id1, id2, id3):
         
@@ -1073,6 +1208,13 @@ class ProfileController(BaseController):
             return json.dumps({"statusCode": 1})
         c.user['avatarSource'] = source
         dbHelpers.commit(c.user)
+        
+        # update in authored objects
+        cList = genericLib.getChildrenOfParent(c.user)
+        for child in cList:
+            if child.objType in ['idea', 'resource', 'discussion', 'comment', 'photo']:
+                child['user_avatar'] = utils._userImageSource(c.user)
+                dbHelpers.commit(child)
         return json.dumps({"statusCode": 0})
         
     @h.login_required
@@ -1273,6 +1415,18 @@ class ProfileController(BaseController):
             session.save()
 
         return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
+        
+    def unsubscribe(self, id1):
+        hash, sep, email = id1.partition('__')
+        if c.user['activationHash'] == hash:
+            c.user['newsletter_unsubscribe'] = '1'
+            dbHelpers.commit(c.user)
+            alert = 'You are unsubscribed from the weekly Civinomics newsletter.'
+            session['alert'] = alert
+            session.save()
+            
+        returnURL = '/profile/%s/%s'%(c.user['urlCode'], c.user['url'])
+        return redirect(returnURL)
 
     def getDiscussions(self, id1, id2):        
         discussions = discussionLib.getDiscussionsForThing(c.user)

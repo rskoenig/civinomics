@@ -9,11 +9,13 @@
         <div id="tab-messages">
             <div ng-init="code = '${c.userCode}'; url = '${c.userUrl}'">
                 <div class="browse" ng-controller="profileMessagesCtrl">
-                    <div class="row-fluid">
-                        <ul class="nav nav-pills civ-search-tools messages" ng-cloak>
-                            <li ng-class="{active : messagesType == '/all'}"><a ng-click="getAllMessages()">All</a></li>
-                            <li ng-class="{active : messagesType == '/unread'}"><a ng-click="getUnreadMessages()">Unread</a></li>
-                        </ul>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <ul class="nav nav-pills" ng-cloak>
+                                <li ng-class="{active : messagesType == '/all'}"><a ng-click="getAllMessages()">All</a></li>
+                                <li ng-class="{active : messagesType == '/unread'}"><a ng-click="getUnreadMessages()">Unread</a></li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="alert alert-info" ng-show="messagesNoResult" ng-cloak>
                         There are no messages to display.
@@ -34,7 +36,7 @@
                                                 <tr>
                                                   <td>
                                                     <div class="activity-item-content-header">
-                                                        <a ng-href="{{userLink}}" class="green green-highlight"><strong>{{userName}}</strong></a>
+                                                        <a ng-href="{{userLink}}"><strong>{{userName}}</strong></a>
                                                         <strong>{{messageTitle}}</strong> 
                                                         <span class="date pull-right">{{fuzzyTime}} ago</span>
                                                     </div>

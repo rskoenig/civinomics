@@ -14,6 +14,7 @@ import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.meeting      as meetingLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.generic      as genericLib
 import pylowiki.lib.utils           as utils
@@ -30,6 +31,7 @@ class RatingController(BaseController):
             return
         if amount is None:
             return
+        log.info(code)
         amount = int(amount)
         if amount < 0:
             amount = -1
@@ -38,19 +40,21 @@ class RatingController(BaseController):
         else:
             amount = 0
         ratingType = 'binary'
-        thing = genericLib.getThing(code)
-        #if action == 'rateDiscussion':
-            #thing = discussionLib.getDiscussion(code)
-        #elif action == 'rateResource':
-            #thing = resourceLib.getResourceByCode(code)
-        #elif action == 'rateComment':
-            #thing = commentLib.getCommentByCode(code)
-        #elif action == 'rateIdea':
-            #thing = ideaLib.getIdea(code)
-        #elif action == 'ratePhoto':
-            #thing = photoLib.getPhoto(code)
-        #elif action == 'rateInitiative':
-            #thing = initiativeLib.getInitiative(code)
+
+        if action == 'rateDiscussion':
+            thing = discussionLib.getDiscussion(code)
+        elif action == 'rateResource':
+            thing = resourceLib.getResourceByCode(code)
+        elif action == 'rateComment':
+            thing = commentLib.getCommentByCode(code)
+        elif action == 'rateIdea':
+            thing = ideaLib.getIdea(code)
+        elif action == 'ratePhoto':
+            thing = photoLib.getPhoto(code)
+        elif action == 'rateInitiative':
+            thing = initiativeLib.getInitiative(code)
+        elif action == 'rateAgendaItem':
+            thing = meetingLib.getAgendaItem(code)
         
         if thing['disabled'] == '1':
             # Should only get triggered when the user posts directly and bypasses the UI
@@ -105,9 +109,13 @@ class RatingController(BaseController):
         return redirect(session['return_to'])
         
     @h.login_required
+
     def rateUser(self, code, amount):
         return redirect(session['return_to'])
 
+    def rateAgendaItem(self, code, amount):
+        return redirect(session['return_to'])
+        
     ########################################################################
     # 
     # Everything below is unused right now, almost certainly broken

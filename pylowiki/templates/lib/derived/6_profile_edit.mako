@@ -43,12 +43,12 @@
         if c.unreadMessageCount != 0:
             msgString = ' (' + str(c.unreadMessageCount) + ')'
     %>
-    <div class="row-fluid">
+    <div class="row">
         % if c.conf['read_only.value'] == 'true':
             <h1> Sorry, Civinomics is in read only mode right now </h1>
         % else:
             <div class="tabbable">
-                <div class="span3">
+                <div class="col-sm-3">
                     <div class="section-wrapper">
                         <div class="browse">
                             <ul class="nav nav-pills nav-stacked">
@@ -92,8 +92,8 @@
                             </ul>
                         </div><!-- browse -->
                     </div><!-- section-wrapper -->
-                </div> <!-- /.span3 -->
-                <div class="span9">
+                </div> <!-- /.col-sm-3 -->
+                <div class="col-sm-9">
                     ${lib_6.fields_alert()}
                     % if c.conf['read_only.value'] == 'true':
                         <!-- read only -->
@@ -122,10 +122,10 @@
                             % endif
                         </div><!-- tab-content -->
                     % endif
-                </div> <!-- /.span9 -->
+                </div> <!-- /.col-sm-9 -->
             </div><!-- tabbable -->
         % endif
-    </div> <!-- /.row-fluid -->
+    </div> <!-- /.row -->
 </%def>
 
 <%def name="profileInfo()">
@@ -134,60 +134,62 @@
 	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile">
     		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
-                <div class="control-group">
-				    <label for="member-name" class="control-label">Membership Type:</label>
-				    <% 
-				        memberType = 'Individual'
-				        if c.user['memberType'] == 'organization':
-				            memberType = 'Organization'
-				    %>
-				    <div class="controls">
-					    ${memberType}
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
-				    <label for="member-name" class="control-label">Your Name:</label>
-				    <div class="controls">
-					    <input type="text" id="member-name" class="span10" name="member_name" value="${c.user['name']}" ng-model="fullName" ng-init="fullName='${c.user['name']}'" ng-pattern="fullNameRegex" required>
+                <div class="form-group">
+                    <div class="col-xs-12">
+    				    <label for="member-name" class="control-label">Membership Type:</label>
+    				    <% 
+    				        memberType = 'Individual'
+    				        if c.user['memberType'] == 'organization':
+    				            memberType = 'Organization'
+    				    %>
+    				    <div class="controls">
+    					    ${memberType}
+    				    </div> <!-- /.controls -->
+                    </div>
+			    </div> <!-- /.form-group -->
+			    <div ng-class=" {'form-group': true, 'error': infoEdit.member_name.$error.pattern} ">
+				    <div class="col-xs-12">
+                        <label for="member-name" class="control-label">Your Name:</label>
+					    <input type="text" id="member-name" class="col-sm-10 form-control" name="member_name" value="${c.user['name']}" ng-model="fullName" ng-init="fullName='${c.user['name']}'" ng-pattern="fullNameRegex" required>
                         <span class="error help-block" ng-show="infoEdit.member_name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-			    <div class="control-group">
-				    <label for="email" class="control-label">Email:</label>
-				    <div class="controls">
-					    <input type="text" id="email" class="span10" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-                <div ng-class=" {'control-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
-				    <label for="postalCode" class="control-label">Postal code:</label>
-                    <div class="controls">
-					    <input type="text" id="postalCode" class="span10" name="postalCode" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required>
+				    </div> <!-- /.col-xs-12 -->
+			    </div> <!-- /.form-group -->
+			    <div class="form-group">
+				    <div class="col-xs-12">
+                        <label for="email" class="control-label">Email:</label>
+					    <input type="text" id="email" class="col-sm-10 form-control" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
+				    </div> <!-- /.col-xs-12 -->
+			    </div> <!-- /.form-group -->
+                <div ng-class=" {'form-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
+                    <div class="col-xs-12">
+                        <label for="postalCode" class="control-label">Postal code:</label>
+					    <input type="text" id="postalCode" class="col-sm-5 form-control" name="postalCode form-control" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required>
                         <br />
                         <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-        	    <div class="control-group">
-				    <label for="greetingMsg" class="control-label">Short bio:</label>
-				    <div class="controls">
-                        <input type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="span10">
+				    </div> <!-- /.col-xs-12 -->
+			    </div> <!-- /.form-group -->
+        	    <div class="form-group">
+				    <div class="col-xs-12">
+                        <label for="greetingMsg" class="control-label">Short bio:</label>
+                        <input class="form-control" type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="col-sm-10">
                         <span class="help-block">Displayed with your posts<br>(example: Thomas Jefferson, Founding Father)</span>
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-       	        <div class="control-group">
-				    <label for="orgLink" class="control-label">Your website:</label>
-    			    <div class="controls">
-                        <input type="text" class="span10" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-       	        <div class="control-group">
-				    <label for="orgLinkMsg" class="control-label">A description of your website:</label>
-				    <div class="controls">
-                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="span10"></textarea>
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
+				    </div> <!-- /.col-xs-12 -->
+			    </div> <!-- /.form-group -->
+       	        <div class="form-group">
+    			    <div class="col-xs-12">
+                        <label for="orgLink" class="control-label">Your website:</label>
+                        <input type="text" class="col-sm-10 form-control" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
+				    </div> <!-- /.col-xs-12 -->
+			    </div> <!-- /.form-group -->
+       	        <div class="form-group">
+				    <div class="col-xs-12">
+                        <label for="orgLinkMsg" class="control-label">A description of your website:</label>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="col-sm-10 form-control"></textarea>
+				    </div> <!-- /.col-xs-12 -->
+			    </div> <!-- /.form-group -->
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
-                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes" ng-click="submitProfileEdit()"></input>
+                    <input type="submit" class="btn btn-warning btn-lg" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes" ng-click="submitProfileEdit()"></input>
                     <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
                     <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
                     <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
@@ -206,11 +208,11 @@
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
             <form class="form-horizontal" id="setImageSourceForm" name="setImageSourceForm">
                 % if 'facebookAuthId' in c.user.keys():
-                    <div class="control-group">
+                    <div class="form-group">
                         <label class="control-label" for="avatarType">
                             ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="facebook")}
                         </label>
-                        <div class="controls chooseAvatar">
+                        <div class="col-xs-12 chooseAvatar">
                             <label class="radio">
                                 <input type="radio" value="facebook" name="avatarType" id="avatarType" ng-click="uploadImage = false" ng-model="imageSource">
                                     Use your facebook image
@@ -220,12 +222,12 @@
                     </div>
                 % endif
                 
-                <div class="control-group">
-                    <label class="control-label" for="avatarType">
-                        ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="gravatar")}
-                    </label>
-                    <div class="controls chooseAvatar">
-                        <label class="radio">
+                <div class="form-group">
+                    <div class="col-xs-12 chooseAvatar">
+                        <label class="col-sm-3" for="avatarType">
+                            ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="gravatar")}
+                        </label>
+                        <label class="radio col-sm-9">
                             <input type="radio" value="gravatar" name="avatarType" id="avatarType" ng-click="uploadImage = false" ng-model="imageSource">
                                 Use your 
                                 <a href="http://gravatar.com" target="_blank">gravatar</a> 
@@ -234,12 +236,12 @@
                         </label>
                     </div>
                 </div>
-                <div class="control-group">
-                    <label class="control-label" for="avatarType">
-                        ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="civ")}
-                    </label>
-                    <div class="controls chooseAvatar">
-                        <label class="radio">
+                <div class="form-group">
+                    <div class="col-xs-12 chooseAvatar">
+                        <label class="col-sm-3" for="avatarType">
+                            ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="civ")}
+                        </label>
+                        <label class="col-sm-9 radio">
                             <input type="radio" value="civ" name="avatarType" id="avatarType" ng-click="uploadImage = true" ng-model="imageSource">
                                 Use your uploaded image
                             </input>
@@ -247,7 +249,7 @@
                     </div>
                 </div>
                 <div class="form-actions save-profile" ng-class="{'light-yellow':setImageSourceForm.$dirty && submitStatus == -1, 'light-blue':!setImageSourceForm.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
-                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!setImageSourceForm.$dirty}" value="Save changes" ng-click="setImageSource()"></input>
+                    <input type="submit" class="btn btn-warning btn-lg" ng-class="{'disabled':!setImageSourceForm.$dirty}" value="Save changes" ng-click="setImageSource()"></input>
                     <span class="help-inline" ng-show="!setImageSourceForm.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
                     <span class="help-inline" ng-show="setImageSourceForm.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
                     <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
@@ -258,8 +260,8 @@
                 <!-- Redirect browsers with JavaScript disabled to the origin page -->
                 <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-                <div id="fileupload-button-div" class="row-fluid fileupload-buttonbar collapse in">
-                    <div class="span10 offset1">
+                <div id="fileupload-button-div" class="row fileupload-buttonbar collapse in">
+                    <div class="col-sm-10 col-sm-offset-1">
                         <!-- The fileinput-button span is used to style the file input field as button -->
                         <span class="btn btn-success fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
                             <i class="icon-plus icon-white"></i>
@@ -271,8 +273,8 @@
                     </div>
                     <!-- The global progress information -->
                 </div>
-                <div class="row-fluid">
-                    <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+                <div class="row">
+                    <div class="col-sm-10 col-sm-offset-1 fade" data-ng-class="{true: 'in'}[!!active()]">
                         <!-- The global progress bar -->
                         <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
                         <!-- The extended global progress information -->
@@ -296,7 +298,7 @@
                                 <i class="icon-upload icon-white"></i>
                                 <span>Start</span>
                             </button>
-                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel" data-toggle="collapse" data-target="#fileupload-button-div">
+                            <button type="button" class="btn btn-warning btn-lg cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel" data-toggle="collapse" data-target="#fileupload-button-div">
                                 <i class="icon-ban-circle icon-white"></i>
                                 <span>Cancel</span>
                             </button>
@@ -314,30 +316,30 @@
             <h4 class="section-header smaller">Update Your Password</h4>
             <form action="/profile/${c.user['urlCode']}/${c.user['url']}/password/update/handler" enctype="multipart/form-data" method="post" class="form-horizontal">
 		    <fieldset>
-            <div class="control-group">
-                <label for="oldPassword" class="control-label">Old Password:</label>
-                <div class="controls">
-                    <input type="password" id="oldPassword" name="oldPassword">
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <label for="oldPassword" class="control-label">Old Password:</label>
+                    <input class="form-control" type="password" id="oldPassword" name="oldPassword">
                     <span class="help-inline"> If you reset your password, this is the random string you received via email.</span>
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
-            <div class="control-group">
-                <label for="newPassword" class="control-label">New Password:</label>
-                <div class="controls">
-                    <input type="password" id="newPassword" name="newPassword">
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
-            <div class="control-group">
-                <label for="reNewPassword" class="control-label">Repeat New Password:</label>
-                <div class="controls">
-                    <input type="password" id="reNewPassword" name="reNewPassword">
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
-            <div class="control-group">
-                <div class="controls">
-                    <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
+                </div> <!-- /.col-xs-12 -->
+            </div> <!-- /.form-group -->
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <label for="newPassword" class="control-label">New Password:</label>
+                    <input class="form-control" type="password" id="newPassword" name="newPassword">
+                </div> <!-- /.col-xs-12 -->
+            </div> <!-- /.form-group -->
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <label for="reNewPassword" class="control-label">Repeat New Password:</label>
+                    <input class="form-control" type="password" id="reNewPassword" name="reNewPassword">
+                </div> <!-- /.col-xs-12 -->
+            </div> <!-- /.form-group -->
+            <div class="form-group">
+                <div class="col-xs-12">
+                    <button type="submit" class="btn btn-warning btn-lg" name="submit">Save Changes</button>
+                </div> <!-- /.col-xs-12 -->
+            </div> <!-- /.form-group -->
             </fieldset>
             </form>
         </div><!-- browse -->
@@ -353,15 +355,15 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Preferences</h4>
-            <div class="row-fluid">
-                <div class="span3">Email when:</div>
-                <div class="span6">
+            <div class="row">
+                <div class="col-sm-3">Email when:</div>
+                <div class="col-sm-6">
                     <form ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'" class="no-bottom form-inline">
                         New comments added to my items: <input type="checkbox" name="commentAlerts" value="comments" ng-click="emailOnComments()" ${commentsChecked}>
                         <span ng-show="emailOnCommentsShow">{{emailOnCommentsResponse}}</span>
                     </form>
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
         </div><!-- browse -->
     </div><!-- section-wrapper-->
 </%def>
@@ -378,28 +380,28 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Social Network Sharing</h4>
-            <div class="row-fluid">
-                <div class="span3">Facebook account:</div>
-                <div class="span6">
+            <div class="row">
+                <div class="col-sm-3">Facebook account:</div>
+                <div class="col-sm-6">
                     % if facebookChecked == 'checked':
                         Email registered with facebook:
-                        <input type="text" id="fbEmail" class="span10" name="fbEmail" ng-model="fbEmail" ng-init="fbEmail='${c.user['fbEmail']}'" required>
+                        <input class="form-control" type="text" id="fbEmail" class="col-sm-10" name="fbEmail" ng-model="fbEmail" ng-init="fbEmail='${c.user['fbEmail']}'" required>
                     % else:
                         Account not connected with facebook.
                     % endif
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
-            <div class="row-fluid">
-                <div class="span3">Twitter account:</div>
-                <div class="span6">
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            <div class="row">
+                <div class="col-sm-3">Twitter account:</div>
+                <div class="col-sm-6">
                     % if twitterChecked == 'checked':
                         Email registered with twitter:
-                        <input type="text" id="email" class="span10" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
+                        <input class="form-control" type="text" id="email" class="col-sm-10" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
                     % else:
                         Account not connected with twitter.
                     % endif
-                </div><!-- span6 -->
-            </div><!-- row-fluid -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
         </div><!-- browse -->
     </div><!-- section-wrapper-->
 </%def>
@@ -438,14 +440,14 @@
             <form method="post" name="enableUser" id="enableUser" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/handler">
             <strong>${eAction} Member</strong><br />
             <fieldset>
-                <div class="control-group">
+                <div class="form-group">
                     <label for="enable" class="control-label">Reason for ${eAction}</label>
-                    <div class="controls">
-                        <input type="text" name="enableUserReason">
+                    <div class="col-xs-12">
+                        <input class="form-control" type="text" name="enableUserReason">
                         <input type="radio" name="verifyEnableUser" value="0"> Verify ${eAction}
                         &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
-                    </div> <!-- /.controls -->
-                </div> <!-- /.control-group -->
+                    </div> <!-- /.col-xs-12 -->
+                </div> <!-- /.form-group -->
             </fieldset>
             </form>
             <br /><br />
@@ -462,14 +464,14 @@
             <form method="post" name="userPrivs" id="userPrivs" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/handler">
             <strong>Change Access Level From ${oldTitle} To ${newTitle}</strong><br />
             <fieldset>
-            <div class="control-group">
+            <div class="form-group">
                 <label for="setPrivs" class="control-label">Reason for Change</label>
-                <div class="controls">
-                    <input type="text" name="accessChangeReason">
+                <div class="col-xs-12">
+                    <input class="form-control" type="text" name="accessChangeReason">
                     <input type="radio" name="accessChangeVerify" value="0"> Verify Change
                     &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Change Access</button>
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
+                </div> <!-- /.col-xs-12 -->
+            </div> <!-- /.form-group -->
             </fieldset>
             </form>
             <br /><br />

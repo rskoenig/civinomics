@@ -11,6 +11,7 @@ import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.meeting      as meetingLib
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
@@ -171,6 +172,8 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
     if discussion['discType'] == 'initiative':
         attachedThing = initiativeLib.getInitiative(discussion['initiativeCode'])
         profileOwner = generic.getThingByID(attachedThing.owner)
+    if discussion['discType'] == 'agendaitem':
+        attachedThing = meetingLib.getAgendaItem(discussion['agendaitemCode'])
     if discussion['discType'] == 'resource' and 'initiativeCode' in discussion:
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)

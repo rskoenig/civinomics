@@ -247,8 +247,6 @@
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
-        facebookAppId = c.facebookAppId
-        channelUrl = c.channelUrl
         thingCode = c.thingCode
         if not thingCode:
           thingCode = 'noCode'
@@ -473,6 +471,22 @@
         
         
     % endif
+</%def>
+
+<%def name="mailToShare(item, **kwargs)">
+    <%  
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+        subj = 'Vote on "' + item['title'] + '"'
+        subj = subj.replace(' ','%20')
+        if item.objType == 'initiative':
+            body = initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+        elif item.objType == 'workshop':
+            body = workshopLink(item)
+        else:
+            body = itemInWorkshopLink(item, workshop=workshop)
+    %>
+    <a class="listed-item-title" target="_blank" href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope icon-2x"></i></a>
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
@@ -824,14 +838,26 @@
 
 <%def name="workshopLink(w, **kwargs)">
    <%
-   if 'embed' in kwargs:
-      if kwargs['embed'] == True:
-         if 'raw' in kwargs:
-            if kwargs['raw'] == True:
-               return "/workshop/%s/%s" %(w['urlCode'], w['url'])
-         return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
+    if 'embed' in kwargs:
+        if kwargs['embed'] == True:
+            if 'raw' in kwargs:
+                if kwargs['raw'] == True:
+                    return "/workshop/%s/%s" %(w['urlCode'], w['url'])
+            return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
+
+    else:
+        baseUrl = utilsLib.getBaseUrl()
+        return '%s/workshop/%s/%s' % (baseUrl, w['urlCode'], w['url'])
    %>
    href="/workshops/${w['urlCode']}/${w['url']}"
+</%def>
+
+<%def name="itemInWorkshopLink(item, **kwargs)">
+    <%
+        workshop = kwargs['workshop']
+        baseUrl = utilsLib.getBaseUrl()
+        return '%s/workshop/%s/%s/%s/%s/%s' % (baseUrl, workshop['urlCode'],workshop['url'],item.objType, item['urlCode'], item['url'] )
+    %>
 </%def>
 
 <%def name="workshopImage(w, **kwargs)">
@@ -1510,7 +1536,7 @@
     <% unpublishID = 'unpublish-%s' % thing['urlCode'] %>
     <div class="row-fluid collapse" id="${unpublishID}">
         <div class="span11 offset1 alert">
-            <strong>Are you sure you want to unpublish this ${thing.objType}?</strong>
+            <strong>Are you sure you want to send this ${thing.objType} to the trash?</strong>
             <br />
             <a ${unpublishThingLink(thing)} class="btn btn-danger">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">No</a>
@@ -1578,34 +1604,35 @@
             elif 'ideaCode' in thing:
                 ctype = 'idea'
     %>
-    <div class="row-fluid collapse" id="${editID}">
-        <div class="span11 offset1">
+    <div class="row collapse" id="${editID}">
+        <div class="col-xs-11 col-xs-offset-1">
             <div class="spacer"></div>
             <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
                 <fieldset>
                 <label>Edit</label>
                 <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
-                    <label>Comment text</label>
                     % if ctype == 'initiative' or ctype == 'idea':
-                        <div class="row-fluid">
-                                <label class="radio inline">
-                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}
-                                </label>
-                                <label class="radio inline">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> Pro
+                                </span>
+                                <span class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="neutral" ${neutralChecked}> Neutral
-                                </label>
-                                <label class="radio inline">
-                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> I am against this ${ctype}
-                                </label>
-                        </div><!-- row-fluid -->
+                                </span>
+                                <span class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> Con
+                                </span>
+                            </div>
+                        </div>
                     % endif
-                    <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
+                    <textarea class="comment-reply col-sm-10 form-control" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
                     <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
+                    <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
                 % elif thing.objType == 'discussion':
                     <label>Topic title</label>
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
@@ -1631,7 +1658,7 @@
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
                 </fieldset>
-                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
+                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
@@ -1643,8 +1670,8 @@
             return
         adminID = 'admin-%s' % thing['urlCode']
     %>
-    <div class="row-fluid collapse" id="${adminID}">
-        <div class="span11 offset1 alert">
+    <div class="row collapse" id="${adminID}">
+        <div class="col-sm-11 col-sm-offset-1 alert">
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
@@ -1657,45 +1684,46 @@
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
                     % endif
                 </ul>
+                <div class="spacer"></div>
                 <div class="tab-content">
                     <div class="tab-pane active" id="disable-${adminID}">
                         <form class="form-inline" action = ${disableThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
-                                <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
-                                <button type="submit" name="submit" class="btn disableButton" ${disableThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                            <div class="form-group">
+                                <label for="reason">Reason:</label>
+                                <input type="text" name="reason" class="form-control">
+                                <button type="submit" name="submit" class="btn btn-default disableButton" ${disableThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="disableResponse-${thing['urlCode']}"></span>
                     </div>
                     <div class="tab-pane" id="enable-${adminID}">
                         <form class="form-inline" action = ${enableThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
-                                <button type="submit" name = "submit" class="btn enableButton" ${enableThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button type="submit" name = "submit" class="btn btn-default enableButton" ${enableThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="enableResponse-${thing['urlCode']}"></span>
                     </div>
                     <div class="tab-pane" id="immunify-${adminID}">
                         <form class="form-inline" action = ${immunifyThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
-                                <button type="submit" name = "submit" class="btn immunifyButton" ${immunifyThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button type="submit" name = "submit" class="btn btn-default immunifyButton" ${immunifyThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="immunifyResponse-${thing['urlCode']}"></span>
                     </div>
                     % if thing.objType == 'idea':
                     <div class="tab-pane" id="adopt-${adminID}">
                         <form class="form-inline" action = ${adoptThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
-                                <button class="btn adoptButton" type="submit" name="submit" ${adoptThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button class="btn btn-default adoptButton" type="submit" name="submit" ${adoptThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="adoptResponse-${thing['urlCode']}"></span>
                     </div>
@@ -1703,11 +1731,11 @@
                     % if c.privs['admin']:
                     <div class="tab-pane" id="delete-${adminID}">
                         <form class="form-inline" action = ${deleteThingLink(thing, embed=True, raw=True) | n}>
-                            <fieldset>
+                            <div class="form-group">
                                 <label>Reason:</label>
-                                <input type="text" name="reason" class="span8">
-                                <button class="btn deleteButton" type="submit" name="submit" ${deleteThingLink(thing, embed=True) | n}>Submit</button>
-                            </fieldset>
+                                <input type="text" name="reason" class="form-control">
+                                <button class="btn btn-default deleteButton" type="submit" name="submit" ${deleteThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
                         </form>
                         <span id="deleteResponse-${thing['urlCode']}"></span>
                     </div>
@@ -1857,7 +1885,7 @@
 </%def>
 
 <%def name="public_tags()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Search by Tag
@@ -1872,7 +1900,7 @@
 </%def>
 
 <%def name="public_tag_filter()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
   <select class="med-width" ng-model="query">
       <option value=''>All Tags</option>
     % for category in sorted(categories):
@@ -1882,7 +1910,7 @@
 </%def>
 
 <%def name="public_tag_list_filter()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
       <li ng-class="{active: query == ''}"><a href="" ng-click="query = '' ">All Categories</a></li>
     % for category in sorted(categories):
       <li ng-class="{active: query == '${category}'}"><a href="#" ng-click="query = '${category}' ">${category}</a></li>
@@ -1890,7 +1918,7 @@
 </%def>
 
 <%def name="public_tag_links()">
-  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <%  categories = tagLib.getTagCategories() %>
     % for category in sorted(categories):
       <a href="/searchTags/${category}">${category}</a><br>
     % endfor
@@ -1979,7 +2007,7 @@
               <% 
                 tagValue = tag.replace(" ", "_")
               %>
-              <a class="label workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+              <a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>

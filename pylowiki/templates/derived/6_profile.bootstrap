@@ -8,30 +8,34 @@
 <%namespace file="/lib/ng_lib.mako" name="ng_helpers" />
 <%!
     from pylowiki.lib.db.user import isAdmin
+    from pylons import session
 %>
 <%
     lib.return_to()
 %>
 ##<div ng-app="ngUploadApp">
     <!-- inline style kludge to handle fixed nav bar -->
+    <div class="spacer"></div>
     <% 
         if c.user['memberType'] == 'organization':
             who = "Our"
+        if 'alert' in session:
+            message = session['alert']
+            session.pop('alert')
+            session.save()
         else:
             who = "My"
+            message = ''
     %>
-    <div class="spacer">
-    <div class="row-fluid" ng-controller="profileController">
-        <div class="span2">
-            % if c.user['memberType'] == 'organization':
-                <% userImage = lib_6._userImageSource(c.user, className="avatar-large") %>
-                <div style="width: 170px; height:114px; background-image:url(${userImage}); background-size: cover; background-position: center center; -webkit-border-radius: 4px;"></div>
-            % else:
+
+    <div class="spacer"></div>
+    <div class="row" ng-controller="profileController">
+        <div class="col-sm-2">
                 ${lib_6.userImage(c.user, className="avatar avatar-large")}
-            % endif
             <div>
                 <ul class="nav nav-tabs nav-stacked" style="width: 100%" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
+
                     % if c.user['memberType'] == 'organization':
                         <li><a href="#tab-activity" data-toggle="tab" class="green green-hover">Members</a></li>
                         <li><a href="#tab-activity" data-toggle="tab" class="green green-hover">Followers</a></li>
@@ -41,16 +45,31 @@
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">${who} Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab" class="green green-hover">${who} Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">${who} Pictures</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/meetings">My Meetings</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives"><i class="icon-trash"></i> Trash</i></a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
+                            % if not c.privs['provisional']:
+                            	% if c.user['accessLevel'] > '200':
+                                	<li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
+                                % endif
+                                <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
+                            % endif
+                        % else:
+                            ${helpers.followButton(c.user)}
                         % endif
                     % endif
                 </ul>
             </div>
         </div>
-        <div class="span10">
+        <div class="col-sm-10">
+            % if message != '':
+                <div class="alert alert-info">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <strong>${message}</strong>
+                </div>
+            % endif
             <div class="well slim-well">
                 <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
                     <h3 style="margin: 0;" ng-cloak>{{fullName}}</h3>
@@ -93,9 +112,6 @@
                             <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
                             </button>
                         % endif
-                        
-
-                        
                         <div ng-init="code = '${c.user['urlCode']}'; url = '${c.user['url']}'; activityType = 'member'">
                             <div ng-controller="activityController">
                                 <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
@@ -193,9 +209,31 @@
                     </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
-        </div><!-- span10 -->
+        </div><!-- col-sm-10 -->
     </div>
-##</div>
+</div>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
+        % endif
+        <script type="text/javascript" src="${lib_6.fingerprintFile('/js/upDown.js')}"></script>
+    % endif
+    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-tab.js')}" type="text/javascript"></script>
+
+
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/following.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/follow_unfollow.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+
+</%def>
 
 <%def name = 'extraScripts()'>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
@@ -219,19 +257,3 @@
     % endif
 
 </%def>
-
-<%def name="headScripts()">
-    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
-    <script src="${lib_6.fingerprintFile('/js/ng/activity.js')}" type="text/javascript"></script>
-    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
-    % if 'user' in session:
-        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
-            <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
-            <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
-        % endif
-        <script type="text/javascript" src="${lib_6.fingerprintFile('/js/upDown.js')}"></script>
-    % endif
-    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-tab.js')}" type="text/javascript"></script>
-</%def>
-
-

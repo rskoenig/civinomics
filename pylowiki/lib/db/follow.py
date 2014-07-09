@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import pickle
 
 from sqlalchemy import and_
 from pylons import session, tmpl_context as c
@@ -41,15 +42,21 @@ def getWorkshopFollows( user, disabled = '0'):
     except:
         return False
 
-def setWorkshopFollowsInSession(fwdisabled = '0'):        
-    bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
-    if bookmarked:
-        bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+def setWorkshopFollowsInSession(fwdisabled = '0'):
+    if 'bookmarkedWorkshops' not in c.authuser:
+        bookmarked = getWorkshopFollows(c.authuser, disabled = fwdisabled)
+        if bookmarked:
+            bookmarkedWorkshops = [ followObj['workshopCode'] for followObj in bookmarked ]
+        else:
+            bookmarkedWorkshops = []
+        c.authuser['bookmarkedWorkshops'] = str(pickle.dumps(bookmarkedWorkshops))
+        commit(c.authuser)
     else:
-        bookmarkedWorkshops = []
+        bookmarkedWorkshops = pickle.loads(str(c.authuser['bookmarkedWorkshops']))
+        
     session["bookmarkedWorkshops"] = bookmarkedWorkshops
     session.save()
-        
+
 # Which initiatives is the user following
 def getInitiativeFollows( user, disabled = '0'):
     try:
@@ -62,19 +69,26 @@ def getInitiativeFollows( user, disabled = '0'):
         return False
         
 def setInitiativeFollowsInSession(idisabled = '0'):
+    if 'bookmarkedInitiatives' not in c.authuser:
         bookmarkedInitiatives = []
-        iwatching = getInitiativeFollows(c.authuser)
-        if iwatching:
-            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in iwatching ]
+        bookmarked = getInitiativeFollows(c.authuser)
+        if bookmarked:
+            initiativeList = [ generic.getThing(followObj['initiativeCode']) for followObj in bookmarked ]
             for i in initiativeList:
                 if i.objType == 'initiative':
                     if i['public'] == '1':
                         if i['deleted'] != '1':
                             bookmarkedInitiatives.append(i['urlCode'])
-                            
-        session["bookmarkedInitiatives"] = bookmarkedInitiatives
-        session.save()
-
+        else:
+            bookmarkedInitiatives = []
+        c.authuser['bookmarkedInitiatives'] = str(pickle.dumps(bookmarkedInitiatives))
+        commit(c.authuser)
+    else:
+        bookmarkedInitiatives = pickle.loads(str(c.authuser['bookmarkedInitiatives']))
+        
+    session["bookmarkedInitiatives"] = bookmarkedInitiatives
+    session.save()
+    
 # Which users is the user following
 def getUserFollows( user, disabled = '0'):
     try:
@@ -86,13 +100,18 @@ def getUserFollows( user, disabled = '0'):
     except:
         return False
         
-def setUserFollowsInSession(udisabled = '0'):        
-    following = getUserFollows(c.authuser, disabled = udisabled)
-    if following:
-        userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
-        followingUsers = [ user.id for user in userList ]
+def setUserFollowsInSession(udisabled = '0'):
+    if 'followingUsers' not in c.authuser:
+        following = getUserFollows(c.authuser, disabled = udisabled)
+        if following:
+            userList = [ generic.getThing(followObj['userCode']) for followObj in following ]
+            followingUsers = [ user.id for user in userList ]
+        else:
+            followingUsers = []
+        c.authuser['followingUsers'] = str(pickle.dumps(followingUsers))
+        commit(c.authuser)
     else:
-        followingUsers = []
+        followingUsers = pickle.loads(str(c.authuser['followingUsers']))
     session["followingUsers"] = followingUsers
     session.save()
 
@@ -145,10 +164,13 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             if f['disabled'] == '1':
                 if sKey in session and thingCode in session[sKey]:
                     session[sKey].remove(thingCode)
+                    user[sKey] = str(pickle.dumps(session[sKey]))
+                    commit(user)
             else:
-                log.info("follow thing enabled")
                 if sKey in session and thingCode not in session[sKey]:
                     session[sKey].append(thingCode)
+                    user[sKey] = str(pickle.dumps(session[sKey]))
+                    commit(user)
         else:
             f = Thing('follow', user.id)
             generic.linkChildToParent(f, thing)
@@ -157,8 +179,12 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             f['disabled'] = disabled
             if sKey in session and session[sKey] and thingCode not in session[sKey]:
                 session[sKey].append(thingCode)
+                user[sKey] = str(pickle.dumps(session[sKey]))
+                commit(user)
             elif sKey in session and not session[sKey]:
                 session[sKey].append(thingCode)
+                user[sKey] = str(pickle.dumps(session[sKey]))
+                commit(user)
 
         
         if thing.objType == 'user':

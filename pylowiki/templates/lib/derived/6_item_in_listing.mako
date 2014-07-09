@@ -99,13 +99,13 @@
     %>
     <div class="btn-group" style="margin-top: -10px;">
         % if thing['disabled'] == '0' and not c.privs['provisional']:
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+            <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+            <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
         % endif
         % if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
 
     </div>

@@ -59,8 +59,12 @@ function profileController($scope, $http) {
     
     $scope.getActivityURL = '/getActivity/' + $scope.code + '/' + $scope.url
     $scope.getTrashURL = '/getTrash/' + $scope.code + '/' + $scope.url
+    $scope.getMeetingsURL = '/getMeetings/' + $scope.code + '/' + $scope.url
     if ($scope.trash){
         $scope.getActivityURL = $scope.getTrashURL
+    }
+    if ($scope.meetings){
+        $scope.getActivityURL = $scope.getMeetingsURL
     }
 
     $scope.getActivity = function() {
@@ -72,7 +76,7 @@ function profileController($scope, $http) {
 				$scope.alertType = data.alertType;
 			} 
 			else if (data.statusCode === 0){
-				$scope.trash = data.result;
+				$scope.items = data.result;
 				
 			}
 			$scope.loading = false;

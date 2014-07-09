@@ -14,7 +14,7 @@
     <div class="centered">
         ${lib_6.userImage(c.user, className="avatar avatar-large")}
     </div>
-    <div class="section-wrapper">
+    <div class="section-wrapper" ng-cloak>
         <div class="browse">
             %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                 <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
@@ -55,8 +55,8 @@
             % endif
 
             <hr>
-            <div class="row-fluid">
-                <div class="span4">
+            <div class="row">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/resources" %(c.user['urlCode'], c.user['url'])
                         if 'resource_counter' in c.user:
@@ -68,8 +68,8 @@
                     <a class="black" href="${thingListingURL}">${numThings}</a>
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">resources</a></p></div>
-                </div><!-- span4 -->
-                <div class="span4">
+                </div><!-- col-xs-4 -->
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/ideas" %(c.user['urlCode'], c.user['url'])
                         if 'idea_counter' in c.user:
@@ -82,7 +82,7 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">ideas</a></p></div>
                 </div>
-                <div class="span4">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/discussions" %(c.user['urlCode'], c.user['url'])
                         if 'discussion_counter' in c.user:
@@ -95,10 +95,10 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">conversations</a></p></div>
                 </div>
-            </div> <!--/.row-fluid-->
+            </div> <!--/.row-->
             <hr>
-            <div class="row-fluid">
-                <div class="span4">
+            <div class="row">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/followers" %(c.user['urlCode'], c.user['url'])
                         if 'follower_counter' in c.user:
@@ -111,7 +111,7 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">followers</a></p></div>
                 </div>
-                <div class="span4">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/following" %(c.user['urlCode'], c.user['url'])
                         if 'follow_counter' in c.user:
@@ -124,7 +124,7 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">following</a></p></div>
                 </div>
-                <div class="span4">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/watching" %(c.user['urlCode'], c.user['url'])
                         if 'bookmark_counter' in c.user:
@@ -137,10 +137,10 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">bookmarks</a></p></div>
                 </div>
-            </div> <!--/.row-fluid-->
+            </div> <!--/.row-->
                         <hr>
-            <div class="row-fluid">
-                <div class="span4">
+            <div class="row">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/pictures" %(c.user['urlCode'], c.user['url'])
                         if 'photo_counter' in c.user:
@@ -153,7 +153,7 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">pictures</a></p></div>
                 </div>
-                <div class="span4">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/facilitating" %(c.user['urlCode'], c.user['url'])
                         if 'facilitator_counter' in c.user:
@@ -166,7 +166,7 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">facilitating</a></p></div>
                 </div>
-                <div class="span4">
+                <div class="col-xs-4">
                     <% 
                         thingListingURL = "/profile/%s/%s/listening" %(c.user['urlCode'], c.user['url'])
                         if 'listener_counter' in c.user:
@@ -179,7 +179,7 @@
                     </h3>
                     <div class="centered"><p><a class="green green-hover" href="${thingListingURL}">listening</a></p></div>
                 </div>
-            </div> <!--/.row-fluid-->
+            </div> <!--/.row-->
         </div><!--/.browse-->
     </div><!--/.section-wrapper-->
 </%def>

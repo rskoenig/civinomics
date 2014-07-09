@@ -28,7 +28,10 @@ import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.activity   	    as activityLib
 import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
+import pylowiki.lib.db.meeting 			as meetingLib
+import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.utils				as utils
+import pylowiki.lib.json				as jsonLib
 import pylowiki.lib.fuzzyTime			as fuzzyTime	
 import misaka as m
 
@@ -61,23 +64,33 @@ class HomeController(BaseController):
         return render('/derived/6_home.bootstrap')
 
     def getFollowingInitiatives(self, offset=0, limit=0):
-		interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
-		# reverse list so most recent first
-		interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+        if 'facilitatorInitiatives' in session:
+            facilitatorInitiativeCodes = session['facilitatorInitiatives']
+        else:
+            facilitatorInitiativeCodes = []
 
-		offset = int(offset)
-		limit = int(limit)
-		interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+        if 'bookmarkedInitiatives' in session:
+            bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
+        else:
+            bookmarkedInitiativeCodes = []
 
-		interestedInitiatives = []
-		for code in interestedInitiativeCodes:
-			log.info('%s' % code)
+        interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
+        # reverse list so most recent first
+        interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+        offset = int(offset)
+        limit = int(limit)
+        interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+        interestedInitiatives = []
+        for code in interestedInitiativeCodes:
+			#log.info('%s' % code)
 			i = initiativeLib.getInitiative(code)
 			interestedInitiatives.append(i)
 
-		if len(interestedInitiatives) == 0:
+        if len(interestedInitiatives) == 0:
 			return json.dumps({'statusCode':1})
-		else:
+        else:
 			result = []
 
 			myRatings = {}
@@ -122,7 +135,8 @@ class HomeController(BaseController):
 				tags = []
 				tagList = []
 				if 'tags' in item:
-				    tagList = item['tags'].split('|')
+					if item['tags'] != None:
+						tagList = item['tags'].split('|')
 				for tag in tagList:
 				    if tag and tag != '':
 				        tags.append(tag)
@@ -157,20 +171,19 @@ class HomeController(BaseController):
 			return json.dumps({'statusCode':0, 'result': result})
 
 
+    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7, code = None):
+        #log.info("activity type is %s"%type)
+        # get recent activity and return it into json format
+        result = []
+        allActivity = []
+        
+        offset = int(offset)
+        commments = int(comments)
 
-    def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7, code = None, url = None):
-		# get recent activity and return it into json format
-		result = []
-		allActivity = []
+        if type == 'all':
+		    recentActivity = activityLib.getRecentActivity(max, 0, offset)
 
-		offset = int(offset)
-		commments = int(comments)
-
-		if type == 'all':
-			recentActivity = activityLib.getRecentActivity(max, 0, offset)
-				
-
-		elif type == 'following' and c.authuser:
+        elif type == 'following' and c.authuser:
 			if c.privs['participant'] or c.privs['provisional']:
 				# combine the list of interested workshops
 				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
@@ -194,7 +207,7 @@ class HomeController(BaseController):
 				alertMsg = "You are not following any people, workshops or initiatives yet!"
 				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
-		elif type == 'geo' and c.authuser:
+        elif type == 'geo' and c.authuser:
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
@@ -207,220 +220,45 @@ class HomeController(BaseController):
 		    else:
 		    	alertMsg = "There is no activity in your county yet. Add something!"
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
-
-		elif type == 'initiatives':
-			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
-		elif type == 'member' and c.authuser:
-		    user = userLib.getUserByCode(code)
-		    memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
-		    if memberActivity:
-		        recentActivity = memberActivity
+		    	
+        elif type == 'meetings' and c.authuser:
+		    # try getting the activity of their area
+		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+		    scopeList = userScope.split('|')
+		    countyScope = scopeList[6]
+		    #log.info("countyScope is %s"%countyScope)
+		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
+		    if countyActivity:
+		    	recentActivity = countyActivity
 		    else:
-		        log.info('yup, no activity')
-		        alertMsg = "This is where your activity will show up, once you do something!"
+		    	alertMsg = "There are no upcoming meetings listed for your county yet."
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
-		else:
+
+        elif type == 'initiatives':
+        	recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+
+        elif type == 'member' and c.authuser:
+        	user = userLib.getUserByCode(code)
+        	memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
+        	if memberActivity:
+        		recentActivity = memberActivity
+        	else:
+        		log.info('no activity')
+        		alertMsg = "This is where your activity will show up, once you do something!"
+        		return json.dumps({'statusCode':1, 'alertMsg':alertMsg, 'alertType':'alert-info'})
+
+        else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
-		
-		myRatings = {}
-		if 'ratings' in session:
-			myRatings = session['ratings']
 
-		for item in recentActivity:
-			entry = {}
-			# item attributes
-			if 'title' in item:
-			    entry['title'] = item['title']
-			else: 
-			    entry['title'] = ''
-			entry['objType'] = item.objType
-			if item.objType == 'discussion':
-				if item['discType'] == 'update':
-					entry['objType'] = 'update'
-				if item['discType'] == 'organization_position':
-					entry['objType'] = 'position'
-					if item['position'] == 'support':
-					    entry['position'] = 'support'
-					else:
-					    entry['position'] = 'oppose'
-			entry['urlCode'] = item['urlCode']
-			if 'url' in item:
-			    entry['url'] = item['url']
-			else:
-			    entry['url'] = ''
-			entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
-			entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
-			if 'views' in item:
-				entry['views'] = str(item['views'])
-			else:
-				entry['views'] = '0'
-
-			# attributes that vary accross items
-			entry['text'] = ''
-			if 'text' in item:
-				entry['text'] = item['text']
-			elif 'description' in item:
-				entry['text'] = item['description']
-			elif 'data' in item:
-			    entry['text'] = item['data']
-			entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
-			if 'link' in item:
-				entry['link'] = item['link']
-			else:
-				entry['link'] = ''
-			if 'cost' in item:
-				entry['cost'] = item['cost']
-			else:
-				entry['cost'] = ''
-			entry['article'] = 'a'
-			if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
-				entry['article'] = 'an'
-
-			# href
-			# note: we should standardize the way object urls are constructed
-			if item.objType == 'photo':
-			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
-			else:
-			    entry['href'] = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
-
-			if item.objType == 'discussion' and item['discType'] == 'organization_position':
-			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/position/show/" + item['urlCode']
-			    if 'initiativeCode' in item:
-			        entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
-			    elif 'ideaCode' in item:
-			        entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url'] + '/idea/' + item['ideaCode'] + '/' + item['idea_url']
-			elif 'workshopCode' in item:
-			    entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-			    entry['href'] = entry['parentHref'] + entry['href']
-			elif 'initiativeCode' in item:
-			    entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
-			    if entry['objType'] == 'update':
-			        entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
-			    else:
-			        entry['href'] = entry['parentHref'] + entry['href']
-			elif item.objType == 'discussion' and item['discType'] == 'organization_general':
-			    entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/discussion/show/" + item['urlCode']
-
-		    
-			# modifications for children of workshops and initiatives
-			entry['parentTitle'] = ''
-			entry['parentObjType'] = ''
-			if 'workshopCode' in item:
-			    entry['parentTitle'] = item['workshop_title']
-			    entry['parentObjType'] = 'workshop'
-			elif 'initiativeCode' in item:
-			    entry['parentTitle'] = item['initiative_title']
-			    entry['parentObjType'] = 'initiative'
-
-			# photo
-			if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-			elif entry['parentObjType'] == 'workshop':
-				mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
-				if mainImage['pictureHash'] == 'supDawg':
-					entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
-				elif 'format' in mainImage.keys():
-					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
-				else:
-					entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
-
-			elif entry['parentObjType'] == 'initiative':
-				initiative = initiativeLib.getInitiative(item['initiativeCode'])
-				entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
-				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
-			else:
-				entry['mainPhoto'] = ''
-				entry['thumbnail'] = ''
-
-			#tags
-			tags = []
-			tagList = []
-			if 'tags' in item:
-			    tagList = item['tags'].split('|')
-			elif 'initiative_tags' in item:
-			    tagList = item['initiative_tags'].split('|')
-			elif 'workshop_category_tags' in item:
-			    tagList = item['workshop_category_tags'].split('|')
-			for tag in tagList:
-			    if tag and tag != '':
-			        tags.append(tag)
-			entry['tags'] = tags
-			
-			if item.objType == 'discussion' and item['discType'] == 'organization_general':
-			    org = userLib.getUserByCode(item['userCode'])
-			    entry['scopeName'] = org['name']
-			    entry['scopeLevel'] = 'organization forum'
-			    entry['scopeHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
-			    entry['flag'] = utils._userImageSource(org)
-			else:
-			    # scope attributes
-			    if 'scope' in item:
-				    entry['scope'] = item['scope']
-			    elif 'initiative_scope' in item:
-				    entry['scope'] = item['initiative_scope']
-			    elif 'workshop_public_scope' in item:
-				    entry['scope'] = item['workshop_public_scope']
-			    else:
-				    entry['scope'] = '0||united-states||0||0||0|0'
-			    scopeInfo = utils.getPublicScope(entry['scope'])
-			    entry['scopeName'] = scopeInfo['name']
-			    entry['scopeLevel'] = scopeInfo['level']
-			    entry['scopeHref'] = scopeInfo['href']
-			    entry['flag'] = scopeInfo['flag']
-
-			# user rating
-			if entry['urlCode'] in myRatings:
-				entry['rated'] = myRatings[entry['urlCode']]
-				entry['vote'] = 'voted'
-			else:
-				entry['rated'] = 0
-				entry['vote'] = 'nvote'
-
-			# votes
-			entry['voteCount'] = int(item['ups']) + int(item['downs'])
-			entry['ups'] = int(item['ups'])
-			entry['downs'] = int(item['downs'])
-			entry['netVotes'] = int(item['ups']) - int(item['downs'])
-
-			# comments
-			discussion = discussionLib.getDiscussionForThing(item)
-			if discussion:
-			    entry['discussion'] = discussion['urlCode']
-			else:
-			    entry['discussion'] = ''
-			entry['numComments'] = 0
-			if 'numComments' in item:
-				entry['numComments'] = item['numComments']
-
-			# author data
-			# CCN - need to find a way to optimize this lookup
-			author = userLib.getUserByID(item.owner)
-			entry['authorName'] = author['name']
-			entry['authorPhoto'] = utils._userImageSource(author)
-			entry['authorCode'] = author['urlCode']
-			entry['authorURL'] = author['url']
-			entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-
-			entry['parentTitle'] = ''
-			entry['parentObjType'] = ''
-			entry['article'] = 'a'
-			if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
-				entry['article'] = 'an'
-
-			# modifications for children of workshops and initiatives
-			if 'workshopCode' in item:
-				entry['parentTitle'] = item['workshop_title']
-				entry['parentObjType'] = 'workshop'
-			elif 'initiativeCode' in item:
-				entry['parentTitle'] = item['initiative_title']
-				entry['parentObjType'] = 'initiative'
+        for item in recentActivity:
+			entry = jsonLib.getJsonProperties(item)
 
 			result.append(entry)
 
-		if len(result) == 0:
+        if len(result) == 0:
 			return json.dumps({'statusCode':1})
-		return json.dumps({'statusCode':0, 'result': result})
+        return json.dumps({'statusCode':0, 'result': result})
 
 
 

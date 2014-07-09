@@ -95,9 +95,11 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
+
             elif thing.objType == 'discussion' and (thing['discType'] == 'organization_general' or thing['discType'] == 'organization_position'):
                 userLib.setUserPrivs()
-            elif thing.objType == 'photo' or thing.objType == 'initiative' or 'initiativeCode' in thing:
+            elif thing.objType == 'photo' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or 'initiativeCode' in thing:
+                
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
@@ -127,7 +129,7 @@ class CommentController(BaseController):
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
@@ -135,7 +137,7 @@ class CommentController(BaseController):
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
-            if parentAuthor != c.authuser:
+            if parentAuthor != c.authuser and thing.objType != 'agendaitem':
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
@@ -227,14 +229,32 @@ class CommentController(BaseController):
 
     def jsonCommentsForItem(self, urlCode):
         result = []
+        myRatings = []
+        if 'ratings' in session:
+		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
         for comment in comments:
             entry = {}
             entry['text'] = comment['data']
             entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['urlCode'] = comment['urlCode']
+            entry['voteCount'] = int(comment['ups']) + int(comment['downs'])
+            entry['ups'] = int(comment['ups'])
+            entry['downs'] = int(comment['downs'])
+            entry['netVotes'] = int(comment['ups']) - int(comment['downs'])
+            if entry['urlCode'] in myRatings:
+                entry['rated'] = myRatings[entry['urlCode']]
+            else:
+                entry['rated'] = 0
+
             entry['commentRole'] = ''
             if 'commentRole' in comment:
                 entry['commentRole'] = comment['commentRole']
+                    
+            if 'ideaCode' in comment or 'initiativeCode' in comment or 'meetingCode' in comment:
+                entry['doCommentRole'] = 'yes'
+            else:
+                entry['doCommentRole'] = 'no'
 
             entry['date'] = fuzzyTime.timeSince(comment.date)
 
@@ -243,11 +263,69 @@ class CommentController(BaseController):
             entry['authorName'] = author['name']
             entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
             entry['authorPhoto'] = utils._userImageSource(author)
+            if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
+                entry['canEdit'] = 'yes'
+            else:
+                entry['canEdit'] = 'no'
+                
+            # get revisions
+            revisions = revisionLib.getRevisionsForThing(comment)
+            if revisions:
+                entry['revisions'] = 'yes'
+            else:
+                entry['revisions'] = 'no'
+            entry['revisionList'] = []
+            if revisions:
+                for rev in revisions:
+                    revision = {}
+                    code = rev['urlCode'] 
+                    date = str(rev.date)
+                    text = rev['data']
+                    html = m.html(rev['data'], render_flags=m.HTML_SKIP_HTML)
+                    if 'commentRole' in rev:
+                        role = rev['commentRole']
+                    else:
+                        role = 'Neutral'
+                        
+                    if role == 'yes':
+                        role = 'Pro'
+                    elif role == 'no':
+                        role = 'Con'
+                    else:
+                        role = 'Neutral'
+                        
+                    revision['date'] = date
+                    revision['urlCode'] = code
+                    revision['text'] = text
+                    revision['html'] = html
+                    revision['role'] = role
+                    entry['revisionList'].append(revision)
+                
             result.append(entry)
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})
+        
+    def jsonEditCommentHandler(self):
+        payload = json.loads(request.body)
+        if 'commentCode' in payload:
+            commentCode = payload['commentCode']
+            comment = commentLib.getCommentByCode(commentCode)
+            # save a revision first
+            revision = revisionLib.Revision(c.authuser, comment)
+            if not comment:
+                return json.dumps({'statusCode':1})
+            
+            if 'commentText' in payload and payload['commentText'] != '':
+                comment['data'] = payload['commentText']
+                comment['commentRole'] = payload['commentRole']
+                dbHelpers.commit(comment)
+                return json.dumps({'statusCode':0})
+
+        return json.dumps({'statusCode':1})
+
+        
         
     ####################################################
     # 

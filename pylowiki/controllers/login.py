@@ -22,7 +22,6 @@ import pylowiki.lib.db.workshop     	as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
-import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.discussion   	as discussionLib
 
@@ -31,6 +30,7 @@ from twython import Twython
 
 import requests
 import mechanize
+import pickle
 
 import base64
 import hashlib
@@ -224,10 +224,6 @@ class LoginController(BaseController):
             if user:
                 log.info("found user by facebook id")
 
-        #if user:
-        #    for thisKey in user.keys():
-        #        log.info("user %s == %s"%(thisKey, user[thisKey]))
-
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
@@ -253,7 +249,7 @@ class LoginController(BaseController):
         # the login page.
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
@@ -309,6 +305,7 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
+                        log.info("fblogin handoff 1")
                         loginURL = LoginController.logUserIn(self, user)
                         return redirect(loginURL)
                 elif 'unactivatedTwitterAuthId' in user.keys():
@@ -347,6 +344,7 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
+            log.info("fblogin handoff 2")
             loginURL = LoginController.logUserIn(self, user)
             return redirect(loginURL)
         else:
@@ -371,6 +369,7 @@ class LoginController(BaseController):
                         user['email'] = email
                 commit(user)
                 #return redirect("/fbLoggingIn")
+                log.info("fblogin handoff 3")
                 loginURL = LoginController.logUserIn(self, user)
                 return redirect(loginURL)
             else:
@@ -382,7 +381,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Linking account with Facebook Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
 
         try:
@@ -441,7 +440,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Linking account with Twitter Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         try:
             email = session['twtEmail']
@@ -550,7 +549,13 @@ class LoginController(BaseController):
         c.authuser = user
         
         # get and cache their ratings
-        ratings = ratingLib.getRatingsForUser()
+        if 'ratings' not in c.authuser:
+            ratings = ratingLib.getRatingsForUser()
+            c.authuser['ratings'] = str(pickle.dumps(ratings))
+            commit(c.authuser)
+        else:
+            ratings = pickle.loads(str(c.authuser["ratings"]))
+
         session["ratings"] = ratings
         
         # if they are an organization, get and cache their stated positions
@@ -559,7 +564,6 @@ class LoginController(BaseController):
         session.save()
         
         # get their workshops and initiatives of interest
-        #log.info("start session cache")
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
         pMemberLib.setPrivateMemberWorkshopsInSession()
@@ -567,7 +571,6 @@ class LoginController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
-        #log.info("end session cache")
 
         #log.info("login:logUserIn")
         if 'iPhoneApp' in kwargs:
@@ -626,7 +629,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
 
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -708,7 +711,7 @@ class LoginController(BaseController):
         c.title = c.heading = "Forgot Password"
         c.splashMsg = False
         splashMsg = {}
-        splashMsg['type'] = 'error'
+        splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
         email = request.params["email"].lower()
         user = userLib.getUserByEmail( email ) 
@@ -759,9 +762,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':
@@ -780,9 +780,6 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render("/derived/login.bootstrap")
 
     def loginRedirects(self, page):
-        c.facebookAppId = config['facebook.appid']
-        c.channelUrl = config['facebook.channelUrl']
-
         afterLoginURL = ''
         if page == 'newWorkshop':
             afterLoginURL += "/workshop/display/create/form"
