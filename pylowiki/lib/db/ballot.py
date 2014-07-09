@@ -1,10 +1,11 @@
 #-*- coding: utf-8 -*-
 import logging
+import datetime
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
@@ -34,6 +35,20 @@ def getElectionsForUser(code):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'election')\
             .filter(Thing.data.any(wc('userCode', code)))\
+            .all()
+    except:
+        return False
+        
+def getElectionsForScope(scope):
+    now = datetime.datetime.now()
+    threeDays = datetime.timedelta(days=3)
+    eDate = now - threeDays
+    checkDate = eDate.strftime("%Y-%m-%d")
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'election')\
+            .filter(Thing.data.any(wc('scope', scope)))\
+            .filter(Thing.data.any(gtc('electionDate', checkDate)))\
             .all()
     except:
         return False

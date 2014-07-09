@@ -29,6 +29,7 @@ import pylowiki.lib.db.activity   	    as activityLib
 import pylowiki.lib.db.discussion 		as discussionLib
 import pylowiki.lib.db.comment 			as commentLib
 import pylowiki.lib.db.meeting 			as meetingLib
+import pylowiki.lib.db.ballot 			as ballotLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.json				as jsonLib
@@ -169,6 +170,58 @@ class HomeController(BaseController):
 			if len(result) == 0:
 				return json.dumps({'statusCode':1})
 			return json.dumps({'statusCode':0, 'result': result})
+			
+        
+    def getElectionsForPostalCode(self, postalCode):
+        scope = getGeoScope( c.authuser['postalCode'], "United States" )
+        scopeList = scope.split('|')
+        loop = 0
+        for item in scopeList:
+            if item == '':
+                scopeList[loop] = '0'
+            loop += 1
+            
+        countryScopeList = scopeList[0:3]
+        countryScope = '|'.join(countryScopeList) + '|0|0|0|0|0|0|0'
+        
+        stateScopeList = scopeList[0:5]
+        stateScope = '|'.join(stateScopeList) + '|0|0|0|0|0'
+
+        countyScopeList = scopeList[0:7]
+        countyScope = '|'.join(countyScopeList) + '|0|0|0'
+		
+        cityScopeList = scopeList[0:9]
+        cityScope = '|'.join(cityScopeList) + '|0'
+		
+        scopes = [countryScope, stateScope, countyScope, cityScope]
+        
+        result = []
+        for scope in scopes:
+            elections = ballotLib.getElectionsForScope(scope)
+            log.info("scope is %s"%scope)
+            if elections:
+
+                for item in elections:
+                    entry = {}
+                    entry['objType'] = 'election'
+                    entry['url']= item['url']
+                    entry['urlCode']=item['urlCode']
+                    entry['title'] = item['title']
+                    entry['text'] = item['text']
+                    entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+                    entry['electionDate'] = item['electionDate']
+            
+                    scopeInfo = utils.getPublicScope(item['scope'])
+                    entry['scopeName'] = scopeInfo['name']
+                    entry['scopeLevel'] = scopeInfo['level']
+                    entry['scopeHref'] = scopeInfo['href']
+                    entry['flag'] = scopeInfo['flag']
+                    entry['href']= '/election/' + entry['urlCode'] + '/' + entry['url'] + '/show'
+                    result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
 
 
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
@@ -211,7 +264,8 @@ class HomeController(BaseController):
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
-		    countyScope = scopeList[6]
+		    countyScopeList = scopeList[0:7]
+		    countyScope = '|'.join(countyScopeList)
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
@@ -225,7 +279,8 @@ class HomeController(BaseController):
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
-		    countyScope = scopeList[6]
+		    countyScopeList = scopeList[0:7]
+		    countyScope = '|'.join(countyScopeList)
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)

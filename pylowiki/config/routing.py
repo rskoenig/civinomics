@@ -172,6 +172,9 @@ def make_map():
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
+    # elections
+    map.connect('/getElectionsForPostalCode/{postalCode}{end:/?}' , controller = 'home', action = 'getElectionsForPostalCode', postalCode = '{postalCode}')
+
     # trash
     map.connect('/trash/{code}/{url}{end:/?}' , controller = 'trash', action = 'trashThingHandler', code = '{code}', url = '{url}')
     # restore

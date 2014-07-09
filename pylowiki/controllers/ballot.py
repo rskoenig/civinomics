@@ -234,7 +234,7 @@ class BallotController(BaseController):
         c.edit = True
        
         return render('/derived/6_election.bootstrap')
-        
+
     def electionShow(self):
 
         c.revisions = revisionLib.getRevisionsForThing(c.election)
