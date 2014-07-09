@@ -349,7 +349,8 @@
                             'meeting':'meeting',
                             'agendaitem':'agenda item',
                             'ballot':'ballot',
-                            'ballotmeasure':'ballot measure'}
+                            'ballotmeasure':'ballot measure',
+                            'ballotcandidate': 'ballot candidate'}
     %>
     <table class="table table-hover table-condensed">
         <tbody>
@@ -501,7 +502,14 @@
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
-            
+            % elif objType == 'comment' and 'ballotCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">ballot item</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
