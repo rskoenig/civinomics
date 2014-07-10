@@ -59,9 +59,9 @@
     <!-- /NVD3 1.1.15 beta -->
     
     <div class='row-fluid'>   
-        <div class='span6'>
+        <div class='col-sm-6'>
             <div class='row-fluid'>   
-                <div class='span9 offset3'>
+                <div class='col-sm-9 col-sm-offset-3'>
                     <h4>Voting</h4>
                 </div>
             </div>
@@ -69,9 +69,9 @@
                 <svg id="nvd3-yesNo-chart" class="voteModalPieChart"></svg>
             </div>
         </div>
-        <div class='span6'>
+        <div class='col-sm-6'>
             <div class='row-fluid'>   
-                <div class='span9 offset3'>
+                <div class='col-sm-9 col-sm-offset-3'>
                     <h4>Activity</h4>
                 </div> 
             </div>

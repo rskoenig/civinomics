@@ -246,7 +246,7 @@
                     },
                     function(countResponse) {
                         console.log(countResponse[0].like_count);
-                        var likesSharesComments = '<div class="right-space left-space" style="font-size: 0.8em;">Likes <span class="label blue-tag" style="color: #222;">' + countResponse[0].like_count + '</span> Shares <span class="label blue-tag" style="color: #222;">' + countResponse[0].share_count + '</span> Comments  <span class="label blue-tag" style="color: #222;">' + countResponse[0].comment_count + '</span></div>';
+                        var likesSharesComments = '<div class="right-space left-space" style="font-size: 0.8em;">Likes <span class="label blue-tag" style="color: #222;">' + countResponse[0].like_count + '</span> <br /><br />Shares <span class="label blue-tag" style="color: #222;">' + countResponse[0].share_count + '</span> <br /><br />Comments  <span class="label blue-tag" style="color: #222;">' + countResponse[0].comment_count + '</span></div>';
                         $('.fb-likesSharesComments').html(likesSharesComments);
                         // good spot to ping the server with an updated share count?
                         // lib/db: getShareByUserAndCode(user, code)
