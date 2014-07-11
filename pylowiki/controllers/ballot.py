@@ -188,8 +188,10 @@ class BallotController(BaseController):
 
         if 'public' in request.params:
             public = request.params['public']
+            if public == 'on':
+                public = '1'
         else:
-            public = ''
+            public = '0'
             
         #create the election
         c.election = ballotLib.Election(c.authuser, title, text, scope, electionDate, electionOfficialURL, public)
@@ -324,10 +326,13 @@ class BallotController(BaseController):
 
         if 'public' in request.params:
             public = request.params['public']
+            log.info("public is %s"%public)
             if public == 'on':
                 c.election['election_public'] = '1'
             else:
                 c.election['election_public'] = '0'
+        else:
+            c.election['election_public'] = '0'
 
         dbHelpers.commit(c.election)
                 

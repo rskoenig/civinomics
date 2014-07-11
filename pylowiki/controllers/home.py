@@ -198,7 +198,6 @@ class HomeController(BaseController):
         result = []
         for scope in scopes:
             elections = ballotLib.getElectionsForScope(scope)
-            log.info("scope is %s"%scope)
             if elections:
 
                 for item in elections:

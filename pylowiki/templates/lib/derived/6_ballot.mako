@@ -22,7 +22,7 @@
     </div>
     <div class="row spacer">
         <div class="col-xs-2">
-            <img src="${scopeInfo['flag']}" width="60" height="60"> 
+            <img src="${scopeInfo['flag']}" width="80" height="60"> 
         </div>
         <div class="col-xs-9 text-left">
             <p>${scopeInfo['level']} of ${scopeInfo['name']}</p>
@@ -165,7 +165,7 @@
             public = c.election['election_public']
             electionDate = c.election['electionDate']
             electionOfficialURL = c.election['electionOfficialURL']
-            if public == 'on':
+            if public == '1':
                 publicChecked = 'checked'
             else:
                 publicChecked = ""

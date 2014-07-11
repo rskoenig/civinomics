@@ -104,7 +104,7 @@
 <%def name="election_listing()">
     <div class="media well search-listing">
         <div class="row" style="margin-top:19px;">
-            <div class="col-xs-3"><img src="{{item.flag}}" width="60" height="60"></div>
+            <div class="col-xs-3"><img src="{{item.flag}}" width="80" height="60"></div>
             <div class="col-xs-9">
                 <a href="{{item.href}}">{{item.title}}</a><br>
                 {{item.scopeLevel}} of {{item.scopeName}}<br>

@@ -48,6 +48,7 @@ def getElectionsForScope(scope):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'election')\
             .filter(Thing.data.any(wc('scope', scope)))\
+            .filter(Thing.data.any(wc('election_public', '1')))\
             .filter(Thing.data.any(gtc('electionDate', checkDate)))\
             .all()
     except:
