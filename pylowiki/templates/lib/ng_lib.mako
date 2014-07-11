@@ -104,15 +104,15 @@
 <%def name="election_listing()">
     <div class="media well search-listing">
         <div class="row" style="margin-top:19px;">
-            <div class="col-xs-2"><img src="{{item.flag}}" width="60" height="60"></div>
-            <div class="col-xs-9 no-left">{{item.scopeLevel}} of {{item.scopeName}}</div>
+            <div class="col-xs-3"><img src="{{item.flag}}" width="60" height="60"></div>
+            <div class="col-xs-9">
+                <a href="{{item.href}}">{{item.title}}</a><br>
+                {{item.scopeLevel}} of {{item.scopeName}}<br>
+                Election Date: {{item.electionDate}}<br>
+            </div>
         </div><!-- row -->
         <div class="row">
-            <div class="col-xs-2">
-                <strong>{{item.electionDate}}</strong>
-            </div>
-            <div class="col-xs-9 no-left">
-                <a href="{{item.href}}">{{item.title}}</a>
+            <div class="col-xs-11">
                 <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
             </div>
