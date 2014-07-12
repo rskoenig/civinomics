@@ -116,7 +116,6 @@
                             <div ng-controller="activityController">
                                 <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
                                     <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
-                                        <tr><td>${ng_helpers.authorPosting()}</td></tr>
                                         <tr>
                                           <td ng-if="item.objType == 'initiative'">
                                             ${ng_helpers.initiative_listing()}
@@ -143,7 +142,7 @@
                                           </td>
                                           
                                           <td ng-if="item.objType == 'comment'">
-                                            {{item.objType}}{{item.text}}
+                                            ${ng_helpers.comment_listing()}
                                           </td>
                                 
                                         </tr>

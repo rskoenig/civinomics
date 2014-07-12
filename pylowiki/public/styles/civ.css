@@ -3216,14 +3216,14 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
-tr.con, .panel-heading.against{
-  background-color: #f2dede
+tr.con, .panel-heading.against, .con{
+  background-color: #f2dede;
 }
 
-tr.pro, .panel-heading.favor{
+tr.pro, .panel-heading.favor, .pro{
   background-color: #dff0d8;
 }
-tr.neutral, .panel-heading.neutral{
+tr.neutral, .panel-heading.neutral, .neutral{
   background-color: #e0e0e0;
 }
 

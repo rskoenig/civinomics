@@ -74,6 +74,10 @@ def getJsonProperties(item):
         entry['text'] = item['text']
     elif 'description' in item:
         entry['text'] = item['description']
+    elif 'data' in item:
+        entry['text'] = item['data']
+
+
     entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
     if 'link' in item:
         entry['link'] = item['link']
@@ -115,6 +119,51 @@ def getJsonProperties(item):
     elif 'initiativeCode' in item:
         entry['parentTitle'] = item['initiative_title']
         entry['parentObjType'] = 'initiative'
+
+    # to support listing of comments in the profile
+    if item.objType == 'comment':
+        if 'workshopCode' in item:
+            workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
+            if 'ideaCode' in item:
+                parentCode = item['ideaCode']
+                parentURL = item['parent_url']
+                parentObjType = 'idea'
+            elif 'resourceCode' in item:
+                parentCode = item['resourceCode']
+                parentURL = item['parent_url']
+                parentObjType = 'resource'
+            elif 'discussionCode' in item:
+                parentCode = item['discussionCode']
+                parentURL = item['parent_url']
+                parentObjType = 'discussion'
+            entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+
+        elif 'photoCode' in item:
+            parentCode = item['photoCode']
+            parentURL = item['parent_url']
+            parentObjType = 'photo'
+            entry['parentHref'] = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+        elif 'initiativeCode' in item and 'resourceCode' in item:
+            parentCode = item['resourceCode']
+            parentURL = item['parent_url']
+            parentObjType = 'resource'
+            entry['parentHref'] = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
+        elif 'initiativeCode' in item:
+            parentCode = item['initiativeCode']
+            parentURL = item['parent_url']
+            parentObjType = 'initiative'
+            entry['parentHref'] = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+        elif 'meetingCode' in item:
+            parentCode = item['meetingCode']
+            parentURL = item['meeting_url']
+            parentObjType = 'meeting'
+            entry['parentHref'] = "/meeting/" + parentCode + "/" + parentURL + "/show/"
+        elif 'profileCode' in item:
+            entry['parentHref'] = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+        else:
+            log.info("no parentObjType item is %s"%item.keys())
+            entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+
 
     # photo
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
@@ -235,5 +284,8 @@ def getJsonProperties(item):
         entry['group'] = item['group']
         entry['href'] += '/show'
         entry['agendaItemCount'] = str(aCount)
+
+    if 'commentRole' in item:
+        entry['position'] = item['commentRole']
 
     return entry

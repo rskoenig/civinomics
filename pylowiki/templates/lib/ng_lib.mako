@@ -206,6 +206,23 @@
     </div>
 </%def>
 
+<%def name="comment_listing()">
+    <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
+        <div ng-controller="yesNoVoteCtrl">
+            <div class="row">
+                <div class="col-xs-11">
+                    <p><small>${metaData()}</small></p>
+                    <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}} {{item.position}}</a>
+                </div>
+                <div class="col-xs-1">
+                    ${upDownVoteBlock()}
+                </div>
+            </div>
+        </div>
+    </div>
+</%def>
+
+                    
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
         <div class="row" ng-controller="yesNoVoteCtrl">
