@@ -255,20 +255,6 @@ def getJsonProperties(item):
     entry['authorURL'] = author['url']
     entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
-    entry['parentTitle'] = ''
-    entry['parentObjType'] = ''
-    entry['article'] = 'a'
-    if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
-        entry['article'] = 'an'
-
-    # modifications for children of workshops and initiatives
-    if 'workshopCode' in item:
-        entry['parentTitle'] = item['workshop_title']
-        entry['parentObjType'] = 'workshop'
-    elif 'initiativeCode' in item:
-        entry['parentTitle'] = item['initiative_title']
-        entry['parentObjType'] = 'initiative'
-
     # special case for meetings
     if item.objType == 'meeting':
         aCount = meetingLib.getAgendaItems(item['urlCode'], 1)
