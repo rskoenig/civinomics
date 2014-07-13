@@ -388,16 +388,14 @@
 </%def>
 
 <%def name="metaData()">
-    <small>
-        <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-        <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
-        <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
-        <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
-    </small>
+    <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+    <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
+    <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
+    <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
 </%def>
 
 <%def name="authorPosting()">
-    <img class="avatar med-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+    <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <small>
         <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
         <span class="date">{{item.fuzzyTime}} ago</span>
