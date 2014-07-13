@@ -172,9 +172,6 @@ def make_map():
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
 
-    # elections
-    map.connect('/getElectionsForPostalCode/{postalCode}{end:/?}' , controller = 'home', action = 'getElectionsForPostalCode', postalCode = '{postalCode}')
-
     # trash
     map.connect('/trash/{code}/{url}{end:/?}' , controller = 'trash', action = 'trashThingHandler', code = '{code}', url = '{url}')
     # restore
@@ -404,6 +401,7 @@ def make_map():
     map.connect('/getBallots/{id1}/{id2}', controller = 'profile', action = 'getUserBallots', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/elections', controller = 'profile', action = 'showUserElections', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getElections/{id1}/{id2}', controller = 'profile', action = 'getUserElections', id1 = '{id1}', id2 = '{id2}')
+
     
 
     # CSV Parsing 
@@ -447,7 +445,9 @@ def make_map():
     map.connect('/ballotcandidate/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotcandidateEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/ballotcandidate/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotcandidateShow', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getBallotCandidates/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotCandidates', id1 = '{id1}', id2 = '{id2}')
-
+    map.connect('/showSampleBallot/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'showSampleBallot', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getElectionsForPostalCode/{id1}{end:/?}' , controller = 'ballot', action = 'getElectionsForPostalCode', id1 = '{id1}')
+    map.connect('/getSampleBallotInfo/{id1}/{id2}{end:/?}' , controller = 'ballot', action = 'getSampleBallotInfo', id1 = '{id1}', id2 = '{id2}')
 
     ###############
     # Initiatives #

@@ -170,58 +170,6 @@ class HomeController(BaseController):
 			if len(result) == 0:
 				return json.dumps({'statusCode':1})
 			return json.dumps({'statusCode':0, 'result': result})
-			
-        
-    def getElectionsForPostalCode(self, postalCode):
-        scope = getGeoScope( c.authuser['postalCode'], "United States" )
-        scopeList = scope.split('|')
-        loop = 0
-        for item in scopeList:
-            if item == '':
-                scopeList[loop] = '0'
-            loop += 1
-            
-        countryScopeList = scopeList[0:3]
-        countryScope = '|'.join(countryScopeList) + '|0|0|0|0|0|0|0'
-        
-        stateScopeList = scopeList[0:5]
-        stateScope = '|'.join(stateScopeList) + '|0|0|0|0|0'
-
-        countyScopeList = scopeList[0:7]
-        countyScope = '|'.join(countyScopeList) + '|0|0|0'
-		
-        cityScopeList = scopeList[0:9]
-        cityScope = '|'.join(cityScopeList) + '|0'
-		
-        scopes = [countryScope, stateScope, countyScope, cityScope]
-        
-        result = []
-        for scope in scopes:
-            elections = ballotLib.getElectionsForScope(scope)
-            if elections:
-
-                for item in elections:
-                    entry = {}
-                    entry['objType'] = 'election'
-                    entry['url']= item['url']
-                    entry['urlCode']=item['urlCode']
-                    entry['title'] = item['title']
-                    entry['text'] = item['text']
-                    entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
-                    entry['electionDate'] = item['electionDate']
-            
-                    scopeInfo = utils.getPublicScope(item['scope'])
-                    entry['scopeName'] = scopeInfo['name']
-                    entry['scopeLevel'] = scopeInfo['level']
-                    entry['scopeHref'] = scopeInfo['href']
-                    entry['flag'] = scopeInfo['flag']
-                    entry['href']= '/election/' + entry['urlCode'] + '/' + entry['url'] + '/show'
-                    result.append(entry)
-            
-        if len(result) == 0:
-            return json.dumps({'statusCode':1})
-        return json.dumps({'statusCode':0, 'result': result})
-
 
     def getActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
         #log.info("activity type is %s"%type)

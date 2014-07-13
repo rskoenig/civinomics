@@ -120,6 +120,53 @@
     </div><!-- media-well -->
 </%def>
 
+<%def name="election_home_listing()">
+    <div class="media well search-listing">
+        <div class="row">
+            <div class="col-xs-11">
+                <h4>{{item.niceDate}}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <span ng-repeat="flag in item.flags">
+                    <img src="{{flag}}" width="60" height="40">
+                </span>
+                <p><a href="{{item.href}}">View Interactive Sample Ballot</a></p>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </div><!-- media-well -->
+</%def>
+
+<%def name="sample_ballot_listing()">
+    <div class="media well search-listing">
+        <div class="row">
+            <div class="col-xs-11">
+                <h4>{{item.niceDate}}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <span ng-repeat="flag in item.flags">
+                    <img src="{{flag}}" width="60" height="40">
+                </span>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div ng-repeat="scopeLevel in item.scopes">
+            <div class="row">
+                <div class="col-xs-11">
+                    <img src="{{scopeLevel.flag}}" width="60" height="40"> <strong>{{scopeLevel.name}}</strong>
+                    <div ng-repeat="ballot in scopeLevel.ballots">
+                        <p><strong>{{ballot.title}}</strong></p>
+                    </div><!-- ng-repeat -->
+                </div><!-- col-xs-11 -->
+            </div><!-- row --> 
+        </div><!-- ng-repeat -->
+    </div><!-- media-well -->
+</%def>
+
 <%def name="ballot_listing()">
     <div class="media well search-listing">
         <div class="row" style="margin-top:19px;">

@@ -39,6 +39,8 @@ class BallotController(BaseController):
             c.edit = False
             if not c.user:
                 abort(404)
+        elif id1 is not None and action == 'getElectionsForPostalCode':
+            c.scope = geoInfoLib.getGeoScope(id1, 'United States')
         elif id1 is not None and id2 is not None:
             if action == 'electionEdit' or action == 'electionEditHandler' or action == 'ballotNewHandler' or action == 'getBallots':
                 c.election = ballotLib.getElection(id1)
@@ -50,6 +52,9 @@ class BallotController(BaseController):
                     c.election = revisionLib.getRevisionByCode(id1)
                     if not c.election:
                         abort(404)
+            elif action == 'showSampleBallot' or action == 'getSampleBallotInfo':
+                c.scope = geoInfoLib.getGeoScope(id1, 'United States')
+                c.electionDate = id2
             elif action == 'ballotmeasureEditHandler':
                 c.ballotmeasure = ballotLib.getBallotMeasure(id1)
                 if c.ballotmeasure:
@@ -107,7 +112,145 @@ class BallotController(BaseController):
                 c.election = ballotLib.getElection(c.ballot['electionCode'])
             
         #log.info("done with before, action is %s"%action)
+
+    def showSampleBallot(self):
+        
+        
+        return render('/derived/6_sample_ballot.bootstrap')
+        
+    def getElectionsForPostalCode(self, id1):
+        postalCode = id1
+        scopeList = c.scope.split('|')
+        loop = 0
+        for item in scopeList:
+            if item == '':
+                scopeList[loop] = '0'
+            loop += 1
             
+        countryScopeList = scopeList[0:3]
+        countryScope = '|'.join(countryScopeList) + '|0|0|0|0|0|0|0'
+        
+        stateScopeList = scopeList[0:5]
+        stateScope = '|'.join(stateScopeList) + '|0|0|0|0|0'
+
+        countyScopeList = scopeList[0:7]
+        countyScope = '|'.join(countyScopeList) + '|0|0|0'
+		
+        cityScopeList = scopeList[0:9]
+        cityScope = '|'.join(cityScopeList) + '|0'
+		
+        scopes = [countryScope, stateScope, countyScope, cityScope]
+        
+        result = []
+        electionDates = {}
+        for scope in scopes:
+            elections = ballotLib.getElectionsForScope(scope)
+            if elections:
+
+                for item in elections:
+                    electionDate = item['electionDate']
+                    scopeInfo = utils.getPublicScope(item['scope'])
+                    flag = scopeInfo['flag']
+                    if electionDate not in electionDates:
+                        electionDates[electionDate] = {}
+                        electionDates[electionDate]['flags'] = []
+                        electionDates[electionDate]['niceDate'] = datetime.datetime.strptime(electionDate, '%Y-%m-%d').strftime('%A %B %d, %Y')
+                        electionDates[electionDate]['href'] = '/showSampleBallot/' + postalCode + '/' + electionDate
+                        
+                    electionDates[electionDate]['flags'].append(flag)
+
+
+                        
+        for electionDate in electionDates.keys():
+            result.append(electionDates[electionDate])
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
+    def getSampleBallotInfo(self, id1, id2):
+        c.postalCode = id1
+        c.electionDate = id2
+        scopeList = c.scope.split('|')
+        loop = 0
+        for item in scopeList:
+            if item == '':
+                scopeList[loop] = '0'
+            loop += 1
+            
+        countryScopeList = scopeList[0:3]
+        countryScope = '|'.join(countryScopeList) + '|0|0|0|0|0|0|0'
+        
+        stateScopeList = scopeList[0:5]
+        stateScope = '|'.join(stateScopeList) + '|0|0|0|0|0'
+
+        countyScopeList = scopeList[0:7]
+        countyScope = '|'.join(countyScopeList) + '|0|0|0'
+		
+        cityScopeList = scopeList[0:9]
+        cityScope = '|'.join(cityScopeList) + '|0'
+		
+        scopes = [countryScope, stateScope, countyScope, cityScope]
+        
+        result = []
+        electionDates = {}
+        for scope in scopes:
+            elections = ballotLib.getElectionsForScope(scope)
+            if elections:
+                for item in elections:
+                    electionDate = item['electionDate']
+                    if electionDate != c.electionDate:
+                        continue
+                    scopeInfo = utils.getPublicScope(item['scope'])
+                    flag = scopeInfo['flag']
+                    name = scopeInfo['name']
+                    scope = item['scope']
+                    if electionDate not in electionDates:
+                        electionDates[electionDate] = {}
+                        electionDates[electionDate]['flags'] = []
+                        electionDates[electionDate]['niceDate'] = datetime.datetime.strptime(electionDate, '%Y-%m-%d').strftime('%A %B %d, %Y')
+                        electionDates[electionDate]['href'] = '/showSampleBallot/' + c.postalCode + '/' + electionDate
+                        electionDates[electionDate]['scopes'] = []
+                        
+                    electionDates[electionDate]['flags'].append(flag)
+                    
+                    scopeEntry = {}
+                    scopeEntry['flag'] = flag
+                    scopeEntry['name'] = name
+                    scopeEntry['ballots'] = []
+                    
+                    # get the ballots for the election
+                    ballots = ballotLib.getBallotsForElection(item['urlCode'])
+                    if not ballots:
+                        ballots = []
+
+                    for ballot in ballots:
+                        if ballot.objType == 'ballotUnpublished':
+                            continue
+                        entry = {}
+                        entry['canEdit'] = 'no'
+                        entry['objType'] = 'ballot'
+                        entry['url']= ballot['url']
+                        entry['urlCode']=ballot['urlCode']
+                        entry['title'] = ballot['title']
+                        entry['text'] = ballot['text']
+                        entry['number'] = ballot.sort
+                        entry['views'] = ballot['views']
+                        entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
+                        entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+                        entry['instructions'] = m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML)
+                        scopeEntry['ballots'].append(entry)
+                            
+                    electionDates[electionDate]['scopes'].append(scopeEntry)
+                            
+        for electionDate in electionDates.keys():
+            result.append(electionDates[electionDate])
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+
+        
     def electionNew(self):
         
         # initialize the scope dropdown selector in the edit template
@@ -326,7 +469,6 @@ class BallotController(BaseController):
 
         if 'public' in request.params:
             public = request.params['public']
-            log.info("public is %s"%public)
             if public == 'on':
                 c.election['election_public'] = '1'
             else:
@@ -335,7 +477,16 @@ class BallotController(BaseController):
             c.election['election_public'] = '0'
 
         dbHelpers.commit(c.election)
-                
+        
+        # update any children
+        children = generic.getChildrenOfParent(c.election)
+        for child in children:
+            child['election_url'] = c.election['url']
+            child['election_public'] = c.election['election_public']
+            child['election_date'] = c.election['electionDate']
+            child['election_scope'] = c.election['scope']
+            dbHelpers.commit(child)
+            
         returnURL = "/election/%s/%s/show"%(c.election['urlCode'], c.election['url'])
         
         return redirect(returnURL)

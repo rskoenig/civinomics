@@ -1,0 +1,37 @@
+<%!
+    import misaka as m
+%>
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace file="/lib/derived/6_ballot.mako" name="bhelpers" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/ng_lib.mako" name="ng_lib" />
+
+<% lib.return_to() %>
+
+<div  ng-init="postalCode=${c.authuser['postalCode']}; electionDate='${c.electionDate}';">
+    <div ng-controller="sampleBallotController">
+        <div ng-show="sampleBallot.length >= 1" ng-cloak>
+            <h2><small>Sample Ballot</small></h2>
+            <div ng-repeat="item in sampleBallot">
+                <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
+                    <tr>
+                        ${ng_lib.sample_ballot_listing()}
+                    </tr>
+                </table>
+            <div><!-- ng-repeat -->
+        </div><!-- well -->
+    </div><!-- sampleBallotController -->
+</div>
+<p>
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/sample_ballot.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/ballots.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+</%def>

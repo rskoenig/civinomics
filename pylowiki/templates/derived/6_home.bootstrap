@@ -142,7 +142,7 @@
                 <div ng-repeat="item in elections">
                     <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
                         <tr>
-                        ${ng_helpers.election_listing()}
+                        ${ng_helpers.election_home_listing()}
                         </tr>
                     </table>
                 <div><!-- ng-repeat -->
