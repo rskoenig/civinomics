@@ -203,7 +203,8 @@ class BallotController(BaseController):
                         continue
                     scopeInfo = utils.getPublicScope(item['scope'])
                     flag = scopeInfo['flag']
-                    name = scopeInfo['name']
+                    name = scopeInfo['level'].title() + ' of ' + scopeInfo['name']
+ 
                     scope = item['scope']
                     if electionDate not in electionDates:
                         electionDates[electionDate] = {}
@@ -230,6 +231,8 @@ class BallotController(BaseController):
                         entry = {}
                         entry['canEdit'] = 'no'
                         entry['objType'] = 'ballot'
+                        entry['ballotSlate'] = ballot['ballotSlate']
+                        entry['slateInfo'] = ballot['slateInfo']
                         entry['url']= ballot['url']
                         entry['urlCode']=ballot['urlCode']
                         entry['title'] = ballot['title']

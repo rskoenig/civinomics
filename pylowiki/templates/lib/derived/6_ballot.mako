@@ -563,20 +563,28 @@
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Measure</button>
             <div id="addItem" class="collapse spacer">
                 <form action="/ballot/${ballot['urlCode']}/${ballot['url']}/ballotMeasureAddHandler" role="form" method="POST">
-                    <fieldset>
-                        <label>Title</label>
-                        <input type="text" name="ballotMeasureTitle" class="span6" required>
-                        <label>Official Web Site URL</label>
-                        <input type="text" name="ballotMeasureOfficialURL" class="span6" required>
-                        <label>Listing Order Number in Ballot</label>
-                        <input type="text" name="ballotMeasureNumber" class="span1" required>
-                        <label>Text</label>
-                        ${lib_6.formattingGuide()}<br>
-                        <textarea rows="3" name="ballotMeasureText" class="span6" required></textarea>
-                        
+                    <div class="form-group">
+                        <label for="ballotMeasureTitle">Title</label><br>
+                        <input type="text" name="ballotMeasureTitle" class="form-control" required>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotMeasureOfficialURL">Official Web Site URL</label>
+                        <input type="text" name="ballotMeasureOfficialURL" class="form-control" required>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotMeasureNumber">Listing Order Number in Ballot</label><br>
+                        <input type="text" name="ballotMeasureNumber" class="col-xs-1" required>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <br>${lib_6.formattingGuide()}<br>
+                        <label for="ballotMeasureText">Text</label><br>
+                        <textarea rows="3" name="ballotMeasureText" class="form-control" required></textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group">
                         <p><button class="btn btn-success" type="submit" class="btn">Save Item</button>
                         <button class="btn btn-danger" type="reset" value="Reset">Cancel</button></p>
-                    </fieldset>
+                    </div><!-- form-group -->
+                    </div>
                 </form>
             </div>
         </div><!-- row -->

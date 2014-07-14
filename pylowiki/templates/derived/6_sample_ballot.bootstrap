@@ -13,7 +13,7 @@
     <div ng-controller="sampleBallotController">
         <div ng-show="sampleBallot.length >= 1" ng-cloak>
             <h2><small>Sample Ballot</small></h2>
-            <div ng-repeat="item in sampleBallot">
+            <div ng-repeat="sampleBallot in sampleBallot">
                 <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
                     <tr>
                         ${ng_lib.sample_ballot_listing()}

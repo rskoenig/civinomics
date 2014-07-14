@@ -6,6 +6,8 @@ function ballotsController($scope, $http) {
         $scope.getBallotItemsURL = '/getBallotCandidates/' + $scope.code + '/' + $scope.url;
     }
 
+    $scope.ballotMsg = $scope.ballotSlate + " " + $scope.code + " " + $scope.url + " " + $scope.getBallotItemsURL;
+    
     $scope.updateCandidateVote = function(code, url) {
         var checkVote = $scope.mycandidateVotes[code];
         if (checkVote == 'voted') {
