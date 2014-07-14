@@ -68,6 +68,15 @@ class CreateController(BaseController):
         
         elif id1 == "Workshop":
             self.createWorkshop()
+            
+        elif id1 == "Resource":
+            self.addResourceHandler()
+
+        elif id1 == "Discussion":
+            self.addDiscussionHandler()
+
+        elif id1 == "Idea":
+            self.addIdeaHandler()            
 
 #################
 # Workshops
@@ -233,6 +242,7 @@ class CreateController(BaseController):
 
 #################
 # Resources
+# I have to edit this so it suits the current form.
 #################
 
     @h.login_required
@@ -269,6 +279,115 @@ class CreateController(BaseController):
             return jsonReturn
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
+            
+#################
+# Discussions
+# I have to edit this so it suits the current form.
+#################           
+            
+    @h.login_required
+    def addDiscussionHandler(self, workshopCode, workshopURL):
+
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
+        if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+       
+        if 'title' in payload:
+            title = payload['title']
+        else: 
+            title = False
+        if 'text' in payload:
+            text = payload['text']
+        else:
+            text = ''
+
+        if not title or title=='':
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+
+        else:
+            if len(title) > 120:
+                title = title[:120]
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
+                title = title, text = text, workshop = c.w, privs = c.privs, role = None)
+            alertsLib.emailAlerts(d.d)
+            commit(c.w)
+        
+        if request.params:
+            return redirect(utils.thingURL(c.w, d.d))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
+
+#################
+# Ideas
+# I have to edit this so it suits the current form.
+#################             
+
+    @h.login_required
+    def addIdeaHandler(self, workshopCode, workshopURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
+        # check throughout function if add comment was submited via traditional form or json
+        # if through json, it's coming from an activity feed and we do NOT want to return redirect
+        # return redirect breaks the success function on https
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
+        if 'submit' not in payload or 'title' not in payload:
+            log.info("submit or title not in req params")
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+        title = payload['title'].strip()
+        if 'text' in payload:
+            text = payload['text']
+        else:
+            text = ''
+        if title == '':
+            log.info("title is blank")
+            if request.params:
+                return redirect(session['return_to'])
+            elif json.loads(request.body):
+                return json.dumps({'statusCode':1})
+        if len(title) > 120:
+            title = title[:120]
+        newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
+        log.info("made new idea")
+        alertsLib.emailAlerts(newIdea)
+        if iPhoneApp:
+            log.info("in iphone app")
+            entry = {}
+            entry['workshopCode'] = newIdea['workshopCode']
+            entry['workshop_url'] = newIdea['workshop_url']
+            entry['thingCode'] = newIdea['urlCode']
+            entry['url'] = newIdea['url']
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})   
+        elif request.params:
+            return redirect(utils.thingURL(c.w, newIdea))
+        elif json.loads(request.body):
+            return json.dumps({'statusCode':2})
+
     
 #################
 # Helper functions
