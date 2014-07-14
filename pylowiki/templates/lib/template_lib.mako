@@ -42,7 +42,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                 	<li>
-	                                	<a href="/create"><i class="icon-file-text"></i> New "thing"</a>
+	                                	<a href="/create"><i class="icon-file-text"></i> Quick addition</a>
 									</li>
                                     % if 'user' in session:
                                         <li>

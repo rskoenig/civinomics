@@ -1,10 +1,12 @@
 function createController($scope, $http) {
-
-	
-	
 	$scope.createNew = function() {
-		$scope.createUrl = '/create/' + $scope.thing + '/' + $scope.authorCode + '/' + $scope.authorUrl;	
-        var createData = {'submit':'submit', 'initiativeTitle':$scope.title, 'initiativeDescription':$scope.description, 'initiativeRegionScope':$scope.scope, 'tags':$scope.tag, 'deadline':$scope.date};
+		console.log("I'm being called")
+		if ($scope.thing == 'Initiative') {
+			$scope.createUrl = '/create/' + $scope.thing + '/' + $scope.authorCode + '/' + $scope.authorUrl;	
+		} else if ($scope.thing == 'Workshop'){
+			$scope.createUrl = '';
+		}
+        var createData = {'submit':'submit', 'initiativeTitle':$scope.title, 'initiativeDescription':$scope.description, 'initiativeRegionScope':$scope.scope, 'tags':$scope.tag, 'deadline':$scope.date, 'file':$scope.file};
         console.log(createData);
         
 		
@@ -16,8 +18,8 @@ function createController($scope, $http) {
 	}
 	
 	// Scope
-	$scope.thing = "Thing"
-	
+	$scope.thing = ""
+	$scope.file = "";
 	$scope.thingList = ['Initiative', 'Workshop']
 	$scope.id1 = ""
 	$scope.id2 = ""
@@ -27,6 +29,7 @@ function createController($scope, $http) {
 	$scope.county = "0"
 	$scope.city = "0"
 	$scope.postal = "0"
+	$scope.scope = "0|0|united-states|0|0|0|0|0|0|0"
 	
 	$scope.updateScope = function(){
         $scope.scope = '0|0|' + $scope.country + '|0|' + $scope.state + '|0|' + $scope.county + '|0|' + $scope.city + '|0|' + $scope.postal;

@@ -15,11 +15,14 @@
 				<option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
 			</select>
 			<br/><br/>
-            <form ng-submit="createNew()">
-                <div class="">
+            <form enctype="multipart/form-data"  action="/create/{{thing}}/{{authorCode}}/{{authorUrl}}" method="POST">
+                <div id="output" class="">
+                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
+                <input type="hidden" name="deadline" value="{{date}}" \>
+                <input type="hidden" name="tags" value="{{tags}}" \>
                 <p class="lead">Basic Information</p>
-                    <input class="form-control ng-pristine ng-valid" type="text" ng-model="title" placeholder="Title" required></input>    
-                    <textarea class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="Description"></textarea>        
+                    <input class="form-control ng-pristine ng-valid" type="text" ng-model="title" placeholder="Title" name="title" required></input>    
+                    <textarea class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="Description" name="description"></textarea>        
                 </div>
                 <div>
                 	" "
@@ -30,12 +33,14 @@
                 <div>
                 <p class="lead">{{thing}} Images</p>
                 <h4>{{thing}} Photo</h4>
-				        <input type='file' id="imgAvatar" />
-				        <img id="avatar" src="#" alt="your {{thing}} image" />
+				        <input type="file" name="avatar" id="imgAvatar" />
+				        <img id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
                 <h4>Cover Photo</h4>
-				        <input type='file' id="imgCover" />
-				        <img id="cover" src="#" alt="your cover image" />
+				        <input type='file' id="imgCover" name="cover" />
+				        <img id="cover" name="cover" src="#" alt="your cover image" />
 				</div>
+				
+			
                 <hr>
                 <div>
                     <select ng-model="tag">
@@ -60,7 +65,7 @@
 	                    <div class="row-fluid">
 	                        <div class="span6">
 	                            <p class="input-group">
-	                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+	                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="thing == 'Initiative'" close-text="Close" />
 	                              <span class="input-group-btn">
 	                                <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
 	                              </span>
@@ -77,7 +82,15 @@
                     <input class="span6 input-large" type="text" ng-model="positionTitle" placeholder="Position Title"></input>
                     
                 </div>
+                <div ng-show="thing == 'Workshop'">
+                	<h4>Privacy level</h4>
+                	<select ng-model="workshopAccess" name="privacy" ng-required="thing == 'Workshop'">
+                		<option value="public">Public</option>
+                		<option value="private">Private</option>
+                	</select>
+                </div>
                 <div>
+	                <h4>Geographic scope</h4>
                     ${ng_lib.ngGeoSelect()}
                 </div>
                 <button type="submit" class="btn btn-large btn-success pull-right">Submit</button>
