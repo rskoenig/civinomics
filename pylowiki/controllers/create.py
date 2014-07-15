@@ -41,6 +41,9 @@ import misaka as m
 import pylowiki.lib.db.motd         as motdLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.images          as imageLib
+import pylowiki.lib.db.resource         as  resourceLib
+import pylowiki.lib.db.discussion       as  discussionLib
+import pylowiki.lib.alerts              as  alertsLib
 
 import simplejson as json
 
@@ -70,12 +73,15 @@ class CreateController(BaseController):
             self.createWorkshop()
             
         elif id1 == "Resource":
+            #Do something with the necessary arguments here
             self.addResourceHandler()
 
         elif id1 == "Discussion":
+            #Do something with the necessary arguments here
             self.addDiscussionHandler()
 
         elif id1 == "Idea":
+            #Do something with the necessary arguments here
             self.addIdeaHandler()            
 
 #################
@@ -246,14 +252,21 @@ class CreateController(BaseController):
 #################
 
     @h.login_required
-    def addResourceHandler(self, parentCode, parentURL):
+    def addResourceHandler(self):
+        log.info(vars(c.authuser))
+        log.info(c.privs)
         if c.w:
             parent = c.w
-        else:
+        elif c.initiative:
             parent = c.initiative
             userLib.setUserPrivs()
             c.w = None
-        payload = json.loads(request.body)
+        else:
+            c.w = None
+            parent = None
+            userLib.setUserPrivs()
+            
+        payload = request.params
         if 'title' not in payload:
             return redirect(session['return_to'])
         title = payload['title'].strip()
@@ -261,19 +274,34 @@ class CreateController(BaseController):
             return redirect(session['return_to'])
         if 'link' not in payload:
             return redirect(session['return_to'])
-        if resourceLib.getResourceByLink(payload['link'], parent):
-            return redirect(session['return_to']) # Link already submitted
+        
+        log.info("2")
+#       
+#       if resourceLib.getResourceByLink(payload['link'], parent):
+#             return redirect(session['return_to']) # Link already submitted
         link = payload['link']
         text = ''
-        if 'text' in payload:
-            text = payload['text'] # Optional
+        log.info("2,1")
+        if 'description' in payload:
+            text = payload['description'] # Optional
         if len(title) > 120:
             title = title[:120]
+        if 'geoScope' in payload:
+            scope = payload['geoScope']
+            
+        else:
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
+        
+        kwargs = {'geoScope' : scope}
+        
         if c.w:
+            log.info("3")
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
         else:
+            log.info("4")
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text, parent = parent)
         if newResource:
+            log.info("5")
             alertsLib.emailAlerts(newResource)
             jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
             return jsonReturn
@@ -286,7 +314,7 @@ class CreateController(BaseController):
 #################           
             
     @h.login_required
-    def addDiscussionHandler(self, workshopCode, workshopURL):
+    def addDiscussionHandler(self):
 
         # check throughout function if add comment was submited via traditional form or json
         # if through json, it's coming from an activity feed and we do NOT want to return redirect
@@ -295,19 +323,21 @@ class CreateController(BaseController):
             payload = request.params  
         elif json.loads(request.body):
             payload = json.loads(request.body)
-
-        if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
-            if request.params:
-                return redirect(session['return_to'])
-            elif json.loads(request.body):
-                return json.dumps({'statusCode':1})
+        
+        c.w = None
+        
+#         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
+#             if request.params:
+#                 return redirect(session['return_to'])
+#             elif json.loads(request.body):
+#                 return json.dumps({'statusCode':1})
        
         if 'title' in payload:
             title = payload['title']
         else: 
             title = False
-        if 'text' in payload:
-            text = payload['text']
+        if 'description' in payload:
+            text = payload['description']
         else:
             text = ''
 
@@ -323,7 +353,7 @@ class CreateController(BaseController):
             d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
                 title = title, text = text, workshop = c.w, privs = c.privs, role = None)
             alertsLib.emailAlerts(d.d)
-            commit(c.w)
+            #commit(c.w)
         
         if request.params:
             return redirect(utils.thingURL(c.w, d.d))

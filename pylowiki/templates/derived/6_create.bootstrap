@@ -89,6 +89,9 @@
                 		<option value="private">Private</option>
                 	</select>
                 </div>
+                <div ng-show="thing == 'Resource'">
+                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link" name="link" ng-required="thing == 'Resource'"></input>    
+                </div>
                 <div>
 	                <h4>Geographic scope</h4>
                     ${ng_lib.ngGeoSelect()}

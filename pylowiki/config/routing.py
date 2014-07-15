@@ -192,6 +192,8 @@ def make_map():
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler')
     map.connect('/{initiative:initiatives?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler') 
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource')
+    #show resource without a parent
+    map.connect('/resource/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResourceSingle')
     map.connect('/{initiative:initiatives?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}/thread/{commentCode}{end:/?}', controller = 'resource', action = 'thread') 
     

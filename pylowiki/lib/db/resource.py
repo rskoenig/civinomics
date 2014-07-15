@@ -237,13 +237,14 @@ def editResource(resource, title, text, link, owner):
         return False
 
 # Object
-def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
+def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None, **kwargs):
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
     eObj = getEObj(link)
     if not eObj:
         return False
-        
+    if 'geoScope' in kwargs:
+        a['geoScope'] = kwargs['geoScope']
     a = Thing('resource', owner.id)
     a['link'] = link
     setAttributes(a, eObj)

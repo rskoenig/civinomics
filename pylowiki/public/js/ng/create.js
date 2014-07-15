@@ -20,7 +20,7 @@ function createController($scope, $http) {
 	// Scope
 	$scope.thing = ""
 	$scope.file = "";
-	$scope.thingList = ['Initiative', 'Workshop']
+	$scope.thingList = ['Initiative', 'Workshop', 'Resource', 'Discussion', 'Idea']
 	$scope.id1 = ""
 	$scope.id2 = ""
     $scope.planet = "0"
