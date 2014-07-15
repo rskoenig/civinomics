@@ -244,11 +244,8 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     if not eObj:
         return False
     a = Thing('resource', owner.id)
-    log.info("Hai")
     if 'geoScope' in kwargs:
-        log.info("I have a scope :D")
         a['scope'] = kwargs['geoScope']
-    log.info("Bai")
     a['link'] = link
     setAttributes(a, eObj)
     a['url'] = urlify(title[:30])

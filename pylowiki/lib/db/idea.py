@@ -87,7 +87,7 @@ def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0'):
     except:
         return False
 
-def Idea(user, title, text, workshop, privs, role = None):
+def Idea(user, title, text, workshop, privs, role = None, **kwargs):
     """
         user    ->  The user Thing creating the idea
         title   ->  The idea itself, in string format.
@@ -104,12 +104,18 @@ def Idea(user, title, text, workshop, privs, role = None):
     idea['downs'] = '0'
     idea['views'] = '0'
     idea['url'] = urlify(title[:20])
+    if 'geoScope' in kwargs:
+        idea['scope'] = kwargs['geoScope']
     idea = generic.addedItemAs(idea, privs, role)
     commit(idea)
     idea['urlCode'] = toBase62(idea)
-    d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
+    if workshop is not None:
+        d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
+        idea = generic.linkChildToParent(idea, workshop)
+    else:
+        d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, privs = privs, role = role)
+
     idea['discussion_child'] = d.d['urlCode']
-    idea = generic.linkChildToParent(idea, workshop)
     idea = generic.linkChildToParent(idea, user)
     commit(idea)
     return idea

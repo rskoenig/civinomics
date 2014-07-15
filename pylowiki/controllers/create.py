@@ -43,6 +43,7 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.images          as imageLib
 import pylowiki.lib.db.resource         as  resourceLib
 import pylowiki.lib.db.discussion       as  discussionLib
+import pylowiki.lib.db.idea       as  ideaLib
 import pylowiki.lib.alerts              as  alertsLib
 
 import simplejson as json
@@ -56,6 +57,7 @@ class CreateController(BaseController):
         c.user = None
         if action == 'createThing' and id2 is not None and id3 is not None:
             c.user = userLib.getUserByCode(id2)
+            userLib.setUserPrivs()
             if not c.user:
                 abort(404)
 
@@ -275,38 +277,35 @@ class CreateController(BaseController):
         if 'link' not in payload:
             return redirect(session['return_to'])
         
-        log.info("2")
 #       
 #       if resourceLib.getResourceByLink(payload['link'], parent):
 #             return redirect(session['return_to']) # Link already submitted
         link = payload['link']
         text = ''
-        log.info("2,1")
         if 'description' in payload:
             text = payload['description'] # Optional
         if len(title) > 120:
             title = title[:120]
+            
         if 'geoScope' in payload:
             log.info("it has a scope in create")
             scope = payload['geoScope']
         else:
             log.info("still has a scope")
             scope = '0|0|united-states|0|0|0|0|0|0|0'
-        
         kwargs = {'geoScope' : scope}
         
         if c.w:
-            log.info("3")
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
         else:
-            log.info("4")
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text, parent = parent, **kwargs)
         if newResource:
             log.info("5")
             alertsLib.emailAlerts(newResource)
             log.info(vars(newResource))
-            jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
-            return jsonReturn
+            redirectUrl = "/resource/" + newResource['urlCode'] +"/"+ newResource['url']
+            log.info(redirectUrl)
+            redirect(redirectUrl)
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
             
@@ -342,23 +341,31 @@ class CreateController(BaseController):
             text = payload['description']
         else:
             text = ''
-
+            
+        if 'geoScope' in payload:
+            log.info("it has a scope in create")
+            scope = payload['geoScope']
+        else:
+            log.info("still has a scope")
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
+        kwargs = {'geoScope' : scope}
+        
         if not title or title=='':
             if request.params:
                 return redirect(session['return_to'])
             elif json.loads(request.body):
                 return json.dumps({'statusCode':1})
-
         else:
             if len(title) > 120:
                 title = title[:120]
-            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
-                title = title, text = text, workshop = c.w, privs = c.privs, role = None)
+            
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'general',\
+                title = title, text = text, privs = c.privs, role = None, **kwargs)
             alertsLib.emailAlerts(d.d)
             #commit(c.w)
         
         if request.params:
-            return redirect(utils.thingURL(c.w, d.d))
+            return d
         elif json.loads(request.body):
             return json.dumps({'statusCode':2})
 
@@ -368,7 +375,7 @@ class CreateController(BaseController):
 #################             
 
     @h.login_required
-    def addIdeaHandler(self, workshopCode, workshopURL):
+    def addIdeaHandler(self):
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
 
@@ -380,17 +387,24 @@ class CreateController(BaseController):
         elif json.loads(request.body):
             payload = json.loads(request.body)
 
-        if 'submit' not in payload or 'title' not in payload:
+        if 'title' not in payload:
             log.info("submit or title not in req params")
             if request.params:
                 return redirect(session['return_to'])
             elif json.loads(request.body):
                 return json.dumps({'statusCode':1})
         title = payload['title'].strip()
-        if 'text' in payload:
-            text = payload['text']
+        if 'description' in payload:
+            text = payload['description']
         else:
             text = ''
+        if 'geoScope' in payload:
+            log.info("it has a scope in create")
+            scope = payload['geoScope']
+        else:
+            log.info("still has a scope")
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
+        kwargs = {'geoScope' : scope}
         if title == '':
             log.info("title is blank")
             if request.params:
@@ -399,7 +413,7 @@ class CreateController(BaseController):
                 return json.dumps({'statusCode':1})
         if len(title) > 120:
             title = title[:120]
-        newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
+        newIdea = ideaLib.Idea(c.authuser, title, text, None, c.privs, **kwargs)
         log.info("made new idea")
         alertsLib.emailAlerts(newIdea)
         if iPhoneApp:
@@ -416,7 +430,7 @@ class CreateController(BaseController):
             #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})   
         elif request.params:
-            return redirect(utils.thingURL(c.w, newIdea))
+            return newIdea
         elif json.loads(request.body):
             return json.dumps({'statusCode':2})
 

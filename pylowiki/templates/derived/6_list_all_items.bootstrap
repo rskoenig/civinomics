@@ -130,8 +130,16 @@
                         % elif itemType in ['idea', 'discussion', 'resource'] and 'workshopCode' in item:
                             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
                             <td><a ${lib_6.thingLinkRouter(item, workshop)} class="expandable">${item['title']}</a></td>
-                        % elif itemType in ['idea', 'discussion', 'resource'] and 'workshopCode' not in item and 'initiativeCode' not in item:
+                        % elif itemType in ['discussion', 'resource'] and 'workshopCode' not in item and 'initiativeCode' not in item:
                             <td><a href="/resource/${item['urlCode']}/${item['url']}"} class="expandable">${item['title']}</a></td>
+                        % elif itemType == 'idea' and 'workshopCode' not in item:
+                            <td>
+                            % if 'urlCode' in item:
+                            <a href="/resource/${item['urlCode']}/${item['url']}"} class="expandable">${item['title']}</a>
+                            %else:
+                            ${item['title']}
+                            %endif
+                            </td>
                         % elif itemType == 'comment' and 'workshopCode' in item:
                             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
                             <td><a ${lib_6.thingLinkRouter(item, workshop, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a></td>
