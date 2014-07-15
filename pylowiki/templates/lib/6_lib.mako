@@ -1947,12 +1947,15 @@
     <%  
         try:
           try:
+            log.info(item['scope'])
             scopeList = item['scope']
           except KeyError:
             scopeList = item['workshop_public_scope']
         except:
           scopeList = "0|0|0|0|0|0|0|0|0|0"
 
+
+        log.info(scopeList)
         scopeList = scopeList.split('|')
         country = scopeList[2].replace("-", " ")
         state = scopeList[4].replace("-", " ")
@@ -1980,11 +1983,13 @@
     <%  
         try:
           try:
+            
             scopeList = item['scope']
           except KeyError:
             scopeList = item['workshop_public_scope']
         except:
           scopeList = "0|0|0|0|0|0|0|0|0|0"
+
 
         scopeList = scopeList.split('|')
         country = scopeList[2].replace("-", " ")

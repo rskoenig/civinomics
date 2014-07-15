@@ -287,9 +287,10 @@ class CreateController(BaseController):
         if len(title) > 120:
             title = title[:120]
         if 'geoScope' in payload:
+            log.info("it has a scope in create")
             scope = payload['geoScope']
-            
         else:
+            log.info("still has a scope")
             scope = '0|0|united-states|0|0|0|0|0|0|0'
         
         kwargs = {'geoScope' : scope}
@@ -299,10 +300,11 @@ class CreateController(BaseController):
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
         else:
             log.info("4")
-            newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text, parent = parent)
+            newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text, parent = parent, **kwargs)
         if newResource:
             log.info("5")
             alertsLib.emailAlerts(newResource)
+            log.info(vars(newResource))
             jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
             return jsonReturn
         else:
