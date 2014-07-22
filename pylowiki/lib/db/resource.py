@@ -246,6 +246,7 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     a = Thing('resource', owner.id)
     if 'geoScope' in kwargs:
         a['scope'] = kwargs['geoScope']
+        a['public'] = '1'
     a['link'] = link
     setAttributes(a, eObj)
     a['url'] = urlify(title[:30])

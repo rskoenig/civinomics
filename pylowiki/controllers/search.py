@@ -759,6 +759,7 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             log.info("searchIdeas type geo")
             ideas = ideaLib.searchIdeas('workshop_public_scope', self.query)
+            ideas += ideaLib.searchIdeas('scope', self.query)
         else:
             log.info("searchIdeas type title")
             ideas = ideaLib.searchIdeas('title', self.query)

@@ -106,6 +106,7 @@ def Idea(user, title, text, workshop, privs, role = None, **kwargs):
     idea['url'] = urlify(title[:20])
     if 'geoScope' in kwargs:
         idea['scope'] = kwargs['geoScope']
+        idea['public'] = '1'
     idea = generic.addedItemAs(idea, privs, role)
     commit(idea)
     idea['urlCode'] = toBase62(idea)
@@ -115,6 +116,7 @@ def Idea(user, title, text, workshop, privs, role = None, **kwargs):
     else:
         d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, privs = privs, role = role)
 
+	
     idea['discussion_child'] = d.d['urlCode']
     idea = generic.linkChildToParent(idea, user)
     commit(idea)

@@ -146,6 +146,7 @@ class Discussion(object):
         d['url'] = urlify(title)
         if 'geoScope' in kwargs:
             d['scope'] = kwargs['geoScope']
+            d['public'] = '1'
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
         # Optional arguments
         if 'workshop' in kwargs:
