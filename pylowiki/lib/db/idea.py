@@ -81,7 +81,7 @@ def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0', hasw
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('disabled', disabled)))
         if hasworkshop:
-            q.filter(Thing.data.any(wc('workshop_searchable', '1')))
+            q = q.filter(Thing.data.any(wc('workshop_searchable', '1')))
         if count:
             return q.count()
         return q.all()

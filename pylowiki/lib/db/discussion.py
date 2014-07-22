@@ -86,7 +86,7 @@ def editDiscussion(discussion, title, text, owner):
         log.error('ERROR: Failed to edit discussion')
         return False
 
-def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = False, rootDiscussions = True):
+def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = False, rootDiscussions = True, hasworkshop = True):
     try:
         if type(keys) != type([]):
             keys = [keys]
@@ -96,10 +96,11 @@ def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = Fal
                 .filter_by(objType = 'discussion')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
         if rootDiscussions:
             q = q.filter(Thing.data.any(wc('discType', 'general')))
+        if hasworkshop:
+            q = q.filter(Thing.data.any(wc('workshop_searchable', '1')))
         if count:
             return q.count()
         return q.all()
