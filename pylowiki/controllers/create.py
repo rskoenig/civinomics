@@ -403,7 +403,7 @@ class CreateController(BaseController):
             scope = payload['geoScope']
         else:
             log.info("still has a scope")
-            scope = '0|0|united-states|0|0|0|0|0|0|0'
+            scope = '||united-states|0|0|0|0|0|0|0'
         kwargs = {'geoScope' : scope}
         if title == '':
             log.info("title is blank")

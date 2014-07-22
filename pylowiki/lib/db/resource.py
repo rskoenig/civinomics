@@ -147,8 +147,9 @@ def getAllResources(deleted = '0', disabled = '0'):
     except:
         return False
 
-def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False):
+def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False, hasworkshop = True):
     try:
+        log.info("Keys are %s, Values are %s", keys, values)
         if type(keys) != type([]):
             keys = [keys]
             values = [values]
@@ -156,9 +157,12 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'resource')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
-                .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
-                .filter(Thing.data.any(reduce(sa.or_, m)))
+                .filter(Thing.data.any(wc('disabled', disabled)))
+        log.info(q)
+        if hasworkshop:
+            q.filter(Thing.data.any(wc('workshop_searchable', '1')))        
+        q.filter(Thing.data.any(reduce(sa.or_, m)))
+        log.info(q)
         if count:
             return q.count()
         return q.all()

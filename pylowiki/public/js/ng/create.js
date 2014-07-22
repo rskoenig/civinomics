@@ -29,10 +29,15 @@ function createController($scope, $http) {
 	$scope.county = "0"
 	$scope.city = "0"
 	$scope.postal = "0"
-	$scope.scope = "0|0|united-states|0|0|0|0|0|0|0"
+	$scope.scope = "||united-states||0||0||0|0"
 	
 	$scope.updateScope = function(){
-        $scope.scope = '0|0|' + $scope.country + '|0|' + $scope.state + '|0|' + $scope.county + '|0|' + $scope.city + '|0|' + $scope.postal;
+		if ($scope.thing == "Initiative"){
+			$scope.scope = '0|0|' + $scope.country + '|0|' + $scope.state + '|0|' + $scope.county + '|0|' + $scope.city + '|0|' + $scope.postal;
+		}
+		else{
+	        $scope.scope = '||' + $scope.country + '||' + $scope.state + '||' + $scope.county + '||' + $scope.city + '|' + $scope.postal;
+        }
         $scope.scope = $scope.scope.toLowerCase().replace(/ /g, '-')
 	}
 	

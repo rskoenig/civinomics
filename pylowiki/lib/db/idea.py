@@ -74,13 +74,14 @@ def isAdopted(idea):
         
     return False
 
-def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0'):
+def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0', hasworkshop = True):
     try:
         q = meta.Session.query(Thing).filter_by(objType = 'idea')\
             .filter(Thing.data.any(wcl(key, value)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
-            .filter(Thing.data.any(wc('workshop_searchable', '1')))
+            .filter(Thing.data.any(wc('disabled', disabled)))
+        if hasworkshop:
+            q.filter(Thing.data.any(wc('workshop_searchable', '1')))
         if count:
             return q.count()
         return q.all()
