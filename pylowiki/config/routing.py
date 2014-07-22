@@ -203,6 +203,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/discussion/{handler:handler/?}', controller = 'discussion', action = 'addDiscussionHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'topic', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', revisionCode = '')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}/thread/{revisionCode}{end:/?}', controller = 'discussion', action = 'thread', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', revisionCode = '{revisionCode}')
+    #show discussion without a parent
+    map.connect('/discussion/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'showDiscussionSingle')
+
 
     # Ideas
     map.connect('/idea/{ideaCode}/{ideaURL}', controller = 'idea', action = 'showJsonIdea', ideaCode='ideaCode', ideaURL='ideaURL')
@@ -212,6 +215,10 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{idea:ideas?}/{handler:handler/?}', controller = 'idea', action = 'addIdeaHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{idea:ideas?}/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showJsonIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', ideaCode = '{ideaCode}', ideaURL = '{ideaURL}')    
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/ideas/get{end:/?}', controller = 'workshop', action = 'workshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    #show resource without a parent
+    map.connect('/idea/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showIdeaSingle')
+
+    
     # ADD HERE: threaded discussion route
 
     # Cofacilitation invitation and response
@@ -428,6 +435,7 @@ def make_map():
     # Create #
     ###############
     map.connect('/create{end:/?}', controller = 'create', action = 'showCreateForm')
+    map.connect('/create/geo/{thingType}/{geoString}{end:/?}', controller = 'create', action = 'showCreateFormGeo')
     map.connect('/create/{id1}/{id2}/{id3}', controller = 'create', action = 'createThing', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
 
     ###############

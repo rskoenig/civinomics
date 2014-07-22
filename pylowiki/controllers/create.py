@@ -66,6 +66,11 @@ class CreateController(BaseController):
         c.tagList = getTagCategories()
         return render('/derived/6_create.bootstrap')
 
+    def showCreateFormGeo(self, thingType, geoString):
+        c.tagList = getTagCategories()
+        c.geoString = geoString
+        c.thingType = thingType
+        return render('/derived/6_create.bootstrap')
     
     def createThing(self, id1):
         if id1 == "Initiative":
@@ -293,8 +298,14 @@ class CreateController(BaseController):
         else:
             log.info("still has a scope")
             scope = '0|0|united-states|0|0|0|0|0|0|0'
+
         kwargs = {'geoScope' : scope}
-        
+
+        if 'tags' in payload:
+        	tags = payload['tags']
+        	kwargs['tags'] = tags
+			
+		
         if c.w:
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
         else:
@@ -302,9 +313,7 @@ class CreateController(BaseController):
         if newResource:
             log.info("5")
             alertsLib.emailAlerts(newResource)
-            log.info(vars(newResource))
             redirectUrl = "/resource/" + newResource['urlCode'] +"/"+ newResource['url']
-            log.info(redirectUrl)
             redirect(redirectUrl)
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
@@ -350,6 +359,10 @@ class CreateController(BaseController):
             scope = '0|0|united-states|0|0|0|0|0|0|0'
         kwargs = {'geoScope' : scope}
         
+        if 'tags' in payload:
+        	tags = payload['tags']
+        	kwargs['tags'] = tags
+        
         if not title or title=='':
             if request.params:
                 return redirect(session['return_to'])
@@ -364,10 +377,10 @@ class CreateController(BaseController):
             alertsLib.emailAlerts(d.d)
             #commit(c.w)
         
-        if request.params:
-            return d
-        elif json.loads(request.body):
-            return json.dumps({'statusCode':2})
+        log.info(vars(d.d))
+        if d:
+            redirectUrl = "/discussion/" + d.d['urlCode'] +"/"+ d.d['url']
+            redirect(redirectUrl)
 
 #################
 # Ideas
@@ -404,7 +417,13 @@ class CreateController(BaseController):
         else:
             log.info("still has a scope")
             scope = '||united-states|0|0|0|0|0|0|0'
+        
         kwargs = {'geoScope' : scope}
+        
+        if 'tags' in payload:
+        	tags = payload['tags']
+        	kwargs['tags'] = tags
+        
         if title == '':
             log.info("title is blank")
             if request.params:
@@ -429,10 +448,11 @@ class CreateController(BaseController):
             response.headers['Content-type'] = 'application/json'
             #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})   
-        elif request.params:
-            return newIdea
-        elif json.loads(request.body):
-            return json.dumps({'statusCode':2})
+        if newIdea:
+            log.info("5")
+            alertsLib.emailAlerts(newIdea)
+            redirectUrl = "/idea/" + newIdea['urlCode'] +"/"+ newIdea['url']
+            redirect(redirectUrl)
 
     
 #################

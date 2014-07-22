@@ -758,13 +758,16 @@ class SearchController(BaseController):
             entry['date'] = d.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
             if hasworkshop:
-                for title in d['workshop_category_tags'].split('|'):
-                    if title and title != '':
-                        tagMapping = {}
-                        tagMapping['title'] = title
-                        tagMapping['colour'] = titleToColourMapping[title]
-                        tagList.append(tagMapping)
-                entry['tags'] = tagList
+                tags = d['workshop_category_tags']
+            else:
+                tags = d['tags']
+            for title in tags.split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -845,26 +848,31 @@ class SearchController(BaseController):
                 entry['workshopTitle'] = entry['workshop_title'] = ""
             #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(idea.owner)
+            
             entry['authorHash'] = md5(u['email']).hexdigest()
-
             entry['authorCode'] = entry['userCode'] = idea['userCode']
             entry['authorURL'] = entry['user_url'] = idea['user_url']
             entry['authorName'] = entry['user_name'] = idea['user_name']
+            
             # dont need to look up the idea here
             #thing = ideaLib.getIdea(idea['urlCode'])
             #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
+            
             if hasworkshop:
-                for title in idea['workshop_category_tags'].split('|'):
-                    if title and title != '':
-                        tagMapping = {}
-                        tagMapping['title'] = title
-                        tagMapping['colour'] = titleToColourMapping[title]
-                        tagList.append(tagMapping)
-                entry['tags'] = tagList
+                tags = idea['workshop_category_tags']
             else:
-                entry['tags'] = ""
+                tags = idea['tags']
+            
+            for title in tags.split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             log.info("searchIdeas return len result == 0")

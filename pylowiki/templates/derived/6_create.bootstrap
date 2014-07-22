@@ -2,7 +2,7 @@
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <div  ng-controller="createController">
-<h1>Create New {{thing}}</h1>
+<h1>Create {{thing}}</h1>
 % if c.authuser:
     <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
 %endif
@@ -25,12 +25,13 @@
                     <textarea class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="Description" name="description"></textarea>        
                 </div>
                 <div>
-                	" "
                 </div>
-                <br/>
-                  
+
+                %if c.thingType:
+                <input type="hidden" ng-model="thing" value="${c.thingType}">
+                %endif
+                <div ng-show="thing == 'Initiative' || thing == 'Workshop'">
                 <hr>
-                <div>
                 <p class="lead">{{thing}} Images</p>
                 <h4>{{thing}} Photo</h4>
 				        <input type="file" name="avatar" id="imgAvatar" />
@@ -41,20 +42,14 @@
 				</div>
 				
 			
-                <hr>
+          
                 <div>
-                    <select ng-model="tag">
+                      <hr>
+                    <select name="tags" ng-model="tag">
                         <option value="">Tags</option>
                         % for tag in c.tagList:
                             <option value="${tag}"> ${tag}</option>
                         % endfor
-                    </select>
-                    
-                    <select ng-model="objType">
-                        <option value="">Type</option>        
-                        <option value="initiative">Initiative</option>        
-                        <option value="ballot_measure">Ballot Measure</option>        
-                        <option value="candidate">Candidate</option>        
                     </select>
                 </div>
                 <div>
@@ -94,6 +89,10 @@
                 </div>
                 <div>
 	                <h4>Geographic scope</h4>
+	                % if c.geoString:
+	                You have selected the geographic scope: ${c.geoString} <br/>
+
+	                % endif
                     ${ng_lib.ngGeoSelect()}
                 </div>
                 <button type="submit" class="btn btn-large btn-success pull-right">Submit</button>

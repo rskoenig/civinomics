@@ -108,6 +108,8 @@ def Idea(user, title, text, workshop, privs, role = None, **kwargs):
     if 'geoScope' in kwargs:
         idea['scope'] = kwargs['geoScope']
         idea['public'] = '1'
+    if 'tags' in kwargs:
+            idea['tags'] = kwargs['tags']
     idea = generic.addedItemAs(idea, privs, role)
     commit(idea)
     idea['urlCode'] = toBase62(idea)

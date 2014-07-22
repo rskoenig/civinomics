@@ -148,6 +148,8 @@ class Discussion(object):
         if 'geoScope' in kwargs:
             d['scope'] = kwargs['geoScope']
             d['public'] = '1'
+        if 'tags' in kwargs:
+            d['tags'] = kwargs['tags']
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
         # Optional arguments
         if 'workshop' in kwargs:
