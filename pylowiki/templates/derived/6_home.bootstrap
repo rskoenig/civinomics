@@ -111,6 +111,7 @@
                     </div>
                     
                     ###Conditional Fields
+                    
                     <div ng-show="thing == 'Workshop'">
 	                	<h4>Privacy level</h4>
 	                	<select ng-model="workshopAccess" name="privacy" ng-required="thing == 'Workshop'">
@@ -133,7 +134,16 @@
 	                        </div>
 	                    </div>
                     </div>
-                    
+                    <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'">
+		                <hr>
+		                <p class="lead">{{thing}} Images</p>
+		                <h5>{{thing}} Photo</h5>
+						        <input type="file" name="avatar" id="imgAvatar" />
+						        <img id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
+		                <h4>Cover Photo</h4>
+						        <input type='file' id="imgCover" name="cover" />
+						        <img id="cover" name="cover" src="#" alt="your cover image" />
+					</div>
                     ###Extra info (hidden)
 		                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
 		                <input type="hidden" name="deadline" value="{{date}}" \>
