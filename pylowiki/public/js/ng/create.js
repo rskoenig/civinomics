@@ -30,6 +30,7 @@ function createController($scope, $http) {
 	$scope.city = "0"
 	$scope.postal = "0"
 	$scope.scope = "||united-states||0||0||0|0"
+	$scope.showGeoSelect = false
 	
 	$scope.updateScope = function(){
 		if ($scope.thing == "Initiative"){
@@ -130,4 +131,14 @@ function createController($scope, $http) {
     $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'shortDate'];
     $scope.format = $scope.formats[0];
 
+	$scope.activateGeoSelect = function(){
+		console.log("in activate geo select");
+		console.log($scope.showGeoSelect);
+		$scope.showGeoSelect = !$scope.showGeoSelect;
+		console.log($scope.showGeoSelect);
+	}
+	
+	$scope.setGeoScope = function(s){
+		$scope.scope = s;
+	}
 }

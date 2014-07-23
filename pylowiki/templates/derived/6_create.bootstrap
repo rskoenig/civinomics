@@ -11,8 +11,13 @@
     <div class="well span8">
             <!--{{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}{{date}}-->
             <span>Create: </span>
-            <select ng-model="thing">
-				<option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
+            <select ng-model="thing" 
+              %if c.thingType:
+                 ng-init="thing='${c.thingType}'"
+              %endif 
+              >
+				<option ng-repeat="type in thingList" ng-value="type"
+				>{{type}}</option>
 			</select>
 			<br/><br/>
             <form enctype="multipart/form-data"  action="/create/{{thing}}/{{authorCode}}/{{authorUrl}}" method="POST">
@@ -26,10 +31,6 @@
                 </div>
                 <div>
                 </div>
-
-                %if c.thingType:
-                <input type="hidden" ng-model="thing" value="${c.thingType}">
-                %endif
                 <div ng-show="thing == 'Initiative' || thing == 'Workshop'">
                 <hr>
                 <p class="lead">{{thing}} Images</p>
@@ -90,11 +91,32 @@
                 <div>
 	                <h4>Geographic scope</h4>
 	                % if c.geoString:
-	                You have selected the geographic scope: ${c.geoString} <br/>
-
+	                <span ng-show="!showGeoSelect">
+	                	<span ng-if="!showGeoSelect">{{setGeoScope('${c.geoScope}')}}</span>
+		                Your selected geographic scope is: <br/>
+			                ${c.geoString['country']}
+		                	% if 'state' in c.geoString:
+			                	- ${c.geoString['state']}
+			                %endif
+			                % if 'county' in c.geoString:
+							    - ${c.geoString['county']}
+							%endif	
+							% if 'city' in c.geoString:
+								- ${c.geoString['city']}
+							%endif
+							% if 'postal' in c.geoString:
+								- ${c.geoString['postal']}
+							%endif
+		                <br/>
+		                <a ng-click="activateGeoSelect()"> Change? </a>
+	                </span>
+	                <span ng-show="showGeoSelect">${ng_lib.ngGeoSelect()}
+	                <a ng-click="activateGeoSelect()"> Back to your previous selection? </a>
+	                </span>
+	                %else:
+	                	${ng_lib.ngGeoSelect()}
 	                % endif
-                    ${ng_lib.ngGeoSelect()}
-                </div>
+                    </div>
                 <button type="submit" class="btn btn-large btn-success pull-right">Submit</button>
                 </div>
         </form>

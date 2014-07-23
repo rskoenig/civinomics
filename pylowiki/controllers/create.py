@@ -45,6 +45,7 @@ import pylowiki.lib.db.resource         as  resourceLib
 import pylowiki.lib.db.discussion       as  discussionLib
 import pylowiki.lib.db.idea       as  ideaLib
 import pylowiki.lib.alerts              as  alertsLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 
 import simplejson as json
 
@@ -68,7 +69,9 @@ class CreateController(BaseController):
 
     def showCreateFormGeo(self, thingType, geoString):
         c.tagList = getTagCategories()
-        c.geoString = geoString
+        c.geoScope = geoString
+        c.geoString = geoInfoLib.getFullScope(geoString)
+        log.info("I'm requesting to create a(n) %s", thingType)
         c.thingType = thingType
         return render('/derived/6_create.bootstrap')
     
