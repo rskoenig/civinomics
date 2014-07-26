@@ -113,9 +113,114 @@ class BallotController(BaseController):
             
         #log.info("done with before, action is %s"%action)
 
-    def showSampleBallot(self):
+    def showSampleBallot(self, id1, id2):
+        c.postalCode = id1
+        c.electionDate = id2
+        scopeList = c.scope.split('|')
+        loop = 0
+        for item in scopeList:
+            if item == '':
+                scopeList[loop] = '0'
+            loop += 1
+            
+        countryScopeList = scopeList[0:3]
+        countryScope = '|'.join(countryScopeList) + '|0|0|0|0|0|0|0'
         
+        stateScopeList = scopeList[0:5]
+        stateScope = '|'.join(stateScopeList) + '|0|0|0|0|0'
+
+        countyScopeList = scopeList[0:7]
+        countyScope = '|'.join(countyScopeList) + '|0|0|0'
+		
+        cityScopeList = scopeList[0:9]
+        cityScope = '|'.join(cityScopeList) + '|0'
+		
+        scopes = [countryScope, stateScope, countyScope, cityScope]
         
+        c.electionInfo = []
+        electionDates = {}
+        for scope in scopes:
+            elections = ballotLib.getElectionsForScope(scope)
+            if elections:
+                for item in elections:
+                    electionDate = item['electionDate']
+                    if electionDate != c.electionDate:
+                        continue
+                    scopeInfo = utils.getPublicScope(item['scope'])
+                    flag = scopeInfo['flag']
+                    name = scopeInfo['level'].title() + ' of ' + scopeInfo['name']
+ 
+                    scope = item['scope']
+                    if electionDate not in electionDates:
+                        electionDates[electionDate] = {}
+                        electionDates[electionDate]['flags'] = []
+                        electionDates[electionDate]['niceDate'] = datetime.datetime.strptime(electionDate, '%Y-%m-%d').strftime('%A %B %d, %Y')
+                        electionDates[electionDate]['href'] = '/showSampleBallot/' + c.postalCode + '/' + electionDate
+                        electionDates[electionDate]['scopes'] = []
+                        
+                    electionDates[electionDate]['flags'].append(flag)
+                    
+                    scopeEntry = {}
+                    scopeEntry['flag'] = flag
+                    scopeEntry['name'] = name
+                    scopeEntry['ballots'] = []
+                    
+                    # get the ballots for the election
+                    ballots = ballotLib.getBallotsForElection(item['urlCode'])
+                    if not ballots:
+                        ballots = []
+
+                    for ballot in ballots:
+                        if ballot.objType == 'ballotUnpublished':
+                            continue
+                        entry = {}
+                        entry['canEdit'] = 'no'
+                        entry['objType'] = 'ballot'
+                        entry['ballotSlate'] = ballot['ballotSlate']
+                        entry['slateInfo'] = ballot['slateInfo']
+                        entry['url']= ballot['url']
+                        entry['urlCode']=ballot['urlCode']
+                        entry['title'] = ballot['title']
+                        entry['text'] = ballot['text']
+                        entry['number'] = ballot.sort
+                        entry['views'] = ballot['views']
+                        entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
+                        entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+                        entry['instructions'] = m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML)
+                        entry['ballotItems'] = []
+                        
+                        # get the ballot items
+                        urlCode = ballot['urlCode']
+                        if ballot['ballotSlate'] == 'measures':
+                            ballotItems = ballotLib.getBallotMeasures(urlCode)
+                        else:
+                            ballotItems = ballotLib.getBallotCandidates(urlCode)
+                            
+                        for item in ballotItems:
+                            bItem = {}
+                            bItem['urlCode'] = item['urlCode']
+                            bItem['title'] = item['title']
+                            bItem['text'] = item['text']
+                            bItem['numComments'] = item['numComments']
+                            views = int(item['views'])
+                            views += 1
+                            item['views'] = str(views)
+                            dbHelpers.commit(item)
+                            bItem['views'] = item['views']
+                            if ballot['ballotSlate'] == 'measures':
+                                bItem['ballotMeasureOfficialURL'] = item['ballotMeasureOfficialURL']
+                            else:
+                                bItem['ballotCandidateOfficialURL'] = item['ballotCandidateOfficialURL']
+                                bItem['ballotCandidateParty'] = item['ballotCandidateParty']
+                            entry['ballotItems'].append(bItem)
+                            
+                        scopeEntry['ballots'].append(entry)
+                            
+                    electionDates[electionDate]['scopes'].append(scopeEntry)
+                            
+        for electionDate in electionDates.keys():
+            c.electionInfo.append(electionDates[electionDate])
+            
         return render('/derived/6_sample_ballot.bootstrap')
         
     def getElectionsForPostalCode(self, id1):
@@ -242,6 +347,33 @@ class BallotController(BaseController):
                         entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
                         entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
                         entry['instructions'] = m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML)
+                        entry['ballotItems'] = []
+                        
+                        # get the ballot items
+                        urlCode = ballot['urlCode']
+                        if ballot['ballotSlate'] == 'measures':
+                            ballotItems = ballotLib.getBallotMeasures(urlCode)
+                        else:
+                            ballotItems = ballotLib.getBallotCandidates(urlCode)
+                            
+                        for item in ballotItems:
+                            bItem = {}
+                            bItem['urlCode'] = item['urlCode']
+                            bItem['title'] = item['title']
+                            bItem['text'] = item['text']
+                            bItem['numComments'] = item['numComments']
+                            views = int(item['views'])
+                            views += 1
+                            item['views'] = str(views)
+                            dbHelpers.commit(item)
+                            bItem['views'] = item['views']
+                            if ballot['ballotSlate'] == 'measures':
+                                bItem['ballotMeasureOfficialURL'] = item['ballotMeasureOfficialURL']
+                            else:
+                                bItem['ballotCandidateOfficialURL'] = item['ballotCandidateOfficialURL']
+                                bItem['ballotCandidateParty'] = item['ballotCandidateParty']
+                            entry['ballotItems'].append(bItem)
+                            
                         scopeEntry['ballots'].append(entry)
                             
                     electionDates[electionDate]['scopes'].append(scopeEntry)

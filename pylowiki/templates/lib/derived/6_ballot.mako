@@ -15,6 +15,26 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="showSampleBallot()">
+    % for ballot in c.electionInfo:
+        <div class="media well search-listing">
+            <div class="row">
+                <div class="col-xs-11">
+                    <h4>${ballot['niceDate']}</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-11">
+                    % for flag in ballot['flags']:
+                        <img src="${flag}" width="60" height="40">
+                    % endfor
+                </div>
+            </div>
+            <div class="spacer"></div>
+        </div><!-- media -->
+    % endfor
+</%def>
+
 <%def name="showElectionInfo(election, author)">
     <% scopeInfo = utils.getPublicScope(c.election['scope']) %>
     <div class="row">

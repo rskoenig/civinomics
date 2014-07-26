@@ -9,21 +9,7 @@
 
 <% lib.return_to() %>
 
-<div  ng-init="postalCode=${c.authuser['postalCode']}; electionDate='${c.electionDate}';">
-    <div ng-controller="sampleBallotController">
-        <div ng-show="sampleBallot.length >= 1" ng-cloak>
-            <h2><small>Sample Ballot</small></h2>
-            <div ng-repeat="sampleBallot in sampleBallot">
-                <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
-                    <tr>
-                        ${ng_lib.sample_ballot_listing()}
-                    </tr>
-                </table>
-            <div><!-- ng-repeat -->
-        </div><!-- well -->
-    </div><!-- sampleBallotController -->
-</div>
-<p>
+${bhelpers.showSampleBallot()}
 
 <%def name="extraScripts2()">
     <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
