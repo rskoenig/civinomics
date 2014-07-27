@@ -272,7 +272,7 @@
                         <a href="/unpublish/ballotmeasure/{{urlCode}}" class="btn btn-danger">Yes</a>
                         <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
                         <span id = "unpublish_{{urlCode}}"></span>
-                    </div>
+                    </div><!-- alert -->
                 </div>
                 <ul class="unstyled">
                 <div ng-repeat="rev in revisionList">
@@ -285,7 +285,7 @@
             ${yesNoVoteFooter()}
             ${actions()}
         </div>
-    </div>
+    </div><!-- media -->
     <div class="spacer"></div>
 </%def>
 
@@ -333,7 +333,7 @@
                         <button class="btn btn-success" type="submit" class="btn">Save Item</button>
                     </div><!-- form-group -->
                 </form>
-            </div>
+            </div><!-- collapse -->
             <div id="unpublish-{{urlCode}}" class="collapse" >
                 <div class="alert">
                     <strong>Are you sure you want to send this ballot candidate to the trash?</strong>
@@ -342,18 +342,18 @@
                     <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
                     <span id = "unpublish_{{urlCode}}"></span>
                 </div>
-                </div>
-            </div>
+            </div><!-- collapse -->
             <ul class="unstyled">
-            <div ng-repeat="rev in revisionList">
-                <li><a href="/ballotcandidate/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
-            </div><!-- ng-repeat -->
+                <div ng-repeat="rev in revisionList">
+                    <li><a href="/ballotcandidate/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+                </div><!-- ng-repeat -->
             </ul>
-        </div>
-        <div class="row-fluid">
+        </div><!-- row -->
+        <div class="row">
             ${actions()}
         </div>
-    </div>
+    </div><!-- media -->
+    <div class="spacer"></div>
 </%def>
                         
 

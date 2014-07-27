@@ -59,6 +59,7 @@ function ballotsController($scope, $http) {
                     $scope.mycandidateVotes = data.mycandidateVotes;
                     $scope.totalcandidateVotes = data.totalcandidateVotes;
                     $scope.candidateMax = parseInt(data.candidateMax);
+                    $scope.ballotMsg = $scope.ballotSlate;
 				}
 			}
 			$scope.loading = false;
