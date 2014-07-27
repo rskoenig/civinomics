@@ -65,7 +65,25 @@
                             </div><!-- ng-init -->
                         % endif
                         % if ballot['ballotSlate'] == 'candidates':
-                            <h3>Candidates</h3>
+                            <div class="spacer"></div>
+                            <div ng-init="url = '${ballot['url']}'; code = '${ballot['urlCode']}'; ballotSlate = 'candidates'; candidateMax = '${ballot['slateInfo']}';">
+                                <div ng-controller="ballotsController">
+                                    <div class="row">
+                                        <div class="col-xs-9">
+                                            <div class="centered" ng-show="loading" ng-cloak>
+                                                <i class="icon-spinner icon-spin icon-4x"></i>
+                                            </div><!-- loading -->
+                                            <div ng-repeat="item in activity">
+                                                <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                                                <tr><td>
+                                                    ${ng_lib.ballot_candidate_listing()}
+                                                </td></tr>
+                                                </table>
+                                            </div><!-- ng-repeat -->
+                                        </div><!-- col-xs-9-->
+                                    </div><!-- row -->
+                                </div><!-- ng-controller -->
+                            </div><!-- ng-init -->
                         % endif
                     % endfor
                 </div><!-- col-xs-11 -->
