@@ -14,13 +14,14 @@
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 
 <%def name="showSampleBallot()">
     % for election in c.electionInfo:
         <div class="media well search-listing">
             <div class="row">
                 <div class="col-xs-11">
-                    <h4>${election['niceDate']}</h4>
+                    <h4>Sample Ballot: ${election['niceDate']}</h4>
                 </div>
             </div>
             <div class="row">
@@ -31,46 +32,36 @@
                 </div>
             </div>
             <div class="spacer"></div>
-            % for scopeLevel in election['scopes']:
+        </div><!-- media -->
+        <div class="spacer"></div>
+        % for scopeLevel in election['scopes']:
+            <div class="media well search-listing">
                 <div class="row">
                 <div class="col-xs-11">
                     <img src="${scopeLevel['flag']}" width="60" height="40"> <strong>${scopeLevel['name']}</strong>
                     % for ballot in scopeLevel['ballots']:
                         <p><strong>${ballot['title']}</strong></p>
-                        ${ballot['html']}
+                        ${m.html(ballot['text'], render_flags=m.HTML_SKIP_HTML) | n}
                         <p><strong>Instructions:</strong></p>
-                        ${ballot['instructions']}
+                        ${m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML) | n}
                         % if ballot['ballotSlate'] == 'measures':
-                            <div class="spacer"></div>
-                            <div ng-init="url = ballot.url; code = ballot.urlCode; ballotSlate = ballot.ballotSlate;">
+                            <div ng-init="url = '${ballot['url']}'; code = '${ballot['urlCode']}'; ballotSlate = 'measures';">
                                 <div ng-controller="ballotsController">
                                     <div class="row">
-                                        <div class="col-xs-11">
-                                            % for ballotmeasure in ballot['ballotItems']:
-                                                <div class="row spacer">
-                                                    <div class="col-xs-9 text-left">
-                                                        <h3>${ballotmeasure['title']}</h3>
-                                                    </div>
-                                                </div><!-- row -->
-    
-                                                % if ballotmeasure['ballotMeasureOfficialURL'] != '':
-                                                    <div class="row spacer">
-                                                        <div class="col-xs-9 text-left">
-                                                            Official Web Site: <a href="${ballotmeasure['ballotMeasureOfficialURL']}" target="_blank">${ballotmeasure['ballotMeasureOfficialURL']}</a>
-                                                        </div>
-                                                    </div><!-- row -->
-                                                % endif
-    
-                                                <div class="row spacer">
-                                                    <div class="col-xs-9 text-left">
-                                                        ${m.html(ballotmeasure['text'], render_flags=m.HTML_SKIP_HTML) | n}
-                                                    </div>
-                                                </div><!-- row -->
-    
-                                            % endfor
-                                        </div><!-- col-xs-11 -->
+                                        <div class="col-xs-9">
+                                            <div class="centered" ng-show="loading" ng-cloak>
+                                                <i class="icon-spinner icon-spin icon-4x"></i>
+                                            </div><!-- loading -->
+                                            <div ng-repeat="item in activity">
+                                                <table style="margin-bottom: 0px;" ng-cloak class="activity-item">
+                                                <tr><td>
+                                                    ${ng_lib.ballot_measure_listing()}
+                                                </td></tr>
+                                                </table>
+                                            </div><!-- ng-repeat -->
+                                        </div><!-- col-xs-9 -->
                                     </div><!-- row -->
-                                </div><!-- ng-controller -->
+                                </div>
                             </div><!-- ng-init -->
                         % endif
                         % if ballot['ballotSlate'] == 'candidates':
@@ -79,8 +70,8 @@
                     % endfor
                 </div><!-- col-xs-11 -->
                 </div><!-- row --> 
-            % endfor
-        </div><!-- media -->
+            </div><!-- media -->
+        % endfor
     % endfor
 </%def>
 

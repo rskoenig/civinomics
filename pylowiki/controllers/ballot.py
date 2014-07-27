@@ -116,6 +116,10 @@ class BallotController(BaseController):
     def showSampleBallot(self, id1, id2):
         c.postalCode = id1
         c.electionDate = id2
+        myRatings = {}
+        if 'ratings' in session:
+		    myRatings = session['ratings']
+		    
         scopeList = c.scope.split('|')
         loop = 0
         for item in scopeList:
@@ -199,6 +203,7 @@ class BallotController(BaseController):
                         for item in ballotItems:
                             bItem = {}
                             bItem['urlCode'] = item['urlCode']
+                            bItem['url'] = item['url']
                             bItem['title'] = item['title']
                             bItem['text'] = item['text']
                             bItem['numComments'] = item['numComments']
@@ -212,8 +217,31 @@ class BallotController(BaseController):
                             else:
                                 bItem['ballotCandidateOfficialURL'] = item['ballotCandidateOfficialURL']
                                 bItem['ballotCandidateParty'] = item['ballotCandidateParty']
-                            entry['ballotItems'].append(bItem)
                             
+                            
+                            # user rating
+                            if item['urlCode'] in myRatings:
+                                bItem['rated'] = myRatings[item['urlCode']]
+                                bItem['vote'] = 'voted'
+                            else:
+                                bItem['rated'] = 0
+                                bItem['vote'] = 'nvote'
+
+                            bItem['vote'] = 'nvote'
+                            bItem['voteCount'] = int(item['ups']) + int(item['downs'])
+                            bItem['ups'] = int(item['ups'])
+                            bItem['downs'] = int(item['downs'])
+                            bItem['netVotes'] = int(item['ups']) - int(item['downs'])
+
+                            # comments
+                            discussion = discussionLib.getDiscussionForThing(item)
+                            bItem['discussion'] = discussion['urlCode']
+
+                            bItem['numComments'] = '0'
+                            if 'numComments' in item:
+                                bItem['numComments'] = discussion['numComments']
+                
+                            entry['ballotItems'].append(bItem)
                         scopeEntry['ballots'].append(entry)
                             
                     electionDates[electionDate]['scopes'].append(scopeEntry)

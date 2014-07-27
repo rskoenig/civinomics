@@ -17,7 +17,6 @@ ${bhelpers.showSampleBallot()}
 
 <%def name="headScripts()">
     <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
-    <script src="${lib_6.fingerprintFile('/js/ng/sample_ballot.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/ballots.js')}" type="text/javascript"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
 </%def>
