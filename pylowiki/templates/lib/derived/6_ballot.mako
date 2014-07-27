@@ -16,21 +16,70 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="showSampleBallot()">
-    % for ballot in c.electionInfo:
+    % for election in c.electionInfo:
         <div class="media well search-listing">
             <div class="row">
                 <div class="col-xs-11">
-                    <h4>${ballot['niceDate']}</h4>
+                    <h4>${election['niceDate']}</h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-11">
-                    % for flag in ballot['flags']:
+                    % for flag in election['flags']:
                         <img src="${flag}" width="60" height="40">
                     % endfor
                 </div>
             </div>
             <div class="spacer"></div>
+            % for scopeLevel in election['scopes']:
+                <div class="row">
+                <div class="col-xs-11">
+                    <img src="${scopeLevel['flag']}" width="60" height="40"> <strong>${scopeLevel['name']}</strong>
+                    % for ballot in scopeLevel['ballots']:
+                        <p><strong>${ballot['title']}</strong></p>
+                        ${ballot['html']}
+                        <p><strong>Instructions:</strong></p>
+                        ${ballot['instructions']}
+                        % if ballot['ballotSlate'] == 'measures':
+                            <div class="spacer"></div>
+                            <div ng-init="url = ballot.url; code = ballot.urlCode; ballotSlate = ballot.ballotSlate;">
+                                <div ng-controller="ballotsController">
+                                    <div class="row">
+                                        <div class="col-xs-11">
+                                            % for ballotmeasure in ballot['ballotItems']:
+                                                <div class="row spacer">
+                                                    <div class="col-xs-9 text-left">
+                                                        <h3>${ballotmeasure['title']}</h3>
+                                                    </div>
+                                                </div><!-- row -->
+    
+                                                % if ballotmeasure['ballotMeasureOfficialURL'] != '':
+                                                    <div class="row spacer">
+                                                        <div class="col-xs-9 text-left">
+                                                            Official Web Site: <a href="${ballotmeasure['ballotMeasureOfficialURL']}" target="_blank">${ballotmeasure['ballotMeasureOfficialURL']}</a>
+                                                        </div>
+                                                    </div><!-- row -->
+                                                % endif
+    
+                                                <div class="row spacer">
+                                                    <div class="col-xs-9 text-left">
+                                                        ${m.html(ballotmeasure['text'], render_flags=m.HTML_SKIP_HTML) | n}
+                                                    </div>
+                                                </div><!-- row -->
+    
+                                            % endfor
+                                        </div><!-- col-xs-11 -->
+                                    </div><!-- row -->
+                                </div><!-- ng-controller -->
+                            </div><!-- ng-init -->
+                        % endif
+                        % if ballot['ballotSlate'] == 'candidates':
+                            <h3>Candidates</h3>
+                        % endif
+                    % endfor
+                </div><!-- col-xs-11 -->
+                </div><!-- row --> 
+            % endfor
         </div><!-- media -->
     % endfor
 </%def>
