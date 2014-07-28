@@ -10,12 +10,18 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="profileCurator()">
+
+    
+</%def>
+
 <%def name="profileDashboard()">
     <div class="centered">
         ${lib_6.userImage(c.user, className="avatar avatar-large")}
     </div>
     <div class="section-wrapper" ng-cloak>
         <div class="browse">
+
             %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                 <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
                     <h3 class="section-header">{{fullName}}</h3>
@@ -27,6 +33,30 @@
             %endif
             
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+            % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
+                <p>Community curator for ${c.user['curateLevelTitle']}</p>
+            % endif
+            %if c.isAdmin:
+                <div class="well">
+                % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
+                    <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/nocurate">
+                    Remove as a curator: <button type="submit" class="btn btn-danger">Submit</button>
+                    </form>
+                % else:
+                    <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/curate">
+                    Make a curator for their &nbsp; &nbsp;
+                    <select name="curateLevel">
+                        <option value="8">City</option>
+                        <option value="6" selected>County</option>
+                        <option value="4">State</option>
+                        <option value="2">Country</option>
+                    </select> 
+                    <p><button type="submit" class="btn btn-primary">Submit</button></p>
+                    </form>
+                % endif
+                </div><!-- well -->
+                <div class="spacer"></div>
+            % endif
             % if c.user['greetingMsg'] != '':
                 %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                     <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">

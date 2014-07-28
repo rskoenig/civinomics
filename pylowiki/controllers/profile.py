@@ -735,6 +735,67 @@ class ProfileController(BaseController):
             return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
+            
+    @h.login_required
+    def curate(self, id1, id2):
+        if userLib.isAdmin(c.authuser.id):
+            curateLevel = request.params['curateLevel']
+            scope = geoInfoLib.getGeoScope(c.user['postalCode'], 'United States')
+            scopeList = scope.split('|')
+            if curateLevel == '8':
+                # city
+                scopeName = scopeList[8].title()
+                curateLevelTitle = "City of %s"%scopeName
+                curateList = scopeList[0:8]
+                curateScope = '|'.join(curateList)
+            elif curateLevel == '6':
+                # county
+                scopeName = scopeList[6].title()
+                curateLevelTitle = "County of %s"%scopeName
+                curateList = scopeList[0:6]
+                curateScope = '|'.join(curateList) 
+            elif curateLevel == '4':
+                # state
+                scopeName = scopeList[4].title()
+                curateLevelTitle = "State of %s"%scopeName
+                curateList = scopeList[0:4]
+                curateScope = '|'.join(curateList)
+            elif curateLevel == '2':
+                # country
+                scopeName = scopeList[2].title()
+                curateLevelTitle = "Country of %s"%scopeName
+                curateList = scopeList[0:2]
+                curateScope = '|'.join(curateList)
+            else:
+                abort(404)
+                
+            c.user['curateLevel'] = curateLevel
+            c.user['curateLevelTitle'] = curateLevelTitle
+            c.user['curateScope'] = curateScope
+            dbHelpers.commit(c.user)
+            
+            returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
+                
+            return redirect(returnURL)
+            
+        else:
+            abort(404)
+            
+    @h.login_required
+    def nocurate(self, id1, id2):
+        if userLib.isAdmin(c.authuser.id):
+            c.user['curateLevel'] = ''
+            c.user['curateLevelTitle'] = ''
+            c.user['curateScope'] = ''
+            dbHelpers.commit(c.user)
+            
+            returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
+                
+            return redirect(returnURL)
+            
+        else:
+            abort(404)
+
 
     @h.login_required
     def csv(self, id1, id2):

@@ -401,6 +401,8 @@ def make_map():
     map.connect('/getBallots/{id1}/{id2}', controller = 'profile', action = 'getUserBallots', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/elections', controller = 'profile', action = 'showUserElections', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getElections/{id1}/{id2}', controller = 'profile', action = 'getUserElections', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/curate', controller = 'profile', action = 'curate', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/nocurate', controller = 'profile', action = 'nocurate', id1 = '{id1}', id2 = '{id2}')
 
     
 
