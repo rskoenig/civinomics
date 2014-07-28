@@ -375,33 +375,7 @@ class BallotController(BaseController):
                         entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
                         entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
                         entry['instructions'] = m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML)
-                        entry['ballotItems'] = []
-                        
-                        # get the ballot items
-                        urlCode = ballot['urlCode']
-                        if ballot['ballotSlate'] == 'measures':
-                            ballotItems = ballotLib.getBallotMeasures(urlCode)
-                        else:
-                            ballotItems = ballotLib.getBallotCandidates(urlCode)
-                            
-                        for item in ballotItems:
-                            bItem = {}
-                            bItem['urlCode'] = item['urlCode']
-                            bItem['title'] = item['title']
-                            bItem['text'] = item['text']
-                            bItem['numComments'] = item['numComments']
-                            views = int(item['views'])
-                            views += 1
-                            item['views'] = str(views)
-                            dbHelpers.commit(item)
-                            bItem['views'] = item['views']
-                            if ballot['ballotSlate'] == 'measures':
-                                bItem['ballotMeasureOfficialURL'] = item['ballotMeasureOfficialURL']
-                            else:
-                                bItem['ballotCandidateOfficialURL'] = item['ballotCandidateOfficialURL']
-                                bItem['ballotCandidateParty'] = item['ballotCandidateParty']
-                            entry['ballotItems'].append(bItem)
-                            
+
                         scopeEntry['ballots'].append(entry)
                             
                     electionDates[electionDate]['scopes'].append(scopeEntry)

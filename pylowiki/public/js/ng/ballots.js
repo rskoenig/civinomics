@@ -55,12 +55,9 @@ function ballotsController($scope, $http) {
 			} 
 			else if (data.statusCode === 0){
 				$scope.activity = data.result;
-				if ($scope.ballotSlate == 'candidates') {
-                    $scope.mycandidateVotes = data.mycandidateVotes;
-                    $scope.totalcandidateVotes = data.totalcandidateVotes;
-                    $scope.candidateMax = parseInt(data.candidateMax);
-                    $scope.ballotMsg = $scope.ballotSlate;
-				}
+                $scope.mycandidateVotes = data.mycandidateVotes;
+                $scope.totalcandidateVotes = data.totalcandidateVotes;
+                $scope.candidateMax = parseInt(data.candidateMax);
 			}
 			$scope.loading = false;
 		});

@@ -61,7 +61,7 @@
                                             </div><!-- ng-repeat -->
                                         </div><!-- col-xs-9 -->
                                     </div><!-- row -->
-                                </div>
+                                </div><!-- ng-controller -->
                             </div><!-- ng-init -->
                         % endif
                         % if ballot['ballotSlate'] == 'candidates':
