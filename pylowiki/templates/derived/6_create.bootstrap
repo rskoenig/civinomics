@@ -7,8 +7,6 @@
     <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
 %endif
 <div ng-init="tagList = ${c.tagList}"></div>
-{{tagList}}
-{{thingList}}
 <div class="row-fluid">
     <div class="well span8">
             <!--{{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}{{date}}-->
