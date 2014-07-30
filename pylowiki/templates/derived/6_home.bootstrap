@@ -96,20 +96,21 @@
 						<textarea class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
                     
                     <hr>
-                    <div class="col-xs-5">
-                    <h4>Geographic Scope</h4>
-                    ${ng_helpers.ngGeoSelect()}
-                    </div>
-                    <div class="col-xs-5">
-                    <h4>Tag</h4>
-	                    <select name="tags" ng-model="tag">
-	                        <option value="">Tags</option>
-	                        % for tag in c.tagList:
-	                            <option value="${tag}"> ${tag}</option>
-	                        % endfor
-	                    </select>
-                    </div>
-                    
+                    <div ng-show="thing != ''">
+	                    <div class="col-xs-5">
+	                    <h4>Geographic Scope</h4>
+	                    ${ng_helpers.ngGeoSelect()}
+	                    </div>
+	                    <div class="col-xs-5">
+	                    <h4>Tag</h4>
+		                    <select name="tags" ng-model="tag">
+		                        <option value="">Tags</option>
+		                        % for tag in c.tagList:
+		                            <option value="${tag}"> ${tag}</option>
+		                        % endfor
+		                    </select>
+	                    </div>
+					</div>
                     ###Conditional Fields
                     
                     <div ng-show="thing == 'Workshop'">
@@ -163,6 +164,7 @@
 	                	 </form>   
 	                </div>
 					<br/>
+
 	            </div>
 	            <br/>
 	        </div>
