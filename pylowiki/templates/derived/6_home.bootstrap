@@ -25,6 +25,21 @@
                             <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <a href="#"><img class="thumbnail flag med-flag bottom-space" src="/images/soquelCreek_flag.gif"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#"><img class="thumbnail flag med-flag bottom-space" src="/images/cruzio_flag.gif"></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a href="#"><img class="thumbnail flag med-flag bottom-space" src="/images/digitalNest_flag.gif"></a>
+                        </td>
+                    </tr>
                 </table>
 
                 <div class="btn-group" ng-show="!loading">
@@ -62,11 +77,10 @@
         <div class="col-xs-12" style="margin-top: 5px; margin-bottom: 10px;">
           <ul class="nav nav-pills">
             <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
-            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
+            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Category <b class="caret"></b></a></li>
+            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Object Type <b class="caret"></b></a></li>
             % if c.authuser:
-              <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
-              <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> County Activity</a></li>
-              <li ng-class="{'active' : activityType == '/meetings'}"><a ng-click="getMeetingActivity()"> Upcoming Meetings </a></li>
+              <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Sort By <b class="caret"></b></a></li>
             % endif
           </ul>
         </div>
@@ -143,6 +157,35 @@
                     <div class="top-space" id="resendMessage"></div>
                   </div>
                 % endif
+
+                <div class="well" style="position: relative;">
+
+                  <div style="position: absolute; background-image: url('/images/Seascape_Resort_Aerial.jpg'); background-position: center center; background-size: cover; height: 120px; width: 100%; top: 0; left: 0; border-top-right-radius: 4px; border-top-left-radius: 4px;"></div>
+
+                  <div class="centered">
+                    <a><img class="thumbnail tight flag border" style="width: 200px; position: absolute;z-index: 1; top: 30px; left: 30px;"src="/images/soquelCreek_flag.gif"></a>
+                  </div>
+
+                  <table id="metrics" style="margin-top: 155px;">
+                    <tr>
+                      <td class="clickable" style="padding-left: 0px;">
+                        <span class="workshop-metrics">Members</span><br>
+                          <strong ng-cloak>555</strong>
+                      </td>
+                      <td class="clickable">
+                        <span class="workshop-metrics">Customers</span><br>
+                          <strong ng-cloak>3,724</strong>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <ul class="nav nav-pills workshop-menu" style="width: 100%" id="profileTabs">
+                  <li class="active"><a href="#tab-activity" data-toggle="tab">Activity</a></li>
+                  <li><a href="#tab-activity" data-toggle="tab">Listeners</a></li>
+                  <li><a href="#tab-activity" data-toggle="tab">Members</a></li>
+                  <li><a href="#tab-activity" data-toggle="tab">Meetings</a></li>
+                  <li><a href="#tab-activity" data-toggle="tab">Elections</a></li>
+                </ul>
 
                 <h2><small>Following</small></h2>
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
