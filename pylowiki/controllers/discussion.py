@@ -198,7 +198,7 @@ class DiscussionController(BaseController):
             return json.dumps({'statusCode':2})
 
     def showDiscussionSingle(self, discussionCode, discussionURL):
-        
+        userLib.setUserPrivs()
         # sharing - extra details
         c.thingCode = discussionCode        
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)

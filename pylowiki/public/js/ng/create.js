@@ -117,7 +117,6 @@ function createController($scope, $http) {
     
     
     $scope.open = function($event) {
-    	console.log("in function open");
         $event.preventDefault();
         $event.stopPropagation();
     
