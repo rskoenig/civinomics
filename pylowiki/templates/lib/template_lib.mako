@@ -39,11 +39,8 @@
                     % if c.authuser:
                         % if c.authuser['activated'] == '1':
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                                <a href="/create" class="dropdown-toggle">Create <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
-                                	<li>
-	                                	<a href="/create"><i class="icon-file-text"></i> Quick addition</a>
-									</li>
                                     % if 'user' in session:
                                         <li>
                                             <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/newInitiative"><i class="icon-file-text"></i> New Initiative</a>
