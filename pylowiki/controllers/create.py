@@ -273,8 +273,8 @@ class CreateController(BaseController):
 
     @h.login_required
     def addResourceHandler(self):
-        log.info(vars(c.authuser))
-        log.info(c.privs)
+        log.info(request.params.keys())
+
         if c.w:
             parent = c.w
         elif c.initiative:

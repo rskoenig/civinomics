@@ -152,14 +152,15 @@
 	                </div>
 	                <div class="col-xs-1">
 	                    <button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button>
-	                   </form>
+	                   
 	                </div>
 	            </div>
 	            <div class="row">
 	            <div ng-show="thing == 'Resource'" class="col-xs-12">
 	                <br/>
 	                	<h4>Link</h4>
-	                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link" name="link" ng-required="thing == 'Resource'"></input>    
+	                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link" name="link" ng-required="thing == 'Resource'"></input> 
+	                	 </form>   
 	                </div>
 					<br/>
 	            </div>
