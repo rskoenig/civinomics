@@ -79,6 +79,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/curators">Curators</a></li>
                                 </ul>
                             </li>
                         % endif

@@ -155,6 +155,10 @@ class AdminController(BaseController):
         c.list = userLib.getAllUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
         
+    def curators(self):
+        c.list = userLib.getAllCurators()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
     def usersNotActivated(self):
         c.list = userLib.getNotActivatedUsers()
         return render( "/derived/6_list_all_items.bootstrap" )

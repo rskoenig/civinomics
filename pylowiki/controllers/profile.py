@@ -746,25 +746,25 @@ class ProfileController(BaseController):
                 # city
                 scopeName = scopeList[8].title()
                 curateLevelTitle = "City of %s"%scopeName
-                curateList = scopeList[0:8]
+                curateList = scopeList[0:9]
                 curateScope = '|'.join(curateList)
             elif curateLevel == '6':
                 # county
                 scopeName = scopeList[6].title()
                 curateLevelTitle = "County of %s"%scopeName
-                curateList = scopeList[0:6]
+                curateList = scopeList[0:7]
                 curateScope = '|'.join(curateList) 
             elif curateLevel == '4':
                 # state
                 scopeName = scopeList[4].title()
                 curateLevelTitle = "State of %s"%scopeName
-                curateList = scopeList[0:4]
+                curateList = scopeList[0:5]
                 curateScope = '|'.join(curateList)
             elif curateLevel == '2':
                 # country
                 scopeName = scopeList[2].title()
-                curateLevelTitle = "Country of %s"%scopeName
-                curateList = scopeList[0:2]
+                curateLevelTitle = "Country of %s"%scopeName.replace('-','')
+                curateList = scopeList[0:3]
                 curateScope = '|'.join(curateList)
             else:
                 abort(404)
