@@ -76,6 +76,15 @@ class CreateController(BaseController):
         c.thingType = thingType
         return render('/derived/6_create.bootstrap')
     
+    def showCreateFormGeoTag(self, thingType, geoString, tag):
+        c.tagList = getTagCategories()
+        c.tag = tag
+        c.geoScope = geoString
+        c.geoString = geoInfoLib.getFullScope(geoString)
+        log.info("I'm requesting to create a(n) %s", thingType)
+        c.thingType = thingType
+        return render('/derived/6_create.bootstrap')
+    
     def createThing(self, id1):
         if id1 == "Initiative":
             self.createInitiative()

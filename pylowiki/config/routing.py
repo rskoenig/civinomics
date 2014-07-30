@@ -436,6 +436,7 @@ def make_map():
     ###############
     map.connect('/create{end:/?}', controller = 'create', action = 'showCreateForm')
     map.connect('/create/geo/{thingType}/{geoString}{end:/?}', controller = 'create', action = 'showCreateFormGeo')
+    map.connect('/create/geo/{thingType}/{geoString}/{tag}{end:/?}', controller = 'create', action = 'showCreateFormGeoTag')
     map.connect('/create/{id1}/{id2}/{id3}', controller = 'create', action = 'createThing', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
 
     ###############

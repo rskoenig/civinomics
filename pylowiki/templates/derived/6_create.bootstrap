@@ -6,7 +6,9 @@
 % if c.authuser:
     <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
 %endif
-<div ng-init="test = '1 2 3 4'"></div>
+<div ng-init="tagList = ${c.tagList}"></div>
+{{tagList}}
+{{thingList}}
 <div class="row-fluid">
     <div class="well span8">
             <!--{{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}{{date}}-->
@@ -47,10 +49,10 @@
                 <div>
                       <hr>
                     <select name="tags" ng-model="tag">
-                        <option value="">Tags</option>
-                        % for tag in c.tagList:
-                            <option value="${tag}"> ${tag}</option>
-                        % endfor
+                    	%if c.tag:
+						{{tag = "${c.tag}"}}
+						%endif
+                    	<option ng-repeat="stag in tagList" ng-value="stag">{{stag}}</option>
                     </select>
                 </div>
                 <div>
@@ -86,7 +88,8 @@
                 	</select>
                 </div>
                 <div ng-show="thing == 'Resource'">
-                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link" name="link" ng-required="thing == 'Resource'"></input>    
+	                <h4>Link</h4>
+                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="http://" name="link" ng-required="thing == 'Resource'"></input>    
                 </div>
                 <div>
 	                <h4>Geographic scope</h4>

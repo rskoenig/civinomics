@@ -137,13 +137,13 @@
                     % if 'user' in session:
                         % if c.searchType != 'region':
                             % if not c.privs['provisional']:
-                                <a class="btn btn-default" href="/create/geo/Resource/${c.geoString}">
+                                <a class="btn btn-default" href="/create/geo/Resource/${c.geoString}/{{query}}">
                                     Create Resource
                                 </a>
                             % endif
                         % else:
                             % if not c.privs['provisional']:
-                                <form id="create_intitiatve" action = "/create/geo/Resource/${c.geoString}" method = "post" class="inline">
+                                <form id="create_intitiatve" action = "/create/geo/Resource/${c.geoString}/{{query}}" method = "post" class="inline">
                                     <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
                                     <button class="btn btn-default" type="submit">Create Resource</button>
                                 </form>
@@ -159,13 +159,13 @@
                     % if 'user' in session:
                         % if c.searchType != 'region':
                             % if not c.privs['provisional']:
-                                <a class="btn btn-default" href="/create/geo/Discussion/${c.geoString}">
+                                <a class="btn btn-default" href="/create/geo/Discussion/${c.geoString}/{{query}}">
                                     Start Discussion
                                 </a>
                             % endif
                         % else:
                             % if not c.privs['provisional']:
-                                <form id="create_intitiatve" action = "/create/geo/Discussion/${c.geoString}" method = "post" class="inline">
+                                <form id="create_intitiatve" action = "/create/geo/Discussion/${c.geoString}/{{query}}" method = "post" class="inline">
                                     <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
                                     <button class="btn btn-default" type="submit">Start Discussion</button>
                                 </form>
@@ -181,13 +181,13 @@
                     % if 'user' in session:
                         % if c.searchType != 'region':
                             % if not c.privs['provisional']:
-                                <a class="btn btn-default" href="/create/geo/Idea/${c.geoString}">
+                                <a class="btn btn-default" href="/create/geo/Idea/${c.geoString}/{{query}}">
                                     Create Idea
                                 </a>
                             % endif
                         % else:
                             % if not c.privs['provisional']:
-                                <form id="create_intitiatve" action = "/create/geo/Idea/${c.geoString}" method = "post" class="inline">
+                                <form id="create_intitiatve" action = "/create/geo/Idea/${c.geoString}/{{query}}" method = "post" class="inline">
                                     <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
                                     <button class="btn btn-default" type="submit">Create Idea</button>
                                 </form>
