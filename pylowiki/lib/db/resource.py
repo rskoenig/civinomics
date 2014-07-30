@@ -156,10 +156,10 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'resource')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
-                .filter(Thing.data.any(wc('disabled', disabled)))
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(reduce(sa.or_, m)))
         if hasworkshop:
             q = q.filter(Thing.data.any(wc('workshop_searchable', '1')))        
-        q.filter(Thing.data.any(reduce(sa.or_, m)))
         if count:
             return q.count()
         return q.all()

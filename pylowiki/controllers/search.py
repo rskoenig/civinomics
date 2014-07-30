@@ -145,6 +145,7 @@ class SearchController(BaseController):
     
     def search(self):
         iPhoneApp = utils.iPhoneRequestTest(request)
+        log.info("hello")
         if self.noQuery:
             return self._noSearch()
         elif self.query.count('%') == len(self.query):
@@ -152,6 +153,7 @@ class SearchController(BaseController):
             return self._noSearch()
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
+        log.info("Search query in search to get the count %s", self.query)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         iResources = resourceLib.searchInitiativeResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         c.numResources += iResources
@@ -560,8 +562,7 @@ class SearchController(BaseController):
             ikeys = ['initiative_scope']
             ivalues = [scope]
             resources = resourceLib.searchResources(keys, values)
-            resources2 = resourceLib.searchResources(['scope'], values, hasworkshop = False) 
-            log.info(resources2)
+            resources2 = resourceLib.searchResources('scope', self.query, hasworkshop = False) 
             iresources = resourceLib.searchInitiativeResources(ikeys, ivalues)
         else:
             keys = ['title', 'text', 'link']
@@ -599,7 +600,8 @@ class SearchController(BaseController):
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
         titleToColourMapping = tagLib.getTagColouring()
-
+        c.numResources = len(resources)
+        
         myRatings = {}
         if 'ratings' in session:
            myRatings = session['ratings']
