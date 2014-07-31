@@ -79,6 +79,18 @@
                 publicChecked = ""
         else:
             mScope = "0|0|0|0|0|0|0|0|0|0"
+            if 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
+                mscope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+                level = c.authuser['curateLevel']
+                if level == '2':
+                    mscope += '|0|0|0|0|0|0|0'
+                elif level == '4':
+                    mscope += '|0|0|0|0|0'
+                elif level == '6':
+                    mscope += '|0|0|0'
+                elif level == '8':
+                    mscope += '|0'
+                log.info('mscope is %s'%mscope)
             title = ""
             group = ""
             tag = ""

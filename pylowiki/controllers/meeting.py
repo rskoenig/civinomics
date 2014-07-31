@@ -71,11 +71,33 @@ class MeetingController(BaseController):
         
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
+        c.postal = "0"
         c.country = "0"
         c.state = "0"
         c.county = "0"
         c.city = "0"
-        c.postal = "0"
+        if userLib.isAdmin(c.authuser.id):
+            pass
+        if'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
+            scope = '0' + c.authuser['curateScope']
+            clevel = c.authuser['curateLevel']
+            if clevel == '2':
+                scope += '|0|0|0|0|0|0|0'
+            elif clevel == '4':
+                scope += '|0|0|0|0|0'
+            elif clevel == '6':
+                scope += '|0|0|0'
+            elif clevel == '8':
+                scope += '|0'
+            
+            geoTags = scope.split('|')
+            c.country = utils.geoDeurlify(geoTags[2])
+            c.state = utils.geoDeurlify(geoTags[4])
+            c.county = utils.geoDeurlify(geoTags[6])
+            c.city = utils.geoDeurlify(geoTags[8])
+            c.postal = utils.geoDeurlify(geoTags[9])
+        else:
+            abort(404)
         
         c.editMeeting = False
        

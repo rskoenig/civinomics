@@ -107,6 +107,15 @@ def getBallotsForUser(code):
     except:
         return False
         
+def getBallotsForCuratorScope(scope):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'ballot')\
+            .filter(Thing.data.any(wcl('election_scope', scope)))\
+            .all()
+    except:
+        return False
+        
 def getBallotMeasures(code, count = 0, deleted = u'0'):
     try:
         q = meta.Session.query(Thing)\

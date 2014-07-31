@@ -189,7 +189,6 @@ class AdminController(BaseController):
             c.list = ballotLib.getAllElections()
         else:
             scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
-            log.info('scope is %s'%scope)
             c.list = ballotLib.getElectionsForCuratorScope(scope)
         if not c.list:
             c.list = []
@@ -198,7 +197,11 @@ class AdminController(BaseController):
         
         
     def ballots(self):
-        c.list = ballotLib.getAllBallots()
+        if userLib.isAdmin(c.authuser.id):
+            c.list = ballotLib.getAllBallots()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            c.list = ballotLib.getBallotsForCuratorScope(scope)
         if not c.list:
             c.list = []
         c.title = "List All Ballots"
