@@ -12,84 +12,8 @@
 %>
 
 <div class="spacer"></div>
+<h3>${c.title}</h3>
 <div class="row">
-    <div class="col-sm-2">
-        <ul class="nav nav-list">
-            <li class="nav-header">Item Type</li>
-            % if itemType == 'user':
-                <li class="active"><a href="/admin/users">Users</a></li>
-            % else:
-                <li><a href="/admin/users">Users</a></li>
-            % endif
-            
-            % if itemType == 'workshop':
-                <li class="active"><a href="/admin/workshops">Workshops</a></li>
-            % else:
-                <li><a href="/admin/workshops">Workshops</a></li>
-            % endif
-            
-            % if itemType == 'idea':
-                <li class="active"><a href="/admin/ideas">Ideas</a></li>
-            % else:
-                <li><a href="/admin/ideas">Ideas</a></li>
-            % endif
-            
-            % if itemType == 'resource':
-                <li class="active"><a href="/admin/resources">Resources</a></li>
-            % else:
-                <li><a href="/admin/resources">Resources</a></li>
-            % endif
-            
-            % if itemType == 'discussion':
-                <li class="active"><a href="/admin/discussions">Discussions</a></li>
-            % else:
-                <li><a href="/admin/discussions">Discussions</a></li>
-            % endif
-            
-            % if itemType == 'comment':
-                <li class="active"><a href="/admin/comments">Comments</a></li>
-            % else:
-                <li><a href="/admin/comments">Comments</a></li>
-            % endif
-            
-             % if itemType == 'photo':
-                <li class="active"><a href="/admin/photos">Photos</a></li>
-            % else:
-                <li><a href="/admin/photos">Photos</a></li>
-            % endif
-            
-            % if itemType == 'flaggedphoto':
-                <li class="active"><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
-            % else:
-                <li><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
-            % endif
-            
-            % if itemType == 'initiative':
-                <li class="active"><a href="/admin/initiatives">Initiatives</a></li>
-            % else:
-                <li><a href="/admin/initiatives">Initiatives</a></li>
-            % endif
-            
-            % if itemType == 'flaggedinitiative':
-                <li class="active"><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-            % else:
-                <li><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-            % endif
-            
-            % if itemType == 'meeting':
-                <li class="active"><a href="/admin/meetings">All Meetings</a></li>
-            % else:
-                <li><a href="/admin/meetings">All Meetings</a></li>
-            % endif
-            
-            % if itemType == 'election':
-                <li class="active"><a href="/admin/elections">All Elections</a></li>
-            % else:
-                <li><a href="/admin/elections">All Elections</a></li>
-            % endif
-        </ul>
-    </div><!--/.col-sm-2 -->
-
     <div class="col-sm-10">
         <table class="table table-striped">
             <thead>

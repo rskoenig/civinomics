@@ -47,39 +47,35 @@
                                         </li>
                                     % endif
                                     <li><a href="/workshop/display/create/form"><i class="icon-gear"></i> New Workshop</a></li>
-                                    % if int(c.authuser['accessLevel']) > 200:
+                                    % if int(c.authuser['accessLevel']) > 200 or ('curateLevel' in c.authuser and c.authuser['curateLevel'] != ''):
                                         <li><a href="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNew"><i class="icon-calendar"></i> New Meeting</a></li>
                                         <li><a href="/election/${c.authuser['urlCode']}/${c.authuser['url']}/electionNew"><i class="icon-ok"></i> New Election</a></li>
                                     % endif
                                 </ul>
                             </li>
                         % endif
-                        % if userLib.isAdmin(c.authuser.id):
+                        % if userLib.isAdmin(c.authuser.id) or ('curateLevel' in c.authuser and c.authuser['curateLevel'] != ''):
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Curate<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/csv">Upload</a></li>
-                                    % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/meetings">My Meetings</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">Meetings</a></li>
+                                    <li><a tabindex="-1" href="/admin/elections">Elections</a></li>
+                                    <li><a tabindex="-1" href="/admin/ballots">Ballots</a></li>
+                                    % if userLib.isAdmin(c.authuser.id):
+                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/csv">Upload</a></li>
+                                        <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                                        <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
+                                        <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                        <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                        <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                        <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                        <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                                        <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                                        <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                        <li><a tabindex="-1" href="/admin/curators">Curators</a></li>
                                     % endif
-                                    % if 'election_counter' in c.authuser and c.authuser['election_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/elections">My Elections</a></li>
-                                    % endif
-                                    % if 'ballot_counter' in c.authuser and c.authuser['ballot_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/ballots">My Ballots</a></li>
-                                    % endif
-                                    <li><a tabindex="-1" href="/admin/users">All Users</a></li>
-                                    <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
-                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
-                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
-                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
-                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
-                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
-                                    <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
-                                    <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
-                                    <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
-                                    <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-                                    <li><a tabindex="-1" href="/admin/curators">Curators</a></li>
                                 </ul>
                             </li>
                         % endif
@@ -161,35 +157,30 @@
                         <li class="${homeSelected}">
                             <a href="/">Home</a>
                         </li>
-                        <!--<li class="${bSelected}"><a href="/browse/initiatives">Browse</a></li>-->
-                        % if userLib.isAdmin(c.authuser.id):
+                        % if 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '' or (userLib.isAdmin(c.authuser.id)):
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Curate<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/csv">Upload</a></li>
-                                    % if 'meeting_counter' in c.authuser and c.authuser['meeting_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/meetings">My Meetings</a></li>
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/meetings">Meetings</a></li>
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/elections">Elections</a></li>
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/ballots">Ballots</a></li>
+                                    % if userLib.isAdmin(c.authuser.id):
+                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/csv">Upload</a></li>
+                                        <li><a tabindex="-1" href="/admin/users">All Users</a></li>
+                                        <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
+                                        <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                        <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                        <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                        <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                        <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
+                                        <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
+                                        <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                        <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
+                                        <li><a tabindex="-1" href="/admin/elections">All Elections</a></li>
+                                        <li><a tabindex="-1" href="/admin/ballots">All Ballots</a></li>
                                     % endif
-                                    % if 'election_counter' in c.authuser and c.authuser['election_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/elections">My Elections</a></li>
-                                    % endif
-                                    % if 'ballot_counter' in c.authuser and c.authuser['ballot_counter'] != '0':
-                                        <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/ballots">My Ballots</a></li>
-                                    % endif
-                                    <li><a tabindex="-1" href="/admin/users">All Users</a></li>
-                                    <li><a tabindex="-1" href="/admin/usersNotActivated">Unactivated Users</a></li>
-                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
-                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
-                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
-                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
-                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
-                                    <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
-                                    <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
-                                    <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
-                                    <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-                                    <li><a tabindex="-1" href="/admin/meetings">All Meetings</a></li>
-                                    <li><a tabindex="-1" href="/admin/elections">All Elections</a></li>
-                                    <li><a tabindex="-1" href="/admin/ballots">All Ballots</a></li>
                                 </ul>
                             </li>
                         % endif

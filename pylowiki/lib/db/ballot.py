@@ -54,6 +54,15 @@ def getElectionsForScope(scope):
     except:
         return False
         
+def getElectionsForCuratorScope(scope):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'election')\
+            .filter(Thing.data.any(wcl('scope', scope)))\
+            .all()
+    except:
+        return False
+        
 def getBallotsForElection(code):
     try:
         return meta.Session.query(Thing)\

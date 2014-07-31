@@ -83,7 +83,7 @@ class AdminController(BaseController):
                 parent = generic.getThing(c.thing['ballotCode'])
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
-            elif 'meetingCode' in c.thing:
+            elif 'electionCode' in c.thing:
                 parent = generic.getThing(c.thing['electionCode'])
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
@@ -153,32 +153,47 @@ class AdminController(BaseController):
                 
     def users(self):
         c.list = userLib.getAllUsers()
+        c.title = "List All Members"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def curators(self):
         c.list = userLib.getAllCurators()
+        c.title = "List All Curators"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def usersNotActivated(self):
         c.list = userLib.getNotActivatedUsers()
+        c.title = "List All Unactivated Members"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def photos(self):
         c.list = photoLib.getAllPhotos()
         if not c.list:
             c.list = []
+        c.title = "List All Photos"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def meetings(self):
-        c.list = meetingLib.getAllMeetings()
+        if userLib.isAdmin(c.authuser.id):
+            c.list = meetingLib.getAllMeetings()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            c.list = meetingLib.getMeetingsForScope(0, scope)
         if not c.list:
             c.list = []
+        c.title = "List All Meetings"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def elections(self):
-        c.list = ballotLib.getAllElections()
+        if userLib.isAdmin(c.authuser.id):
+            c.list = ballotLib.getAllElections()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            log.info('scope is %s'%scope)
+            c.list = ballotLib.getElectionsForCuratorScope(scope)
         if not c.list:
             c.list = []
+        c.title = "List All Elections"
         return render( "/derived/6_list_all_items.bootstrap" )
         
         
@@ -186,44 +201,53 @@ class AdminController(BaseController):
         c.list = ballotLib.getAllBallots()
         if not c.list:
             c.list = []
+        c.title = "List All Ballots"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def flaggedPhotos(self):
         c.list = flagLib.getFlaggedThings('photo')
         if not c.list:
             c.list = []
+        c.title = "List All Flagged Photos"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def initiatives(self):
         c.list = initiativeLib.getAllInitiatives()
         if not c.list:
             c.list = []
+        c.title = "List All Initiatives"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def flaggedInitiatives(self):
         c.list = flagLib.getFlaggedThings('initiative')
         if not c.list:
             c.list = []
+        c.title = "List All Flagged Initiatives"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def workshops(self):
         c.list = workshopLib.getWorkshops()
+        c.title = "List All Workshops"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def ideas(self):
         c.list = ideaLib.getAllIdeas()
+        c.title = "List All Ideas"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def discussions(self):
         c.list = discussionLib.getDiscussions()
+        c.title = "List All Discussions"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def resources(self):
         c.list = resourceLib.getAllResources()
+        c.title = "List All Resources"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def comments(self):
         c.list = commentLib.getAllComments()
+        c.title = "List All Comments"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def edit(self, thingCode):

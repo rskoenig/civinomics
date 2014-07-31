@@ -28,6 +28,22 @@ def getAllMeetings():
             .all()
     except:
         return False
+
+def getMeetingsForScope(limit, scope, offset = 0):
+    postList = []
+    objectList = ['meeting']
+    q = meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(objectList))\
+        .filter(Thing.data.any(wcl('scope', scope)))\
+        .order_by('-date')\
+        .offset(offset)
+    if limit:
+        postList += q.limit(limit)
+    else:
+        postList += q.all()
+            
+    return postList
+
         
 def getAgendaItem(code):
     try:
