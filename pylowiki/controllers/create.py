@@ -156,8 +156,9 @@ class CreateController(BaseController):
         alert['title'] = 'Your new ' + scope + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
         session.save()
-
-        return redirect('/workshop/%s/%s/preferences'%(w['urlCode'], w['url']))
+        redirectUrl2 = "/home"
+        redirectUrl = '/workshop/%s/%s/preferences'%(w['urlCode'], w['url'])
+        return redirect(redirectUrl2)
     
 #################
 # Initiatives
@@ -264,6 +265,7 @@ class CreateController(BaseController):
         log.info("Maybe")
         returnURL = "/home"
         log.info("Yes")
+        redirectUrl2 = "/"
         return redirect(returnURL)
 
 #################
@@ -327,7 +329,8 @@ class CreateController(BaseController):
             log.info("5")
             alertsLib.emailAlerts(newResource)
             redirectUrl = "/resource/" + newResource['urlCode'] +"/"+ newResource['url']
-            redirect(redirectUrl)
+            redirectUrl2 = "/home"
+            redirect(redirectUrl2)
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
             
@@ -392,8 +395,9 @@ class CreateController(BaseController):
         
         log.info(vars(d.d))
         if d:
+            redirectUrl2 = "/home"
             redirectUrl = "/discussion/" + d.d['urlCode'] +"/"+ d.d['url']
-            redirect(redirectUrl)
+            redirect(redirectUrl2)
 
 #################
 # Ideas
@@ -463,9 +467,10 @@ class CreateController(BaseController):
             return json.dumps({'statusCode':statusCode, 'result':result})   
         if newIdea:
             log.info("5")
+            redirectUrl2 = "/home"
             alertsLib.emailAlerts(newIdea)
             redirectUrl = "/idea/" + newIdea['urlCode'] +"/"+ newIdea['url']
-            redirect(redirectUrl)
+            redirect(redirectUrl2)
 
     
 #################

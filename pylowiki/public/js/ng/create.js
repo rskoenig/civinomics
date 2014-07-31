@@ -18,6 +18,7 @@ function createController($scope, $http) {
 	}
 	
 	// Scope
+	$scope.showAll = false
 	$scope.thing = "Idea"
 	$scope.file = "";
 	$scope.thingList = ['Initiative', 'Workshop', 'Resource', 'Discussion', 'Idea']
@@ -143,3 +144,35 @@ function createController($scope, $http) {
 		$scope.scope = s;
 	}
 }
+	    function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#avatar').attr('src', e.target.result);
+	                $('#avatar').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    function readURL2(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#cover').attr('src', e.target.result);
+	                $('#cover').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    $("#imgAvatar").change(function(){
+	        readURL(this);
+	    });
+	    $("#imgCover").change(function(){
+	        readURL2(this);
+	    });
