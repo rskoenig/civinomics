@@ -18,7 +18,7 @@ function createController($scope, $http) {
 	}
 	
 	// Scope
-	$scope.thing = ""
+	$scope.thing = "Idea"
 	$scope.file = "";
 	$scope.thingList = ['Initiative', 'Workshop', 'Resource', 'Discussion', 'Idea']
 	$scope.tagList = []
