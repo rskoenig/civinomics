@@ -68,17 +68,16 @@ class MeetingController(BaseController):
             c.author = userLib.getUserByCode(c.meeting['userCode'])
     
     def meetingNew(self):
-        
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
-        c.postal = "0"
-        c.country = "0"
-        c.state = "0"
-        c.county = "0"
-        c.city = "0"
+
         if userLib.isAdmin(c.authuser.id):
-            pass
-        if'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
+            c.country = "United States"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
+            c.postal = "0"
+        elif 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
             scope = '0' + c.authuser['curateScope']
             clevel = c.authuser['curateLevel']
             if clevel == '2':

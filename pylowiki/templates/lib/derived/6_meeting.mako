@@ -79,18 +79,6 @@
                 publicChecked = ""
         else:
             mScope = "0|0|0|0|0|0|0|0|0|0"
-            if 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
-                mscope = '0' + c.authuser['curateScope'].replace('||', '|0|')
-                level = c.authuser['curateLevel']
-                if level == '2':
-                    mscope += '|0|0|0|0|0|0|0'
-                elif level == '4':
-                    mscope += '|0|0|0|0|0'
-                elif level == '6':
-                    mscope += '|0|0|0'
-                elif level == '8':
-                    mscope += '|0'
-                log.info('mscope is %s'%mscope)
             title = ""
             group = ""
             tag = ""
@@ -287,38 +275,43 @@
     <div class="row"><span id="planetSelect">
         <div class="col-sm-3">Planet:</div>
         <div class="col-sm-8">
-            <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
-                <option value="0">Earth</option>
-            </select>
+            <input type="hidden" name="geoTagPlanet" value="Earth">
+            Earth
         </div><!-- col-sm-8 -->
     </span><!-- countrySelect -->
     </div><!-- row -->     
     <div class="row"><span id="countrySelect">
         <div class="col-sm-3">Country:</div>
         <div class="col-sm-8">
-            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
-                <option value="0">Select a country</option>
-                <option value="United States" ${countrySelected}>United States</option>
-            </select>
+            <input type="hidden" name="geoTagPlanet" value="United States">
+            United States
         </div><!-- col-sm-8 -->
     </span><!-- countrySelect -->
     </div><!-- row -->
     <div class="row"><span id="stateSelect">
         % if c.country != "0":
-            <div class="col-sm-3">State:</div><div class="col-sm-8">
-            <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
-            <option value="0">Select a state</option>
-            % for state in states:
-                % if state != 'District of Columbia':
-                    % if c.state == state['StateFullName']:
-                        <% stateSelected = "selected" %>
-                    % else:
-                        <% stateSelected = "" %>
+            <div class="col-sm-3">State:</div>
+            <div class="col-sm-8">
+            
+            <% 
+                if c.state != "0" and 'curateLevel' in c.authuser and c.authuser['curateLevel'] == "4":
+                    disabled = "disabled"
+                else:
+                    disabled = ""
+            %>
+            <select name="geoTagState" id="geoTagState" class="geoTagState" ${disabled} onChange="geoTagStateChange(); return 1;">
+                <option value="0">Select a state</option>
+                % for state in c.states:
+                    % if state != 'District of Columbia':
+                        % if c.state == state['StateFullName']:
+                            <% stateSelected = "selected" %>
+                        % else:
+                            <% stateSelected = "" %>
+                        % endif
+                        <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
                     % endif
-                    <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
-                % endif
-            % endfor
-            </select>
+                % endfor
+                </select>
             </div><!-- col-sm-8 -->
         % else:
             Leave 'Country' blank if the meeting jurisdiction applies to the entire planet.
@@ -328,18 +321,25 @@
         % if c.state != "0":
             <% counties = getCountyList("united-states", c.state) %>
             <% cityMessage = "Leave blank 'County' blank if the meeting jurisdiction applies to the entire state." %>
-            <div class="col-sm-3">County:</div><div class="col-sm-8">
-            <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
-                <option value="0">Select a county</option>
-                % for county in counties:
-                    % if c.county == county['County'].title():
-                        <% countySelected = "selected" %>
-                    % else:
-                        <% countySelected = "" %>
-                    % endif
-                    <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
-                % endfor
-            </select>
+            <div class="col-sm-3">County:</div>
+            <div class="col-sm-8">
+                <% 
+                    if c.county != "0" and 'curateLevel' in c.authuser and c.authuser['curateLevel'] == "6":
+                        disabled = "disabled"
+                    else:
+                        disabled = ""
+                %>
+                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" ${disabled} onChange="geoTagCountyChange(); return 1;">
+                    <option value="0">Select a county</option>
+                    % for county in counties:
+                        % if c.county == county['County'].title():
+                            <% countySelected = "selected" %>
+                        % else:
+                            <% countySelected = "" %>
+                        % endif
+                        <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
+                    % endfor
+                </select>
             </div><!-- col-sm-8 -->
         % else:
             <% cityMessage = "" %>
@@ -350,18 +350,25 @@
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
             <% postalMessage = "Leave 'City' blank if the meeting jurisdiction applies to the entire county." %>
-            <div class="col-sm-3">City:</div><div class="col-sm-8">
-            <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
-            <option value="0">Select a city</option>
-                % for city in cities:
-                    % if c.city == city['City'].title():
-                        <% citySelected = "selected" %>
-                    % else:
-                        <% citySelected = "" %>
-                    % endif
-                    <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
-                % endfor
-            </select>
+            <div class="col-sm-3">City:</div>
+            <div class="col-sm-8">
+                <% 
+                    if c.city != "0" and 'curateLevel' in c.authuser and c.authuser['curateLevel'] == "8":
+                        disabled = "disabled"
+                    else:
+                        disabled = ""
+                %>
+                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                <option value="0">Select a city</option>
+                    % for city in cities:
+                        % if c.city == city['City'].title():
+                            <% citySelected = "selected" %>
+                        % else:
+                            <% citySelected = "" %>
+                        % endif
+                        <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                    % endfor
+                </select>
             </div><!-- col-sm-8 -->
         % else:
             <% postalMessage = "" %>
