@@ -283,7 +283,7 @@
     <div class="row"><span id="countrySelect">
         <div class="col-sm-3">Country:</div>
         <div class="col-sm-8">
-            <input type="hidden" name="geoTagPlanet" value="United States">
+            <input type="hidden" name="geoTagCountry" value="United States">
             United States
         </div><!-- col-sm-8 -->
     </span><!-- countrySelect -->

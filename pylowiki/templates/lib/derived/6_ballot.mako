@@ -450,19 +450,16 @@
     <div class="row"><span id="planetSelect">
         <div class="col-xs-3 text-left">Planet:</div>
         <div class="col-xs-8 text-left">
-            <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
-                <option value="0">Earth</option>
-            </select>
+            <input type="hidden" name="geoTagPlanet" value="Earth">
+            Earth
         </div><!-- col-xs-8 text-left -->
     </span><!-- countrySelect -->
     </div><!-- row -->     
     <div class="row"><span id="countrySelect">
         <div class="col-xs-3 text-left">Country:</div>
         <div class="col-xs-8 text-left">
-            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
-                <option value="0">Select a country</option>
-                <option value="United States" ${countrySelected}>United States</option>
-            </select>
+            <input type="hidden" name="geoTagCountry" value="United States">
+            United States
         </div><!-- col-xs-8 text-left -->
     </span><!-- countrySelect -->
     </div><!-- row -->
@@ -470,7 +467,13 @@
         % if c.country != "0":
             <div class="col-xs-3 text-left">State:</div>
             <div class="col-xs-8 text-left">
-            <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+            <% 
+                if c.state != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 4:
+                    disabled = "disabled"
+                else:
+                    disabled = ""
+            %>
+            <select name="geoTagState" id="geoTagState" class="geoTagState" ${disabled} onChange="geoTagStateChange(); return 1;">
             <option value="0">Select a state</option>
             % for state in states:
                 % if state != 'District of Columbia':
@@ -494,7 +497,13 @@
             <% cityMessage = "Leave blank 'County' blank if the election jurisdiction applies to the entire state." %>
             <div class="col-xs-3 text-left">County:</div>
             <div class="col-xs-8 text-left">
-            <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                <% 
+                    if c.county != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 6:
+                        disabled = "disabled"
+                    else:
+                        disabled = ""
+                %>
+                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" ${disabled} onChange="geoTagCountyChange(); return 1;">
                 <option value="0">Select a county</option>
                 % for county in counties:
                     % if c.county == county['County'].title():
