@@ -294,7 +294,7 @@
             <div class="col-sm-8">
             
             <% 
-                if c.state != "0" and 'curateLevel' in c.authuser and c.authuser['curateLevel'] == "4":
+                if c.state != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 4:
                     disabled = "disabled"
                 else:
                     disabled = ""
@@ -324,7 +324,7 @@
             <div class="col-sm-3">County:</div>
             <div class="col-sm-8">
                 <% 
-                    if c.county != "0" and 'curateLevel' in c.authuser and c.authuser['curateLevel'] == "6":
+                    if c.county != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 6:
                         disabled = "disabled"
                     else:
                         disabled = ""
@@ -353,12 +353,12 @@
             <div class="col-sm-3">City:</div>
             <div class="col-sm-8">
                 <% 
-                    if c.city != "0" and 'curateLevel' in c.authuser and c.authuser['curateLevel'] == "8":
+                    if c.city != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 8:
                         disabled = "disabled"
                     else:
                         disabled = ""
                 %>
-                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" ${disabled} onChange="geoTagCityChange(); return 1;">
                 <option value="0">Select a city</option>
                     % for city in cities:
                         % if c.city == city['City'].title():
