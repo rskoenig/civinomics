@@ -1,0 +1,3 @@
+include pylowiki/config/deployment.ini_tmpl
+recursive-include pylowiki/public *
+recursive-include pylowiki/templates *
