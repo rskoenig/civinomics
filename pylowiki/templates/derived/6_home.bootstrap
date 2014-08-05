@@ -79,24 +79,27 @@
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}
       </div>
-	  <div ng-controller="createController">
+	  <div ng-controller="createController" ng-cloak>
 		  	<div class="media well search-listing">
 	        <div>
 	            <div class="row">
-	                <div class="col-xs-11">
+	                <div class="col-xs-12">
 	                    <p><span>Create: &nbsp; </span>
-				            <select ng-model="thing">
+				            <select ng-model="thing" ng-change="showAll = true">
 								<option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
 							</select></p>
-							<span ng-show="thing == 'Initiative' || thing == 'Workshop'">You won't be able to see your {{thing}} until you publish it!</span>
-						###Basic
+								###Basic
 						<form enctype="multipart/form-data"  action="/create/{{thing}}/${c.authuser['urlCode']}/${c.authuser['url']}" method="POST">			
-						<br/>
-	                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required></input>  
+	                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  
+	                    <div ng-show="thing == 'Resource'">
+	                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
+						 
+	           </div>
 						<textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
                     
-                    <hr>
+                    
                     <div ng-show="showAll">
+                    <hr>
 	                    <div class="col-xs-5">
 	                    <h4>Geographic Scope</h4>
 	                    ${ng_helpers.ngGeoSelect()}
@@ -151,21 +154,13 @@
 		                <input type="hidden" name="deadline" value="{{date}}" \>
 		                <input type="hidden" name="tags" value="{{tags}}" \>
                     
-	                </div>
-	                <div class="col-xs-1">
-	                    <button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button>
-	                   
-	                </div>
+	                </div> 
 	            </div>
 	            <div ng-show="showAll" class="row">
-	            <div ng-show="thing == 'Resource'" class="col-xs-12">
-	                <br/>
-	                	<h4>Link</h4>
-	                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link" name="link" ng-required="thing == 'Resource'"></input> 
+	            	<div class="col-xs-12">
+			   			<button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button>
 	                	 </form>   
-	                </div>
-					<br/>
-
+					</div>
 	            </div>
 	            <br/>
 	        </div>

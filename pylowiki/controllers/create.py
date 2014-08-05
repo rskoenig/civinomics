@@ -158,7 +158,7 @@ class CreateController(BaseController):
         session.save()
         redirectUrl2 = "/home"
         redirectUrl = '/workshop/%s/%s/preferences'%(w['urlCode'], w['url'])
-        return redirect(redirectUrl2)
+        return redirect(redirectUrl)
     
 #################
 # Initiatives
@@ -263,7 +263,7 @@ class CreateController(BaseController):
         
         c.editInitiative = True
         log.info("Maybe")
-        returnURL = "/home"
+        returnURL = '/initiative/%s/%s'%(c.initiative['urlCode'], c.initiative['url'])
         log.info("Yes")
         redirectUrl2 = "/"
         return redirect(returnURL)
