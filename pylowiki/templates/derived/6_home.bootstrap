@@ -84,10 +84,14 @@
 	        <div>
 	            <div class="row">
 	                <div class="col-xs-12">
+	                <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
+					</span>
 	                    <p><span>Create: &nbsp; </span>
 				            <select ng-model="thing" ng-change="showAll = true">
 								<option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
-							</select></p>
+							</select>							
+							</p>
+
 								###Basic
 						<form enctype="multipart/form-data"  action="/create/{{thing}}/${c.authuser['urlCode']}/${c.authuser['url']}" method="POST">			
 	                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  

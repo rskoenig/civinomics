@@ -143,6 +143,10 @@ function createController($scope, $http) {
 	$scope.setGeoScope = function(s){
 		$scope.scope = s;
 	}
+	
+	$scope.changeShowAll = function(){
+		$scope.showAll = !$scope.showAll;
+	}
 }
 	    function readURL(input) {
 	        if (input.files && input.files[0]) {
