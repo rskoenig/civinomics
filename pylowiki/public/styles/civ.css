@@ -3703,6 +3703,7 @@ svg{
   padding-left:10px;
 }
 
-.markdown img{
+.markdown img, p.markdown, .markdown p, .markdown span{
   max-width: 100%;
+  width: 100%;
 }
