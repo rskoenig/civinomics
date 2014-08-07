@@ -248,17 +248,18 @@ class CreateController(BaseController):
             file = request.params['avatar']
             filename = file.filename
             fileitem = file.file
-            log.info("AVATAR")
-            log.info(file.filename)
             photoAvatarInfo = self.photoUploadHandler(file)
             
-        if 'imgCover' in requestKeys:
-            file = request.params['imgCover']
+        if 'cover' in requestKeys:
+            file = request.params['cover']
             filename = file.filename
             fileitem = file.file
             log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             log.info(file.filename)
-            photoCoverInfo = self.photoUploadHandler(file)
+            photoCoverInfo = self.photoUploadHandler(file, cover = True)
+            c.initiative['coverPhoto'] = photoCoverInfo
+            # dbHelpers.commit(c.initiative)
+            log.info(c.initiative['coverPhoto'])
             
         
         c.editInitiative = True
@@ -480,7 +481,7 @@ class CreateController(BaseController):
 # Photo uploader
 
     @h.login_required
-    def photoUploadHandler(self, photo):
+    def photoUploadHandler(self, photo, cover = False):
         """
             Ideally:  
             1) User selects image, gets presented with aspect-ratio constrained selection.
@@ -522,8 +523,10 @@ class CreateController(BaseController):
         if not image:
             abort(404) # Maybe make this a json response instead
         imageHash = imageLib.generateHash(filename, c.authuser)
-        
-        image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
+        if not cover:
+            image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
+        else:
+            image = imageLib.saveImage(image, imageHash, 'photos', 'orig')
         log.info(image)
         width = min(image.size)
         x = 0
