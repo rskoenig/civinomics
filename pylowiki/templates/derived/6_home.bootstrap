@@ -98,7 +98,7 @@
 						% endif	
 	                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  
 	                    <div ng-show="thing == 'Resource'">
-	                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
+	                	 <input class="form-control ng-pristine ng-valid" ng-if="showAll" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
 						 
 	           </div>
 						<textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
