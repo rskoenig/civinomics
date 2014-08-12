@@ -150,7 +150,7 @@
 		                <p class="lead">{{thing}} Images</p>
 		                <h5>{{thing}} Photo</h5>
 						        <input type="file" name="avatar" id="imgAvatar" />
-						        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
+						        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
 		                <h5>Cover Photo</h5>
 						        <input type='file' id="imgCover" name="cover" />
 						        <img style="display:none;" id="cover" name="cover" src="#" alt="your cover image" />
