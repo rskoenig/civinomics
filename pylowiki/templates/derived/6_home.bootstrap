@@ -122,7 +122,7 @@
 					</div>
                     ###Conditional Fields
                     
-                    <div ng-if="thing == 'Workshop'">
+                    <div ng-if="thing == 'Workshop' && showAll">
 	                	<h4>Privacy level</h4>
 	                	<select ng-model="workshopAccess" name="privacy" required>
 	                		<option value=""></option>
@@ -145,7 +145,7 @@
 		                        </div>
 		                    </div>
                     </div>
-                    <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'">
+                    <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'" ng-if="showAll">
 		                <hr>
 		                <p class="lead">{{thing}} Images</p>
 		                <h5>{{thing}} Photo</h5>
