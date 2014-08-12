@@ -254,18 +254,13 @@ class CreateController(BaseController):
             file = request.params['cover']
             filename = file.filename
             fileitem = file.file
-            log.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-            log.info(file.filename)
+            log.info("Processing cover photo %s", file.filename)
             photoCoverInfo = self.photoUploadHandler(file, cover = True)
             c.initiative['coverPhoto'] = photoCoverInfo
-            # dbHelpers.commit(c.initiative)
-            log.info(c.initiative['coverPhoto'])
             
         
         c.editInitiative = True
-        log.info("Maybe")
         returnURL = '/initiative/%s/%s'%(c.initiative['urlCode'], c.initiative['url'])
-        log.info("Yes")
         redirectUrl2 = "/"
         return redirect(returnURL)
 
@@ -526,8 +521,7 @@ class CreateController(BaseController):
         if not cover:
             image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
         else:
-            image = imageLib.saveImage(image, imageHash, 'photos', 'orig')
-        log.info(image)
+            image = imageLib.saveImage(image, imageHash, 'cover', 'orig', thing = c.initiative)
         width = min(image.size)
         x = 0
         y = 0
@@ -563,11 +557,12 @@ class CreateController(BaseController):
             clientHeight = request.params['clientHeight']
             if not clientHeight or clientHeight == 'null':
                 clientHeight = -1
-        image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
-        image = imageLib.resizeImage(image, imageHash, 480, 480)
-        image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
-        image = imageLib.resizeImage(image, imageHash, 160, 160)
-        image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+        if not cover:
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
+            image = imageLib.resizeImage(image, imageHash, 160, 160)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
         
         photoInfo ={
                     'name':filename,

@@ -151,7 +151,7 @@
 		                <h5>{{thing}} Photo</h5>
 						        <input type="file" name="avatar" id="imgAvatar" />
 						        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
-		                <h4>Cover Photo</h4>
+		                <h5>Cover Photo</h5>
 						        <input type='file' id="imgCover" name="cover" />
 						        <img style="display:none;" id="cover" name="cover" src="#" alt="your cover image" />
 					</div>

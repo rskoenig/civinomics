@@ -67,6 +67,7 @@ class InitiativeController(BaseController):
                 if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
                     c.photo_url = "/images/photos/%s/orig/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                     c.bgPhoto_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+                    c.cover_url = "/images/cover/%s/orig/%s.png"%(c.initiative['directoryNum_cover'], c.initiative['pictureHash_cover'])
                     c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
                 else:
                     c.photo_url = "/images/icons/generalInitiative_lg.jpg"
