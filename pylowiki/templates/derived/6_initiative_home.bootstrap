@@ -18,14 +18,15 @@
     <h4 class="initiative-title">Proposal</h4>
     ${ihelpers.showProposal()}
 
-	%if c.cover_url:
+<%doc>
+	###%if c.cover_url:
 	COVER TEST
 	<img src="${c.cover_url}"/>
 	${c.cover_url}
 	<div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.cover_url}'); background-position: center center; background-size: cover;"></div>
 	END COVER TEST
 	%endif
-	
+</%doc>
 	% if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
