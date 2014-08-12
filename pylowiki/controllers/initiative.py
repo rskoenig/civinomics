@@ -104,7 +104,9 @@ class InitiativeController(BaseController):
             if c.iPrivs == False:
                 abort(404)
                 
-            c.complete = self.initiativeCheck()
+            # c.complete = self.initiativeCheck()
+            # removing requirements for publishing an initiative
+            c.complete = True
             
         c.resources = []
         c.updates = []
@@ -295,7 +297,9 @@ class InitiativeController(BaseController):
                 c.initiative['publishDate'] = startTime
                 c.initiative['unpublishDate'] = u'0000-00-00'
                 dbHelpers.commit(c.initiative)
-                c.saveMessage = "Your initiative is now live! It is publicly viewable."
+                c.saveMessage = "Your initiative is now live. Share it with your friends!"
+                return redirect('/initiative/%s/%s' % (c.initiative['urlCode'], c.initiative['url']))
+
         elif 'public' in request.params and request.params['public'] == 'unpublish':
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
@@ -419,7 +423,9 @@ class InitiativeController(BaseController):
             c.saveMessage = "Changes saved."
 
         c.editInitiative = True
-        c.complete = self.initiativeCheck()
+        #c.complete = self.initiativeCheck()
+        # removing requirements for publishing an intiative to make it easier/ encourage more ideation
+        c.complete = True
         
         return render('/derived/6_initiative_edit.bootstrap')
         

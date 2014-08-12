@@ -8,24 +8,23 @@
 
 <% lib.return_to() %>
 
+%if c.cover_url:
+    <div class="policy-cover" style="background-image:url('${c.cover_url}')">
+        <div class="darkened-bg"></div>
+    </div>
+%endif
+
 <span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}'; initiativeTitle = '${c.initiative['title']}';"></span>
 <div class="container" ng-controller="showThingCtrl">
     <div class="row">
-        <div class="col-sm-9 col-md-9 well initiative-panel">
-            <div class="row">
-                % if c.initiativeHome:
-                    <div class="row">
-                        <div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.photo_url}'); background-position: center center; background-size: cover;"></div>
-                    </div>
-                    <% titleSpan = "col-xs-12" %>
-                % else: 
-                    <div class="col-xs-2">
-                        <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
-                    </div>
-                    <% titleSpan = "col-xs-10" %>
-                % endif
+        <div class="col-sm-9 col-md-9">
+            <div class="row title-offset">
+                <div class="col-xs-2">
+                    <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
+                </div>
+                <% titleSpan = "col-xs-10" %>
                 <div class="${titleSpan}" style="position:relative;">
-                    <h2 class="initiative-title"><a class="no-highlight" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h2>
+                    <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h1>
                     <h4> 
                         ${lib_6.showTags(c.initiative)}<a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a href="${c.scopeHref}">${c.scopeTitle}</a>
                     % if c.iPrivs:
@@ -51,10 +50,9 @@
                 </div>
             </div>
             <hr class="narrow">
-                % if c.initiative['public'] == '0':
-                    <div class="alert alert-warning" style=>This initiative is unpublished. It does not show up in searches or on public listings.</div>
-                % endif
-            ${next.body()}
+            <div class="top-offset">
+                ${next.body()}
+            </div>
         </div>
         <div class="col-sm-3 col-md-3" id="sidebar">
             <div style="position:fixed; width: inherit; max-width: 280px;">
@@ -93,17 +91,30 @@
             % elif not c.editInitiative and c.initiative.objType == 'initiative':
                 <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                     % if c.initiative.objType != 'revision':
-                        <h4 class="text-center gray">Vote</h4>
-                        <hr class="narrow">
-                        <div class="row">
-                            <div class="col-xs-10 col-xs-offset-1">
-                                <div ng-init="inPage = true;">
-                                    <div ng-controller="yesNoVoteCtrl">
-                                        ${ng_lib.yesNoVoteBlock()}
+                            % if c.initiative['public'] == '0':
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        % if c.initiative['public'] == '0':
+                                            <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
+                                                <button type="submit" class="btn btn-lg btn-success btn-block" name="public" value="publish">Publish</button>
+                                            </form>
+                                        % endif
+                                        <div class="alert alert-warning top-space" style=>This initiative is not yet published. It does not show up in searches or on public listings.</div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            % else:
+                                <h4 class="text-center gray">Vote</h4>
+                                <hr class="narrow">
+                                <div class="row">
+                                    <div class="col-xs-10 col-xs-offset-1">
+                                        <div ng-init="inPage = true;">
+                                            <div ng-controller="yesNoVoteCtrl">
+                                                ${ng_lib.yesNoVoteBlock()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            % endif
                         <!--
                         <hr class="narrow">
                         <div>
@@ -121,7 +132,6 @@
                           </table>
                         </div>
                         -->
-                        <hr class="narrow">
                         <div class="row centered">
                             <span>
                                 <%
@@ -130,6 +140,7 @@
                                     body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
                                 %>
                                 % if c.initiative['public'] == '1':
+                                    <hr class="narrow">
                                     ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
 
                                     % if not c.privs['provisional']:
@@ -139,11 +150,6 @@
                                     <!-- % if c.initiative['public'] == '1':
                                         <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
                                     #%endif -->
-                                % else:
-                                    <a class="btn dropdown-toggle btn-primary facebook unpublished disabled" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it." href="#">
-                                        <i class="icon-facebook icon-light right-space"></i> | Share
-                                    </a>
-                                    <a class="btn btn-danger disabled email-invite" href="#" rel="tooltip" data-placement="bottom" data-original-title="Initiative must be published before you can share it."><i class="icon-envelope right-space"></i> | Email</i></a>
                                 % endif
                             </span>
                         
