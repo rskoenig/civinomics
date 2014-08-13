@@ -506,7 +506,7 @@ hr.subMenu{
 }
 
 .hero-bottom{
-  padding: 9px 19px;"
+  padding: 9px 19px;
 }
 
 /* end workshops */
@@ -2739,6 +2739,10 @@ border-radius: 14px 0 0 14px;
     width: 100%;
     margin-left: 2.75%
   }
+}
+
+ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;    
 }
 
 .dropdown-menu.bookmark-options li{

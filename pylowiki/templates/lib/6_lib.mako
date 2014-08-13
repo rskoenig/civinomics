@@ -969,6 +969,7 @@
 <%def name="discussionLink(d, w, **kwargs)">
     <%
         if 'workshopCode' in d:
+            log.info("It has a discussion code")
             if 'noHref' in kwargs:
                 discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
             else:
@@ -983,6 +984,8 @@
                 discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
             else:
                 discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+        else:
+            discussionStr = 'href="/discussion/%s/%s"'%(d['urlCode'], d['url'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -1947,12 +1950,15 @@
     <%  
         try:
           try:
+            log.info(item['scope'])
             scopeList = item['scope']
           except KeyError:
             scopeList = item['workshop_public_scope']
         except:
           scopeList = "0|0|0|0|0|0|0|0|0|0"
 
+
+        log.info(scopeList)
         scopeList = scopeList.split('|')
         country = scopeList[2].replace("-", " ")
         state = scopeList[4].replace("-", " ")
@@ -1980,11 +1986,13 @@
     <%  
         try:
           try:
+            
             scopeList = item['scope']
           except KeyError:
             scopeList = item['workshop_public_scope']
         except:
           scopeList = "0|0|0|0|0|0|0|0|0|0"
+
 
         scopeList = scopeList.split('|')
         country = scopeList[2].replace("-", " ")

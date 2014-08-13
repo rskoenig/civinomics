@@ -261,6 +261,88 @@ class IdeaController(BaseController):
         entry = jsonLib.getJsonProperties(idea)
         return json.dumps({'statusCode':1, 'thing': entry})
 
+    def showIdeaSingle(self, ideaCode, ideaURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        
+        c.thingCode = ideaCode
+        
+        c.thing = ideaLib.getIdea(ideaCode)
+        if not c.thing:
+            c.thing = revisionLib.getRevisionByCode(ideaCode)
+            if not c.thing:
+                abort(404)
+        
+        ################## FB SHARE ###############################
+#         c.facebookShare.title = c.thing['title']
+#         c.facebookShare.thingCode = c.thingCode
+#         # update url for this item
+#         c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
+#         # set description to be that of the topic's description
+#         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
 
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+        
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
+
+        if not iPhoneApp:
+            c.discussion = discussionLib.getDiscussionForThing(c.thing)
+        
+        c.listingType = 'idea'
+        
+        if not iPhoneApp:
+            c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        
+        if not iPhoneApp:
+            if 'comment' in request.params:
+                c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+                if not c.rootComment:
+                    abort(404)
+
+        if iPhoneApp:
+            log.info("iphone idea")
+            entry = {}
+            # if this person has voted on the idea, we need to pack their vote data in
+            if 'user' in session:
+                log.info("iphone idea: user in session")
+                rated = ratingLib.getRatingForThing(c.authuser, c.thing)
+                if rated:
+                    if rated['amount'] == '1':
+                        entry['rated'] = "1"
+                    elif rated['amount'] == '-1':
+                        entry['rated'] = "-1"
+                    elif rated['amount'] == '0' :
+                        entry['rated'] = "0"
+                    else:
+                        entry['rated'] = "0"
+                else:
+                    entry['rated'] = "0"
+            #    utils.isWatching(c.authuser, c.w)
+            #if c.authuser:
+                #
+            # rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            
+            entry['thingCode'] = c.thingCode
+            entry['backgroundImage'] = c.backgroundImage
+            #entry['title'] = c.thing['title']
+            #entry['text'] = c.thing['text']
+            ideaTextHtml = m.html(c.thing['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['ideaText'] = ideaTextHtml
+            entry['thing'] = dict(c.thing)
+            entry['discussion'] = dict(c.discussion)
+            #entry['revisions'] = c.revisions
+            entry['rootComment'] = c.rootComment
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:    
+            return render('/derived/6_resource.bootstrap')
 
 
