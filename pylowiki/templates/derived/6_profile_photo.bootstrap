@@ -1,0 +1,68 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_photos.mako" name="photo" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+
+<div class="spacer"></div>
+<a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">View All Photos</a>
+<div class="spacer"></div>
+<div class="row">
+    <div class="col-sm-8">
+        ${photo.showPhoto()}
+        <!-- recreate this function, in doing so I'll find the bug point -->
+        <span class="share-icons right-space">
+            ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
+        </span>
+        % if c.photo['deleted'] == '0':
+            % if c.revisions:
+                <ul class="unstyled">
+                % for revision in c.revisions:
+                    <li>Revision: <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${revision['urlCode']}">${revision.date}</a></li>
+                % endfor
+                </ul>
+            % endif
+            % if c.photo.objType == 'revision':
+                This is a revision dated ${c.photo.date}<br />
+            % else:
+                ${photo.photoModerationPanel(c.photo)}
+                % if c.photo.objType != 'photoUnpublished':
+                    ${comments(c.photo, c.discussion)}
+                % endif
+            % endif
+        % endif
+    </div>
+    <div class="col-sm-4" ng-controller="profileController">
+        ${dashboard.profileDashboard()}
+    </div><!--/.col-sm-4 -->
+</div>
+
+
+
+<%def name="extraScripts()">
+    <script type="text/javascript">
+        $('.hoverTip').tooltip();
+    </script>
+    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script src="/js/ng/edit_item.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+        });
+    </script>
+</%def>
+<%def name="extraScripts2()">
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+        <script src="/js/geo.js" type="text/javascript"></script>
+    % endif
+</%def>

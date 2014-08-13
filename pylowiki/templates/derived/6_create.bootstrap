@@ -1,0 +1,162 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<div  ng-controller="createController">
+<h1>Create {{thing}}</h1>
+% if c.authuser:
+    <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
+%endif
+<div ng-init="tagList = ${c.tagList}"></div>
+<div class="row-fluid">
+    <div class="well span8">
+            <!--{{test}}{{createUrl}}{{authorCode}}{{authorUrl}}{{tag}}{{country}}{{scope}}{{date}}-->
+            <span>Create: </span>
+            <select ng-model="thing" 
+              %if c.thingType:
+                 ng-init="thing='${c.thingType}'"
+              %endif 
+              >
+				<option ng-repeat="type in thingList" ng-value="type"
+				>{{type}}</option>
+			</select>
+			<br/><br/>
+            <form enctype="multipart/form-data"  action="/create/{{thing}}/{{authorCode}}/{{authorUrl}}" method="POST">
+                <div id="output" class="">
+                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
+                <input type="hidden" name="deadline" value="{{date}}" \>
+                <input type="hidden" name="tags" value="{{tags}}" \>
+                <p class="lead">Basic Information</p>
+                    <input class="form-control ng-pristine ng-valid" type="text" ng-model="title" placeholder="Title" name="title" required></input>    
+                    <textarea class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="Description" name="description"></textarea>        
+                </div>
+                <div>
+                </div>
+                <div ng-show="thing == 'Initiative' || thing == 'Workshop'">
+                <hr>
+                <p class="lead">{{thing}} Images</p>
+                <h4>{{thing}} Photo</h4>
+				        <input type="file" name="avatar" id="imgAvatar" />
+				        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
+                <h4>Cover Photo</h4>
+				        <input type='file' id="imgCover" name="cover" />
+				        <img id="cover" style="display:none;" name="cover" src="#" alt="your cover image" />
+				</div>
+                <div>
+                    <hr>
+                    <p class="lead">Additional Fields</p>
+                    <div class="create-additional" style="margin-bottom:25px">
+                      <h4>Tag</h4>
+                    <select name="tags" ng-model="tag">
+                    	%if c.tag:
+						{{tag = "${c.tag}"}}
+						%endif
+                    	<option ng-repeat="stag in tagList" ng-value="stag">{{stag}}</option>
+                    </select>
+					&nbsp; &nbsp;
+                 </div>
+                    <div ng-show="thing == 'Initiative'">
+                    <h4>Deadline</h4>
+	                    <div class="row-fluid">
+	                        <div class="span6">
+	                            <p class="input-group">
+	                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="thing == 'Initiative'" close-text="Close" />
+	                              <span class="input-group-btn">
+	                                <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
+	                              </span>
+	                            </p>
+	                        </div>
+	                    </div>
+                    </div>
+
+                </div>
+                <div ng-show="objType == 'candidate'" ng-cloak>
+                    <hr>
+                    <p class="lead">Additional Fields</p>
+                    <label>What position is this candidate running for?</label>
+                    <input class="span6 input-large" type="text" ng-model="positionTitle" placeholder="Position Title"></input>
+                    
+                </div>
+                <div ng-show="thing == 'Workshop'">
+                	<h4>Privacy level</h4>
+                	<select ng-model="workshopAccess" name="privacy" ng-required="thing == 'Workshop'">
+                		<option value="public">Public</option>
+                		<option value="private">Private</option>
+                	</select>
+                </div>
+                <div ng-show="thing == 'Resource'">
+	                <h4>Link</h4>
+                	 <input class="form-control ng-pristine ng-valid" type="text" ng-model="link" placeholder="http://" name="link" ng-required="thing == 'Resource'"></input>    
+                </div>
+                <div>
+	                <h4>Geographic scope</h4>
+	                % if c.geoString:
+	                <span ng-show="!showGeoSelect">
+	                	<span ng-if="!showGeoSelect">{{setGeoScope('${c.geoScope}')}}</span>
+		                Your selected geographic scope is: <br/>
+			                ${c.geoString['country']}
+		                	% if 'state' in c.geoString:
+			                	- ${c.geoString['state']}
+			                %endif
+			                % if 'county' in c.geoString:
+							    - ${c.geoString['county']}
+							%endif	
+							% if 'city' in c.geoString:
+								- ${c.geoString['city']}
+							%endif
+							% if 'postal' in c.geoString:
+								- ${c.geoString['postal']}
+							%endif
+		                <br/>
+		                <a ng-click="activateGeoSelect()"> Change? </a>
+	                </span>
+	                <span ng-show="showGeoSelect">${ng_lib.ngGeoSelect()}
+	                <a ng-click="activateGeoSelect()"> Back to your previous selection? </a>
+	                </span>
+	                %else:
+	                	${ng_lib.ngGeoSelect()}
+	                % endif
+                    </div>
+                <button type="submit" class="btn btn-large btn-success pull-right">Submit</button>
+                </div>
+        </form>
+        <a ng-href="/initiative/{{newObjCode}}/{{newObjUrl}}/show" target="_blank" ng-cloak>{{newObjUrl}}</a>
+    </div>
+</div>
+</div>
+<%def name="extraScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/create.js')}" type="text/javascript"></script>
+    <script>
+	    function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#avatar').attr('src', e.target.result);
+	                $('#avatar').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    function readURL2(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#cover').attr('src', e.target.result);
+	                $('#cover').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    $("#imgAvatar").change(function(){
+	        readURL(this);
+	    });
+	    $("#imgCover").change(function(){
+	        readURL2(this);
+	    });
+    </script>
+</%def>
