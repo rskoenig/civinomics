@@ -460,7 +460,8 @@ class InitiativeController(BaseController):
         """
         if c.iPrivs == False:
             abort(404)
-
+            
+        log.info(request.params)
         if 'files[]' in request.params:
             file = request.params['files[]']
             filename = file.filename

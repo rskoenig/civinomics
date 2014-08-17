@@ -244,21 +244,21 @@ class CreateController(BaseController):
             c.postal = "0"
 
 
-        if 'avatar' in requestKeys:
-            file = request.params['avatar']
-            if file:
+        if 'avatar[]' in requestKeys:
+            file = request.params['avatar[]']
+            if file is not None:
+                log.info("Processing avatar")
                 filename = file.filename
                 fileitem = file.file
                 photoAvatarInfo = self.photoUploadHandler(file)
             
-        if 'cover' in requestKeys:
-            file = request.params['cover']
-            if file:
-                filename = file.filename
-                fileitem = file.file
-                log.info("Processing cover photo %s", file.filename)
-                photoCoverInfo = self.photoUploadHandler(file, cover = True)
-                c.initiative['coverPhoto'] = photoCoverInfo
+        if 'cover[]' in requestKeys:
+            fileThing = request.params['cover[]']
+            if fileThing is not None:
+                filename = fileThing.filename
+                fileitem = fileThing.file
+                log.info("Processing cover photo %s", fileThing.filename)
+                photoCoverInfo = self.photoUploadHandler(fileThing, cover = True)
             
         
         c.editInitiative = True

@@ -35,11 +35,11 @@
                 <hr>
                 <p class="lead">{{thing}} Images</p>
                 <h4>{{thing}} Photo</h4>
-				        <input type="file" name="avatar" id="imgAvatar" />
+				        <input type="file" name="avatar[]" id="imgAvatar" />
 				        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
                 <h4>Cover Photo</h4>
 				        <input type='file' id="imgCover" name="cover" />
-				        <img id="cover" style="display:none;" name="cover" src="#" alt="your cover image" />
+				        <img id="cover" style="display:none;" name="cover[]" src="#" alt="your cover image" />
 				</div>
                 <div>
                     <hr>
