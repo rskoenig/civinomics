@@ -142,7 +142,10 @@ class CreateController(BaseController):
         else:
             title = 'New Initiative'
             
-        w = workshopLib.Workshop(title, c.authuser, scope, wType)
+        if 'description' in request.params:
+            description = request.params['description']
+            
+        w = workshopLib.Workshop(title, c.authuser, scope, wType, description)
         if request.params['privacy'] == 'public' and 'geoScope' in request.params:
             w['workshop_public_scope'] =  request.params['geoScope']
         else:
@@ -176,7 +179,7 @@ class CreateController(BaseController):
 #         log.info(c.authuser['url'])
         
         requestKeys = request.params.keys()
-
+        kwargs = {}
         query = request.POST
         log.info(query)
         
@@ -190,10 +193,13 @@ class CreateController(BaseController):
         else:
             description = ''
 
+        if 'tags' in query:
+            tags = query['tags']
+            kwargs['tag'] = tags
+
         # the scope if initiative is created from a geoSearch page
         if 'geoScope' in query:
             scope = query['geoScope']
-            
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
             
@@ -203,7 +209,7 @@ class CreateController(BaseController):
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
         
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal, **kwargs)
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
@@ -244,21 +250,18 @@ class CreateController(BaseController):
             c.postal = "0"
 
 
-        if 'avatar[]' in requestKeys:
+        if 'avatar[]' in requestKeys and request.params['avatar[]'] is not u'':
             file = request.params['avatar[]']
-            if file is not None:
-                log.info("Processing avatar")
-                filename = file.filename
-                fileitem = file.file
-                photoAvatarInfo = self.photoUploadHandler(file)
+            filename = file.filename
+            fileitem = file.file
+            photoAvatarInfo = self.photoUploadHandler(file)
             
-        if 'cover[]' in requestKeys:
+        if 'cover[]' in requestKeys and request.params['cover[]'] is not u'':
             fileThing = request.params['cover[]']
-            if fileThing is not None:
-                filename = fileThing.filename
-                fileitem = fileThing.file
-                log.info("Processing cover photo %s", fileThing.filename)
-                photoCoverInfo = self.photoUploadHandler(fileThing, cover = True)
+            filename = fileThing.filename
+            fileitem = fileThing.file
+            log.info("Processing cover photo %s", fileThing.filename)
+            photoCoverInfo = self.photoUploadHandler(fileThing, cover = True)
             
         
         c.editInitiative = True
