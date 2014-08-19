@@ -3,22 +3,21 @@
 import logging
 import urllib2
 import datetime
-import webhelpers.feedgenerator as feedgenerator
 import pickle
 
-from pylons import config
-from pylons import request, response, session, tmpl_context as c, url, config
-from pylons.controllers.util import abort, redirect
-from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.tag import getTagCategories
-from pylowiki.lib.db.user import searchUsers, getUserByID
-
-from pylowiki.lib.db.workshop import getActiveWorkshops
-
-
+from pylons                     import config
+from pylons                     import request, response, session, tmpl_context as c, url, config
+from pylons.controllers.util    import abort, redirect
+from pylowiki.lib.base          import BaseController, render
+from pylowiki.lib.db.page       import get_all_pages
+from pylowiki.lib.db.tag        import getTagCategories
+from pylowiki.lib.db.user       import searchUsers, getUserByID
+from pylowiki.lib.db.workshop   import getActiveWorkshops
+from pylowiki.model             import Thing
 
 
+
+import webhelpers.feedgenerator         as feedgenerator
 import pylowiki.lib.db.user         	as userLib
 import pylowiki.lib.db.message      	as messageLib
 import pylowiki.lib.db.photo        	as photoLib
@@ -38,17 +37,16 @@ import pylowiki.lib.fuzzyTime			as fuzzyTime
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.helpers             as h
-import misaka as m
-import pylowiki.lib.db.motd         as motdLib
-import pylowiki.lib.db.account      as accountLib
-import pylowiki.lib.images          as imageLib
-import pylowiki.lib.db.resource         as  resourceLib
-import pylowiki.lib.db.discussion       as  discussionLib
-import pylowiki.lib.db.idea       as  ideaLib
-import pylowiki.lib.alerts              as  alertsLib
-import pylowiki.lib.db.geoInfo      as geoInfoLib
-
-import simplejson as json
+import misaka                           as m
+import pylowiki.lib.db.motd             as motdLib
+import pylowiki.lib.db.account          as accountLib
+import pylowiki.lib.images              as imageLib
+import pylowiki.lib.db.resource         as resourceLib
+import pylowiki.lib.db.discussion       as discussionLib
+import pylowiki.lib.db.idea             as ideaLib
+import pylowiki.lib.alerts              as alertsLib
+import pylowiki.lib.db.geoInfo          as geoInfoLib
+import simplejson                       as json
 
 
 log = logging.getLogger(__name__)
@@ -146,6 +144,15 @@ class CreateController(BaseController):
             description = request.params['description']
             
         w = workshopLib.Workshop(title, c.authuser, scope, wType, description)
+        
+        if request.params['avatar[]'] is not u'':
+            file = request.params['avatar[]']
+            filename = file.filename
+            fileitem = file.file
+            s = self.saveSlide(c.authuser, "Main Image", filename, fileitem)
+            mainImageLib.setMainImage(c.authuser, w, s)
+            dbHelpers.commit(w)
+            
         if request.params['privacy'] == 'public' and 'geoScope' in request.params:
             w['workshop_public_scope'] =  request.params['geoScope']
         else:
@@ -261,7 +268,7 @@ class CreateController(BaseController):
             filename = fileThing.filename
             fileitem = fileThing.file
             log.info("Processing cover photo %s", fileThing.filename)
-            photoCoverInfo = self.photoUploadHandler(fileThing, cover = True)
+            photoCoverInfo = self.photoUploadHandler(fileThing, tipus = 'cover')
             
         
         c.editInitiative = True
@@ -481,7 +488,7 @@ class CreateController(BaseController):
 # Photo uploader
 
     @h.login_required
-    def photoUploadHandler(self, photo, cover = False):
+    def photoUploadHandler(self, photo, tipus = False):
         """
             Ideally:  
             1) User selects image, gets presented with aspect-ratio constrained selection.
@@ -523,10 +530,12 @@ class CreateController(BaseController):
         if not image:
             abort(404) # Maybe make this a json response instead
         imageHash = imageLib.generateHash(filename, c.authuser)
-        if not cover:
+        if not tipus:
             image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
-        else:
+        elif tipus == 'cover':
             image = imageLib.saveImage(image, imageHash, 'cover', 'orig', thing = c.initiative)
+        elif tipus == 'slide':
+            image = imageLib.saveImage(image, imageHash, 'cover', 'orig')
         width = min(image.size)
         x = 0
         y = 0
@@ -562,16 +571,20 @@ class CreateController(BaseController):
             clientHeight = request.params['clientHeight']
             if not clientHeight or clientHeight == 'null':
                 clientHeight = -1
-        if not cover:
+        if not tipus:
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 480, 480)
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
             image = imageLib.resizeImage(image, imageHash, 160, 160)
             image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+            location = c.initiative['directoryNum_photos']
+        elif tipus == 'slide':
+            imageLocation, directoryNum = imageLib.getImageLocation(image)
+            location = directoryNum
         
         photoInfo ={
                     'name':filename,
-                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(c.initiative['directoryNum_photos'], imageHash),
+                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(location, imageHash),
                     'image_hash':imageHash
                    }
         return photoInfo
@@ -631,7 +644,7 @@ class CreateController(BaseController):
             
         return goal
 
-# Helper function for workshops
+# Helper functions for workshops
 
     @h.login_required
     def validatePaymentForm(self):
@@ -674,3 +687,30 @@ class CreateController(BaseController):
             return False
             
         return True
+        
+# Save Slide without slideshow (this is...)
+  
+    def saveSlide(self, owner, title, filename, image):
+        image = imageLib.openImage(image)
+        if not image:
+            abort(404)
+        s = Thing('slide', owner.id)
+        dbHelpers.commit(s)
+        s['urlCode'] = utils.toBase62(s)
+   
+        imageHash = imageLib.generateHash(filename, s)
+        image = imageLib.saveImage(image, imageHash, 'slide', 'orig', thing = s)
+        image = imageLib.resizeImage(image, imageHash, 1200, 1200, preserveAspectRatio = True)
+        image = imageLib.saveImage(image, imageHash, 'slide', 'slideshow')
+        image = imageLib.resizeImage(image, imageHash, 128, 128, preserveAspectRatio = True)
+        image = imageLib.saveImage(image, imageHash, 'slide', 'thumbnail')
+
+        # finally
+        s['pictureHash'] = imageHash
+        s['title'] = title
+        s['filename'] = filename
+        s['deleted'] = u'0'
+        s['disabled'] = u'0'
+        s['format'] = u'png'
+        dbHelpers.commit(s)
+        return s
