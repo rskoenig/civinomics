@@ -150,10 +150,12 @@
 		                <p class="lead">{{thing}} Images</p>
 		                <h5>{{thing}} Photo</h5>
 						        <input type="file" name="avatar[]" id="imgAvatar" />
-						        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
+						        <img style="display:none;" id="avatarPreview" name="avatarPreview" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
+						<div ng-show="thing == 'Initiative'">
 		                <h5>Cover Photo</h5>
 						        <input type='file' id="imgCover" name="cover[]" />
-						        <img style="display:none;" id="cover" name="cover" src="#" alt="your cover image" />
+						        <img style="display:none;" id="coverPreview" name="coverPreview" src="#" alt="your cover image" />
+						</div>
 					</div>
                     ###Extra info (hidden)
 		                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
@@ -349,5 +351,43 @@
       $('.dropdown-menu input, .dropdown-menu label').click(function(e) {
         e.stopPropagation();
       });
+    </script>
+    <script>
+    	function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();        
+	            reader.onload = function (e) {
+	                $('#avatarPreview').attr('src', e.target.result);
+	                $('#avatarPreview').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    function readURL2(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#coverPreview').attr('src', e.target.result);
+	                $('#coverPreview').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    jQuery(document).ready(function(){
+		    jQuery("#imgAvatar").on('change',function(){
+		    	alert("YUP");
+		        readURL(this);
+		    });
+		    
+		    jQuery("#imgCover").on('change',function(){
+		    	alert("AHA");
+		        readURL2(this);
+		    });
+	    });
     </script>
 </%def>

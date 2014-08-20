@@ -153,8 +153,8 @@ function createController($scope, $http) {
 	            var reader = new FileReader();
 	            
 	            reader.onload = function (e) {
-	                $('#avatar').attr('src', e.target.result);
-	                $('#avatar').show();
+	                $('#avatarPreview').attr('src', e.target.result);
+	                $('#avatarPreview').show();
 	            }
 	            
 	            reader.readAsDataURL(input.files[0]);
@@ -166,8 +166,8 @@ function createController($scope, $http) {
 	            var reader = new FileReader();
 	            
 	            reader.onload = function (e) {
-	                $('#cover').attr('src', e.target.result);
-	                $('#cover').show();
+	                $('#coverPreview').attr('src', e.target.result);
+	                $('#coverPreview').show();
 	            }
 	            
 	            reader.readAsDataURL(input.files[0]);
@@ -175,8 +175,10 @@ function createController($scope, $http) {
 	    }
 	    
 	    $("#imgAvatar").change(function(){
+	    	alert("YUP");
 	        readURL(this);
 	    });
 	    $("#imgCover").change(function(){
+	    	alert("AHA");
 	        readURL2(this);
 	    });
