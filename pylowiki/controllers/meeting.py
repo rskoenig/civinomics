@@ -242,8 +242,6 @@ class MeetingController(BaseController):
             c.city = "0"
             c.postal = "0"
 
-        if 'public' in request.params:
-            log.info("got %s"%request.params['public'])
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.meeting['public'] == '0':
                 c.meeting['public'] = '1'
@@ -372,6 +370,17 @@ class MeetingController(BaseController):
 
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         c.author = userLib.getUserByCode(c.meeting['userCode'])
+        if 'user' in session and c.authuser:
+            if 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
+                curateLevel = int(c.authuser['curateLevel']) + 1
+                curateScope = c.authuser['curateScope']
+                meetingScope = c.meeting['scope'].replace('0', '')
+                scopeList = meetingScope.split('|')[0:curateLevel]
+                meetingScope = '|'.join(scopeList)
+                if curateScope == meetingScope:
+                    c.curator = True
+                else:
+                    c.curator = False
         
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1

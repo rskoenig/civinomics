@@ -25,6 +25,7 @@ def getAllMeetings():
     try:
         return meta.Session.query(Thing)\
             .filter(Thing.objType.in_(['meeting', 'meetingUnpublished']))\
+            .order_by('-date')\
             .all()
     except:
         return False

@@ -275,7 +275,6 @@ def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
     SQLtoday = mdate.strftime("%Y-%m-%d")
     postList = []
     objectList = ['meeting']
-    log.info("activity scope is %s"%scope)
 
     q = meta.Session.query(Thing)\
         .filter(Thing.objType.in_(objectList))\
