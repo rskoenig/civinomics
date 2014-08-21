@@ -296,10 +296,15 @@
             <% 
                 if c.state != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 4:
                     disabled = "disabled"
+                    fieldName = "geoTagStateDisabled"
                 else:
                     disabled = ""
+                    fieldName = "geoTagState"
             %>
-            <select name="geoTagState" id="geoTagState" class="geoTagState" ${disabled} onChange="geoTagStateChange(); return 1;">
+            % if disabled == "disabled":
+                <input type=hidden name="geoTagState" value="${c.state}">
+            % endif
+            <select name="${fieldName}" id="geoTagState" class="geoTagState" ${disabled} onChange="geoTagStateChange(); return 1;">
                 <option value="0">Select a state</option>
                 % for state in c.states:
                     % if state != 'District of Columbia':
@@ -326,10 +331,15 @@
                 <% 
                     if c.county != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 6:
                         disabled = "disabled"
+                        fieldName = "geoTagCountyDisabled"
                     else:
                         disabled = ""
+                        fieldName = "geoTagCounty"
                 %>
-                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" ${disabled} onChange="geoTagCountyChange(); return 1;">
+                % if disabled == "disabled":
+                    <input type=hidden name="geoTagCounty" value="${c.county}">
+                % endif
+                <select name="${fieldName}" id="geoTagCounty" class="geoTagCounty" ${disabled} onChange="geoTagCountyChange(); return 1;">
                     <option value="0">Select a county</option>
                     % for county in counties:
                         % if c.county == county['County'].title():
@@ -355,10 +365,15 @@
                 <% 
                     if c.city != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 8:
                         disabled = "disabled"
+                        fieldName = "geoTagCityDisabled"
                     else:
                         disabled = ""
+                        fieldName = "geoTagCity"
                 %>
-                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" ${disabled} onChange="geoTagCityChange(); return 1;">
+                % if disabled == "disabled":
+                    <input type=hidden name="geoTagCounty" value="${c.city}">
+                % endif
+                <select name="${fieldName}" id="geoTagCity" class="geoTagCity" ${disabled} onChange="geoTagCityChange(); return 1;">
                 <option value="0">Select a city</option>
                     % for city in cities:
                         % if c.city == city['City'].title():
