@@ -228,7 +228,8 @@ class HomeController(BaseController):
 		    scopeList = userScope.split('|')
 		    countyScopeList = scopeList[0:7]
 		    countyScope = '|'.join(countyScopeList)
-		    #log.info("countyScope is %s"%countyScope)
+		    countyScope = '0' + countyScope.replace('||', '|0|')
+		    log.info("home countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
 		    if countyActivity:

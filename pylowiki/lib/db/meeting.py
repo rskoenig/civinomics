@@ -4,7 +4,7 @@ import logging
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl, with_key_characteristic_like as wkcl
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
@@ -34,7 +34,7 @@ def getMeetingsForScope(limit, scope, offset = 0):
     objectList = ['meeting']
     q = meta.Session.query(Thing)\
         .filter(Thing.objType.in_(objectList))\
-        .filter(Thing.data.any(wcl('scope', scope)))\
+        .filter(Thing.data.any(wkcl('scope', scope)))\
         .order_by('-date')\
         .offset(offset)
     if limit:
