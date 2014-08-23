@@ -581,6 +581,14 @@ class CreateController(BaseController):
         elif tipus == 'slide':
             imageLocation, directoryNum = imageLib.getImageLocation(image)
             location = directoryNum
+        elif tipus == 'cover':
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
+            image = imageLib.resizeImage(image, imageHash, 160, 160)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+            location = c.initiative['directoryNum_photos']
+
         
         photoInfo ={
                     'name':filename,
