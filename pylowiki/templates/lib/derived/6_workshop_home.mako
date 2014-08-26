@@ -28,40 +28,6 @@
         % endfor
         </ul>
      % endif
-    % if c.pendingListeners:
-        <hr style="margin:8px 0;">
-        <div><p><em class="grey"><small>Not yet participating. Invite them to join in.</small></em></p></div>
-        <ul class="media-list" id="workshopNotables">
-        % for person in c.pendingListeners:
-            <li class="media notables-item">
-                % if 'user' in session and c.authuser:
-                    <div class="pull-left rightbuttonspacing"><a href="#invite${person['urlCode']}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
-                % else:
-                    <div class="pull-left rightbuttonspacing"><a href="#signupLoginModal" data-toggle="modal" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
-                % endif
-                <div class="media-body">
-                    <span class="listener-name">${person['name']}</span><br />
-                    <small>${person['title']}</small> 
-                </div>
-            </li>
-        % endfor
-        </ul>
-     % endif
-      
-     
-     % if 'user' in session and c.authuser and not c.privs['provisional']:
-      <!-- 
-        <em class="grey"><small>Which public officials should participate?</small></em><br />
-        <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener" name="suggestListenerForm">
-          <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
-          <button type="submit" class="btn btn-success btn-small">Submit</button>
-          <div class="alert top-space bottom-space" ng-show="suggestListenerShow" ng-cloak>
-            <button data-dismiss="alert" class="close">x</button>
-            {{suggestListenerResponse}}
-          </div>
-        </form>
-      -->
-     %endif
 </%def>
 
 <%def name="whoListeningModals()">

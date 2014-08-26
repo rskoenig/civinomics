@@ -54,7 +54,7 @@
 </%def>
 
 <%def name="admin_facilitators()">
-    <p>To invite a member to be a listener of, or co-facilitate this workshop, visit their Civinomics profile page and look for the "Invite ..." button!</p>
+    <p>To invite a member to co-facilitate this workshop, visit their Civinomics profile page and look for the "Invite ..." button!</p>
     <table class="table table-bordered table-condensed" ng-controller="facilitatorController">
         <thead>
             <tr>
@@ -148,64 +148,6 @@
         % endfor
         </tbody>
         </table>
-    % endif
-</%def>
-
-<%def name="admin_listeners()">
-    % if c.w['public_private'] != 'trial':
-        <div ng-controller="listenerController" ng-init="user='${c.authuser['urlCode']}'; code='${c.w['urlCode']}'; url='${c.w['url']}'; testString=''; getList()">
-        <table class="table table-bordered">
-        <thead>
-        <tr><th>Officials 
-        <button type="button" class="pull-right btn btn-small btn-success" data-toggle="collapse" data-target="#addlistener">
-        + Listener
-        </button>
-        <div id="addlistener" class="collapse">
-            <div class="spacer"></div>
-            <form id="addListener" ng-submit="saveListener()" class="form-inline" name="addListener">
-                New Listener: 
-                <input type="text" name="lName" class="input-medium" ng-model="lName" placeholder="Name" required>
-                <input type="text" name="lTitle" class="input-medium" ng-model="lTitle" placeholder="Title" required>
-                <input type="text" name="lEmail" class="input-medium" ng-model="lEmail" placeholder="Email" required>
-                <button type="submit" class="btn btn-warning">Save</button>
-                <br />
-                <span ng-show="addListenerShow">{{addListenerResponse}}</span>
-            </form>
-        </div><!-- collapse -->
-        </th></th>
-        </thead>
-        <tbody>
-        <tr ng-repeat="listener in listeners">
-        <td>
-            <a href="{{listener.profileLink}}" class="{{listener.state}}"><img class="avatar small-avatar" src="{{listener.userImage}}"> <span id="listenerName{{listener.urlCode}}">{{listener.lName}}</span>, <span id="listenerTitle{{listener.urlCode}}">{{listener.lTitle}}</span> ({{listener.state}})</a>
-            <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" id="toggleButton{{listener.urlCode}}" data-target="#disableListener{{listener.urlCode}}">
-            {{listener.button}}</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener{{listener.urlCode}}">
-            Edit</button></div><!-- btn-group -->
-            {{testString}}
-            <div id="disableListener{{listener.urlCode}}" class="collapse">
-                <form id="toggleForm{{listener.urlCode}}" ng-submit="toggleListener(listener.urlCode, listener.button)" class="form-inline" name="toggleForm{{listener.urlCode}}">
-                <input type="text" id="lReason{{listener.urlCode}}" name="lReason{{listener.urlCode}}" placeholder="Reason" required>
-                <button type="submit" class="btn btn-warning" id="toggleSubmit{{listener.urlCode}}">{{listener.button}} Listener</button>
-                <br />
-                <span id="toggleListenerResponse{{listener.urlCode}}"></span>
-                </form>
-            </div><!-- collapse -->
-            <div id="editListener{{listener.urlCode}}" class="collapse">
-                <form id="editForm{{listener.urlCode}}" ng-submit="editListener('{{listener.urlCode}}')" class="form-inline" name="editForm{{listener.urlCode}}">
-                Edit Listener:<br />
-                Name: <input type="text" class="input-small" id="lName" name="lName" value="{{listener.lName}}" required>
-                Title: <input type="text" class="input-small" id="lTitle" name="lTitle" value="{{listener.lTitle}}" required>
-                Email: <input type="text" class="input-small" id="lEmail" name="lEmail" value="{{listener.lEmail}}" required>
-                <button type="submit" class="btn btn-warning">Save Changes</button>
-                <br />
-                <span id="editListenerResponse{{listener.urlCode}}"></span>
-                </form>
-            </div><!-- collapse -->
-        </td>
-        </tr>
-        </tbody>
-        </table>
-        </div><!-- listenerController -->
     % endif
 </%def>
 
