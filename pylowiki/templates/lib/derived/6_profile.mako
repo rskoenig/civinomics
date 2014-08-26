@@ -682,20 +682,5 @@
                 </div>
             </div><!-- row -->
         % endif
-        % if wListL:
-            <div class="row">
-                <div class="centered">
-                <form method="post" name="inviteListen" id="inviteListen" action="/profile/${c.user['urlCode']}/${c.user['url']}/listener/invite/handler" class="form-inline">
-                    <br />
-                    <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to be a listener of the selected workshop">Invite</button> to be a listener <select name="workshopCode">
-                    % for myW in wListL:
-                        <option value="${myW['urlCode']}">${myW['title']}</option>
-                    % endfor                       
-                    </select>
-                    <input type="text" name="lTitle" placeholder="Title or Description" required>
-                </form>
-                </div>
-            </div><!-- row -->
-        % endif
     %endif
 </%def>

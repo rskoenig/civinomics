@@ -24,7 +24,6 @@
                     <small>${lib_6.userGreetingMsg(person)}</small>
                 </div>
             </li>
-            
         % endfor
         </ul>
      % endif

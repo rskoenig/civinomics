@@ -317,15 +317,6 @@ class ProfileController(BaseController):
             #entry['isFollowing'] = c.isFollowing
             entry['isUser'] = c.isUser
             entry['browse'] = c.browse
-            # next entries represented as __workshop/facilitator/post0..len(c.__-1)
-            #entry['watching'] = c.watching
-            #entry['bookmarkedWorkshops'] = c.bookmarkedWorkshops
-            #entry['privateWorkshops'] = c.privateWorkshops
-            #entry['listeningWorkshops'] = c.listeningWorkshops
-            #entry['pendingFacilitators'] = c.pendingFacilitators
-            #entry['facilitatorWorkshops'] = c.facilitatorWorkshops
-            #entry['memberPosts'] = c.memberPosts
-            #entry['unpublishedActivity'] = c.unpublishedActivity
             
             result = []
             result.append(entry)
