@@ -8,25 +8,24 @@
     <h4 class="initiative-title">Summary</h4>
     ${ihelpers.showDescription()}
     ${ihelpers.showUpdateList()}
-    <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
-    ${ihelpers.showFunding_Summary()}
-    ${ihelpers.showCost(c.initiative)}
+
+    % if c.initiative['funding_summary']:
+        <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
+        ${ihelpers.showFunding_Summary()}
+    % endif
+    % if c.initiative['cost']:
+        ${ihelpers.showCost(c.initiative)}
+    % endif
     <br>
     <hr>
-    <h4 class="initiative-title">Background</h4>
-    ${ihelpers.showBackground()}
-    <h4 class="initiative-title">Proposal</h4>
-    ${ihelpers.showProposal()}
-
-<%doc>
-	###%if c.cover_url:
-	COVER TEST
-	<img src="${c.cover_url}"/>
-	${c.cover_url}
-	<div class="thumbnail i-main-photo" style="height: 300px; color: #fff; background-image:url('${c.cover_url}'); background-position: center center; background-size: cover;"></div>
-	END COVER TEST
-	%endif
-</%doc>
+    % if c.initiative['background']:
+        <h4 class="initiative-title">Background</h4>
+        ${ihelpers.showBackground()}
+    % endif
+    % if c.initiative['proposal']:
+        <h4 class="initiative-title">Proposal</h4>
+        ${ihelpers.showProposal()}
+    % endif 
 	% if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
