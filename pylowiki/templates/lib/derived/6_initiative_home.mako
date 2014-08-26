@@ -607,21 +607,20 @@
     %>
     % if not c.update:
         <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
-            <fieldset>
-                <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+            <div class="form-group">
+                <label>Update Title</label>
+                <input type="text" class="form-control input-block-level" name="title" ng-model="title" maxlength = "120" required>
                 <span ng-show="addUpdateTitleShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Progress Report Text</strong>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Update Text</label>
+                <a href="#" class="btn btn-xs btn-info left-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a>
+                <textarea name="text" rows="3" class="form-control input-block-level" ng-model="text" required></textarea>
                 <span ng-show="addUpdateTextShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTextResponse}}</div></span>
-                <span class="help-block"> (A description of the progress made on implementing the initiative since the last progress report.) </span>
-            </fieldset>
-            <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-success pull-right" type="submit" name="submit">Submit</button>
+            </div>
         </form>
     % endif
 </%def>
