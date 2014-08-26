@@ -117,6 +117,17 @@
     % endif
 </%def>
 
+<%def name="showItemAuthor(thing)">
+    <%
+        role = ''
+        if 'addedAs' in thing.keys():
+            roles = ['admin', 'facilitator', 'listener']
+            if thing['addedAs'] in roles:
+                role = ' (%s)' % thing['addedAs']
+    %>
+    ${lib_6.userLink(thing.owner)}${role}<span class="grey">${lib_6.userGreetingMsg(thing.owner)}</span> from ${lib_6.userGeoLink(thing.owner)}${lib_6.userImage(thing.owner, className="avatar med-avatar")}
+</%def>
+
 <%def name="moderationPanel(thing)">
     <%
         if 'user' not in session or thing.objType == 'revision':
