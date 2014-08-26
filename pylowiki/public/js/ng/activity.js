@@ -51,6 +51,12 @@ function activityController($scope, $http) {
 		$scope.offset = $scope.sliceSize;
 	};
 	
+	$scope.getGeoScopedActivity = function(scope){
+		$scope.activityType = '/geo/'+scope;
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+	
 	$scope.getMeetingActivity = function(){
 		$scope.activityType = '/meetings';
 		$scope.getActivity();
