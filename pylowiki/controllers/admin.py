@@ -173,6 +173,17 @@ class AdminController(BaseController):
         c.title = "List All Photos"
         return render( "/derived/6_list_all_items.bootstrap" )
         
+    def listeners(self):
+        if userLib.isAdmin(c.authuser.id):
+            c.list = listenerLib.getAllListeners()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            c.list = listenerLib.getListenersForScope(0, scope)
+        if not c.list:
+            c.list = []
+        c.title = "List All Listeners"
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
     def meetings(self):
         if userLib.isAdmin(c.authuser.id):
             c.list = meetingLib.getAllMeetings()

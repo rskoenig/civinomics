@@ -217,16 +217,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
     
     # Listener management
-    map.connect('/profile/{userCode}/{userURL}/listener/invite/{handler:handler/?}', controller = 'listener', action = 'listenerInviteHandler', userCode = '{userCode}', userURL = '{userURL}')
-    map.connect('/profile/{userCode}/{userURL}/listener/response/{handler:handler/?}', controller = 'listener', action = 'listenerResponseHandler', userCode = '{userCode}', userURL = '{userURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/add/{handler:handler/?}', controller = 'listener', action = 'listenerAddHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/edit/{handler:handler/?}', controller = 'listener', action = 'listenerEditHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/toggle/{handler:handler/?}', controller = 'listener', action = 'listenerToggleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/email/{handler:handler/?}', controller = 'listener', action = 'listenerEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/suggest/{handler:handler/?}', controller = 'listener', action = 'listenerSuggestHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/list/{handler:handler/?}', controller = 'listener', action = 'listenerListHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/title/{handler:handler/?}', controller = 'listener', action = 'listenerTitleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/listener/{urlCode}/listenerShow{end:/?}', controller = 'listener', action = 'listenerShow', urlCode = '{urlCode}')
+    map.connect('/listener/{urlCode}/edit{end:/?}', controller = 'listener', action = 'listenerEdit', urlCode = '{urlCode}')
+    map.connect('/listener/{urlCode}/listenerEditHandler{end:/?}', controller = 'listener', action = 'listenerEditHandler', urlCode = '{urlCode}')
 
     # Share management
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/email/{handler:handler/?}', controller = 'share', action = 'shareEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
@@ -235,9 +228,6 @@ def make_map():
 
     # Comment notifications
     map.connect('/profile/preferences/{id1}/{id2}/comments/{handler:handler/?}', controller = 'profile', action = 'preferencesCommentsHandler', id1 = '{id1}', id2 = '{id2}')
-    
-    # Listener notifications
-    map.connect('/{workshop:workshops?}/{workshopCode}/{url}/listen/{userCode}/notifications/{handler:handler/?}', controller = 'listener', action = 'listenerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')

@@ -68,6 +68,8 @@
                             <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
                         % elif itemType == 'meeting' or itemType == 'meetingUnpublished':
                             <td><a href="/meeting/${item['urlCode']}/${item['url']}/show/">${item['meetingDate']} ${item['title']}</a></td>
+                        % elif itemType == 'listener' or itemType == 'listenerUnpublished':
+                            <td><a href="/listener/${item['urlCode']}/listenerShow/">${item['name']} ${item['title']}</a></td>
                         % elif itemType == 'election' or itemType == 'electionUnpublished':
                             <td><a href="/election/${item['urlCode']}/${item['url']}/show/">${item['electionDate']} ${item['title']}</a></td>
                         % elif itemType == 'ballot' or itemType == 'ballotUnpublished':
@@ -81,7 +83,7 @@
                             %>
                             <td><a href="/initiative/${item['urlCode']}/${item['url']}/show"><img src="${imgSrc}">${item['title']}</a></td>
                         % endif
-                        <td>                             
+                        <td>
                         % if 'activated' in item and item['activated'] == "1":
                             Activated
                         % elif 'activated' in item and item['activated'] == "0":
