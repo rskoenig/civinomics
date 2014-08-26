@@ -1,0 +1,68 @@
+<%!
+    import pylowiki.lib.db.workshop         as workshopLib
+    import cgi
+%>
+
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+  <div class="span12 workshop-panel" style="margin-left: 0px;">
+    <% 
+        if c.privs and (c.privs['admin'] or c.privs['facilitator']):
+            allowIdeas = '1'
+            allowResources = '1'
+        else:
+            allowIdeas = c.w['allowIdeas']
+            allowResources = c.w['allowResources']
+    %>
+    <div ng-init="code = '${c.w['urlCode']}'; url = '${c.w['url']}'; allowIdeas = '${allowIdeas}'; allowResources = '${allowResources}';">
+      <div id="top" class="row-fluid" ng-controller="activityWorkshopController">
+        ${next.body()}
+      </div>
+    </div>
+  </div><!-- /.span12 -->
+</div><!--/.row-->
+${helpers.whoListeningModals()}
+
+<%def name="extraScripts()">
+   <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+      $(".preferencesLink").tooltip();
+      $(".publishButton").tooltip();
+   </script>
+</%def>
+
+<%def name="headScripts()">
+    % if c.facebookShare:
+        % if c.facebookShare.facebookAppId:
+            % if c.facebookShare.facebookAppId:
+                <meta property="fb:app_id" content="${c.facebookShare.facebookAppId}" />
+            % endif
+            % if c.facebookShare.title:
+                <meta property="og:title" content="${c.facebookShare.title}" />
+            % endif
+            <meta property="og:site_name" content="Civinomics"/>
+            <meta property="og:locale" content="en_US" /> 
+            % if c.facebookShare.url:
+                <meta property="og:url" content="${c.facebookShare.url}" />
+            % endif
+            % if c.facebookShare.description:
+                <meta property="og:description" content="${c.facebookShare.description}" />
+            % endif
+            % if c.facebookShare.image:
+                <meta property="og:image" content="${c.facebookShare.image}"/>
+            % endif
+        % endif
+    % endif
+</%def>
+
+<%def name="headScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/ng/goals.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/share.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/workshop_activity.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/resource.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+    
+</%def>
