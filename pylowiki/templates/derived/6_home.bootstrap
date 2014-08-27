@@ -22,7 +22,7 @@
 	                <table ng-show="!loading" class="full-width">
 	                    <tr ng-repeat="geo in geos">
 	                        <td>
-	                            <a ng-click="getGeoScopedActivity(geo.scope)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
+	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
 	                        </td>
 	                    </tr>
 	                </table>
@@ -82,8 +82,8 @@
 	      <div class="media well search-listing" ng-if="geoScope != ''">
 		        <div>
 		            <div class="row">
-		                <div class="col-xs-12">
-		                Your selected scope is: {{geoScope}}. <a href="#" ng-click="getAllActivity()">Change?</a>
+		                <div class="col-xs-12" style="margin-bottom: 10px;">
+		                Your selected scope is: {{geoScopeName}}. <a href="#" ng-click="getAllActivity()">Change?</a><br/>
 		                </div>
 		            </div>
 		        </div>
