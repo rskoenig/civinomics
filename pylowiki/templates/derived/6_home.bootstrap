@@ -78,6 +78,17 @@
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}
       </div>
+      <div ng-controller="createController" ng-cloak>
+	      <div class="media well search-listing" ng-if="geoScope != ''">
+		        <div>
+		            <div class="row">
+		                <div class="col-xs-12">
+		                Your selected scope is: {{geoScope}}. <a href="#" ng-click="getAllActivity()">Change?</a>
+		                </div>
+		            </div>
+		        </div>
+		  </div>
+	  </div>
 	  <div ng-controller="createController" ng-cloak>
 		  	<div class="media well search-listing">
 	        <div>
@@ -105,7 +116,7 @@
                     
                     <div ng-show="showAll">
                     <hr>
-	                    <div class="col-xs-5" ng-if="scope == ''">
+	                    <div class="col-xs-5" ng-if="geoScope == ''">
 	                    <h4>Geographic Scope</h4>
 	                    ${ng_helpers.ngGeoSelect()}
 	                    </div>
@@ -158,6 +169,7 @@
 					</div>
                     ###Extra info (hidden)
 		                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
+		                <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
 		                <input type="hidden" name="deadline" value="{{date}}" \>
 	                </div> 
 	            </div>

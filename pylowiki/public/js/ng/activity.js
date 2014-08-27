@@ -32,8 +32,10 @@ function activityController($scope, $http) {
 
 	$scope.getActivity();
 
+	$scope.geoScope = '';
 
 	$scope.getAllActivity = function(){
+		$scope.geoScope = '';
 		$scope.activityType = '/all';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
@@ -53,6 +55,7 @@ function activityController($scope, $http) {
 	
 	$scope.getGeoScopedActivity = function(scope){
 		$scope.activityType = '/geo/'+scope;
+		$scope.geoScope = scope;
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
