@@ -65,35 +65,27 @@
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
-        if c.meeting:
-            mScope = c.meeting['scope']
-            title = c.meeting['title']
-            group = c.meeting['group']
-            tag = c.meeting['tag']
-            text = c.meeting['text']
-            location = c.meeting['location']
-            meetingDate = c.meeting['meetingDate']
-            meetingTime = c.meeting['meetingTime']
-            agendaPostDate = c.meeting['agendaPostDate']
-            public = c.meeting['public']
-            if public == 'on':
-                publicChecked = 'checked'
-            else:
-                publicChecked = ""
+        if c.listener:
+            scope = c.listener['scope']
+            name = c.listener['name']
+            title = c.listener['title']
+            group = c.listener['group']
+            text = c.listener['text']
+            email = c.listener['email']
+            lurl = c.listener['lurl']
+            termEnd = c.listener['term_end']
+
         else:
-            mScope = "0|0|0|0|0|0|0|0|0|0"
+            scope = "0|0|0|0|0|0|0|0|0|0"
+            name = ""
             title = ""
             group = ""
-            tag = ""
             text = ""
-            location = ""
-            meetingDate = ""
-            meetingTime = ""
-            agendaPostDate = ""
-            public = ""
-            publicChecked = ""
+            email = ""
+            lurl = ""
+            termEnd = ""
             
-        scopeList = mScope.split('|')
+        scopeList = scope.split('|')
         if scopeList[9] == '0' and scopeList[8] == '0':
             countySelected = "selected"
         elif scopeList[9] == '0' and scopeList[8] != '0':
@@ -110,20 +102,20 @@
     % endif
     <div class="row>
         <div class="col-sm-12">
-            % if c.editMeeting:
-                <form method="POST" name="edit_meeting" id="edit_meeting" action="/meeting/${c.meeting['urlCode']}/${c.meeting['url']}/meetingEditHandler">
+            % if c.listener:
+                <form method="POST" name="edit_listener" id="edit_listener" action="/listener/${c.listener['urlCode']}/listenerEditHandler">
             % else:
-                <form method="POST" name="edit_meeting" id="edit_meeting" action="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNewHandler">
+                <form method="POST" name="edit_listener" id="edit_listener" action="/listener/new/listenerNewHandler">
             % endif
             <div class="row">
-                <h3>Meeting Information</h3>
+                <h3>Listener Information</h3>
             </div><!-- row -->
             <br>
             
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Meeting Title:</strong></label>
-                    <input type="text" name="meetingTitle" class="col-sm-12 form-control" value="${title}" required>
+                    <label for="title" class="control-label" required><strong>Listener Name:</strong></label>
+                    <input type="text" name="listenerName" class="col-sm-12 form-control" value="${name}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
@@ -134,36 +126,12 @@
             
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Meeting Date:</strong></label>
-                    <input type="text" name="meetingDate" id="meetingDate" class="col-sm-6 form-control" value="${meetingDate}" required>
+                    <label for="title" class="control-label" required><strong>Listener Title:</strong></label>
+                    <input type="text" name="listenerTitle" class="col-sm-12 form-control" value="${title}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        Date of meeting.
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="meetingTime" class="control-label" required><strong>Meeting Time:</strong></label>
-                    <input type="text" name="meetingTime" class="col-sm-6 form-control" value="${meetingTime}" required>
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        Time of meeting.
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Agenda Post Date:</strong></label>
-                    <input type="text" name="agendaPostDate" id="agendaPostDate" class="col-sm-6 form-control" value="${agendaPostDate}">
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        Date the meeting agenda will be posted for this meeting.
+                        Keep it short and descriptive.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
@@ -171,23 +139,11 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Name of group:</strong></label>
-                    <input type="text" name="meetingGroup" class="col-sm-12 form-control" value="${group}" required>
+                    <input type="text" name="listenerGroup" class="col-sm-12 form-control" value="${group}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
                         The name of the group which is meeting.
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Meeting location:</strong></label>
-                    <input type="text" name="meetingLocation" class="col-sm-12 form-control" value="${location}" required>
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        Where the meeting is to be held.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
@@ -199,61 +155,24 @@
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        The region or legal jurisdiction associated with the meeting.
+                        The region or legal jurisdiction associated with the listener.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
             
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="tag" class="control-label" required><strong>Meeting category:</strong></label>
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-8 no-left">
-                        <select name="tag" id="tag">
-                        % if (c.meeting and c.meeting['public'] == '0') or not c.meeting:
-                            <option value="">Choose one</option>
-                        % endif
-                        % for mtag in tagList:
-                            <% 
-                                selected = ""
-                                if tag == mtag:
-                                    selected = "selected"
-                            %>
-                            <option value="${mtag}" ${selected}/> ${mtag}</option>
-                        % endfor
-                        </select>
-                    </div><!-- col-sm-8 -->
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        The topic area associated with the meeting.
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
             
             <div class="row spacer">
                 <div class="col-sm-6">
-                    <label for="text" class="control-label" required><strong>Description:</strong></label>
+                    <label for="text" class="control-label" required><strong>Listener Description:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        A short description about the meeting.
+                        A short description of the listener.
                     </div>
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
-            <textarea rows="10" id="meetingText" name="meetingText" class="col-sm-12 form-control" required>${text}</textarea>
-            
-            <div class="row spacer">
-                <div class="col-sm-6">            
-                    <input type="checkbox" name="public" ${publicChecked}> Publish this meeting
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        Makes the meeting viewable by members and the public, with members able to comment and vote (where set).
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
+            <textarea rows="10" id="meetingText" name="listenerText" class="col-sm-12 form-control" required>${text}</textarea>
 
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>

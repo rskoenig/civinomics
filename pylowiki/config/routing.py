@@ -218,7 +218,7 @@ def make_map():
     
     # Listener management
     map.connect('/listener/{urlCode}/listenerShow{end:/?}', controller = 'listener', action = 'listenerShow', urlCode = '{urlCode}')
-    map.connect('/listener/{urlCode}/edit{end:/?}', controller = 'listener', action = 'listenerEdit', urlCode = '{urlCode}')
+    map.connect('/listener/{urlCode}/listenerEdit{end:/?}', controller = 'listener', action = 'listenerEdit', urlCode = '{urlCode}')
     map.connect('/listener/{urlCode}/listenerEditHandler{end:/?}', controller = 'listener', action = 'listenerEditHandler', urlCode = '{urlCode}')
 
     # Share management

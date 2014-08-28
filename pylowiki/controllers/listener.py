@@ -18,8 +18,8 @@ log = logging.getLogger(__name__)
 
 class ListenerController(BaseController):
     
-    @h.login_required
-    def __before__(self, action, urlCode):
+    def __before__(self, action = "foo", urlCode = "foo"):
+        log.info("urlCode is %s and action is %s"%(urlCode, action))
         if not urlCode or urlCode == '':
             abort(404)
 
@@ -27,8 +27,16 @@ class ListenerController(BaseController):
         c.listener = listenerLib.getListenerByCode(urlCode)
         
         return render( "/derived/6_listener.bootstrap" )
+     
+    @h.login_required   
+    def listenerEdit(self, urlCode):
+        if urlCode != 'new':
+            c.listener = listenerLib.getListenerByCode(urlCode)
+        
+        return render( "/derived/6_listener_edit.bootstrap" )
             
     @h.login_required
+    # name, title, group, lurl, text, email, scope, term_end
     def listenerEditHandler(self, urlCode):
         payload = request.params
         if 'lName' not in payload or 'lTitle' not in payload or 'lEmail' not in payload or 'urlCode' not in payload:

@@ -1,9 +1,9 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace file="/lib/derived/6_meeting.mako" name="mhelpers" />
+<%namespace file="/lib/derived/6_listener.mako" name="helpers" />
 
 <div class="row-fluid">
-    ${mhelpers.editMeeting()}
+    ${helpers.editListener()}
 </div>
 
 <%def name="headScripts()">
