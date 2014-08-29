@@ -5,9 +5,9 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-    <h4 class="initiative-title">Summary</h4>
+    <h4 id="summary" class="initiative-title">Summary</h4>
     ${ihelpers.showDescription()}
-    ${ihelpers.showUpdateList()}
+    ${ihelpers.showAuthor(c.initiative)}
 
     % if c.initiative['funding_summary']:
         <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
@@ -33,13 +33,20 @@
         <div class="text-right">
             ${ihelpers.initiativeModerationPanel(c.initiative)}
         </div>
+    % if c.updates:
         <hr>
-        <h4 class="initiative-title">Related Links ${ihelpers.addResourceButton()}</h4>
+        <div id="updates">
+            <h4 class="initiative-title">Updates ${ihelpers.addUpdateButton()}</h4>
+            ${ihelpers.showUpdateList()}
+        </div>
+    % endif
+        <hr>
+        <h4 id="resources" class="initiative-title">Related Links ${ihelpers.addResourceButton()}</h4>
         ${ihelpers.listResources()}
         <br>
         % if c.initiative.objType != 'initiativeUnpublished':
             <hr>
-            <h4 class="initiative-title">Comments</h4>
+            <h4 id="comments" class="initiative-title">Comments</h4>
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif

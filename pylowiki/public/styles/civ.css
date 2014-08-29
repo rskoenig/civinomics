@@ -2194,6 +2194,24 @@ li.thumbnail-gallery{
   margin-top: 20px;
 }
 
+.i-social-buttons{
+  margin-top: 25px;
+}
+
+.i-edit-menu{
+  margin-top: 170px;
+}
+
+.action-buttons{
+  margin-top: 40px;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus, .nav-pills>li>a:hover, .nav-pills>li>a:focus {
+color: grey;
+background-color: whitesmoke;
+border: 1px solid #ddd;
+}
+
 .strong{
   font-weight: bold;
 }
@@ -3737,7 +3755,7 @@ svg{
 }
 
 .title-offset{
-  margin-top: 120px;
+  margin-top: 160px;
 }
 
 .top-offset{

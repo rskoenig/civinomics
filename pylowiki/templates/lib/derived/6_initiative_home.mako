@@ -32,8 +32,6 @@
                                 ${lib_6.userImage(author, className="avatar small-avatar")}
                             % endfor
                         </td>
-                    </tr>
-                    <tr>
                         <td>
                             <span class="grey">
                             % for author in c.authors[:showNum]:
@@ -78,21 +76,17 @@
             </div><!-- tab-pane -->
         </div><!-- tabcontent -->
     </div><!-- tabbable -->
-    <br>
     <span class="grey">
         Published: ${item.date}
     </span>
 </%def>
 
 <%def name="showUpdateList()">
-    % if c.updates:
-        <h4 class="initiative-title">Updates</h4>
-        <ul>
-        % for update in c.updates:
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update['title']} <span class="pull-right">${update.date}</span></a></li>
-        % endfor
-        </ul>
-    % endif
+    <ul>
+    % for update in c.updates:
+        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update['title']} <span class="pull-right">${update.date}</span></a></li>
+    % endfor
+    </ul>
 </%def>
                         
 
@@ -151,6 +145,14 @@
         
     %>
     ${printStr | n}
+</%def>
+
+
+
+<%def name="addUpdateButton()">
+    % if c.iPrivs:
+        <a class="btn btn-default btn-sm pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><i class="icon icon-plus"></i></a>
+    % endif
 </%def>
 
 <%def name="listResources()">

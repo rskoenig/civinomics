@@ -8,6 +8,12 @@
 
 <% lib.return_to() %>
 
+<style>
+html,body{
+   background-color: #fff;
+}
+</style>
+
 %if c.cover_url:
     <div class="policy-cover" style="background-image:url('${c.cover_url}')">
         <div class="darkened-bg"></div>
@@ -25,31 +31,34 @@
                 <% titleSpan = "col-xs-10" %>
                 <div class="${titleSpan}" style="position:relative;">
                     <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h1>
+
                     <h4> 
                         ${lib_6.showTags(c.initiative)}<a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a href="${c.scopeHref}">${c.scopeTitle}</a>
-                    % if c.iPrivs:
-                        <span>
-                            ${ihelpers.watchButton(c.initiative)}
-                            % if c.editInitiative:
-                                <a class="btn btn-default pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
-                            % elif c.initiative.objType != 'revision':
-                                <span class="pull-right">
-                                    <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                    <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
-                                </span>
-                            % else:
-                                <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
-                            % endif
-                        </span>
-                    % elif c.initiativeHome and c.initiative.objType != 'revision':
-                        <span>
-                            ${ihelpers.watchButton(c.initiative)}
-                        </span>
-                    % endif
                     </h4>
+                    <div class="row action-buttons">
+                        % if c.iPrivs:
+                            <span>
+                                ${ihelpers.watchButton(c.initiative)}
+                                % if c.editInitiative:
+                                    <a class="btn btn-default pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                                % elif c.initiative.objType != 'revision':
+                                    <span class="pull-right">
+                                        <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                        <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                                    </span>
+                                % else:
+                                    <a class="btn pull-right" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
+                                % endif
+                            </span>
+                        % elif c.initiativeHome and c.initiative.objType != 'revision':
+                            <span>
+                                ${ihelpers.watchButton(c.initiative)}
+                            </span>
+                        % endif
+                    </div>
                 </div>
             </div>
-            <hr class="narrow">
+            <hr class="narrow no-top">
             <div class="top-offset">
                 ${next.body()}
             </div>
@@ -57,19 +66,7 @@
         <div class="col-sm-3 col-md-3" id="sidebar">
             <div style="position:fixed; width: inherit; max-width: 280px;">
             % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
-                <ul class="nav nav-tabs nav-stacked nav-init no-top" style="width: 100%;">
-                    <li class="active"><a href="#basics">1. Basics</a></li>
-                    <li><a href="#summary">2. Summary</a></li>
-                    <li><a href="#detail">3. Detail</a></li>
-                    <li><a href="#photo">4. Photo</a></li>
-                    <li><a href="#coauthors">5. Coauthors</a></li>
-                    <!--
-                    <li><a href="#iStats" data-toggle="tab">Stats</a></li>
-                    <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
-                    <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
-                    -->
-                </ul>
-                <div class="well" style="background-color: whitesmoke;">
+                <div class="well i-edit-menu" style="background-color: whitesmoke;">
                     <div class="row">
                         % if c.initiative['public'] == '0' and c.complete:
                             <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
@@ -88,6 +85,18 @@
                         % endif
                     </div>
                 </div>
+                <ul class="nav nav-pills nav-stacked" style="width: 100%;">
+                    <li class="active"><a href="#basics">1. Basics</a></li>
+                    <li><a href="#summary">2. Summary</a></li>
+                    <li><a href="#detail">3. Detail</a></li>
+                    <li><a href="#photo">4. Photo</a></li>
+                    <li><a href="#coauthors">5. Coauthors</a></li>
+                    <!--
+                    <li><a href="#iStats" data-toggle="tab">Stats</a></li>
+                    <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
+                    <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
+                    -->
+                </ul>
             % elif not c.editInitiative and c.initiative.objType == 'initiative':
                 <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
                     % if c.initiative.objType != 'revision':
@@ -132,7 +141,7 @@
                           </table>
                         </div>
                         -->
-                        <div class="row centered">
+                        <div class="row centered i-social-buttons">
                             <span>
                                 <%
                                     subj = 'Vote on "' + c.initiative['title'] + '"'
@@ -177,19 +186,17 @@
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
-                <div class="section-wrapper overview well initiative-well" style="overflow:visible;">
-                    ${ihelpers.showAuthor(c.initiative)}
-                </div>  
-                <!--
-                <ul class="nav nav-tabs nav-stacked nav-init" style="width: 100%;">
-                    <li class="active"><a href="#iText" data-toggle="tab">Text</a></li>
-                    <li><a href="#iResources" data-toggle="tab">Resources</a></li>
-                    <li><a href="#iStats" data-toggle="tab">Stats</a></li>
-                    <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
-                    <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
-
-                </ul>
-                -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <ul class="nav nav-pills nav-stacked" style="width: 100%;">
+                            <li class="active"><a href="#summary" data-toggle="tab">Summary</a></li>
+                            <li><a href="#updates">Updates</a></li>
+                            <li><a href="#resources">Resources</a></li>
+                            <li><a href="#comments">Comments</a></li>
+                            <!-- <li><a href="#iPhotos">Photos</a></li> -->
+                        </ul>
+                    </div>
+                </div>
             % endif
             </div> <!-- position:fixed -->
         </div><!-- span4 -->
