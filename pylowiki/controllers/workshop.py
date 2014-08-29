@@ -600,6 +600,8 @@ class WorkshopController(BaseController):
         if c.w['public_private'] == 'public' and 'changeScope' in request.params:
             weventMsg = 'Workshop scope changed from public to private.'
             c.w['public_private'] = 'private'
+            c.w['workshop_searchable'] = '2'
+            workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             dbHelpers.commit(c.w)
             
         if 'continueToNext' in request.params:
@@ -1489,7 +1491,8 @@ class WorkshopController(BaseController):
         else:
             sort = 0
 
-        workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort)
+
+        workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'])
         
         myRatings = {}
         if 'ratings' in session:

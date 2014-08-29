@@ -429,7 +429,10 @@ def Workshop(title, owner, publicPrivate, type = "personal", desc = " ", **kwarg
     w['allowResources'] = u'1'
     w['allowDiscussions']  = u'1'
     w['workshop_category_tags'] = ''
-    w['workshop_searchable'] = u'0'
+    if publicPrivate == 'private':
+        w['workshop_searchable'] = u'2'
+    else:
+        w['workshop_searchable'] = u'0'
     w['numPosts'] = 0
     w['numBookmarks'] = 0
     commit(w)
