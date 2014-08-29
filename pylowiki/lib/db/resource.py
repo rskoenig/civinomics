@@ -147,7 +147,7 @@ def getAllResources(deleted = '0', disabled = '0'):
     except:
         return False
 
-def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False):
+def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False, hasworkshop = True):
     try:
         if type(keys) != type([]):
             keys = [keys]
@@ -157,8 +157,9 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
                 .filter_by(objType = 'resource')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
+        if hasworkshop:
+            q = q.filter(Thing.data.any(wc('workshop_searchable', '1')))        
         if count:
             return q.count()
         return q.all()
@@ -237,14 +238,18 @@ def editResource(resource, title, text, link, owner):
         return False
 
 # Object
-def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
+def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None, **kwargs):
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
     eObj = getEObj(link)
     if not eObj:
         return False
-        
     a = Thing('resource', owner.id)
+    if 'geoScope' in kwargs:
+        a['scope'] = kwargs['geoScope']
+        a['public'] = '1'
+    if 'tags' in kwargs:
+            a['tags'] = kwargs['tags']
     a['link'] = link
     setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
