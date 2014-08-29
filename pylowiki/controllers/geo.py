@@ -295,4 +295,154 @@ class GeoController(BaseController):
             result = "No such zipcode."
         return json.dumps({'statusCode':statusCode, 'cityTitle':cityTitle, 'cityURL':cityURL, 'stateTitle':stateTitle, 'stateURL':stateURL, 'countryTitle':countryTitle, 'countryURL':countryURL})
 
+    ######################################################################
+    # 
+    # Functions used in /create/thing
+    # 
+    ######################################################################
 
+    def geoStateHandlerJSON(self, id1):
+        country = id1
+
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        try:
+            states = geoInfoLib.getStateList(country)
+            if states:
+                result = states
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No states"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                sList = []
+                for state in states:
+                    if state['StateFullName'] != 'District of Columbia':
+                        entry = {}
+                        entry['StateFullName'] = state['StateFullName']
+                        sList.append(entry)
+                return json.dumps({'result':sList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No states."
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No states."})
+
+    def geoCountyHandlerJSON(self, id1, id2):
+        country = id1
+        state = geoInfoLib.geoDeurlify(id2)
+        state = state.title()
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
+        try:
+            counties = geoInfoLib.getCountyList(country, state)
+            cList = ""
+            if counties:
+                result = counties
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No counties"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                cList = []
+                for county in counties:
+                    entry = {}
+                    entry['County'] = county['County'].title()
+                    cList.append(entry)
+                return json.dumps({'result':cList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No counties"
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No counties"})
+
+    def geoCityHandlerJSON(self, id1, id2, id3):
+        country = id1
+        state = geoInfoLib.geoDeurlify(id2)
+        state = state.title()
+        county = geoInfoLib.geoDeurlify(id3)
+        county = county.upper()
+
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
+        try:
+            cities = geoInfoLib.getCityList(country, state, county)
+            cList = ""
+            if cities:
+                result = cities
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No cities"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                cList = []
+                for city in cities:
+                    entry = {}
+                    entry['City'] = city['City'].title()
+                    cList.append(entry)
+                return json.dumps({'result':cList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No cities"
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No cities"})
+
+    def geoPostalHandlerJSON(self, id1, id2, id3, id4):
+        country = id1
+        state = geoInfoLib.geoDeurlify(id2)
+        state = state.title()
+        county = geoInfoLib.geoDeurlify(id3)
+        county = county.upper()
+        city = geoInfoLib.geoDeurlify(id4)
+        city = city.upper()
+
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
+        try:
+            postalCodes = geoInfoLib.getPostalList(country, state, county, city)
+            pList = ""
+            if postalCodes:
+                result = postalCodes
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No zipcodes"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                pList = []
+                for postal in postalCodes:
+                    entry = {}
+                    entry['ZipCode'] = str(postal['ZipCode'])
+                    pList.append(entry)
+                return json.dumps({'result':pList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No zipcodes"
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No zipcodes"})

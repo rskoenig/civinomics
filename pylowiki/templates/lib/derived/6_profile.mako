@@ -398,6 +398,9 @@
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
                         log.info("no parentObjType item is %s"%item.keys())
+                        parentObjType = ""
+                        parentURL = ""
+                        parentCode = ""
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                         
                     title = lib_6.ellipsisIZE(item['data'], 40)

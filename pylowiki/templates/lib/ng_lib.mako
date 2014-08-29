@@ -697,3 +697,56 @@
             </div>
             
 </%def>
+
+<%def name="ngGeoSelect()">
+
+    <div class="row-fluid">
+        <div class="span3">Country:</div>
+        <div class="span8">
+            <select name="country" ng-model="country" ng-change="changeStateList()">
+                <option value="">Select a country</option>
+                <option value="united-states">United States</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid" ng-show="showStateSelect" ng-cloak>
+        <div class="span3">State:</div>
+        <div class="span8">
+            <select name="state" ng-model="state" ng-change="changeCountyList()">
+                <option value="0">Select a state</option>
+                <option ng-repeat="state in stateList" ng-value="state.StateFullName">{{state.StateFullName}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid" ng-show="showCountySelect" ng-cloak>
+        <div class="span3">County:</div>
+        <div class="span8">
+            <select ng-model="county" ng-change="changeCityList()">
+                <option value="0">Select a county</option>
+                <option ng-repeat="county in countyList" ng-value="county.County">{{county.County}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row -->
+    
+    <div class="row-fluid" ng-show="showCitySelect" ng-cloak>
+        <div class="span3">City:</div>
+        <div class="span8">
+            <select ng-model="city" ng-change="changePostalList()">
+                <option value="0">Select a city</option>
+                <option ng-repeat="city in cityList" ng-value="city.City">{{city.City}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid" ng-show="showPostalSelect" ng-cloak>
+        <div class="span3">Zip Code:</div>
+        <div class="span8">
+            <select ng-model="postal">
+                <option value="0">Select a zip code</option>
+                <option ng-repeat="postal in postalList" ng-value="postal.ZipCode">{{postal.ZipCode}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+</%def>

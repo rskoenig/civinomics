@@ -407,7 +407,7 @@ def setWorkshopPrivs(workshop):
             c.privs['visitor'] = False
 
 
-def Workshop(title, owner, publicPrivate, type = "personal"):
+def Workshop(title, owner, publicPrivate, type = "personal", desc = " ", **kwargs):
     # title -> A string
     # owner -> A user object in Thing form
     #
@@ -421,7 +421,7 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['deleted'] = u'0'
     w['disabled'] = u'0'
     w['facilitators'] = c.authuser.id
-    w['description'] = u''
+    w['description'] = desc
     w['public_private'] = publicPrivate
     w['type'] = type
     w['allowIdeas'] = u'1'
