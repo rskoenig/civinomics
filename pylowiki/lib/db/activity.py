@@ -276,7 +276,7 @@ def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
         postList += q.limit(limit)
     else:
         postList += q.all()
-            
+    
     return postList
     
 def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):

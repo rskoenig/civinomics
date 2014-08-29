@@ -112,7 +112,7 @@ def updateInitiativeChildren(initiative, initiativeKey):
         
 
 # Object
-def Initiative(owner, title, description, scope, goal = None, workshop = None):
+def Initiative(owner, title, description, scope, goal = None, workshop = None, **kwargs):
     i = Thing('initiative', owner.id)
     generic.linkChildToParent(i, owner)
     if workshop is not None:
@@ -124,7 +124,10 @@ def Initiative(owner, title, description, scope, goal = None, workshop = None):
     i['description'] = description
     i['background'] = ""
     i['proposal'] = ""
-    i['tags'] = ""
+    if 'tag' in kwargs:
+        i['tags'] = kwargs['tag']
+    else:
+        i['tags'] = ""
     i['scope'] = scope
     i['cost'] = u'0'
     i['funding_summary'] = ""
