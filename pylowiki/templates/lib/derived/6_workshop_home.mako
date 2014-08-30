@@ -17,9 +17,10 @@
     % if c.activeListeners:
         <ul class="media-list" id="workshopNotables">
         % for listener in c.activeListeners:
+            <% scopeInfo = utils.getPublicScope(listener['scope']) %>
             <li class="media notables-item">
-                <div class="media-body">
-                    ${listener['name']} <small>${listener['title']} ${listener['group']}</small><br />
+                <div class="row">
+                    <div class="col-xs-3"><img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"></div><div class="col-xs-9">${listener['name']}</br> <small>${listener['title']}, ${listener['group']}</small></div>
                 </div>
             </li>
         % endfor
