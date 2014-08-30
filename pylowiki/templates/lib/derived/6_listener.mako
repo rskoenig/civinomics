@@ -105,7 +105,7 @@
             % if c.listener:
                 <form method="POST" name="edit_listener" id="edit_listener" action="/listener/${c.listener['urlCode']}/listenerEditHandler">
             % else:
-                <form method="POST" name="edit_listener" id="edit_listener" action="/listener/new/listenerNewHandler">
+                <form method="POST" name="edit_listener" id="edit_listener" action="/listener/new/listenerEditHandler">
             % endif
             <div class="row">
                 <h3>Listener Information</h3>
@@ -138,12 +138,36 @@
             
             <div class="row">
                 <div class="col-sm-6">
+                    <label for="title" class="control-label" required><strong>Listener Email:</strong></label>
+                    <input type="text" name="listenerEmail" class="col-sm-12 form-control" value="${email}" required>
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
+                    <div class="alert alert-info">
+                        This needs to be a valid email address.
+                    </div><!-- alert -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            
+            <div class="row">
+                <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Name of group:</strong></label>
                     <input type="text" name="listenerGroup" class="col-sm-12 form-control" value="${group}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        The name of the group which is meeting.
+                        The name of the listener group or organization.
+                    </div><!-- alert -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="title" class="control-label" required><strong>URL of web site:</strong></label>
+                    <input type="text" name="listenerURL" class="col-sm-12 form-control" value="${lurl}">
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
+                    <div class="alert alert-info">
+                        A web site with more information about the listener.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
@@ -160,6 +184,18 @@
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
             
+            <div class="row spacer">
+                <div class="col-sm-6">
+                    <label for="title" class="control-label" required><strong>Term End Date:</strong></label>
+                    <input type="text" name="termEnd" id="termEnd" class="col-sm-6 form-control" value="${termEnd}">
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
+                    <div class="alert alert-info">
+                        Date term ends for this listener.
+                    </div><!-- alert -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            
             
             <div class="row spacer">
                 <div class="col-sm-6">
@@ -172,7 +208,8 @@
                     </div>
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
-            <textarea rows="10" id="meetingText" name="listenerText" class="col-sm-12 form-control" required>${text}</textarea>
+            <textarea rows="10" id="meetingText" name="listenerText" class="col-sm-12 form-control">${text}</textarea>
+            
 
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>

@@ -13,13 +13,13 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 
 log = logging.getLogger(__name__)
 
 class ListenerController(BaseController):
     
     def __before__(self, action = "foo", urlCode = "foo"):
-        log.info("urlCode is %s and action is %s"%(urlCode, action))
         if not urlCode or urlCode == '':
             abort(404)
 
@@ -30,37 +30,141 @@ class ListenerController(BaseController):
      
     @h.login_required   
     def listenerEdit(self, urlCode):
+        # initialize the scope dropdown selector in the edit template
+        c.states = geoInfoLib.getStateList('United-States')
+        c.country = "United States"
+        c.state = "0"
+        c.county = "0"
+        c.city = "0"
+        c.postal = "0"
+        
         if urlCode != 'new':
             c.listener = listenerLib.getListenerByCode(urlCode)
-        
+            
+            # ||country||state||county||city|zip
+            if c.listener['scope'] != '':
+                geoTags = c.listener['scope'].split('|')
+                c.country = utils.geoDeurlify(geoTags[2])
+                c.state = utils.geoDeurlify(geoTags[4])
+                c.county = utils.geoDeurlify(geoTags[6])
+                c.city = utils.geoDeurlify(geoTags[8])
+                c.postal = utils.geoDeurlify(geoTags[9])
+            else:
+                if userLib.isAdmin(c.authuser.id):
+                    c.country = "United States"
+                    c.state = "0"
+                    c.county = "0"
+                    c.city = "0"
+                    c.postal = "0"
+                elif 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
+                    scope = '0' + c.authuser['curateScope']
+                    clevel = c.authuser['curateLevel']
+                    if clevel == '2':
+                        scope += '|0|0|0|0|0|0|0'
+                    elif clevel == '4':
+                        scope += '|0|0|0|0|0'
+                    elif clevel == '6':
+                        scope += '|0|0|0'
+                    elif clevel == '8':
+                        scope += '|0'
+            
+                    geoTags = scope.split('|')
+                    c.country = utils.geoDeurlify(geoTags[2])
+                    c.state = utils.geoDeurlify(geoTags[4])
+                    c.county = utils.geoDeurlify(geoTags[6])
+                    c.city = utils.geoDeurlify(geoTags[8])
+                    c.postal = utils.geoDeurlify(geoTags[9])
+
         return render( "/derived/6_listener_edit.bootstrap" )
             
     @h.login_required
     # name, title, group, lurl, text, email, scope, term_end
     def listenerEditHandler(self, urlCode):
-        payload = request.params
-        if 'lName' not in payload or 'lTitle' not in payload or 'lEmail' not in payload or 'urlCode' not in payload:
-            return "Error"
-        lName = payload['lName']
-        lTitle = payload['lTitle']
-        lEmail = payload['lEmail']
-        urlCode = payload['urlCode']
-        if not lName or not lTitle or not lEmail:
+        if 'listenerName' not in request.params or 'listenerTitle' not in request.params or 'listenerEmail' not in request.params:
+            abort(404)
+            
+        name = request.params['listenerName']
+        title = request.params['listenerTitle']
+        email = request.params['listenerEmail']
+        
+        if 'listenerGroup' in request.params and request.params['listenerGroup'] != '':
+            group = request.params['listenerGroup']
+        else:
+            group = ""
+        
+        if 'listenerText' in request.params and request.params['listenerText'] != '':
+            text = request.params['listenerText']
+        else:
+            text = "" 
+            
+        if 'listenerURL' in request.params and request.params['listenerURL'] != '':
+            lurl = request.params['listenerURL']
+        else:
+            lurl = ""
+
+        if 'termEnd' in request.params and request.params['termEnd'] != '':
+            term_end = request.params['termEnd']
+        else:
+            term_end = ""            
+
+        
+        if 'geoTagCountry' in request.params:
+            if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+                geoTagCountry = request.params['geoTagCountry']
+            else:
+                geoTagCountry = "0"
+                
+            if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+                geoTagState = request.params['geoTagState']
+            else:
+                geoTagState = "0"
+                
+            if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+                geoTagCounty = request.params['geoTagCounty']
+            else:
+                geoTagCounty = "0"
+                
+            if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+                geoTagCity = request.params['geoTagCity']
+            else:
+                geoTagCity = "0"
+                
+            if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+                geoTagPostal = request.params['geoTagPostal']
+            else:
+                geoTagPostal = "0"
+
+            # assemble the scope string 
+            # ||country||state||county||city|zip
+            scope = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
+        else:
+            scope = '0|0|united-states|0|0|0|0|0|0|0'
+            
+
+        if not name or not title or not email:
             return "Please enter complete information"
         if urlCode == 'new':
-            listener = listenerLib.Listen()
+            listener = listenerLib.Listener(name, title, group, lurl, text, email, scope, term_end)
         else:
             listener = listenerLib.getListenerByCode(urlCode)
             if not listener:
                 return 'No such listener!'
             else:
-                listener['name'] = lName;
-                listener['title'] = lTitle;
-                listener['email'] = lEmail;
+                listener['name'] = name;
+                listener['title'] = title;
+                listener['email'] = email;
+                listener['group'] = group;
+                listener['lurl'] = lurl;
+                listener['text'] = text;
+                listener['scope'] = scope;
+                listener['term_end'] = term_end;
 
         dbHelpers.commit(listener)
         eventLib.Event('Listener edited', '%s edited listener info'%c.authuser['name'], listener, user = c.authuser)
-        return "Updated Listener."
+        
+        returnURL = "/listener/%s/listenerShow"%listener['urlCode']
+        
+        return redirect(returnURL)
             
     @h.login_required
     def listenerToggleHandler(self):
