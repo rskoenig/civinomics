@@ -25,14 +25,12 @@
     <table class="info-table">
         % if 'group' in c.listener and c.listener['group'] != '':
             <tr>
-                <td class="left">Group:</td>
-                <td class="right">${c.listener['group']}</td>
+                <td colspan="2">Group or organization: <strong>${c.listener['group']}</strong></td>
             </tr>
         % endif
         % if 'lurl' in c.listener and c.listener['lurl'] != '':
             <tr>
-                <td class="left">Web Site</td>
-                <td class="right"><a href="${c.listener['lurl']}" target="_blank">${c.listener['lurl']}</a></td>
+                <td colspan="2">Listener Web Site: <strong><a href="${c.listener['lurl']}" target="_blank">${c.listener['lurl']}</a></strong></td>
             </tr>
         % endif
         % if 'text' in c.listener and c.listener['text'] != '':
@@ -44,8 +42,7 @@
         % endif
         % if 'term_end' in c.listener and c.listener['term_end'] != '':
             <tr>
-                <td class="left">Term Ends:</td>
-                <td class="right">${c.listener['term_end']}</td>
+                <td colspan="2">Term Ends:  ${c.listener['term_end']}</td>
             </tr>
         % endif
     </table>
