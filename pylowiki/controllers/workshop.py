@@ -1008,11 +1008,8 @@ class WorkshopController(BaseController):
         if not iPhoneApp:
             for l in (listenerLib.getListenersForWorkshop(c.w)):
                 if l['disabled'] == '0':
-                    if 'userCode' in l:
-                        user = generic.getThing(l['userCode'])
-                        c.activeListeners.append(user)
-                    else:
-                        c.pendingListeners.append(l)
+                    c.activeListeners.append(l)
+                        
               
         c.slides = []
         if not iPhoneApp:

@@ -16,12 +16,10 @@
 <%def name="whoListening()">
     % if c.activeListeners:
         <ul class="media-list" id="workshopNotables">
-        % for person in c.activeListeners:
+        % for listener in c.activeListeners:
             <li class="media notables-item">
-                ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
-                    ${lib_6.userLink(person, className="listener-name")}<br />
-                    <small>${lib_6.userGreetingMsg(person)}</small>
+                    ${listener['name']} <small>${listener['title']} ${listener['group']}</small><br />
                 </div>
             </li>
         % endfor

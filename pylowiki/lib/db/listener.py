@@ -72,9 +72,9 @@ def getListenersForWorkshop(workshop, disabled = 0):
         wkey = ''
         if 'workshop_public_scope' in workshop:
             wkey = 'workshop_public_scope'
+            wscope = '0' + workshop[wkey].replace('||', '|0|')
         elif 'workshop_org_scope' in workshop:
             wkey = 'workshop_org_scope'
-        if wkey != '':
             wscope = workshop[wkey]
         else:
             wscope = "foo"
