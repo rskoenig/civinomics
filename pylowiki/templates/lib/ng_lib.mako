@@ -33,7 +33,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <h4 class="listed-item-title">{{item.title}}</h4>
-                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
         </div><!-- row -->
         <div class="row">
@@ -373,7 +373,7 @@
                 <div class="col-sm-9 no-left">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
-                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                     <p><strong>
                         <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
                         <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
@@ -404,7 +404,7 @@
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p style="line-height: 16px;"><small>${metaData()}</small></p>
                     <!--
-                    <p ng-init="stringLimit=300"><small><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small></p>
+                    <p ng-init="stringLimit=300" class="markdown"><small><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small></p>
                     -->
                     <h4>
                         <small class="grey centered">Estimated Cost:</small>
@@ -431,7 +431,7 @@
                     % endif
                     <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
-                    <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 </div>
             </div>
             <div class="row">
@@ -472,7 +472,7 @@
                 % if not c.w:
                     <p><small>${metaData()}</small></p>
                 % endif
-                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
                 ${upDownVoteBlock()}
@@ -496,7 +496,7 @@
                 </div>
                 <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p><small>${metaData()}</small></p>
-                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
                 ${upDownVoteBlock()}
@@ -691,7 +691,7 @@
                         <td class="comment-main-cell">
                             <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                             <br>
-                            <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                            <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
                             <div class="accordion" id="revisions">
                                 <div ng-repeat="rev in comment.revisionList">
                                     <div class="accordion-group">
@@ -857,7 +857,7 @@
                     <td style="padding: 10px;">
                         <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
                         <br>
-                        <p ng-init="stringLimit=300"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>  
+                        <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>  
                         <div class="accordion" id="revisions">
                                 <div ng-repeat="rev in comment.revisionList">
                                     <div class="accordion-group">
@@ -980,4 +980,57 @@
             </table>
             </div>
             
+</%def>
+
+<%def name="ngGeoSelect()">
+
+    <div class="row-fluid">
+        <div class="span3">Country:</div>
+        <div class="span8">
+            <select name="country" ng-model="country" ng-change="changeStateList()">
+                <option value="">Select a country</option>
+                <option value="united-states">United States</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid" ng-show="showStateSelect" ng-cloak>
+        <div class="span3">State:</div>
+        <div class="span8">
+            <select name="state" ng-model="state" ng-change="changeCountyList()">
+                <option value="0">Select a state</option>
+                <option ng-repeat="state in stateList" ng-value="state.StateFullName">{{state.StateFullName}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid" ng-show="showCountySelect" ng-cloak>
+        <div class="span3">County:</div>
+        <div class="span8">
+            <select ng-model="county" ng-change="changeCityList()">
+                <option value="0">Select a county</option>
+                <option ng-repeat="county in countyList" ng-value="county.County">{{county.County}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row -->
+    
+    <div class="row-fluid" ng-show="showCitySelect" ng-cloak>
+        <div class="span3">City:</div>
+        <div class="span8">
+            <select ng-model="city" ng-change="changePostalList()">
+                <option value="0">Select a city</option>
+                <option ng-repeat="city in cityList" ng-value="city.City">{{city.City}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
+    
+    <div class="row-fluid" ng-show="showPostalSelect" ng-cloak>
+        <div class="span3">Zip Code:</div>
+        <div class="span8">
+            <select ng-model="postal">
+                <option value="0">Select a zip code</option>
+                <option ng-repeat="postal in postalList" ng-value="postal.ZipCode">{{postal.ZipCode}}</option>
+            </select>
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
 </%def>

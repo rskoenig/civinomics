@@ -34,43 +34,43 @@ class DiscussionController(BaseController):
     def __before__(self, action, workshopCode = None):
         publicOrPrivate = ['index', 'topic', 'thread']
         
-        if workshopCode is None:
+        if workshopCode is not None:
             abort(404)
-        c.w = workshopLib.getWorkshopByCode(workshopCode)
-        if not c.w:
-            abort(404)
+            c.w = workshopLib.getWorkshopByCode(workshopCode)
+            if not c.w:
+                abort(404)
             
-        c.mainImage = mainImageLib.getMainImage(c.w)
+            c.mainImage = mainImageLib.getMainImage(c.w)
         
-        #################################################
-        # these values are needed for facebook sharing
-        c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-        shareOk = workshopLib.isPublic(c.w)
-        c.facebookShare = FacebookShareObject(
-            itemType='workshop',
-            url=utils.workshopURL(c.w) + '/discussion',
-            parentCode=workshopCode, 
-            image=c.backgroundImage,
-            title=c.w['title'],
-            description=c.w['description'].replace("'", "\\'"),
-            shareOk = shareOk
-        )
-        # add this line to tabs in the workshop in order to link to them on a share:
-        # c.facebookShare.url = c.facebookShare.url + '/activity'
-        #################################################
-
-        # Demo workshop status
-        c.demo = workshopLib.isDemo(c.w)
+            #################################################
+            # these values are needed for facebook sharing
+            c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+            shareOk = workshopLib.isPublic(c.w)
+            c.facebookShare = FacebookShareObject(
+                itemType='workshop',
+                url=utils.workshopURL(c.w) + '/discussion',
+                parentCode=workshopCode, 
+                image=c.backgroundImage,
+                title=c.w['title'],
+                description=c.w['description'].replace("'", "\\'"),
+                shareOk = shareOk
+            )
+            # add this line to tabs in the workshop in order to link to them on a share:
+            # c.facebookShare.url = c.facebookShare.url + '/activity'
+            #################################################
+    
+            # Demo workshop status
+            c.demo = workshopLib.isDemo(c.w)
         
-        workshopLib.setWorkshopPrivs(c.w)
-        if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
-        if action in publicOrPrivate:
-            if c.w['public_private'] != 'public':
-                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    abort(404)
-        if 'user' in session:
-            utils.isWatching(c.authuser, c.w)
+            workshopLib.setWorkshopPrivs(c.w)
+            if c.w['public_private'] == 'public':
+                c.scope = geoInfoLib.getPublicScope(c.w)
+            if action in publicOrPrivate:
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+            if 'user' in session:
+                utils.isWatching(c.authuser, c.w)
 
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -196,4 +196,42 @@ class DiscussionController(BaseController):
             return redirect(utils.thingURL(c.w, d.d))
         elif json.loads(request.body):
             return json.dumps({'statusCode':2})
+
+    def showDiscussionSingle(self, discussionCode, discussionURL):
+        userLib.setUserPrivs()
+        # sharing - extra details
+        c.thingCode = discussionCode        
+        c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
+        if not c.thing:
+            c.thing = revisionLib.getRevisionByCode(discussionCode)
+            if not c.thing:
+                log.info("Abort here")
+                abort(404)
         
+        ################## FB SHARE ###############################
+#         c.facebookShare.title = c.thing['title']
+#         c.facebookShare.thingCode = c.thingCode
+#         # update url for this item
+#         c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
+#         # set description to be that of the topic's description
+#         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
+
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
+
+        c.flags = flagLib.getFlags(c.thing)
+        c.events = eventLib.getParentEvents(c.thing)
+        c.title = c.thing['title']
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        c.listingType = 'discussion'
+        
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
+        return render('/derived/6_resource.bootstrap')        

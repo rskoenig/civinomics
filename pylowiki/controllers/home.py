@@ -13,6 +13,7 @@ from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getGeoScope, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.workshop import getActiveWorkshops
+from pylowiki.lib.db.tag import getTagCategories
 
 import pylowiki.lib.db.user         	as userLib
 import pylowiki.lib.db.message      	as messageLib
@@ -57,6 +58,7 @@ class HomeController(BaseController):
         userLib.setUserPrivs()
 
     def index(self):
+        c.tagList = getTagCategories()
     	c.postalCode = '95060'
     	if c.authuser:
     		c.postalCode = c.authuser['postalCode']

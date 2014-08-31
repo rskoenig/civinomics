@@ -30,6 +30,8 @@ def make_map():
     map.connect('/{systemAdmin:systemAdmin/?}', controller = 'systemAdmin', action = 'index')
     map.connect('/systemAdmin/{handler:handler/?}', controller = 'systemAdmin', action = 'handler')
     map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin')
+    map.connect('/getAdminList{end:/?}' , controller = 'admin', action = 'getList')
+    map.connect('/getAdminList/{type}/{offset}{end:/?}' , controller = 'admin', action = 'getList', type = '{type}', offset='{offset}')
     
     ########################################################################################################
     # 
@@ -72,11 +74,15 @@ def make_map():
     # Geo stuff
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
+    map.connect('/geo/stateListJSON/{id1}', controller = 'geo', action = 'geoStateHandlerJSON', id1 = '{id1}')
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/geo/countyListJSON/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandlerJSON', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/geo/cityListJSON/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandlerJSON', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/cityStateCountry/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateCountryHandler', id1 = '{id1}')
     map.connect('/geo/cityStateCountryLink/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateCountryLinkHandler', id1 = '{id1}')
     map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/geo/postalListJSON/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandlerJSON', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
 
     # Geo rss stuff
     map.connect('/workshops/rss/earth{end:/?}', controller = 'geo', action = 'rss')
@@ -186,6 +192,8 @@ def make_map():
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler')
     map.connect('/{initiative:initiatives?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler') 
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource')
+    #show resource without a parent
+    map.connect('/resource/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResourceSingle')
     map.connect('/{initiative:initiatives?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}/thread/{commentCode}{end:/?}', controller = 'resource', action = 'thread') 
     
@@ -195,6 +203,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/discussion/{handler:handler/?}', controller = 'discussion', action = 'addDiscussionHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'topic', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', revisionCode = '')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}/thread/{revisionCode}{end:/?}', controller = 'discussion', action = 'thread', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', revisionCode = '{revisionCode}')
+    #show discussion without a parent
+    map.connect('/discussion/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'showDiscussionSingle')
+
 
     # Ideas
     map.connect('/idea/{ideaCode}/{ideaURL}', controller = 'idea', action = 'showJsonIdea', ideaCode='ideaCode', ideaURL='ideaURL')
@@ -204,6 +215,10 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{idea:ideas?}/{handler:handler/?}', controller = 'idea', action = 'addIdeaHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{idea:ideas?}/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showJsonIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', ideaCode = '{ideaCode}', ideaURL = '{ideaURL}')    
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/ideas/get{end:/?}', controller = 'workshop', action = 'workshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    #show resource without a parent
+    map.connect('/idea/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showIdeaSingle')
+
+    
     # ADD HERE: threaded discussion route
 
     # Cofacilitation invitation and response
@@ -442,8 +457,17 @@ def make_map():
     map.connect('/getSampleBallotInfo/{id1}/{id2}{end:/?}' , controller = 'ballot', action = 'getSampleBallotInfo', id1 = '{id1}', id2 = '{id2}')
 
     ###############
+    # Create #
+    ###############
+    map.connect('/create{end:/?}', controller = 'create', action = 'showCreateForm')
+    map.connect('/create/geo/{thingType}/{geoString}{end:/?}', controller = 'create', action = 'showCreateFormGeo')
+    map.connect('/create/geo/{thingType}/{geoString}/{tag}{end:/?}', controller = 'create', action = 'showCreateFormGeoTag')
+    map.connect('/create/{id1}/{id2}/{id3}', controller = 'create', action = 'createThing', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+
+    ###############
     # Initiatives #
     ###############
+    map.connect('/create/initiative{end:/?}', controller = 'create', action = 'showCreateForm')
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)

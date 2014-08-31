@@ -7,6 +7,8 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
+from hashlib import md5
+
 import pylowiki.lib.helpers as h
 
 import pylowiki.lib.db.activity         as activityLib
@@ -28,7 +30,6 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.meeting          as meetingLib
-import pylowiki.lib.db.ballot           as ballotLib
 import pylowiki.lib.alerts              as alertsLib
 import pylowiki.lib.utils               as utils
 
@@ -74,17 +75,6 @@ class AdminController(BaseController):
                 userLib.setUserPrivs()
             elif 'meetingCode' in c.thing:
                 parent = generic.getThing(c.thing['meetingCode'])
-                c.user = generic.getThing(parent['userCode'])
-                userLib.setUserPrivs()
-            elif c.thing.objType.replace("Unpublished", "") == 'election':
-                c.user = generic.getThing(c.thing['userCode'])
-                userLib.setUserPrivs()
-            elif 'ballotCode' in c.thing:
-                parent = generic.getThing(c.thing['ballotCode'])
-                c.user = generic.getThing(c.thing['userCode'])
-                userLib.setUserPrivs()
-            elif 'electionCode' in c.thing:
-                parent = generic.getThing(c.thing['electionCode'])
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
                  
@@ -151,117 +141,114 @@ class AdminController(BaseController):
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
                 
-    def users(self):
-        c.list = userLib.getAllUsers()
-        c.title = "List All Members"
-        return render( "/derived/6_list_all_items.bootstrap" )
+
+    def getList(self, type = 'auto', offset = 0, max = 7):
+        # get recent activity and return it into json format
         
-    def curators(self):
-        c.list = userLib.getAllCurators()
-        c.title = "List All Curators"
-        return render( "/derived/6_list_all_items.bootstrap" )
+        log.info("Admin - getList")
+        result = []
+        allActivity = []
+        offset = int(offset)
+        
+        log.info("Offset is %d", offset)
+        if type == 'users':
+            allObjects = userLib.getUsers(max, offset)
+            
+#         elif type = 'usersNotActivated':
+#             allObjects = userLib.getNotActivatedUsers()
+#             
+
+        for o in allObjects:
+            log.info(o['name'])
+            entry = {}
+            entry['id'] = o.id
+            entry['date'] = str(o.date)
+            entry['objType'] = 'user'
+            entry['name'] = o['name']
+            entry['image'] = _userImageSource(o, className ='avatar small-avatar') 
+            entry['link'] = userLink(o)
+            entry['urlCode'] = o['urlCode']
+            entry['url'] = o['url']
+            if 'owner' in o:
+                entry['owner'] = 'Something'
+            else:
+                entry['owner'] = 'None'
+            if 'poll_name' in o:
+                entry['poll_name'] = o['poll_name']
+                entry['source'] = 'Survey App'
+            else:
+                entry['poll_name'] = 'None'
+                entry['source'] = 'Online'
+            if 'activated' in o and o['activated'] == "1":
+                entry['activated'] = 1
+            elif 'activated' in o and o['activated'] == "0":
+                entry['activated'] = 0
+            if 'disabled' in o:
+                entry['disabled'] = o['disabled']
+            elif 'deleted' in o:
+                entry['disabled'] = o['deleted']
+            
+            result.append(entry)
+        
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0,'result':result})
+
+    def users(self):
+        return render( "/derived/6_list_all_items_ng.bootstrap" )
         
     def usersNotActivated(self):
         c.list = userLib.getNotActivatedUsers()
-        c.title = "List All Unactivated Members"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def photos(self):
         c.list = photoLib.getAllPhotos()
         if not c.list:
             c.list = []
-        c.title = "List All Photos"
-        return render( "/derived/6_list_all_items.bootstrap" )
-        
-    def listeners(self):
-        if userLib.isAdmin(c.authuser.id):
-            c.list = listenerLib.getAllListeners()
-        else:
-            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
-            c.list = listenerLib.getListenersForScope(0, scope)
-        if not c.list:
-            c.list = []
-        c.title = "List All Listeners"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def meetings(self):
-        if userLib.isAdmin(c.authuser.id):
-            c.list = meetingLib.getAllMeetings()
-        else:
-            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
-            c.list = meetingLib.getMeetingsForScope(0, scope)
+        c.list = meetingLib.getAllMeetings()
         if not c.list:
             c.list = []
-        c.title = "List All Meetings"
-        return render( "/derived/6_list_all_items.bootstrap" )
-        
-    def elections(self):
-        if userLib.isAdmin(c.authuser.id):
-            c.list = ballotLib.getAllElections()
-        else:
-            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
-            c.list = ballotLib.getElectionsForCuratorScope(scope)
-        if not c.list:
-            c.list = []
-        c.title = "List All Elections"
-        return render( "/derived/6_list_all_items.bootstrap" )
-        
-        
-    def ballots(self):
-        if userLib.isAdmin(c.authuser.id):
-            c.list = ballotLib.getAllBallots()
-        else:
-            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
-            c.list = ballotLib.getBallotsForCuratorScope(scope)
-        if not c.list:
-            c.list = []
-        c.title = "List All Ballots"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def flaggedPhotos(self):
         c.list = flagLib.getFlaggedThings('photo')
         if not c.list:
             c.list = []
-        c.title = "List All Flagged Photos"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def initiatives(self):
         c.list = initiativeLib.getAllInitiatives()
         if not c.list:
             c.list = []
-        c.title = "List All Initiatives"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def flaggedInitiatives(self):
         c.list = flagLib.getFlaggedThings('initiative')
         if not c.list:
             c.list = []
-        c.title = "List All Flagged Initiatives"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def workshops(self):
         c.list = workshopLib.getWorkshops()
-        c.title = "List All Workshops"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def ideas(self):
         c.list = ideaLib.getAllIdeas()
-        c.title = "List All Ideas"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def discussions(self):
         c.list = discussionLib.getDiscussions()
-        c.title = "List All Discussions"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def resources(self):
         c.list = resourceLib.getAllResources()
-        c.title = "List All Resources"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def comments(self):
         c.list = commentLib.getAllComments()
-        c.title = "List All Comments"
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def edit(self, thingCode):
@@ -467,16 +454,6 @@ class AdminController(BaseController):
             returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         elif 'meetingCode' in c.thing or c.thing.objType == 'meeting':
             returnURL = "/meeting/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
-        elif c.thing.objType == 'agendaitem':
-            dparent = generic.getThing(c.thing['meetingCode'])
-            returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
-        elif c.thing.objType == 'ballotmeasure' or c.thing.objType == 'ballotcandidate':
-            dparent = generic.getThing(c.thing['ballotCode'])
-            returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
-        elif c.thing.objType == 'ballot':
-            returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
-        elif c.thing.objType == 'election':
-            returnURL = "/election/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -513,13 +490,6 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'agendaitem':
             dparent = generic.getThing(c.thing['meetingCode'])
             returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
-        elif c.thing.objType.replace("Unpublished", "") == 'ballotmeasure' or c.thing.objType.replace("Unpublished", "") == 'ballotcandidate':
-            dparent = generic.getThing(c.thing['ballotCode'])
-            returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
-        elif c.thing.objType.replace("Unpublished", "") == 'ballot':
-            returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
-        elif c.thing.objType.replace("Unpublished", "") == 'election':
-            returnURL = "/election/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -591,3 +561,95 @@ class AdminController(BaseController):
         dbHelpers.commit(user)
         result = "Activated"
         return json.dumps({'code':thingCode, 'result':result})
+        
+        
+        
+##---------HELPER FUNCTIONS THAT I'M GONNA MOVE SOMEWHERE ELSE--------
+def userLink(user, **kwargs):
+    if type(user) == type(1L):
+        user = userLib.getUserByID(user)
+    elif type(user) == type(u''):
+        user = userLib.getUserByCode(user)
+    if user.objType == 'facilitator':
+        user = userLib.getUserByID(user.owner)
+    if user.objType == 'listener':
+        user = userLib.getUserByEmail(user['email'])
+    if 'raw' in kwargs:
+        if kwargs['raw']:
+            return '/profile/%s/%s/' %(user['urlCode'], user['url'])
+    thisLink = "<a href='/profile/%s/%s/'" %(user['urlCode'], user['url'])
+    if 'className' in kwargs:
+        thisLink += ' class = "' + kwargs['className'] + '"'
+    thisLink += '>'
+    if 'title' in kwargs:
+        thisTitle = kwargs['title']
+    else:
+        thisTitle = user['name']
+    if 'maxChars' in kwargs:
+        thisTitle = ellipsisIZE(thisTitle, kwargs['maxChars'])
+    thisLink += thisTitle
+    if 'image' in kwargs:
+        if kwargs['image'] == True:
+            thisLink += userImage(user)
+    thisLink += "</a>"
+    #return thisLink
+    return '/profile/%s/%s/' %(user['urlCode'], user['url'])
+    
+def _userImageSource(user, **kwargs):
+    # Assumes 'user' is a Thing.
+    # Defaults to a gravatar source
+    # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+    #                          we return a source based on the value given here (civ/gravatar)
+    source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+    large = False
+    gravatar = True
+
+    if 'className' in kwargs:
+        if 'avatar-large' in kwargs['className']:
+            large = True
+    if 'forceSource' in kwargs:
+        if kwargs['forceSource'] == 'civ':
+            gravatar = False
+            if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            else:
+                source = '/images/hamilton.png'
+        elif kwargs['forceSource'] == 'facebook':
+            if large:
+                source = user['facebookProfileBig']
+            else:
+                source = user['facebookProfileSmall']
+        elif kwargs['forceSource'] == 'twitter':
+            source = user['twitterProfilePic']
+
+    else:
+        if 'avatarSource' in user.keys():
+            if user['avatarSource'] == 'civ':
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                    gravatar = False
+            elif user['avatarSource'] == 'facebook':
+                gravatar = False
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+            elif user['avatarSource'] == 'twitter':
+                gravatar = False
+                source = user['twitterProfilePic']
+
+        elif 'extSource' in user.keys():
+            # this is needed untl we're sure all facebook connected users have properly 
+            # functioning profile pics - the logic here is now handled 
+            # with the above user['avatarSource'] == 'facebook': ..
+            if 'facebookSource' in user.keys():
+                if user['facebookSource'] == u'1':
+                    gravatar = False
+                    # NOTE - when to provide large or small link?
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+    if large and gravatar:
+        source += '&s=200'
+    return source

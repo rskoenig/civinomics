@@ -120,8 +120,10 @@ def makeOrChangeRating(thing, user, amount, ratingType):
     myRatings[thingCode] = str(ratingObj['amount'])
     user["ratings"] = str(pickle.dumps(myRatings))
     commit(user)
-    session["ratings"] = myRatings
-    session.save()
+    #if c.personalRatings:
+    if 'user' in session and (c.authuser['email'] == user['email']):
+        session["ratings"] = myRatings
+        session.save()
 
     return ratingObj
     

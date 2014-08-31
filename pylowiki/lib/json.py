@@ -217,8 +217,15 @@ def getJsonProperties(item):
         aCount = meetingLib.getAgendaItems(item['urlCode'], 1)
         dList = item['meetingDate'].split('-')
         entry['meetingDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
-        dList = item['agendaPostDate'].split('-')
-        entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+        if 'agendaPostDate' in item and item['agendaPostDate'] != '':
+            dList = item['agendaPostDate'].split('-')
+            if len(dList) == 3:
+                entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+            else:
+                entry['agendaPostDate'] = item['agendaPostDate']
+                log.info("postDate is %s"%item['agendaPostDate'])
+        else:
+            entry['agendaPostDate'] = ""
         entry['meetingTime'] = item['meetingTime']
         entry['location'] = item['location']
         entry['group'] = item['group']

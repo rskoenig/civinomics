@@ -20,11 +20,7 @@
                 <div class="span10 offset1">
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="pull-left">Upload the CSV with the information on the users.  (5MB max, please)</span>
-                    <span class="btn btn-success fileinput-button pull-right">
-                        <i class="icon-plus icon-white"></i>
-                        <span>CSV</span>
-                        <input id="fileUploadButton" type="file" name="files[]">
-                    </span>
+                    
                     
                     <!-- The loading indicator is shown during file processing -->
                     <div class="fileupload-loading">
@@ -55,6 +51,12 @@
             <div id="progressbar"></div >
 			</div>
             </div><!--file_accepted-->
+            
+            <span class="btn btn-success pull-right">
+                        <i class="icon-plus icon-white"></i>
+                        <span>CSV</span>
+                        <input id="fileUploadButton" type="file" name="files[]">
+                    </span>
         </form>
     % endif
 </%def>

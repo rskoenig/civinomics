@@ -53,12 +53,14 @@
   ### Activity Feed
   ###
   <div class="col-sm-7 col-md-7">
+  	
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
       ###
       ### Feed Filters
       ###
       <div class="spacer"></div>
       <div class="row">
+      	
         <div class="col-xs-12" style="margin-top: 5px; margin-bottom: 10px;">
           <ul class="nav nav-pills">
             <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
@@ -77,7 +79,104 @@
       <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
           {{alertMsg}}
       </div>
+	  <div ng-controller="createController" ng-cloak>
+		  	<div class="media well search-listing">
+	        <div>
+	            <div class="row">
+	                <div class="col-xs-12">
+	                <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
+					</span>
+	                    <p><span>Create: &nbsp; </span>
+				            <select ng-model="thing" ng-change="showAll = true">
+								<option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
+							</select>							
+							</p>
 
+								###Basic
+						% if 'user' in session:
+						<form enctype="multipart/form-data" action="/create/{{thing}}/${c.authuser['urlCode']}/${c.authuser['url']}" method="POST">		
+						% endif	
+	                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  
+	                    <div ng-show="thing == 'Resource'">
+	                	 <input class="form-control ng-pristine ng-valid" ng-if="showAll" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
+						 
+	           </div>
+						<textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
+                    
+                    
+                    <div ng-show="showAll">
+                    <hr>
+	                    <div class="col-xs-5">
+	                    <h4>Geographic Scope</h4>
+	                    ${ng_helpers.ngGeoSelect()}
+	                    </div>
+	                    <div class="col-xs-5">
+	                    <h4>Tag</h4>
+		                    <select name="tags" ng-model="tag">
+		                        <option value="">Tags</option>
+		                        % for tag in c.tagList:
+		                            <option value="${tag}"> ${tag}</option>
+		                        % endfor
+		                    </select>
+	                    </div>
+					</div>
+                    ###Conditional Fields
+                    
+                    <div ng-if="thing == 'Workshop' && showAll">
+	                	<h4>Privacy level</h4>
+	                	<select ng-model="workshopAccess" name="privacy" required>
+	                		<option value=""></option>
+	                		<option value="public">Public</option>
+	                		<option value="private">Private</option>
+	                	</select>
+	                </div>
+	                
+	                
+					<div ng-show="false" class="col-xs-12">
+	                    <h4>Deadline</h4>
+		                    <div class="row-fluid">
+		                        <div class="span6">
+		                            <p class="input-group">
+		                              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" />
+		                              <span class="input-group-btn">
+		                                <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
+		                              </span>
+		                            </p>
+		                        </div>
+		                    </div>
+                    </div>
+                    <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'" ng-if="showAll">
+		                <hr>
+		                <p class="lead">{{thing}} Images</p>
+		                <h5>{{thing}} Photo</h5>
+						        <input type="file" name="avatar[]" id="imgAvatar" />
+						        <img style="display:none;" id="avatarPreview" name="avatarPreview" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
+						<div ng-show="thing == 'Initiative'">
+		                <h5>Cover Photo</h5>
+						        <input type='file' id="imgCover" name="cover[]" />
+						        <img style="display:none;" id="coverPreview" name="coverPreview" src="#" alt="your cover image" />
+						</div>
+					</div>
+                    ###Extra info (hidden)
+		                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
+		                <input type="hidden" name="deadline" value="{{date}}" \>
+	                </div> 
+	            </div>
+	            <div ng-show="showAll" class="row">
+	            	<div class="col-xs-12">
+			   			 % if 'user' in session:
+           <button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button>
+ % else:
+            <a href="#signupLoginModal" role="button" data-toggle="modal"><button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button></a>
+ % endif
+
+	                	 </form>   
+					</div>
+	            </div>
+	            <br/>
+	        </div>
+	    </div>
+  	</div>
       <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
         <!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
         <tr>
@@ -107,7 +206,7 @@
 
         </tr>
       </table>
-
+	  
       <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
@@ -116,41 +215,6 @@
   </div><!-- /span8 -->
 
   <div class="col-sm-4">
-    % if c.authuser and c.authuser['activated'] == '0':
-        <div class="spacer"></div>
-        <div class="alert alert-success">
-            <h4>Welcome!</h4> 
-            <p>Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.</p>
-            <p>You can't add comments until you click on the link in the confirmation email.</p>
-            <br>
-            <div class="row">
-                <div class="col-xs-8 col-xs-offset-2">
-                    <button class="btn btn-success btn-block resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
-                </div>
-            </div>
-            <div class="top-space" id="resendMessage"></div>
-        </div>
-    % endif
-    % if c.authuser:
-        ###
-        ### Elections
-        ###
-        <div  ng-init="postalCode=${c.authuser['postalCode']};">
-            <div ng-controller="electionsHomeController">
-            <div ng-show="elections.length >= 1" ng-cloak>
-                <h2><small>Upcoming Elections</small></h2>
-                <div ng-repeat="item in elections">
-                    <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
-                        <tr>
-                        ${ng_helpers.election_home_listing()}
-                        </tr>
-                    </table>
-                <div><!-- ng-repeat -->
-            </div><!-- well -->
-            </div><!-- electionsHomeController -->
-        </div>
-    % endif
-    
     ###
     ### Following Initiatives
     ###
@@ -159,6 +223,22 @@
 
         % if c.authuser:
             <div>
+                % if c.authuser and c.authuser['activated'] == '0':
+                  <div class="spacer"></div>
+                  <div class="alert alert-success">
+                    <h4>Welcome!</h4> 
+                    <p>Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.</p>
+                    <p>You can't add comments until you click on the link in the confirmation email.</p>
+                    <br>
+                    <div class="row">
+                      <div class="col-xs-8 col-xs-offset-2">
+                        <button class="btn btn-success btn-block resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+                      </div>
+                    </div>
+                    <div class="top-space" id="resendMessage"></div>
+                  </div>
+                % endif
+
                 <h2><small>Following</small></h2>
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
                   <div ng-repeat="item in followInitiatives">
@@ -231,7 +311,6 @@
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/following.js')}"></script>
-  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/elections_home.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/follow_unfollow.js')}"></script>
   <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
@@ -258,6 +337,7 @@
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/create.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
     <script type="text/javascript">
       $('.carousel').carousel({
@@ -269,5 +349,43 @@
       $('.dropdown-menu input, .dropdown-menu label').click(function(e) {
         e.stopPropagation();
       });
+    </script>
+    <script>
+    	function readURL(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();        
+	            reader.onload = function (e) {
+	                $('#avatarPreview').attr('src', e.target.result);
+	                $('#avatarPreview').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    function readURL2(input) {
+	        if (input.files && input.files[0]) {
+	            var reader = new FileReader();
+	            
+	            reader.onload = function (e) {
+	                $('#coverPreview').attr('src', e.target.result);
+	                $('#coverPreview').show();
+	            }
+	            
+	            reader.readAsDataURL(input.files[0]);
+	        }
+	    }
+	    
+	    jQuery(document).ready(function(){
+		    jQuery("#imgAvatar").on('change',function(){
+		    	alert("YUP");
+		        readURL(this);
+		    });
+		    
+		    jQuery("#imgCover").on('change',function(){
+		    	alert("AHA");
+		        readURL2(this);
+		    });
+	    });
     </script>
 </%def>

@@ -276,6 +276,24 @@ def getPublicScope(workshop):
         scopeLevel = 'earth'
         scopeName  = 'earth'
     return {'level':scopeLevel, 'name':scopeName}
+    
+
+def getFullScope(scopeString):
+    scope = scopeString.split('|')
+    scopeDict = {}
+    if scope[9] != '0':
+        scopeDict['postal'] = scope[9].replace("-"," ").title()
+    if scope[8] != '0':
+        scopeDict['city'] = scope[8].replace("-"," ").title()
+    if scope[6] != '0':
+        scopeDict['county'] = scope[6].replace("-"," ").title()
+    if scope[4] != '0':
+        scopeDict['state'] = scope[4].replace("-"," ").title()
+    if scope[2] != '0':
+        scopeDict['country'] = scope[2].replace("-"," ").title()
+    else:
+        scopeDict['earth'] = 'Earth'
+    return scopeDict
 
 class WorkshopScope(object):
     def __init__(self, workshop, scope):
