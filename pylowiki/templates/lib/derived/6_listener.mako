@@ -33,6 +33,15 @@
                 <td colspan="2">Listener Web Site: <strong><a href="${c.listener['lurl']}" target="_blank">${c.listener['lurl']}</a></strong></td>
             </tr>
         % endif
+        % if c.member:
+            <tr>
+                <td colspan="2">
+                    Civinomics Member Profile:</br>
+                    ${lib_6.userLink(c.member, className="listener-name")}<br />
+                    <small>${lib_6.userGreetingMsg(c.member)}</small>
+                </td>
+            </p>
+        % endif
         % if 'text' in c.listener and c.listener['text'] != '':
             <tr>
                 <td colspan=2>

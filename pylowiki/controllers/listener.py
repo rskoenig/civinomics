@@ -25,6 +25,9 @@ class ListenerController(BaseController):
 
     def listenerShow(self, urlCode):
         c.listener = listenerLib.getListenerByCode(urlCode)
+        if 'userCode' in c.listener:
+            userCode = c.listener['userCode']
+            c.member = userLib.getUserByCode(userCode)
         
         return render( "/derived/6_listener.bootstrap" )
      

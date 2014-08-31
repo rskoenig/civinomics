@@ -119,35 +119,6 @@
                             </div><!-- row -->
                         </div><!-- margin-top -->
                     % endif
-                    % if role == 'Listening':
-                        <div style="margin-top: 10px;">
-                            <%
-                                l = listenerLib.getListener(c.user['email'], workshop)
-                                itemsChecked = ''
-                                digestChecked = ''
-                                if l:
-                                    if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                                        itemsChecked = 'checked'
-                                    if 'digest' in l and l['digest'] == '1':
-                                        digestChecked = 'checked'
-                            %>
-                            <div class="row" ng-controller="listenerController">
-                                <div class="col-sm-3">Email when:</div>
-                                <div class="col-sm-3">
-                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
-                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                    </form>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-3">
-                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
-                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
-                                    </form>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- row -->
-                        </div><!-- margin-top -->
-                    % endif
                     % if role == 'Bookmarked': 
                         <% f = followLib.getFollow(c.user, workshop) %>
                         % if f:
@@ -360,7 +331,6 @@
                 origObjType = item.objType
                 objType = item.objType.replace("Unpublished", "")
                 activityStr = actionMapping[objType]
-                log.info("objType is %s"%objType)
                 
                 if 'workshopCode' in item:
                     workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
@@ -412,7 +382,6 @@
                     elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
-                        log.info("no parentObjType item is %s"%item.keys())
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                         
                     title = lib_6.ellipsisIZE(item['data'], 40)

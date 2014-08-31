@@ -183,8 +183,14 @@ class ProfileController(BaseController):
         c.pendingListeners = []
         c.listeningWorkshops = []
         for l in listenerList:
-            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-            c.listeningWorkshops.append(lw)
+            lscope = l['scope']
+            lscope = lscope.replace('0|', '|')
+            lscope = lscope.replace('|0', '|')
+            
+            lw = workshopLib.getWorkshopsByScope(lscope, 9)
+            if lw:
+                for w in lw:
+                    c.listeningWorkshops.append(w)
         if iPhoneApp:
             if displayWorkshops:
                 i = 0
