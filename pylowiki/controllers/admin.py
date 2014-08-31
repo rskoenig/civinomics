@@ -30,6 +30,7 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.meeting          as meetingLib
+import pylowiki.lib.db.ballot           as ballotLib
 import pylowiki.lib.alerts              as alertsLib
 import pylowiki.lib.utils               as utils
 
@@ -77,6 +78,18 @@ class AdminController(BaseController):
                 parent = generic.getThing(c.thing['meetingCode'])
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'election':
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
+            elif 'ballotCode' in c.thing:
+                parent = generic.getThing(c.thing['ballotCode'])
+                c.user = generic.getThing(c.thing['userCode'])
+                userLib.setUserPrivs()
+            elif 'electionCode' in c.thing:
+                parent = generic.getThing(c.thing['electionCode'])
+                c.user = generic.getThing(parent['userCode'])
+                userLib.setUserPrivs()
+
                  
             # Check if a non-admin is attempting to mess with an admin-level item
             if c.thing.objType != 'user' and userLib.isAdmin(author.id):
@@ -207,10 +220,43 @@ class AdminController(BaseController):
             c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )
         
+    def listeners(self):
+        if userLib.isAdmin(c.authuser.id):
+            c.list = listenerLib.getAllListeners()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            c.list = listenerLib.getListenersForScope(0, scope)
+        if not c.list:
+            c.list = []
+        c.title = "List All Listeners"
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
     def meetings(self):
         c.list = meetingLib.getAllMeetings()
         if not c.list:
             c.list = []
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def elections(self):
+        if userLib.isAdmin(c.authuser.id):
+            c.list = ballotLib.getAllElections()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            c.list = ballotLib.getElectionsForCuratorScope(scope)
+        if not c.list:
+            c.list = []
+        c.title = "List All Elections"
+        return render( "/derived/6_list_all_items.bootstrap" )
+
+    def ballots(self):
+        if userLib.isAdmin(c.authuser.id):
+            c.list = ballotLib.getAllBallots()
+        else:
+            scope = '0' + c.authuser['curateScope'].replace('||', '|0|')
+            c.list = ballotLib.getBallotsForCuratorScope(scope)
+        if not c.list:
+            c.list = []
+        c.title = "List All Ballots"
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def flaggedPhotos(self):
@@ -454,6 +500,16 @@ class AdminController(BaseController):
             returnURL = "/initiative/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         elif 'meetingCode' in c.thing or c.thing.objType == 'meeting':
             returnURL = "/meeting/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType == 'agendaitem':
+            dparent = generic.getThing(c.thing['meetingCode'])
+            returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType == 'ballotmeasure' or c.thing.objType == 'ballotcandidate':
+            dparent = generic.getThing(c.thing['ballotCode'])
+            returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType == 'ballot':
+            returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType == 'election':
+            returnURL = "/election/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -490,6 +546,13 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'agendaitem':
             dparent = generic.getThing(c.thing['meetingCode'])
             returnURL = "/meeting/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'ballotmeasure' or c.thing.objType.replace("Unpublished", "") == 'ballotcandidate':
+            dparent = generic.getThing(c.thing['ballotCode'])
+            returnURL = "/ballot/%s/%s/show"%(dparent['urlCode'], dparent['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'ballot':
+            returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'election':
+            returnURL = "/election/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
