@@ -145,6 +145,10 @@ class CreateController(BaseController):
             
         w = workshopLib.Workshop(title, c.authuser, scope, wType, description)
         
+        if 'tags' in request.params:
+            w['workshop_category_tags'] = request.params['tags']
+            dbHelpers.commit(w)
+            
         if request.params['avatar[]'] is not u'':
             file = request.params['avatar[]']
             filename = file.filename
