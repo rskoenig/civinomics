@@ -17,9 +17,13 @@
     <div class="col-xs-12 col-sm-1 col-md-1">
         <div ng-init="zipValue = ${c.postalCode}">
 	            <div ng-controller="zipLookupCtrl" ng-cloak>
-	                <div style="height: 30px;"></div>
 	                <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i><br>
 	                <table ng-show="!loading" class="full-width">
+	                	<tr>
+	                		<td>
+	                            <a ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag med-flag bottom-space" src="/images/flags/homeFlag.gif"></a>
+	                        </td>
+	                	</tr>
 	                    <tr ng-repeat="geo in geos">
 	                        <td>
 	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
