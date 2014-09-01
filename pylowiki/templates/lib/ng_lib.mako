@@ -357,7 +357,6 @@
 </%def>
                         
 
-
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
@@ -435,7 +434,11 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter()}
+                % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
+                    ${yesNoVoteFooter(readonly = True)}
+                % else:
+                    ${yesNoVoteFooter()}
+                % endif
                 ${actions()}
             </div>
     </div><!-- media well -->
@@ -534,7 +537,14 @@
 
 <%def name="yesNoVoteFooter(**kwargs)">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
-        % if 'user' in session:
+        % if 'readonly' in kwargs:
+            <div class="row centered">
+                <div class="col-sm-12">
+                    <a href="#readonlyModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a href="#readonlyModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            </div>
+        % elif 'user' in session:
             <div class="row centered">
                 <div class="col-sm-12">
                     <a ng-click="updateYesVote()" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>

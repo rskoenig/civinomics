@@ -383,8 +383,17 @@ def setWorkshopPrivs(workshop):
     c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
+    # Readonly, no new objects, no new comments, no new votes
+    c.privs['readonly'] = False
     # is a demo workshop
     c.privs['demo'] = isDemo(workshop)
+    
+    endList = workshop['endTime'].split(" ")
+    endTime = datetime.datetime.strptime(endList[0], "%Y-%m-%d")
+    endTime = endTime.strftime("%Y-%m-%d")
+    now = datetime.datetime.now()
+    now = now.strftime("%Y-%m-%d")
+    #log.info("now is %s and endTime is %s"%(now, endTime))
     
     if 'user' in session:
         if c.authuser['activated'] == '0':
@@ -395,6 +404,7 @@ def setWorkshopPrivs(workshop):
             c.privs['participant'] = isScoped(c.authuser, workshop)
             c.privs['guest'] = False
             c.privs['visitor'] = False
+            c.privs['readonly'] = True
         else:
             c.privs['provisional'] = False
             c.privs['admin'] = userLib.isAdmin(c.authuser.id)
@@ -402,9 +412,16 @@ def setWorkshopPrivs(workshop):
             testL = listenerLib.getListener(c.authuser, workshop)
             if testL and testL['pending'] != '1':
                 c.privs['listener'] = True
+            if now > endTime:
+                log.info("now %s > endtime %s"%(now, endTime))
+                c.privs['readonly'] = True
+            else:
+                c.privs['readonly'] = False
+                log.info("now < endtime")
             c.privs['participant'] = isScoped(c.authuser, workshop)
-            c.privs['guest'] = False
             c.privs['visitor'] = False
+            c.privs['guest'] = False
+            
 
 
 def Workshop(title, owner, publicPrivate, type = "personal", desc = " ", **kwargs):

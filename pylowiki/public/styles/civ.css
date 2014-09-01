@@ -542,6 +542,20 @@ font-size: 14px;
     max-height: 800px;
 }
 
+#readonlyModal span {
+  background-image: none;
+  background-color: #ffffff;
+}
+
+#readonlyModal .modal-footer{
+  margin-left: -15px;
+  margin-right: -15px;
+  margin-bottom: -15px;
+}
+
+#readonlyModal .modal-body{
+    max-height: 800px;
+}
 .sc-font-light {
 font-weight: 100;
 }
