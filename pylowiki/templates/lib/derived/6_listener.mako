@@ -56,7 +56,7 @@
         % endif
     </table>
     % if 'views' in c.listener:
-        <i class="icon-eye-open"></i> Views (${c.listener['views']})
+        &nbsp; <i class="icon-eye-open"></i> Views (${c.listener['views']})
     % endif
     % if listener.objType == 'revision':
         <div class="alert alert-error">
@@ -401,10 +401,6 @@
         % endif
         % if c.revisions:
             <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#revisions">Revisions (${len(c.revisions)})</a>
-        % endif
-
-        % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">Admin</a>
         % endif
     </div>
     

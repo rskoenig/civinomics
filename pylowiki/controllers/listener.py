@@ -25,7 +25,13 @@ class ListenerController(BaseController):
 
     def listenerShow(self, urlCode):
         c.listener = listenerLib.getListenerByCode(urlCode)
-        if 'userCode' in c.listener:
+        if c.listener:
+            views = int(c.listener['views'])
+            views += 1
+            c.listener['views'] = str(views)
+            dbHelpers.commit(c.listener)
+            
+        if c.listener and 'userCode' in c.listener:
             userCode = c.listener['userCode']
             c.member = userLib.getUserByCode(userCode)
         

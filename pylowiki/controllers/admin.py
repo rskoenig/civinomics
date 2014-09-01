@@ -81,6 +81,10 @@ class AdminController(BaseController):
             elif c.thing.objType.replace("Unpublished", "") == 'election':
                 c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'listener':
+                c.user = c.authuser
+                author = c.authuser
+                userLib.setUserPrivs()
             elif 'ballotCode' in c.thing:
                 parent = generic.getThing(c.thing['ballotCode'])
                 c.user = generic.getThing(c.thing['userCode'])
@@ -510,6 +514,8 @@ class AdminController(BaseController):
             returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         elif c.thing.objType == 'election':
             returnURL = "/election/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType == 'listener':
+            returnURL = "/listener/%s/listenerShow"%c.thing['urlCode']
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
@@ -553,6 +559,8 @@ class AdminController(BaseController):
             returnURL = "/ballot/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
         elif c.thing.objType.replace("Unpublished", "") == 'election':
             returnURL = "/election/%s/%s/show"%(c.thing['urlCode'], c.thing['url'])
+        elif c.thing.objType.replace("Unpublished", "") == 'listener':
+            returnURL = "/listener/%s/listenerShow"%c.thing['urlCode']
         else:
             dparent = generic.getThingByID(c.thing.owner)
             returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])

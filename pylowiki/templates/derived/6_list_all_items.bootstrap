@@ -101,7 +101,10 @@
                             <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
                             </button>
                         % endif
-                        % if 'disabled' in item:
+                        <% unpublishedTypes = ['listenerUnpublished'] %>
+                        % if item.objType in unpublishedTypes:
+                            Unpublished
+                        % elif 'disabled' in item:
                             Disabled: ${item['disabled']} 
                         % elif 'deleted' in item:
                             Deleted: ${item['deleted']}

@@ -14,18 +14,20 @@ import pylowiki.lib.db.user         as userLib
 log = logging.getLogger(__name__)
 
 def getListenerByCode(code):
+    objectList = ['listener', 'listenerUnpublished']
     try:
         return meta.Session.query(Thing)\
-                .filter_by(objType = 'listener')\
+                .filter(Thing.objType.in_(objectList))\
                 .filter(Thing.data.any(wc('urlCode', code)))\
                 .one()
     except:
         return False
         
 def getAllListeners():
+    objectList = ['listener', 'listenerUnpublished']
     try:
         return meta.Session.query(Thing)\
-                .filter_by(objType = 'listener')\
+                .filter(Thing.objType.in_(objectList))\
                 .order_by('-date')\
                 .all()
     except:
