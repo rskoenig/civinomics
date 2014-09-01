@@ -36,6 +36,12 @@
             % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
                 <p>Community curator for ${c.user['curateLevelTitle']}</p>
             % endif
+            % if c.listener:
+                % for l in c.listener:
+                    <% scopeInfo = utils.getPublicScope(l) %>
+                    <p>Listener for ${scopeInfo['level'].title()} of ${scopeInfo['name']}</p>
+                % endfor
+            % endif
             %if c.isAdmin:
                 <div class="well">
                 % if 'curateLevel' in c.user and c.user['curateLevel'] != '':

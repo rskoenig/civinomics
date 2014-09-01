@@ -181,10 +181,10 @@ class ProfileController(BaseController):
                     entry[privateWorkshopEntry] = dict(privateWorkshopCopy)
                     i = i + 1
 
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.listener = listenerLib.getListenersForUser(c.user, disabled = '0')
         c.pendingListeners = []
         c.listeningWorkshops = []
-        for l in listenerList:
+        for l in c.listener:
             lscope = l['scope']
             lscope = lscope.replace('0|', '|')
             lscope = lscope.replace('|0', '|')
