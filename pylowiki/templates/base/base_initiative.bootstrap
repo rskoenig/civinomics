@@ -9,9 +9,9 @@
 <% lib.return_to() %>
 
 <style>
-html,body{
-   background-color: #fff;
-}
+    html,body{
+       background-color: #fff;
+    }
 </style>
 
 %if c.cover_url:
@@ -22,7 +22,7 @@ html,body{
         <div class="darkened-bg-cover"></div>
     </div>
 
-<span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}'; initiativeTitle = '${c.initiative['title']}';"></span>
+<span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}';"></span>
 <div class="container" ng-controller="showThingCtrl">
     <div class="row">
         <div class="col-sm-9 col-md-9">
@@ -32,14 +32,14 @@ html,body{
                 </div>
                 <% titleSpan = "col-xs-10" %>
                 <div class="${titleSpan}" style="position:relative;">
-                    <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}" ng-cloak>{{initiativeTitle}}</a></h1>
+                    <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
 
                     <h4> 
                         ${lib_6.showTags(c.initiative)}<a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a href="${c.scopeHref}">${c.scopeTitle}</a>
                     </h4>
                 </div>
             </div>
-            <div class="row action-buttons content-offset">
+            <div id="summary"class="row action-buttons content-offset">
                 % if c.iPrivs:
                     <span>
                         ${ihelpers.watchButton(c.initiative)}
@@ -188,17 +188,13 @@ html,body{
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
-                <div class="row">
-                    <div class="col-xs-12">
-                        <ul class="nav nav-pills nav-stacked" style="width: 100%;">
-                            <li class="active"><a href="#summary" data-toggle="tab">Summary</a></li>
-                            <li><a href="#updates">Updates</a></li>
-                            <li><a href="#resources">Resources</a></li>
-                            <li><a href="#comments">Comments</a></li>
-                            <!-- <li><a href="#iPhotos">Photos</a></li> -->
-                        </ul>
-                    </div>
-                </div>
+                <ul class="nav nav-pills nav-stacked" style="width: 100%;">
+                    <li class="active"><a href="#summary">Summary</a></li>
+                    <li><a href="#updates">Updates</a></li>
+                    <li><a href="#resources">Resources</a></li>
+                    <li><a href="#comments">Comments</a></li>
+                    <!-- <li><a href="#iPhotos">Photos</a></li> -->
+                </ul>
             % endif
             </div> <!-- position:fixed -->
         </div><!-- span4 -->

@@ -5,7 +5,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <% lib.return_to() %>
-    <h4 id="summary" class="initiative-title">Summary</h4>
+    <h4 class="initiative-title">Summary</h4>
     ${ihelpers.showDescription()}
     ${ihelpers.showAuthor(c.initiative)}
 
@@ -50,3 +50,8 @@
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif
+
+<%def name="extraScripts2()">
+    # for some reason this script is stopping weird behavior where a '/' was injected into id based links, e.g. '#/resources' instead of '#resources' 
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
+</%def>
