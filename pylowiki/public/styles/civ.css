@@ -1519,6 +1519,10 @@ voting ribbon triangle
   */
 }
 
+.initiative-well.action-panel, .i-edit-menu {
+  min-height:325px;
+}
+
 .oddComment{
     background-color:whitesmoke;
 }
@@ -1782,6 +1786,7 @@ button.transparent{
 
 .btn.followButton{
     margin-left: 4px;
+    margin-bottom: 8px;
 }
 
 .inline{
@@ -2196,10 +2201,6 @@ li.thumbnail-gallery{
 
 .i-social-buttons{
   margin-top: 25px;
-}
-
-.i-edit-menu{
-  margin-top: 170px;
 }
 
 .action-buttons{
@@ -3261,7 +3262,7 @@ a.no-highlight.no-hover:hover{
 }
 
 .initiative-thumb{
-  width: 130px;
+  width: 100%;
   margin-top: 15px;
 }
 
@@ -3744,7 +3745,7 @@ svg{
 }
 
 
-.darkened-bg{
+.darkened-bg-cover{
   position: absolute;
   top:0;
   left:0;
@@ -3754,8 +3755,8 @@ svg{
   z-index: 1;
 }
 
-.title-offset{
-  margin-top: 160px;
+.content-offset{
+  margin-top: 300px;
 }
 
 .top-offset{
