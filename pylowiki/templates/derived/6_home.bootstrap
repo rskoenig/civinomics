@@ -26,7 +26,7 @@
 	                	</tr>
 	                    <tr ng-repeat="geo in geos">
 	                        <td>
-	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
 	                        </td>
 	                    </tr>
 	                </table>
@@ -120,7 +120,7 @@
                     
                     <div ng-show="showAll">
                     <hr>
-	                    <div class="col-xs-5" ng-if="geoScope == ''">
+	                    <div class="col-xs-5" ng-show="geoScope == ''">
 	                    <h4>Geographic Scope</h4>
 	                    ${ng_helpers.ngGeoSelect()}
 	                    </div>
@@ -254,6 +254,12 @@
                   </div>
                 % endif
 
+				<div class="well info-side" style="background-image: url('{{geoFlagUrl}}');" >
+					<img src="/images/flags/homeFlag.gif" class="info-flag"/>
+					<div >Test test</div>
+					Test
+				</div>
+
                 <h2><small>Following</small></h2>
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
                   <div ng-repeat="item in followInitiatives">
@@ -320,7 +326,6 @@
 
   </div><!-- /span4 -->
 </div><!-- /row -->
-
 
 <%def name="headScripts()">
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>

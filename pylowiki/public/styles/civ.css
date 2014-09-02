@@ -3712,6 +3712,12 @@ svg{
   width: 100%;
 }
 
+
+/*
+	Custom for feed scoped pages
+*/
+
+/* Responsive flags */
  .activeGeo{
 	border: solid 2px orange;
 	opacity: 1 !important;
@@ -3721,3 +3727,15 @@ svg{
 	opacity: 0.5;
 }
 
+/*Right hand side flag*/
+.info-flag{
+	margin-top:10%; 
+	position:relative;
+}
+.info-side{
+	background-size:100% 50%; 
+	background-repeat: no-repeat;
+	height: 250px;
+	margin-top: 21px;
+	background-image:url('http://img2.findthebest.com/sites/default/files/2307/media/images/Safety_Orange_Blaze_Orange_429976_i0.png');
+}
