@@ -3711,3 +3711,13 @@ svg{
   max-width: 100%;
   width: 100%;
 }
+
+ .activeGeo{
+	border: solid 2px orange;
+	opacity: 1 !important;
+}
+
+ .inactiveGeo{
+	opacity: 0.5;
+}
+

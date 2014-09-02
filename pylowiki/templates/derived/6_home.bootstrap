@@ -21,12 +21,12 @@
 	                <table ng-show="!loading" class="full-width">
 	                	<tr>
 	                		<td>
-	                            <a ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag med-flag bottom-space" src="/images/flags/homeFlag.gif"></a>
+	                            <a ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag med-flag bottom-space" src="/images/flags/homeFlag.gif" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
 	                        </td>
 	                	</tr>
 	                    <tr ng-repeat="geo in geos">
 	                        <td>
-	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
+	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
 	                        </td>
 	                    </tr>
 	                </table>
@@ -83,7 +83,7 @@
           {{alertMsg}}
       </div>
       <div ng-controller="createController" ng-cloak>
-	      <div class="media well search-listing" ng-if="geoScope != ''">
+	      <div class="media well search-listing" ng-if="false">
 		        <div>
 		            <div class="row">
 		                <div class="col-xs-12" style="margin-bottom: 10px;">
