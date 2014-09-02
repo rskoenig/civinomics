@@ -542,7 +542,7 @@ font-size: 14px;
     max-height: 800px;
 }
 
-#readonlyModal span {
+#readonlyModal .social-sign-in-separator span {
   background-image: none;
   background-color: #ffffff;
 }
@@ -556,6 +556,7 @@ font-size: 14px;
 #readonlyModal .modal-body{
     max-height: 800px;
 }
+
 .sc-font-light {
 font-weight: 100;
 }
