@@ -26,7 +26,7 @@
 	                	</tr>
 	                    <tr ng-repeat="geo in geos">
 	                        <td>
-	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
 	                        </td>
 	                    </tr>
 	                </table>
@@ -253,12 +253,22 @@
                     <div class="top-space" id="resendMessage"></div>
                   </div>
                 % endif
-
-				<div class="well info-side" style="background-image: url('{{geoFlagUrl}}');" >
-					<img src="/images/flags/homeFlag.gif" class="info-flag"/>
-					<div >Test test</div>
-					Test
+				
+				###
+				### Geo flag info
+				###
+				
+				<div class="well info-side" ng-if="geoScope != ''" ng-cloak>
+					<img src="{{geoFlagUrl}}" class="info-flag"/>
+					<br/>
+					<p style="margin-top:5px;">
+					<b>{{geoScopeName}}</b><br/>
+					Population: {{geoPopulation}}</p>
+					<div class="nav nav-pills" ng-if="geoScope != ''" ng-cloak>
+					<a href="#" class="active">View full profile</a>
+					</div>
 				</div>
+				
 
                 <h2><small>Following</small></h2>
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>

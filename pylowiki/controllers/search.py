@@ -1080,17 +1080,47 @@ class SearchController(BaseController):
         scopeMap.extend((countryScope, stateScope, countyScope, cityScope, zipScope))
 
         exceptions = utils.getGeoExceptions()
+        
+        getGeoInfo= {
+        	'Country' : getCountryInfo,
+        	'State': getStateInfo,
+        	'County': getCountyInfo,
+        	'City': getCityInfo,
+        	'Postalcode': getPostalInfo,
+        }
+        
+        geoArguments= {
+        	'Country' : [country],
+        	'State': [state, country],
+        	'County': [county, state, country],
+        	'City': [city, state, country],
+        	'Postalcode': [self.zip],
+        }
+        
+        geoPopulation= {
+        	'Country' : 'Country_population',
+        	'State': 'Population',
+        	'County': 'Population',
+        	'City': 'Population',
+        	'Postalcode': 'Population',
+        }
+
 
         for scope in scopeMap:
             scopeInfo = utils.getPublicScope(scope)
+            geoInfo = getGeoInfo[scopeInfo['level'].title()](*geoArguments[scopeInfo['level'].title()]) 
+             
             entry = {}
+            if geoInfo:
+                population = geoInfo[geoPopulation[scopeInfo['level'].title()]]
+                entry['population'] = population
             entry['name'] = scopeInfo['name']
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
             entry['fullName'] = entry['level'] + ' of ' + entry['name']
             entry['scope'] = scope[1:]
-
+            
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')
                 continue

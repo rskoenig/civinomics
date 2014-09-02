@@ -33,11 +33,13 @@ function activityController($scope, $http) {
 	$scope.getActivity();
 
 	$scope.geoScope = '';
-	$scope.geoFlagUrl = '';
+	$scope.geoFlagUrl = '/images/flags/homeFlag.gif';
+	$scope.geoPopulation = '';
 
 	$scope.getAllActivity = function(){
 		$scope.geoScope = '';
 		$scope.activityType = '/all';
+		$scope.geoFlagUrl = '/images/flags/homeFlag.gif';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
@@ -54,11 +56,12 @@ function activityController($scope, $http) {
 		$scope.offset = $scope.sliceSize;
 	};
 	
-	$scope.getGeoScopedActivity = function(scope, name, url){
+	$scope.getGeoScopedActivity = function(scope, name, url, population){
 		$scope.activityType = '/geo/'+scope;
 		$scope.geoScope = scope;
 		$scope.geoScopeName = name;
 		$scope.geoFlagUrl = url;
+		$scope.geoPopulation = population;
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
