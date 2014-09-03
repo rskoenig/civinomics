@@ -455,9 +455,7 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
    padding-right: 10px;
    background-color: whitesmoke;
 }
-.nav.nav-tabs.nav-stacked.nav-init > li > a{
-  font-size: 16px
-}
+
 .nav.nav-tabs.nav-stacked > li > a:hover{
    background-color: #fff;
 }
@@ -1519,6 +1517,10 @@ voting ribbon triangle
   */
 }
 
+.initiative-well.action-panel, .i-edit-menu {
+  min-height:325px;
+}
+
 .oddComment{
     background-color:whitesmoke;
 }
@@ -1782,6 +1784,7 @@ button.transparent{
 
 .btn.followButton{
     margin-left: 4px;
+    margin-bottom: 8px;
 }
 
 .inline{
@@ -2178,6 +2181,10 @@ li.thumbnail-gallery{
   margin-bottom: 20px;
 }
 
+.bottom-space-lg{
+  margin-bottom: 50px;
+}
+
 .left-indent{
   margin-left: 20px;
 }
@@ -2192,6 +2199,21 @@ li.thumbnail-gallery{
 
 .top-space-md{
   margin-top: 20px;
+}
+
+.i-social-buttons{
+  margin-top: 25px;
+}
+
+.action-buttons{
+  margin-top: 40px;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus, .nav-pills>li>a:hover, .nav-pills>li>a:focus {
+color: grey;
+background-color: whitesmoke;
+border: 1px solid #ddd;
+padding: 8px;
 }
 
 .strong{
@@ -3175,7 +3197,7 @@ margin-right: -13px;
 }
 
 .initiative-title{
-  text-transform:uppercase;
+  /*text-transform:uppercase;*/
 }
 
 .wiki-well h1, .wiki-well h2, .wiki-well h3, .wiki-well h4{
@@ -3228,8 +3250,11 @@ tr.neutral, .panel-heading.neutral{
 a.no-highlight{
   color:#333333;
 }
+a.no-highlight.overlay{
+  color:#fff;
+}
 a.no-highlight:hover{
-    color: #D15D00;
+    color: #428bca;
 }
 a.no-highlight.no-hover:hover{
     color: #333333;
@@ -3240,7 +3265,7 @@ a.no-highlight.no-hover:hover{
 }
 
 .initiative-thumb{
-  width: 85px;
+  width: 100%;
   margin-top: 15px;
 }
 
@@ -3707,7 +3732,36 @@ svg{
   padding-left:10px;
 }
 
+.policy-cover{
+  height: 300px;
+  background-size: cover;
+  background-position: center center;
+  position: absolute;
+  z-index: 0;
+  width: 100%;
+  margin-top: -10px;
+}
+
 .markdown img, p.markdown, .markdown p, .markdown span{
   max-width: 100%;
   width: 100%;
+}
+
+
+.darkened-bg-cover{
+  position: absolute;
+  top:0;
+  left:0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,.3);
+  z-index: 1;
+}
+
+.content-offset{
+  margin-top: 300px;
+}
+
+.top-offset{
+  margin-top: 10px;
 }

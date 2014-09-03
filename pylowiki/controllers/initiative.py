@@ -104,7 +104,9 @@ class InitiativeController(BaseController):
             if c.iPrivs == False:
                 abort(404)
                 
-            c.complete = self.initiativeCheck()
+            # c.complete = self.initiativeCheck()
+            # removing requirements for publishing an initiative
+            c.complete = True
             
         c.resources = []
         c.updates = []
@@ -295,7 +297,9 @@ class InitiativeController(BaseController):
                 c.initiative['publishDate'] = startTime
                 c.initiative['unpublishDate'] = u'0000-00-00'
                 dbHelpers.commit(c.initiative)
-                c.saveMessage = "Your initiative is now live! It is publicly viewable."
+                c.saveMessage = "Your initiative is now live. Share it with your friends!"
+                return redirect('/initiative/%s/%s' % (c.initiative['urlCode'], c.initiative['url']))
+
         elif 'public' in request.params and request.params['public'] == 'unpublish':
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
@@ -419,7 +423,9 @@ class InitiativeController(BaseController):
             c.saveMessage = "Changes saved."
 
         c.editInitiative = True
-        c.complete = self.initiativeCheck()
+        #c.complete = self.initiativeCheck()
+        # removing requirements for publishing an intiative to make it easier/ encourage more ideation
+        c.complete = True
         
         return render('/derived/6_initiative_edit.bootstrap')
         
@@ -586,6 +592,7 @@ class InitiativeController(BaseController):
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):
+        c.editResource = True
         if 'user' not in session:
             log.info("someone not logged in tried to add a resource to an initiative...")
             abort(404)
@@ -608,12 +615,11 @@ class InitiativeController(BaseController):
         
     @h.login_required       
     def updateEdit(self):
-        
+        c.editUpdate = True
         return render('/derived/6_initiative_update.bootstrap')
         
     @h.login_required
     def updateEditHandler(self):
-        
         payload = json.loads(request.body)
         if 'title' in payload:
             title = payload['title']
