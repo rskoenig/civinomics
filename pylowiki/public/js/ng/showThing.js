@@ -1,10 +1,15 @@
-function showThingCtrl($scope, $http) {
+function showThingCtrl($scope, $http, $location, $anchorScroll) {
 	$scope.costRegex = /^(\-)?(([1-9]\d{0,2}(,\d{3})*)|(([1-9]\d*)?\d))$/;
     $scope.clearTitle = function() {
         if ($scope.initiativeTitle == 'New Initiative'){
             $scope.initiativeTitle = '';
         }
     };
+
+    $scope.scrollTo = function(id) {
+      $location.hash(id);
+      $anchorScroll();
+   	}
 
     $scope.getUrl = '/' + $scope.objType + '/' + $scope.thingCode + '/' + $scope.thingUrl + '/json';
 

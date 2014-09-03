@@ -50,8 +50,3 @@
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif
-
-<%def name="extraScripts2()">
-    # for some reason this script is stopping weird behavior where a '/' was injected into id based links, e.g. '#/resources' instead of '#resources' 
-    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
-</%def>

@@ -189,10 +189,10 @@
                     % endif 
                 </div><!-- section-wrapper -->
                 <ul class="nav nav-pills nav-stacked" style="width: 100%;">
-                    <li class="active"><a href="#summary">Summary</a></li>
-                    <li><a href="#updates">Updates</a></li>
-                    <li><a href="#resources">Resources</a></li>
-                    <li><a href="#comments">Comments</a></li>
+                    <li><a ng-click="scrollTo('summary')">Summary</a></li>
+                    <li><a ng-click="scrollTo('updates')">Updates</a></li>
+                    <li><a ng-click="scrollTo('resources')">Resources</a></li>
+                    <li><a ng-click="scrollTo('comments')">Comments</a></li>
                     <!-- <li><a href="#iPhotos">Photos</a></li> -->
                 </ul>
             % endif
