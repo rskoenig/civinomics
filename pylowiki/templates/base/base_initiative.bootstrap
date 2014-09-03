@@ -88,11 +88,11 @@
                     </div>
                 </div>
                 <ul class="nav nav-pills nav-stacked" style="width: 100%;">
-                    <li class="active"><a href="#basics">1. Basics</a></li>
-                    <li><a href="#summary">2. Summary</a></li>
-                    <li><a href="#detail">3. Detail</a></li>
-                    <li><a href="#photo">4. Photo</a></li>
-                    <li><a href="#coauthors">5. Coauthors</a></li>
+                    <li><a ng-click="scrollTo('basics')">1. Basics</a></li>
+                    <li><a ng-click="scrollTo('summary')">2. Summary</a></li>
+                    <li><a ng-click="scrollTo('detail')">3. Detail</a></li>
+                    <li><a ng-click="scrollTo('photo')">4. Photo</a></li>
+                    <li><a ng-click="scrollTo('coauthors')">5. Coauthors</a></li>
                     <!--
                     <li><a href="#iStats" data-toggle="tab">Stats</a></li>
                     <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
