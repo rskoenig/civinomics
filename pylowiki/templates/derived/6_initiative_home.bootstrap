@@ -36,12 +36,12 @@
     % if c.updates:
         <hr>
         <div id="updates">
-            <h4 class="initiative-title">Updates ${ihelpers.addUpdateButton()}</h4>
+            <h4 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h4>
             ${ihelpers.showUpdateList()}
         </div>
     % endif
         <hr>
-        <h4 id="resources" class="initiative-title">Related Links ${ihelpers.addResourceButton()}</h4>
+        <h4 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h4>
         ${ihelpers.listResources()}
         <br>
         % if c.initiative.objType != 'initiativeUnpublished':

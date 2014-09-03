@@ -592,6 +592,7 @@ class InitiativeController(BaseController):
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):
+        c.editResource = True
         if 'user' not in session:
             log.info("someone not logged in tried to add a resource to an initiative...")
             abort(404)
@@ -614,12 +615,11 @@ class InitiativeController(BaseController):
         
     @h.login_required       
     def updateEdit(self):
-        
+        c.editUpdate = True
         return render('/derived/6_initiative_update.bootstrap')
         
     @h.login_required
     def updateEditHandler(self):
-        
         payload = json.loads(request.body)
         if 'title' in payload:
             title = payload['title']
