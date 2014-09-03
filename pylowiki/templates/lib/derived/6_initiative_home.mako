@@ -32,8 +32,6 @@
                                 ${lib_6.userImage(author, className="avatar small-avatar")}
                             % endfor
                         </td>
-                    </tr>
-                    <tr>
                         <td>
                             <span class="grey">
                             % for author in c.authors[:showNum]:
@@ -78,21 +76,17 @@
             </div><!-- tab-pane -->
         </div><!-- tabcontent -->
     </div><!-- tabbable -->
-    <br>
     <span class="grey">
         Published: ${item.date}
     </span>
 </%def>
 
 <%def name="showUpdateList()">
-    % if c.updates:
-        Progress Reports:<br />
-        <ul>
-        % for update in c.updates:
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update.date} ${update['title']}</a></li>
-        % endfor
-        </ul>
-    % endif
+    <ul>
+    % for update in c.updates:
+        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update['title']} <span class="pull-right">${update.date}</span></a></li>
+    % endfor
+    </ul>
 </%def>
                         
 
@@ -151,6 +145,14 @@
         
     %>
     ${printStr | n}
+</%def>
+
+
+
+<%def name="addUpdateButton()">
+    % if c.iPrivs:
+        <a class="btn btn-default btn-sm pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><i class="icon icon-plus"></i></a>
+    % endif
 </%def>
 
 <%def name="listResources()">
@@ -569,26 +571,27 @@
     %>
     % if not c.resource:
         <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
-            <fieldset>
-                <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
+            <div class="form-group">
+                <label>Resource title</label>
                 <input type="text" class="input-block-level form-control" name="title" ng-model="title" maxlength = "120" required>
+                <span class="help-block">Try to keep your title informative, but concise.</span>
                 <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
+            </div>
+            <div class="form-group">
                 <label>Resource URL</label>
                 <input type="url" class="input-block-level form-control" name="link" ng-model="link" placeholder="http://" required>
                 <span ng-show="addResourceURLShow"><div class="alert alert-danger" ng-cloak>{{addResourceURLResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Additional information</strong><br>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+            </div>
+            <div class="form-group">
+                <label><strong>Additional information</strong>
+                <a href="#" class="btn btn-xs btn-info left-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
                 <textarea name="text" rows="3" class="input-block-level form-control" ng-model="text"></textarea>
-                <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
-            </fieldset>
+                <span class="help-block">Any additional information you want to include.  This is optional.</span>
+            </div>
             <span ng-show="addResourceShow">{{addResourceResponse}}</span>
-            <fieldset>
-                <button class="btn btn-large btn-default pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-lg btn-success pull-right" type="submit" name="submit">Submit</button>
+            </div>
         </form>
     % endif
 </%def>
@@ -607,21 +610,20 @@
     %>
     % if not c.update:
         <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
-            <fieldset>
-                <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+            <div class="form-group">
+                <label>Update Title</label>
+                <input type="text" class="form-control input-block-level" name="title" ng-model="title" maxlength = "120" required>
                 <span ng-show="addUpdateTitleShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Progress Report Text</strong>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Update Text</label>
+                <a href="#" class="btn btn-xs btn-info left-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a>
+                <textarea name="text" rows="3" class="form-control input-block-level" ng-model="text" required></textarea>
                 <span ng-show="addUpdateTextShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTextResponse}}</div></span>
-                <span class="help-block"> (A description of the progress made on implementing the initiative since the last progress report.) </span>
-            </fieldset>
-            <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-success pull-right" type="submit" name="submit">Submit</button>
+            </div>
         </form>
     % endif
 </%def>
