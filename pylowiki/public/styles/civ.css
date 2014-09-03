@@ -3197,7 +3197,7 @@ margin-right: -13px;
 }
 
 .initiative-title{
-  /* text-transform:uppercase; */
+  /*text-transform:uppercase;*/
 }
 
 .wiki-well h1, .wiki-well h2, .wiki-well h3, .wiki-well h4{
@@ -3250,8 +3250,11 @@ tr.neutral, .panel-heading.neutral{
 a.no-highlight{
   color:#333333;
 }
+a.no-highlight.overlay{
+  color:#fff;
+}
 a.no-highlight:hover{
-    color: #D15D00;
+    color: #428bca;
 }
 a.no-highlight.no-hover:hover{
     color: #333333;
@@ -3744,6 +3747,24 @@ svg{
   width: 100%;
 }
 
+
+.darkened-bg-cover{
+  position: absolute;
+  top:0;
+  left:0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,.3);
+  z-index: 1;
+}
+
+.content-offset{
+  margin-top: 300px;
+}
+
+.top-offset{
+  margin-top: 10px;
+}
 
 /*
 	Custom for feed scoped pages
