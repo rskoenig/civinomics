@@ -3737,7 +3737,42 @@ svg{
 .info-side{
 	background-size:100% 50%; 
 	background-repeat: no-repeat;
-	height: 200px;
-	margin-top: 21px;
+	/* height: 200px; */
+	margin-top: 6%;
+	text-align: right;
 	background-image:url('http://www.colorhexa.com/428bca.png');
 }
+
+div.info-side img{
+	float:left;
+	width:35%;
+	margin: 0px 10px 10% 0px;
+	border: solid 1px #999;
+}
+
+.top-info-side{
+	overflow: hidden;	
+}
+
+div.top-info-side p{
+	padding-top: 16%;
+	margin-bottom: 10%;
+	font-size: 18px;	
+	color: white;
+}
+
+
+/*
+div.info-side p{
+	float:right;
+	color: white;
+	margin-top:15%;
+	margin-right: -10px;
+	text-align: right;
+	font-size:18px;
+}
+
+div.info-side span{
+	font-size: 14px;
+}
+*/

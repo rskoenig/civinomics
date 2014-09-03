@@ -259,12 +259,19 @@
 				###
 				
 				<div class="well info-side" ng-if="geoScope != ''" ng-cloak>
-					<img src="{{geoFlagUrl}}" class="info-flag" style="float:left;"/>
-					<p style="float:right; color: white; margin-top:6%; text-align: right; font-size:18px;">{{geoScopeName}}<br/>
-					<span style="font-size: 14px;">Population: {{geoPopulation}}</span></p>
-					<div style="clear:both;"></div>
-					<div class="nav nav-pills" ng-if="geoScope != ''" ng-cloak  style="float: right; margin-top:-18px;">
-					<a href="{{geoHref}}" class="active">View full profile</a>
+					<div class="top-info-side">
+						<img src="{{geoFlagUrl}}"/>
+						<p>{{geoScopeName}}</p>
+					</div>
+					<div></div>
+					<div>
+						<p>
+						Population: {{geoPopulation}}<br/>
+						Members: 123456789
+						</p>
+						<div class="nav nav-pills" ng-if="geoScope != ''" ng-cloak>
+						<a href="{{geoHref}}" class="active">View full profile</a>
+						</div>
 					</div>
 				</div>
 				
