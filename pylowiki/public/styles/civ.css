@@ -2212,8 +2212,6 @@ li.thumbnail-gallery{
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus, .nav-pills>li>a:hover, .nav-pills>li>a:focus {
 color: grey;
 background-color: whitesmoke;
-border: 1px solid #ddd;
-padding: 8px;
 }
 
 .strong{

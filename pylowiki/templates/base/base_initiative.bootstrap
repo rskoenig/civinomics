@@ -70,21 +70,23 @@
             % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
                 <div class="well i-edit-menu" style="background-color: whitesmoke;">
                     <div class="row">
+                        <div class="col-xs-12">
                         % if c.initiative['public'] == '0' and c.complete:
                             <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
                                 <button type="submit" class="btn btn-lg btn-success btn-block" name="public" value="publish">Publish</button>
                             </form>
-                            <p>You have added all of the required information. Click 'Publish' to make your initiative publicly discoverable.</p>
+                            <div class="alert alert-success top-space" style="margin-bottom: 0;">You have added all of the required information. Click 'Publish' to make your initiative publicly discoverable.</div>
                         % elif c.initiative['public'] == '0':
                             <button class="btn btn-lg btn-warning btn-block" disabled>Publish</button>
                             <br>
-                            <p>You must complete all required information and upload a picture before you can publish.</p>
+                            <div class="alert alert-warning top-space" style="margin-bottom: 0;">You must add a title before you can publish.</div>
                         % else:
                             <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
                                 <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>
                             </form>
                             <div class="alert alert-warning top-space" style="margin-bottom: 0;">Unpublished initiatives don't show up in searches or on public listings.</div>
                         % endif
+                        </div>  
                     </div>
                 </div>
                 <ul class="nav nav-pills nav-stacked" style="width: 100%;">
