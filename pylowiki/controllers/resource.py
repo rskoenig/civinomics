@@ -36,8 +36,6 @@ class ResourceController(BaseController):
     
     def __before__(self, action, parentCode = None, parentURL = None, resourceCode = None, resourceURL = None):
         if parentCode:
-            log.info("Abort parentcode none")
-            abort(404)
             parent = genericLib.getThing(parentCode)
             if not parent:
                 log.info("Abort no parent")
