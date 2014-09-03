@@ -456,7 +456,11 @@
                     % endif
                 </div>
                 <div class="col-xs-1">
-                    ${upDownVoteBlock()}
+                    % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
+                        ${upDownVoteBlock(readonly = True)}
+                    % else:
+                        ${upDownVoteBlock()}
+                    % endif
                 </div>
             </div>
             <div class="row">
@@ -478,7 +482,11 @@
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
-                ${upDownVoteBlock()}
+                % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
+                    ${upDownVoteBlock(readonly = True)}
+                % else:
+                    ${upDownVoteBlock()}
+                % endif
             </div>
         </div>
         <div class="row">
@@ -582,9 +590,18 @@
     </div>
 </%def>
 
-<%def name="upDownVoteBlock()"> 
+<%def name="upDownVoteBlock(**kwargs)"> 
     <div class="text-center" >
-    % if 'user' in session:
+    % if 'readonly' in kwargs:
+        <a href="#readonlyModal" data-toggle="modal" class="upVote">
+            <i class="icon-chevron-sign-up icon-2x"></i>
+        </a>
+        <br>
+        <div class="centered chevron-score"> {{netVotes}}</div>
+        <a href="#readonlyModal" data-toggle="modal" class="downVote">
+            <i class="icon-chevron-sign-down icon-2x"></i>
+        </a>
+    % elif 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
             <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
         </a>
@@ -761,7 +778,10 @@
                             <td class="col-xs-10" style="padding: 10px 0px;">
                                 <form class="no-bottom form-inline" ng-submit="submitComment()">
                                     <div class="form-group col-sm-10 text-right" style="margin-left: 0; padding-left:0;">
-                                        % if c.privs and not c.privs['provisional']:
+                                        % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
+                                            <a href="#readonlyModal" data-toggle='modal'>
+                                            <textarea class="form-control" style="width: 100%;" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea></a>
+                                        % elif c.privs and not c.privs['provisional']:
                                             <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                         % else:
                                             <a href="#activateAccountModal" data-toggle='modal'>
@@ -782,7 +802,9 @@
                                         
                                     </div>
                                     <div class="form-group">
-                                        % if c.privs and not c.privs['provisional']:
+                                        % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
+                                            <a href="#readonlyModal" data-toggle='modal' class="btn btn-primary">Submit</a>
+                                        % elif c.privs and not c.privs['provisional']:
                                             <button type="submit" class="btn btn-primary">Submit</button>
                                         % else:
                                             <a href="#activateAccountModal" data-toggle='modal' class="btn btn-primary">Submit</a>
