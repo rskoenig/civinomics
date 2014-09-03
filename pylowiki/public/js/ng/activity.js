@@ -56,13 +56,14 @@ function activityController($scope, $http) {
 		$scope.offset = $scope.sliceSize;
 	};
 	
-	$scope.getGeoScopedActivity = function(scope, name, url, population, href){
+	$scope.getGeoScopedActivity = function(scope, name, url, population, href, photo){
 		$scope.activityType = '/geo/'+scope;
 		$scope.geoScope = scope;
 		$scope.geoScopeName = name;
 		$scope.geoFlagUrl = url;
 		$scope.geoPopulation = population;
-		$scope.geoHref = href
+		$scope.geoHref = href;
+		$scope.geoPhoto = photo;
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};

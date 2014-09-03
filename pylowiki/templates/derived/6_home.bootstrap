@@ -26,7 +26,7 @@
 	                	</tr>
 	                    <tr ng-repeat="geo in geos">
 	                        <td>
-	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population, geo.href)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+	                            <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population, geo.href, geo.photo)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
 	                        </td>
 	                    </tr>
 	                </table>
@@ -258,7 +258,7 @@
 				### Geo flag info
 				###
 				
-				<div class="well info-side" ng-if="geoScope != ''" ng-cloak>
+				<div class="well info-side" ng-if="geoScope != ''" ng-cloak style="background-image:url('{{geoPhoto}}');">
 					<div class="top-info-side">
 						<img src="{{geoFlagUrl}}"/>
 						<p>{{geoScopeName}}</p>
@@ -266,7 +266,7 @@
 					<div></div>
 					<div>
 						<p>
-						Population: {{geoPopulation}}<br/>
+						Population: {{geoPopulation | number}}<br/>
 						Members: 123456789
 						</p>
 						<div class="nav nav-pills" ng-if="geoScope != ''" ng-cloak>

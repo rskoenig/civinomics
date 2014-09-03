@@ -1124,7 +1124,28 @@ class SearchController(BaseController):
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')
                 continue
+            
+                        # for flipboard style layout    
+            defaultPhoto = "/images/grey.png"
 
+            # current scope search for photos and initaitives is slightly different - should be reconciled
+            initScope = scope.replace('||', '|0|')
+            photoScope = scope[1:]
+
+            initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
+            if initiatives and len(initiatives) != 0:
+                i = initiatives[-1]
+                entry['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
+            else:
+                photos = photoLib.searchPhotos('scope', photoScope)
+                if photos and len(photos) != 0:
+                    photos = sort.sortBinaryByTopPop(photos)
+                    p = photos[0]
+                    entry['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+                else:
+                    entry['photo'] = defaultPhoto
+            log.info(entry['photo'])
+            
             result.append(entry)                
 
         if len(result) == 0:
