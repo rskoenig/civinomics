@@ -28,7 +28,6 @@
             message = ''
     %>
 
-    <div class="spacer"></div>
     <div class="row" ng-controller="profileController">
         <div class="col-sm-2">
                 ${lib_6.userImage(c.user, className="avatar avatar-large")}
@@ -37,16 +36,17 @@
                     <li class="active"><a href="#tab-activity" data-toggle="tab">Activity</a></li>
 
                     % if c.user['memberType'] == 'organization':
-                        <li><a href="#tab-activity" data-toggle="tab">Members</a></li>
-                        <li><a href="#tab-activity" data-toggle="tab">Followers</a></li>
-                        <li><a href="#tab-endorsements" data-toggle="tab">Endorsements</a></li>
-                        <li><a href="#tab-forum" data-toggle="tab">Forum</a></li>
+                        <!-- <li><a href="#tab-activity" data-toggle="tab">Members</a></li>
+                        <li><a href="#tab-activity" data-toggle="tab">Followers</a></li> -->
+                        <li><a href="#tab-endorsements" data-toggle="tab">Positions</a></li>
+                        <li><a href="#tab-forum" data-toggle="tab">Discussions</a></li>
                     % endif
                     <li><a href="#tab-workshops" data-toggle="tab">${who} Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab">${who} Initiatives</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">${who} Pictures</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/meetings">My Meetings</a></li>
                     % if 'user' in session:
+                        <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">Trash</i></a></li>
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if not c.privs['provisional']:
                                 % if c.user['accessLevel'] > '200':
@@ -57,7 +57,6 @@
                         % else:
                             ${helpers.followButton(c.user)}
                         % endif
-                        <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives"><i class="icon-trash"></i> Trash</i></a></li>
                     % endif
                 </ul>
             </div>
@@ -74,6 +73,7 @@
                     <div class="row">
                         <div class="col-sm-7">
                             <h1 ng-cloak>{{fullName}}</h1>
+                            <p class="grey" ng-cloak>{{greetingMsg}}</p>
                         </div>
                         <div class="col-sm-5 top-space-md">
                             % if c.user['memberType'] != 'organization':
@@ -82,7 +82,7 @@
                                     <table ng-show="!loading">
                                         <tr>
                                             <td ng-repeat="geo in geos">
-                                                <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}"></a>
+                                                <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space border" src="{{geo.flag}}" ng-cloak></a>
                                             </td>
                                         </tr>
                                     </table>
@@ -93,6 +93,7 @@
                     </div>
 
                     % if c.user['memberType'] == 'organization':
+                        <!--
                         <table id="metrics">
                             <tr>
                                 <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
@@ -113,13 +114,16 @@
                                 % endif
                             </tr>
                         </table>
+                        -->
                     % endif
                 </div>
             </div>
             % if c.user['memberType'] == 'organization':
+                <!-- replace this with create code 
                 <div class="well slim-well">
                     ${helpers.addTopic()}
                 </div>
+                -->
             % endif
             <div class="tabbable"> <!-- Only required for left/right tabs -->
                 <div class="tab-content">

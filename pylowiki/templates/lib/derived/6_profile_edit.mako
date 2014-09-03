@@ -48,10 +48,10 @@
             <h1> Sorry, Civinomics is in read only mode right now </h1>
         % else:
             <div class="tabbable">
-                <div class="col-sm-3">
-                    <div class="section-wrapper">
-                        <div class="browse">
-                            <ul class="nav nav-pills nav-stacked">
+                <div class="col-sm-2">
+                    ${lib_6.userImage(c.user, className="avatar avatar-large")}
+                    <div>
+                        <ul class="nav nav-pills nav-stacked workshop-menu">
                             <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
                             </a></li>
                             <li class="${tab6active}"><a href="#tab6" data-toggle="tab">2. Picture
@@ -67,6 +67,7 @@
                             Admin only - shhh!.</a></li>
                             % endif
                             % if c.user['memberType'] != 'organization' and not c.privs['provisional']:
+                                <!--
                                 <a href="#upgradeOrg" role="button" class="btn btn-success" data-toggle="modal">Upgrade to Organization</a>
                                 <div id="upgradeOrg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upgradeOrgLabel" aria-hidden="true">
                                     <div class="modal-header">
@@ -87,13 +88,17 @@
                                         <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
                                         <a href="/profile/${c.user['urlCode']}/${c.user['url']}/organization/upgrade/handler" class="btn btn-primary">Upgrade to Organization</a>
                                     </div>
-                            </div>
+                                </div>
+                                -->
                             % endif
-                            </ul>
-                        </div><!-- browse -->
-                    </div><!-- section-wrapper -->
-                </div> <!-- /.col-sm-3 -->
-                <div class="col-sm-9">
+                        </ul>
+                    </div>
+                </div> <!-- /.col-sm-2 -->
+                <div class="col-sm-10">
+                    <ul class="nav nav-tabs" id="editTabs">
+                        <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover">Edit Profile</a></li>
+                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
+                    </ul>
                     ${lib_6.fields_alert()}
                     % if c.conf['read_only.value'] == 'true':
                         <!-- read only -->

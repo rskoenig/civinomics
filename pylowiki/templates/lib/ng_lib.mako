@@ -211,9 +211,8 @@
         <div ng-controller="yesNoVoteCtrl">
             <div class="row">
                 <div class="col-xs-11">
-                    <p>${authorPosting()}</p>
+                    <p>${authorPosting()} <small class="left-space right-space">in</small> <small>${metaData()}</small></p>
                     <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
-                    <p><small>${metaData()}</small></p>
                 </div>
                 <div class="col-xs-1">
                     ${upDownVoteBlock()}

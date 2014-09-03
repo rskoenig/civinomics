@@ -15,7 +15,11 @@
 <div ng-init="fullName = '${c.user['name']}'; url = '${c.user['url']}'; code = '${c.user['urlCode']}'; trash = true">
     <div class="row" ng-controller="profileController">
             ##var thisForm = {member_name:$scope.fullName, $scope.email, $scope.postalCode, $scope.greetingMsg, $scope.websiteLink, $scope.websiteDesc
-        <div class="col-sm-8">
+
+        <div class="col-sm-2">
+                ${lib_6.userImage(c.user, className="avatar avatar-large")}
+        </div>
+        <div class="col-sm-10">
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="editTabs">
                 <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover"><i class="icon-trash"></i></i> Trash</a></li>
@@ -45,9 +49,6 @@
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
         </div><!-- col-sm-8 -->
-        <div class="col-sm-4">
-            ${dashboard.profileDashboard()}
-        </div><!--/.col-sm-4-->
     </div>
 </div><!-- ng-init -->
 
