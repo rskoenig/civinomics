@@ -299,7 +299,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Initiative Title:</strong></label>
-                    <input type="text" name="title" class="col-sm-12 form-control" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-click="clearTitle()" ng-cloak>
+                    <input type="text" name="title" class="col-sm-12 form-control" value="${c.initiative['title']}">
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
