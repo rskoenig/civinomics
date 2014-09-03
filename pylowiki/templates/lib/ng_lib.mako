@@ -190,7 +190,7 @@
             <div class="row">
                 <div class="col-xs-11">
                     <p>${authorPosting()}</p>
-                    <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small>({{item.link}})</small></a></h4>
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a> <a ng-href="{{item.link}}"<small>({{item.link}})</small></a></h4>
                     % if not c.w:
                         <p><small>${metaData()}</small></p>
                     % endif
