@@ -619,19 +619,25 @@
 <%def name="orgPosition(thing)">
     % if 'positions' in session and thing['urlCode'] not in session['positions']:
         <form action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST">
-            Does your organization:</br>
-            <label class="radio">
-            <input type="radio" name="position" id="positionSupport" value="support" checked>
-                Support this ${thing.objType}
-            </label>
-            <label class="radio">
-            <input type="radio" name="position" id="positionOppose" value="oppose">
-                Oppose this ${thing.objType}
-            </label>
-            Reason:
-            <textarea rows="3" name="text" required></textarea>
-            <button class="btn btn-success">Submit</button>
+            <div class="form-group">
+                <label class="radio-inline">
+                    <input type="radio" name="position" id="positionSupport" value="support" checked>
+                    Support
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="position" id="positionOppose" value="oppose">
+                    Oppose
+                </label>
+            </div>
+            <div class="form-group">
+                <label style="font-weight: 400;">
+                    Statement:
+                </label>
+                <textarea class="form-control" rows="3" name="text" required></textarea>
+            </div>
+            <button class="btn btn-success pull-right">Submit</button>
         </form>
+        <div class="spacer"></div>
     % endif
 </%def>
 

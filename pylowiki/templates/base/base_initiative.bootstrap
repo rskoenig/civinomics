@@ -113,6 +113,10 @@
                                         <div class="alert alert-warning top-space" style="margin-bottom: 0;">This initiative is not yet published. It does not show up in searches or on public listings.</div>
                                     </div>
                                 </div>
+                            % elif c.authuser and c.authuser['memberType'] == 'organization':
+                                <h4 class="text-center gray">Position</h4>
+                                <hr class="narrow">
+                                ${lib_6.orgPosition(c.initiative)}
                             % else:
                                 <h4 class="text-center gray">Vote</h4>
                                 <hr class="narrow">

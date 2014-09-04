@@ -51,6 +51,12 @@ def getJsonProperties(item):
     if item.objType == 'discussion':
         if item['discType'] == 'update':
             entry['objType'] = 'update'
+        elif item['discType'] == 'organization_position':
+            entry['objType'] = 'position'
+            if item['position'] == 'support':
+                entry['position'] = 'support'
+            else:
+                entry['position'] = 'oppose'
     entry['urlCode'] = item['urlCode']
     if 'url' in item:
         entry['url'] = item['url']

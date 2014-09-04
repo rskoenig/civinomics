@@ -770,11 +770,11 @@
             parentURL = "/workshop/%s/%s/idea/%s/%s"%(c.discussion['workshopCode'], c.discussion['workshop_url'], c.discussion['ideaCode'], c.discussion['idea_url'])
             parentTitle = c.discussion['idea_title']
     %>
-    <div class="row-fluid">
-        <div class="span2">
+    <div class="row">
+        <div class="col-xs-1">
             ${lib_6.upDownVote(c.discussion)}
-        </div><!-- span2 -->
-        <div class="span10">
+        </div><!-- col-xs-1 -->
+        <div class="col-xs-11">
             <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
             View ${parentType}: <a href="${parentURL}">${parentTitle}</a>
             <div class="spacer"></div>
@@ -786,8 +786,8 @@
                 <br />Originally posted  ${c.discussion.date}
                 <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
             % endif 
-        </div><!-- span10 -->
-    </div><!-- row-fluid -->
+        </div><!-- col-xs-11 -->
+    </div><!-- row -->
 </%def>
 
 <%def name="addTopic()">

@@ -246,13 +246,14 @@
 
 <%def name="position_listing()">
     <div class="media well search-listing" ng-class="{pro : item.position == 'support', con : item.position == 'oppose'}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
-        <div class="row-fluid" ng-controller="yesNoVoteCtrl">
+        <div class="row" ng-controller="yesNoVoteCtrl">
             <div class="col-xs-11">
+                ${authorPosting()}
                 <p>
-                <strong ng-if="item.position == 'support'">We support: </strong>
-                <strong ng-if="item.position == 'oppose'">We oppose: </strong>
-                <a ng-href = '{{item.parentHref}}'><img ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
-                <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a><img class="thumbnail flag mini-flag border" src="{{item.flag}}"><span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                    <strong ng-if="item.position == 'support'">We support: </strong>
+                    <strong ng-if="item.position == 'oppose'">We oppose: </strong>
+                    <a ng-href = '{{item.parentHref}}'><img ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
+                    <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a> <small><span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span><img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"></small>
                 </p>
                 <p>"{{item.text}}"</p>
             </div>
