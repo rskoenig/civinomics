@@ -144,7 +144,7 @@ def editDiscussion(discussion, title, text, owner, position = False):
         log.error('ERROR: Failed to edit discussion')
         return False
 
-def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = False, rootDiscussions = True):
+def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = False, rootDiscussions = True, hasworkshop = True):
     discussionTypes = ['general']
     try:
         if type(keys) != type([]):
@@ -155,10 +155,11 @@ def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = Fal
                 .filter_by(objType = 'discussion')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
         if rootDiscussions:
             q = q.filter(Thing.data.any(wkl('discType', discussionTypes)))
+        if hasworkshop:
+            q = q.filter(Thing.data.any(wc('workshop_searchable', '1')))
         if count:
             return q.count()
         return q.all()
@@ -203,6 +204,11 @@ class Discussion(object):
         d['views'] = '0'
         d['title'] = title
         d['url'] = urlify(title)
+        if 'geoScope' in kwargs:
+            d['scope'] = kwargs['geoScope']
+            d['public'] = '1'
+        if 'tags' in kwargs:
+            d['tags'] = kwargs['tags']
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
         # Optional arguments
         if 'workshop' in kwargs:

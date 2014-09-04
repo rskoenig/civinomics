@@ -138,6 +138,72 @@
                         <button class="btn btn-default" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"> Start Initiative</button>
                     % endif
                 </li>
+                
+                ### Create resource
+                <li class="pull-right" ng-show="showingResources.create" ng-cloak>
+                    % if 'user' in session:
+                        % if c.searchType != 'region':
+                            % if not c.privs['provisional']:
+                                <a class="btn btn-default" href="/create/geo/Resource/${c.geoString}/{{query}}">
+                                    Create Resource
+                                </a>
+                            % endif
+                        % else:
+                            % if not c.privs['provisional']:
+                                <form id="create_intitiatve" action = "/create/geo/Resource/${c.geoString}/{{query}}" method = "post" class="inline">
+                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                    <button class="btn btn-default" type="submit">Create Resource</button>
+                                </form>
+                            % endif
+                        % endif
+                    % else:
+                        <button class="btn btn-default" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"> Start Initiative</button>
+                    % endif
+                </li>
+                
+                ### Start discussion
+                <li class="pull-right" ng-show="showingDiscussions.create" ng-cloak>
+                    % if 'user' in session:
+                        % if c.searchType != 'region':
+                            % if not c.privs['provisional']:
+                                <a class="btn btn-default" href="/create/geo/Discussion/${c.geoString}/{{query}}">
+                                    Start Discussion
+                                </a>
+                            % endif
+                        % else:
+                            % if not c.privs['provisional']:
+                                <form id="create_intitiatve" action = "/create/geo/Discussion/${c.geoString}/{{query}}" method = "post" class="inline">
+                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                    <button class="btn btn-default" type="submit">Start Discussion</button>
+                                </form>
+                            % endif
+                        % endif
+                    % else:
+                        <button class="btn btn-default" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"> Start Initiative</button>
+                    % endif
+                </li>
+                
+                ### Create idea
+                <li class="pull-right" ng-show="showingIdeas.create" ng-cloak>
+                    % if 'user' in session:
+                        % if c.searchType != 'region':
+                            % if not c.privs['provisional']:
+                                <a class="btn btn-default" href="/create/geo/Idea/${c.geoString}/{{query}}">
+                                    Create Idea
+                                </a>
+                            % endif
+                        % else:
+                            % if not c.privs['provisional']:
+                                <form id="create_intitiatve" action = "/create/geo/Idea/${c.geoString}/{{query}}" method = "post" class="inline">
+                                    <input type="hidden" name="initiativeRegionScope" value="${c.geoString}">
+                                    <button class="btn btn-default" type="submit">Create Idea</button>
+                                </form>
+                            % endif
+                        % endif
+                    % else:
+                        <button class="btn btn-default" style="margin-top: 7px;" href="#signupLoginModal" data-toggle="modal"> Start Initiative</button>
+                    % endif
+                </li>
             </ul>
 
             <div id="sortOptions" class="row-fluid collapse">

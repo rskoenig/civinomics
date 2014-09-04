@@ -262,7 +262,11 @@ def getJsonProperties(item):
         entry['meetingDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
         if 'agendaPostDate' in item and item['agendaPostDate'] != '':
             dList = item['agendaPostDate'].split('-')
-            entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+            if len(dList) == 3:
+                entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
+            else:
+                entry['agendaPostDate'] = item['agendaPostDate']
+                log.info("postDate is %s"%item['agendaPostDate'])
         else:
             entry['agendaPostDate'] = ""
         entry['meetingTime'] = item['meetingTime']

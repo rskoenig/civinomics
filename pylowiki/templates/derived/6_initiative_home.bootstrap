@@ -7,60 +7,25 @@
 <% lib.return_to() %>
     <h4 class="initiative-title">Summary</h4>
     ${ihelpers.showDescription()}
-    ${ihelpers.showUpdateList()}
-    <hr>
-    <div ng-init="code = '${c.initiative['urlCode']}'"></div>
-    <div ng-controller="positionsCtrl">
-        <div class="centered" ng-show="positionsLoading" ng-cloak>
-            <i class="icon-spinner icon-spin icon-4x"></i>
-        </div>
-        <table ng-show="!positionsLoading" style="width: 100%" ng-cloak>
-            <tr>
-                <td class="lead green"><h4 class="initiative-title">Support</h4></td>
-                <td class="lead red"><h4 class="initiative-title">Oppose</h4></td>
-            </tr>
-            <tr>
-                <td style="width:50%; vertical-align:top;">
-                    <!-- a supporter -->
-                    <table class="table">
-                        <tr ng-repeat="s in support" class="pro">
-                            <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{s.authorPhoto}}"></td>
-                            <td>
-                                <a ng-href="{{s.authorHref}}"><strong>{{s.authorName}}</strong></a><br><small class="grey">{{s.fuzzyTime}} ago</small>
-                                <br>
-                                {{s.text}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="width:50%; vertical-align:top;">
-                    <!-- an opposer -->
-                    <table class="table">
-                        <tr ng-repeat="o in oppose" class="con"> 
-                            <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{o.authorPhoto}}"></td>
-                            <td>
-                                <a ng-href="{{o.authorHref}}"><strong>{{o.authorName}}</strong></a><br>
-                                <small class="grey">{{o.fuzzyTime}} ago</small>
-                                <br>
-                                {{o.text}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
-    ${ihelpers.showFunding_Summary()}
-    ${ihelpers.showCost(c.initiative)}
+    ${ihelpers.showAuthor(c.initiative)}
+
+    % if c.initiative['funding_summary']:
+        <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
+        ${ihelpers.showFunding_Summary()}
+    % endif
+    % if c.initiative['cost']:
+        ${ihelpers.showCost(c.initiative)}
+    % endif
     <br>
     <hr>
-    <h4 class="initiative-title">Background</h4>
-    ${ihelpers.showBackground()}
-    <h4 class="initiative-title">Proposal</h4>
-    ${ihelpers.showProposal()}
-
-
+    % if c.initiative['background']:
+        <h4 class="initiative-title">Background</h4>
+        ${ihelpers.showBackground()}
+    % endif
+    % if c.initiative['proposal']:
+        <h4 class="initiative-title">Proposal</h4>
+        ${ihelpers.showProposal()}
+    % endif 
     % if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
@@ -68,13 +33,21 @@
         <div class="text-right">
             ${ihelpers.initiativeModerationPanel(c.initiative)}
         </div>
+    % if c.updates:
         <hr>
-        <h4 class="initiative-title">Related Links ${ihelpers.addResourceButton()}</h4>
+        <div id="updates">
+            <h4 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h4>
+            ${ihelpers.showUpdateList()}
+        </div>
+    % endif
+        <hr>
+        <h4 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h4>
         ${ihelpers.listResources()}
         <br>
+        ${ihelpers.showSupportOppose()}
         % if c.initiative.objType != 'initiativeUnpublished':
             <hr>
-            <h4 class="initiative-title">Comments</h4>
+            <h4 id="comments" class="initiative-title">Comments</h4>
             ${comments(c.initiative, c.discussion)}
         % endif
     % endif

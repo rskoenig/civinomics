@@ -74,20 +74,21 @@ def isAdopted(idea):
         
     return False
 
-def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0'):
+def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0', hasworkshop = True):
     try:
         q = meta.Session.query(Thing).filter_by(objType = 'idea')\
             .filter(Thing.data.any(wcl(key, value)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
-            .filter(Thing.data.any(wc('workshop_searchable', '1')))
+            .filter(Thing.data.any(wc('disabled', disabled)))
+        if hasworkshop:
+            q = q.filter(Thing.data.any(wc('workshop_searchable', '1')))
         if count:
             return q.count()
         return q.all()
     except:
         return False
 
-def Idea(user, title, text, workshop, privs, role = None):
+def Idea(user, title, text, workshop, privs, role = None, **kwargs):
     """
         user    ->  The user Thing creating the idea
         title   ->  The idea itself, in string format.
@@ -104,12 +105,22 @@ def Idea(user, title, text, workshop, privs, role = None):
     idea['downs'] = '0'
     idea['views'] = '0'
     idea['url'] = urlify(title[:20])
+    if 'geoScope' in kwargs:
+        idea['scope'] = kwargs['geoScope']
+        idea['public'] = '1'
+    if 'tags' in kwargs:
+            idea['tags'] = kwargs['tags']
     idea = generic.addedItemAs(idea, privs, role)
     commit(idea)
     idea['urlCode'] = toBase62(idea)
-    d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
+    if workshop is not None:
+        d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
+        idea = generic.linkChildToParent(idea, workshop)
+    else:
+        d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, privs = privs, role = role)
+
+	
     idea['discussion_child'] = d.d['urlCode']
-    idea = generic.linkChildToParent(idea, workshop)
     idea = generic.linkChildToParent(idea, user)
     commit(idea)
     return idea

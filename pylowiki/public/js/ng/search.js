@@ -262,19 +262,19 @@ app.controller('SearchCtrl', function($scope, $http){
             {
                 $scope.noQuery = true;
                 $scope.noResult = true;
-                $scope.showingResources = {'class': 'active', 'show': false};
+                $scope.showingResources = {'class': 'active', 'show': false, 'create': true};
                 $scope.resources = null;
             }
             else if (data.statusCode == 2)
             {
                 $scope.noResult = true;
-                $scope.showingResources = {'class': 'active', 'show': false};
+                $scope.showingResources = {'class': 'active', 'show': false, 'create': true};
                 $scope.resources = null;
             }
             else if (data.statusCode === 0)
             {
                 $scope.resources = data.result;
-                $scope.showingResources = {'class': 'active', 'show': true};
+                $scope.showingResources = {'class': 'active', 'show': true, 'create': true};
             }
             $scope.loading = false;
         });
@@ -301,19 +301,19 @@ app.controller('SearchCtrl', function($scope, $http){
             {
                 $scope.noQuery = true;
                 $scope.noResult = true;
-                $scope.showingDiscussions = {'class': 'active', 'show': false};
+                $scope.showingDiscussions = {'class': 'active', 'show': false, 'create': true};
                 $scope.discussions = null;
             }
             else if (data.statusCode == 2)
             {
                 $scope.noResult = true;
-                $scope.showingDiscussions = {'class': 'active', 'show': false};
+                $scope.showingDiscussions = {'class': 'active', 'show': false, 'create': true};
                 $scope.discussions = null;
             }
             else if (data.statusCode === 0)
             {
                 $scope.discussions = data.result;
-                $scope.showingDiscussions = {'class': 'active', 'show': true};
+                $scope.showingDiscussions = {'class': 'active', 'show': true, 'create': true};
             }
             $scope.loading = false;
         });
@@ -340,19 +340,19 @@ app.controller('SearchCtrl', function($scope, $http){
             {
                 $scope.noQuery = true;
                 $scope.noResult = true;
-                $scope.showingIdeas = {'class': 'active', 'show': false};
+                $scope.showingIdeas = {'class': 'active', 'show': false, 'create': true};
                 $scope.ideas = null;
             }
             else if (data.statusCode == 2)
             {
                 $scope.noResult = true;
-                $scope.showingIdeas = {'class': 'active', 'show': false};
+                $scope.showingIdeas = {'class': 'active', 'show': false, 'create': true};
                 $scope.ideas = null;
             }
             else if (data.statusCode === 0)
             {
                 $scope.ideas = data.result;
-                $scope.showingIdeas = {'class': 'active', 'show': true};
+                $scope.showingIdeas = {'class': 'active', 'show': true, 'create': true};
             }
             $scope.loading = false;
         });

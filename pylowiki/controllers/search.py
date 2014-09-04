@@ -145,6 +145,7 @@ class SearchController(BaseController):
     
     def search(self):
         iPhoneApp = utils.iPhoneRequestTest(request)
+        log.info("hello")
         if self.noQuery:
             return self._noSearch()
         elif self.query.count('%') == len(self.query):
@@ -153,6 +154,7 @@ class SearchController(BaseController):
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numOrganizations = userLib.searchOrganizations(['name', 'url'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
+        log.info("Search query in search to get the count %s", self.query)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         iResources = resourceLib.searchInitiativeResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         c.numResources += iResources
@@ -581,6 +583,7 @@ class SearchController(BaseController):
             ikeys = ['initiative_scope']
             ivalues = [scope]
             resources = resourceLib.searchResources(keys, values)
+            resources2 = resourceLib.searchResources('scope', self.query, hasworkshop = False) 
             iresources = resourceLib.searchInitiativeResources(ikeys, ivalues)
         else:
             keys = ['title', 'text', 'link']
@@ -588,19 +591,38 @@ class SearchController(BaseController):
             resources = resourceLib.searchResources(keys, values)
             iresources = resourceLib.searchInitiativeResources(keys, values)
             
+# Changed this to the following format because there was a huge time impact when having both lists
+#         if iresources:
+#             if resources:
+#                 for r in resources:
+#                     iresources.append(r)
+#                     
+#             resources = iresources
+# 
+#         if resources2:
+#             if resources:
+#                 for r in resources:
+#                     resources2.append(r)
+#                     
+#             resources = resources2
+        
         if iresources:
             if resources:
-                for r in resources:
-                    iresources.append(r)
-                    
-            resources = iresources
-            
+                for ri in iresources:
+                    resources.append(ri)
+
+        if resources2:
+            if resources:
+                for r2 in resources2:
+                    resources.append(r2)
+        
         if not resources:
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
         titleToColourMapping = tagLib.getTagColouring()
-
+        c.numResources = len(resources)
+        
         myRatings = {}
         if 'ratings' in session:
            myRatings = session['ratings']
@@ -672,7 +694,7 @@ class SearchController(BaseController):
                 if title and title != '':
                     tagMapping = {}
                     tagMapping['title'] = title
-                    tagMapping['colour'] = titleToColourMapping[title]
+                    #tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
             entry['tags'] = tagList
             result.append(entry)
@@ -695,10 +717,13 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            independent_discussions = discussionLib.searchDiscussions(['scope'], values, hasworkshop = False)
         else:
             keys = ['title', 'text']
             values = [self.query, self.query]
         discussions = discussionLib.searchDiscussions(keys, values)
+        if independent_discussions:
+            discussions += independent_discussions
         if not discussions:
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
@@ -710,11 +735,14 @@ class SearchController(BaseController):
            myRatings = session['ratings']
 
         for d in discussions:
+            hasworkshop = False
             # We don't need to look up this discussion's workshop anymore.
             # w = generic.getThing(d['workshopCode'])
             # Therefore this line,
-            if d['workshop_searchable'] != u'1':
-                continue
+            if 'workshop_searchable' in d:
+                hasworkshop = True
+                if d['workshop_searchable'] != u'1':
+                    continue
             # replaces these two:
             #if w['public_private'] != u'public':
             #    continue
@@ -725,7 +753,8 @@ class SearchController(BaseController):
             entry['text'] = d['text']
             entry['urlCode'] = d['urlCode']
             entry['url'] = d['url']
-            entry['addedAs'] = d['addedAs']
+            if hasworkshop:
+                entry['addedAs'] = d['addedAs']
             entry['voteCount'] = int(d['ups']) - int(d['downs'])
             if entry['urlCode'] in myRatings:
                 entry['rated'] = myRatings[entry['urlCode']]
@@ -735,9 +764,10 @@ class SearchController(BaseController):
             #: Note in the cases here where there are multiple tags assigned to one value,
             #: I'm adding the standard tags to the json object here as a start for us to 
             #: migrate the whole system over to using the same definitions everywhere.
-            entry['workshopCode'] = d['workshopCode']
-            entry['workshopURL'] = entry['workshop_url'] = d['workshop_url']
-            entry['workshopTitle'] = entry['workshop_title'] = d['workshop_title']
+            if hasworkshop:
+                entry['workshopCode'] = d['workshopCode']
+                entry['workshopURL'] = entry['workshop_url'] = d['workshop_url']
+                entry['workshopTitle'] = entry['workshop_title'] = d['workshop_title']
             #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(d.owner)
             entry['authorHash'] = md5(u['email']).hexdigest()
@@ -750,7 +780,11 @@ class SearchController(BaseController):
             #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['date'] = d.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
-            for title in d['workshop_category_tags'].split('|'):
+            if hasworkshop:
+                tags = d['workshop_category_tags']
+            else:
+                tags = d['tags']
+            for title in tags.split('|'):
                 if title and title != '':
                     tagMapping = {}
                     tagMapping['title'] = title
@@ -780,6 +814,7 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             log.info("searchIdeas type geo")
             ideas = ideaLib.searchIdeas('workshop_public_scope', self.query)
+            ideas += ideaLib.searchIdeas('scope', self.query, hasworkshop = False)
         else:
             log.info("searchIdeas type title")
             ideas = ideaLib.searchIdeas('title', self.query)
@@ -796,11 +831,14 @@ class SearchController(BaseController):
            myRatings = session['ratings']
 
         for idea in ideas:
+            hasworkshop = False
             # We don't need to look up this idea's workshop anymore.
             # w = generic.getThing(idea['workshopCode'])
             # Therefore this line,
-            if idea['workshop_searchable'] != u'1':
-                continue
+            if 'workshop_searchable' in idea:
+                hasworkshop = True
+                if idea['workshop_searchable'] != u'1':
+                    continue
             # replaces these two:
             #if w['public_private'] != u'public':
             #    continue
@@ -823,27 +861,40 @@ class SearchController(BaseController):
             #: Note in the cases here where there are multiple tags assigned to one value,
             #: I'm adding the standard tags to the json object here as a start for us to 
             #: migrate the whole system over to using the same definitions everywhere.
-            entry['workshopCode'] = idea['workshopCode']
-            entry['workshopURL'] = entry['workshop_url'] = idea['workshop_url']
-            entry['workshopTitle'] = entry['workshop_title'] = idea['workshop_title']
+            if hasworkshop:
+                entry['workshopCode'] = idea['workshopCode']
+                entry['workshopURL'] = entry['workshop_url'] = idea['workshop_url']
+                entry['workshopTitle'] = entry['workshop_title'] = idea['workshop_title']
+            else:
+                entry['workshopCode'] = ""
+                entry['workshopURL'] = entry['workshop_url'] = ""
+                entry['workshopTitle'] = entry['workshop_title'] = ""
             #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(idea.owner)
+            
             entry['authorHash'] = md5(u['email']).hexdigest()
-
             entry['authorCode'] = entry['userCode'] = idea['userCode']
             entry['authorURL'] = entry['user_url'] = idea['user_url']
             entry['authorName'] = entry['user_name'] = idea['user_name']
+            
             # dont need to look up the idea here
             #thing = ideaLib.getIdea(idea['urlCode'])
             #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
-            for title in idea['workshop_category_tags'].split('|'):
+            
+            if hasworkshop:
+                tags = idea['workshop_category_tags']
+            else:
+                tags = idea['tags']
+            
+            for title in tags.split('|'):
                 if title and title != '':
                     tagMapping = {}
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
+            
             entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
@@ -1128,7 +1179,3 @@ class SearchController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
-
-
-    
-    

@@ -21,7 +21,6 @@ import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.alerts          as  alertsLib
-import pylowiki.lib.fuzzyTime	    as fuzzyTime	
 
 from pylowiki.lib.facebook import FacebookShareObject
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -36,12 +35,14 @@ class DiscussionController(BaseController):
     def __before__(self, action, workshopCode = None):
         publicOrPrivate = ['index', 'topic', 'thread']
         
-        if workshopCode:
+        if workshopCode is not None:
+            abort(404)
             c.w = workshopLib.getWorkshopByCode(workshopCode)
+            if not c.w:
+                abort(404)
+            
             c.mainImage = mainImageLib.getMainImage(c.w)
         
-            ## All of the below code dependent on a workshop; this dependency must be removed
-            
             #################################################
             # these values are needed for facebook sharing
             c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
@@ -61,7 +62,7 @@ class DiscussionController(BaseController):
     
             # Demo workshop status
             c.demo = workshopLib.isDemo(c.w)
-            
+        
             workshopLib.setWorkshopPrivs(c.w)
             if c.w['public_private'] == 'public':
                 c.scope = geoInfoLib.getPublicScope(c.w)
@@ -196,8 +197,46 @@ class DiscussionController(BaseController):
             return redirect(utils.thingURL(c.w, d.d))
         elif json.loads(request.body):
             return json.dumps({'statusCode':2})
+
+    def showDiscussionSingle(self, discussionCode, discussionURL):
+        userLib.setUserPrivs()
+        # sharing - extra details
+        c.thingCode = discussionCode        
+        c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
+        if not c.thing:
+            c.thing = revisionLib.getRevisionByCode(discussionCode)
+            if not c.thing:
+                log.info("Abort here")
+                abort(404)
+        
+        ################## FB SHARE ###############################
+#         c.facebookShare.title = c.thing['title']
+#         c.facebookShare.thingCode = c.thingCode
+#         # update url for this item
+#         c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
+#         # set description to be that of the topic's description
+#         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
+
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
             
-            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
+
+        c.flags = flagLib.getFlags(c.thing)
+        c.events = eventLib.getParentEvents(c.thing)
+        c.title = c.thing['title']
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        c.listingType = 'discussion'
+        
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
+        return render('/derived/6_resource.bootstrap') 
+
     def getOrgPositions(self, objType, code):
         if objType == 'initiative':
             thing = initiativeLib.getInitiative(code)
@@ -228,11 +267,5 @@ class DiscussionController(BaseController):
         if len(support) == 0 and len(oppose) == 0:
             return json.dumps({'status':1})
         else:
-            return json.dumps({'support': support, 'oppose': oppose})
-            
-        
-        
-        
-        
-        
-        
+            return json.dumps({'support': support, 'oppose': oppose})   
+             

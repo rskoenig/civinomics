@@ -34,45 +34,56 @@ log = logging.getLogger(__name__)
 
 class ResourceController(BaseController):
     
-    def __before__(self, action, parentCode = None, parentURL = None):
-        if parentCode is None:
-            abort(404)
-        parent = genericLib.getThing(parentCode)
-        if not parent:
-            abort(404)
-        if parent.objType == 'workshop':
-            c.w = parent
-            c.mainImage = mainImageLib.getMainImage(c.w)
-            workshopLib.setWorkshopPrivs(c.w)
-            if c.w['public_private'] == 'public':
-                c.scope = geoInfoLib.getPublicScope(c.w)
-            if c.w['public_private'] != 'public':
-                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    abort(404)
-            
-            # Demo workshop status
-            c.demo = workshopLib.isDemo(c.w)
-
-            if 'user' in session:
-                utils.isWatching(c.authuser, c.w)
-
-            shareType = 'workshop'
-            shareUrl = utils.workshopURL(c.w)
-            shareDescription = c.w['description'].replace("'", "\\'")
-            shareOk = workshopLib.isPublic(c.w)
-        elif parent.objType == 'initiative':
-            c.initiative = parent
-            userLib.setUserPrivs()
-            shareType = 'initiative'
-            shareUrl = utils.initiativeURL(c.initiative)
-            # note: why doesn't the workshop description use misaka? if this changes over we'll need to
-            #   catch this happening and mod the uses of c.w['description'] in places that can't handle html
-            shareDescription = utils.getTextFromMisaka(c.initiative['description'])
-            shareOk = initiativeLib.isPublic(c.initiative)
+    def __before__(self, action, parentCode = None, parentURL = None, resourceCode = None, resourceURL = None):
+        if parentCode:
+            parent = genericLib.getThing(parentCode)
+            if not parent:
+                log.info("Abort no parent")
+                abort(404)
+            if parent and parent.objType == 'workshop':
+                c.w = parent
+                c.mainImage = mainImageLib.getMainImage(c.w)
+                workshopLib.setWorkshopPrivs(c.w)
+                if c.w['public_private'] == 'public':
+                    c.scope = geoInfoLib.getPublicScope(c.w)
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+                
+                # Demo workshop status
+                c.demo = workshopLib.isDemo(c.w)
+    
+                if 'user' in session:
+                    utils.isWatching(c.authuser, c.w)
+    
+                shareType = 'workshop'
+                shareUrl = utils.workshopURL(c.w)
+                shareDescription = c.w['description'].replace("'", "\\'")
+                shareOk = workshopLib.isPublic(c.w)
+            elif parent and parent.objType == 'initiative':
+                c.initiative = parent
+                userLib.setUserPrivs()
+                shareType = 'initiative'
+                shareUrl = utils.initiativeURL(c.initiative)
+                # note: why doesn't the workshop description use misaka? if this changes over we'll need to
+                #   catch this happening and mod the uses of c.w['description'] in places that can't handle html
+                shareDescription = utils.getTextFromMisaka(c.initiative['description'])
+                shareOk = initiativeLib.isPublic(c.initiative)
+            else:
+                log.info("Abort no parent coherent")
+                abort(404)
+            c.title = parent['title']
         else:
-            abort(404)
-
-        c.title = parent['title']
+            c.title ="Resource"
+            shareType = 'workshop'
+            shareUrl = ""
+            shareDescription = ""
+            shareOk = False
+            log.info(resourceCode)
+            log.info(resourceURL)
+            parentCode = ""
+            parentURL = ""
+            userLib.setUserPrivs()
         
         ################## FB SHARE ###############################
         # these values are needed for facebook sharing of a workshop
@@ -243,4 +254,97 @@ class ResourceController(BaseController):
             return jsonReturn
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
+            
+            
+    def showResourceSingle(self, resourceCode, resourceURL):
+        
+        c.thingCode = resourceCode
+        log.info("in showResource")
+        if c.w:
+            #get the scope to display jurisidction flag
+            if c.w['public_private'] == 'public':
+                c.scope = workshopLib.getPublicScope(c.w)
+
+            # standard thumbnail image for facebook shares
+            #if c.mainImage['pictureHash'] == 'supDawg':
+            #    c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+            #elif 'format' in c.mainImage.keys():
+            #    c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+            #else:
+            #    c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+            # Note: I need to check on how c.backgroundImage is used elsewhere. If it's only being used with fb shares,
+            #   then I should call this with the thumbnail flag set to true, and I don't need to use the c. global, 
+            #   I just need to update the c.facebookShare object.
+            c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+            c.facebookShare.updateImageUrl(c.backgroundImage)
+            thingParent = c.w
+        if c.initiative:
+            scopeProps = utils.getPublicScope(c.initiative)
+            scopeName = scopeProps['name'].title()
+            scopeLevel = scopeProps['level'].title()
+            if scopeLevel == 'Earth':
+                c.scopeTitle = scopeName
+            else:
+                c.scopeTitle = scopeLevel + ' of ' + scopeName
+            c.scopeFlag = scopeProps['flag']
+            c.scopeHref = scopeProps['href']
+
+            #if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+            #    c.photo_url = "/images/photos/%s/photo/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+            #    c.thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos'])
+            #else:
+            #    c.photo_url = "/images/icons/generalInitiative.jpg"
+            #    c.thumbnail_url = "/images/icons/generalInitiative.jpg"
+            #c.bgPhoto_url = "'" + c.photo_url + "'"
+
+            c.bgPhoto_url, c.photo_url, c.thumbnail_url = utils.initiativeImageURL(c.initiative)
+            c.facebookShare.updateImageUrl(c.photo_url)
+            thingParent = c.initiative
+
+        c.thing = resourceLib.getResourceByCode(resourceCode)
+        if not c.thing:
+            c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
+            if not c.thing:
+                c.thing = revisionLib.getRevisionByCode(resourceCode)
+                if not c.thing:
+                    abort(404)
+        c.resource = c.thing
+
+        ################## FB SHARE ###############################
+        # c.facebookShare.title = c.thing['title']
+#         c.facebookShare.thingCode = c.thingCode
+#         # update url for this item
+#         c.facebookShare.updateUrl(utils.thingURL(thingParent, c.thing))
+#         # set description to be that of the topic's description
+#         c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        #################################################
+
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+            
+        #c.scope = geoInfoLib.getPublicScope(c.w)
+        
+        log.info(c.privs['admin'])
+      
+            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
+        log.info("before c.discussion")
+        c.discussion = discussionLib.getDiscussionForThing(c.thing)
+        c.listingType = 'resource'
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
+                
+        if c.w:
+            return render('/derived/6_item_in_listing.bootstrap')
+        elif c.initiative:
+            return render('/derived/6_initiative_resource.bootstrap')
+        else:
+            log.info("ELSE")
+            return render('/derived/6_resource.bootstrap')
 

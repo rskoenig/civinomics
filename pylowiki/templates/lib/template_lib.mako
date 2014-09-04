@@ -39,7 +39,7 @@
                     % if c.authuser:
                         % if c.authuser['activated'] == '1':
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <b class="caret"></b></a>
+                                <a href="/create" class="dropdown-toggle">Create <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     % if 'user' in session:
                                         <li>
@@ -68,6 +68,7 @@
                                     <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     <li><a tabindex="-1" href="/admin/initiatives">Initiatives</a></li>
                                     <li><a tabindex="-1" href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
+                                    <li><a tabindex="-1" href="/admin/meetings">Meetings</a></li>
                                 </ul>
                             </li>
                         % endif

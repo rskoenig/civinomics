@@ -31,8 +31,11 @@ import pylowiki.lib.helpers as h
 class CommentController(BaseController):
     
     def __before__(self, action, workshopCode = None, workshopURL = None, urlCode = None):
+        log.info(c.privs)
         shareOk = False
         shareUrl = None
+        if workshopURL is None:
+            userLib.setUserPrivs()
         if action in ['permalink', 'showThread']:
             if workshopCode is not None:
                 c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
@@ -118,16 +121,19 @@ class CommentController(BaseController):
                     return json.dumps({'statusCode':1})
             
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
+                log.info("1")
                 # Reply to an existing comment
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
                 parentAuthor = userLib.getUserByID(parentComment.owner)
             elif 'discussionCode' in payload:
+                log.info("2")
                 # Root level comment
                 discussion = discussionLib.getDiscussion(payload['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
+            log.info(c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem':
                 if 'commentRole' in payload:

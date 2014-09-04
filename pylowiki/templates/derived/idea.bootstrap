@@ -22,7 +22,7 @@
 		<div class="row">
 			<div class="col-sm-9 well">
 				<h1 ng-cloak>{{item.title}}</h1>
-				<p><span ng-bind-html="item.html"></span></p>
+				<p class="markdown"><span ng-bind-html="item.html"></span></p>
 				<div class="spacer"></div>
 				<div class="row">
 				    <div class="col-xs-12">

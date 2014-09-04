@@ -186,12 +186,13 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
         imageHashIdentifier = 'pictureHash_' + identifier
         thing[directoryNumIdentifier] = directoryNumber
         thing[imageHashIdentifier] = imageHash
+        log.info("Image hash identifier %s, and hash %s ", imageHashIdentifier, imageHash)
         commit(thing)
     
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     fullpath = os.path.join(pathname, savename)
-	
+    log.info(fullpath)
     # Now convert and save
     # only gif conversions seem to give trouble.
     # tested formats:   tiff (lzw/packbits/no compression, alpha/no-alpha)
