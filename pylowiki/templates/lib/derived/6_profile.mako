@@ -771,10 +771,7 @@
             parentTitle = c.discussion['idea_title']
     %>
     <div class="row">
-        <div class="col-xs-1">
-            ${lib_6.upDownVote(c.discussion)}
-        </div><!-- col-xs-1 -->
-        <div class="col-xs-11">
+        <div class="col-xs-12">
             <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
             View ${parentType}: <a href="${parentURL}">${parentTitle}</a>
             <div class="spacer"></div>
@@ -829,13 +826,13 @@
     %>
     <div class="btn-group">
         % if thing['disabled'] == '0':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
         % endif
         % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
         % endif
 
     </div>
