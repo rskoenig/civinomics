@@ -5,7 +5,7 @@ import urllib2
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes, getZipCodesBy
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
@@ -1105,7 +1105,6 @@ class SearchController(BaseController):
         	'Postalcode': 'Population',
         }
 
-
         for scope in scopeMap:
             scopeInfo = utils.getPublicScope(scope)
             geoInfo = getGeoInfo[scopeInfo['level'].title()](*geoArguments[scopeInfo['level'].title()]) 
@@ -1118,6 +1117,13 @@ class SearchController(BaseController):
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
+           #  if entry['level'] != 'Country' and entry['level'] != 'Postalcode':
+#                 members = 0
+#                 zipcodes = getZipCodesBy(entry['level'],entry['name'])              
+#                 for zipcode in zipcodes:
+#                     log.info(zipcode)
+#                     members += userLib.getUsersPerZipCode(zipcode)
+#                 log.info("There are %d members in %s"%(members,entry['level']))
             entry['fullName'] = entry['level'] + ' of ' + entry['name']
             entry['scope'] = scope[1:]
             
@@ -1144,7 +1150,6 @@ class SearchController(BaseController):
                     entry['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
                 else:
                     entry['photo'] = defaultPhoto
-            log.info(entry['photo'])
             
             result.append(entry)                
 

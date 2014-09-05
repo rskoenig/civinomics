@@ -275,7 +275,6 @@
 					</div>
 				</div>
 				
-
                 <h2><small>Following</small></h2>
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
                   <div ng-repeat="item in followInitiatives">
