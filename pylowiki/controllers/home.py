@@ -192,6 +192,8 @@ class HomeController(BaseController):
         
         if geoScope:
             initScope = geoScope.replace('||', '|0|')
+            initScope = "0" + initScope + "|0"
+            log.info(initScope)
 
         offset = int(offset)
         limit = int(limit)
@@ -268,7 +270,7 @@ class HomeController(BaseController):
                 entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
 
                 # scope attributes
-                if 'scope' in item and item['scope'] == geoScope:
+                if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope):
                     log.info("dafuq")
                     log.info("haha")
                     entry['scope'] = item['scope']
@@ -283,8 +285,8 @@ class HomeController(BaseController):
 				
                     result.append(entry)
                 else:
-                    log.info("item %s", item['scope'])
-                    log.info("with 0s %s",initScope)
+                    log.info("item      %s", item['scope'])
+                    log.info("with 0s   %s",initScope)
                     log.info("unaltered %s",geoScope)
                     log.info(item['scope'] == initScope)
                     
