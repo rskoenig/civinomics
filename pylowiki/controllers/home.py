@@ -271,8 +271,6 @@ class HomeController(BaseController):
 
                 # scope attributes
                 if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope):
-                    log.info("dafuq")
-                    log.info("haha")
                     entry['scope'] = item['scope']
                     
                     scopeInfo = utils.getPublicScope(entry['scope'])
@@ -284,11 +282,12 @@ class HomeController(BaseController):
                     entry['authorID'] = item.owner
 				
                     result.append(entry)
-                else:
-                    log.info("item      %s", item['scope'])
-                    log.info("with 0s   %s",initScope)
-                    log.info("unaltered %s",geoScope)
-                    log.info(item['scope'] == initScope)
+
+#                 else:                 
+#                     log.info("item      %s", item['scope'])
+#                     log.info("with 0s   %s",initScope)
+#                     log.info("unaltered %s",geoScope)
+#                     log.info(item['scope'] == initScope)
                     
             if len(result) == 0:
                 return json.dumps({'statusCode':1})
