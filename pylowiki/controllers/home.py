@@ -172,6 +172,125 @@ class HomeController(BaseController):
 				return json.dumps({'statusCode':1})
 			return json.dumps({'statusCode':0, 'result': result})
 
+    def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
+        log.info("in following initatives GEO")
+        if 'facilitatorInitiatives' in session:
+            facilitatorInitiativeCodes = session['facilitatorInitiatives']
+            
+        else:
+            facilitatorInitiativeCodes = []
+
+        if 'bookmarkedInitiatives' in session:
+            bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
+        else:
+            bookmarkedInitiativeCodes = []
+
+
+        interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
+        # reverse list so most recent first
+        interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+        
+        if geoScope:
+            initScope = geoScope.replace('||', '|0|')
+
+        offset = int(offset)
+        limit = int(limit)
+        interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+        interestedInitiatives = []
+        for code in interestedInitiativeCodes:
+            #log.info('%s' % code)
+            i = initiativeLib.getInitiative(code)
+            interestedInitiatives.append(i)
+        
+        log.info(len(interestedInitiatives))
+        if len(interestedInitiatives) == 0:
+            return json.dumps({'statusCode':1})
+        else:
+            result = []
+
+            myRatings = {}
+            if 'ratings' in session:
+                myRatings = session['ratings']
+
+            for item in interestedInitiatives:
+                entry = {}
+                #entry['urlCode'] = item
+                entry['title'] = item['title']
+                entry['urlCode'] = item['urlCode']
+                entry['url'] = item['url']
+
+                # user rating
+                if entry['urlCode'] in myRatings:
+                    entry['rated'] = myRatings[entry['urlCode']]
+                    entry['vote'] = 'voted'
+                else:
+                    entry['rated'] = 0
+                    entry['vote'] = 'nvote'
+
+                # votes
+                entry['voteCount'] = int(item['ups']) + int(item['downs'])
+                entry['ups'] = int(item['ups'])
+                entry['downs'] = int(item['downs'])
+                entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+                #goal votes
+                if entry['voteCount'] < 100:
+                    entry['goal'] = 100
+                elif 'goal' in item:
+                    entry['goal'] = item['goal']
+                else:
+                    entry['goal'] = 100
+
+                # comments
+                entry['numComments'] = 0
+                if 'numComments' in item:
+                    entry['numComments'] = item['numComments']
+
+                #tags
+                tags = []
+                tagList = []
+                if 'tags' in item:
+                    if item['tags'] != None:
+                        tagList = item['tags'].split('|')
+                for tag in tagList:
+                    if tag and tag != '':
+                        tags.append(tag)
+                entry['tags'] = tags
+
+                # photo
+                if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+                    entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                    entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                else:
+                    entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
+
+                entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
+
+                # scope attributes
+                if 'scope' in item and item['scope'] == geoScope:
+                    log.info("dafuq")
+                    log.info("haha")
+                    entry['scope'] = item['scope']
+                    
+                    scopeInfo = utils.getPublicScope(entry['scope'])
+                    entry['scopeName'] = scopeInfo['name']
+                    entry['scopeLevel'] = scopeInfo['level']
+                    entry['scopeHref'] = scopeInfo['href']
+                    entry['flag'] = scopeInfo['flag']
+
+                    entry['authorID'] = item.owner
+				
+                    result.append(entry)
+                else:
+                    log.info("item %s", item['scope'])
+                    log.info("with 0s %s",initScope)
+                    log.info("unaltered %s",geoScope)
+                    log.info(item['scope'] == initScope)
+                    
+            if len(result) == 0:
+                return json.dumps({'statusCode':1})
+            return json.dumps({'statusCode':0, 'result': result})
 
     def getActivity(self, comments = 0, type = 'auto', scope = 'none', offset = 0, max = 7):
         #log.info("activity type is %s"%type)

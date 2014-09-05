@@ -234,6 +234,7 @@
     ### Following Initiatives
     ###
     <div ng-controller="followCtrl">
+    	<p ng-if="geoScope != ''"><p ></p></p>
       <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
 
         % if c.authuser:
