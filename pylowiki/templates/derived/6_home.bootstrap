@@ -260,7 +260,7 @@
 				###
 				
 				<div ng-if="geoScope != ''" ng-cloak style="position: relative;">
-					<div style="background-image:url('{{geoPhoto}}'); height: 100px; z-index: 50; border-radius: 4px 4px 0px 0px;  border: 1px solid #e3e3e3;">
+					<div style="background-image:url('{{geoPhoto}}'); height: 100px; z-index: 50; border-radius: 4px 4px 0px 0px;  border: 1px solid #e3e3e3; background-position:50% 30%;">
 					</div>
 					<img src="{{geoFlagUrl}}" class="info-side-img"/>
 					<div class="well" style="z-index: 53;height: 100px;margin-top: -50px;text-align: right; border-radius: 0px 0px 4px 4px;">
