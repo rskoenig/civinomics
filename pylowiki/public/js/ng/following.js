@@ -3,6 +3,7 @@ function followCtrl($scope, $http) {
 	$scope.followSliceLoading = false;
 	$scope.noMoreFollowSlices = false;
 	$scope.followBusy = false;
+	$scope.followingGeo = false;
 	$scope.sliceSize = 10
 	$scope.offset = 0
 	$scope.limit = $scope.offset + $scope.sliceSize
@@ -31,7 +32,8 @@ function followCtrl($scope, $http) {
 	$scope.getFollowing()
 
 	$scope.getFollowSlice = function() {
-		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult) return;
+		console.log("in get follow slice");
+		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult || $scope.followingGeo) return;
 		$scope.followBusy = true;
 		$scope.followAlertMsg = ''
 		$scope.followSliceLoading = true;
@@ -68,22 +70,40 @@ function followCtrl($scope, $http) {
 		'geoScope',
 		function(newValue, oldValue){
 			if (!(newValue === oldValue)) { 
-				/*Does this actually work?*/
-				console.log("There has been a change in the scope");
-				$scope.followInitiatives = null;
-				$scope.followLoading = true;
-				$scope.followSliceLoading = false;
-				$scope.noMoreFollowSlices = false;
-				$scope.followBusy = false;
-				$scope.sliceSize = 10;
-				$scope.offset = 0;
-				$scope.limit = $scope.offset + $scope.sliceSize;
-				$scope.getFollowingGeo(newValue);
-				$scope.followSliceLoading = false;
-				$scope.followBusy = false;
-				/*Do stuff.
-				We have to change whatever's in followInitiatives with whatever we get
-				*/
+				if (newValue === ""){
+					console.log("Back to default");
+					$scope.followingGeo = false;
+					$scope.followInitiatives = null;
+					$scope.followLoading = true;
+					$scope.followSliceLoading = false;
+					$scope.noMoreFollowSlices = false;
+					$scope.followBusy = false;
+					$scope.sliceSize = 10;
+					$scope.offset = 0;
+					$scope.limit = $scope.offset + $scope.sliceSize;
+					$scope.followLookupURL = '/getFollowInitiatives/' + $scope.offset + '/' + $scope.limit
+					$scope.getFollowing();
+				}
+				else{
+					$scope.followingGeo = true;
+					/*Do I really need all this?*/
+					console.log("There has been a change in the scope");
+					console.log(newValue)
+					$scope.followInitiatives = null;
+					$scope.followLoading = true;
+					$scope.followSliceLoading = false;
+					$scope.noMoreFollowSlices = false;
+					$scope.followBusy = false;
+					$scope.sliceSize = 10;
+					$scope.offset = 0;
+					$scope.limit = $scope.offset + $scope.sliceSize;
+					$scope.getFollowingGeo(newValue);
+					$scope.followSliceLoading = false;
+					$scope.followBusy = false;
+					/*Do stuff.
+					We have to change whatever's in followInitiatives with whatever we get
+					*/
+				};
 					
 			};
 		}

@@ -193,7 +193,6 @@ class HomeController(BaseController):
         if geoScope:
             initScope = geoScope.replace('||', '|0|')
             initScope = "0" + initScope + "|0"
-            log.info(initScope)
 
         offset = int(offset)
         limit = int(limit)
@@ -205,7 +204,6 @@ class HomeController(BaseController):
             i = initiativeLib.getInitiative(code)
             interestedInitiatives.append(i)
         
-        log.info(len(interestedInitiatives))
         if len(interestedInitiatives) == 0:
             return json.dumps({'statusCode':1})
         else:
@@ -288,7 +286,7 @@ class HomeController(BaseController):
 #                     log.info("with 0s   %s",initScope)
 #                     log.info("unaltered %s",geoScope)
 #                     log.info(item['scope'] == initScope)
-                    
+            log.info(len(result))
             if len(result) == 0:
                 return json.dumps({'statusCode':1})
             return json.dumps({'statusCode':0, 'result': result})
