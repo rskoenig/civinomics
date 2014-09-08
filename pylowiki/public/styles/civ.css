@@ -3796,11 +3796,13 @@ text-align: right;
 background-image:url('http://www.colorhexa.com/428bca.png');
 }
 
-div.info-side img{
-float:left;
+.info-side-img{
 width:35%;
-margin: 0px 10px 10% 0px;
+margin: -13px 0px 0px 10px;
 border: solid 1px #999;
+z-index: 1;
+margin-top: -13%;
+width: 36%;
 }
 
 .top-info-side{
@@ -3808,8 +3810,6 @@ overflow: hidden;
 }
 
 div.top-info-side p{
-padding-top: 16%;
-margin-bottom: 10%;
 font-size: 18px;
 color: white;
 }
