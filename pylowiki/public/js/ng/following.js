@@ -56,7 +56,7 @@ function followCtrl($scope, $http) {
 	};
 	
 	$scope.getFollowingGeo = function(scope){
-		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult) return;
+		if ($scope.followBusy) return;
 		console.log("In getFollowingGeo");
 		$scope.followBusy = true;
 		$scope.followAlertMsg = '';
