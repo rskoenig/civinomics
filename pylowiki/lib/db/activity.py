@@ -217,6 +217,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
 
 
 def getRecentActivity(limit, comments = 0, offset = 0):
+        log.info("in getRecentActivity")
         objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
         if comments:
             objectList.append('comment')
