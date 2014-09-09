@@ -429,7 +429,7 @@ class SearchController(BaseController):
             #log.info("results geo: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
-            return render('/derived/6_search.bootstrap')
+            return render('/derived/6_geo_profile.bootstrap')
     
     def searchPeople(self):
         #: this function returns json data so we set the headers appropriately
