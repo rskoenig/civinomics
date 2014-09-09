@@ -215,6 +215,7 @@ class CommentController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
+        log.info(urlCode)
         for comment in comments:
             entry = {}
             entry['text'] = comment['data']

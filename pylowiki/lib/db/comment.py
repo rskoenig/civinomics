@@ -157,7 +157,8 @@ def editComment(comment, data, commentRole = 'neutral'):
 def Comment(data, owner, discussion, privs, role = None, parent = 0):
     attachedThing = None
     thisComment = Thing('comment', owner.id)
-        
+    
+    log.info("Comment added has %s discussion type."%discussion['discType'])
     if 'workshopCode' in discussion:
         w = getWorkshopByCode(discussion['workshopCode'])
         thisComment = generic.linkChildToParent(thisComment, w)
@@ -177,6 +178,11 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+    elif discussion['discType'] == 'resource' and 'initiativeCode' not in discussion:
+        attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+    if discussion['discType'] == 'idea':
+        attachedThing = ideaLib.getIdea(discussion['ideaCode'])
+        
             
     thisComment = generic.linkChildToParent(thisComment, owner)
             
