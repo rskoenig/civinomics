@@ -10,18 +10,14 @@ function followCtrl($scope, $http) {
 	$scope.followLookupURL = '/getFollowInitiatives/' + $scope.offset + '/' + $scope.limit
 
 	$scope.getFollowing = function() {
-		console.log("In get following");
 		$scope.followLoading = true;
-		console.log($scope.followLookupURL);
 		$http.get($scope.followLookupURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noFollowingResult = true;
 			}
 			else if (data.statusCode === 0){
-			console.log("alive2");
 				$scope.noFollowingResult = false;
 				$scope.followInitiatives = data.result;
-				console.log(data.result);
 			}
 			$scope.followLoading = false;
 			$scope.offset += $scope.sliceSize
@@ -32,7 +28,6 @@ function followCtrl($scope, $http) {
 	$scope.getFollowing()
 
 	$scope.getFollowSlice = function() {
-		console.log("in get follow slice");
 		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult || $scope.followingGeo) return;
 		$scope.followBusy = true;
 		$scope.followAlertMsg = ''
@@ -57,12 +52,10 @@ function followCtrl($scope, $http) {
 	
 	$scope.getFollowingGeo = function(scope){
 		if ($scope.followBusy) return;
-		console.log("In getFollowingGeo");
 		$scope.followBusy = true;
 		$scope.followAlertMsg = '';
 		$scope.followSliceLoading = true;
 		$scope.followLookupURL = '/getFollowInitiatives/geo/' + $scope.offset + '/' + $scope.limit + '/' + scope;
-		console.log($scope.followLookupURL);
 		$scope.getFollowing();
 	};
 	
@@ -71,7 +64,6 @@ function followCtrl($scope, $http) {
 		function(newValue, oldValue){
 			if (!(newValue === oldValue)) { 
 				if (newValue === ""){
-					console.log("Back to default");
 					$scope.followingGeo = false;
 					$scope.followInitiatives = null;
 					$scope.followLoading = true;
@@ -87,8 +79,6 @@ function followCtrl($scope, $http) {
 				else{
 					$scope.followingGeo = true;
 					/*Do I really need all this?*/
-					console.log("There has been a change in the scope");
-					console.log(newValue)
 					$scope.followInitiatives = null;
 					$scope.followLoading = true;
 					$scope.followSliceLoading = false;
