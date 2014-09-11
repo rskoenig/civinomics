@@ -113,6 +113,23 @@ def isAdmin(id):
            return False
     except:
         return False
+        
+def isCurator(user, scope):
+    if 'curateScope' in user and user['curateScope'] != '':
+        if 'curateLevel' in user and user['curateLevel'] != '':
+            curateLevel = int(user['curateLevel']) + 1
+            curateScope = user['curateScope']
+            scope = scope.replace('0', '')
+            scopeList = scope.split('|')[0:curateLevel]
+            scope = '|'.join(scopeList)
+            if curateScope == scope:
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
     
 def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'1', count = False):
     try:

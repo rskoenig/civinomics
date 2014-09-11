@@ -470,10 +470,15 @@
             <% 
                 if c.state != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 4:
                     disabled = "disabled"
+                    fieldName = "geoTagStateDisabled"
                 else:
                     disabled = ""
+                    fieldName = "geoTagState"
             %>
-            <select name="geoTagState" id="geoTagState" class="geoTagState" ${disabled} onChange="geoTagStateChange(); return 1;">
+            % if disabled == "disabled":
+                <input type=hidden name="geoTagState" value="${c.state}">
+            % endif
+            <select name="${fieldName}" id="geoTagState" class="geoTagState" ${disabled} onChange="geoTagStateChange(); return 1;">
             <option value="0">Select a state</option>
             % for state in states:
                 % if state != 'District of Columbia':
@@ -500,10 +505,15 @@
                 <% 
                     if c.county != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 6:
                         disabled = "disabled"
+                        fieldName = "geoTagCountyDisabled"
                     else:
                         disabled = ""
+                        fieldName = "geoTagCounty"
                 %>
-                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" ${disabled} onChange="geoTagCountyChange(); return 1;">
+                % if disabled == "disabled":
+                    <input type=hidden name="geoTagCounty" value="${c.county}">
+                % endif
+                <select name="${fieldName}" id="geoTagCounty" class="geoTagCounty" ${disabled} onChange="geoTagCountyChange(); return 1;">
                 <option value="0">Select a county</option>
                 % for county in counties:
                     % if c.county == county['County'].title():
@@ -526,7 +536,18 @@
             <% postalMessage = "Leave 'City' blank if the election jurisdiction applies to the entire county." %>
             <div class="col-xs-3 text-left">City:</div>
             <div class="col-xs-8 text-left">
-            <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                <% 
+                    if c.city != "0" and 'curateLevel' in c.authuser and int(c.authuser['curateLevel']) >= 8:
+                        disabled = "disabled"
+                        fieldName = "geoTagCityDisabled"
+                    else:
+                        disabled = ""
+                        fieldName = "geoTagCity"
+                %>
+                % if disabled == "disabled":
+                    <input type=hidden name="geoTagCounty" value="${c.city}">
+                % endif
+            <select name="${fieldName}" id="geoTagCity" class="geoTagCity" ${disabled} onChange="geoTagCityChange(); return 1;">
             <option value="0">Select a city</option>
                 % for city in cities:
                     % if c.city == city['City'].title():
@@ -571,7 +592,7 @@
 </%def>
 
 <%def name="addBallot(election, author)">
-    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+    % if 'user' in session and (userLib.isCurator(c.authuser, election['scope']) or userLib.isAdmin(c.authuser.id)):
         <script>
             function Ctrl($scope) {
                 $scope.candidate = 0;
@@ -645,7 +666,7 @@
 </%def>
 
 <%def name="addBallotMeasure(ballot, author)">
-    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+    % if 'user' in session and (userLib.isCurator(c.authuser, ballot['election_scope']) or userLib.isAdmin(c.authuser.id)):
         <div class="row">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Measure</button>
             <div id="addItem" class="collapse spacer">
@@ -679,7 +700,7 @@
 </%def>
 
 <%def name="addBallotCandidate(ballot, author)">
-    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+    % if 'user' in session and (userLib.isCurator(c.authuser, ballot['election_scope']) or userLib.isAdmin(c.authuser.id)):
         <div class="row-fluid">
             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem"><i class="icon icon-white icon-plus"></i> Ballot Candidate</button>
             <div id="addItem" class="collapse spacer">
@@ -723,9 +744,15 @@
         adminID = 'admin-%s' % thing['urlCode']
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
+        if 'scope' in thing:
+            electionScope = thing['scope']
+        elif 'election_scope' in thing:
+            electionScope = thing['election_scope']
+        else:
+            electionScope = "0|0|0|0|0|0|0|0|0|0|0"
     %>
     <div class="btn-group">
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'electionUnpublished':
+        % if (userLib.isCurator(c.authuser, electionScope) or userLib.isAdmin(c.authuser.id)) and thing.objType != 'electionUnpublished':
             <a href="/election/${thing['urlCode']}/${thing['url']}/electionEdit" class="btn btn-mini">Edit</a>
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">trash</a>
         % elif thing.objType == 'electionUnpublished' and thing['unpublished_by'] != 'parent':
@@ -745,7 +772,7 @@
     </div>
     
     % if thing['disabled'] == '0':
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+        % if (userLib.isCurator(c.authuser, electionScope) or userLib.isAdmin(c.authuser.id)):
             % if thing.objType == 'electionUnpublished':
                 ${lib_6.publishThing(thing)}
             % else:
@@ -779,9 +806,15 @@
         adminID = 'admin-%s' % thing['urlCode']
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
+        if 'scope' in thing:
+            electionScope = thing['scope']
+        elif 'election_scope' in thing:
+            electionScope = thing['election_scope']
+        else:
+            electionScope = "0|0|0|0|0|0|0|0|0|0|0"
     %>
     <div class="btn-group">
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'ballotUnpublished':
+        % if (userLib.isCurator(c.authuser, electionScope) or userLib.isAdmin(c.authuser.id)) and thing.objType != 'ballotUnpublished':
             <a href="/ballot/${thing['urlCode']}/${thing['url']}/ballotEdit" class="btn btn-mini">Edit</a>
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">trash</a>
         % elif thing.objType == 'ballotUnpublished' and thing['unpublished_by'] != 'parent':
@@ -801,7 +834,7 @@
     </div>
     
     % if thing['disabled'] == '0':
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+        % if (userLib.isCurator(c.authuser, electionScope) or userLib.isAdmin(c.authuser.id)):
             % if thing.objType == 'ballotUnpublished':
                 ${lib_6.publishThing(thing)}
             % else:

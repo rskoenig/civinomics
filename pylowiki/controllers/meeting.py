@@ -366,17 +366,11 @@ class MeetingController(BaseController):
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         c.author = userLib.getUserByCode(c.meeting['userCode'])
         if 'user' in session and c.authuser:
-            if 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
-                curateLevel = int(c.authuser['curateLevel']) + 1
-                curateScope = c.authuser['curateScope']
-                meetingScope = c.meeting['scope'].replace('0', '')
-                scopeList = meetingScope.split('|')[0:curateLevel]
-                meetingScope = '|'.join(scopeList)
-                if curateScope == meetingScope:
-                    c.curator = True
-                else:
-                    c.curator = False
-        
+            if userLib.isCurator(c.authuser, c.meeting['scope']):
+                c.curator = True
+            else:
+                c.curator = False
+
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1
             c.meeting['views'] = str(views)

@@ -371,7 +371,7 @@
                         fieldName = "geoTagCity"
                 %>
                 % if disabled == "disabled":
-                    <input type=hidden name="geoTagCounty" value="${c.city}">
+                    <input type=hidden name="geoTagCity" value="${c.city}">
                 % endif
                 <select name="${fieldName}" id="geoTagCity" class="geoTagCity" ${disabled} onChange="geoTagCityChange(); return 1;">
                 <option value="0">Select a city</option>
