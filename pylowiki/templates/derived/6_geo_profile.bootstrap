@@ -20,11 +20,19 @@
 		</div><!--Title-->
 			<div class="geo-profile-info-data" style="margin-left:25px">
 				<h4>POPULATION</h4>
-				<p>1,234,567</p>
+				<p>${c.population}</p>
 			</div>
 			<div class="geo-profile-info-data">
 				<h4>MEMBERS</h4>
 				<p>1,234,567</p>
+			</div>
+			<div class="geo-profile-info-data">
+				<h4>MEDIAN AGE</h4>
+				<p>${c.medianAge}</p>
+			</div>
+			<div class="geo-profile-info-data">
+				<h4>HOUSEHOLD INCOME</h4>
+				<p>${c.personsHousehold}</p>
 			</div>
 	</div>
 </div><!-- Header with info-->
@@ -36,11 +44,12 @@
     
     <div class="col-sm-2">
     <ul class="nav nav-pills nav-stacked i-menu">
-    	<li class="active"><a href="#">Link 1</a></li>
-    	<li><a href="#">Link 2</a></li>
-    	<li><a href="#">Link 3</a></li>
-    	<li><a href="#">Link 4</a></li>
-    	<li><a href="#">Link 5</a></li>
+	    <li class="active" ng-click="showOnly('all')"><a href="#">All activity</a></li>
+    	<li><a href="#" ng-click="showOnly('workshop')">Workshops</a></li>
+    	<li><a href="#" ng-click="showOnly('initiative')">Initiatives</a></li>
+    	<li><a href="#" ng-click="showOnly('resource')">Resources</a></li>
+    	<li><a href="#" ng-click="showOnly('idea')">Ideas</a></li>
+    	<li><a href="#" ng-click="showOnly('discussion')">Discussions</a></li>
     </ul>
     </div><!-- Left column-->
     
@@ -147,7 +156,7 @@
 	  	</div>     	<!-- END CREATE MODULE -->
 	  	<div>
 		  	<div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='4'>
-				<table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+				<table ng-repeat="item in activity | filter: showConditionalType" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
 				<!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
 				<tr>
 				<td ng-if="item.objType == 'initiative'">
@@ -166,7 +175,7 @@
 				${ng_helpers.resource_listing()}
 				</td>
 				
-				<td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+				<td ng-if="item.objType == 'discussion' || item.objType == 'update'">
 				${ng_helpers.discussion_listing()}
 				</td>
 				

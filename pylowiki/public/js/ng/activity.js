@@ -101,14 +101,6 @@ function activityController($scope, $http) {
 			$scope.offset += $scope.sliceSize;
 		})
 	};
-
-	$scope.geoInit = function(scope){	
-		$scope.activity = null;
-		$scope.activityType = '/geo/'+scope;
-		$scope.isGeoInit = true;
-		$scope.getActivity();
-	};
-
 }
 
 
