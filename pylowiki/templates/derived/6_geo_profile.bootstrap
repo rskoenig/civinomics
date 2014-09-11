@@ -192,10 +192,22 @@
 		</div><!--Activity controller-->
     </div><!-- Center column-->
     
-    <div class="col-sm-3">
-    	<div class="well">
-    		Right side stuff.
-    	</div>
+    <div class="col-sm-3" ng-init="getMeetingActivity('${c.geoScope}')">
+	    <h2 style="margin-top:-12px"><small>Upcoming Events</small></h2>
+    	      <div class="alert" ng-class="rightAlertType" ng-if="rightAlertMsg && !(rightAlertMsg == '') " ng-cloak>
+		          {{rightAlertMsg}}
+		      </div>
+		      	<table ng-repeat="item in meetings"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+				<tr>
+				
+				<td ng-if="item.objType == 'meeting'">
+				${ng_helpers.meeting_listing_small()}
+				</td>
+				</tr>
+				</table>
+		      <div class="centered" ng-show="meetingsLoading || meetingsSliceLoading" ng-cloak>
+				  <i class="icon-spinner icon-spin icon-4x"></i>
+			  </div>
     </div><!-- Right column-->
 </div><!-- row-fluid -->
 

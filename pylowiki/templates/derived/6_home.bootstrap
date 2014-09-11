@@ -234,28 +234,7 @@
     ### Following Initiatives
     ###
     <div ng-controller="followCtrl">
-    	<p ng-if="geoScope != ''"><p ></p></p>
-      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
-
-        % if c.authuser:
-            <div>
-                % if c.authuser and c.authuser['activated'] == '0':
-                  <div class="spacer"></div>
-                  <div class="alert alert-success">
-                    <h4>Welcome!</h4> 
-                    <p>Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.</p>
-                    <p>You can't add comments until you click on the link in the confirmation email.</p>
-                    <br>
-                    <div class="row">
-                      <div class="col-xs-8 col-xs-offset-2">
-                        <button class="btn btn-success btn-block resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
-                      </div>
-                    </div>
-                    <div class="top-space" id="resendMessage"></div>
-                  </div>
-                % endif
-				
-				###
+    ###
 				### Geo flag info
 				###
 				
@@ -278,6 +257,28 @@
 						</div>
 					</div>
 				</div>
+    	<p ng-if="geoScope != ''"><p ></p></p>
+      <div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
+
+        % if c.authuser:
+            <div>
+                % if c.authuser and c.authuser['activated'] == '0':
+                  <div class="spacer"></div>
+                  <div class="alert alert-success">
+                    <h4>Welcome!</h4> 
+                    <p>Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.</p>
+                    <p>You can't add comments until you click on the link in the confirmation email.</p>
+                    <br>
+                    <div class="row">
+                      <div class="col-xs-8 col-xs-offset-2">
+                        <button class="btn btn-success btn-block resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+                      </div>
+                    </div>
+                    <div class="top-space" id="resendMessage"></div>
+                  </div>
+                % endif
+				
+				
 								
 				
                 <h2><small>Following</small></h2>

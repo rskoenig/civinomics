@@ -27,6 +27,20 @@
     </div><!-- media-well -->
 </%def>
 
+<%def name="meeting_listing_small()">
+    <div class="media well search-listing">
+        <div class="row">
+            <div class="col-xs-3">
+            	<strong style="font-size:22px; text-align:center; margin-right:5px;">{{item.meetingDate.split("-")[2]+"-"+item.meetingDate.split("-")[0]+"-"+item.meetingDate.split("-")[1] | date: "MMM dd"}}</strong>
+            </div>
+            <div class="col-xs-9">
+                <a href="{{item.href}}">{{item.title}}</a>
+                <p>Public Meeting of {{item.group}}</p>
+            </div>
+        </div><!-- row -->
+    </div><!-- media-well -->
+</%def>
+
 <%def name="agenda_item_listing()">
     <div style="margin-top: 30px;"></div>
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; canVote=item.canVote; canComment=item.canComment; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">

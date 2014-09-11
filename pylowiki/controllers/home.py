@@ -358,6 +358,7 @@ class HomeController(BaseController):
 		    countyScope = scopeList[6]
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    log.info(countyScope)
 		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
 		    if countyActivity:
 		    	recentActivity = countyActivity
@@ -365,6 +366,21 @@ class HomeController(BaseController):
 		    	alertMsg = "There are no upcoming meetings listed for your county yet."
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
+        elif type == 'geomeetings' and scope is not 'none':
+		    # try getting the activity of their area
+		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+		    scopeList = userScope.split('|')
+		    countyScope = scopeList[6]
+		    #log.info("countyScope is %s"%countyScope)
+		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+		    formattedScope = scope.replace('||', '|0|')
+		    countyActivity = activityLib.getUpcomingGeoMeetings(max, formattedScope, 0, offset)
+		    if countyActivity:
+		    	recentActivity = countyActivity
+		    else:
+		    	alertMsg = "There are no upcoming meetings listed for this area yet."
+		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+		    	
         elif type == 'initiatives':
 			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
