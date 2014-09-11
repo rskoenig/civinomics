@@ -18,11 +18,11 @@
 		<div style="color: white; margin-left: 180px; margin-top: 10px; text-shadow: 2px 2px 3px #555;">
 			<h2>Very Long Name of Region</h2>
 		</div><!--Title-->
-			<div class="geo-profile-info-data" style="float:left; padding: 5px 10px; text-align: center; margin-left:25px">
+			<div class="geo-profile-info-data" style="margin-left:25px">
 				<h4>POPULATION</h4>
 				<p>1,234,567</p>
 			</div>
-			<div class="geo-profile-info-data" style="float:left; padding: 5px 10px; text-align: center;">
+			<div class="geo-profile-info-data">
 				<h4>MEMBERS</h4>
 				<p>1,234,567</p>
 			</div>
@@ -30,12 +30,13 @@
 </div><!-- Header with info-->
 <div style="height:250px;"></div>
 <div class="spacer"></div>
-<div class="row-fluid one-up" ng-controller="SearchCtrl">
+<div class="row-fluid one-up" ng-controller="activityController" ng-init="geoInit('${c.geoScope}')"> 
+
 	
     
     <div class="col-sm-2">
-    <ul style="list-style-type:none;">
-    	<li><a href="#">Link 1</a></li>
+    <ul class="nav nav-pills nav-stacked i-menu">
+    	<li class="active"><a href="#">Link 1</a></li>
     	<li><a href="#">Link 2</a></li>
     	<li><a href="#">Link 3</a></li>
     	<li><a href="#">Link 4</a></li>
@@ -43,7 +44,7 @@
     </ul>
     </div><!-- Left column-->
     
-    <div class="col-sm-8">
+    <div class="col-sm-7">
     	<!-- INIT CREATE MODULE -->
 	    <div ng-controller="createController" ng-cloak>
 			  	<div class="media well search-listing">
@@ -144,30 +145,45 @@
 		        </div>
 		    </div>
 	  	</div>     	<!-- END CREATE MODULE -->
-	  	<div class="well">
-	  		Things here.
-	  	</div>
-	  	<div class="well">
-	  		And here.
-	  	</div>
-	  	<div class="well">
-	  		And here.
-	  	</div>
-	  	<div class="well">
-	  		And here.
-	  	</div>
-	  	<div class="well">
-	  		And here.
-	  	</div>
-	  	<div class="well">
-	  		And here.
-	  	</div>
-	  	<div class="well">
-	  		And here.
-	  	</div>
+	  	<div>
+		  	<div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='4'>
+				<table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+				<!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
+				<tr>
+				<td ng-if="item.objType == 'initiative'">
+				${ng_helpers.initiative_listing()}
+				</td>
+				
+				<td ng-if="item.objType == 'meeting'">
+				${ng_helpers.meeting_listing()}
+				</td>
+				
+				<td ng-if="item.objType == 'idea'">
+				${ng_helpers.idea_listing()}
+				</td>
+				
+				<td ng-if="item.objType == 'resource'">
+				${ng_helpers.resource_listing()}
+				</td>
+				
+				<td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+				${ng_helpers.discussion_listing()}
+				</td>
+				
+				<td ng-if="item.objType == 'photo'">
+				${ng_helpers.photo_listing()}
+				</td>
+				
+				</tr>
+				</table>
+				<div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+				  <i class="icon-spinner icon-spin icon-4x"></i>
+				</div>
+			</div><!-- infinite-scroll -->
+		</div><!--Activity controller-->
     </div><!-- Center column-->
     
-    <div class="col-sm-2">
+    <div class="col-sm-3">
     	<div class="well">
     		Right side stuff.
     	</div>
@@ -175,8 +191,6 @@
 </div><!-- row-fluid -->
 
 <%def name="headScripts()">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
-    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/create.js')}"></script>

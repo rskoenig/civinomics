@@ -85,7 +85,6 @@ function activityController($scope, $http) {
 		$scope.busy = true;
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
-		console.log('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset);
 		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
@@ -103,5 +102,13 @@ function activityController($scope, $http) {
 		})
 	};
 
+	$scope.geoInit = function(scope){	
+		$scope.activity = null;
+		$scope.activityType = '/geo/'+scope;
+		$scope.isGeoInit = true;
+		$scope.getActivity();
+	};
+
 }
+
 

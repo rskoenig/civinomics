@@ -271,6 +271,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return self._noSearch()
         #log.info("searchWorkshopGeo YO CHECK THIS OUT %s %s"%(self.query, self.noQuery))
+        c.geoScope = self.query
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)

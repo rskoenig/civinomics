@@ -3813,3 +3813,26 @@ div.top-info-side p{
 font-size: 18px;
 color: white;
 }
+
+/*
+	Geo profile classes
+	
+*/
+
+.geo-profile-info-data{
+	float:left; 
+	padding: 10px 10px 0px 10px; 
+	text-align: center;
+}
+
+div.geo-profile-info-data h4{
+	font-size: 0.9em;
+	color: #999;	
+	font-weight: 400;
+}
+
+div.geo-profile-info-data p{
+	font-weight: bold;
+	margin-top: -15px;
+	font-size: 1.5em;
+}
