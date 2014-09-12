@@ -455,8 +455,12 @@ class MeetingController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         for item in c.agendaItems:
+            if 'meeting_scope' in item:
+                meetingScope = item['meeting_scope']
+            else:
+                meetingScope = "0|0|0|0|0|0|0|0|0|0|0"
             entry = {}
-            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+            if 'user' in session and (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
             else:
                 entry['canEdit'] = 'no'

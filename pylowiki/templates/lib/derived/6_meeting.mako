@@ -417,7 +417,7 @@
 </%def>
 
 <%def name="addAgendaItem(meeting, author)">
-    % if 'user' in session and (c.authuser['email'] == author['email'] or userLib.isAdmin(c.authuser.id)):
+    % if 'user' in session and (userLib.isCurator(c.authuser, meeting['scope']) or userLib.isAdmin(c.authuser.id)):
         <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem">New Agenda Item</button>
         <div id="addItem" class="collapse">
             <form class="col-sm-6 " action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
@@ -458,9 +458,15 @@
         adminID = 'admin-%s' % thing['urlCode']
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
+        if 'scope' in thing:
+            meetingScope = thing['scope']
+        elif 'meeting_scope' in thing:
+            meetingScope = thing['meeting_scope']
+        else:
+            meetingScope = "0|0|0|0|0|0|0|0|0|0|0"
     %>
     <div class="btn-group btn-group-sm pull-right">
-        % if (c.curator or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
+        % if 'user' in session and (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
             <a href="/meeting/${thing['urlCode']}/${thing['url']}/meetingEdit" class="btn btn-default">Edit</a>
             <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">Trash</a>
         % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
@@ -480,7 +486,7 @@
     </div>
     
     % if thing['disabled'] == '0':
-        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+        % if (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)):
             % if thing.objType == 'meetingUnpublished':
                 ${lib_6.publishThing(thing)}
             % else:

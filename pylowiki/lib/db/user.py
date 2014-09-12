@@ -122,7 +122,9 @@ def isCurator(user, scope):
             scope = scope.replace('0', '')
             scopeList = scope.split('|')[0:curateLevel]
             scope = '|'.join(scopeList)
+            #log.info("curateScope is %s and curateLevel is %s and scope is %s"%(curateScope, curateLevel, scope))
             if curateScope == scope:
+                #log.info("is a curator")
                 return True
             else:
                 return False
