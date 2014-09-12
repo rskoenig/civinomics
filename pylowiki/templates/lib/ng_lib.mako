@@ -380,7 +380,7 @@
 </%def>
 
 <%def name="actions()">
-    % if not c.searchQuery:
+    % if not c.searchQuery or c.geoScope:
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
             <div ng-controller="commentsController">
                 <div class="row">
