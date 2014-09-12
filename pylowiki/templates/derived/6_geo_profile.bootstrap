@@ -53,6 +53,7 @@
     </div><!-- Left column-->
     
     <div class="col-sm-7">
+    ${request.path_info}
     	<!-- INIT CREATE MODULE -->
 	    <div ng-controller="createController" ng-cloak>
 			  	<div class="media well search-listing">
@@ -105,9 +106,10 @@
 		                		<option value="private">Private</option>
 		                	</select>
 		                </div>
-		                
+		                {{console.log(document.location)}}
 		                
 						<div ng-show="false" class="col-xs-12">
+						{{geoScope = '${c.geoScope}'}}
 		                    <h4>Deadline</h4>
 			                    <div class="row-fluid">
 			                        <div class="span6">
@@ -133,8 +135,7 @@
 							</div>
 						</div>
 	                    ###Extra info (hidden)
-			                <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
-			                <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
+			                <input type="hidden" name="geoScope" value="${c.geoScope}" \>
 			                <input type="hidden" name="deadline" value="{{date}}" \>
 		                </div> 
 		            </div>
