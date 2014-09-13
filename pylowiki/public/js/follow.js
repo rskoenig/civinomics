@@ -12,7 +12,8 @@ $('button.followButton').click(function(e){
         });
         
         $button.removeClass('following');
-        $button.removeClass('btn-civ');
+        $button.removeClass('btn-success');
+        $button.addClass('btn-default');
         $button.removeClass('unfollow');
         if(urlList[0] == 'profile'){
             var bText = '<span><i class="icon-user med-green"></i><strong> Follow </span>';
@@ -30,9 +31,9 @@ $('button.followButton').click(function(e){
         });
                    
         $button.addClass('following');
-        $button.addClass('btn-civ');
+        $button.addClass('btn-success');
         if(urlList[0] == 'profile'){
-            var bText = '<span><i class="icon-user med-green"></i><strong> Following </strong></span>';
+            var bText = '<span><i class="icon-user"></i><strong> Following </strong></span>';
         } else {
             var bText = '<span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>';
         }

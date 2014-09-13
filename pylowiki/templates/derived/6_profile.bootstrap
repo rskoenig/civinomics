@@ -54,8 +54,6 @@
                                 % endif
                             % endif
                             <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
-                        % else:
-                            ${helpers.followButton(c.user)}
                         % endif
                     % endif
                 </ul>
@@ -91,31 +89,42 @@
                             % endif
                         </div>
                     </div>
-
-                    % if c.user['memberType'] == 'organization':
-                        <!--
-                        <table id="metrics">
-                            <tr>
-                                <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
-                                    <span class="workshop-metrics">Followers</span><br>
-                                      <strong ng-cloak>100</strong>
-                                </td>
-                                <td class="clickable" ng-click="toggleAdopted()">
-                                    <span class="workshop-metrics">Members</span><br>
-                                      <strong ng-cloak>100</strong>
-                                </td>
-                                % if c.user['email'] != c.authuser['email']:
-                                    <td>
-                                        ${helpers.followButton(c.user)}
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-warning">Become a member</button>
-                                    </td>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div>
+                                % if c.user['email'] == c.authuser['email']:
+                                    <a class="btn btn-default" href="/profile/${c.user['urlCode']}/${c.user['url']}/edit"><strong>Edit Profile</strong></a>
+                                % else:
+                                    ${helpers.followButton(c.user)}
                                 % endif
-                            </tr>
-                        </table>
-                        -->
-                    % endif
+                            </div>
+                            % if c.user['memberType'] == 'organization':
+                                <!--
+                                <table id="metrics">
+                                    <tr>
+                                        <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
+                                            <span class="workshop-metrics">Followers</span><br>
+                                              <strong ng-cloak>100</strong>
+                                        </td>
+                                        <td class="clickable" ng-click="toggleAdopted()">
+                                            <span class="workshop-metrics">Members</span><br>
+                                              <strong ng-cloak>100</strong>
+                                        </td>
+                                        % if c.user['email'] != c.authuser['email']:
+                                            <td>
+                                                ${helpers.followButton(c.user)}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-warning">Become a member</button>
+                                            </td>
+                                        % endif
+                                    </tr>
+                                </table>
+                                -->
+                            % endif
+                        </div>
+                    </div>
                 </div>
             </div>
             % if c.user['memberType'] == 'organization':
