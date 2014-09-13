@@ -774,8 +774,9 @@ class BallotController(BaseController):
             if item.objType == 'ballotUnpublished':
                 continue
 
+            electionScope = item['election_scope']
             entry = {}
-            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+            if 'user' in session and (userLib.isCurator(c.authuser, electionScope) or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
             else:
                 entry['canEdit'] = 'no'
@@ -901,8 +902,9 @@ class BallotController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         for item in c.ballotMeasures:
+            electionScope = item['election_scope']
             entry = {}
-            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+            if 'user' in session and (userLib.isCurator(c.authuser, electionScope) or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
             else:
                 entry['canEdit'] = 'no'

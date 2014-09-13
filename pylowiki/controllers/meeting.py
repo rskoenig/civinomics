@@ -459,6 +459,7 @@ class MeetingController(BaseController):
                 meetingScope = item['meeting_scope']
             else:
                 meetingScope = "0|0|0|0|0|0|0|0|0|0|0"
+                
             entry = {}
             if 'user' in session and (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
