@@ -53,7 +53,6 @@
     </div><!-- Left column-->
     
     <div class="col-sm-7">
-    ${request.path_info}
     	<!-- INIT CREATE MODULE -->
 	    <div ng-controller="createController" ng-cloak>
 			  	<div class="media well search-listing">
@@ -137,6 +136,7 @@
 	                    ###Extra info (hidden)
 			                <input type="hidden" name="geoScope" value="${c.geoScope}" \>
 			                <input type="hidden" name="deadline" value="{{date}}" \>
+			                <input type="hidden" name="returnTo" value="${request.path_info}" \>
 		                </div> 
 		            </div>
 		            <div ng-show="showAll" class="row">
