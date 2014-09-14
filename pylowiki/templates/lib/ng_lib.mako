@@ -146,6 +146,7 @@
     </div>
 </%def>
 
+
 <%def name="initiative_listing_condensed()">
     <div class="media well search-listing initiative-listing" style="height: 415px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
@@ -175,6 +176,33 @@
         </div>
     </div>
 </%def>
+
+<%def name="workshop_listing()">
+THIS IS A WORKSHOP
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+        <div ng-controller="yesNoVoteCtrl"> 
+            ${authorPosting()}
+            <div class="row" style="margin-top:19px;">
+                <div class="col-sm-3">
+                    <div class="listed-photo">
+                        <a href = '{{item.href}}'>
+                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-9 no-left">
+                    <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <p><small>${metaData()}</small></p>
+                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                </div>
+            </div>
+            <div class="row">
+                ${actions()}
+            </div>
+        </div>
+    </div>
+</%def>
+
 
 <%def name="idea_listing()">
     <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
@@ -386,7 +414,7 @@
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
                         <ul class="horizontal-list iconListing">
-                            <li>
+                            <li ng-if="item.objType != 'workshop'">
                                 <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                                 <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>

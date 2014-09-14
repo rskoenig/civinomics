@@ -46,6 +46,7 @@
     <ul class="nav nav-pills nav-stacked i-menu">
 	    <li class="active" ng-click="showOnly('all')"><a href="#">All activity</a></li>
     	<li><a href="#" ng-click="showOnly('initiative')">Initiatives</a></li>
+    	<li><a href="#" ng-click="showOnly('workshop')">Workshops</a></li>
     	<li><a href="#" ng-click="showOnly('resource')">Resources</a></li>
     	<li><a href="#" ng-click="showOnly('idea')">Ideas</a></li>
     	<li><a href="#" ng-click="showOnly('discussion')">Discussions</a></li>
@@ -159,6 +160,10 @@
 				<table ng-repeat="item in activity | filter: showConditionalType" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
 				<!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
 				<tr>
+				<td ng-if="item.objType == 'workshop'">
+				${ng_helpers.workshop_listing()}
+				</td>
+				
 				<td ng-if="item.objType == 'initiative'">
 				${ng_helpers.initiative_listing()}
 				</td>
