@@ -1813,6 +1813,8 @@
                                         dparent = c.initiative
                                     elif c.user:
                                         dparent = c.user
+                                    else:
+                                        dparent = None
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
                                 %>
                                 <tr>
