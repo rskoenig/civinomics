@@ -2326,6 +2326,11 @@ padding: 8px;
   padding-bottom: 0;
 }
 
+.well.search-listing-comment{
+  margin-bottom: 8px;
+  padding-bottom: 19px;
+}
+
 .table.plain{
   margin-bottom: 0;
 }

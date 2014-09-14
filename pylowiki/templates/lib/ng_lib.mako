@@ -207,7 +207,7 @@
 </%def>
 
 <%def name="comment_listing()">
-    <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
+    <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl">
             <div class="row">
                 <div class="col-xs-11">

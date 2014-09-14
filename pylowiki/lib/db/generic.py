@@ -27,6 +27,21 @@ def linkChildToParent(child, parent):
     if key in child:
         # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
+    if parent.objType == 'discussion':
+        child['discussion_url'] = parent['url']
+        child['discussion_tags'] = parent['tags']
+        child['discussion_scope'] = parent['scope']
+        child['discussion_title'] = parent['title']
+    if parent.objType == 'idea':
+        child['idea_url'] = parent['url']
+        child['idea_tags'] = parent['tags']
+        child['idea_scope'] = parent['scope']
+        child['idea_title'] = parent['title']
+    if parent.objType == 'resource':
+        child['resource_url'] = parent['url']
+        child['resource_tags'] = parent['tags']
+        child['resource_scope'] = parent['scope']
+        child['resource_title'] = parent['title']
     if parent.objType == 'initiative':
         child['initiative_public'] = parent['public']
         child['initiative_url'] = parent['url']

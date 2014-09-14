@@ -128,22 +128,28 @@ def getJsonProperties(item):
 
     # to support listing of comments in the profile
     if item.objType == 'comment':
-        if 'workshopCode' in item:
-            workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
-            if 'ideaCode' in item:
-                parentCode = item['ideaCode']
-                parentURL = item['parent_url']
-                parentObjType = 'idea'
-            elif 'resourceCode' in item:
-                parentCode = item['resourceCode']
-                parentURL = item['parent_url']
-                parentObjType = 'resource'
-            elif 'discussionCode' in item:
-                parentCode = item['discussionCode']
-                parentURL = item['parent_url']
-                parentObjType = 'discussion'
-            entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
-
+        if 'ideaCode' in item:
+            parentCode = item['ideaCode']
+            parentURL = item['parent_url']
+            parentObjType = 'idea'
+            parentObjType = 'idea'
+            entry['parentTitle'] = item['idea_title']
+            entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        elif 'resourceCode' in item:
+            parentCode = item['resourceCode']
+            parentURL = item['parent_url']
+            parentObjType = 'resource'
+            parentObjType = 'resource'
+            entry['parentTitle'] = item['resource_title']
+            entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        elif 'discussionCode' in item:
+            parentCode = item['discussionCode']
+            parentURL = item['parent_url']
+            parentObjType = 'discussion'
+            if 'discussion_title' in item:
+                # this if statement only to handle defunct objects on test server
+                entry['parentTitle'] = item['discussion_title']
+            entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
         elif 'photoCode' in item:
             parentCode = item['photoCode']
             parentURL = item['parent_url']
@@ -165,7 +171,11 @@ def getJsonProperties(item):
             parentObjType = 'meeting'
             entry['parentHref'] = "/meeting/" + parentCode + "/" + parentURL + "/show/"
         elif 'profileCode' in item:
+            parentCode = item['profileCode']
             entry['parentHref'] = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+        elif 'workshopCode' in item:
+            workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
+            entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
         else:
             log.info("no parentObjType item is %s"%item.keys())
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
