@@ -6,6 +6,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
 from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes, getZipCodesBy
+from pylowiki.lib.db.tag        import getTagCategories
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
@@ -52,6 +53,7 @@ class SearchController(BaseController):
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
         c.user = c.authuser
+        c.tagList = getTagCategories()
         userLib.setUserPrivs()
         
         self.query = ''
