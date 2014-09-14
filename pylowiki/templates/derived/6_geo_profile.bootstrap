@@ -22,7 +22,7 @@
 				<h4>POPULATION</h4>
 				<p ng-cloak>{{${c.population}|number}}</p>
 			</div>
-			<div class="geo-profile-info-data" ng-if="False">
+			<div class="geo-profile-info-data" ng-if="False" ng-cloak>
 				<h4>MEMBERS</h4>
 				<p>1,234,567</p>
 			</div>

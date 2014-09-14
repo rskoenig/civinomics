@@ -249,7 +249,7 @@
 						<div>
 							<p>
 							Population: {{geoPopulation | number}}<br/>
-							Members: 123456789
+							<p ng-if="False" ng-cloak>Members: 123456789</p>
 							</p>
 							<div class="nav nav-pills" ng-if="geoScope != ''" ng-cloak>
 							<a href="{{geoHref}}" class="active">View full profile</a>
