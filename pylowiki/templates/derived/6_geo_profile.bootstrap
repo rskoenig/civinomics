@@ -14,7 +14,7 @@
 	<div style="background-image:url('${c.backgroundPhoto}'); z-index:3; height:240px; background-attachment:fixed; background-size: 100%; background-position: 50%;">
 	</div>
 	<div style="z-index:1; margin-top: -75px; margin-left: 9%;">
-		<img src="${c.flag}" style="width:150px; float: left; border-radius:6px; border: 3px solid #DDD;"/>
+		<img src="${c.flag}" style="height:102px; float: left; border-radius:6px; border: 3px solid #DDD;"/>
 		<div style="color: white; margin-left: 180px; margin-top: 10px; text-shadow: 2px 2px 3px #555;">
 			<h2>${c.searchQuery}</h2>
 		</div><!--Title-->
@@ -22,7 +22,7 @@
 				<h4>POPULATION</h4>
 				<p ng-cloak>{{${c.population}|number}}</p>
 			</div>
-			<div class="geo-profile-info-data">
+			<div class="geo-profile-info-data" ng-if="False">
 				<h4>MEMBERS</h4>
 				<p>1,234,567</p>
 			</div>
