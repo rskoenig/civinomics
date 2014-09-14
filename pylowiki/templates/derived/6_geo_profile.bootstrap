@@ -135,7 +135,7 @@
 						</div>
 	                    ###Extra info (hidden)
 			                <input type="hidden" name="geoScope" value="${c.geoScope}" \>
-			                <input type="hidden" name="deadline" value="{{date}}" \>
+			                <input type="hidden" name="deadline" value="{{date}}"  \>
 			                <input type="hidden" name="returnTo" value="${request.path_info}" \>
 		                </div> 
 		            </div>
