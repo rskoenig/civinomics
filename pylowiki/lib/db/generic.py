@@ -29,28 +29,49 @@ def linkChildToParent(child, parent):
         log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
     if parent.objType == 'discussion':
         child['discussion_url'] = parent['url']
-        child['discussion_tags'] = parent['tags']
-        child['discussion_scope'] = parent['scope']
         child['discussion_title'] = parent['title']
+        if 'tags' in parent:
+            child['discussion_tags'] = parent['tags']
+        elif 'workshop_category_tags' in parent:
+            child['discussion_tags'] = parent['workshop_category_tags']
+        if 'scope' in parent:
+            child['discussion_scope'] = parent['scope']
+        elif 'workshop_public_scope' in parent:
+            child['discussion_scope'] = parent['workshop_public_scope']
+        elif 'workshop_private_scope' in parent:
+            child['discussion_scope'] = parent['workshop_private_scope']
     if parent.objType == 'idea':
         child['idea_url'] = parent['url']
-        child['idea_tags'] = parent['tags']
-        child['idea_scope'] = parent['scope']
         child['idea_title'] = parent['title']
+        if 'tags' in parent:
+            child['idea_tags'] = parent['tags']
+        elif 'workshop_category_tags' in parent:
+            child['idea_tags'] = parent['workshop_category_tags']
+        if 'scope' in parent:
+            child['idea_scope'] = parent['scope']
+        elif 'workshop_public_scope' in parent:
+            child['idea_scope'] = parent['workshop_public_scope']
+        elif 'workshop_private_scope' in parent:
+            child['idea_scope'] = parent['workshop_private_scope']
     if parent.objType == 'resource':
         child['resource_url'] = parent['url']
-        child['resource_tags'] = parent['tags']
-        child['resource_scope'] = parent['scope']
         child['resource_title'] = parent['title']
+        if 'tags' in parent:
+            child['resource_tags'] = parent['tags']
+        elif 'workshop_category_tags' in parent:
+            child['resource_tags'] = parent['workshop_category_tags']
+        if 'scope' in parent:
+            child['resource_scope'] = parent['scope']
+        elif 'workshop_public_scope' in parent:
+            child['resource_scope'] = parent['workshop_public_scope']
+        elif 'workshop_private_scope' in parent:
+            child['resource_scope'] = parent['workshop_private_scope']
     if parent.objType == 'initiative':
         child['initiative_public'] = parent['public']
         child['initiative_url'] = parent['url']
         child['initiative_tags'] = parent['tags']
         child['initiative_scope'] = parent['scope']
         child['initiative_title'] = parent['title']
-    if parent.objType == 'idea':
-        child['idea_url'] = parent['url']
-        child['idea_title'] = parent['title']
     if 'initiativeCode' in parent and 'initiative_url' in parent and child.objType != 'rating':
         child['initiativeCode'] = parent['initiativeCode']
         child['initiative_url'] = parent['initiative_url']

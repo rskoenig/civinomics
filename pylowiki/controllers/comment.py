@@ -147,8 +147,11 @@ class CommentController(BaseController):
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
-                
-                if thing.objType.replace("Unpublished", "") == 'photo':
+
+                if 'workshopCode' in thing:
+                    title = ' replied to a post you made'
+                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
+                elif thing.objType.replace("Unpublished", "") == 'photo':
                     title = ' commented on one of your pictures'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
                 elif thing.objType.replace("Unpublished", "") == 'initiative':
@@ -157,9 +160,6 @@ class CommentController(BaseController):
                 elif thing.objType.replace("Unpublished", "") == 'resource':
                     title = ' commented on a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
-                elif 'workshopCode' in thing:
-                    title = ' replied to a post you made'
-                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
                 elif thing.objType.replace("Unpublished", "") == 'discussion':
                     if thing['discType'] == 'update':
                         title = ' commented on an initiative update you made'
@@ -170,13 +170,13 @@ class CommentController(BaseController):
                     elif thing['discType'] == 'organization_position':
                         title = ' commented on one of your organization positions'
                         message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgPosition")
-                    elif 'workshopCode' in thing:
-                        title = ' replied to a post you made'
-                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
-                elif 'workshopCode' in thing:
-                        title = ' replied to a post you made'
-                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
-                        
+                    else:
+                        title = ' commented on one of your discussions'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnDiscussion")
+                elif thing.objType.replace("Unpublished", "") == 'idea':
+                    title = ' commented on one of your ideas'
+                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnIdea")
+                
                 message = genericLib.linkChildToParent(message, comment)
                 dbHelpers.commit(message)
                 alertsLib.emailAlerts(comment)
@@ -239,6 +239,7 @@ class CommentController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
+        log.info(urlCode)
         for comment in comments:
             entry = {}
             entry['text'] = comment['data']

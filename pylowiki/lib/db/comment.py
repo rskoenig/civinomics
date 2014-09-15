@@ -158,7 +158,8 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
     profileTypes = ['photo', 'initiative', 'organization_general', 'organization_position']
     attachedThing = None
     thisComment = Thing('comment', owner.id)
-        
+    
+    log.info("Comment added has %s discussion type."%discussion['discType'])
     if 'workshopCode' in discussion:
         w = getWorkshopByCode(discussion['workshopCode'])
         thisComment = generic.linkChildToParent(thisComment, w)
@@ -169,18 +170,23 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
     if discussion['discType'] == 'photo':
         attachedThing = photoLib.getPhoto(discussion['photoCode'])
         profileOwner = generic.getThingByID(attachedThing.owner)
-    if discussion['discType'] == 'initiative':
+    elif discussion['discType'] == 'initiative':
         attachedThing = initiativeLib.getInitiative(discussion['initiativeCode'])
         profileOwner = generic.getThingByID(attachedThing.owner)
-    if discussion['discType'] == 'agendaitem':
+    elif discussion['discType'] == 'agendaitem':
         attachedThing = meetingLib.getAgendaItem(discussion['agendaitemCode'])
-    if discussion['discType'] == 'resource' and 'initiativeCode' in discussion:
+    elif discussion['discType'] == 'resource' and 'initiativeCode' in discussion:
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
-    if discussion['discType'] == 'organization_general' or discussion['discType'] == 'organization_position':
+    elif discussion['discType'] == 'resource' and 'initiativeCode' not in discussion:
+        attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+    elif discussion['discType'] == 'organization_general' or discussion['discType'] == 'organization_position':
         attachedThing = discussion
         profileOwner = generic.getThingByID(attachedThing.owner)
+    elif discussion['discType'] == 'idea':
+        attachedThing = ideaLib.getIdea(discussion['ideaCode'])
+        
             
     thisComment = generic.linkChildToParent(thisComment, owner)
             

@@ -420,8 +420,6 @@
                 ### Comments
                 <div class="activity-comments">
                 <table class="activity-comments">
-
-
                     <tr class="centered" ng-show="commentsLoading" ng-cloak>
                         <td></td>
                         <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
