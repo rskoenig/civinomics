@@ -259,10 +259,13 @@ def getInitiativeActivity(limit, comments = 0, offset = 0):
         else:
             return []
 
-def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
+def getRecentGeoActivity(limit, scope, comments = 0, offset = 0, itemType = ''):
     log.info("In getRecentGeoActivity")
     postList = []
-    objectList = ['idea', 'workshop', 'resource', 'discussion', 'initiative', 'photo']
+    if itemType is '':
+        objectList = ['idea', 'workshop', 'resource', 'discussion', 'initiative', 'photo']
+    else:
+        objectList = itemType
     if comments:
         objectList.append('comment')
         

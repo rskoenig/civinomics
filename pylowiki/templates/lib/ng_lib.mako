@@ -178,7 +178,6 @@
 </%def>
 
 <%def name="workshop_listing()">
-THIS IS A WORKSHOP
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
             ${authorPosting()}

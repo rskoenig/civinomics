@@ -70,6 +70,13 @@ function geoProfileController($scope, $http) {
 		$scope.offset = $scope.sliceSize;
 	};
 	
+	
+	$scope.getGeoScopedActivityType = function(scope, type){
+		$scope.activityType = '/geo/'+scope + '/' + type;
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+	
 	$scope.getMeetingActivity = function(scope){
 		$scope.oldActivityType = $scope.activityType;
 		$scope.activityType = '/geomeetings/'+scope;
@@ -125,16 +132,28 @@ function geoProfileController($scope, $http) {
 		$scope.activity = null;
 		$scope.activityType = '/geo/'+scope;
 		$scope.isGeoInit = true;
+		$scope.currentScope = scope;
 		$scope.getActivity();
 	};
 	
 	$scope.showOnly = function(type){
 		if (type === 'all') {
+/*
 			$scope.showConditional = false;
 			$scope.showConditionalType = "";
-		} else {
+*/
+			$scope.activityType = '/geo/'+$scope.currentScope;
+			$scope.getActivity();
+		} 
+		else if (type === 'initiative') {
+			$scope.browseInitiatives();	
+		} 
+		else {
+			$scope.getGeoScopedActivityType($scope.currentScope, type);
+/*	
 			$scope.showConditional = true;
 			$scope.showConditionalType = type;	
+*/
 		}
 	};
 

@@ -291,7 +291,7 @@ class HomeController(BaseController):
                 return json.dumps({'statusCode':1})
             return json.dumps({'statusCode':0, 'result': result})
 
-    def getActivity(self, comments = 0, type = 'auto', scope = 'none', offset = 0, max = 7):
+    def getActivity(self, comments = 0, type = 'auto', scope = 'none', objectType = 'all', offset = 0, max = 7):
         #log.info("activity type is %s"%type)
         # get recent activity and return it into json format
         result = []
@@ -344,12 +344,15 @@ class HomeController(BaseController):
         elif type=='geo' and scope is not 'none':
             # try getting the activity of their area
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    geoActivity = activityLib.getRecentGeoActivity(max, scope, 0, offset)
-		    if geoActivity:
-		    	recentActivity = geoActivity
-		    else:
-		    	alertMsg = "There is no activity for that area yet. Add something!"
-		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+            if objectType is not 'all':
+                geoActivity = activityLib.getRecentGeoActivity(max, scope, 0, offset, itemType = [objectType])
+            else:
+                geoActivity = activityLib.getRecentGeoActivity(max, scope, 0, offset)
+            if geoActivity:
+                recentActivity = geoActivity
+            else:
+                alertMsg = "There is no activity for that area yet. Add something!"
+                return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
         
         elif type == 'meetings' and c.authuser:
 		    # try getting the activity of their area
@@ -382,7 +385,10 @@ class HomeController(BaseController):
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 		    	
         elif type == 'initiatives':
-			recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+            if scope is not 'none':
+                recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+            else:
+                recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
         else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
