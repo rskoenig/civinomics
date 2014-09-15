@@ -432,6 +432,7 @@ class SearchController(BaseController):
             #log.info("results geo: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
+            c.title = c.heading = c.searchQuery + " Activity"
             return render('/derived/6_geo_profile.bootstrap')
     
     def searchPeople(self):
