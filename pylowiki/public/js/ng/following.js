@@ -63,7 +63,9 @@ function followCtrl($scope, $http) {
 		'geoScope',
 		function(newValue, oldValue){
 			if (!(newValue === oldValue)) { 
+			$scope.followAlertMsg = '';
 				if (newValue === ""){
+					$scope.followAlertMsg = '';
 					$scope.followingGeo = false;
 					$scope.followInitiatives = null;
 					$scope.followLoading = true;
@@ -77,6 +79,7 @@ function followCtrl($scope, $http) {
 					$scope.getFollowing();
 				}
 				else{
+					$scope.followAlertMsg = '';
 					$scope.followingGeo = true;
 					/*Do I really need all this?*/
 					$scope.followInitiatives = null;

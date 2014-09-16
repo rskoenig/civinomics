@@ -261,7 +261,7 @@ def getInitiativeActivity(limit, comments = 0, offset = 0, geoScope = False):
         else:
             return []
 
-def getRecentGeoActivity(limit, scope, comments = 0, offset = 0, itemType = ''):
+def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = ''):
     log.info("In getRecentGeoActivity")
     postList = []
     if itemType is '':
@@ -275,10 +275,9 @@ def getRecentGeoActivity(limit, scope, comments = 0, offset = 0, itemType = ''):
         .filter(Thing.objType.in_(objectList))\
         .filter(Thing.data.any(wc('disabled', u'0')))\
         .filter(Thing.data.any(wc('deleted', u'0')))\
-        .filter(Thing.data.any(wkcl('scope', scope)))\
+        .filter(Thing.data.any(or_(wkcl('scope', scopes[0]),  wkcl('scope', scopes[1]), wkcl('scope', scopes[2]))))\
         .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
-        .order_by('-date')\
-        .offset(offset)
+        .order_by('-date')
     if limit:
         postList += q.limit(limit)
     else:

@@ -157,9 +157,7 @@ class HomeController(BaseController):
 				# scope attributes
 				if 'scope' in item:
 					entry['scope'] = item['scope']
-					log.info("Scope of followed initiative is %s"%item['scope'])
 				else:
-				    log.info("This initiative doesn't have a scope.")
 				    entry['scope'] = '0||united-states||0||0||0|0'
 				scopeInfo = utils.getPublicScope(entry['scope'])
 				entry['scopeName'] = scopeInfo['name']
@@ -176,8 +174,6 @@ class HomeController(BaseController):
 			return json.dumps({'statusCode':0, 'result': result})
 
     def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
-        log.info("in following initatives GEO")
-        log.info("Geo scope is %s"%geoScope)
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
             
@@ -347,7 +343,11 @@ class HomeController(BaseController):
             if objectType is not 'all':
                 geoActivity = activityLib.getRecentGeoActivity(max, scope, 0, offset, itemType = [objectType])
             else:
-                geoActivity = activityLib.getRecentGeoActivity(max, scope, 0, offset)
+                initScope = scope.replace('||', '|0|')
+                initScope = "0" + initScope
+                initScope2 = initScope + "|0"
+                scopes = [scope, initScope, initScope2]
+                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset)
             if geoActivity:
                 recentActivity = geoActivity
             else:

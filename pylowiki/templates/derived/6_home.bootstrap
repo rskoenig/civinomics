@@ -79,7 +79,7 @@
       
       <!--<h2><small>Initiatives</small></h2>-->
 
-      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '')" ng-cloak>
           {{alertMsg}}
       </div>
       <div ng-controller="createController" ng-cloak>
@@ -336,7 +336,7 @@
                 <div class="centered following-spinner" ng-show="followLoading" ng-cloak>
                   <i class="icon-spinner icon-spin icon-4x"></i>
                 </div>
-                <div ng-if="noFollowingResult" class="alert alert-info" ng-cloak>
+                <div ng-show="noFollowingResult && !followLoading" class="alert alert-info" ng-cloak>
                     You have not follwed or authored any initiatives yet.
                  </div>
                 <div class="large-spacer"></div>
