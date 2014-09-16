@@ -872,40 +872,44 @@
         <div class="centered" ng-show="positionsLoading" ng-cloak>
             <i class="icon-spinner icon-spin icon-4x"></i>
         </div>
-        <table ng-show="!positionsLoading" style="width: 100%" ng-cloak>
-            <tr>
-                <td class="lead"><h4 class="initiative-title">Support</h4></td>
-                <td class="lead"><h4 class="initiative-title">Oppose</h4></td>
-            </tr>
-            <tr>
-                <td style="width:50%; vertical-align:top;">
-                    <!-- a supporter -->
-                    <table class="table">
-                        <tr ng-repeat="s in support" class="pro">
-                            <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{s.authorPhoto}}"></td>
-                            <td>
-                                <a ng-href="{{s.authorHref}}"><strong>{{s.authorName}}</strong></a><br><small class="grey">{{s.fuzzyTime}} ago</small>
-                                <br>
-                                {{s.text}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="width:50%; vertical-align:top;">
-                    <!-- an opposer -->
-                    <table class="table">
-                        <tr ng-repeat="o in oppose" class="con"> 
-                            <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{o.authorPhoto}}"></td>
-                            <td>
-                                <a ng-href="{{o.authorHref}}"><strong>{{o.authorName}}</strong></a><br>
-                                <small class="grey">{{o.fuzzyTime}} ago</small>
-                                <br>
-                                {{o.text}}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+        <div class="row" ng-show="!positionsLoading" ng-cloak>
+            <div class="col-sm-6">
+                <h4 class="initiative-title">Support</h4>
+                <!-- a supporter -->
+                <table class="table pro">
+                    <tr ng-if="support.length == 0">
+                        <td>There are no supporters yet.</td>
+                    </tr>
+                    <tr ng-repeat="s in support">
+                        <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{s.authorPhoto}}"></td>
+                        <td>
+                            <a ng-href="{{s.authorHref}}"><strong>{{s.authorName}}</strong></a><br><small class="grey">{{s.fuzzyTime}} ago</small>
+                            <br>
+                            {{s.text}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <h4 class="initiative-title">Oppose</h4>
+                <!-- an opposer -->
+                <table class="table con">
+                    <tr ng-if="oppose.length == 0">
+                        <td>
+                            There are no opponents yet.
+                        </td>
+                    </tr>
+                    <tr ng-repeat="o in oppose"> 
+                        <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{o.authorPhoto}}"></td>
+                        <td>
+                            <a ng-href="{{o.authorHref}}"><strong>{{o.authorName}}</strong></a><br>
+                            <small class="grey">{{o.fuzzyTime}} ago</small>
+                            <br>
+                            {{o.text}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 </%def>

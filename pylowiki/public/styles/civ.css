@@ -3251,6 +3251,10 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
+table.pro, table.con{
+  border-radius: 5px;
+}
+
 tr.con, .panel-heading.against, .con{
   background-color: #f2dede;
 }
