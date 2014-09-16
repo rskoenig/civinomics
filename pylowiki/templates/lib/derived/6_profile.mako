@@ -745,10 +745,14 @@
     <% discussions = discussionLib.getPositionsForOrganization(c.user) %>
     % for d in discussions:
         <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + d['urlCode'] %>
-        <div class="row-fluid">
-            <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
-            posted ${fuzzyTime.timeSince(d.date)} ago ${str(d['numComments'])} comments <i class="icon-eye-open"></i> ${str(d['views'])} views</br>
-        </div><!-- row-fluid -->
+        <div class="well">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
+                    <p>posted ${fuzzyTime.timeSince(d.date)} ago | ${str(d['numComments'])} comments | <i class="icon-eye-open"></i> ${str(d['views'])} views</p>
+                </div>
+            </div><!-- row -->
+        </div>
     % endfor        
 </%def>
 
