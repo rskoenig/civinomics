@@ -66,6 +66,7 @@ class HomeController(BaseController):
         return render('/derived/6_home.bootstrap')
 
     def getFollowingInitiatives(self, offset=0, limit=0):
+        log.info("in get following initiatives")
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
         else:
@@ -156,8 +157,10 @@ class HomeController(BaseController):
 				# scope attributes
 				if 'scope' in item:
 					entry['scope'] = item['scope']
+					log.info("Scope of followed initiative is %s"%item['scope'])
 				else:
-					entry['scope'] = '0||united-states||0||0||0|0'
+				    log.info("This initiative doesn't have a scope.")
+				    entry['scope'] = '0||united-states||0||0||0|0'
 				scopeInfo = utils.getPublicScope(entry['scope'])
 				entry['scopeName'] = scopeInfo['name']
 				entry['scopeLevel'] = scopeInfo['level']
@@ -174,6 +177,7 @@ class HomeController(BaseController):
 
     def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
         log.info("in following initatives GEO")
+        log.info("Geo scope is %s"%geoScope)
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
             
@@ -192,7 +196,9 @@ class HomeController(BaseController):
         
         if geoScope:
             initScope = geoScope.replace('||', '|0|')
-            initScope = "0" + initScope + "|0"
+            initScope = "0" + initScope
+            initScope2 = initScope + "|0"
+            log.info("initScope is %s"%initScope)
 
         offset = int(offset)
         limit = int(limit)
@@ -268,9 +274,9 @@ class HomeController(BaseController):
                 entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
 
                 # scope attributes
-                if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope):
+                if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope or item['scope'] == initScope2):
                     entry['scope'] = item['scope']
-                    
+                    log.info("Scope of followed initiative is %s"%item['scope'])
                     scopeInfo = utils.getPublicScope(entry['scope'])
                     entry['scopeName'] = scopeInfo['name']
                     entry['scopeLevel'] = scopeInfo['level']
@@ -281,12 +287,6 @@ class HomeController(BaseController):
 				
                     result.append(entry)
 
-#                 else:                 
-#                     log.info("item      %s", item['scope'])
-#                     log.info("with 0s   %s",initScope)
-#                     log.info("unaltered %s",geoScope)
-#                     log.info(item['scope'] == initScope)
-            log.info(len(result))
             if len(result) == 0:
                 return json.dumps({'statusCode':1})
             return json.dumps({'statusCode':0, 'result': result})

@@ -1145,7 +1145,8 @@ class SearchController(BaseController):
             initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
             if initiatives and len(initiatives) != 0:
                 i = initiatives[-1]
-                entry['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
+                if 'directoryNum_photos' in i:
+                    entry['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
             else:
                 photos = photoLib.searchPhotos('scope', photoScope)
                 if photos and len(photos) != 0:
