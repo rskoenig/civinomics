@@ -66,7 +66,7 @@
                 </div>
             % endif
             <div class="well">
-                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; updateGeoLinks();";>
+                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; updateGeoLinks();">
                     <div class="row">
                         % if c.user['memberType'] != 'organization':
                         <div class="col-sm-7">
@@ -100,39 +100,66 @@
                     <hr>
                     <div class="row">
                         <div class="col-xs-12">
-                            <div>
+                            <span class="profile-dash-button pull-right">
                                 % if c.user['email'] == c.authuser['email']:
                                     <a class="btn btn-default" href="/profile/${c.user['urlCode']}/${c.user['url']}/edit"><strong>Edit Profile</strong></a>
                                 % else:
                                     ${helpers.followButton(c.user)}
                                 % endif
-                            </div>
-                            % if c.user['memberType'] == 'organization':
-                                <!--
-                                <table id="metrics">
+                            </span>
+
+                            % if c.user['memberType'] != 'organization':
+                                <table id="metrics" class="table-inline">
                                     <tr>
-                                        <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
+                                        <td style="padding-left: 0px;">
+                                            <% 
+                                                thingListingURL = "/profile/%s/%s/ideas" %(c.user['urlCode'], c.user['url'])
+                                                if 'idea_counter' in c.user:
+                                                    numThings = c.user['idea_counter']
+                                                else:
+                                                    numThings = '0'
+                                            %>
+                                            <span class="workshop-metrics">Ideas</span><br>
+                                              <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                        </td>
+                                        <td>
+                                            <% 
+                                                thingListingURL = "/profile/%s/%s/discussions" %(c.user['urlCode'], c.user['url'])
+                                                if 'discussion_counter' in c.user:
+                                                    numThings = c.user['discussion_counter']
+                                                else:
+                                                    numThings = '0'
+                                            %>
+                                            <span class="workshop-metrics">Discussions</span><br>
+                                              <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                        </td>
+                                        <td>
+                                            <% 
+                                                thingListingURL = "/profile/%s/%s/resources" %(c.user['urlCode'], c.user['url'])
+                                                if 'resource_counter' in c.user:
+                                                    numThings = c.user['resource_counter']
+                                                else:
+                                                    numThings = '0'
+                                            %>
+                                            <span class="workshop-metrics">Resources</span><br>
+                                              <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                        </td>
+                                        <td>
+                                            <% 
+                                                thingListingURL = "/profile/%s/%s/followers" %(c.user['urlCode'], c.user['url'])
+                                                if 'follower_counter' in c.user:
+                                                    numThings = c.user['follower_counter']
+                                                else:
+                                                    numThings = '0'
+                                            %>
                                             <span class="workshop-metrics">Followers</span><br>
-                                              <strong ng-cloak>100</strong>
+                                              <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
                                         </td>
-                                        <td class="clickable" ng-click="toggleAdopted()">
-                                            <span class="workshop-metrics">Members</span><br>
-                                              <strong ng-cloak>100</strong>
-                                        </td>
-                                        % if c.user['email'] != c.authuser['email']:
-                                            <td>
-                                                ${helpers.followButton(c.user)}
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-warning">Become a member</button>
-                                            </td>
-                                        % endif
                                     </tr>
                                 </table>
-                                -->
                             % endif
-                        </div>
-                    </div>
+                        </div><!-- col-xs-12 -->
+                    </div><!-- row -->
                 </div>
             </div>
             % if c.user['memberType'] == 'organization':

@@ -3455,6 +3455,15 @@ hr.object-list-header{
   vertical-align: top;
 }
 
+table.table-inline{
+  display: inline;
+}
+
+.profile-dash-button button{
+  margin-top: 8px;
+  vertical-align: top;
+}
+
 .splash-initiative{
   padding: 8px 0 8px 0 !important;
 }
