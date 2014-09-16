@@ -159,6 +159,27 @@
                         <span class="error help-block" ng-show="infoEdit.member_name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
 				    </div> <!-- /.col-xs-12 -->
 			    </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="greetingMsg" class="control-label">Short bio:</label>
+                        <input class="form-control" type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="col-sm-10">
+                        <span class="help-block">Displayed with your posts (e.g. Thomas Jefferson, 3rd President of the United States; Founding Father; Principle Author, Declaration of Independence )</span>
+                    </div> <!-- /.col-xs-12 -->
+                </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="orgLink" class="control-label">Your website:</label>
+                        <input type="text" class="col-sm-10 form-control" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
+                    </div> <!-- /.col-xs-12 -->
+                </div> <!-- /.form-group -->
+                <!--
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="orgLinkMsg" class="control-label">A description of your website:</label>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="col-sm-10 form-control"></textarea>
+                    </div> 
+                </div>
+                -->
 			    <div class="form-group">
 				    <div class="col-xs-12">
                         <label for="email" class="control-label">Email:</label>
@@ -172,25 +193,6 @@
                         <br />
                         <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
-				    </div> <!-- /.col-xs-12 -->
-			    </div> <!-- /.form-group -->
-        	    <div class="form-group">
-				    <div class="col-xs-12">
-                        <label for="greetingMsg" class="control-label">Short bio:</label>
-                        <input class="form-control" type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="col-sm-10">
-                        <span class="help-block">Displayed with your posts<br>(example: Thomas Jefferson, Founding Father)</span>
-				    </div> <!-- /.col-xs-12 -->
-			    </div> <!-- /.form-group -->
-       	        <div class="form-group">
-    			    <div class="col-xs-12">
-                        <label for="orgLink" class="control-label">Your website:</label>
-                        <input type="text" class="col-sm-10 form-control" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
-				    </div> <!-- /.col-xs-12 -->
-			    </div> <!-- /.form-group -->
-       	        <div class="form-group">
-				    <div class="col-xs-12">
-                        <label for="orgLinkMsg" class="control-label">A description of your website:</label>
-                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="col-sm-10 form-control"></textarea>
 				    </div> <!-- /.col-xs-12 -->
 			    </div> <!-- /.form-group -->
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
@@ -268,7 +270,7 @@
                 <div id="fileupload-button-div" class="row fileupload-buttonbar collapse in">
                     <div class="col-sm-10 col-sm-offset-1">
                         <!-- The fileinput-button span is used to style the file input field as button -->
-                        <span class="btn btn-success fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
+                        <span class="btn btn-success btn-lg fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
                             <i class="icon-plus icon-white"></i>
                             <span>Select your picture</span>
                             <input type="file" name="files[]">
@@ -299,7 +301,7 @@
                             <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                            <button type="button" class="btn btn-primary btn-lg start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
                                 <i class="icon-upload icon-white"></i>
                                 <span>Start</span>
                             </button>

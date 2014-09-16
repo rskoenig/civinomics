@@ -53,7 +53,6 @@
                                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/csv">Upload</a></li>
                                 % endif
                             % endif
-                            <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                         % endif
                     % endif
                 </ul>
@@ -67,27 +66,36 @@
                 </div>
             % endif
             <div class="well">
-                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; zipValue='${c.user['postalCode']}'; updateGeoLinks();";>
+                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; updateGeoLinks();";>
                     <div class="row">
+                        % if c.user['memberType'] != 'organization':
                         <div class="col-sm-7">
                             <h1 ng-cloak>{{fullName}}</h1>
                             <p class="grey" ng-cloak>{{greetingMsg}}</p>
                         </div>
                         <div class="col-sm-5 top-space-md">
-                            % if c.user['memberType'] != 'organization':
-                                <!-- user flags -->
-                                <div ng-controller="zipLookupCtrl" style="float: right;">
-                                    <table ng-show="!loading">
-                                        <tr>
-                                            <td ng-repeat="geo in geos">
-                                                <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space border" src="{{geo.flag}}" ng-cloak></a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <p>${lib_6.userGeoLink(c.user)}</p>
-                                </div><!-- ng-controller -->
-                            % endif
+                            <!-- user flags -->
+                            <div ng-controller="zipLookupCtrl" style="float: right;">
+                                <table ng-show="!loading">
+                                    <tr>
+                                        <td ng-repeat="geo in geos">
+                                            <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space border" src="{{geo.flag}}" ng-cloak></a>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <p>${lib_6.userGeoLink(c.user)}</p>
+                            </div><!-- ng-controller -->
                         </div>
+                        % else:
+                        <div class="col-sm-12">
+                            <h1 ng-cloak>{{fullName}}</h1>
+                            <p class="grey" ng-cloak>
+                                {{greetingMsg}}
+                                <span ng-if="greetingMsg != ''"> | </span>
+                                <a ng-href="websiteLink" ng-cloak>{{websiteLink}}</a>
+                            </p>
+                        </div>
+                        % endif
                     </div>
                     <hr>
                     <div class="row">

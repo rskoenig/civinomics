@@ -2152,7 +2152,9 @@ li.thumbnail-gallery{
     margin-bottom:0;
 }
 .form-actions.save-profile{
-    padding-left:190px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin-left:-10px;
     margin-right:-10px;
     margin-bottom:-20px;
@@ -2162,7 +2164,8 @@ li.thumbnail-gallery{
     margin-top:30px;
 }
 .civAvatarUploadForm{
-   margin-top:40px;
+  text-align: center;
+  margin-top:30px;
 }
 
 .comment-data h1{
