@@ -145,9 +145,6 @@ function geoProfileController($scope, $http) {
 			$scope.activityType = '/geo/'+$scope.currentScope;
 			$scope.getActivity();
 		} 
-		else if (type === 'initiative') {
-			$scope.browseInitiatives();	
-		} 
 		else {
 			$scope.getGeoScopedActivityType($scope.currentScope, type);
 /*	

@@ -277,7 +277,8 @@ def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = '')
         .filter(Thing.data.any(wc('deleted', u'0')))\
         .filter(Thing.data.any(or_(wkcl('scope', scopes[0]),  wkcl('scope', scopes[1]), wkcl('scope', scopes[2]))))\
         .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
-        .order_by('-date')
+        .order_by('-date')\
+        .offset(offset)
     if limit:
         postList += q.limit(limit)
     else:

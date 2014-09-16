@@ -341,7 +341,12 @@ class HomeController(BaseController):
             # try getting the activity of their area
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
             if objectType is not 'all':
-                geoActivity = activityLib.getRecentGeoActivity(max, scope, 0, offset, itemType = [objectType])
+                log.info("Getting an object of type %s for scope %s"%(objectType, scope))
+                initScope = scope.replace('||', '|0|')
+                initScope = "0" + initScope
+                initScope2 = initScope + "|0"
+                scopes = [scope, initScope, initScope2]
+                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset, itemType = [objectType])
             else:
                 initScope = scope.replace('||', '|0|')
                 initScope = "0" + initScope
@@ -384,13 +389,8 @@ class HomeController(BaseController):
 		    	alertMsg = "There are no upcoming meetings listed for this area yet."
 		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 		    	
-        elif type == 'initiatives':
-            if scope is not 'none':
-                initScope = scope.replace('||', '|0|')
-                initScope = "0" + initScope + "|0"
-                recentActivity = activityLib.getInitiativeActivity(max, 0, offset, geoScope = initScope)
-            else:
-                recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+        elif type == 'initiatives' and scope is 'none':
+            recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
         else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)

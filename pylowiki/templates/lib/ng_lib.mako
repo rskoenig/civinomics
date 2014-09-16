@@ -182,14 +182,7 @@
         <div ng-controller="yesNoVoteCtrl"> 
             ${authorPosting()}
             <div class="row" style="margin-top:19px;">
-                <div class="col-sm-3">
-                    <div class="listed-photo">
-                        <a href = '{{item.href}}'>
-                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-                        </a>
-                    </div>
-                </div>
-                <div class="col-sm-9 no-left">
+                <div class="col-sm-12">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>

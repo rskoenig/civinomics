@@ -195,6 +195,10 @@
       <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
         <!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
         <tr>
+          <td ng-if="item.objType == 'workshop'">
+				${ng_helpers.workshop_listing()}
+		  </td>
+		  
           <td ng-if="item.objType == 'initiative'">
             ${ng_helpers.initiative_listing()}
           </td>

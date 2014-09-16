@@ -85,6 +85,7 @@ function activityController($scope, $http) {
 		$scope.busy = true;
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
+		console.log($scope.offset);
 		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
@@ -99,6 +100,7 @@ function activityController($scope, $http) {
 			$scope.activitySliceLoading = false;
 			$scope.busy = false;
 			$scope.offset += $scope.sliceSize;
+			console.log($scope.offset);
 		})
 	};
 }
