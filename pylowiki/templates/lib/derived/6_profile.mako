@@ -788,28 +788,31 @@
 </%def>
 
 <%def name="addTopic()">
-    <div class="row-fluid">
-        <div class="span1">
-            ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
-        </div>
-        <div class="span11">
-            <form ng-controller="topicController" ng-init="userCode = '${c.user['urlCode']}'; userURL = '${c.user['url']}'; topicCode = 'new'; addTopicTitleResponse=''; addUpdateTextResponse=''; addTopicResponse='';"  id="addTopicForm" name="addTopicForm" ng-submit="submitTopicForm(addTopicForm)">
-                <fieldset>
-                    <label><strong ng-hide="title == ''" ng-cloak>Title</strong></label>
-                    <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" placeholder="Start a discussion topic..." required>
-                    <span ng-show="addTopicTitleShow"><div class="alert alert-danger" ng-cloak>{{addTopicTitleResponse}}</div></span>
-                </fieldset>
-                <fieldset ng-hide="title == ''" ng-cloak>
-                    <label ><strong>Topic Description</strong>
-                    <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level" ng-model="text"></textarea>
-                    <span ng-show="addTopicTextShow"><div class="alert alert-danger" ng-cloak>{{addTopicTextResponse}}</div></span>
-                    <span class="help-block"> (Describe the topic you wish to discuss in the forum.) </span>
-                </fieldset>
-                <fieldset ng-hide="title == ''" ng-cloak>
-                    <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-                </fieldset>
-           </form>
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="well" ng-controller="topicController" ng-init="userCode = '${c.user['urlCode']}'; userURL = '${c.user['url']}'; topicCode = 'new'; addTopicTitleResponse=''; addUpdateTextResponse=''; addTopicResponse='';"  id="addTopicForm" name="addTopicForm" ng-submit="submitTopicForm(addTopicForm)">
+                <div class="row">
+                    <div class="col-xs-1 form-group">
+                        ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+                    </div>
+                    <div class="col-xs-11">
+                        <div class="form-group">
+                            <label><strong ng-cloak>Title</strong></label>
+                            <input type="text" class="input-block-level form-control" name="title" ng-model="title" maxlength = "120" placeholder="Start a discussion topic..." required>
+                            <span ng-show="addTopicTitleShow"><div class="alert alert-danger" ng-cloak>{{addTopicTitleResponse}}</div></span>
+                        </div>
+                        <div class="form-group"ng-cloak>
+                            <label ><strong>Topic Description</strong>
+                            <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+                            <textarea name="text" rows="3" class="input-block-level form-control" ng-model="text" placeholder="Describe the topic you wish to discuss in the forum."></textarea>
+                            <span ng-show="addTopicTextShow"><div class="alert alert-danger" ng-cloak>{{addTopicTextResponse}}</div></span>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success pull-right" type="submit" name="submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </%def>
