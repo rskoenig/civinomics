@@ -67,11 +67,11 @@
         <div class="col-xs-12" style="margin-top: 5px; margin-bottom: 10px;">
           <ul class="nav nav-pills">
             <li ng-class="{'active' : activityType == '/all'}"><a ng-click="getAllActivity()"> Activity </a></li>
-            <li ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
+            <li ng-if="geoScope === ''" ng-class="{'active' : activityType == '/initiatives'}"><a ng-click="browseInitiatives()"> Initiatives </a></li>
             % if c.authuser:
-              <li ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
-              <li ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> County Activity</a></li>
-              <li ng-class="{'active' : activityType == '/meetings'}"><a ng-click="getMeetingActivity()"> Upcoming Meetings </a></li>
+              <li ng-if="geoScope === ''" ng-class="{'active' : activityType == '/following'}"><a ng-click="getFollowingActivity()"> Following Activity</a></li>
+              <li ng-if="geoScope === ''" ng-class="{'active' : activityType == '/geo'}"><a ng-click="getGeoActivity()"> County Activity</a></li>
+              <li ng-if="geoScope === ''" ng-class="{'active' : activityType == '/meetings'}"><a ng-click="getMeetingActivity()"> Upcoming Meetings </a></li>
             % endif
           </ul>
         </div>

@@ -386,7 +386,9 @@ class HomeController(BaseController):
 		    	
         elif type == 'initiatives':
             if scope is not 'none':
-                recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
+                initScope = scope.replace('||', '|0|')
+                initScope = "0" + initScope + "|0"
+                recentActivity = activityLib.getInitiativeActivity(max, 0, offset, geoScope = initScope)
             else:
                 recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 

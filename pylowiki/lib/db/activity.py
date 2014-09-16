@@ -238,7 +238,7 @@ def getRecentActivity(limit, comments = 0, offset = 0):
         else:
             return []
 
-def getInitiativeActivity(limit, comments = 0, offset = 0):
+def getInitiativeActivity(limit, comments = 0, offset = 0, geoScope = False):
         objectList = ['initiative']
         if comments:
             objectList.append('comment')
@@ -249,6 +249,8 @@ def getInitiativeActivity(limit, comments = 0, offset = 0):
             .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .order_by('-date')\
             .offset(offset)
+        if geoScope:
+            q.filter(Thing.data.any(wkcl('scope', geoScope)))
         if limit:
             postList = q.limit(limit)
         else:
