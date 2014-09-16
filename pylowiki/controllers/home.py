@@ -66,7 +66,7 @@ class HomeController(BaseController):
         return render('/derived/6_home.bootstrap')
 
     def getFollowingInitiatives(self, offset=0, limit=0):
-        log.info("in get following initiatives")
+#         log.info("in get following initiatives")
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
         else:
@@ -194,7 +194,7 @@ class HomeController(BaseController):
             initScope = geoScope.replace('||', '|0|')
             initScope = "0" + initScope
             initScope2 = initScope + "|0"
-            log.info("initScope is %s"%initScope)
+            #log.info("initScope is %s"%initScope)
 
         offset = int(offset)
         limit = int(limit)
@@ -272,7 +272,7 @@ class HomeController(BaseController):
                 # scope attributes
                 if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope or item['scope'] == initScope2):
                     entry['scope'] = item['scope']
-                    log.info("Scope of followed initiative is %s"%item['scope'])
+                    #log.info("Scope of followed initiative is %s"%item['scope'])
                     scopeInfo = utils.getPublicScope(entry['scope'])
                     entry['scopeName'] = scopeInfo['name']
                     entry['scopeLevel'] = scopeInfo['level']
@@ -340,19 +340,17 @@ class HomeController(BaseController):
         elif type=='geo' and scope is not 'none':
             # try getting the activity of their area
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+            initScope = scope.replace('||', '|0|')
+            initScope = "0" + initScope
+            initScope2 = initScope + "|0"
+            scopes = [scope, initScope, initScope2]
+            
             if objectType is not 'all':
-                log.info("Getting an object of type %s for scope %s"%(objectType, scope))
-                initScope = scope.replace('||', '|0|')
-                initScope = "0" + initScope
-                initScope2 = initScope + "|0"
-                scopes = [scope, initScope, initScope2]
+                #log.info("Getting an object of type %s for scope %s"%(objectType, scope))
                 geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset, itemType = [objectType])
             else:
-                initScope = scope.replace('||', '|0|')
-                initScope = "0" + initScope
-                initScope2 = initScope + "|0"
-                scopes = [scope, initScope, initScope2]
                 geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset)
+                
             if geoActivity:
                 recentActivity = geoActivity
             else:
@@ -366,7 +364,7 @@ class HomeController(BaseController):
 		    countyScope = scopeList[6]
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    log.info(countyScope)
+		    #log.info(countyScope)
 		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
 		    if countyActivity:
 		    	recentActivity = countyActivity
