@@ -33,44 +33,45 @@ class DiscussionController(BaseController):
 
     def __before__(self, action, workshopCode = None):
         publicOrPrivate = ['index', 'topic', 'thread']
+        independentDiscussion = False
         
         if workshopCode is not None:
-            abort(404)
             c.w = workshopLib.getWorkshopByCode(workshopCode)
             if not c.w:
-                abort(404)
+                independentDiscussion = True
             
-            c.mainImage = mainImageLib.getMainImage(c.w)
+            if not independentDiscussion:
+                c.mainImage = mainImageLib.getMainImage(c.w)
         
-            #################################################
-            # these values are needed for facebook sharing
-            c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
-            shareOk = workshopLib.isPublic(c.w)
-            c.facebookShare = FacebookShareObject(
-                itemType='workshop',
-                url=utils.workshopURL(c.w) + '/discussion',
-                parentCode=workshopCode, 
-                image=c.backgroundImage,
-                title=c.w['title'],
-                description=c.w['description'].replace("'", "\\'"),
-                shareOk = shareOk
-            )
-            # add this line to tabs in the workshop in order to link to them on a share:
-            # c.facebookShare.url = c.facebookShare.url + '/activity'
-            #################################################
+                #################################################
+                # these values are needed for facebook sharing
+                c.backgroundImage = utils.workshopImageURL(c.w, c.mainImage)
+                shareOk = workshopLib.isPublic(c.w)
+                c.facebookShare = FacebookShareObject(
+                    itemType='workshop',
+                    url=utils.workshopURL(c.w) + '/discussion',
+                    parentCode=workshopCode, 
+                    image=c.backgroundImage,
+                    title=c.w['title'],
+                    description=c.w['description'].replace("'", "\\'"),
+                    shareOk = shareOk
+                )
+                # add this line to tabs in the workshop in order to link to them on a share:
+                # c.facebookShare.url = c.facebookShare.url + '/activity'
+                #################################################
     
-            # Demo workshop status
-            c.demo = workshopLib.isDemo(c.w)
+                # Demo workshop status
+                c.demo = workshopLib.isDemo(c.w)
         
-            workshopLib.setWorkshopPrivs(c.w)
-            if c.w['public_private'] == 'public':
-                c.scope = geoInfoLib.getPublicScope(c.w)
-            if action in publicOrPrivate:
-                if c.w['public_private'] != 'public':
-                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                        abort(404)
-            if 'user' in session:
-                utils.isWatching(c.authuser, c.w)
+                workshopLib.setWorkshopPrivs(c.w)
+                if c.w['public_private'] == 'public':
+                    c.scope = geoInfoLib.getPublicScope(c.w)
+                if action in publicOrPrivate:
+                    if c.w['public_private'] != 'public':
+                        if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                            abort(404)
+                if 'user' in session:
+                    utils.isWatching(c.authuser, c.w)
 
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
