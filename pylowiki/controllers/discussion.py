@@ -265,9 +265,7 @@ class DiscussionController(BaseController):
                 support.append(entry)
             elif p['position'] == 'oppose':
                 oppose.append(entry)
-                
-        if len(support) == 0 and len(oppose) == 0:
-            return json.dumps({'status':1})
+
         else:
             return json.dumps({'support': support, 'oppose': oppose})   
              
