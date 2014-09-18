@@ -73,6 +73,10 @@ h5.h45, h4.h45{
   margin-bottom: 5px;
 }
 
+.light{
+  font-weight: 300;
+}
+
 .listed-item-title{
   color: #333333;
 }

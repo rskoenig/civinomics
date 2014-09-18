@@ -478,15 +478,15 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label" for="memberType">Membership Type</label>
+                <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
                 <div class="col-sm-8">
                     <label class="radio">
                         <input type="radio" name="memberType" id="memberType1" ng-model="memberType1" value="professional" checked>
-                        This membership is for an individual
+                        Individual <span class="light">(vote, suggest new ideas)</span>
                     </label>
                     <label class="radio">
                         <input type="radio" name="memberType" id="memberType2" ng-model="memberType2" value="organization">
-                        This membership is for an organization
+                        Organization <span class="light">(take positions, have members)</span>
                     </label>
                 </div>
             </div>
