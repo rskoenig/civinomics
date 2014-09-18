@@ -614,7 +614,7 @@
                     <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
 
                     <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
-                    <div class="top-space green" id="resendMessage"></div>
+                    <div class="" id="resendMessage"></div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
