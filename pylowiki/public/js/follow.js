@@ -35,7 +35,7 @@ $('button.followButton').click(function(e){
         if(urlList[0] == 'profile'){
             var bText = '<span><i class="icon-user"></i><strong> Following </strong></span>';
         } else {
-            var bText = '<span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>';
+            var bText = '<span><i class="icon-bookmark"></i><strong> Following </strong></span>';
         }
         $button.html(bText);
     }

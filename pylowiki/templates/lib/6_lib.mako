@@ -218,7 +218,7 @@
         <div class="btn-group facebook">
           % if 'btn' in kwargs:
             <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
-              <i class="icon-facebook icon-light right-space"></i> | Share
+              <i class="glyphicon glyphicon-share-alt"></i> Share
             </a>
           % else:
             <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
@@ -226,6 +226,16 @@
             </a>
           % endif
           <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            % if not c.privs['provisional'] and c.initiative:
+                <%
+                    subj = 'Vote on "' + c.initiative['title'] + '"'
+                    subj = subj.replace(' ','%20')
+                    body = initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+                %>
+                <li>
+                    <a href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope"></i> Email</i></a>
+                </li>
+            % endif
             <li>
               % if shareOnWall:
                 <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
@@ -621,9 +631,26 @@
     <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
     <div ng-controller="positionsCtrl">
 
-        <div ng-show="userStatement.support" class="alert alert-success" ng-cloak>Your organization has posted a position statement in support of this {{objType}}.<br><br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+        <!-- if org has already made a position statement -->
 
-        <div ng-show="userStatement.oppose" class="alert alert-danger" ng-cloak>Your organization has posted a position statement in opposition to this {{objType}}.<br><br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+        <div ng-show="userStatement.support" class="alert alert-success" ng-cloak>Your organization has posted a position statement in support of this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+
+        <div ng-show="userStatement.oppose" class="alert alert-danger" ng-cloak>Your organization has posted a position statement in opposition to this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+
+        <div ng-init="inPage = true;">
+            <div ng-controller="yesNoVoteCtrl">
+                <div ng-show="userStatement.madeStatement" ng-cloak>
+                    <small class="grey">{{totalVotes}} votes <span>| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+                    <div class="progress" style="height: 12px; margin-bottom: 5px;">
+                        <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
+                    </div>
+                    <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+                    <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- if org has not yet made a position statement -->
 
         <form ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
             <div class="form-group">

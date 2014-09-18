@@ -7,25 +7,19 @@
 <% lib.return_to() %>
     <h4 class="initiative-title">Summary</h4>
     ${ihelpers.showDescription()}
-    ${ihelpers.showAuthor(c.initiative)}
 
     % if c.initiative['funding_summary']:
         <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
         ${ihelpers.showFunding_Summary()}
     % endif
+
     % if c.initiative['cost']:
         ${ihelpers.showCost(c.initiative)}
     % endif
-    <br>
+
+    <!-- metadata -->
     <hr>
-    % if c.initiative['background']:
-        <h4 class="initiative-title">Background</h4>
-        ${ihelpers.showBackground()}
-    % endif
-    % if c.initiative['proposal']:
-        <h4 class="initiative-title">Proposal</h4>
-        ${ihelpers.showProposal()}
-    % endif 
+    ${ihelpers.showAuthor(c.initiative)}
     % if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
@@ -33,6 +27,19 @@
         <div class="text-right">
             ${ihelpers.initiativeModerationPanel(c.initiative)}
         </div>
+    % endif
+
+    % if c.initiative['background']:
+        <hr>
+        <h4 class="initiative-title">Background</h4>
+        ${ihelpers.showBackground()}
+    % endif
+
+    % if c.initiative['proposal']:
+        <h4 class="initiative-title">Proposal</h4>
+        ${ihelpers.showProposal()}
+    % endif 
+
     % if c.updates:
         <hr>
         <div id="updates">
@@ -40,14 +47,14 @@
             ${ihelpers.showUpdateList()}
         </div>
     % endif
+
+    ${ihelpers.showSupportOppose()}
+    <hr>
+    <h4 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h4>
+    ${ihelpers.listResources()}
+    <br>
+    % if c.initiative.objType != 'initiativeUnpublished':
         <hr>
-        <h4 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h4>
-        ${ihelpers.listResources()}
-        <br>
-        ${ihelpers.showSupportOppose()}
-        % if c.initiative.objType != 'initiativeUnpublished':
-            <hr>
-            <h4 id="comments" class="initiative-title">Comments</h4>
-            ${comments(c.initiative, c.discussion)}
-        % endif
+        <h4 id="comments" class="initiative-title">Comments</h4>
+        ${comments(c.initiative, c.discussion)}
     % endif
