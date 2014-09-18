@@ -252,6 +252,8 @@ class DiscussionController(BaseController):
         # jsonify
         support = []
         oppose = []
+        userStatement = {}
+        userStatement['madeStatement'] = False
         for p in positions:
             entry = {}
             org = userLib.getUserByID(p.owner)
@@ -266,6 +268,16 @@ class DiscussionController(BaseController):
             elif p['position'] == 'oppose':
                 oppose.append(entry)
 
+            if org['urlCode'] == c.authuser['urlCode']:
+                userStatement['madeStatement'] = True
+                userStatement['url'] = entry['authorHref'] + "/position/show/4VAv"
+                if p['position'] == 'support':
+                    userStatement['support'] = True
+                    userStatement['oppose'] = False
+                else:
+                    userStatement['support'] = False
+                    userStatement['oppose'] = True
+
         else:
-            return json.dumps({'support': support, 'oppose': oppose})   
+            return json.dumps({'support': support, 'oppose': oppose, 'userStatement': userStatement})   
              

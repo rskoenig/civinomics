@@ -867,7 +867,7 @@
 
 <%def name="showSupportOppose()">
     <hr>
-    <div ng-init="code = '${c.initiative['urlCode']}'"></div>
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
     <div ng-controller="positionsCtrl">
         <div class="centered" ng-show="positionsLoading" ng-cloak>
             <i class="icon-spinner icon-spin icon-4x"></i>

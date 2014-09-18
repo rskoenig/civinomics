@@ -1,6 +1,5 @@
 function positionsCtrl($scope, $http) {
   
-    $scope.objType = 'initiative'
     $scope.getPositionsUrl = '/getPositions/' + $scope.objType + '/' + $scope.code
     $scope.getPositions = function(){
         $scope.positionsLoading = true;
@@ -8,9 +7,17 @@ function positionsCtrl($scope, $http) {
             $scope.support = data.support
             $scope.oppose = data.oppose
             $scope.positionsLoading = false;
+
+            $scope.userStatement = data.userStatement;
+            $scope.checkingMadeStatement = false;
+
         });
     }
-    
+
+    $scope.checkingMadeStatement = true
+    $scope.userStatement = {}
+    $scope.userStatement.madeStatement = false
+
     $scope.getPositions()
-    
+
 };

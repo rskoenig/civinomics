@@ -617,35 +617,44 @@
 </%def>
 
 <%def name="orgPosition(thing)">
-    <form action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST">
-        <div class="form-group">
-            <label class="radio-inline">
-                <input type="radio" name="position" id="positionSupport" value="support" checked>
-                Support
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="position" id="positionOppose" value="oppose">
-                Oppose
-            </label>
-        </div>
-        <div class="form-group">
-            <label style="font-weight: 400;">
-                Statement:
-            </label>
-            % if not c.privs['provisional']:
-                <textarea class="form-control" rows="3" name="text" required></textarea>
-            % else:
-                <a href="#activateAccountModal" data-toggle="modal">
+    <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+    <div ng-controller="positionsCtrl">
+
+        <div ng-show="userStatement.support" class="alert alert-success" ng-cloak>Your organization has posted a position statement in support of this {{objType}}.<br><br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+
+        <div ng-show="userStatement.oppose" class="alert alert-danger" ng-cloak>Your organization has posted a position statement in opposition to this {{objType}}.<br><br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+
+        <form ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
+            <div class="form-group">
+                <label class="radio-inline">
+                    <input type="radio" name="position" id="positionSupport" value="support" checked>
+                    Support
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="position" id="positionOppose" value="oppose">
+                    Oppose
+                </label>
+            </div>
+            <div class="form-group">
+                <label style="font-weight: 400;">
+                    Statement:
+                </label>
+                % if not c.privs['provisional']:
                     <textarea class="form-control" rows="3" name="text" required></textarea>
-                </a>
+                % else:
+                    <a href="#activateAccountModal" data-toggle="modal">
+                        <textarea class="form-control" rows="3" name="text" required></textarea>
+                    </a>
+                % endif
+            </div>
+            % if not c.privs['provisional']:
+                <button class="btn btn-success pull-right">Submit</button>
+            % else:
+                <a class="btn btn-success pull-right" href="#activateAccountModal" data-toggle="modal">Submit</a>
             % endif
-        </div>
-        % if not c.privs['provisional']:
-            <button class="btn btn-success pull-right">Submit</button>
-        % else:
-            <a class="btn btn-success pull-right" href="#activateAccountModal" data-toggle="modal">Submit</a>
-        % endif
-    </form>
+        </form>
+    </div>
     <div class="spacer"></div>
 </%def>
 
