@@ -627,61 +627,57 @@
 </%def>
 
 <%def name="orgPosition(thing)">
-    <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
-    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
-    <div ng-controller="positionsCtrl">
 
-        <!-- if org has already made a position statement -->
+    <!-- if org has already made a position statement -->
 
-        <div ng-show="userStatement.support" class="alert alert-success" ng-cloak>Your organization has posted a position statement in support of this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+    <div ng-show="userStatement.support" class="alert alert-success" ng-cloak>Your organization has posted a position statement in support of this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
 
-        <div ng-show="userStatement.oppose" class="alert alert-danger" ng-cloak>Your organization has posted a position statement in opposition to this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+    <div ng-show="userStatement.oppose" class="alert alert-danger" ng-cloak>Your organization has posted a position statement in opposition to this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
 
-        <div ng-init="inPage = true;">
-            <div ng-controller="yesNoVoteCtrl">
-                <div ng-show="userStatement.madeStatement" ng-cloak>
-                    <small class="grey">{{totalVotes}} votes <span>| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
-                    <div class="progress" style="height: 12px; margin-bottom: 5px;">
-                        <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
-                    </div>
-                    <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
-                    <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+    <div ng-init="inPage = true;">
+        <div ng-controller="yesNoVoteCtrl">
+            <div ng-show="userStatement.madeStatement" ng-cloak>
+                <small class="grey">{{totalVotes}} votes <span>| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+                <div class="progress" style="height: 12px; margin-bottom: 5px;">
+                    <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
                 </div>
+                <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+                <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
             </div>
         </div>
-
-        <!-- if org has not yet made a position statement -->
-
-        <form ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
-            <div class="form-group">
-                <label class="radio-inline">
-                    <input type="radio" name="position" id="positionSupport" value="support" checked>
-                    Support
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="position" id="positionOppose" value="oppose">
-                    Oppose
-                </label>
-            </div>
-            <div class="form-group">
-                <label style="font-weight: 400;">
-                    Statement:
-                </label>
-                % if not c.privs['provisional']:
-                    <textarea class="form-control" rows="3" name="text" required></textarea>
-                % else:
-                    <a href="#activateAccountModal" data-toggle="modal">
-                        <textarea class="form-control" rows="3" name="text" required></textarea>
-                    </a>
-                % endif
-            </div>
-            % if not c.privs['provisional']:
-                <button class="btn btn-success pull-right">Submit</button>
-            % else:
-                <a class="btn btn-success pull-right" href="#activateAccountModal" data-toggle="modal">Submit</a>
-            % endif
-        </form>
     </div>
+
+    <!-- if org has not yet made a position statement -->
+
+    <form ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
+        <div class="form-group">
+            <label class="radio-inline">
+                <input type="radio" name="position" id="positionSupport" value="support" checked>
+                Support
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="position" id="positionOppose" value="oppose">
+                Oppose
+            </label>
+        </div>
+        <div class="form-group">
+            <label style="font-weight: 400;">
+                Statement:
+            </label>
+            % if not c.privs['provisional']:
+                <textarea class="form-control" rows="3" name="text" required></textarea>
+            % else:
+                <a href="#activateAccountModal" data-toggle="modal">
+                    <textarea class="form-control" rows="3" name="text" required></textarea>
+                </a>
+            % endif
+        </div>
+        % if not c.privs['provisional']:
+            <button class="btn btn-success pull-right">Submit</button>
+        % else:
+            <a class="btn btn-success pull-right" href="#activateAccountModal" data-toggle="modal">Submit</a>
+        % endif
+    </form>
     <div class="spacer"></div>
 </%def>
 
@@ -2160,4 +2156,49 @@
   <a ${initiativeLink(i)}>
       <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
+</%def>
+
+<%def name="showSupportOppose()">
+    <div class="centered" ng-show="positionsLoading" ng-cloak>
+        <i class="icon-spinner icon-spin icon-4x"></i>
+    </div>
+    <div class="row" ng-show="!positionsLoading" ng-cloak>
+        <div class="col-sm-6">
+            <h4 class="initiative-title">Support</h4>
+            <!-- a supporter -->
+            <table class="table pro">
+                <tr ng-if="support.length == 0">
+                    <td>There are no supporters yet.</td>
+                </tr>
+                <tr ng-repeat="s in support">
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{s.authorPhoto}}"></td>
+                    <td>
+                        <a ng-href="{{s.authorHref}}"><strong>{{s.authorName}}</strong></a><br><small class="grey">{{s.fuzzyTime}} ago</small>
+                        <br>
+                        {{s.text}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <h4 class="initiative-title">Oppose</h4>
+            <!-- an opposer -->
+            <table class="table con">
+                <tr ng-if="oppose.length == 0">
+                    <td>
+                        There are no opponents yet.
+                    </td>
+                </tr>
+                <tr ng-repeat="o in oppose"> 
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{o.authorPhoto}}"></td>
+                    <td>
+                        <a ng-href="{{o.authorHref}}"><strong>{{o.authorName}}</strong></a><br>
+                        <small class="grey">{{o.fuzzyTime}} ago</small>
+                        <br>
+                        {{o.text}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </%def>

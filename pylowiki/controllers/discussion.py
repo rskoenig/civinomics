@@ -9,6 +9,7 @@ from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.utils as utils
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.comment      as commentLib
@@ -243,7 +244,7 @@ class DiscussionController(BaseController):
         if objType == 'initiative':
             thing = initiativeLib.getInitiative(code)
         elif objType == 'idea':
-            pass
+            thing = ideaLib.getIdea(code)
             
         
         pStr = ""

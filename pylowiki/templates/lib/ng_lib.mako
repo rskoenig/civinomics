@@ -387,9 +387,16 @@
     <a class="green green-hover" ng-show="comment.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
-<%def name="metaData()">
+<%def name="metaData(*args)">
     <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-    <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
+
+    % if 'inline' in args:
+        <img class="thumbnail flag inline-title-flag border no-bottom" src="{{item.flag}}"> 
+
+    % else:
+        <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
+    % endif
+
     <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
     <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
 </%def>

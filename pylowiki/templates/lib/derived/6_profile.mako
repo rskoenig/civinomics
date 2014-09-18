@@ -771,7 +771,10 @@
             parentTitle = c.discussion['initiative_title']
         else:
             parentType = 'idea'
-            parentURL = "/workshop/%s/%s/idea/%s/%s"%(c.discussion['workshopCode'], c.discussion['workshop_url'], c.discussion['ideaCode'], c.discussion['idea_url'])
+            if 'workshopCode' in c.discussion:
+                parentURL = "/workshop/%s/%s/idea/%s/%s"%(c.discussion['workshopCode'], c.discussion['workshop_url'], c.discussion['ideaCode'], c.discussion['idea_url'])
+            else:
+                parentURL = "/idea/%s/%s"%(c.discussion['ideaCode'], c.discussion['idea_url'])
             parentTitle = c.discussion['idea_title']
     %>
     <div class="row">

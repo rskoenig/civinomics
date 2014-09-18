@@ -2400,6 +2400,14 @@ text-align: right;
   box-shadow: -1px 1px 1px #dff0d8;
 }
 
+.inline-title-flag{
+  width: auto!important;
+  height: 35px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline;
+}
+
 .small-flag{
   width:40px !important; 
   height: 27px;

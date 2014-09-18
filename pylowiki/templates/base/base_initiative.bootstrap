@@ -97,7 +97,11 @@
                             % elif c.authuser and c.authuser['memberType'] == 'organization':
                                 <h4 class="text-center gray">Position</h4>
                                 <hr class="narrow">
-                                ${lib_6.orgPosition(c.initiative)}
+                                <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
+                                <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+                                <div ng-controller="positionsCtrl">
+                                    ${lib_6.orgPosition(c.initiative)}
+                                </div>
                             % else:
                                 <h4 class="text-center gray">Vote</h4>
                                 <hr class="narrow">
@@ -149,7 +153,7 @@
                                             % endif
                                         </span>
                                     % endif
-                                    
+
                                     % if c.initiativeHome and c.initiative.objType != 'revision':
                                         ${ihelpers.watchButton(c.initiative)}
                                     % endif

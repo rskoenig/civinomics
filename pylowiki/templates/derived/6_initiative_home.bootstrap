@@ -48,7 +48,12 @@
         </div>
     % endif
 
-    ${ihelpers.showSupportOppose()}
+    <hr>
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+    <div ng-controller="positionsCtrl">
+        ${lib_6.showSupportOppose()}
+    </div>
+
     <hr>
     <h4 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h4>
     ${ihelpers.listResources()}
