@@ -398,7 +398,7 @@
     % endif
 
     <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
-    <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
+    <span ng-if="item.parentHref && item.parentTitle != ''">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
 </%def>
 
 <%def name="authorPosting()">

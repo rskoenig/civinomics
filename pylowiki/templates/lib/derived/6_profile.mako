@@ -867,7 +867,7 @@
 
 <%def name="horizontalDashboard()">
     <div class="well">
-        <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; updateGeoLinks();">
+        <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();">
             <div class="row">
                 % if c.user['memberType'] != 'organization':
                 <div class="col-sm-7">

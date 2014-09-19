@@ -124,6 +124,7 @@
                                     <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
                                         <i class="icon-spinner icon-spin icon-4x"></i>
                                     </div>
+
                                     <!-- this alert not working -->
                                     <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
                                         {{alertMsg}}

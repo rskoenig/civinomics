@@ -133,22 +133,29 @@ def getJsonProperties(item):
             parentURL = item['parent_url']
             parentObjType = 'idea'
             parentObjType = 'idea'
-            entry['parentTitle'] = item['idea_title']
+            if 'idea_title' in item:
+                entry['parentTitle'] = item['idea_title']
+            else:
+                entry['parentTitle'] == ''
             entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
         elif 'resourceCode' in item:
             parentCode = item['resourceCode']
             parentURL = item['parent_url']
             parentObjType = 'resource'
             parentObjType = 'resource'
-            entry['parentTitle'] = item['resource_title']
+            if 'resource_title' in item:
+                entry['parentTitle'] = item['resource_title']
+            else:
+                entry['parentTitle'] == ''
             entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
         elif 'discussionCode' in item:
             parentCode = item['discussionCode']
             parentURL = item['parent_url']
             parentObjType = 'discussion'
             if 'discussion_title' in item:
-                # this if statement only to handle defunct objects on test server
                 entry['parentTitle'] = item['discussion_title']
+            else:
+                entry['parentTitle'] == ''
             entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
         elif 'photoCode' in item:
             parentCode = item['photoCode']
