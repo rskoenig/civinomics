@@ -21,6 +21,7 @@
             var scopeApply = function () {
                     var scope = angular.element(this)
                         .fileupload('option', 'scope')();
+                    console.log(scope);
                     if (!scope.$$phase) {
                         scope.$apply();
                     }
@@ -39,6 +40,7 @@
                 },
                 add: function (e, data) {
                     var scope = data.scope();
+                    console.log(data);
                     data.process(function () {
                         return scope.process(data);
                     }).always(
@@ -116,6 +118,7 @@
                 prependFiles: true,
                 autoUpload: false
             };
+            
             this.$get = [
                 function () {
                     return {
@@ -158,6 +161,7 @@
 	            console.log("I'm being called mwhahaha");
                 $scope.disabled = angular.element('<input type="file">')
                     .prop('disabled');
+                                console.log($scope.disabled);
                 $scope.uploadImage = false;
                 $scope.submitStatus = '-1';
                 $scope.queue = $scope.queue || [];
@@ -219,6 +223,7 @@
                     return $element.fileupload('send', data);
                 };
                 $scope.process = function (data) {
+                	console.log($element.fileupload('process', data));
                     return $element.fileupload('process', data);
                 };
                 $scope.processing = function (data) {
@@ -320,8 +325,10 @@
         .controller('FileUploadPreviewController', [
             '$scope', '$element', '$attrs', '$parse',
             function ($scope, $element, $attrs, $parse) {
+            console.log("evil controller");
                 var fn = $parse($attrs.preview),
                     file = fn($scope);
+                    console.log(file);
                 if (file.preview) {
                     $element.append(file.preview);
                     var height = $element[0].clientHeight; // what the user sees
@@ -360,12 +367,11 @@
         .controller('CoverUploadController', [
             '$scope', '$element', '$attrs', 'fileUpload', '$http',
             function ($scope, $element, $attrs, fileUpload, $http) {
-            	console.log("I'm being called");
-                $scope.disabled = angular.element('<input type="file">')
+                $scope.disabled = angular.element('coverFile')
                     .prop('disabled');
                 $scope.uploadImage = false;
                 $scope.submitStatus = '-1';
-                $scope.queue = $scope.queue || [];
+                $scope.queueC = $scope.queueC || [];
                 $scope.setImageSource = function () {
                     var data = {'source': $scope.imageSource};
                     $http.post("/profile/" + $scope.code + "/" + $scope.url + "/picture/set/image/source", data)
@@ -380,8 +386,8 @@
                     );
                 };
                 $scope.clear = function (files) {
-                    var queue = this.queue,
-                        i = queue.length,
+                    var queueC = this.queueC,
+                        i = queueC.length,
                         file = files,
                         length = 1;
                     if (angular.isArray(files)) {
@@ -389,20 +395,20 @@
                         length = files.length;
                     }
                     while (i) {
-                        if (queue[i -= 1] === file) {
-                            return queue.splice(i, length);
+                        if (queueC[i -= 1] === file) {
+                            return queueC.splice(i, length);
                         }
                     }
                 };
                 $scope.replace = function (oldFiles, newFiles) {
-                    var queue = this.queue,
+                    var queueC = this.queueC,
                         file = oldFiles[0],
                         i,
                         j;
-                    for (i = 0; i < queue.length; i += 1) {
-                        if (queue[i] === file) {
+                    for (i = 0; i < queueC.length; i += 1) {
+                        if (queueC[i] === file) {
                             for (j = 0; j < newFiles.length; j += 1) {
-                                queue[i + j] = newFiles[j];
+                                queueC[i + j] = newFiles[j];
                             }
                             return;
                         }
@@ -430,7 +436,7 @@
                     return $element.fileupload('processing', data);
                 };
                 $scope.applyOnQueue = function (method) {
-                    var list = this.queue.slice(0),
+                    var list = this.queueC.slice(0),
                         i,
                         file;
                     for (i = 0; i < list.length; i += 1) {
@@ -526,10 +532,10 @@
             function ($scope, $element, $attrs, $parse) {
             	
                 var fn = $parse($attrs.preview),
-                    coverFile = fn($scope);
+                    file = fn($scope);
                     console.log("Using cover controller");
             	console.log($attrs);
-                if (coverFile.preview) {
+                if (file.preview) {
                     $element.append(file.preview);
                     var height = $element[0].clientHeight; // what the user sees
                     var width = $element[0].clientWidth; // what the user sees
@@ -555,9 +561,9 @@
                             * c.y   ->  x coordinate of lower-right corner
                             * c.y2  ->  y coordinate of lower-right corner
                             */
-                            coverFile.width = c.w;
-                            coverFile.x = c.x;
-                            coverFile.y = c.y;
+                            file.width = c.w;
+                            file.x = c.x;
+                            file.y = c.y;
                         }
                     });
                 }
@@ -565,42 +571,37 @@
         ])
 
         .directive('fileupload', function () {
-        	console.log("DHSUAo");
             return {
                 controller: 'FileUploadController'
             };
         })
 
         .directive('progress', function () {
-        console.log("DHSUAo2");
             return {
                 controller: 'FileUploadProgressController'
             };
         })
 
         .directive('preview', function () {
-        console.log("DHSUAo3");
             return {
                 controller: 'FileUploadPreviewController'
             };
         })
         
         .directive('fileuploadcover', function () {
-        console.log("DHSUAo4");
             return {
                 controller: 'CoverUploadController'
             };
         })
 
         .directive('progresscover', function () {
-        console.log("DHSUAo5");
             return {
                 controller: 'CoverUploadProgressController'
             };
         })
 
         .directive('previewcover', function () {
-        console.log("DHSUAo6");
+        console.log("Preview Cover Directive");
             return {
                 controller: 'CoverUploadPreviewController'
             };

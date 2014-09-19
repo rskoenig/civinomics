@@ -425,7 +425,7 @@
         </form>
         
         <h4 class="initiative-title edit">Cover Photo</h4>
-	<form class="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileuploadcover="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="true">
+	<form id="fileuploadcover" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileuploadcover="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="true">
             <div id="fileinput-button-div">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 %if 'directoryNum_photos' in c.initiative and 'pictureHash_cover' in c.initiative:
@@ -437,7 +437,7 @@
                 % else:
                     <span class="pull-left">Upload a Picture (Required)</span>
                 % endif
-                <input class="fileinput-button pull-right" type="file" name="cover[]" id="coverFile">
+                <input class="fileinput-button pull-right" type="file" name="cover[]" id="fileCover">
                 <input type="hidden" name="cover" value="True">
                 </span>
                 <!-- The loading indicator is shown during file processing -->
@@ -454,13 +454,13 @@
             </div><!-- row -->
             <!-- The table listing the files available for upload/download -->
             <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
-                <tbody><tr data-ng-repeat="file in queue1">
+                <tbody><tr data-ng-repeat="file in queueC">
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
                             <script type="text/javascript">
                                 function setAction(imageHash) {
                                     actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
-                                    document.getElementById('fileupload').action = actionURL;
+                                    document.getElementById('fileuploadcover').action = actionURL;
                                 }
                             </script>
                             <div class="row">
@@ -471,17 +471,17 @@
                             </form>
 
                         </div><!-- preview -->
-                        <div class="preview" data-ng-switch-default="" data-previewcover="file" id="previewcover"></div>
+                        <div class="preview" data-ng-switch-default="" data-previewcover="file" id="preview"></div>
                             </td>
                             <td>
-                                <div ng-show="file.error"><span class="label label-important">Error</span> {{coverFile.error}}</div>
+                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!coverFile.$submit">
+                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
                                 <i class="icon-upload icon-white"></i>
                                 <span>Save</span>
                                 </button>
-                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!coverFile.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
+                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
                                 <i class="icon-ban-circle icon-white"></i>
                                 <span>Cancel</span>
                                 </button>
@@ -494,7 +494,7 @@
         <div class="row" id="photo">
             <h3 class="initiative-title edit">4. Photo</h3>
         </div><!-- row -->
-        <form class="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
+        <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
             <div id="fileinput-button-div">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
