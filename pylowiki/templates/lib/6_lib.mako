@@ -665,10 +665,10 @@
                 Statement:
             </label>
             % if not c.privs['provisional']:
-                <textarea class="form-control" rows="3" style="height: auto !important;" required></textarea>
+                <textarea class="form-control min-textarea" rows="3" required></textarea>
             % else:
                 <a href="#activateAccountModal" data-toggle="modal">
-                    <textarea class="form-control" rows="3" style="height: auto !important;" required></textarea>
+                    <textarea class="form-control min-textarea" rows="3" required></textarea>
                 </a>
             % endif
         </div>

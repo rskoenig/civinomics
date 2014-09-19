@@ -1246,6 +1246,10 @@ textarea.comment-reply{
     rows:4;
 }
 
+.min-textarea{
+  min-height: 60px;
+}
+
 .admin{
     background-color:#cebdff;
 }
