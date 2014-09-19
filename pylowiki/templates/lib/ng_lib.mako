@@ -360,7 +360,6 @@
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
             <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
         </a>
-        <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
         <a ng-click="updateNoVote()" class="downVote {{voted}}">
             <i class="icon-chevron-sign-down icon-2x {{voted}}"></i>
@@ -369,7 +368,6 @@
         <a href="#signupLoginModal" data-toggle="modal" class="upVote">
             <i class="icon-chevron-sign-up icon-2x"></i>
         </a>
-        <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
         <a href="#signupLoginModal" data-toggle="modal" class="downVote">
             <i class="icon-chevron-sign-down icon-2x"></i>
