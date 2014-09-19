@@ -905,7 +905,9 @@ class ProfileController(BaseController):
                 abort(404) # Maybe make this a json response instead
             imageHash = imageLib.generateHash(filename, c.authuser)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
-            
+            if image == False:
+                abort(404)
+
             width = min(image.size)
             x = 0
             y = 0
