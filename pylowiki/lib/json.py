@@ -192,6 +192,9 @@ def getJsonProperties(item):
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
         entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
         entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+    elif item.objType == 'initiative':
+        entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
+        entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
     elif entry['parentObjType'] == 'workshop':
         mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
         if mainImage['pictureHash'] == 'supDawg':
@@ -203,8 +206,12 @@ def getJsonProperties(item):
 
     elif entry['parentObjType'] == 'initiative':
         initiative = initiativeLib.getInitiative(item['initiativeCode'])
-        entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
-        entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+        if 'directoryNum_photos' in initiative:
+            entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+            entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+        else: 
+            entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
+            entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
     else:
         entry['mainPhoto'] = '0'
         entry['thumbnail'] = '0'
