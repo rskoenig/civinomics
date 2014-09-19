@@ -1248,6 +1248,7 @@ textarea.comment-reply{
 
 .min-textarea{
   min-height: 60px;
+  max-height: 300px;
 }
 
 .admin{

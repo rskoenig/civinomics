@@ -255,7 +255,7 @@
                     <a ng-href = '{{item.parentHref}}'><img ng-if="item.thumbnail != '0'" ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
                     <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a> <small><span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span><img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"></small>
                 </p>
-                <p>"{{item.text}}"</p>
+                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
                 ${upDownVoteBlock()}
@@ -385,6 +385,10 @@
 
 <%def name="moreLessComment()">
     <a class="green green-hover" ng-show="comment.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+</%def>
+
+<%def name="moreLessStatement()">
+    <a ng-href="{{item.href}}" target="_blank" ng-show="item.text.length > 200 && stringLimit == 201">more</a>
 </%def>
 
 <%def name="metaData(*args)">
@@ -791,4 +795,47 @@
             </select>
         </div><!-- span8 -->
     </div><!-- row-fluid -->
+</%def>
+
+<%def name="showSupportOppose()">
+    <div class="centered" ng-show="positionsLoading" ng-cloak>
+        <i class="icon-spinner icon-spin icon-4x"></i>
+    </div>
+    <div class="row" ng-show="!positionsLoading" ng-cloak>
+        <div class="col-sm-6">
+            <h4 class="initiative-title">Support</h4>
+            <!-- a supporter -->
+            <table class="table pro">
+                <tr ng-if="support.length == 0">
+                    <td>There are no supporters yet.</td>
+                </tr>
+                <tr ng-repeat="item in support">
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
+                    <td>
+                        <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br><small class="grey">{{item.fuzzyTime}} ago</small>
+                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <h4 class="initiative-title">Oppose</h4>
+            <!-- an opposer -->
+            <table class="table con">
+                <tr ng-if="oppose.length == 0">
+                    <td>
+                        There are no opponents yet.
+                    </td>
+                </tr>
+                <tr ng-repeat="item in oppose"> 
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
+                    <td>
+                        <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br>
+                        <small class="grey">{{item.fuzzyTime}} ago</small>
+                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </%def>

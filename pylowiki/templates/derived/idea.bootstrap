@@ -35,7 +35,7 @@
 				<hr>
 				<div ng-init="code = '${c.idea['urlCode']}'; objType = 'idea'"></div>
 			    <div ng-controller="positionsCtrl">
-			        ${lib_6.showSupportOppose()}
+			        ${ng_lib.showSupportOppose()}
 			    </div>
 
 				<div class="row">

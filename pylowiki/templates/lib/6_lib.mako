@@ -217,7 +217,7 @@
         </script>
         <div class="btn-group facebook">
           % if 'btn' in kwargs:
-            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+            <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
               <i class="glyphicon glyphicon-share-alt"></i> Share
             </a>
           % else:
@@ -641,8 +641,10 @@
                 <div class="progress" style="height: 12px; margin-bottom: 5px;">
                     <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
                 </div>
-                <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
-                <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+                <div class="text-right">
+                    <small ng-if="item.goal == 100" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+                    <small ng-if="!(item.goal == 100)" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+                </div>
             </div>
         </div>
     </div>
@@ -665,10 +667,10 @@
                 Statement:
             </label>
             % if not c.privs['provisional']:
-                <textarea class="form-control min-textarea" rows="3" required></textarea>
+                <textarea class="form-control min-textarea" rows="3" name="text" required></textarea>
             % else:
                 <a href="#activateAccountModal" data-toggle="modal">
-                    <textarea class="form-control min-textarea" rows="3" required></textarea>
+                    <textarea class="form-control min-textarea" rows="3" name="text" required></textarea>
                 </a>
             % endif
         </div>
@@ -2170,47 +2172,3 @@
   </a>
 </%def>
 
-<%def name="showSupportOppose()">
-    <div class="centered" ng-show="positionsLoading" ng-cloak>
-        <i class="icon-spinner icon-spin icon-4x"></i>
-    </div>
-    <div class="row" ng-show="!positionsLoading" ng-cloak>
-        <div class="col-sm-6">
-            <h4 class="initiative-title">Support</h4>
-            <!-- a supporter -->
-            <table class="table pro">
-                <tr ng-if="support.length == 0">
-                    <td>There are no supporters yet.</td>
-                </tr>
-                <tr ng-repeat="s in support">
-                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{s.authorPhoto}}"></td>
-                    <td>
-                        <a ng-href="{{s.authorHref}}"><strong>{{s.authorName}}</strong></a><br><small class="grey">{{s.fuzzyTime}} ago</small>
-                        <br>
-                        {{s.text}}
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-sm-6">
-            <h4 class="initiative-title">Oppose</h4>
-            <!-- an opposer -->
-            <table class="table con">
-                <tr ng-if="oppose.length == 0">
-                    <td>
-                        There are no opponents yet.
-                    </td>
-                </tr>
-                <tr ng-repeat="o in oppose"> 
-                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{o.authorPhoto}}"></td>
-                    <td>
-                        <a ng-href="{{o.authorHref}}"><strong>{{o.authorName}}</strong></a><br>
-                        <small class="grey">{{o.fuzzyTime}} ago</small>
-                        <br>
-                        {{o.text}}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</%def>

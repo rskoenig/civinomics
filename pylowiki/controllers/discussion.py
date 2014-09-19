@@ -28,6 +28,7 @@ import pylowiki.lib.alerts          as alertsLib
 from pylowiki.lib.facebook import FacebookShareObject
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
+import misaka as m
 import pylowiki.lib.helpers as h
 import simplejson as json
 
@@ -262,6 +263,9 @@ class DiscussionController(BaseController):
             entry['authorPhoto'] = utils._userImageSource(org)
             entry['authorHref'] = '/profile/' + org['urlCode'] + '/' + org['url']
             entry['text'] = p['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['href'] = entry['authorHref'] + '/position/show/' + p['urlCode']
+
             entry['fuzzyTime'] = fuzzyTime.timeSince(p.date)
             
             if p['position'] == 'support':
