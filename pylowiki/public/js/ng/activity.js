@@ -14,7 +14,11 @@ function activityController($scope, $http) {
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
 		$scope.activityLoading = true;
-		$scope.activityUrl = '/getActivity/' + $scope.activityType
+		if ($scope.code){
+	        $scope.activityUrl = '/getActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
+	    }else{
+	    	$scope.activityUrl = '/getActivity/' + $scope.activityType
+	    }
 		$http.get($scope.activityUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
@@ -32,13 +36,9 @@ function activityController($scope, $http) {
 		})
 	};
 
-    if ($scope.code){
-        $scope.activityUrl = '/getActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
-        $scope.getActivity();
-    }else{
-        $scope.getActivity();
-    }
         
+    $scope.getActivity(); 
+
 
 	$scope.getAllActivity = function(){
 		$scope.activityType = 'all';
@@ -60,6 +60,12 @@ function activityController($scope, $http) {
 	
 	$scope.getMeetingActivity = function(){
 		$scope.activityType = 'meetings';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+
+	$scope.getMemberActivity = function(){
+		$scope.activityType = 'member';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
