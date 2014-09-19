@@ -649,7 +649,7 @@
 
     <!-- if org has not yet made a position statement -->
 
-    <form ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
+    <form role="form" ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
         <div class="form-group">
             <label class="radio-inline">
                 <input type="radio" name="position" id="positionSupport" value="support" checked>
@@ -665,20 +665,21 @@
                 Statement:
             </label>
             % if not c.privs['provisional']:
-                <textarea class="form-control" rows="3" name="text" required></textarea>
+                <textarea class="form-control" rows="3" style="height: auto !important;" required></textarea>
             % else:
                 <a href="#activateAccountModal" data-toggle="modal">
-                    <textarea class="form-control" rows="3" name="text" required></textarea>
+                    <textarea class="form-control" rows="3" style="height: auto !important;" required></textarea>
                 </a>
             % endif
         </div>
+        <div class="text-right">
         % if not c.privs['provisional']:
-            <button class="btn btn-success pull-right">Submit</button>
+            <button class="btn btn-success">Submit</button>
         % else:
-            <a class="btn btn-success pull-right" href="#activateAccountModal" data-toggle="modal">Submit</a>
+            <a class="btn btn-success" href="#activateAccountModal" data-toggle="modal">Submit</a>
         % endif
+        </div>
     </form>
-    <div class="spacer"></div>
 </%def>
 
 <%def name="yesNoVote(thing, *args)">
