@@ -66,31 +66,6 @@
                             <li class="${tab5active}"><a href="#tab5" data-toggle="tab">6. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
-                            % if c.user['memberType'] != 'organization' and not c.privs['provisional']:
-                                <!--
-                                <a href="#upgradeOrg" role="button" class="btn btn-success" data-toggle="modal">Upgrade to Organization</a>
-                                <div id="upgradeOrg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upgradeOrgLabel" aria-hidden="true">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                        <h3 id="myModalLabel">Upgrade to Organization</h3>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Organizations are a special class of membership:</p>
-                                        <ul>
-                                        <li>Organizations can't vote, only individuals. Sorry.</li>
-                                        <li>Organizations can be voted up or down</li>
-                                        <li>Members can post topics or comments in Organization forums</li>
-                                        <li>Organization get easy to remember Civinomics addresses: civinomics.com/YourOrganization</li>
-                                        <li>Organizations are listed as a separate category in search results</li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                                        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/organization/upgrade/handler" class="btn btn-primary">Upgrade to Organization</a>
-                                    </div>
-                                </div>
-                                -->
-                            % endif
                         </ul>
                     </div>
                 </div> <!-- /.col-sm-2 -->
@@ -139,19 +114,6 @@
 	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile">
     		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
-                <div class="form-group">
-                    <div class="col-xs-12">
-    				    <label for="member-name" class="control-label">Membership Type:</label>
-    				    <% 
-    				        memberType = 'Individual'
-    				        if c.user['memberType'] == 'organization':
-    				            memberType = 'Organization'
-    				    %>
-    				    <div class="controls">
-    					    ${memberType}
-    				    </div> <!-- /.controls -->
-                    </div>
-			    </div> <!-- /.form-group -->
 			    <div ng-class=" {'form-group': true, 'error': infoEdit.member_name.$error.pattern} ">
 				    <div class="col-xs-12">
                         <label for="member-name" class="control-label">Your Name:</label>
@@ -195,6 +157,54 @@
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.col-xs-12 -->
 			    </div> <!-- /.form-group -->
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <% 
+                            memberType = 'Individual'
+                            if c.user['memberType'] == 'organization':
+                                memberType = 'Organization'
+                        %>
+                        <label for="member-name" class="control-label">Membership Type:</label> ${memberType}<br>
+
+                        % if c.user['memberType'] != 'organization' and not c.privs['provisional']:
+
+                            <div class="panel-group" id="accordion">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#changeToOrg" class="btn btn-default top-space-md" data-toggle="modal">Change to Organization</a>
+
+                                <div id="changeToOrg" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                    <p>Organizations are special types of members:</p>
+                                    <ul>
+                                        <li>Organizations can post featured position statements.</li>
+                                        <!--<li>Members can post topics or ideas about an organization that other members can vote on.</li>-->
+                                        <li>Organization get easy to remember Civinomics addresses: civinomics.com/YourOrganization</li>
+                                        <li>Organizations are listed as a separate category in search results</li>
+                                        <li>Organizations can't vote, sorry.</li>
+                                    </ul>
+                                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/organization/upgrade/handler" class="btn btn-primary">Change to Organization</a>
+                                  </div>
+                                </div>
+                            </div>
+
+
+                            <div id="upgradeOrg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upgradeOrgLabel" aria-hidden="true">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h3 id="myModalLabel">Change to Organization</h3>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                    
+                                </div>
+                            </div>
+                        % endif
+                    </div>
+                </div> <!-- /.form-group -->
+
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
                     <input type="submit" class="btn btn-warning btn-lg" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes" ng-click="submitProfileEdit()"></input>
                     <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
