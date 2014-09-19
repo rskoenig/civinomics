@@ -252,7 +252,7 @@
                 <p>
                     <strong ng-if="item.position == 'support'">We support: </strong>
                     <strong ng-if="item.position == 'oppose'">We oppose: </strong>
-                    <a ng-href = '{{item.parentHref}}'><img ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
+                    <a ng-href = '{{item.parentHref}}'><img ng-if="item.thumbnail != '0'" ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
                     <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a> <small><span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span><img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"></small>
                 </p>
                 <p>"{{item.text}}"</p>
