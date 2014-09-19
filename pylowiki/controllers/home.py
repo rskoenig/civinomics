@@ -196,9 +196,9 @@ class HomeController(BaseController):
             initScope2 = initScope + "|0"
             #log.info("initScope is %s"%initScope)
 
-        offset = int(offset)
-        limit = int(limit)
-        interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+#         offset = int(offset)
+#         limit = int(limit)
+#         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
 
         interestedInitiatives = []
         for code in interestedInitiativeCodes:
