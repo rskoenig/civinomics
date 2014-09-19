@@ -23,11 +23,12 @@
 			<div class="col-sm-9 well">
 				<h1 ng-cloak>{{item.title}}</h1>
 				<p class="markdown"><span ng-bind-html="item.html"></span></p>
-				<div class="spacer"></div>
+				<hr>
+
 				<div class="row">
 				    <div class="col-xs-12">
-				        <span class="top-space-md">${helpers.moderationPanel(c.thing)} </span>
-				        <span class="pull-right">${ng_lib.authorPosting()}</span>
+				        <span class="right-space-md">${helpers.moderationPanel(c.thing)} </span>
+				        <span>${ng_lib.authorPosting()}</span>
 				    </div>
 				</div>
 

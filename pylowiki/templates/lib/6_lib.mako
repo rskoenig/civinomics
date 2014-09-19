@@ -1573,8 +1573,8 @@
 
 <%def name="flagThing(thing, **kwargs)">
     <% flagID = 'flag-%s' % thing['urlCode'] %>
-    <div class="row-fluid collapse" id="${flagID}">
-        <div class="span11 offset1 alert">
+    <div class="row collapse" id="${flagID}">
+        <div class="col-sm-11 col-sm-offset-1 alert">
             <strong>Are you sure you want to flag this ${thing.objType}?</strong>
             <br />
             <a ${flagThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
@@ -1657,12 +1657,9 @@
                 ctype = 'idea'
     %>
     <div class="row collapse" id="${editID}">
-        <div class="col-xs-11 col-xs-offset-1">
+        <div class="col-xs-12">
             <div class="spacer"></div>
             <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
-                <fieldset>
-                <label>Edit</label>
-                <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
                     % if ctype == 'initiative' or ctype == 'idea':
                         <div class="row">
@@ -1681,36 +1678,50 @@
                     % endif
                     <textarea class="comment-reply col-sm-10 form-control" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
-                    <label>Idea title</label>
-                    <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
-                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional nformation <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                        <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
+                    </div>
                 % elif thing.objType == 'discussion':
-                    <label>Topic title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <div class="form-group">
+                        <label>Topic title</label>
+                        <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    </div>
                     % if 'position' in thing:
-                        <div class="row-fluid">
+                        <div class="form-group">
                             <label class="radio inline">
                                 <input type=radio name="position" value="support" ${supportChecked}> We support this ${ctype}
                             </label>
                             <label class="radio inline">
                                 <input type=radio name="position" value="oppose" ${opposeChecked}> We oppose this ${ctype}
                             </label>
-                        </div><!-- row-fluid -->
-                        <div class="spacer"></div>
+                        </div><!-- row-->
                     % endif
-                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
+                    <div class="form-group">
+                        <label>Additional information <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                        <textarea name="text" rows="3" class="input-block-level form-control">${text}</textarea>
+                    </div>
                 % elif thing.objType == 'resource':
-                    <label>Resource title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id="title" required>
-                    <label>Resource URL</label>
-                    <input type="url" class="input-block-level" name="link" value = "${thing['link']}" id = "link" required>
-                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
+                    <div class="form-group">
+                        <label>Resource title</label>
+                        <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Resource URL</label>
+                        <input type="url" class="input-block-level form-control" name="link" value = "${thing['link']}" id = "link" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional information <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                        <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
+                    </div>
                 % endif
-                </fieldset>
-                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
+                </div>
             </form>
         </div>
     </div>

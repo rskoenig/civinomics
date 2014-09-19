@@ -839,6 +839,10 @@ form.addGoal{
   margin-right: 4px;
 }
 
+.right-space-md{
+  margin-right: 20px;
+}
+
 .disabled{
     background: #f2dede;
     border-radius:10px;
@@ -881,6 +885,7 @@ form.addGoal{
 
 .section-wrapper .section-header.smaller, .section-header.smaller{
     min-height:30px;
+    padding-bottom: 10px;
 }
 .section-wrapper .activity {
   padding: 10px;
@@ -1717,6 +1722,11 @@ a.no-border:hover{
 }
 .help-block{
    color:grey;
+}
+
+.comment-help-block{
+  text-align: right;
+  padding-right: 15px;
 }
 
 .table td.no-border{

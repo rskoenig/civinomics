@@ -137,7 +137,7 @@
         adminID = 'admin-%s' % thing['urlCode']
         #log.info("thing keys is %s"%thing.keys())
     %>
-    <div class="btn-group" style="margin-top: -10px;">
+    <div class="btn-group">
         % if thing['disabled'] == '0' and not c.privs['provisional']:
             <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
