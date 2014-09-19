@@ -126,9 +126,10 @@
                                     </div>
 
                                     <!-- this alert not working -->
-                                    <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '') " ng-cloak>
+                                    <div class="alert" ng-class="alertType" ng-if="alertMsg && activity.length == '0'" ng-cloak>
                                         {{alertMsg}}
                                      </div>
+
                                 </div>
                             </div>
                         </div>

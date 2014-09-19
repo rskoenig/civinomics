@@ -246,9 +246,9 @@ class HomeController(BaseController):
         	if memberActivity:
         		recentActivity = memberActivity
         	else:
-        		log.info('no activity')
         		alertMsg = "This is where your activity will show up, once you do something!"
-        		return json.dumps({'statusCode':1, 'alertMsg':alertMsg, 'alertType':'alert-info'})
+        		return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+
 
         else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)

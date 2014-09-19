@@ -89,6 +89,7 @@ function activityController($scope, $http) {
 		$http.get($scope.sliceUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
+				$scope.alertMsg = data.alertMsg;
 			} 
 			else if (data.statusCode === 0){
 				activitySlice = data.result;
