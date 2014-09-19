@@ -921,7 +921,7 @@
                                             numThings = '0'
                                     %>
                                     <span class="workshop-metrics">Ideas</span><br>
-                                      <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
                                 </td>
                                 <td>
                                     <% 
@@ -932,7 +932,7 @@
                                             numThings = '0'
                                     %>
                                     <span class="workshop-metrics">Discussions</span><br>
-                                      <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
                                 </td>
                                 <td>
                                     <% 
@@ -943,7 +943,7 @@
                                             numThings = '0'
                                     %>
                                     <span class="workshop-metrics">Resources</span><br>
-                                      <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
                                 </td>
                                 <td>
                                     <% 
@@ -954,7 +954,7 @@
                                             numThings = '0'
                                     %>
                                     <span class="workshop-metrics">Followers</span><br>
-                                      <strong ng-cloak><a class="black" href="${thingListingURL}">${numThings}</a></strong>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
                                 </td>
                             </tr>
                         </table>
