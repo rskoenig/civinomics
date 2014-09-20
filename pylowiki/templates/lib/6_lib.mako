@@ -1258,7 +1258,7 @@
                         else:
                             source = user['facebookProfileSmall']
         if large and gravatar:
-            source += '&s=200'
+            source += '&s=170'
         return source
         %>
 </%def>
