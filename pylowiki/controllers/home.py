@@ -240,7 +240,7 @@ class HomeController(BaseController):
         elif type == 'initiatives':
         	recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
-        elif type == 'member' and c.authuser:
+        elif type == 'member':
         	user = userLib.getUserByCode(code)
         	memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
         	if memberActivity:
