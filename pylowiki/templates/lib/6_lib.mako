@@ -1159,7 +1159,7 @@
 </%def>
 
 <%def name="userImage(user, **kwargs)">
-   <%
+    <%
       if type(user) == type(1L):
          user = userLib.getUserByID(user)
       imgStr = ''
@@ -1189,12 +1189,16 @@
          imgStr += ' data-placement="%s"' % kwargs['placement']
       
       imgStr += '></a>'
-   %>
-   % if 'noLink' in kwargs:
+    %>
+    % if 'noLink' in kwargs:
       <img src="${_userImageSource(user, **kwargs)}" class="${kwargs['className']}" alt="${title}" title="${title}">
-   % else:
+    % elif 'bgImage' in kwargs:
+        <!-- to handle large facebook photos which are not cropped to squares -->
+        <div class="avatar avatar-large" style="background-image: url(${_userImageSource(user, **kwargs)}); background-size: cover cover; background-position: center top"></div>
+
+    % else:
     ${imgStr | n}
-   % endif
+    % endif
 </%def>
 
 <%def name="_userImageSource(user, **kwargs)">

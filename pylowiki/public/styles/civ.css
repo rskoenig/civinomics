@@ -1169,7 +1169,7 @@ img.config{
    margin-right:10px;
 }
 
-img.avatar{
+img.avatar, .avatar{
    border-radius: 500px;
    margin-right:5px;
 }

@@ -31,7 +31,7 @@
 
     <div class="row" ng-controller="profileController">
         <div class="col-sm-2">
-                ${lib_6.userImage(c.user, className="avatar avatar-large")}
+                ${lib_6.userImage(c.user, className="avatar avatar-large", bgImage=True)}
             <div>
                 <ul class="nav nav-pills workshop-menu" style="width: 100%" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab">Activity</a></li>
