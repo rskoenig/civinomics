@@ -902,10 +902,12 @@
             <div class="row">
                 <div class="col-xs-12">
                     <span class="profile-dash-button pull-right">
-                        % if c.user['email'] == c.authuser['email']:
-                            <a class="btn btn-default" href="/profile/${c.user['urlCode']}/${c.user['url']}/edit"><strong>Edit Profile</strong></a>
-                        % else:
-                            ${followButton(c.user)}
+                        % if c.authuser:
+                            % if c.user['email'] == c.authuser['email']:
+                                <a class="btn btn-default" href="/profile/${c.user['urlCode']}/${c.user['url']}/edit"><strong>Edit Profile</strong></a>
+                            % else:
+                                ${followButton(c.user)}
+                            % endif
                         % endif
                     </span>
 
