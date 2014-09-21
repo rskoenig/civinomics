@@ -397,7 +397,7 @@
                         </td>
                     </tr>
 
-                    <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', hidden : commentsHidden}" class="comment-row">
+                    <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
 
                         <td class="comment-avatar-cell">
                             <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
@@ -436,13 +436,19 @@
                                             <div ng-show="(comment.doCommentRole == 'yes')">
                                                 &nbsp;
                                                 <label class="radio inline">
-                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
-                                                </label>
-                                                <label class="radio inline">
                                                     <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
                                                 </label>
                                                 <label class="radio inline">
+                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                                </label>
+                                                <label class="radio inline">
                                                     <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                                </label>
+                                                <label class="radio inline">
+                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                                </label>
+                                                <label class="radio inline">
+                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
                                                 </label>
                                             </div><!-- ng-show -->
                                         </form>
@@ -474,13 +480,19 @@
 
                                         <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
                                             <span class="radio inline no-top right-space">
-                                                <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
-                                            </span>
-                                            <span class="radio inline no-top right-space">
                                                 <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
                                             </span>
                                             <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
                                                 <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="question"> Question 
+                                            </span>
+                                            <span class="radio inline no-top right-space">
+                                                <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
                                             </span>
                                         </small>
                                         
@@ -508,13 +520,19 @@
                                                 <div ng-show="(comment.doCommentRole == 'yes')">
                                                     &nbsp;
                                                     <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
-                                                    </label>
-                                                    <label class="radio inline">
                                                         <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
                                                     </label>
                                                     <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                                    </label>
+                                                    <label class="radio inline">
                                                         <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
                                                     </label>
                                                 </div><!-- ng-show -->
                                             </div>
@@ -563,7 +581,7 @@
                     </td>
                 </tr>
 
-                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', hidden : commentsHidden}">
+                <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}">
 
                     <td class="comment-avatar-cell">
                         <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
@@ -605,13 +623,19 @@
                                                 <div ng-show="(comment.doCommentRole == 'yes')">
                                                     &nbsp;
                                                     <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
-                                                    </label>
-                                                    <label class="radio inline">
                                                         <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
                                                     </label>
                                                     <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                                    </label>
+                                                    <label class="radio inline">
                                                         <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
                                                     </label>
                                                 </div><!-- ng-show -->
                                             </div>
@@ -644,14 +668,21 @@
 
                                     <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
                                         <span class="radio inline no-top right-space">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
                                         </span>
                                         <span class="radio inline no-top right-space">
-                                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
                                         </span>
                                         <span class="radio inline no-top right-space">
                                             <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
                                         </span>
+                                        <span class="radio inline no-top right-space">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="question"> Question 
+                                        </span>
+                                        <span class="radio inline no-top right-space">
+                                            <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
+                                        </span>
+
                                     </small>
                                     
                                 </div>
