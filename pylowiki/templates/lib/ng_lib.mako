@@ -125,7 +125,9 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter()}
+                % if c.user['memberType'] != 'organization':
+                    ${yesNoVoteFooter()}
+                % endif
                 ${actions()}
             </div>
         </div>
@@ -156,7 +158,9 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter(noStats = True)}
+                % if c.user['memberType'] != 'organization':
+                    ${yesNoVoteFooter(noStats = True)}
+                % endif
             </div>
         </div>
     </div>
@@ -178,7 +182,9 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter()}
+                % if c.user['memberType'] != 'organization':
+                    ${yesNoVoteFooter()}
+                % endif
                 ${actions()}
             </div>
     </div><!-- media well -->
@@ -423,6 +429,9 @@
                                 <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
                             <li><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
+                            % if c.user['memberType'] == 'organization':
+                                <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a class="no-highlight" ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
+                            % endif 
                         </ul>
                     </div>
                 </div>
