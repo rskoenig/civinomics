@@ -1055,7 +1055,7 @@
 
 <%def name="discussionLink(d, p, **kwargs)">
     <%
-        if 'workshopCode' in d:
+        if 'workshopCode' in d and p != None:
             log.info("It has a discussion code")
             if 'noHref' in kwargs:
                 discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
@@ -1072,7 +1072,7 @@
             else:
                 discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
 
-        elif d['discType'] == 'organization_general':
+        elif 'discType' in d and d['discType'] == 'organization_general':
             if 'noHref' in kwargs:
                 discussionStr = '/profile/%s/%s/discussion/show/%s'%(d['userCode'], d['user_url'], d['urlCode'])
             else:

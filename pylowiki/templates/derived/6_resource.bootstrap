@@ -6,7 +6,7 @@
 
 <%
     lib.return_to()
-    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
+    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea', 'position':'Position Statement'}
 %>
 
 <div class="row">

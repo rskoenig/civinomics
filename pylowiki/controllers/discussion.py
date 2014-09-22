@@ -234,6 +234,8 @@ class DiscussionController(BaseController):
         c.title = c.thing['title']
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
         c.listingType = 'discussion'
+        if 'discType' in c.thing and c.thing['discType'] == 'organization_position':
+            c.listingType = 'position'
         
         if 'comment' in request.params:
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
@@ -275,7 +277,7 @@ class DiscussionController(BaseController):
 
             if org['urlCode'] == c.authuser['urlCode']:
                 userStatement['madeStatement'] = True
-                userStatement['url'] = entry['authorHref'] + "/position/show/4VAv"
+                userStatement['url'] = entry['href']
                 if p['position'] == 'support':
                     userStatement['support'] = True
                     userStatement['oppose'] = False
