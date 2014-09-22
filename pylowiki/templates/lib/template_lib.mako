@@ -35,8 +35,8 @@
                 </form>
                 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/home">Home</a></li>
                     % if c.authuser:
+                        <li><a href="/home">Home</a></li>
                         % if c.authuser['activated'] == '1':
                             <li class="dropdown">
                                 <a href="/create" class="dropdown-toggle">Create <b class="caret"></b></a>
@@ -95,6 +95,7 @@
                             </ul>
                         </li>
                     % else:
+                        <li><a href="/home">Browse</a></li>
                         <li><a href="/login">Login</a></li>
                         <li><a href="/signup">Signup</a></li>
                     % endif
