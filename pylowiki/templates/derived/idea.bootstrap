@@ -13,7 +13,6 @@
 				<tr>
 					<td><img ng-if="item.thumbnail" ng-src="{{item.thumbnail}}"></td>
 					<td class="title-cell">
-						<h4><a class="no-highlight" ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></h4>
 						<h3 class="well-header" ng-cloak>${ng_lib.metaData('inline')}</h3>
 					</td>
 				</tr>

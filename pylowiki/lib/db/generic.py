@@ -29,6 +29,7 @@ def linkChildToParent(child, parent):
         log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
     if parent.objType == 'discussion':
         child['discussion_url'] = parent['url']
+        child['discussionCode'] = parent['urlCode']
         child['discussion_title'] = parent['title']
         if 'tags' in parent:
             child['discussion_tags'] = parent['tags']
@@ -42,6 +43,7 @@ def linkChildToParent(child, parent):
             child['discussion_scope'] = parent['workshop_private_scope']
     if parent.objType == 'idea':
         child['idea_url'] = parent['url']
+        child['ideaCode'] = parent['urlCode']
         child['idea_title'] = parent['title']
         if 'tags' in parent:
             child['idea_tags'] = parent['tags']
@@ -55,6 +57,7 @@ def linkChildToParent(child, parent):
             child['idea_scope'] = parent['workshop_private_scope']
     if parent.objType == 'resource':
         child['resource_url'] = parent['url']
+        child['resourceCode'] = parent['urlCode']
         child['resource_title'] = parent['title']
         if 'tags' in parent:
             child['resource_tags'] = parent['tags']

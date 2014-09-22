@@ -125,10 +125,14 @@ def getJsonProperties(item):
     elif 'initiativeCode' in item:
         entry['parentTitle'] = item['initiative_title']
         entry['parentObjType'] = 'initiative'
-    elif 'ideaCode' in item:
-        entry['parentTitle'] = item['idea_title']
+    
+    # should list the more specific object rather than workshop if possible
+    if 'ideaCode' in item:
+        if 'idea_title' in item:
+            entry['parentTitle'] = item['idea_title']
         entry['parentObjType'] = 'idea'
-        entry['parentHref'] = item['idea_url']
+        if 'ideaCode' in item and 'idea_url' in item: 
+            entry['parentHref'] = '/idea/' + item['ideaCode'] + '/' + item['idea_url']
 
     # to support listing of comments in the profile
     if item.objType == 'comment':
