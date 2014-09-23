@@ -42,6 +42,7 @@
 						console.log("add data: ");
 	                    console.log(data);
 	                    console.log("Param info: ");
+	                    scope.queue = [];
 	                    var fileType = data.paramName[0];
 	                    scope.fuType = fileType;
 	                    console.log(fileType);
@@ -395,16 +396,6 @@
                 controller: 'FileUploadPreviewController'
             };
         })
-        
-        /*
-.directive('fileType', function () {
-	        return {
-		      scope: {
-			      fileType: '=f'
-		      };  
-	        };
-        })
-*/
         
         .directive('download', function () {
             return function (scope, elm, attrs) {
