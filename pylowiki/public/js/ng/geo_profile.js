@@ -1,18 +1,19 @@
-function activityController($scope, $http) {
+function geoProfileController($scope, $http) {
 	$scope.listingType = 'activity';
-	if ($scope.activityType == undefined) {
-	    $scope.activityType = '/all';
-	}
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
 	$scope.busy = false;
 	$scope.sliceSize = 7;
 	$scope.offset = $scope.sliceSize;
+	$scope.rightAlertMsg = "";
+	$scope.showConditional = false;
+	$scope.showConditionalType = "";
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
 		$scope.activityLoading = true;
+		console.log($scope.activityType);
 		$http.get('/getSiteActivity' + $scope.activityType).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
@@ -27,10 +28,11 @@ function activityController($scope, $http) {
 				
 			}
 			$scope.activityLoading = false;
+			console.log($scope.activityLoading);
 		})
 	};
 
-	$scope.getActivity();
+	console.log($scope.activityLoading);
 
 	$scope.geoScope = '';
 	$scope.geoFlagUrl = '/images/flags/homeFlag.gif';
@@ -68,10 +70,31 @@ function activityController($scope, $http) {
 		$scope.offset = $scope.sliceSize;
 	};
 	
-	$scope.getMeetingActivity = function(){
-		$scope.activityType = '/meetings';
+	
+	$scope.getGeoScopedActivityType = function(scope, type){
+		$scope.activityType = '/geo/'+scope + '/' + type;
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
+	};
+	
+	$scope.getMeetingActivity = function(scope){
+		$scope.oldActivityType = $scope.activityType;
+		$scope.activityType = '/geomeetings/'+scope;
+		$scope.rightAlertMsg = ''
+		$scope.meetingsLoading = true;
+		console.log($scope.activityType);
+		$http.get('/getSiteActivity' + $scope.activityType).success(function(data){
+			if (data.statusCode == 1){
+				$scope.rightAlertMsg = data.alertMsg;
+				$scope.rightAlertType = data.alertType;
+			} 
+			else if (data.statusCode === 0){
+				$scope.meetings = data.result;
+				
+			}
+			$scope.meetingsLoading = false;
+			$scope.activityType = $scope.oldActivityType;
+		})
 	};
 
 	$scope.browseInitiatives = function(){
@@ -81,11 +104,12 @@ function activityController($scope, $http) {
 	};
 
 	$scope.getActivitySlice = function() {
+		console.log("Hiya!");
 		if ($scope.busy || $scope.noMoreSlices) return;
 		$scope.busy = true;
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
-		console.log($scope.offset);
+		console.log('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset);
 		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
@@ -100,9 +124,36 @@ function activityController($scope, $http) {
 			$scope.activitySliceLoading = false;
 			$scope.busy = false;
 			$scope.offset += $scope.sliceSize;
-			console.log($scope.offset);
 		})
 	};
+
+	$scope.geoInit = function(scope){	
+		console.log("I'm here");
+		$scope.activity = null;
+		$scope.activityType = '/geo/'+scope;
+		$scope.isGeoInit = true;
+		$scope.currentScope = scope;
+		$scope.getActivity();
+	};
+	
+	$scope.showOnly = function(type){
+		if (type === 'all') {
+/*
+			$scope.showConditional = false;
+			$scope.showConditionalType = "";
+*/
+			$scope.activityType = '/geo/'+$scope.currentScope;
+			$scope.getActivity();
+		} 
+		else {
+			$scope.getGeoScopedActivityType($scope.currentScope, type);
+/*	
+			$scope.showConditional = true;
+			$scope.showConditionalType = type;	
+*/
+		}
+	};
+
 }
 
 

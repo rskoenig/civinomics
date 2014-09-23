@@ -3,6 +3,7 @@ function followCtrl($scope, $http) {
 	$scope.followSliceLoading = false;
 	$scope.noMoreFollowSlices = false;
 	$scope.followBusy = false;
+	$scope.followingGeo = false;
 	$scope.sliceSize = 10
 	$scope.offset = 0
 	$scope.limit = $scope.offset + $scope.sliceSize
@@ -27,7 +28,7 @@ function followCtrl($scope, $http) {
 	$scope.getFollowing()
 
 	$scope.getFollowSlice = function() {
-		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult) return;
+		if ($scope.followBusy || $scope.noMoreFollowSlices || $scope.noFollowingResult || $scope.followingGeo) return;
 		$scope.followBusy = true;
 		$scope.followAlertMsg = ''
 		$scope.followSliceLoading = true;
@@ -48,5 +49,57 @@ function followCtrl($scope, $http) {
 			$scope.limit += $scope.sliceSize
 		})
 	};
+	
+	$scope.getFollowingGeo = function(scope){
+		if ($scope.followBusy) return;
+		$scope.followBusy = true;
+		$scope.followAlertMsg = '';
+		$scope.followSliceLoading = true;
+		$scope.followLookupURL = '/getFollowInitiatives/geo/' + $scope.offset + '/' + $scope.limit + '/' + scope;
+		$scope.getFollowing();
+	};
+	
+	$scope.$watch(
+		'geoScope',
+		function(newValue, oldValue){
+			if (!(newValue === oldValue)) { 
+			$scope.followAlertMsg = '';
+				if (newValue === ""){
+					$scope.followAlertMsg = '';
+					$scope.followingGeo = false;
+					$scope.followInitiatives = null;
+					$scope.followLoading = true;
+					$scope.followSliceLoading = false;
+					$scope.noMoreFollowSlices = false;
+					$scope.followBusy = false;
+					$scope.sliceSize = 10;
+					$scope.offset = 0;
+					$scope.limit = $scope.offset + $scope.sliceSize;
+					$scope.followLookupURL = '/getFollowInitiatives/' + $scope.offset + '/' + $scope.limit
+					$scope.getFollowing();
+				}
+				else{
+					$scope.followAlertMsg = '';
+					$scope.followingGeo = true;
+					/*Do I really need all this?*/
+					$scope.followInitiatives = null;
+					$scope.followLoading = true;
+					$scope.followSliceLoading = false;
+					$scope.noMoreFollowSlices = false;
+					$scope.followBusy = false;
+					$scope.sliceSize = 10;
+					$scope.offset = 0;
+					$scope.limit = $scope.offset + $scope.sliceSize;
+					$scope.getFollowingGeo(newValue);
+					$scope.followSliceLoading = false;
+					$scope.followBusy = false;
+					/*Do stuff.
+					We have to change whatever's in followInitiatives with whatever we get
+					*/
+				};
+					
+			};
+		}
+	);
 
 }

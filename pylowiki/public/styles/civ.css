@@ -3245,6 +3245,16 @@ tr.neutral, .panel-heading.neutral{
   background-color: #e0e0e0;
 }
 
+tr.question, .panel-heading.question{
+  background-color: #d9edf7;
+  /*border-color: #bce8f1;*/
+}
+
+tr.suggestion, .panel-heading.suggestion{
+  background-color: #fcf8e3;
+  /*border-color: #faebcc;*/
+}
+
 a.no-highlight{
   color:#333333;
 }
@@ -3762,4 +3772,75 @@ svg{
 
 .top-offset{
   margin-top: 10px;
+}
+
+/*
+Custom for feed scoped pages
+*/
+
+/* Responsive flags */
+ .activeGeo{
+border: solid 2px orange;
+opacity: 1 !important;
+}
+
+ .inactiveGeo{
+opacity: 0.5;
+}
+
+/*Right hand side flag*/
+.info-flag{
+margin-top:5%; 
+position:relative;
+height: 120px;
+border: solid 1px #999;
+}
+.info-side{
+background-size:100% 50%; 
+background-repeat: no-repeat;
+/* height: 200px; */
+margin-top: 6%;
+text-align: right;
+background-image:url('http://www.colorhexa.com/428bca.png');
+}
+
+.info-side-img{
+width:35%;
+margin: -13px 0px 0px 10px;
+border: solid 1px #999;
+z-index: 1;
+margin-top: -13%;
+width: 36%;
+}
+
+.top-info-side{
+overflow: hidden;
+}
+
+div.top-info-side p{
+font-size: 18px;
+color: white;
+}
+
+/*
+	Geo profile classes
+	
+*/
+
+.geo-profile-info-data{
+	float:left; 
+	padding: 10px 10px 0px 10px; 
+	text-align: center;
+}
+
+div.geo-profile-info-data h4{
+	font-size: 0.9em;
+	color: #999;	
+	font-weight: 400;
+}
+
+div.geo-profile-info-data p{
+	font-weight: bold;
+	margin-top: -15px;
+	font-size: 1.5em;
 }

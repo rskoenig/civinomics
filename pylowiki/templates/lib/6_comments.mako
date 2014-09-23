@@ -108,13 +108,19 @@
                 <div class="col-sm-11">
                     <small>
                         <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="yes"> Pro
-                        </span>
-                        <span class="radio inline right-space">
                             <input type=radio name="commentRole" value="neutral" checked> Neutral
                         </span>
                         <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="yes"> Pro
+                        </span>
+                        <span class="radio inline right-space">
                             <input type=radio name="commentRole" value="no"> Con
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="question"> Question
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="suggestion"> Suggestion
                         </span>
                     </small>
                     <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button></span>
@@ -266,6 +272,16 @@
                     roleClass += "green"
                     roleLabel += "Pro"
                     headerClass += " favor"
+
+                elif comment['commentRole'] == 'question':
+                    roleClass += "question"
+                    roleLabel += "Question"
+                    headerClass += " question"
+
+                elif comment['commentRole'] == 'suggestion':
+                    roleClass += "suggestion"
+                    roleLabel += "Suggestion"
+                    headerClass += " suggestion"
 
                 else:
                     roleClass +="grey"
