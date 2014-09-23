@@ -892,6 +892,7 @@ class ProfileController(BaseController):
               }
             ]}
         """
+        
         if (c.authuser.id != c.user.id):
             abort(404)
         

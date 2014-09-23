@@ -93,7 +93,16 @@ def getUserByID(id):
         return meta.Session.query(Thing).filter_by(id = id).one()
     except:
         return False
-    
+
+def getUsersPerZipCode(zipcode): 
+    query = meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('activated', u'1')))\
+            .filter(Thing.data.any(wc('postalCode', zipcode['ZipCode'])))
+    return query.count()
+   
 def isAdmin(id):
     try:
         u = meta.Session.query(Thing).filter_by(id = id).one()
@@ -120,6 +129,7 @@ def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'
                 .filter(Thing.data.any(wc('activated', activated)))\
                 .filter(Thing.data.any(wc('memberType', 'professional')))\
                 .filter(Thing.data.any(reduce(or_, map_user)))
+        log.info(query)
         if count:
             return query.count()
         return query.all()

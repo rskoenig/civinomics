@@ -61,6 +61,7 @@
                             <button class="btn btn-lg btn-warning btn-block" disabled>Publish</button>
                             <br>
                             <div class="alert alert-warning top-space">You must complete all required information and upload a picture before you can publish.</div>
+
                         % else:
                             <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
                                 <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>

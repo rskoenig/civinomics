@@ -333,7 +333,6 @@ class CreateController(BaseController):
             tags = payload['tags']
             kwargs['tags'] = tags
 			
-		
         if c.w:
             newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
         else:
@@ -341,9 +340,11 @@ class CreateController(BaseController):
         if newResource:
             log.info("5")
             alertsLib.emailAlerts(newResource)
-            redirectUrl = "/resource/" + newResource['urlCode'] +"/"+ newResource['url']
-            redirectUrl2 = "/home"
-            redirect(redirectUrl2)
+            redirectUrl2 = "/resource/" + newResource['urlCode'] +"/"+ newResource['url']
+            redirectUrl = "/home"
+            if 'returnTo' in payload:
+                redirectUrl = payload['returnTo']
+            redirect(redirectUrl)
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'
             
@@ -409,6 +410,8 @@ class CreateController(BaseController):
         log.info(vars(d.d))
         if d:
             redirectUrl2 = "/home"
+            if 'returnTo' in request.params:
+                redirectUrl2 = payload['returnTo']
             redirectUrl = "/discussion/" + d.d['urlCode'] +"/"+ d.d['url']
             redirect(redirectUrl2)
 
@@ -484,6 +487,8 @@ class CreateController(BaseController):
             redirectUrl2 = "/home"
             alertsLib.emailAlerts(newIdea)
             redirectUrl = "/idea/" + newIdea['urlCode'] +"/"+ newIdea['url']
+            if 'returnTo' in payload:
+                redirectUrl2 = payload['returnTo']
             redirect(redirectUrl2)
 
     

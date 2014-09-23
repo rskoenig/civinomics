@@ -88,6 +88,7 @@
                         % endif
                         <div ng-init="code = '${c.user['urlCode']}'; url = '${c.user['url']}'; activityType = 'member'">
                             <div ng-controller="activityController">
+
                                 <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
                                     <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
                                         <tr>

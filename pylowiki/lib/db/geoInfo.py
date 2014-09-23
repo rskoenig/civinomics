@@ -140,6 +140,22 @@ def getGeoTitles( postalCode, country ):
     else:
         return "0"
 
+def getZipCodesBy( area, name ):
+    db = getDB()
+    c = db.cursor()
+    if area == 'State':
+        area = 'StateFullName'
+    query = "SELECT ZipCode FROM US_Postal WHERE %s = '%s'"%(area,name)
+    log.info(query)
+    c.execute(query)
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    if rlist != None:
+        return rlist
+    else:
+        return "0"
+
 def getUserScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9

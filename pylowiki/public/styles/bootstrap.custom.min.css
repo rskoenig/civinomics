@@ -710,3 +710,6 @@ div.civ-col{border-left:1px solid #999999;}
 div.civ-col-item{border-bottom:1px solid #999999;}
 div.civ-col>div.row-fluid:last-child div.civ-col-inner{border:none;}
 .fix-plus{height:15px;width:15px;text-indent:-9999px;background:url("/images/plus.png") no-repeat scroll center;border:1px solid #ccc;-webkit-box-shadow:0 0 2px #cccccc;-moz-box-shadow:0 0 2px #cccccc;box-shadow:0 0 2px #cccccc;-webkit-box-shadow:0 0 2px #cccccc;-moz-box-shadow:0 0 2px #cccccc;box-shadow:0 0 2px #cccccc;}
+.activeGeo{
+	opacity: 0.5;
+}
