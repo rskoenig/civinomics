@@ -15,41 +15,49 @@
 (function () {
     'use strict';
 
-    angular.module('blueimp.fileupload', [])
-
-        .provider('fileUpload', function () {
-            var scopeApply = function () {
-                    var scope = angular.element(this)
-                        .fileupload('option', 'scope')();
-                    if (!scope.$$phase) {
-                        scope.$apply();
-                    }
-                },
-                $config;
-            $config = this.defaults = {
-                handleResponse: function (e, data) {
-                    var files = data.result && data.result.files;
-                    if (files) {
-                        data.scope().replace(data.files, files);
-                    } else if (data.errorThrown ||
-                            data.textStatus === 'error') {
-                        data.files[0].error = data.errorThrown ||
-                            data.textStatus;
-                    }
-                },
-                add: function (e, data) {
-                    var scope = data.scope();
-                    data.process(function () {
-                        return scope.process(data);
-                    }).always(
-                        function () {                            
-                            var file = data.files[0],
-                                submit = function () {
-                                    console.log(data);
-                                    return data.submit();
-                                };
-                            file.$cancel = function () {
-                                scope.clear(data.files);
+	    angular.module('blueimp.fileupload', [])
+	
+	        .provider('fileUpload', function () {
+	            var scopeApply = function () {
+	                    var scope = angular.element(this)
+	                        .fileupload('option', 'scope')();
+	                    if (!scope.$$phase) {
+	                        scope.$apply();
+	                    }
+	                },
+	                $config;
+	            $config = this.defaults = {
+	                handleResponse: function (e, data) {
+	                    var files = data.result && data.result.files;
+	                    if (files) {
+	                        data.scope().replace(data.files, files);
+	                    } else if (data.errorThrown ||
+	                            data.textStatus === 'error') {
+	                        data.files[0].error = data.errorThrown ||
+	                            data.textStatus;
+	                    }
+	                },
+	                add: function (e, data) {
+	                    var scope = data.scope();
+						console.log("add data: ");
+	                    console.log(data);
+	                    console.log("Param info: ");
+	                    scope.queue = [];
+	                    var fileType = data.paramName[0];
+	                    scope.fuType = fileType;
+	                    console.log(fileType);
+	                    data.process(function () {
+	                        return scope.process(data);
+	                    }).always(
+	                        function () {                            
+	                            var file = data.files[0],
+	                                submit = function () {
+	                                	console.log("submit data: ");
+	                                    console.log(data);
+	                                    return data.submit();
+	                                };
+	                            file.$cancel = function () {
+	                                scope.clear(data.files);
                                 return data.abort();
                             };
                             file.$state = function () {
@@ -67,6 +75,7 @@
                                 file.$submit = submit;
                             }
                             scope.$apply(function () {
+                            	console.log("Apply is always called?");
                                 var method = scope.option('prependFiles') ?
                                         'unshift' : 'push';
                                 Array.prototype[method].apply(
@@ -116,6 +125,7 @@
                 prependFiles: true,
                 autoUpload: false
             };
+            
             this.$get = [
                 function () {
                     return {
@@ -155,6 +165,9 @@
         .controller('FileUploadController', [
             '$scope', '$element', '$attrs', 'fileUpload', '$http',
             function ($scope, $element, $attrs, fileUpload, $http) {
+            console.log("1");
+            console.log($scope);
+            console.log($scope.fuType);
                 $scope.disabled = angular.element('<input type="file">')
                     .prop('disabled');
                 $scope.uploadImage = false;
@@ -218,6 +231,8 @@
                     return $element.fileupload('send', data);
                 };
                 $scope.process = function (data) {
+                	console.log("Data in process:");
+                	console.log(data);
                     return $element.fileupload('process', data);
                 };
                 $scope.processing = function (data) {
@@ -293,6 +308,8 @@
         .controller('FileUploadProgressController', [
             '$scope', '$attrs', '$parse',
             function ($scope, $attrs, $parse) {
+            	console.log("2");
+            	console.log($scope);
                 var fn = $parse($attrs.progress),
                     update = function () {
                         var progress = fn($scope);
@@ -314,12 +331,17 @@
                 );
             }
         ])
+        
 
         .controller('FileUploadPreviewController', [
             '$scope', '$element', '$attrs', '$parse',
             function ($scope, $element, $attrs, $parse) {
+	            console.log("3");
+	            console.log($attrs);
+	            console.log($scope.fuType);
                 var fn = $parse($attrs.preview),
                     file = fn($scope);
+                    console.log(file);
                 if (file.preview) {
                     $element.append(file.preview);
                     var height = $element[0].clientHeight; // what the user sees
@@ -329,32 +351,34 @@
                     var startX = (width/2) - (selectedWidth/2);
                     var startY = (height/2) - (selectedHeight/2);
                     //var maxDims = [$("#setImageSourceForm").width(), $("#setImageSourceForm").width()];
-                    $element.Jcrop({
-                        //bgColor:     'black',
-                        bgOpacity:   0.4,
-                        aspectRatio: 1,
-                        boxWidth:   400,
-                        //boxHeight:  $("#setImageSourceForm").width(),
-                        setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
-                        // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
-                        onChange: function(c){
-                            /*
-                            * c.w   ->  width
-                            * c.h   ->  length
-                            * c.x   ->  x coordinate of upper-left corner
-                            * c.x2  ->  y coordinate of upper-left corner
-                            * c.y   ->  x coordinate of lower-right corner
-                            * c.y2  ->  y coordinate of lower-right corner
-                            */
-                            file.width = c.w;
-                            file.x = c.x;
-                            file.y = c.y;
-                        }
-                    });
+                    if ($scope.fuType === "files[]"){
+	                    $element.Jcrop({
+	                        //bgColor:     'black',
+	                        bgOpacity:   0.4,
+	                        aspectRatio: 1,
+	                        boxWidth:   400,
+	                        //boxHeight:  $("#setImageSourceForm").width(),
+	                        setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
+	                        // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
+	                        onChange: function(c){
+	                            /*
+	                            * c.w   ->  width
+	                            * c.h   ->  length
+	                            * c.x   ->  x coordinate of upper-left corner
+	                            * c.x2  ->  y coordinate of upper-left corner
+	                            * c.y   ->  x coordinate of lower-right corner
+	                            * c.y2  ->  y coordinate of lower-right corner
+	                            */
+	                            file.width = c.w;
+	                            file.x = c.x;
+	                            file.y = c.y;
+	                        }
+	                    });
+                    };
                 }
             }
         ])
-
+        
         .directive('fileupload', function () {
             return {
                 controller: 'FileUploadController'
@@ -372,7 +396,7 @@
                 controller: 'FileUploadPreviewController'
             };
         })
-
+        
         .directive('download', function () {
             return function (scope, elm, attrs) {
                 elm.on('dragstart', function (e) {
@@ -390,4 +414,4 @@
             };
         });
 
-}());
+}());				
