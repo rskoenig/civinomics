@@ -875,6 +875,8 @@ class ProfileController(BaseController):
               }
             ]}
         """
+        log.info("I'm going to the profile!!!!!!!!!!")
+        
         if (c.authuser.id != c.user.id) or c.privs['provisional']:
             abort(404)
         
