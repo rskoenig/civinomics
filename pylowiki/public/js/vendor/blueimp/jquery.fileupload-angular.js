@@ -15,43 +15,48 @@
 (function () {
     'use strict';
 
-    angular.module('blueimp.fileupload', [])
-
-        .provider('fileUpload', function () {
-            var scopeApply = function () {
-                    var scope = angular.element(this)
-                        .fileupload('option', 'scope')();
-                    console.log(scope);
-                    if (!scope.$$phase) {
-                        scope.$apply();
-                    }
-                },
-                $config;
-            $config = this.defaults = {
-                handleResponse: function (e, data) {
-                    var files = data.result && data.result.files;
-                    if (files) {
-                        data.scope().replace(data.files, files);
-                    } else if (data.errorThrown ||
-                            data.textStatus === 'error') {
-                        data.files[0].error = data.errorThrown ||
-                            data.textStatus;
-                    }
-                },
-                add: function (e, data) {
-                    var scope = data.scope();
-                    console.log(data);
-                    data.process(function () {
-                        return scope.process(data);
-                    }).always(
-                        function () {                            
-                            var file = data.files[0],
-                                submit = function () {
-                                    console.log(data);
-                                    return data.submit();
-                                };
-                            file.$cancel = function () {
-                                scope.clear(data.files);
+	    angular.module('blueimp.fileupload', [])
+	
+	        .provider('fileUpload', function () {
+	            var scopeApply = function () {
+	                    var scope = angular.element(this)
+	                        .fileupload('option', 'scope')();
+	                    if (!scope.$$phase) {
+	                        scope.$apply();
+	                    }
+	                },
+	                $config;
+	            $config = this.defaults = {
+	                handleResponse: function (e, data) {
+	                    var files = data.result && data.result.files;
+	                    if (files) {
+	                        data.scope().replace(data.files, files);
+	                    } else if (data.errorThrown ||
+	                            data.textStatus === 'error') {
+	                        data.files[0].error = data.errorThrown ||
+	                            data.textStatus;
+	                    }
+	                },
+	                add: function (e, data) {
+	                    var scope = data.scope();
+						console.log("add data: ");
+	                    console.log(data);
+	                    console.log("Param info: ");
+	                    var fileType = data.paramName[0];
+	                    scope.fuType = fileType;
+	                    console.log(fileType);
+	                    data.process(function () {
+	                        return scope.process(data);
+	                    }).always(
+	                        function () {                            
+	                            var file = data.files[0],
+	                                submit = function () {
+	                                	console.log("submit data: ");
+	                                    console.log(data);
+	                                    return data.submit();
+	                                };
+	                            file.$cancel = function () {
+	                                scope.clear(data.files);
                                 return data.abort();
                             };
                             file.$state = function () {
@@ -69,6 +74,7 @@
                                 file.$submit = submit;
                             }
                             scope.$apply(function () {
+                            	console.log("Apply is always called?");
                                 var method = scope.option('prependFiles') ?
                                         'unshift' : 'push';
                                 Array.prototype[method].apply(
@@ -158,10 +164,11 @@
         .controller('FileUploadController', [
             '$scope', '$element', '$attrs', 'fileUpload', '$http',
             function ($scope, $element, $attrs, fileUpload, $http) {
-	            console.log("I'm being called mwhahaha");
+            console.log("1");
+            console.log($scope);
+            console.log($scope.fuType);
                 $scope.disabled = angular.element('<input type="file">')
                     .prop('disabled');
-                                console.log($scope.disabled);
                 $scope.uploadImage = false;
                 $scope.submitStatus = '-1';
                 $scope.queue = $scope.queue || [];
@@ -223,7 +230,8 @@
                     return $element.fileupload('send', data);
                 };
                 $scope.process = function (data) {
-                	console.log($element.fileupload('process', data));
+                	console.log("Data in process:");
+                	console.log(data);
                     return $element.fileupload('process', data);
                 };
                 $scope.processing = function (data) {
@@ -299,6 +307,8 @@
         .controller('FileUploadProgressController', [
             '$scope', '$attrs', '$parse',
             function ($scope, $attrs, $parse) {
+            	console.log("2");
+            	console.log($scope);
                 var fn = $parse($attrs.progress),
                     update = function () {
                         var progress = fn($scope);
@@ -325,7 +335,9 @@
         .controller('FileUploadPreviewController', [
             '$scope', '$element', '$attrs', '$parse',
             function ($scope, $element, $attrs, $parse) {
-            console.log("evil controller");
+	            console.log("3");
+	            console.log($attrs);
+	            console.log($scope.fuType);
                 var fn = $parse($attrs.preview),
                     file = fn($scope);
                     console.log(file);
@@ -364,212 +376,6 @@
             }
         ])
         
-        .controller('CoverUploadController', [
-            '$scope', '$element', '$attrs', 'fileUpload', '$http',
-            function ($scope, $element, $attrs, fileUpload, $http) {
-                $scope.disabled = angular.element('coverFile')
-                    .prop('disabled');
-                $scope.uploadImage = false;
-                $scope.submitStatus = '-1';
-                $scope.queueC = $scope.queueC || [];
-                $scope.setImageSource = function () {
-                    var data = {'source': $scope.imageSource};
-                    $http.post("/profile/" + $scope.code + "/" + $scope.url + "/picture/set/image/source", data)
-                        .success(function(result){
-                            if (result.statusCode === 1){
-                                $scope.submitStatus = 1;
-                            }
-                            else{
-                                $scope.submitStatus = 0;
-                            }
-                        }
-                    );
-                };
-                $scope.clear = function (files) {
-                    var queueC = this.queueC,
-                        i = queueC.length,
-                        file = files,
-                        length = 1;
-                    if (angular.isArray(files)) {
-                        file = files[0];
-                        length = files.length;
-                    }
-                    while (i) {
-                        if (queueC[i -= 1] === file) {
-                            return queueC.splice(i, length);
-                        }
-                    }
-                };
-                $scope.replace = function (oldFiles, newFiles) {
-                    var queueC = this.queueC,
-                        file = oldFiles[0],
-                        i,
-                        j;
-                    for (i = 0; i < queueC.length; i += 1) {
-                        if (queueC[i] === file) {
-                            for (j = 0; j < newFiles.length; j += 1) {
-                                queueC[i + j] = newFiles[j];
-                            }
-                            return;
-                        }
-                    }
-                };
-                $scope.progress = function () {
-                    return $element.fileupload('progress');
-                };
-                $scope.active = function () {
-                    return $element.fileupload('active');
-                };
-                $scope.option = function (option, data) {
-                    return $element.fileupload('option', option, data);
-                };
-                $scope.add = function (data) {
-                    return $element.fileupload('add', data);
-                };
-                $scope.send = function (data) {
-                    return $element.fileupload('send', data);
-                };
-                $scope.process = function (data) {
-                    return $element.fileupload('process', data);
-                };
-                $scope.processing = function (data) {
-                    return $element.fileupload('processing', data);
-                };
-                $scope.applyOnQueue = function (method) {
-                    var list = this.queueC.slice(0),
-                        i,
-                        file;
-                    for (i = 0; i < list.length; i += 1) {
-                        file = list[i];
-                        if (file[method]) {
-                            file[method]();
-                        }
-                    }
-                };
-                $scope.submit = function () {
-                    this.applyOnQueue('$submit');
-                };
-                $scope.cancel = function () {
-                    this.applyOnQueue('$cancel');
-                };
-                // The fileupload widget will initialize with
-                // the options provided via "data-"-parameters,
-                // as well as those given via options object:
-                $element.fileupload(angular.extend(
-                    {scope: function () {
-                        return $scope;
-                    }},
-                    fileUpload.defaults
-                )).on('fileuploadadd', function (e, data) {
-                    data.scope = $scope.option('scope');
-                }).on([
-                    'fileuploadadd',
-                    'fileuploadsubmit',
-                    'fileuploadsend',
-                    'fileuploaddone',
-                    'fileuploadfail',
-                    'fileuploadalways',
-                    'fileuploadprogress',
-                    'fileuploadprogressall',
-                    'fileuploadstart',
-                    'fileuploadstop',
-                    'fileuploadchange',
-                    'fileuploadpaste',
-                    'fileuploaddrop',
-                    'fileuploaddragover',
-                    'fileuploadchunksend',
-                    'fileuploadchunkdone',
-                    'fileuploadchunkfail',
-                    'fileuploadchunkalways',
-                    'fileuploadprocessstart',
-                    'fileuploadprocess',
-                    'fileuploadprocessdone',
-                    'fileuploadprocessfail',
-                    'fileuploadprocessalways',
-                    'fileuploadprocessstop'
-                ].join(' '), function (e, data) {
-                    $scope.$emit(e.type, data);
-                });
-                // Observe option changes:
-                $scope.$watch(
-                    $attrs.fileupload,
-                    function (newOptions, oldOptions) {
-                        if (newOptions) {
-                            $element.fileupload('option', newOptions);
-                        }
-                    }
-                );
-            }
-        ])
-        
-        .controller('CoverUploadProgressController', [
-            '$scope', '$attrs', '$parse',
-            function ($scope, $attrs, $parse) {
-                var fn = $parse($attrs.progress),
-                    update = function () {
-                        var progress = fn($scope);
-                        if (!progress || !progress.total) {
-                            return;
-                        }
-                        $scope.num = Math.floor(
-                            progress.loaded / progress.total * 100
-                        );
-                    };
-                update();
-                $scope.$watch(
-                    $attrs.progress + '.loaded',
-                    function (newValue, oldValue) {
-                        if (newValue !== oldValue) {
-                            update();
-                        }
-                    }
-                );
-            }
-        ])
-        
-        .controller('CoverUploadPreviewController', [
-            '$scope', '$element', '$attrs', '$parse',
-            function ($scope, $element, $attrs, $parse) {
-            	
-                var fn = $parse($attrs.preview),
-                    file = fn($scope);
-                    console.log("Using cover controller");
-            	console.log($attrs);
-                if (file.preview) {
-                    $element.append(file.preview);
-                    var height = $element[0].clientHeight; // what the user sees
-                    var width = $element[0].clientWidth; // what the user sees
-                    var selectedWidth = 100; // The default selection width
-                    var selectedHeight = 100; // The default selection height
-                    var startX = (width/2) - (selectedWidth/2);
-                    var startY = (height/2) - (selectedHeight/2);
-                    //var maxDims = [$("#setImageSourceForm").width(), $("#setImageSourceForm").width()];
-                    $element.Jcrop({
-                        //bgColor:     'black',
-                        bgOpacity:   0.4,
-                        aspectRatio: 1,
-                        boxWidth:   400,
-                        //boxHeight:  $("#setImageSourceForm").width(),
-                        setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
-                        // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
-                        onChange: function(c){
-                            /*
-                            * c.w   ->  width
-                            * c.h   ->  length
-                            * c.x   ->  x coordinate of upper-left corner
-                            * c.x2  ->  y coordinate of upper-left corner
-                            * c.y   ->  x coordinate of lower-right corner
-                            * c.y2  ->  y coordinate of lower-right corner
-                            */
-                            file.width = c.w;
-                            file.x = c.x;
-                            file.y = c.y;
-                        }
-                    });
-                }
-            }
-        ])
-
         .directive('fileupload', function () {
             return {
                 controller: 'FileUploadController'
@@ -588,26 +394,16 @@
             };
         })
         
-        .directive('fileuploadcover', function () {
-            return {
-                controller: 'CoverUploadController'
-            };
+        /*
+.directive('fileType', function () {
+	        return {
+		      scope: {
+			      fileType: '=f'
+		      };  
+	        };
         })
-
-        .directive('progresscover', function () {
-            return {
-                controller: 'CoverUploadProgressController'
-            };
-        })
-
-        .directive('previewcover', function () {
-        console.log("Preview Cover Directive");
-            return {
-                controller: 'CoverUploadPreviewController'
-            };
-        })
-
-
+*/
+        
         .directive('download', function () {
             return function (scope, elm, attrs) {
                 elm.on('dragstart', function (e) {
@@ -625,4 +421,4 @@
             };
         });
 
-}());
+}());				
