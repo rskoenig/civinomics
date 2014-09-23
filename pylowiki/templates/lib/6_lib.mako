@@ -218,7 +218,7 @@
         <div class="btn-group facebook">
           % if 'btn' in kwargs:
             <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
-              <i class="glyphicon glyphicon-share-alt"></i> Share
+              <strong><i class="glyphicon glyphicon-share-alt"></i> Share </strong>
             </a>
           % else:
             <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
