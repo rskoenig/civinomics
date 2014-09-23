@@ -1,0 +1,56 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+
+<div class="spacer"></div>
+<div class="row-fluid" ng-controller="ProfileEditController">
+    <div class="span8">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h3 class="section-header"> Comment </h3>
+                <div class="row-fluid">
+                    <div class="span10 offset1">
+                        <div class="alert alert-error">
+                            <h4>Notice</h4>
+                            You are looking at a previous version (dated ${c.revision.date} PST), kept in the interests of transparency and history.
+                        </div><!-- alert -->
+                    </div><!-- span10 -->
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <div class="span10 offset1">
+                        <%
+                            lib_6.userImage(c.revision.owner, className="inline avatar small-avatar comment-avatar", linkClass="inline")
+                            lib_6.userLink(c.revision.owner, className="inline")
+                        %>
+                        <p>Said:</p>
+                        <p>${c.revision['data']}</p>
+                    </div><!-- span10 -->
+                </div><!--/.row-fluid-->
+            </div><!--/.browse-->
+        </div><!-- section-wrapper -->
+    </div><!-- span8 -->
+    <div class="span4">
+        ${dashboard.profileDashboard()}
+    </div><!--/.span4-->
+</div>
+
+<%def name="extraScripts()">
+    <script type="text/javascript">
+        $('.hoverTip').tooltip();
+    </script>
+    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+        });
+    </script>
+</%def>
