@@ -3245,6 +3245,16 @@ tr.neutral, .panel-heading.neutral{
   background-color: #e0e0e0;
 }
 
+tr.question, .panel-heading.question{
+  background-color: #d9edf7;
+  /*border-color: #bce8f1;*/
+}
+
+tr.suggestion, .panel-heading.suggestion{
+  background-color: #fcf8e3;
+  /*border-color: #faebcc;*/
+}
+
 a.no-highlight{
   color:#333333;
 }
