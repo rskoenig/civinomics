@@ -350,28 +350,30 @@
                     var startX = (width/2) - (selectedWidth/2);
                     var startY = (height/2) - (selectedHeight/2);
                     //var maxDims = [$("#setImageSourceForm").width(), $("#setImageSourceForm").width()];
-                    $element.Jcrop({
-                        //bgColor:     'black',
-                        bgOpacity:   0.4,
-                        aspectRatio: 1,
-                        boxWidth:   400,
-                        //boxHeight:  $("#setImageSourceForm").width(),
-                        setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
-                        // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
-                        onChange: function(c){
-                            /*
-                            * c.w   ->  width
-                            * c.h   ->  length
-                            * c.x   ->  x coordinate of upper-left corner
-                            * c.x2  ->  y coordinate of upper-left corner
-                            * c.y   ->  x coordinate of lower-right corner
-                            * c.y2  ->  y coordinate of lower-right corner
-                            */
-                            file.width = c.w;
-                            file.x = c.x;
-                            file.y = c.y;
-                        }
-                    });
+                    if ($scope.fuType === "files[]"){
+	                    $element.Jcrop({
+	                        //bgColor:     'black',
+	                        bgOpacity:   0.4,
+	                        aspectRatio: 1,
+	                        boxWidth:   400,
+	                        //boxHeight:  $("#setImageSourceForm").width(),
+	                        setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
+	                        // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
+	                        onChange: function(c){
+	                            /*
+	                            * c.w   ->  width
+	                            * c.h   ->  length
+	                            * c.x   ->  x coordinate of upper-left corner
+	                            * c.x2  ->  y coordinate of upper-left corner
+	                            * c.y   ->  x coordinate of lower-right corner
+	                            * c.y2  ->  y coordinate of lower-right corner
+	                            */
+	                            file.width = c.w;
+	                            file.x = c.x;
+	                            file.y = c.y;
+	                        }
+	                    });
+                    };
                 }
             }
         ])
