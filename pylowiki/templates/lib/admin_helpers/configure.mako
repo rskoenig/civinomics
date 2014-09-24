@@ -267,7 +267,7 @@
                                                 <span>
                                                 <input type="checkbox" class="goal-checkbox">
                                                 <span class="goal-title">{{criteria}}</span>
-                                                <a class="inline" class=""><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:50%"></a></span>
+                                                <a class="inline" class="" ng-click="deleteCriteriaFromList(criteria)"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:50%"></a></span>
                                             </li>
                                         </ul>
                                         <form class="addGoal">

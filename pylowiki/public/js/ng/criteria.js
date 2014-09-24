@@ -13,15 +13,17 @@ app.controller('ratingsController', function($scope, $http){
 		console.log($scope.rating.criteriaList.indexOf($scope.criteriaName));
 		console.log(!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1));
 		console.log(!$scope.rating.criteriaList.indexOf($scope.criteriaName)>-1);
-		if(!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1)){
-		
+		if (!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1)) {
 			$scope.rating.criteriaList.push($scope.criteriaName);
 			$scope.criteriaName = '';	
 		};
 	};
 	
 	$scope.deleteCriteriaFromList = function (criteria){
-		
+		var deleteCriteria = $scope.rating.criteriaList.indexOf(criteria);
+		if (deleteCriteria > -1) {
+			$scope.rating.criteriaList.splice(deleteCriteria, 1);
+		}
 	};
 	
 	$scope.sendCriteriaList = function (){
