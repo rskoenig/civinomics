@@ -251,33 +251,34 @@
 	<div class="section-wrapper wiki-well">
 		<div class="browse">
 			<h4 class="section-header smaller"> Ratings </h4>
-			<div class="col-sm-12" style="padding: 19px;">
+			<div class="col-sm-12" style="padding: 19px;" ng-controller="ratingsController">
 				<div class="form-group">
 					<p>Choose the type of rating for the ideas in this workshop:</p>
 					
 					<div class="col-xs-6">			
-						<input type="radio" name="rating_type" value="yesno" ng-model="rating_type"> Yes / No
+						<input type="radio" name="rating_type" value="yesno" ng-model="rating.type"> Yes / No
 					</div> <!-- col-xs-6 criteria -->
 					
 					<div class="col-xs-6">
-						<input type="radio" name="rating_type" value="criteria" ng-model="rating_type"> Rated criteria 
-						 <ul class="unstyled">
-                                            <li>
+						<input type="radio" name="rating_type" value="criteria" ng-model="rating.type"> Rated criteria 
+						<div ng-show="rating.type === 'criteria'">
+						 <ul class="unstyled" >
+                                            <li ng-repeat="criteria in rating.criteriaList">
                                                 <span>
                                                 <input type="checkbox" class="goal-checkbox">
-                                                <span class="goal-title">Sample criteria</span>
+                                                <span class="goal-title">{{criteria}}</span>
                                                 <a class="inline" class=""><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:50%"></a></span>
                                             </li>
                                         </ul>
                                         <form class="addGoal">
                                             <div class="input-group">
-                                                <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" class="addGoal form-control" id="">
+                                                <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" ng-model="criteriaName" class="addGoal form-control" id="">
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="submit" value="add">add</button>
+                                                    <button class="btn btn-primary" type="submit" value="add" ng-click="addCriteriaToList(criteriaName)">add</button>
                                                 </span>
                                             </div>
                                         </form>
-
+						</div>
 					</div> <!-- col-xs-6 criteria -->
 					
 				</div> <!-- form-group -->

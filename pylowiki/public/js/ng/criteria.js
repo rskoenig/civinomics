@@ -1,6 +1,32 @@
-var app = angular.module('civ', ['ngSanitize']);
+var app = angular.module('civ');
 
 app.controller('ratingsController', function($scope, $http){
+
+	$scope.rating = {
+		type: '',
+		criteriaList: []
+	};
+	
+	$scope.criteriaName = '';
+	
+	$scope.addCriteriaToList = function(){
+		console.log($scope.rating.criteriaList.indexOf($scope.criteriaName));
+		console.log(!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1));
+		console.log(!$scope.rating.criteriaList.indexOf($scope.criteriaName)>-1);
+		if(!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1)){
+		
+			$scope.rating.criteriaList.push($scope.criteriaName);
+			$scope.criteriaName = '';	
+		};
+	};
+	
+	$scope.deleteCriteriaFromList = function (criteria){
+		
+	};
+	
+	$scope.sendCriteriaList = function (){
+		
+	};
   /*
 	  Things that I need for this controller:
 	  	Adding a criteria
@@ -18,25 +44,4 @@ app.controller('ratingsController', function($scope, $http){
 	  		
 	  	In the future, there will need to be also functions to retrieve current criteria and display them properly (for ideas and the likes) so we might need an independent controller.
   */
-});
-
-app.directive('civBlur', function() 
-{
-  return function( scope, elem, attrs ) {
-    elem.bind('blur', function() {
-      scope.$apply(attrs.civBlur);
-    });
-  };
-})
-
-.directive('civFocus', function( $timeout ) {
-  return function( scope, elem, attrs ) {
-    scope.$watch(attrs.civFocus, function( newval ) {
-      if ( newval ) {
-        $timeout(function() {
-          elem[0].focus();
-        }, 0, false);
-      }
-    });
-  };
 });
