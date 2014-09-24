@@ -323,12 +323,13 @@ class HomeController(BaseController):
 				alertMsg = "You are not following any people, workshops or initiatives yet!"
 				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
+        # inclusive county activity function
         elif type == 'geo' and c.authuser and scope == 'none':
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
 		    countyScope = scopeList[6]
-		    #log.info("countyScope is %s"%countyScope)
+		    #log.info("in old geo scope function")
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
 		    if countyActivity:
@@ -344,7 +345,7 @@ class HomeController(BaseController):
             initScope = "0" + initScope
             initScope2 = initScope + "|0"
             scopes = [scope, initScope, initScope2]
-            
+
             if objectType is not 'all':
                 #log.info("Getting an object of type %s for scope %s"%(objectType, scope))
                 geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset, itemType = [objectType])

@@ -266,7 +266,7 @@ def getInitiativeActivity(limit, comments = 0, offset = 0, geoScope = False):
             return []
 
 def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = ''):
-    log.info("In getRecentGeoActivity")
+    #log.info("In getRecentGeoActivity and itemType is %s" % itemType)
     postList = []
     if itemType is '':
         objectList = ['idea', 'workshop', 'resource', 'discussion', 'initiative', 'photo']

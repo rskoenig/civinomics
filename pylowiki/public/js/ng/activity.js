@@ -15,7 +15,7 @@ function activityController($scope, $http) {
 		$scope.alertMsg = ''
 		$scope.activityLoading = true;
 		if ($scope.code){
-	        $scope.activityUrl = '/getSiteActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
+	        $scope.activityUrl = '/getObjActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
 	    }else{
 	    	$scope.activityUrl = '/getSiteActivity/' + $scope.activityType
 	    }
@@ -99,7 +99,7 @@ function activityController($scope, $http) {
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
 		if ($scope.code){
-		    $scope.sliceUrl = '/getActivitySlice/0/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url + '/' + $scope.offset;
+		    $scope.sliceUrl = '/getObjActivitySlice/0/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url + '/' + $scope.offset;
 		}else{
 		    $scope.sliceUrl = '/getActivitySlice/0/' + $scope.activityType + '/' + $scope.offset;
 		}
