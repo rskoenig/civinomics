@@ -2517,7 +2517,7 @@ hr.stats{
   margin-bottom: 5px;
 }
 
-.break, h4{
+.break, .markdown, h4{
   overflow-wrap: break-word;
   word-wrap: break-word;
   -ms-word-break: break-all;
