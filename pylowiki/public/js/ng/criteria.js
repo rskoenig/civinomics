@@ -2,6 +2,11 @@ var app = angular.module('civ');
 
 app.controller('ratingsController', function($scope, $http){
 
+	$scope.alert = {
+		message : '',
+		type: ''
+	};
+	
 	$scope.rating = {
 		type: '',
 		criteriaList: []
@@ -10,12 +15,16 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.criteriaName = '';
 	
 	$scope.addCriteriaToList = function(){
+		$scope.alert.message = '';
 		console.log($scope.rating.criteriaList.indexOf($scope.criteriaName));
 		console.log(!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1));
 		console.log(!$scope.rating.criteriaList.indexOf($scope.criteriaName)>-1);
 		if (!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1)) {
 			$scope.rating.criteriaList.push($scope.criteriaName);
 			$scope.criteriaName = '';	
+		} else {
+			$scope.alert.message = 'You already added that criteria.';	
+			$scope.alert.type = 'criteria'
 		};
 	};
 	
