@@ -636,6 +636,7 @@
             myRatings = session["ratings"]
         else:
             myRatings = {}
+            
         if 'readOnly' in thing:
             readonly = thing['readOnly']
         else:
@@ -673,7 +674,6 @@
             #   displayTally = 'hidden'
             #   displayPrompt = ''
          %>
-         readonly is ${readony} and href is ${href}<br>
          <a href="${href}1" class="${commentClass}">
               <div class="vote-icon yes-icon detail"></div>
               <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>

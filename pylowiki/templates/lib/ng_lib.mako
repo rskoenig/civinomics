@@ -517,6 +517,7 @@
                 readonly = kwargs['readonly']
             else:
                 readonly = "0"
+            
         %>
         % if readonly == "1":
             <a class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
@@ -531,8 +532,12 @@
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
         % endif
         <br>
+        % if readonly == "1":
+            Voting Complete
+        % endif
         <div ng-cloak>
-            <small class="grey">{{totalVotes}} votes <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+            <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
+            <small><span ng-if="item.readOnly == '1'">| <span class="green">{{(item.ups / item.voteCount * 100) | number:0}}% YES</span> | <span class="red">{{(item.downs / item.voteCount * 100) | number:0}}% NO</span></span></small> 
             <div class="progress" style="height: 12px; margin-bottom: 5px;">
                 <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
             </div>
