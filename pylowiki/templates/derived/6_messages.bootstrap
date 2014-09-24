@@ -67,6 +67,12 @@
                                                     <td ng-switch-when="commentOnUpdate">
                                                         ${ng_messages.commentOnUpdate()}
                                                     </td>
+                                                    <td ng-switch-when="commentOnOrgGeneral">
+                                                        ${ng_messages.commentOnOrgGeneral()}
+                                                    </td>
+                                                    <td ng-switch-when="commentOnOrgPosition">
+                                                        ${ng_messages.commentOnOrgPosition()}
+                                                    </td>
                                                     <td ng-switch-when="disabledEnabledDeletedPhoto">
                                                         ${ng_messages.disabledEnabledDeletedPhoto()}
                                                     </td>

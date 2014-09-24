@@ -118,11 +118,11 @@
 <%def name="watchButton(i, **kwargs)">
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-default pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
-            <span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>
+            <button class="btn btn-success followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
+            <span><i class="icon-bookmark"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn btn-default pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
+            <button class="btn btn-default followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
              <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -936,4 +936,3 @@
         </div><!-- ng-init -->
     %endif   
 </%def>
-

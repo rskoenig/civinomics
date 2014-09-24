@@ -120,14 +120,14 @@
         <div ng-controller="yesNoVoteCtrl"> 
             ${authorPosting()}
             <div class="row" style="margin-top:19px;">
-                <div class="col-sm-3">
+                <div class="col-xs-2">
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
+                            <img class="thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-9 no-left">
+                <div class="col-xs-10 no-left">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <p><small>${metaData()}</small></p>
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
@@ -139,7 +139,9 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter()}
+                % if not c.authuser or c.authuser['memberType'] != 'organization':
+                    ${yesNoVoteFooter()}
+                % endif
                 ${actions()}
             </div>
         </div>
@@ -171,7 +173,9 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter(noStats = True)}
+                % if not c.authuser or c.authuser['memberType'] != 'organization':
+                    ${yesNoVoteFooter(noStats = True)}
+                % endif
             </div>
         </div>
     </div>
@@ -212,7 +216,9 @@
                 </div>
             </div>
             <div class="row">
-                ${yesNoVoteFooter()}
+                % if not c.authuser or c.authuser['memberType'] != 'organization':
+                    ${yesNoVoteFooter()}
+                % endif
                 ${actions()}
             </div>
     </div><!-- media well -->
@@ -240,6 +246,23 @@
     </div>
 </%def>
 
+<%def name="comment_listing()">
+    <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
+        <div ng-controller="yesNoVoteCtrl">
+            <div class="row">
+                <div class="col-xs-11">
+                    <p>${authorPosting()} <small class="left-space right-space">in</small> <small>${metaData()}</small></p>
+                    <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
+                </div>
+                <div class="col-xs-1">
+                    ${upDownVoteBlock()}
+                </div>
+            </div>
+        </div>
+    </div>
+</%def>
+
+                    
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
         <div class="row" ng-controller="yesNoVoteCtrl">
@@ -249,6 +272,29 @@
                 % if not c.w:
                     <p><small>${metaData()}</small></p>
                 % endif
+                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+            </div>
+            <div class="col-xs-1">
+                ${upDownVoteBlock()}
+            </div>
+        </div>
+        <div class="row">
+            ${actions()}
+        </div>
+    </div>
+</%def>
+
+<%def name="position_listing()">
+    <div class="media well search-listing" ng-class="{pro : item.position == 'support', con : item.position == 'oppose'}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
+        <div class="row" ng-controller="yesNoVoteCtrl">
+            <div class="col-xs-11">
+                ${authorPosting()}
+                <p>
+                    <strong ng-if="item.position == 'support'">We support: </strong>
+                    <strong ng-if="item.position == 'oppose'">We oppose: </strong>
+                    <a ng-href = '{{item.parentHref}}'><img ng-if="item.thumbnail != '0'" ng-src="{{item.thumbnail}}" style="height: 40px; width: 40px; border-radius: 4px;"></a>
+                    <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a> <small><span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span><img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"></small>
+                </p>
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
@@ -305,7 +351,6 @@
             <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
             <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
         </div>
-
     </div>
 </%def>
 
@@ -355,7 +400,6 @@
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
             <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
         </a>
-        <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
         <a ng-click="updateNoVote()" class="downVote {{voted}}">
             <i class="icon-chevron-sign-down icon-2x {{voted}}"></i>
@@ -364,7 +408,6 @@
         <a href="#signupLoginModal" data-toggle="modal" class="upVote">
             <i class="icon-chevron-sign-up icon-2x"></i>
         </a>
-        <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
         <a href="#signupLoginModal" data-toggle="modal" class="downVote">
             <i class="icon-chevron-sign-down icon-2x"></i>
@@ -382,13 +425,22 @@
     <a class="green green-hover" ng-show="comment.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
-<%def name="metaData()">
-    <small>
-        <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+<%def name="moreLessStatement()">
+    <a ng-href="{{item.href}}" target="_blank">more</a>
+</%def>
+
+<%def name="metaData(*args)">
+    <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+
+    % if 'inline' in args:
+        <img class="thumbnail flag inline-title-flag border no-bottom" src="{{item.flag}}"> 
+
+    % else:
         <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
-        <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
-        <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
-    </small>
+    % endif
+
+    <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
+    <span ng-if="item.parentHref && item.parentTitle != ''">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
 </%def>
 
 <%def name="authorPosting()">
@@ -411,6 +463,9 @@
                                 <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
                             <li><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
+                            % if c.authuser and c.authuser['memberType'] == 'organization':
+                                <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a class="no-highlight" ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
+                            % endif 
                         </ul>
                     </div>
                 </div>
@@ -812,4 +867,47 @@
             </select>
         </div><!-- span8 -->
     </div><!-- row-fluid -->
+</%def>
+
+<%def name="showSupportOppose()">
+    <div class="centered" ng-show="positionsLoading" ng-cloak>
+        <i class="icon-spinner icon-spin icon-4x"></i>
+    </div>
+    <div class="row" ng-show="!positionsLoading" ng-cloak>
+        <div class="col-sm-6">
+            <h4 class="initiative-title">Support</h4>
+            <!-- a supporter -->
+            <table class="table pro">
+                <tr ng-if="support.length == 0">
+                    <td>There are no supporters yet.</td>
+                </tr>
+                <tr ng-repeat="item in support">
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
+                    <td>
+                        <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br><small class="grey">{{item.fuzzyTime}} ago</small>
+                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-6">
+            <h4 class="initiative-title">Oppose</h4>
+            <!-- an opposer -->
+            <table class="table con">
+                <tr ng-if="oppose.length == 0">
+                    <td>
+                        There are no opponents yet.
+                    </td>
+                </tr>
+                <tr ng-repeat="item in oppose"> 
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
+                    <td>
+                        <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br>
+                        <small class="grey">{{item.fuzzyTime}} ago</small>
+                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </%def>

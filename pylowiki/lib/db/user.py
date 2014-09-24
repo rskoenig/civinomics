@@ -127,12 +127,35 @@ def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
                 .filter(Thing.data.any(wc('activated', activated)))\
+                .filter(Thing.data.any(wc('memberType', 'professional')))\
                 .filter(Thing.data.any(reduce(or_, map_user)))
         log.info(query)
         if count:
             return query.count()
         return query.all()
     except:
+        return False
+        
+def searchOrganizations(uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'1', count = False):
+    try:
+        if type(uKeys) != type([]):
+            u_keys = [uKeys]
+            u_values = [uValues]
+        else:
+            u_keys = uKeys
+            u_values = uValues
+        map_user = map(wcl, u_keys, u_values)
+        query =  meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('memberType', 'organization')))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('activated', activated)))\
+            .filter(Thing.data.any(reduce(or_, map_user)))
+        if count:
+            return query.count()
+        return query.all()
+    except sa.orm.exc.NoResultFound:
         return False
         
 
@@ -245,6 +268,7 @@ def hashPassword(password):
 
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000', **kwargs):
+        log.info("memberType is %s"%memberType)
         u = Thing('user')
         u['greetingMsg'] = ''
         u['websiteLink'] = ''
@@ -254,6 +278,8 @@ class User(object):
         u['activated'] = '0'
         u['disabled'] = '0'
         u['deleted'] = '0'
+        u['ups'] = '0'
+        u['downs'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         log.info('postalCode5 expect number: %s'%postalCode)
