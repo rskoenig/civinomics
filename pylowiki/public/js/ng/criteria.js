@@ -1,74 +1,23 @@
 var app = angular.module('civ', ['ngSanitize']);
 
-app.controller('GoalsCtrl', function($scope, $http){
-  $scope.baseURL = location.pathname;
-  if ($scope.baseURL.match('preferences'))
-  {
-    $scope.baseURL = $scope.baseURL.slice(-$scope.baseURL.length, -11);
-  }
-  else if ($scope.baseURL.match('/add/idea'))
-  {
-    $scope.baseURL = $scope.baseURL.slice(-$scope.baseURL.length, -8);
-  }
-  $http.get($scope.baseURL + 'goals/get').success(function(data){
-    $scope.goals = data;
-    angular.forEach($scope.goals, function(goal){
-        goal.editing = false;
-    });
-  });
- 
-  $scope.addGoal = function() {
-    if ($scope.goalTitle.length > 0)
-    {
-      var thisGoal = {title:$scope.goalTitle, done:false};
-      var addGoalURL = $scope.baseURL + 'goals/add';
-      $http.post(addGoalURL, thisGoal).success(function(item){
-        $scope.goals.push(item);
-        $scope.goalTitle = '';
-      });
-    }
-  };
-  
-  $scope.goalStatus = function(goal) {
-    var goalUpdateURL = $scope.baseURL + 'goals/' + goal.code + '/update';
-    $http.post(goalUpdateURL, goal);
-  };
-  
-  $scope.goalEditState = function(goal) {
-    goal.editing = !goal.editing;
-  };
-  
-  $scope.goalEditDone = function(goal) {
-    var goalUpdateURL = $scope.baseURL + 'goals/' + goal.code + '/update';
-    if (this.editTitle){
-      goal.title = this.editTitle;
-      $http.post(goalUpdateURL, goal).success(function(data){
-        goal.title = data.title;
-        goal.done = data.done;
-        goal.editing = false;
-      });
-    }
-  };
-  
-  $scope.deleteGoal = function(goal) {
-    // javascript lacks a function to remove an item from an array other than pop()
-    var goalDeleteURL = $scope.baseURL + 'goals/' + goal.code + '/delete';
-    $http.post(goalDeleteURL, goal).success(function(data){
-      var oldGoals = $scope.goals;
-      $scope.goals = [];
-      angular.forEach(oldGoals, function(goal) {
-        if (goal.code != data.code) { $scope.goals.push(goal); }
-      });
-    });
-  };
-  
-  $scope.remaining = function() {
-    var count = 0;
-    angular.forEach($scope.goals, function(goal) {
-      count += goal.done ? 0 : 1;
-    });
-    return count;
-  };
+app.controller('ratingsController', function($scope, $http){
+  /*
+	  Things that I need for this controller:
+	  	Adding a criteria
+	  		Adding to an array
+	  	Removing a criteria
+	  		Removing from the array
+	  	Sending the criteria to the workshop
+	  		Array to string with pipes
+	  			Custom cast?
+	  		Getting the workshop code
+	  			URL split? Mako injection?
+	  		Do I really need a criteria controller then?
+	  		Are they ever gonna be separated from workshops?
+	  			Not for now.
+	  		
+	  	In the future, there will need to be also functions to retrieve current criteria and display them properly (for ideas and the likes) so we might need an independent controller.
+  */
 });
 
 app.directive('civBlur', function() 
