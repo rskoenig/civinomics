@@ -300,6 +300,10 @@ class AdminController(BaseController):
             text = request.params['text']
             if 'position' in request.params:
                 position = request.params['position']
+                if request.params['position'] == 'support':
+                    title = title.replace("We oppose", "We support")
+                if request.params['position'] == 'oppose':
+                    title = title.replace("We support", "We oppose")  
             else:
                 position = False
             if title.strip() == '':
