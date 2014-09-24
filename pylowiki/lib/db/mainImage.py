@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from sqlalchemy import or_
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
+from pylons.controllers.util import abort
 
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.revision     as revisionLib

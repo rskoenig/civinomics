@@ -73,6 +73,10 @@ h5.h45, h4.h45{
   margin-bottom: 5px;
 }
 
+.light{
+  font-weight: 300;
+}
+
 .listed-item-title{
   color: #333333;
 }
@@ -112,6 +116,7 @@ h5.h45, h4.h45{
 .footer{
   background-color: #333;
   padding: 30px 0;
+  margin-top:40px;
   color: #eee;
 }
 
@@ -643,6 +648,11 @@ padding: 0;
   margin-bottom: 10px;
 }
 
+.well.slim-well{
+  padding: 5px 15px;
+  min-height: 104px;
+}
+
 .well.footer{
    background-color: #333;
    opacity:0.9;
@@ -829,6 +839,10 @@ form.addGoal{
   margin-right: 4px;
 }
 
+.right-space-md{
+  margin-right: 20px;
+}
+
 .disabled{
     background: #f2dede;
     border-radius:10px;
@@ -871,6 +885,7 @@ form.addGoal{
 
 .section-wrapper .section-header.smaller, .section-header.smaller{
     min-height:30px;
+    padding-bottom: 10px;
 }
 .section-wrapper .activity {
   padding: 10px;
@@ -1154,13 +1169,13 @@ img.config{
    margin-right:10px;
 }
 
-img.avatar{
+img.avatar, .avatar{
    border-radius: 500px;
    margin-right:5px;
 }
 .avatar.avatar-large{
-    height: 200px;
-    width: 200px;
+    height: 170px;
+    width: 170px;
 }
 
 .avatar.avatar-team{
@@ -1229,6 +1244,11 @@ img.avatar{
 textarea.comment-reply{
     width:85%;
     rows:4;
+}
+
+.min-textarea{
+  min-height: 60px;
+  max-height: 300px;
 }
 
 .admin{
@@ -1709,6 +1729,11 @@ a.no-border:hover{
    color:grey;
 }
 
+.comment-help-block{
+  text-align: right;
+  padding-right: 15px;
+}
+
 .table td.no-border{
     border: none;
 }
@@ -2147,7 +2172,9 @@ li.thumbnail-gallery{
     margin-bottom:0;
 }
 .form-actions.save-profile{
-    padding-left:190px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin-left:-10px;
     margin-right:-10px;
     margin-bottom:-20px;
@@ -2157,7 +2184,8 @@ li.thumbnail-gallery{
     margin-top:30px;
 }
 .civAvatarUploadForm{
-   margin-top:40px;
+  text-align: center;
+  margin-top:30px;
 }
 
 .comment-data h1{
@@ -2202,7 +2230,7 @@ li.thumbnail-gallery{
 }
 
 .i-social-buttons{
-  margin-top: 25px;
+  margin-top: 0px;
 }
 
 .action-buttons{
@@ -2319,6 +2347,11 @@ background-color: whitesmoke;
   padding-bottom: 0;
 }
 
+.well.search-listing-comment{
+  margin-bottom: 8px;
+  padding-bottom: 19px;
+}
+
 .table.plain{
   margin-bottom: 0;
 }
@@ -2378,6 +2411,14 @@ text-align: right;
 
 .thumbnail.med-flag:hover{
   box-shadow: -1px 1px 1px #dff0d8;
+}
+
+.inline-title-flag{
+  width: auto!important;
+  height: 35px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  display: inline;
 }
 
 .small-flag{
@@ -2476,7 +2517,7 @@ hr.stats{
   margin-bottom: 5px;
 }
 
-.break, h4{
+.break, .markdown, h4{
   overflow-wrap: break-word;
   word-wrap: break-word;
   -ms-word-break: break-all;
@@ -3235,13 +3276,18 @@ margin-right: -13px;
   padding-right: 10px;
 }
 
-tr.con, .panel-heading.against{
-  background-color: #f2dede
+table.pro, table.con{
+  border-radius: 5px;
 }
-tr.pro, .panel-heading.favor{
+
+tr.con, .panel-heading.against, .con{
+  background-color: #f2dede;
+}
+
+tr.pro, .panel-heading.favor, .pro{
   background-color: #dff0d8;
 }
-tr.neutral, .panel-heading.neutral{
+tr.neutral, .panel-heading.neutral, .neutral{
   background-color: #e0e0e0;
 }
 
@@ -3262,10 +3308,10 @@ a.no-highlight.overlay{
   color:#fff;
 }
 a.no-highlight:hover{
-    color: #428bca;
+  color: #428bca;
 }
 a.no-highlight.no-hover:hover{
-    color: #333333;
+  color: #333333;
 }
 
 .edit-initiative .span6 .alert.alert-info{
@@ -3449,6 +3495,15 @@ hr.object-list-header{
   vertical-align: top;
 }
 
+table.table-inline{
+  display: inline;
+}
+
+.profile-dash-button button{
+  margin-top: 8px;
+  vertical-align: top;
+}
+
 .splash-initiative{
   padding: 8px 0 8px 0 !important;
 }
@@ -3459,7 +3514,7 @@ hr.object-list-header{
 
 .i-photo{
   height:100px;
-  width:100%;
+  width:100px;
   background-repeat:no-repeat;
   background-size:cover;
   background-position:center;
@@ -3767,7 +3822,7 @@ svg{
 }
 
 .content-offset{
-  margin-top: 300px;
+  margin-top: 310px;
 }
 
 .top-offset{

@@ -154,6 +154,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return self._noSearch()
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
+        c.numOrganizations = userLib.searchOrganizations(['name', 'url'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         log.info("Search query in search to get the count %s", self.query)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
@@ -163,7 +164,7 @@ class SearchController(BaseController):
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
         c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
-        c.searchType = "name"
+        c.searchType = self.searchType
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
         if self.query == 'civinomicon':            
@@ -172,6 +173,7 @@ class SearchController(BaseController):
         if iPhoneApp:
             entry = {}
             entry['numUsers'] = c.numUsers
+            entry['numOrganizations'] = c.numOrganizations
             entry['numWorkshops'] = c.numWorkshops
             entry['numResources'] = c.numResources
             entry['numDiscussions'] = c.numDiscussions
@@ -444,7 +446,11 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
+        if self.searchType == "orgURL":
+            # This is a search for organizations
+            people = userLib.searchOrganizations(['name', 'url'], [self.query, self.query])
+        else:
+            people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
         if len(people) == 0:
             return json.dumps({'statusCode': 2})
         for p in people:
@@ -467,6 +473,21 @@ class SearchController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
+        
+    def searchOrganizations( self ):
+        orgURL = utils.urlify(self.query)
+        if self.searchType == 'orgURL':
+            orgs = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query])
+            if orgs and len(orgs) == 1:
+                urlCode = orgs[0]['urlCode']
+                profileURL = '/profile/' + urlCode + '/' + orgURL
+                return redirect(profileURL)
+            else:
+                searchURL = '/search?searchQuery=' + orgURL
+                return redirect(searchURL)
+        else:
+            searchURL = '/search?searchQuery=' + orgURL
+            return redirect(searchURL)
     
     def searchWorkshops(self):
         log.info("controllers/search: in searchWorkshops")
@@ -1121,6 +1142,8 @@ class SearchController(BaseController):
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
+            entry['sep'] = ','
+
            #  if entry['level'] != 'Country' and entry['level'] != 'Postalcode':
 #                 members = 0
 #                 zipcodes = getZipCodesBy(entry['level'],entry['name'])              
@@ -1128,6 +1151,7 @@ class SearchController(BaseController):
 #                     log.info(zipcode)
 #                     members += userLib.getUsersPerZipCode(zipcode)
 #                 log.info("There are %d members in %s"%(members,entry['level']))
+
             entry['fullName'] = entry['level'] + ' of ' + entry['name']
             entry['scope'] = scope[1:]
             

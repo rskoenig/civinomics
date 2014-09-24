@@ -3,11 +3,14 @@
     import pylowiki.lib.db.initiative   as initiativeLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
+    import pylowiki.lib.db.discussion   as discussionLib
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
+    import pylowiki.lib.fuzzyTime       as fuzzyTime
+    import misaka as misaka
     
     import logging, os
     log = logging.getLogger(__name__)
@@ -315,11 +318,11 @@
     % else:
         <span class="button_container">
         % if c.isFollowing:
-            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn pull-right followButton following">
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-success  followButton following">
             <span><i class="icon-user icon-white"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn pull-right followButton unfollow">
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-default followButton unfollow">
             <span><i class="icon-user med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -395,7 +398,11 @@
                         parentObjType = 'meeting'
                         parentLink = "/meeting/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
-                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+                        # not a photo, must be an organization discussion
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/discussion/show/" + item['discussionCode']
+                        parentCode = item['discussionCode']
+                        parentObjType = 'discussion'
+                        parentURL = item['parent_url']
                     else:
                         log.info("no parentObjType item is %s"%item.keys())
                         parentObjType = ""
@@ -451,6 +458,19 @@
                 % if item['deleted'] == '0' and item['initiative_public'] == '1':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
+            % elif objType == 'comment' and 'discType' in item and item['discType'] == 'organization_position':
+                <% 
+                    if 'initiativeCode' in item:
+                        pItem = 'initiative'
+                    else:
+                        pItem = 'idea'
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['discussionCode']
+                    activityStr = "commented on an organization <a href=\"" + link + "\">position</a>, saying"
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
             % elif objType == 'comment' and 'initiativeCode' in item:
                 <% 
                         activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
@@ -471,6 +491,38 @@
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
+                    activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'discussion' and item['discType'] == 'organization_general':
+                <% 
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/discussion/show/" + item['urlCode']
+                    activityStr = "started the organization forum topic "
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'discussion' and item['discType'] == 'organization_position':
+                <% 
+                    if 'initiativeCode' in item:
+                        pItem = 'initiative'
+                        pTitle = item['initiative_title']
+                    else:
+                        pItem = 'idea'
+                        pTitle = item['idea_title']
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/position/show/" + item['urlCode']
+                    activityStr = "took a position to %s the %s "%(item['position'], pItem)
+                    activityStr += " <a href=\"" + link + "\" class=\"expandable\">" + pTitle + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % elif objType == 'comment' and 'profileCode' in item:
+                <% 
+                    activityStr = "commented on an organization forum <a href=\"" + parentLink + "\">discussion</a>, saying"
                     activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
                 %>
                 % if item['deleted'] == '0':
@@ -649,3 +701,269 @@
         % endif
     %endif
 </%def>
+
+<%def name="showDiscussions()">
+    <% discussions = discussionLib.getDiscussionsForOrganization(c.user) %>
+    % for d in discussions:
+        <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/discussion/show/" + d['urlCode'] %>
+        <div class="row-fluid">
+            <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
+            ${lib_6.userLink(d.owner)} from ${lib_6.userGeoLink(d.owner)}${lib_6.userImage(d.owner, className="avatar med-avatar")}</br>
+            posted ${fuzzyTime.timeSince(d.date)} ago ${str(d['numComments'])} comments <i class="icon-eye-open"></i> ${str(d['views'])} views</br>
+        </div><!-- row-fluid -->
+    % endfor        
+</%def>
+
+<%def name="showDiscussion()">
+    <%
+        url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/discussion/show/" + c.discussion['urlCode']
+        role = ''
+        if 'addedAs' in c.discussion.keys():
+            roles = ['admin', 'facilitator', 'listener']
+            if c.discussion['addedAs'] in roles:
+                role = ' (%s)' % c.discussion['addedAs']
+    %>
+    <div class="row-fluid">
+        <div class="span2">
+            ${lib_6.upDownVote(c.discussion)}
+        </div><!-- span2 -->
+        <div class="span10">
+            <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
+            % if 'text' in c.discussion.keys():
+                ${misaka.html(c.discussion['text']) | n}
+            % endif
+            ${lib_6.userLink(c.discussion.owner)}${role} from ${lib_6.userGeoLink(c.discussion.owner)}${lib_6.userImage(c.discussion.owner, className="avatar med-avatar")}
+            % if c.discussion.objType == 'discussion':
+                <br />Originally posted  ${c.discussion.date}
+                <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
+            % endif 
+        </div><!-- span10 -->
+    </div><!-- row-fluid -->
+</%def>
+
+<%def name="showPositions()">
+    <% discussions = discussionLib.getPositionsForOrganization(c.user) %>
+    % for d in discussions:
+        <% url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + d['urlCode'] %>
+        <div class="well">
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3><a href="${url}" class="listed-item-title">${d['title']}</a></h3>
+                    <p>posted ${fuzzyTime.timeSince(d.date)} ago | ${str(d['numComments'])} comments | <i class="icon-eye-open"></i> ${str(d['views'])} views</p>
+                </div>
+            </div><!-- row -->
+        </div>
+    % endfor        
+</%def>
+
+<%def name="showPosition()">
+    <%
+        url = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/position/show/" + c.discussion['urlCode']
+        role = ''
+        if 'addedAs' in c.discussion.keys():
+            roles = ['admin', 'facilitator', 'listener']
+            if c.discussion['addedAs'] in roles:
+                role = ' (%s)' % c.discussion['addedAs']
+
+        if 'initiativeCode' in c.discussion:
+            parentType = 'initiative'
+            parentURL = "/initiative/%s/%s/show"%(c.discussion['initiativeCode'], c.discussion['initiative_url'])
+            parentTitle = c.discussion['initiative_title']
+        else:
+            parentType = 'idea'
+            if 'workshopCode' in c.discussion:
+                parentURL = "/workshop/%s/%s/idea/%s/%s"%(c.discussion['workshopCode'], c.discussion['workshop_url'], c.discussion['ideaCode'], c.discussion['idea_url'])
+            else:
+                parentURL = "/idea/%s/%s"%(c.discussion['ideaCode'], c.discussion['idea_url'])
+            parentTitle = c.discussion['idea_title']
+    %>
+    <div class="row">
+        <div class="col-xs-12">
+            <h3><a href="${url}" class="listed-item-title">${c.discussion['title']}</a></h3>
+            View ${parentType}: <a href="${parentURL}">${parentTitle}</a>
+            <div class="spacer"></div>
+            % if 'text' in c.discussion.keys():
+                ${misaka.html(c.discussion['text']) | n}
+            % endif
+            ${lib_6.userLink(c.discussion.owner)}${role} from ${lib_6.userGeoLink(c.discussion.owner)}${lib_6.userImage(c.discussion.owner, className="avatar med-avatar")}
+            % if c.discussion.objType == 'discussion':
+                <br />Originally posted  ${c.discussion.date}
+                <i class="icon-eye-open"></i> ${str(c.discussion['views'])} views
+            % endif 
+        </div><!-- col-xs-11 -->
+    </div><!-- row -->
+</%def>
+
+<%def name="addTopic()">
+    <div class="row">
+        <div class="col-xs-12">
+            <form class="well" ng-controller="topicController" ng-init="userCode = '${c.user['urlCode']}'; userURL = '${c.user['url']}'; topicCode = 'new'; addTopicTitleResponse=''; addUpdateTextResponse=''; addTopicResponse='';"  id="addTopicForm" name="addTopicForm" ng-submit="submitTopicForm(addTopicForm)">
+                <div class="row">
+                    <div class="col-xs-1 form-group">
+                        ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+                    </div>
+                    <div class="col-xs-11">
+                        <div class="form-group">
+                            <label><strong ng-cloak>Title</strong></label>
+                            <input type="text" class="input-block-level form-control" name="title" ng-model="title" maxlength = "120" placeholder="Start a discussion topic..." required>
+                            <span ng-show="addTopicTitleShow"><div class="alert alert-danger" ng-cloak>{{addTopicTitleResponse}}</div></span>
+                        </div>
+                        <div class="form-group"ng-cloak>
+                            <label ><strong>Topic Description</strong>
+                            <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+                            <textarea name="text" rows="3" class="input-block-level form-control" ng-model="text" placeholder="Describe the topic you wish to discuss in the forum."></textarea>
+                            <span ng-show="addTopicTextShow"><div class="alert alert-danger" ng-cloak>{{addTopicTextResponse}}</div></span>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success pull-right" type="submit" name="submit">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</%def>
+
+<%def name="profileModerationPanel(thing)">
+    <%
+        if 'user' not in session or thing.objType == 'revision':
+            return
+        flagID = 'flag-%s' % thing['urlCode']
+        editID = 'edit-%s' % thing['urlCode']
+        adminID = 'admin-%s' % thing['urlCode']
+        publishID = 'publish-%s' % thing['urlCode']
+        unpublishID = 'unpublish-%s' % thing['urlCode']
+    %>
+    <div class="btn-group">
+        % if thing['disabled'] == '0':
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+        % endif
+        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
+        % endif
+        % if userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+
+    </div>
+    
+    % if thing['disabled'] == '0':
+        ${lib_6.flagThing(thing)}
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            ${lib_6.editThing(thing)}
+            % if userLib.isAdmin(c.authuser.id):
+                ${lib_6.adminThing(thing)}
+            % endif
+        % endif
+    % else:
+        % if userLib.isAdmin(c.authuser.id):
+            ${lib_6.editThing(thing)}
+        % endif
+        % if userLib.isAdmin(c.authuser.id):
+            ${lib_6.adminThing(thing)}
+        % endif
+    % endif
+</%def>
+
+<%def name="horizontalDashboard()">
+    <div class="well">
+        <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();">
+            <div class="row">
+                % if c.user['memberType'] != 'organization':
+                <div class="col-sm-7">
+                    <h1 ng-cloak>{{fullName}}</h1>
+                    <p class="grey" ng-cloak>{{greetingMsg}}</p>
+                </div>
+                <div class="col-sm-5 top-space-md">
+                    <!-- user flags -->
+                    <div ng-controller="zipLookupCtrl" style="float: right;">
+                        <table ng-show="!loading">
+                            <tr>
+                                <td ng-repeat="geo in geos">
+                                    <a href="{{geo.href}}" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space border" src="{{geo.flag}}" ng-cloak></a>
+                                </td>
+                            </tr>
+                        </table>
+                        <p>${lib_6.userGeoLink(c.user)}</p>
+                    </div><!-- ng-controller -->
+                </div>
+                % else:
+                <div class="col-sm-12">
+                    <h1 ng-cloak>{{fullName}}</h1>
+                    <p class="grey" ng-cloak>
+                        {{greetingMsg}}
+                        <span ng-if="greetingMsg != ''"> | </span>
+                        <a ng-href="websiteLink" ng-cloak>{{websiteLink}}</a>
+                    </p>
+                </div>
+                % endif
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class="profile-dash-button pull-right">
+                        % if c.authuser:
+                            % if c.user['email'] == c.authuser['email']:
+                                <a class="btn btn-default" href="/profile/${c.user['urlCode']}/${c.user['url']}/edit"><strong>Edit Profile</strong></a>
+                            % else:
+                                ${followButton(c.user)}
+                            % endif
+                        % endif
+                    </span>
+
+                    % if c.user['memberType'] != 'organization':
+                        <table id="metrics" class="table-inline">
+                            <tr>
+                                <td style="padding-left: 0px;">
+                                    <% 
+                                        thingListingURL = "/profile/%s/%s/ideas" %(c.user['urlCode'], c.user['url'])
+                                        if 'idea_counter' in c.user:
+                                            numThings = c.user['idea_counter']
+                                        else:
+                                            numThings = '0'
+                                    %>
+                                    <span class="workshop-metrics">Ideas</span><br>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
+                                </td>
+                                <td>
+                                    <% 
+                                        thingListingURL = "/profile/%s/%s/discussions" %(c.user['urlCode'], c.user['url'])
+                                        if 'discussion_counter' in c.user:
+                                            numThings = c.user['discussion_counter']
+                                        else:
+                                            numThings = '0'
+                                    %>
+                                    <span class="workshop-metrics">Discussions</span><br>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
+                                </td>
+                                <td>
+                                    <% 
+                                        thingListingURL = "/profile/%s/%s/resources" %(c.user['urlCode'], c.user['url'])
+                                        if 'resource_counter' in c.user:
+                                            numThings = c.user['resource_counter']
+                                        else:
+                                            numThings = '0'
+                                    %>
+                                    <span class="workshop-metrics">Resources</span><br>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
+                                </td>
+                                <td>
+                                    <% 
+                                        thingListingURL = "/profile/%s/%s/followers" %(c.user['urlCode'], c.user['url'])
+                                        if 'follower_counter' in c.user:
+                                            numThings = c.user['follower_counter']
+                                        else:
+                                            numThings = '0'
+                                    %>
+                                    <span class="workshop-metrics">Followers</span><br>
+                                      <strong ng-cloak><span class="black">${numThings}</span></strong>
+                                </td>
+                            </tr>
+                        </table>
+                    % endif
+                </div><!-- col-xs-12 -->
+            </div><!-- row -->
+        </div>
+    </div>
+</%def>
+

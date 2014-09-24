@@ -49,7 +49,7 @@
             <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="col-sm-12 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         </div>
         <div class="col-sm-11 col-sm-offset-1">
-            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
             <a href="#signupLoginModal" data-toggle='modal' title="Login to comment." class="btn btn-primary" type="button">Submit</a>
         </div>
     </div>
@@ -72,7 +72,7 @@
             <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         </div>
         <div class="col-sm-11 col-sm-offset-1">
-            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
             <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
         </div>
     </div>
@@ -128,7 +128,7 @@
             </div><!-- row -->
         % else:
         <div class="row">
-            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
             <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button></span>
         </div><!-- row -->
         % endif
