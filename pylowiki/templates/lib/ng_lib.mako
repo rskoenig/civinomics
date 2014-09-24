@@ -756,7 +756,7 @@
                                     </div><!-- accordian-group -->
                                 </div><!-- ng-repeat -->
                             </div><!-- accordian -->
-                            <div ng-show="(comment.canEdit == 'yes')">
+                            <div ng-show="(comment.canEdit == 'yes') && item.readOnly == '0'">
                                 <div class="btn-group btn-group-xs">
                                     <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
                                     <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
@@ -786,13 +786,14 @@
                         <td class="col-xs-1 comment-vote">
                             <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
                                 <div ng-controller="yesNoVoteCtrl">
-                                    ${upDownVoteBlock()}
+                                    <span ng-show="item.readOnly = '0'">${upDownVoteBlock(readonly = '0')}</span>
+                                    <span ng-show="item.readOnly = '1'">${upDownVoteBlock(readonly = '1')}</span>
                                 </div>
                             </div>
                         </td>
                     </tr>
 
-                    <tr ng-hide="newCommentLoading || commentsHidden">
+                    <tr ng-hide="newCommentLoading || commentsHidden || item.readOnly == '1'">
                         % if c.authuser:
                             <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                             <td class="col-xs-10" style="padding: 10px 0px;">
@@ -879,8 +880,8 @@
                     <td colspan="2" style="padding: 10px;">
                         <ul class="horizontal-list iconListing">
                             <li>
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-if="item.numComments == '0' && item.readOnly == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-if="!(item.numComments == '0')  && item.readOnly == '0'" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                             </li>
                             <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
                         </ul>
