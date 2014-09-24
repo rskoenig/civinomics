@@ -1,0 +1,301 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="templateHelpers" file="/lib/template_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+</%def>
+
+
+% if not c.success:
+    <div id="splash-bg" style="background-image: url('${c.backgroundPhotoURL}');">
+        <div class="darkened-bg"></div>
+    </div>
+% else:
+    <div id="login-bg"></div>
+% endif
+
+<div class="row welcome">
+    % if c.success:
+            <div class="well main-well success-well green">
+                <div class="login-top">
+                    <h2>Success!</h2>
+                <div>
+                Check your email to finish setting up your account.
+                If you dont see an email from us in your inbox, try checking your junk mail folder.
+            </div>
+        </div>
+    % else: 
+    <div class="slogan centered">
+        <h1>Welcome to Civinomics <p class="lead">Vote, propose, be a citizen.</p></h1>
+        % if c.splashMsg:
+            <% message = c.splashMsg %>
+            <div class="row-fluid centered">
+                <div class="span6 offset3 alert alert-${message['type']}">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${message['title']}</strong> ${message['content']}
+                </div>
+            </div>
+        % endif
+        <a href="/signup" class="btn btn-lg btn-primary">Sign up</a>
+        <a href="/login" class="btn btn-lg btn-success">Login</a>
+        <!-- <p>or <span style="text-decoration: underline;">subscribe to our newsletter</span></p> -->
+    </div>
+</div><!-- row welcome -->
+<div class="container splash-container">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3 class="centered">For Citizens</h3>
+            <p>Organize your community around new initiatives, find programs from other regions in the world that can be adopted, vote and comment on official City Council Agenda items, repeal bad laws, create issues and invite your network to solve them. Together we can create government that is "of, by, and for the people."</p>
+        </div>
+        <div class="col-sm-6">
+            <h3 class="centered">For Government</h3>
+            <p>A free and easy to use citizen-feedback platform so that you can crowdsource public input and new ideas for your department, city, county, and beyond. <!--<a href="#orgSignup">Get started.</a> --></p>
+            <p>Need a statistically representative sample? Civinomics’ direct iPad surveys connect person-to-person with all segments of the population and get the data you need to make decisions.</p>
+        </div>
+        <!--
+        <div class="col-sm-6">
+            <h3 class="centered">For Organizations</h3> 
+            <p>Open source group decision making for your organization. Take program and feature suggestions from customers or team members. Does your organization take a stand on a political issue? Let everyone know that too. Start an organization.
+        </div>
+        -->
+    </div>
+    <hr>
+    <div class="row">
+        <h2 class="centered">
+            Surveys
+        </h2>
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <p class="lead centered">You need to know what everyday people think, not just the loudest people. Statistically representative iPad surveys and opinion polls allow you to connect.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6 centered">
+                <a class="thumbnail no-border">
+                    <img src="/images/splash/ipad_survey.jpg" style="margin: auto auto;">
+                </a>
+            </div>
+            <div class="col-sm-6 centered" style="height: 100%;">
+                <img src="/images/splash/citizen_collage.jpg" style="margin: auto auto;">
+                <div class="spacer"></div>
+                <p>
+                    <ul class="spaced-bullets">
+                        <li>Proven to acheive greater statistical accuracy than traditional phone surveys.</li>
+                        <li>Get responses from hard to reach groups like foreign language speakers and youth.</li>
+                        <li>Multimedia content and map-based question types let you take feedback on your issue to the next level.</li>
+                        <li>Discounts available for non-profits and community programs.</li>
+                    </ul>
+                </p>
+                <div class="spacer"></div>
+                <p class="centered">
+                    <a class="btn btn-lg btn-primary" href="mailto:info@civinomics.com" target="_blank">Contact us to get started</a>
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="row-fluid client-logos">
+            <h2 class="centered">A Few of Our Valued Clients</h2>
+            <div class="spacer"></div>
+            <div class="col-sm-2">
+                <a href="/surveys/SSIP" class="thumbnail">
+                    <img src="/images/corp/casestudies/sfpuc_ssip/sfpucLogo.png">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="corp/surveys/svbagban" class="thumbnail">
+                    <img src="/images/corp/casestudies/svbagban/sosLogo.jpg">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="/surveys/cap2" class="thumbnail">
+                    <img src="/images/corp/casestudies/cap2/scCAP.jpg">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="/surveys/scwd2" class="thumbnail">
+                    <img  src="/images/corp/casestudies/scwd2/soquelCreek.gif">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="/surveys/dmc" class="thumbnail">
+                    <img  src="/images/corp/casestudies/dmc/dmcLogo.png">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a href="/surveys/techCommuter" class="thumbnail">
+                    <img  src="/images/corp/casestudies/tech_commuter/ssvLogo.png">
+                </a>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <h2 class="centered">Top Citizen Initiatives</h2>
+        <div ng-controller="SearchCtrl">
+
+            <div class="loading-civ" ng-show="loading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x" style="color: #333333;"></i>
+            </div>
+
+            <div class="col-sm-6 col-md-4" ng-repeat = "item in initiatives | orderBy:orderProp | limitTo:3" ng-cloak>
+                <table style="width: 100%;">
+                    <tr>
+                        <td>
+                            ${ng_helpers.initiative_listing_condensed()}
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+        </div><!-- ng-controller -->
+    </div>
+    <!--
+    <div class="row">
+        <h2 class="text-center">Find initiatves near you</h2>
+    </div>
+    -->
+    <hr> 
+ 
+    <div id="about" class="row">
+        <h2 class="centered">
+            About
+        </h2>
+        <p class="lead centered">
+            Citizenship 2.0
+        </p>
+        <div class="row">
+            <div class="col-sm-6">
+                <a class="thumbnail no-border">
+                    <img src="/images/civ_logo_simple_lg.png" style="max-height: 200px;">
+                </a>
+            </div>
+            <div class="col-sm-6">
+                <div class="spacer"></div>
+                <p>Our logo is the combination of a dove and a hand, symbolyzing our mission to create peace and prosperity (the dove) through active participation (the hand).
+                <br>
+                <p>Like Wikipedia, Mozilla and countless others before us, we believe that the best parts of the internet can and should be open to everyone. That's why we're a non-profit organization.</p>
+                <!-- 
+                <div class="row">
+                    <div class="col-sm-4">
+                        <a>Fork the code</a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a>Volunteer</a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a>Support the cause</a>
+                    </div>
+                </div>
+                -->
+            </div>
+        </div>
+    </div>
+
+    <!--
+    <hr>
+    <div class="row">
+        <h2 class="text-center">
+            From the Blog/ Modal Trial
+        </h2>
+        <p class="lead text-center">
+            Some thoughts on the times we live in.
+        </p>
+    </div>
+    -->
+
+    <hr>
+    <div class="row" style="margin-bottom: 50px;">
+        <h2 class="centered" style="margin-bottom: 30px;">
+            In the News
+        </h2>
+        <div class="row client-logos">
+            <div class="col-sm-2">
+                <a class="thumbnail no-border" href="http://www.bizjournals.com/sanjose/chreynolds-data-centers/2014/05/public-policy-startup-civnomics-wants-to-hack-u-s.html">
+                    <img  src="/images/corp/news/SVBJ.jpg" target="_blank">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a class="thumbnail no-border" href="https://www.youtube.com/watch?v=vJ-Nb0WB1aw">
+                    <img  src="/images/corp/news/tedx_brc.jpg" target="_blank">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a class="thumbnail no-border" href="http://www.gtweekly.com/index.php/santa-cruz-news/good-times-cover-stories/5265-civinomics-rising.html" target="_blank">
+                    <img  src="/images/corp/news/goodtimes.jpg">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a class="thumbnail no-border" href="http://www.santacruzsentinel.com/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders" target="_blank">
+                    <img  src="/images/corp/news/sentinel.jpg">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a class="thumbnail no-border" href="http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/" target="_blank">
+                    <img  src="/images/corp/news/xconomy.png">
+                </a>
+            </div>
+            <div class="col-sm-2">
+                <a class="thumbnail no-border" href="http://www.register-pajaronian.com/v2_news_articles.php?heading=0&story_id=15366&page=72" target="_blank">
+                    <img  src="/images/corp/news/RP.jpg">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    <hr>
+    <div class="row">
+        <h2 class="text-center">Contact Us</h2>
+        <div class="col-md-6"><p class="lead">No message too large or small</p></div>
+        <div class="col-md-6">
+            <form role="form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea type="text" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+    </div>
+    -->
+</div>
+${templateHelpers.condensedFooter()}
+${templateHelpers.signupLoginModal()}
+
+% endif
+<%def name="headScripts()">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
+</%def>
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+    <script type="text/javascript">
+        $('.modal i[rel="tooltip"]')
+        .tooltip({placement: 'top'})
+        .data('tooltip')
+        .tip()
+        .css('z-index', 2080);
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+        $('.upVote.nullvote').tooltip();
+    </script>
+</%def>

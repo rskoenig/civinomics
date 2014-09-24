@@ -1,0 +1,52 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/ng_lib.mako" name="ng_lib" />
+
+
+<div class="spacer"></div>
+<div ng-init="fullName = '${c.user['name']}'; url = '${c.user['url']}'; code = '${c.user['urlCode']}'; meetings = true">
+    <div class="row" ng-controller="profileController">
+        <div class="col-sm-2">
+            ${lib_6.userImage(c.user, className="avatar avatar-large")}
+            <div>
+                <ul class="nav nav-pills workshop-menu" style="width: 100%" id="profileTabs">
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-10">
+            <div class="centered" ng-show="loading" ng-cloak>
+                <i class="icon-spinner icon-spin icon-4x"></i>
+            </div>
+            
+            <div  ng-repeat="item in items">
+                <div ng-init="url=item.url; code=item.urlCode">
+                    <div ng-controller="follow_unfollowCtrl">
+                        <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
+                            <tr>
+                                ${ng_lib.meeting_listing()}
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div><!-- col-sm-10 -->
+
+    </div>
+</div><!-- ng-init -->
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/follow_unfollow.js')}" type="text/javascript"></script>
+    <script src="/js/bootstrap/bootstrap-collapse.js"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+            
+<%def name="extraScripts()">
+    <script type="text/javascript">
+        $('.hoverTip').tooltip();
+    </script>
+</%def>
