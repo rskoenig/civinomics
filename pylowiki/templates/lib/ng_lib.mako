@@ -436,7 +436,8 @@
             <div class="row" ng-if="item.readOnly == '1'">${yesNoVoteFooter(readonly = "1")}</div>
             <div class="row" ng-if="item.readOnly == '0'">${yesNoVoteFooter(readonly = "0")}</div>
             <div class="row">
-                ${actions()}
+                <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
+                <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
             </div>
     </div><!-- media well -->
 </%def>
@@ -458,7 +459,8 @@
                 </div>
             </div>
             <div class="row">
-                ${actions()}
+                <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
+                <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
             </div>
         </div>
     </div>
@@ -481,7 +483,8 @@
             </div>
         </div>
         <div class="row">
-            ${actions()}
+            <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
+            <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
         </div>
     </div>
 </%def>
@@ -696,9 +699,15 @@
     </small>
 </%def>
 
-<%def name="actions()">
+<%def name="actions(**kwargs)">
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = '0'
+    %>
     % if not c.searchQuery:
-        <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
+        <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly">
             <div ng-controller="commentsController">
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
@@ -731,7 +740,6 @@
                     </tr>
 
                     <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', hidden : commentsHidden}" class="comment-row">
-
                         <td class="comment-avatar-cell">
                             <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
                         </td>
@@ -756,7 +764,8 @@
                                     </div><!-- accordian-group -->
                                 </div><!-- ng-repeat -->
                             </div><!-- accordian -->
-                            <div ng-show="(comment.canEdit == 'yes') && item.readOnly == '0'">
+                            % if readonly == '0':
+                            <div ng-show="(comment.canEdit == 'yes')>
                                 <div class="btn-group btn-group-xs">
                                     <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
                                     <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
@@ -782,18 +791,22 @@
                                     </div><!-- controller -->
                                 </div><!-- collapse -->
                             </div><!-- ng-show -->
+                            % endif
                         </td>
                         <td class="col-xs-1 comment-vote">
                             <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
                                 <div ng-controller="yesNoVoteCtrl">
-                                    <span ng-show="item.readOnly = '0'">${upDownVoteBlock(readonly = '0')}</span>
-                                    <span ng-show="item.readOnly = '1'">${upDownVoteBlock(readonly = '1')}</span>
+                                    % if readonly == '0':
+                                        ${upDownVoteBlock(readonly = '0')}
+                                    % else:
+                                        ${upDownVoteBlock(readonly = '1')}
+                                    % endif
                                 </div>
                             </div>
                         </td>
                     </tr>
-
-                    <tr ng-hide="newCommentLoading || commentsHidden || item.readOnly == '1'">
+                    % if readonly == '0':
+                    <tr ng-hide="newCommentLoading || commentsHidden">
                         % if c.authuser:
                             <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                             <td class="col-xs-10" style="padding: 10px 0px;">
@@ -862,7 +875,7 @@
                         % endif
                         <td></td>
                     </tr>
-                    
+                    % endif
                 </table>
                 </div><!-- activity comments -->
             </div>
@@ -870,9 +883,13 @@
     % endif
 </%def>
 
-<%def name="actions2()">
-    
-            ### Comments
+<%def name="actions2(**kwargs)">
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = '0'
+    %>
             <div class="activity-comments">
             <table class="activity-comments">
 
@@ -928,7 +945,8 @@
                                     </div><!-- accordian-group -->
                                 </div><!-- ng-repeat -->
                             </div><!-- accordian -->
-                            <div ng-show="(comment.canEdit == 'yes') && item.readOnly == '0'">
+                            % if readonly == '0':
+                            <div ng-show="(comment.canEdit == 'yes')">
                                 <div class="btn-group btn-group-xs">
                                     <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
                                     <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
@@ -958,18 +976,23 @@
                                     </div><!-- controller -->
                                 </div><!-- collapse -->
                             </div><!-- ng-show -->
+                            % endif
                         </td>
                         <td class="col-xs-1 comment-vote">
                             <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
                                 <div ng-controller="yesNoVoteCtrl">
-                                    <span ng-show="item.readOnly = '0'">${upDownVoteBlock(readonly = '0')}</span>
-                                    <span ng-show="item.readOnly = '1'">${upDownVoteBlock(readonly = '1')}</span>
+                                    % if readonly == '0':
+                                        ${upDownVoteBlock(readonly = '0')}
+                                    % else:
+                                        ${upDownVoteBlock(readonly = '1')}
+                                    % endif
                                 </div>
                             </div>
                         </td>
                 </tr>
 
-                <tr ng-hide="newCommentLoading || commentsHidden || item.readONly == '1'">
+                % if readonly == '0':
+                    <tr ng-hide="newCommentLoading || commentsHidden>
                     % if c.authuser:
                         <td class="col-xs-1 comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                         <td class="col-xs-11" style="padding: 10px 0px;">
@@ -1029,11 +1052,10 @@
                                 </form>
                         </td>
                     % endif
-                </tr>
-                
+                    </tr>
+                % endif
             </table>
             </div>
-            
 </%def>
 
 <%def name="ngGeoSelect()">

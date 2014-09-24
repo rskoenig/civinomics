@@ -622,22 +622,4 @@
     <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
 </%def>
 
-<%def name="readonlyModal()">
-    <div class="modal fade" id="readonlyModal" tabindex="-1" role="dialog" aria-labelledby="readonlyModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="no-top">This item is read-only.<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></h3>
-                </div>
-                <div class="modal-body">
-                    <p>You can't vote, add comments, ideas, discussions or resources, sorry.</p>
-
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</%def>
 

@@ -8,9 +8,7 @@
    </div>
 </div><!-- close wrap -->
 ${helpers.shortFooter()}
-% if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
-    ${helpers.readonlyModal()}
-% elif c.authuser and c.privs:
+% if c.authuser and c.privs:
 	% if c.privs['provisional']:
 		${helpers.activateAccountModal()}
 	% endif

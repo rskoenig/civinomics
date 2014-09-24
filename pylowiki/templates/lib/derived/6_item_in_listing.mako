@@ -125,13 +125,19 @@
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
         #log.info("thing keys is %s"%thing.keys())
+        if 'readOnly' in thing and thing['readOnly'] == '1':
+            readonly = '1'
+        else:
+            readonly = '0'
     %>
     <div class="btn-group" style="margin-top: -10px;">
-        % if thing['disabled'] == '0' and not c.privs['provisional']:
+        % if thing['disabled'] == '0' and not c.privs['provisional'] and readonly == '0':
             <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
-            <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
+            % if readonly == '0':
+                <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
+            % endif
         % endif
         % if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
             <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>

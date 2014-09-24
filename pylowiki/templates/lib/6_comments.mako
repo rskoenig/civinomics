@@ -80,12 +80,16 @@
 
 </%def>
 
+########################################################################
+##
+## Add a comment to the root of the discussion tree
+##
+########################################################################
 <%def name="addCommentToDiscussion(thing, discussion)">
-    ########################################################################
-    ##
-    ## Add a comment to the root of the discussion tree
-    ##
-    ########################################################################
+    <% 
+        if 'readOnly' in thing and thing['readOnly'] == '1':
+            return
+    %>
     <div class="spacer"></div>
     <form action="/comment/add/handler" id="commentAddHandler_root">
         <input type="hidden" id="type" name="type" value="${thing.objType}" />

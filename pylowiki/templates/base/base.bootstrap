@@ -47,7 +47,6 @@
                 ${template_lib.activateAccountModal()}
             % endif
         % endif
-        ${template_lib.readonlyModal()}
         ${template_lib.signupLoginModal()}
         
         
