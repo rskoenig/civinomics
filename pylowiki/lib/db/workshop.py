@@ -412,8 +412,7 @@ def setWorkshopPrivs(workshop):
             testL = listenerLib.getListener(c.authuser, workshop)
             if testL and testL['pending'] != '1':
                 c.privs['listener'] = True
-            if now > endTime:
-                log.info("now %s > endtime %s"%(now, endTime))
+            if 'readOnly' in workshop and workshop['readOnly'] == '1':
                 c.privs['readonly'] = True
             else:
                 c.privs['readonly'] = False

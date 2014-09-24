@@ -134,6 +134,14 @@ def getChildrenOfParent(parent):
     except:
         return False
         
+def setReadOnly(thing, value = '1'):
+    thing['readOnly'] = value
+    commit(thing)
+    children = getChildrenOfParent(thing)
+    for child in children:
+        child['readOnly'] = value
+        commit(child)
+        
 def getThingByID(thingID):
     try:
         return meta.Session.query(Thing)\

@@ -269,7 +269,20 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Allow Resources '
-                
+           
+        if 'endTime' in request.params:
+            endTime = request.params['endTime']
+            if c.w['endTime'] != endTime:
+                c.w['endTime'] = endTime
+                wchanges = 1
+                weventMsg = "Set endTime."
+                endDate = datetime.datetime.strptime(c.w['endTime'],"%Y-%m-%d")
+                now = datetime.datetime.now()
+                if endDate < now:
+                    generic.setReadOnly(c.w, "1")
+                else:
+                    generic.setReadOnly(c.w, "0")
+
         # save successful changes
         if wchanges:
             dbHelpers.commit(c.w)
@@ -688,9 +701,9 @@ class WorkshopController(BaseController):
                 workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             startTime = datetime.datetime.now(None)
             c.w['startTime'] = startTime
-            endTime = datetime.datetime.now(None)
-            endTime = endTime.replace(year = endTime.year + 1)
-            c.w['endTime'] = endTime
+            #endTime = datetime.datetime.now(None)
+            #endTime = endTime.replace(year = endTime.year + 1)
+            #c.w['endTime'] = endTime
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
             dbHelpers.commit(c.w)
 
