@@ -510,9 +510,18 @@
     </div>
 </%def>
 
-<%def name="yesNoVoteBlock()">
+<%def name="yesNoVoteBlock(**kwargs)">
     <div class="form-group">
-        % if 'user' in session:
+        <% 
+            if 'readonly' in kwargs:
+                readonly = kwargs['readonly']
+            else:
+                readonly = "0"
+        %>
+        % if readonly == "1":
+            <a class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+            <a class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+        % elif 'user' in session:
         
             <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
             <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
