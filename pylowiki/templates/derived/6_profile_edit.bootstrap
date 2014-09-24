@@ -8,22 +8,15 @@
 ##<div ng-app="ngUploadApp">
     <div class="spacer"></div>
     <div class="row" ng-controller="profileController">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
             <div class="tabbable">
-                <ul class="nav nav-tabs" id="editTabs">
-                <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover">Edit Profile</a></li>
-                <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
-                </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-edit">
                         ${edit.editProfile()}
                     </div><!-- tab-edit -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
-        </div><!-- col-sm-8 -->
-        <div class="col-sm-4">
-            ${dashboard.profileDashboard()}
-        </div><!--/.col-sm-4 -->
+        </div><!-- col-sm-10 -->
     </div>
 ##</div>
 
@@ -52,7 +45,7 @@
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/load-image.min.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/canvas-to-blob.min.js')}"></script>
             ##<script src="${lib_6.fingerprintFile('/js/vendor/blueimp/bootstrap-image-gallery.min.js')}"></script>
-            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
+            ##<script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-process.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-resize.js')}"></script>

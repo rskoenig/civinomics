@@ -23,6 +23,7 @@ import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
 import pylowiki.lib.db.initiative   	as initiativeLib
+import pylowiki.lib.db.discussion   	as discussionLib
 
 # twython imports
 from twython import Twython
@@ -556,6 +557,10 @@ class LoginController(BaseController):
             ratings = pickle.loads(str(c.authuser["ratings"]))
 
         session["ratings"] = ratings
+        
+        # if they are an organization, get and cache their stated positions
+        positions = discussionLib.getPositionsForOrganizationCache(c.authuser)
+        session["positions"] = positions
         session.save()
         
         # get their workshops and initiatives of interest

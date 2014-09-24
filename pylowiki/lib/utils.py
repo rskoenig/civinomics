@@ -79,7 +79,11 @@ def civinomicsAvatar():
 ##################################################
 def commentLinker(comment):
     itemLink = ''
-    if 'workshopCode' in comment:
+    if 'discType' in comment and comment['discType'] == 'organization_general':
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
+    elif 'discType' in comment and comment['discType'] == 'organization_position':
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/position/show/' + comment['discussionCode']
+    elif 'workshopCode' in comment:
         if 'ideaCode' in comment:
             # /workshop/4OOt/civinomicon-transportation/idea/4PUI/explore-ferry-servic
             itemLink = '/workshop/' + comment['workshopCode'] + '/' +  comment['workshop_url'] + '/idea/' + comment['ideaCode'] + '/' + comment['parent_url']
@@ -103,6 +107,9 @@ def commentLinker(comment):
     elif 'photoCode' in comment:
         # this is a comment on a photo
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/photo/show/' + comment['photoCode']
+    elif 'profileCode' in comment:
+        # I don't like this because it is not explicit what kind of comment this is, this is an implicit fallthrough case, ugh
+        itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
 
     return itemLink
 
@@ -264,6 +271,16 @@ def profilePhotoURL(thing):
 
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
     
+
+def profileDiscussionURL(thing):
+    owner = generic.getThing(thing['userCode'])
+    if thing['discType'] == 'organization_general':
+        dType = 'discussion'
+    else:
+        dType = 'position'
+
+    return "/profile/%s/%s/%s/show/%s" %(owner['urlCode'], owner['url'], dType, thing['urlCode'])
+    
 ##################################################
 # generates a url for a thing
 # kwarg returnTitle gets the title out of the thing as well.
@@ -303,8 +320,13 @@ def thingURL(thingParent, thing, **kwargs):
             returnString = baseURL
             thingUrl = False
     if thingUrl:
-        returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
-
+        if thing.objType == 'discussion' and thing['discType'] == 'organization_general':
+            returnString = "/profile/%s/%s/discussion/show/%s"%(thing['userCode'], thing['user_url'], thing['urlCode'])
+        elif thing.objType == 'discussion' and thing['discType'] == 'organization_position':
+            returnString = "/profile/%s/%s/position/show/%s"%(thing['userCode'], thing['user_url'], thing['urlCode'])
+        else:
+            returnString = baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
+            
     if 'returnTitle' in kwargs:
         if kwargs['returnTitle'] == True:
             try:
