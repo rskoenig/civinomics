@@ -433,12 +433,9 @@
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 </div>
             </div>
+            <div class="row" ng-if="item.readOnly == '1'">${yesNoVoteFooter(readonly = "1")}</div>
+            <div class="row" ng-if="item.readOnly == '0'">${yesNoVoteFooter(readonly = "0")}</div>
             <div class="row">
-                % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
-                    ${yesNoVoteFooter(readonly = True)}
-                % else:
-                    ${yesNoVoteFooter()}
-                % endif
                 ${actions()}
             </div>
     </div><!-- media well -->
@@ -456,11 +453,8 @@
                     % endif
                 </div>
                 <div class="col-xs-1">
-                    % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
-                        ${upDownVoteBlock(readonly = True)}
-                    % else:
-                        ${upDownVoteBlock()}
-                    % endif
+                    <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
+                    <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
             </div>
             <div class="row">
@@ -482,11 +476,8 @@
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
-                % if c.privs and 'readonly' in c.privs and c.privs['readonly'] == True:
-                    ${upDownVoteBlock(readonly = True)}
-                % else:
-                    ${upDownVoteBlock()}
-                % endif
+                <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
+                <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
             </div>
         </div>
         <div class="row">
@@ -545,11 +536,19 @@
 
 <%def name="yesNoVoteFooter(**kwargs)">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
-        % if 'readonly' in kwargs:
+
+        <% 
+            if 'readonly' in kwargs:
+                readonly = kwargs['readonly']
+            else:
+                readonly = "0"
+        %>
+        % if readonly == "1":
             <div class="row centered">
                 <div class="col-sm-12">
-                    <a href="#readonlyModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
-                    <a href="#readonlyModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                    Voting complete.<br>
+                    <a class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
         % elif 'user' in session:
@@ -582,7 +581,7 @@
                 <div class="col-sm-12">
                     <small class="grey">
                         {{totalVotes}} votes<span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> </span>
-                        <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+                        <span ng-if="voted || item.readOnly == '1'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
                     </small>
                 </div>
             </div>
@@ -592,15 +591,22 @@
 
 <%def name="upDownVoteBlock(**kwargs)"> 
     <div class="text-center" >
-    % if 'readonly' in kwargs:
-        <a href="#readonlyModal" data-toggle="modal" class="upVote">
-            <i class="icon-chevron-sign-up icon-2x"></i>
+    <% 
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = "0"
+    %>
+    % if readonly == "1":
+        <a class="upVote {{voted}}">
+            <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
         </a>
         <br>
         <div class="centered chevron-score"> {{netVotes}}</div>
-        <a href="#readonlyModal" data-toggle="modal" class="downVote">
-            <i class="icon-chevron-sign-down icon-2x"></i>
+        <a class="downVote {{voted}}">
+            <i class="icon-chevron-sign-down icon-2x {{voted}}"></i>
         </a>
+        <small>Voting Complete</small><br>
     % elif 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
             <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>

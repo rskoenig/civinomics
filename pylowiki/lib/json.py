@@ -231,5 +231,10 @@ def getJsonProperties(item):
         entry['group'] = item['group']
         entry['href'] += '/show'
         entry['agendaItemCount'] = str(aCount)
+    
+    if 'readOnly' in item:
+        entry['readOnly'] = item['readOnly']
+    else:
+        entry['readOnly'] = "0"
 
     return entry

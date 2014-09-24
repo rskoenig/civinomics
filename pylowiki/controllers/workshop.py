@@ -1636,6 +1636,11 @@ class WorkshopController(BaseController):
             entry['parentTitle'] = item['workshop_title']
             entry['parentObjType'] = 'workshop'
             
+            if 'readOnly' in item and item['readOnly'] == '1':
+                entry['readOnly'] = '1'
+            else:
+                entry['readOnly'] = '0'
+            
             numItems += 1
 
             result.append(entry)
