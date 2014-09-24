@@ -247,6 +247,44 @@
     </script>
 </%def>
 
+<%def name="edit_ratings()">
+	<div class="section-wrapper wiki-well">
+		<div class="browse">
+			<h4 class="section-header smaller"> Ratings </h4>
+			<div class="col-sm-12" style="padding: 19px;">
+				<div class="form-group">
+					<p>Choose the type of rating for the ideas in this workshop:</p>
+					
+					<div class="col-xs-6">			
+						<input type="radio" name="rating_type" value="yesno" ng-model="rating_type"> Yes / No
+					</div> <!-- col-xs-6 criteria -->
+					
+					<div class="col-xs-6">
+						<input type="radio" name="rating_type" value="criteria" ng-model="rating_type"> Rated criteria 
+						 <ul class="unstyled">
+                                            <li>
+                                                <span>
+                                                <input type="checkbox" class="goal-checkbox">
+                                                <span class="goal-title">Sample criteria</span>
+                                                <a class="inline" class=""><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:50%"></a></span>
+                                            </li>
+                                        </ul>
+                                        <form class="addGoal">
+                                            <div class="input-group">
+                                                <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" class="addGoal form-control" id="">
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-primary" type="submit" value="add">add</button>
+                                                </span>
+                                            </div>
+                                        </form>
+
+					</div> <!-- col-xs-6 criteria -->
+					
+				</div> <!-- form-group -->
+			</div>	<!-- col-sm-12 -->
+		</div> <!-- browse -->
+	</div> <!-- section-wrapper -->
+</%def>
 
 
 <%def name="edit_background()">
