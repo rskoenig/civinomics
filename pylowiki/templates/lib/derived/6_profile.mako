@@ -889,6 +889,37 @@
                             </tr>
                         </table>
                         <p>${lib_6.userGeoLink(c.user)}</p>
+                        % if c.listener:
+                            % for l in c.listener:
+                                <% scopeInfo = utils.getPublicScope(l) %>
+                                <p>Listener for ${scopeInfo['level'].title()} of ${scopeInfo['name']}</p>
+                            % endfor
+                        % endif
+                        % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
+                            <p>Community curator for ${c.user['curateLevelTitle']}</p>
+                        % endif
+
+                        %if c.isAdmin:
+                            <div class="well">
+                            % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
+                                <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/nocurate">
+                                    Remove as a curator: <button type="submit" class="btn btn-danger">Submit</button>
+                                </form>
+                            % else:
+                                <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/curate">
+                                    Make a curator for their &nbsp; &nbsp;
+                                    <select name="curateLevel">
+                                        <option value="8">City</option>
+                                        <option value="6" selected>County</option>
+                                        <option value="4">State</option>
+                                        <option value="2">Country</option>
+                                    </select>
+                                    <p><button type="submit" class="btn btn-primary">Submit</button></p>
+                                </form>
+                            % endif
+                            </div><!-- well -->
+                            <div class="spacer"></div>
+                        % endif
                     </div><!-- ng-controller -->
                 </div>
                 % else:

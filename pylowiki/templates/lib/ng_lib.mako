@@ -115,6 +115,260 @@
     </div>
 </%def>
 
+<%def name="election_listing()">
+    <div class="media well search-listing">
+        <div class="row" style="margin-top:19px;">
+            <div class="col-xs-3"><img src="{{item.flag}}" width="80" height="60"></div>
+            <div class="col-xs-9">
+                <a href="{{item.href}}">{{item.title}}</a><br>
+                {{item.scopeLevel}} of {{item.scopeName}}<br>
+                Election Date: {{item.electionDate}}<br>
+            </div>
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-xs-11">
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a></p>
+            </div>
+        </div><!-- row -->
+    </div><!-- media-well -->
+</%def>
+
+<%def name="election_home_listing()">
+    <div class="media well search-listing">
+        <div class="row">
+            <div class="col-xs-11">
+                <h4>{{item.niceDate}}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <span ng-repeat="flag in item.flags">
+                    <img src="{{flag}}" width="60" height="40">
+                </span>
+                <p><a href="{{item.href}}">View Interactive Sample Ballot</a></p>
+            </div>
+        </div>
+        <div class="spacer"></div>
+    </div><!-- media-well -->
+</%def>
+
+<%def name="sample_ballot_listing()">
+    <div class="media well search-listing">
+        <div class="row">
+            <div class="col-xs-11">
+                <h4>{{sampleBallot.niceDate}}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-11">
+                <span ng-repeat="flag in sampleBallot.flags">
+                    <img src="{{flag}}" width="60" height="40">
+                </span>
+            </div>
+        </div>
+        <div class="spacer"></div>
+        <div ng-repeat="scopeLevel in sampleBallot.scopes">
+            <div class="row">
+                <div class="col-xs-11">
+                    <img src="{{scopeLevel.flag}}" width="60" height="40"> <strong>{{scopeLevel.name}}</strong>
+                    <div ng-repeat="ballot in scopeLevel.ballots" class="spacer">
+                        <p><strong>{{ballot.title}}</strong></p>
+                        <div ng-show="ballot.html">
+                            <p ng-init="stringLimit=300"><span ng-bind-html="ballot.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                        </div>
+                        <div ng-show="ballot.instructions">
+                            <p><strong>Instructions:</strong></p>
+                            <p ng-init="stringLimit=300"><span ng-bind-html="ballot.instructions | limitTo:stringLimit"></span>${moreLess()}</p>
+                        </div>
+                        <div ng-show="(ballot.ballotSlate == 'measures')">
+                            <div class="spacer"></div>
+                            <div ng-init="url = ballot.url; code = ballot.urlCode; ballotSlate = ballot.ballotSlate;">
+                                <div ng-controller="ballotsController">
+                                    <div class="row">
+                                        <div class="col-xs-11">
+                                            <div class="centered" ng-show="loading" ng-cloak>
+                                            <i class="icon-spinner icon-spin icon-4x"></i>
+                                            </div><!-- loading -->
+                                            <div ng-repeat="item in activity">
+                                                <div class="row">
+                                                    ${ballot_measure_listing()}
+                                                </div><!-- row -->
+                                            </div><!-- ng-repeat -->
+                                        </div><!-- col-xs-11 -->
+                                    </div><!-- row -->
+                                </div><!-- ng-controller -->
+                            </div><!-- ng-init -->
+                        </div>
+                        <div ng-show="(ballot.ballotSlate == 'candidates')">
+                        </div>
+                    </div><!-- ng-repeat -->
+                </div><!-- col-xs-11 -->
+            </div><!-- row -->
+        </div><!-- ng-repeat -->
+    </div><!-- media-well -->
+</%def>
+
+<%def name="ballot_listing()">
+    <div class="media well search-listing">
+        <div class="row" style="margin-top:19px;">
+            <div class="col-xs-9">
+                <a href="{{item.href}}">{{item.title}}</a>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <p><a href="{{item.href}}">View, vote and comment on ballot items.</a> &nbsp; &nbsp; <i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</p>
+            </div><!-- col-xs-9 -->
+        </div><!-- row -->
+    </div><!-- media-well -->
+</%def>
+
+<%def name="ballot_measure_listing()">
+    <div style="margin-top: 30px;"></div>
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotMeasureOfficialURL = item.ballotMeasureOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; objType = 'ballotmeasure'; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit">
+        <div class="row">
+            <div class="col-xs-11">
+                <h4 class="listed-measure-title">{{item.title}}</h4>
+                <p ng-show="(item.ballotMeasureOfficialURL != '')">Official Web Site: <a href="{{ballotMeasureOfficialURL}}" target="_blank">{{ballotMeasureOfficialURL}}</a></p>
+                <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+            </div><!-- col-xs-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-xs-11">
+                <div class="btn-group">
+                    <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                    <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
+                </div>
+                <div id="edit-{{urlCode}}" class="collapse">
+                    <form action="/ballotmeasure/{{urlCode}}/{{url}}/editHandler" role="form" method="POST">
+                        <div class="row form-group spacer">
+                            <div class="col-xs-3 col-xs-offset-1">
+                                <label for="ballotMeasureTitle" >Title</label>
+                            </div><!-- col-xs-3 -->
+                            <div class="col-xs-6">
+                                <input type="text" name="ballotMeasureTitle" class="form-control" value="{{item.title}}" required>
+                            </div><!-- col-xs-6 -->
+                        </div><!-- form-group -->
+                        <div class="row form-group">
+                            <div class="col-xs-3 col-xs-offset-1">
+                                <label for="ballotMeasureNumber">Listing Order Number on Ballot</label>
+                            </div><!-- col-xs-3 -->
+                            <div class="col-xs-6">
+                                <input type="text" name="ballotMeasureNumber" class="form-control" value="{{item.number}}" required>
+                            </div><!-- col-xs-6 -->
+                        </div><!-- form-group -->
+                        <div class="row form-group">
+                            <div class="col-xs-3 col-xs-offset-1">
+                                <label for="ballotMeasureOfficialURL">Official Website URL</label>
+                            </div><!-- col-xs-3 -->
+                            <div class="col-xs-6">
+                                <input type="text" name="ballotMeasureOfficialURL" class="form-control" value="{{item.ballotMeasureOfficialURL}}">
+                            </div><!-- col-xs-6 -->
+                        </div><!-- form-group -->
+                        <div class="row form-group">
+                            <div class="col-xs-3 col-xs-offset-1">
+                                <label for="ballotMeasureText">Text</label>
+                            </div><!-- col-xs-3 -->
+                            <div class="col-xs-6">
+                                ${lib_6.formattingGuide()}<br>
+                                <textarea rows="3" name="ballotMeasureText" class="form-control" required>{{item.text}}</textarea>
+                            </div><!-- col-xs-6 -->
+                        </div><!-- form-group -->
+                        <div class="row form-group">
+                            <div class="col-xs-3 col-xs-offset-1">
+                                <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                            </div><!-- col-xs-3 -->
+                        </div><!-- form-group -->
+                    </form>
+                </div>
+                <div id="unpublish-{{urlCode}}" class="collapse" >
+                    <div class="alert">
+                        <strong>Are you sure you want to send this ballot measure to the trash?</strong>
+                        <br />
+                        <a href="/unpublish/ballotmeasure/{{urlCode}}" class="btn btn-danger">Yes</a>
+                        <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                        <span id = "unpublish_{{urlCode}}"></span>
+                    </div><!-- alert -->
+                </div>
+                <ul class="unstyled">
+                <div ng-repeat="rev in revisionList">
+                    <li><a href="/ballotmeasure/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+                </div><!-- ng-repeat -->
+                </ul>
+            </div><!-- col-xs-11 -->
+        </div><!-- row -->
+        <div ng-controller="yesNoVoteCtrl" class="row">
+            ${yesNoVoteFooter()}
+            ${actions()}
+        </div>
+    </div><!-- media -->
+    <div class="spacer"></div>
+</%def>
+
+<%def name="ballot_candidate_listing()">
+    <div style="margin-top: 30px;"></div>
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode; url=item.url; ballotCandidateParty = item.ballotCandidateParty; ballotCandidateOfficialURL = item.ballotCandidateOfficialURL; number = item.number; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; type=item.objType; objType = 'ballotcandidate'; revisions = item.revisions; revisionList = item.revisionList; canEdit = item.canEdit;">
+        <div class="row">
+            <div class="well yesNoWell">
+                ${candidateVoteBlock()}
+            </div>
+            <h4 class="listed-candidate-title">{{item.title}}</h4>
+            <p ng-show="(item.ballotCandateParty != '')">Party: {{ballotCandidateParty}}</p>
+            <p ng-show="(item.ballotCandidateOfficialURL != '')">Official Web Site: <a href="{{ballotCandidateOfficialURL}}" target="_blank">{{ballotCandidateOfficialURL}}</a></p>
+            <p ng-init="stringLimit=300"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+        </div><!-- row -->
+        <div class="row">
+            <div class="btn-group">
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#edit-{{urlCode}}">Edit</button>
+                <button type="button" ng-show="(canEdit == 'yes')" class="btn btn-mini" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">trash</a>
+            </div>
+            <div id="edit-{{urlCode}}" class="collapse">
+                <form action="/ballotcandidate/{{urlCode}}/{{url}}/editHandler" role="form" method="POST">
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateTitle">Title</label><br>
+                        <input type="text" name="ballotCandidateTitle" class="form-control" value="{{item.title}}" required>
+                    </div><!-- form-group -->
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateNumber">Listing Order Number on Ballot</label><br>
+                        <input type="text" name="ballotCandidateNumber" value="{{item.number}}" class="col-xs-1" required>
+                    </div><!-- form-group -->
+                    <div class="form-group spacer">
+                        <label for="ballotCandidateParty">Party</label><br>
+                        <input type="text" name="ballotCandidateParty" class="form-control" value="{{item.ballotCandidateParty}}">
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateOfficialURL">Official Website URL</label><br>
+                        <input type="text" name="ballotCandidateOfficialURL" class="form-control" value="{{item.ballotCandidateOfficialURL}}">
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <label for="ballotCandidateText">Text</label><br>
+                        ${lib_6.formattingGuide()}<br>
+                        <textarea rows="3" name="ballotCandidateText" class="form-control" required>{{item.text}}</textarea>
+                    </div><!-- form-group -->
+                    <div class="form-group">
+                        <button class="btn btn-success" type="submit" class="btn">Save Item</button>
+                    </div><!-- form-group -->
+                </form>
+            </div><!-- collapse -->
+            <div id="unpublish-{{urlCode}}" class="collapse" >
+                <div class="alert">
+                    <strong>Are you sure you want to send this ballot candidate to the trash?</strong>
+                    <br />
+                    <a href="/unpublish/ballotcandidate/{{urlCode}}" class="btn btn-danger">Yes</a>
+                    <a class="btn accordion-toggle" data-toggle="collapse" data-target="#unpublish-{{urlCode}}">No</a>
+                    <span id = "unpublish_{{urlCode}}"></span>
+                </div>
+            </div><!-- collapse -->
+            <ul class="unstyled">
+                <div ng-repeat="rev in revisionList">
+                    <li><a href="/ballotcandidate/{{rev.urlCode}}/{{rev.url}}/show">Revision: {{rev.date}}</a></li>
+                </div><!-- ng-repeat -->
+            </ul>
+        </div><!-- row -->
+        <div class="row">
+            ${actions()}
+        </div>
+    </div><!-- media -->
+    <div class="spacer"></div>
+</%def>
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
@@ -215,11 +469,13 @@
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 </div>
             </div>
+            % if not c.authuser or c.authuser['memberType'] != 'organization':
+                <div class="row" ng-if="item.readOnly == '1'">${yesNoVoteFooter(readonly = "1")}</div>
+                <div class="row" ng-if="item.readOnly == '0'">${yesNoVoteFooter(readonly = "0")}</div>
+            % endif
             <div class="row">
-                % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    ${yesNoVoteFooter()}
-                % endif
-                ${actions()}
+                <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
+                <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
             </div>
     </div><!-- media well -->
 </%def>
@@ -236,11 +492,13 @@
                     % endif
                 </div>
                 <div class="col-xs-1">
-                    ${upDownVoteBlock()}
+                    <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
+                    <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
             </div>
             <div class="row">
-                ${actions()}
+                <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
+                <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
             </div>
         </div>
     </div>
@@ -255,7 +513,8 @@
                     <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
                 </div>
                 <div class="col-xs-1">
-                    ${upDownVoteBlock()}
+                    <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
+                    <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
             </div>
         </div>
@@ -275,11 +534,13 @@
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
             <div class="col-xs-1">
-                ${upDownVoteBlock()}
+                <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
+                <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
             </div>
         </div>
         <div class="row">
-            ${actions()}
+            <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
+            <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
         </div>
     </div>
 </%def>
@@ -331,10 +592,19 @@
     </div>
 </%def>
 
-<%def name="yesNoVoteBlock()">
+<%def name="yesNoVoteBlock(**kwargs)">
     <div class="form-group">
-        % if 'user' in session:
-        
+        <%
+            if 'readonly' in kwargs:
+                readonly = kwargs['readonly']
+            else:
+                readonly = "0"
+
+        %>
+        % if readonly == "1":
+            <a class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+            <a class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+        % elif 'user' in session:
             <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
             <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
 
@@ -343,8 +613,12 @@
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
         % endif
         <br>
+        % if readonly == "1":
+            Voting Complete
+        % endif
         <div ng-cloak>
-            <small class="grey">{{totalVotes}} votes <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+            <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
+            <small><span ng-if="item.readOnly == '1'">| <span class="green">{{(item.ups / item.voteCount * 100) | number:0}}% YES</span> | <span class="red">{{(item.downs / item.voteCount * 100) | number:0}}% NO</span></span></small> 
             <div class="progress" style="height: 12px; margin-bottom: 5px;">
                 <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
             </div>
@@ -356,7 +630,22 @@
 
 <%def name="yesNoVoteFooter(**kwargs)">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
-        % if 'user' in session:
+
+        <%
+            if 'readonly' in kwargs:
+                readonly = kwargs['readonly']
+            else:
+                readonly = "0"
+        %>
+        % if readonly == "1":
+            <div class="row centered">
+                <div class="col-sm-12">
+                    Voting complete.<br>
+                    <a class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            </div>
+        % elif 'user' in session:
             <div class="row centered">
                 <div class="col-sm-12">
                     <a ng-click="updateYesVote()" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
@@ -386,7 +675,7 @@
                 <div class="col-sm-12">
                     <small class="grey">
                         {{totalVotes}} votes<span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> </span>
-                        <span ng-show="voted">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+                        <span ng-if="voted || item.readOnly == '1'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
                     </small>
                 </div>
             </div>
@@ -394,9 +683,25 @@
     </div>
 </%def>
 
-<%def name="upDownVoteBlock()"> 
+<%def name="upDownVoteBlock(**kwargs)"> 
     <div class="text-center" >
-    % if 'user' in session:
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = "0"
+    %>
+    % if readonly == "1":
+        <a class="upVote {{voted}}">
+            <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
+        </a>
+        <br>
+        <div class="centered chevron-score"> {{netVotes}}</div>
+        <a class="downVote {{voted}}">
+            <i class="icon-chevron-sign-down icon-2x {{voted}}"></i>
+        </a>
+        <br /><small>Voting Complete</small><br>
+    % elif 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
             <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
         </a>
@@ -451,9 +756,15 @@
     </small>
 </%def>
 
-<%def name="actions()">
+<%def name="actions(**kwargs)">
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = '0'
+    %>
     % if not c.searchQuery or c.geoScope:
-        <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments;">
+        <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;">
             <div ng-controller="commentsController">
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
@@ -462,7 +773,7 @@
                                 <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                                 <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
-                            <li><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
+                            <li ng-show="(item.objType != 'ballotmeasure' && item.objType != 'ballotcandidate')"><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
                             % if c.authuser and c.authuser['memberType'] == 'organization':
                                 <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a class="no-highlight" ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
                             % endif 
@@ -512,6 +823,7 @@
                                     </div><!-- accordian-group -->
                                 </div><!-- ng-repeat -->
                             </div><!-- accordian -->
+                            % if readonly == '0':
                             <div ng-show="(comment.canEdit == 'yes')">
                                 <div class="btn-group btn-group-xs">
                                     <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
@@ -544,16 +856,21 @@
                                     </div><!-- controller -->
                                 </div><!-- collapse -->
                             </div><!-- ng-show -->
+                            % endif
                         </td>
                         <td class="col-xs-1 comment-vote">
                             <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
                                 <div ng-controller="yesNoVoteCtrl">
-                                    ${upDownVoteBlock()}
+                                    % if readonly == '0':
+                                        ${upDownVoteBlock(readonly = '0')}
+                                    % else:
+                                        ${upDownVoteBlock(readonly = '1')}
+                                    % endif
                                 </div>
                             </div>
                         </td>
                     </tr>
-
+                    % if readonly == '0':
                     <tr ng-hide="newCommentLoading || commentsHidden">
                         % if c.authuser:
                             <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
@@ -567,7 +884,7 @@
                                             <textarea class="form-control" style="width: 100%;" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea></a>
                                         % endif
 
-                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea'">
+                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate'">
                                             <span class="radio inline no-top right-space">
                                                 <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
                                             </span>
@@ -630,7 +947,7 @@
                         % endif
                         <td></td>
                     </tr>
-                    
+                    % endif
                 </table>
                 </div><!-- activity comments -->
             </div>
@@ -638,8 +955,13 @@
     % endif
 </%def>
 
-<%def name="actions2()">
-    
+<%def name="actions2(**kwargs)">
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = '0'
+    %>  
             ### Comments
             <div class="activity-comments">
             <table class="activity-comments">
@@ -696,6 +1018,7 @@
                                     </div><!-- accordian-group -->
                                 </div><!-- ng-repeat -->
                             </div><!-- accordian -->
+                            % if readonly == '0':
                             <div ng-show="(comment.canEdit == 'yes')">
                                 <div class="btn-group btn-group-xs">
                                     <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
@@ -732,16 +1055,21 @@
                                     </div><!-- controller -->
                                 </div><!-- collapse -->
                             </div><!-- ng-show -->
+                            % endif
                         </td>
                         <td class="col-xs-1 comment-vote">
                             <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
                                 <div ng-controller="yesNoVoteCtrl">
-                                    ${upDownVoteBlock()}
+                                    % if readonly == '0':
+                                        ${upDownVoteBlock(readonly = '0')}
+                                    % else:
+                                        ${upDownVoteBlock(readonly = '1')}
+                                    % endif
                                 </div>
                             </div>
                         </td>
                 </tr>
-
+                % if readonly == '0':
                 <tr ng-hide="newCommentLoading || commentsHidden">
                     % if c.authuser:
                         <td class="col-xs-1 comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
@@ -810,7 +1138,7 @@
                         </td>
                     % endif
                 </tr>
-                
+                % endif
             </table>
             </div>
             
