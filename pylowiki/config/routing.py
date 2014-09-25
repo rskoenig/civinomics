@@ -459,6 +459,7 @@ def make_map():
     ###############
     map.connect('/create/initiative{end:/?}', controller = 'create', action = 'showCreateForm')
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/initiative/{id1}/{id2}/promoteIdea{end:/?}', controller = 'initiative', action = 'promoteIdea', id1 = '{id1}', id2 = '{id2}')
     map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)

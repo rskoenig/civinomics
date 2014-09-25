@@ -39,6 +39,7 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
 import pylowiki.lib.fuzzyTime       as fuzzyTime
 import webhelpers.feedgenerator     as feedgenerator
+import pylowiki.lib.json            as jsonLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.graphData       as graphData
@@ -1482,12 +1483,7 @@ class WorkshopController(BaseController):
         else:
             sort = 0
 
-
         workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'])
-        
-        myRatings = {}
-        if 'ratings' in session:
-            myRatings = session['ratings']
 
         numItems = 0
         numAdopted = 0
@@ -1495,130 +1491,7 @@ class WorkshopController(BaseController):
         numIdeas = 0
         numResources = 0
         for item in workshopActivity:
-            entry = {}
-            # item attributes
-            entry['title'] = item['title']
-            entry['objType'] = item.objType
-            if item.objType == 'discussion':
-                numDiscussions += 1
-            if item.objType == 'idea':
-                numIdeas += 1
-                entry['status'] = 'proposed'
-                if item['adopted'] == '1':
-                    entry['status'] = 'adopted'
-                    numAdopted += 1
-                elif item['disabled'] == '1':
-                    entry['status'] = 'disabled'
-            if item.objType == 'resource':
-                numResources += 1
-            entry['urlCode'] = item['urlCode']
-            entry['url'] = item['url']
-            entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
-            entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
-            if 'views' in item:
-                views = int(item['views'])
-            else:
-                views = 1
-            views += 1
-            item['views'] = str(views)
-            dbHelpers.commit(item)
-            entry['views'] = item['views']
-
-            # attributes that vary accross items
-            entry['text'] = '0'
-            if 'text' in item:
-                entry['text'] = item['text']
-            elif 'description' in item:
-                entry['text'] = item['description']
-            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
-            if 'link' in item:
-                entry['link'] = item['link']
-            else:
-                entry['link'] = '0'
-            if 'cost' in item:
-                entry['cost'] = item['cost']
-            else:
-                entry['cost'] = ''           
-
-            # href
-            entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-            entry['href'] = entry['parentHref'] + '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
-            entry['parentTitle'] = item['workshop_title']
-            entry['parentObjType'] = 'workshop'
-
-            entry['mainPhoto'] = '0'
-            entry['thumbnail'] = '0'
-
-            #tags
-            tags = []
-            tagList = []
-            if 'tags' in item:
-                tagList = item['tags'].split('|')
-            elif 'initiative_tags' in item:
-                tagList = item['initiative_tags'].split('|')
-            elif 'workshop_category_tags' in item:
-                tagList = item['workshop_category_tags'].split('|')
-            for tag in tagList:
-                if tag and tag != '':
-                    tags.append(tag)
-            entry['tags'] = tags
-
-            # user rating
-            if entry['urlCode'] in myRatings:
-                entry['rated'] = myRatings[entry['urlCode']]
-                entry['vote'] = 'voted'
-            else:
-                entry['rated'] = 0
-                entry['vote'] = 'nvote'
-
-            # votes
-            entry['voteCount'] = int(item['ups']) + int(item['downs'])
-            entry['ups'] = int(item['ups'])
-            entry['downs'] = int(item['downs'])
-            entry['netVotes'] = int(item['ups']) - int(item['downs'])
-
-            # comments
-            if item.objType == 'discussion':
-                entry['discussion'] = item['urlCode']
-            else:
-                if 'discussion_child' in item:
-                    entry['discussion'] = item['discussion_child']
-                else:
-                    log.info('no discussion child for item of objType %s'%item.objType)
-                    discussion = discussionLib.getDiscussionForThing(item)
-                    entry['discussion'] = discussion['urlCode']
-                
-            entry['numComments'] = 0
-            if 'numComments' in item:
-                entry['numComments'] = item['numComments']
-
-            # author data
-            # CCN - need to find a way to optimize this lookup
-            if 'user_name' not in item or 'user_avatar' not in item:
-                author = userLib.getUserByID(item.owner)
-                entry['authorName'] = author['name']
-                entry['authorPhoto'] = utils._userImageSource(author)
-                entry['authorCode'] = author['urlCode']
-                entry['authorURL'] = author['url']
-            else:
-                entry['authorName'] = item['user_name']
-                entry['authorPhoto'] = item['user_avatar']
-                entry['authorCode'] = item['userCode']
-                entry['authorURL'] = item['user_url']
-                
-            entry['authorHref'] = '/profile/' + entry['authorCode'] + '/' + entry['authorURL']
-
-            entry['parentTitle'] = ''
-            entry['parentObjType'] = ''
-            entry['article'] = 'a'
-            if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
-                entry['article'] = 'an'
-
-            entry['parentTitle'] = item['workshop_title']
-            entry['parentObjType'] = 'workshop'
-            
-            numItems += 1
-
+            entry = jsonLib.getJsonProperties(item)
             result.append(entry)
 
         if len(result) == 0:

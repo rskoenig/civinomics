@@ -1500,8 +1500,25 @@
                 return 'href = ' + adoptStr
         adoptStr = 'href = ' + adoptStr
     %>
-    ${immunifyStr | n}
+    ${adoptStr | n}
 </%def>
+
+<%def name="promoteThingLink(thing, **kwargs)">
+    <%
+        author = userLib.getUserByID(thing.owner)
+        promoteStr = '"/initiative/%s/%s/promoteIdea"' %(author['urlCode'], author['url'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return promoteStr
+                    return 'href = ' + promoteStr
+                return 'href = ' + promoteStr
+        promoteStr = 'href = ' + promoteStr
+    %>
+    ${promoteStr | n}
+</%def>
+
 
 <%def name="deleteThingLink(thing, **kwargs)">
     <%
@@ -1749,6 +1766,7 @@
                     <li><a href="#immunify-${adminID}" data-toggle="tab">Immunify</a></li>
                     % if thing.objType == 'idea':
                     <li><a href="#adopt-${adminID}" data-toggle="tab">Adopt</a></li>
+                    <li><a href="#promote-${adminID}" data-toggle="tab">Promote</a></li>
                     % endif
                     % if c.privs['admin']:
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
@@ -1796,6 +1814,39 @@
                             </div>
                         </form>
                         <span id="adoptResponse-${thing['urlCode']}"></span>
+                    </div>
+                    % endif
+                    % if thing.objType == 'idea':
+                    <div class="tab-pane" id="promote-${adminID}">
+                        <form class="form-inline" action = ${promoteThingLink(thing, embed=True, raw=True) | n}>
+                            <div class="form-group">
+
+                                <input type="hidden" name="initiativeTitle" value="${thing['title']}">
+                                <input type="hidden" name="initiativeDescription" value="${thing['text']}">
+
+                                <%
+                                    if 'scope' in thing:
+                                        scope = thing['scope']
+                                    elif 'workshop_public_scope' in thing:
+                                        scope = thing['workshop_public_scope']
+                                    else: 
+                                        scope = None
+                                %>
+                                <input type="hidden" name="initiativeRegionScope" value="${scope}">
+                                <%
+                                    if 'workshopCode' in thing:
+                                        workshopCode = thing['workshopCode']
+                                    else:
+                                        workshopCode = None
+                                %>
+                                <input type="hidden" name="workshopCode" value="${workshopCode}">
+
+                                <label>Reason:</label>
+                                <input type="text" name="reason" class="form-control">
+                                <button class="btn btn-default adoptButton" type="submit" name="submit" ${promoteThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
+                        </form>
+                        <span id="promoteResponse-${thing['urlCode']}"></span>
                     </div>
                     % endif
                     % if c.privs['admin']:

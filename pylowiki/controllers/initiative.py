@@ -18,6 +18,7 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.json            as jsonLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
@@ -36,10 +37,10 @@ class InitiativeController(BaseController):
         c.user = None
         c.initiative = None
         existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson']
-        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
+        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler', 'promoteIdea']
         c.saveMessageClass = 'alert-success'
         c.error = False
-        if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
+        if action == 'initiativeNewHandler' or action == 'promoteIdea' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
                 abort(404)
@@ -162,6 +163,16 @@ class InitiativeController(BaseController):
         userLib.setUserPrivs()
 
 
+    def promoteIdea(self):
+        # store request.params['reason'] somewhere 
+        # functionality to message author of the (now) initiative
+        log.info("Hey author! Your idea has been promoted!")
+        
+        self.initiativeNewHandler()
+
+        return render('/derived/6_initiative_edit.bootstrap')
+
+
     def initiativeNewHandler(self):
         if 'initiativeTitle' in request.params:
             title = request.params['initiativeTitle']
@@ -184,6 +195,11 @@ class InitiativeController(BaseController):
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
+
+        workshop = None
+        if 'workshopCode' in request.params:
+            log.info('workshop, we got a workshop here in the iController!')
+            workshop = workshopLib.getWorkshopByCode(request.params['workshopCode'])
         
         # shortcut scoping for 'My County, My City, My Zip Code'
         #if 'initiativeScope' in request.params:
@@ -207,7 +223,7 @@ class InitiativeController(BaseController):
         
             
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, workshop = workshop, goal = goal)
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
@@ -722,5 +738,6 @@ class InitiativeController(BaseController):
     def getJson(self):
         entry = jsonLib.getJsonProperties(c.initiative)
         return json.dumps({'statusCode':1, 'thing': entry})
+
         
             

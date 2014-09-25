@@ -108,7 +108,7 @@ def getJsonProperties(item):
 
         if 'workshopCode' in item:
             entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-            entry['href'] = entry['parentHref'] + entry['href']
+            #entry['href'] = entry['parentHref'] + entry['href']
         elif 'initiativeCode' in item:
             entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
             if entry['objType'] == 'update':
