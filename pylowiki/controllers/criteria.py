@@ -35,11 +35,17 @@ class CriteriaController(BaseController):
 #         elif not c.privs['admin'] and not c.privs['facilitator'] and not c.privs['participant']:
 #             abort(404)
     def addToWorkshop(self, workshopCode, workshopURL, criteria):
-        log.info(bool(criteria))
-        if not int(criteria):
-            log.info("Hell naw.")
-        else:
+        log.info(criteria == 0)
+        log.info(criteria is 0)
+        log.info(criteria == "0")
+        log.info(criteria is "0")
+        log.info(criteria == '0')
+        log.info(criteria is '0')
+        if not criteria == "0":
             log.info("I guess I'll have to do something.")
+            log.info(criteria.split("|"))
+        else:
+            log.info("Hell naw. I'm not sure if I want to do anything here")            
     
     
     def _returnGoal(self, goal, done = None):
