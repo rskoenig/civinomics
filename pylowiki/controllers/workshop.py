@@ -356,23 +356,14 @@ class WorkshopController(BaseController):
         # save successful changes
         if wchanges:
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
-        else:
-            werror = 1
-            werrMsg = "No changes submitted."
-
-        if werror:
-            alert = {'type':'danger'}
-            alert['title'] = werrMsg
-            session['alert'] = alert
-            session.save()
-        else:
-            dbHelpers.commit(c.w)
-            alert = {'type':'success'}
-            alert['title'] = weventMsg
-            session['alert'] = alert
-            if c.w['startTime'] == '0000-00-00':
-                session['confTab'] = "slideshow"
-            session.save()
+        
+        dbHelpers.commit(c.w)
+        alert = {'type':'success'}
+        alert['title'] = weventMsg
+        session['alert'] = alert
+        if c.w['startTime'] == '0000-00-00':
+            session['confTab'] = "slideshow"
+        session.save()
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
 

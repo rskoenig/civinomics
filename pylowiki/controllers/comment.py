@@ -98,10 +98,15 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
-            elif thing.objType == 'photo' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate' or 'initiativeCode' in thing:
+
+            elif thing.objType == 'discussion' and (thing['discType'] == 'organization_general' or thing['discType'] == 'organization_position'):
+                userLib.setUserPrivs()
+            elif thing.objType == 'photo' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or 'initiativeCode' in thing:
+                
                 userLib.setUserPrivs()
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
+
             data = payload['comment-textarea']
             data = data.strip()
             if data == '':
@@ -114,7 +119,7 @@ class CommentController(BaseController):
                     return redirect(session['return_to'])
                 elif json.loads(request.body):
                     return json.dumps({'statusCode':1})
-             
+            
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 log.info("1")
                 # Reply to an existing comment
@@ -130,7 +135,7 @@ class CommentController(BaseController):
                 parentAuthor = userLib.getUserByID(discussion.owner)
             log.info(c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
@@ -138,10 +143,11 @@ class CommentController(BaseController):
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
-            if parentAuthor != c.authuser and thing.objType != 'agendaitem' and thing.objType != 'ballotmeasure' and thing.objType != 'ballotcandidate':
+            if parentAuthor != c.authuser and thing.objType != 'agendaitem':
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
+
                 if 'workshopCode' in thing:
                     title = ' replied to a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
@@ -155,8 +161,22 @@ class CommentController(BaseController):
                     title = ' commented on a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
                 elif thing.objType.replace("Unpublished", "") == 'discussion':
-                    title = ' commented on an initiative update you made'
-                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnUpdate")
+                    if thing['discType'] == 'update':
+                        title = ' commented on an initiative update you made'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnUpdate")
+                    elif thing['discType'] == 'organization_general':
+                        title = ' commented on an organization forum discussion you started'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgGeneral")
+                    elif thing['discType'] == 'organization_position':
+                        title = ' commented on one of your organization positions'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnOrgPosition")
+                    else:
+                        title = ' commented on one of your discussions'
+                        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnDiscussion")
+                elif thing.objType.replace("Unpublished", "") == 'idea':
+                    title = ' commented on one of your ideas'
+                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnIdea")
+                
                 message = genericLib.linkChildToParent(message, comment)
                 dbHelpers.commit(message)
                 alertsLib.emailAlerts(comment)
@@ -170,18 +190,22 @@ class CommentController(BaseController):
                     mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
             
             if request.params:
+                log.info("commentCCN where oh where")
                 if 'workshopCode' in thing:   
                     return redirect(utils.thingURL(workshop, thing))
                 elif thing.objType == 'photo' or 'photoCode' in thing:
                     return redirect(utils.profilePhotoURL(thing))
-                elif thing.objType == 'initiative' or 'initiativeCode' in thing:
+                elif thing.objType == 'initiative' or 'initiativeCode' in thing and thing.objType != 'discussion':
                     return redirect(utils.initiativeURL(thing))
+                elif thing.objType == 'discussion':
+                    return redirect(utils.profileDiscussionURL(thing))
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            log.info("commentCCN got error")
             if request.params:
-                return redirect(utils.thingURL(workshop, thing))
+                return redirect(session['return_to'])
             elif json.loads(request.body):
                 return json.dumps({'statusCode':1})
 
@@ -215,6 +239,7 @@ class CommentController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
+        log.info(urlCode)
         for comment in comments:
             entry = {}
             entry['text'] = comment['data']

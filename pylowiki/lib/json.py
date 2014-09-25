@@ -43,13 +43,25 @@ def getJsonProperties(item):
 
     entry = {}
     # item attributes
-    entry['title'] = item['title']
+    if 'title' in item:
+        entry['title'] = item['title']
+    else: 
+        entry['title'] = ''
     entry['objType'] = item.objType
     if item.objType == 'discussion':
         if item['discType'] == 'update':
             entry['objType'] = 'update'
+        elif item['discType'] == 'organization_position':
+            entry['objType'] = 'position'
+            if item['position'] == 'support':
+                entry['position'] = 'support'
+            else:
+                entry['position'] = 'oppose'
     entry['urlCode'] = item['urlCode']
-    entry['url'] = item['url']
+    if 'url' in item:
+        entry['url'] = item['url']
+    else:
+        entry['url'] = ''
     entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
     entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
     if 'views' in item:
@@ -68,6 +80,10 @@ def getJsonProperties(item):
         entry['text'] = item['text']
     elif 'description' in item:
         entry['text'] = item['description']
+    elif 'data' in item:
+        entry['text'] = item['data']
+
+
     entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
     if 'link' in item:
         entry['link'] = item['link']
@@ -85,18 +101,20 @@ def getJsonProperties(item):
     # note: we should standardize the way object urls are constructed
     if item.objType == 'photo':
         entry['href'] = '/profile/' + item['userCode'] + '/' + item['user_url'] + "/photo/show/" + item['urlCode']
-    else:
-        entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
 
-    if 'workshopCode' in item:
-        entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-        entry['href'] = entry['parentHref'] + entry['href']
-    elif 'initiativeCode' in item:
-        entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
-        if entry['objType'] == 'update':
-            entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
-        else:
+    elif item.objType != 'comment':
+        entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
+        # need to account for comment obj type
+
+        if 'workshopCode' in item:
+            entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
             entry['href'] = entry['parentHref'] + entry['href']
+        elif 'initiativeCode' in item:
+            entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
+            if entry['objType'] == 'update':
+                entry['href'] = entry['parentHref'] + '/updateShow/' + item['urlCode']
+            else:
+                entry['href'] = entry['parentHref'] + entry['href']
     
     # modifications for children of workshops and initiatives
     entry['parentTitle'] = ''
@@ -107,11 +125,84 @@ def getJsonProperties(item):
     elif 'initiativeCode' in item:
         entry['parentTitle'] = item['initiative_title']
         entry['parentObjType'] = 'initiative'
+    
+    # should list the more specific object rather than workshop if possible
+    if 'ideaCode' in item:
+        if 'idea_title' in item:
+            entry['parentTitle'] = item['idea_title']
+        entry['parentObjType'] = 'idea'
+        if 'ideaCode' in item and 'idea_url' in item: 
+            entry['parentHref'] = '/idea/' + item['ideaCode'] + '/' + item['idea_url']
+
+    # to support listing of comments in the profile
+    if item.objType == 'comment':
+        if 'ideaCode' in item:
+            parentCode = item['ideaCode']
+            parentURL = item['parent_url']
+            parentObjType = 'idea'
+            parentObjType = 'idea'
+            if 'idea_title' in item:
+                entry['parentTitle'] = item['idea_title']
+            else:
+                entry['parentTitle'] == ''
+            entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        elif 'resourceCode' in item:
+            parentCode = item['resourceCode']
+            parentURL = item['parent_url']
+            parentObjType = 'resource'
+            parentObjType = 'resource'
+            if 'resource_title' in item:
+                entry['parentTitle'] = item['resource_title']
+            else:
+                entry['parentTitle'] == ''
+            entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        elif 'discussionCode' in item:
+            parentCode = item['discussionCode']
+            parentURL = item['parent_url']
+            parentObjType = 'discussion'
+            if 'discussion_title' in item:
+                entry['parentTitle'] = item['discussion_title']
+            else:
+                entry['parentTitle'] == ''
+            entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        elif 'photoCode' in item:
+            parentCode = item['photoCode']
+            parentURL = item['parent_url']
+            parentObjType = 'photo'
+            entry['parentHref'] = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+        elif 'initiativeCode' in item and 'resourceCode' in item:
+            parentCode = item['resourceCode']
+            parentURL = item['parent_url']
+            parentObjType = 'resource'
+            entry['parentHref'] = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
+        elif 'initiativeCode' in item:
+            parentCode = item['initiativeCode']
+            parentURL = item['parent_url']
+            parentObjType = 'initiative'
+            entry['parentHref'] = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+        elif 'meetingCode' in item:
+            parentCode = item['meetingCode']
+            parentURL = item['meeting_url']
+            parentObjType = 'meeting'
+            entry['parentHref'] = "/meeting/" + parentCode + "/" + parentURL + "/show/"
+        elif 'profileCode' in item:
+            parentCode = item['profileCode']
+            entry['parentHref'] = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+        elif 'workshopCode' in item:
+            workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
+            entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        else:
+            log.info("no parentObjType item is %s"%item.keys())
+            entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+
 
     # photo
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
         entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
         entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+    elif item.objType == 'initiative':
+        entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
+        entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
     elif entry['parentObjType'] == 'workshop':
         mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
         if mainImage['pictureHash'] == 'supDawg':
@@ -123,8 +214,12 @@ def getJsonProperties(item):
 
     elif entry['parentObjType'] == 'initiative':
         initiative = initiativeLib.getInitiative(item['initiativeCode'])
-        entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
-        entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+        if 'directoryNum_photos' in initiative:
+            entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+            entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(initiative['directoryNum_photos'], initiative['pictureHash_photos'])
+        else: 
+            entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
+            entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
     else:
         entry['mainPhoto'] = '0'
         entry['thumbnail'] = '0'
@@ -198,20 +293,6 @@ def getJsonProperties(item):
     entry['authorURL'] = author['url']
     entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
-    entry['parentTitle'] = ''
-    entry['parentObjType'] = ''
-    entry['article'] = 'a'
-    if entry['objType'] == 'idea' or entry['objType'] == 'update' or entry['objType'] == 'initiative':
-        entry['article'] = 'an'
-
-    # modifications for children of workshops and initiatives
-    if 'workshopCode' in item:
-        entry['parentTitle'] = item['workshop_title']
-        entry['parentObjType'] = 'workshop'
-    elif 'initiativeCode' in item:
-        entry['parentTitle'] = item['initiative_title']
-        entry['parentObjType'] = 'initiative'
-
     # special case for meetings
     if item.objType == 'meeting':
         aCount = meetingLib.getAgendaItems(item['urlCode'], 1)
@@ -236,5 +317,8 @@ def getJsonProperties(item):
         entry['readOnly'] = item['readOnly']
     else:
         entry['readOnly'] = "0"
+
+    if 'commentRole' in item:
+        entry['position'] = item['commentRole']
 
     return entry

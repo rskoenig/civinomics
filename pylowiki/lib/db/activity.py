@@ -8,22 +8,29 @@ import logging
 import datetime
 log = logging.getLogger(__name__)
 
-def getMemberPosts(user, unpublished = '0'):
+def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
     if unpublished == '1':
-        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished', 'ballotcandidateUnpublished']
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished']
     else:
-        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative', 'meeting', 'agendaitem', 'ballot', 'ballotmeasure']
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
+    discussionTypes = ['general', 'update', 'organization_general', 'organization_position']
+    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
+    keys = ['deleted']
+    values = ['0']
     finalActivityList = []
     try:
-        initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
+        q = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('deleted', '0')))\
-            .order_by('-date').all()
+            .order_by('-date').offset(offset)
+        if limit:
+            initialActivityList = q.limit(limit)
+        
         # Messy
         for activity in initialActivityList:
-            if activity.objType == 'discussion' and activity['discType'] != 'general':
+            if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:
                 continue
-            else:
+            else:                
                 finalActivityList.append(activity)
         return finalActivityList
     except:
@@ -214,6 +221,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
 
 
 def getRecentActivity(limit, comments = 0, offset = 0):
+        log.info("in getRecentActivity")
         objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
         if comments:
             objectList.append('comment')
@@ -221,7 +229,7 @@ def getRecentActivity(limit, comments = 0, offset = 0):
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
+            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key.ilike('%searchable'), Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .order_by('-date')\
             .offset(offset)
         if limit:
@@ -234,7 +242,7 @@ def getRecentActivity(limit, comments = 0, offset = 0):
         else:
             return []
 
-def getInitiativeActivity(limit, comments = 0, offset = 0):
+def getInitiativeActivity(limit, comments = 0, offset = 0, geoScope = False):
         objectList = ['initiative']
         if comments:
             objectList.append('comment')
@@ -245,6 +253,8 @@ def getInitiativeActivity(limit, comments = 0, offset = 0):
             .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .order_by('-date')\
             .offset(offset)
+        if geoScope:
+            q.filter(Thing.data.any(wkcl('scope', geoScope)))
         if limit:
             postList = q.limit(limit)
         else:
@@ -255,9 +265,13 @@ def getInitiativeActivity(limit, comments = 0, offset = 0):
         else:
             return []
 
-def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
+def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = ''):
+    #log.info("In getRecentGeoActivity and itemType is %s" % itemType)
     postList = []
-    objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
+    if itemType is '':
+        objectList = ['idea', 'workshop', 'resource', 'discussion', 'initiative', 'photo']
+    else:
+        objectList = itemType
     if comments:
         objectList.append('comment')
         
@@ -265,7 +279,7 @@ def getRecentGeoActivity(limit, scope, comments = 0, offset = 0):
         .filter(Thing.objType.in_(objectList))\
         .filter(Thing.data.any(wc('disabled', u'0')))\
         .filter(Thing.data.any(wc('deleted', u'0')))\
-        .filter(Thing.data.any(wkcl('scope', scope)))\
+        .filter(Thing.data.any(or_(wkcl('scope', scopes[0]),  wkcl('scope', scopes[1]), wkcl('scope', scopes[2]))))\
         .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
         .order_by('-date')\
         .offset(offset)
@@ -355,7 +369,7 @@ def getActivityForUserList(limit, users, comments = 0, offset = 0):
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
+            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key.ilike('%searchable'), Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .order_by('-date')\
             .offset(offset)
         if limit:
@@ -378,7 +392,7 @@ def getActivityForObjectAndUserList(limit, objects, users, comments = 0, offset 
             .filter(Thing.objType.in_(objectList))\
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
-            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
+            .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key.ilike('%searchable'), Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .filter(Thing.data.any(or_(or_(wkil('initiativeCode', objects), wkil('workshopCode', objects), Thing.owner.in_(users)))))\
             .order_by('-date').offset(offset)
         

@@ -93,7 +93,7 @@
                     if 'info' in thing:
                         link = link + '<div class="spacer"></div>' + thing['info']
             else:
-                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                title = '<span class="listed-item-title">%s</span>' %(thing['title']) 
         %>
         ${title | n}<br>
         <div class="spacer"></div>
@@ -117,6 +117,17 @@
     % endif
 </%def>
 
+<%def name="showItemAuthor(thing)">
+    <%
+        role = ''
+        if 'addedAs' in thing.keys():
+            roles = ['admin', 'facilitator', 'listener']
+            if thing['addedAs'] in roles:
+                role = ' (%s)' % thing['addedAs']
+    %>
+    ${lib_6.userLink(thing.owner)}${role}<span class="grey">${lib_6.userGreetingMsg(thing.owner)}</span> from ${lib_6.userGeoLink(thing.owner)}${lib_6.userImage(thing.owner, className="avatar med-avatar")}
+</%def>
+
 <%def name="moderationPanel(thing)">
     <%
         if 'user' not in session or thing.objType == 'revision':
@@ -125,19 +136,13 @@
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
         #log.info("thing keys is %s"%thing.keys())
-        if 'readOnly' in thing and thing['readOnly'] == '1':
-            readonly = '1'
-        else:
-            readonly = '0'
     %>
-    <div class="btn-group" style="margin-top: -10px;">
-        % if thing['disabled'] == '0' and not c.privs['provisional'] and readonly == '0':
+    <div class="btn-group">
+        % if thing['disabled'] == '0' and not c.privs['provisional']:
             <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
-            % if readonly == '0':
-                <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
-            % endif
+            <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
         % endif
         % if userLib.isAdmin(c.authuser.id) or (c.w and facilitatorLib.isFacilitator(c.authuser, c.w)):
             <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>

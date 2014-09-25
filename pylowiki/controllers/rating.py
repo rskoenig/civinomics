@@ -17,6 +17,7 @@ import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.meeting      as meetingLib
 import pylowiki.lib.db.ballot       as ballotLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.generic      as genericLib
 import pylowiki.lib.utils           as utils
 
 import pylowiki.lib.helpers as h
@@ -40,6 +41,7 @@ class RatingController(BaseController):
         else:
             amount = 0
         ratingType = 'binary'
+
         if action == 'rateDiscussion':
             thing = discussionLib.getDiscussion(code)
         elif action == 'rateResource':
@@ -112,6 +114,10 @@ class RatingController(BaseController):
         return redirect(session['return_to'])
         
     @h.login_required
+
+    def rateUser(self, code, amount):
+        return redirect(session['return_to'])
+
     def rateAgendaItem(self, code, amount):
         return redirect(session['return_to'])
         

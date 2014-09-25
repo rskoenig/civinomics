@@ -5,7 +5,8 @@ import urllib2
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes, getZipCodesBy
+from pylowiki.lib.db.tag        import getTagCategories
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
@@ -52,6 +53,7 @@ class SearchController(BaseController):
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
         c.user = c.authuser
+        c.tagList = getTagCategories()
         userLib.setUserPrivs()
         
         self.query = ''
@@ -152,6 +154,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return self._noSearch()
         c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
+        c.numOrganizations = userLib.searchOrganizations(['name', 'url'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         log.info("Search query in search to get the count %s", self.query)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
@@ -161,7 +164,7 @@ class SearchController(BaseController):
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
         c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
-        c.searchType = "name"
+        c.searchType = self.searchType
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
         if self.query == 'civinomicon':            
@@ -170,6 +173,7 @@ class SearchController(BaseController):
         if iPhoneApp:
             entry = {}
             entry['numUsers'] = c.numUsers
+            entry['numOrganizations'] = c.numOrganizations
             entry['numWorkshops'] = c.numWorkshops
             entry['numResources'] = c.numResources
             entry['numDiscussions'] = c.numDiscussions
@@ -271,6 +275,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return self._noSearch()
         #log.info("searchWorkshopGeo YO CHECK THIS OUT %s %s"%(self.query, self.noQuery))
+        c.geoScope = self.query
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
@@ -429,7 +434,8 @@ class SearchController(BaseController):
             #log.info("results geo: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
-            return render('/derived/6_search.bootstrap')
+            c.title = c.heading = c.searchQuery + " Activity"
+            return render('/derived/6_geo_profile.bootstrap')
     
     def searchPeople(self):
         #: this function returns json data so we set the headers appropriately
@@ -440,7 +446,11 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
+        if self.searchType == "orgURL":
+            # This is a search for organizations
+            people = userLib.searchOrganizations(['name', 'url'], [self.query, self.query])
+        else:
+            people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
         if len(people) == 0:
             return json.dumps({'statusCode': 2})
         for p in people:
@@ -463,6 +473,21 @@ class SearchController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
+        
+    def searchOrganizations( self ):
+        orgURL = utils.urlify(self.query)
+        if self.searchType == 'orgURL':
+            orgs = userLib.searchOrganizations(['greetingMsg', 'name', 'url'], [self.query, self.query, self.query])
+            if orgs and len(orgs) == 1:
+                urlCode = orgs[0]['urlCode']
+                profileURL = '/profile/' + urlCode + '/' + orgURL
+                return redirect(profileURL)
+            else:
+                searchURL = '/search?searchQuery=' + orgURL
+                return redirect(searchURL)
+        else:
+            searchURL = '/search?searchQuery=' + orgURL
+            return redirect(searchURL)
     
     def searchWorkshops(self):
         log.info("controllers/search: in searchWorkshops")
@@ -1080,20 +1105,81 @@ class SearchController(BaseController):
         scopeMap.extend((countryScope, stateScope, countyScope, cityScope, zipScope))
 
         exceptions = utils.getGeoExceptions()
+        
+        getGeoInfo= {
+        	'Country' : getCountryInfo,
+        	'State': getStateInfo,
+        	'County': getCountyInfo,
+        	'City': getCityInfo,
+        	'Postalcode': getPostalInfo,
+        }
+        
+        geoArguments= {
+        	'Country' : [country],
+        	'State': [state, country],
+        	'County': [county, state, country],
+        	'City': [city, state, country],
+        	'Postalcode': [self.zip],
+        }
+        
+        geoPopulation= {
+        	'Country' : 'Country_population',
+        	'State': 'Population',
+        	'County': 'Population',
+        	'City': 'Population',
+        	'Postalcode': 'Population',
+        }
 
         for scope in scopeMap:
             scopeInfo = utils.getPublicScope(scope)
+            geoInfo = getGeoInfo[scopeInfo['level'].title()](*geoArguments[scopeInfo['level'].title()]) 
+             
             entry = {}
+            if geoInfo:
+                population = geoInfo[geoPopulation[scopeInfo['level'].title()]]
+                entry['population'] = population
             entry['name'] = scopeInfo['name']
             entry['flag'] = scopeInfo['flag']
             entry['href'] = scopeInfo['href']
             entry['level'] = scopeInfo['level'].title()
-            entry['fullName'] = entry['level'] + ' of ' + entry['name']
+            entry['sep'] = ','
 
+           #  if entry['level'] != 'Country' and entry['level'] != 'Postalcode':
+#                 members = 0
+#                 zipcodes = getZipCodesBy(entry['level'],entry['name'])              
+#                 for zipcode in zipcodes:
+#                     log.info(zipcode)
+#                     members += userLib.getUsersPerZipCode(zipcode)
+#                 log.info("There are %d members in %s"%(members,entry['level']))
+
+            entry['fullName'] = entry['level'] + ' of ' + entry['name']
+            entry['scope'] = scope[1:]
+            
             if entry['name'] in exceptions and exceptions[entry['name']] == entry['level']:
                 log.info('Found geo exception!')
                 continue
+            
+                        # for flipboard style layout    
+            defaultPhoto = "/images/grey.png"
 
+            # current scope search for photos and initaitives is slightly different - should be reconciled
+            initScope = scope.replace('||', '|0|')
+            photoScope = scope[1:]
+
+            initiatives = initiativeLib.searchInitiatives(['scope'], [initScope])
+            if initiatives and len(initiatives) != 0:
+                i = initiatives[-1]
+                if 'directoryNum_photos' in i:
+                    entry['photo'] = "/images/photos/" + i['directoryNum_photos'] + "/photo/" + i['pictureHash_photos'] + ".png"
+            else:
+                photos = photoLib.searchPhotos('scope', photoScope)
+                if photos and len(photos) != 0:
+                    photos = sort.sortBinaryByTopPop(photos)
+                    p = photos[0]
+                    entry['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+                else:
+                    entry['photo'] = defaultPhoto
+            
             result.append(entry)                
 
         if len(result) == 0:

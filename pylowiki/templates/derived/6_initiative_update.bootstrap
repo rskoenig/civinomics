@@ -9,21 +9,22 @@
 <% lib.return_to() %>
 
     % if c.update:
-        <h4 class="initiative-title">Progress Report</h4>
         <div class="row-fluid">
             <div class="span12">
-                <h2>${c.update['title']}</h2>
-                Date: ${c.update.date}<br>
-                ${itemHelpers.showItemOwner(c.update)}
+                <h3>${c.update['title']}</h3>
+                <p class="help-block">Update - ${c.update.date}</p>
                 % if 'text' in c.update:
                     ${m.html(c.update['text'], render_flags=m.HTML_SKIP_HTML) | n}
                 % endif
+                ${itemHelpers.showItemAuthor(c.update)}
                 % if c.revisions:
                     <div class="spacer"></div>
                     <ul class="unstyled">
-                    % for revision in c.revisions:
-                        <li>Revision: <a href="/initiative/${revision['initiativeCode']}/${revision['initiative_url']}/updateShow/${revision['urlCode']}">${revision.date}</a></li>
-                    % endfor
+                    % if c.revisions and len(c.revisions) != 1:
+                        % for revision in c.revisions:
+                            <li>Revision: <a href="/initiative/${revision['initiativeCode']}/${revision['initiative_url']}/updateShow/${revision['urlCode']}">${revision.date}</a></li>
+                        % endfor
+                    % endif
                     </ul>
                 % endif
                 % if c.update.objType == 'revision':
@@ -38,7 +39,8 @@
             </div><!-- span11 -->
         </div><!-- row-fluid -->
     % else:
-        <h4 class="initiative-title">Add New Progress Report</h4>
+        <h3 class="initiative-title">Add Update</h3>
+        <div class="spacer"></div>
         ${ihelpers.editUpdate()}
     % endif
 

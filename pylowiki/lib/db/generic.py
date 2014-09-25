@@ -27,6 +27,48 @@ def linkChildToParent(child, parent):
     if key in child:
         # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
+    if parent.objType == 'discussion':
+        child['discussion_url'] = parent['url']
+        child['discussionCode'] = parent['urlCode']
+        child['discussion_title'] = parent['title']
+        if 'tags' in parent:
+            child['discussion_tags'] = parent['tags']
+        elif 'workshop_category_tags' in parent:
+            child['discussion_tags'] = parent['workshop_category_tags']
+        if 'scope' in parent:
+            child['discussion_scope'] = parent['scope']
+        elif 'workshop_public_scope' in parent:
+            child['discussion_scope'] = parent['workshop_public_scope']
+        elif 'workshop_private_scope' in parent:
+            child['discussion_scope'] = parent['workshop_private_scope']
+    if parent.objType == 'idea':
+        child['idea_url'] = parent['url']
+        child['ideaCode'] = parent['urlCode']
+        child['idea_title'] = parent['title']
+        if 'tags' in parent:
+            child['idea_tags'] = parent['tags']
+        elif 'workshop_category_tags' in parent:
+            child['idea_tags'] = parent['workshop_category_tags']
+        if 'scope' in parent:
+            child['idea_scope'] = parent['scope']
+        elif 'workshop_public_scope' in parent:
+            child['idea_scope'] = parent['workshop_public_scope']
+        elif 'workshop_private_scope' in parent:
+            child['idea_scope'] = parent['workshop_private_scope']
+    if parent.objType == 'resource':
+        child['resource_url'] = parent['url']
+        child['resourceCode'] = parent['urlCode']
+        child['resource_title'] = parent['title']
+        if 'tags' in parent:
+            child['resource_tags'] = parent['tags']
+        elif 'workshop_category_tags' in parent:
+            child['resource_tags'] = parent['workshop_category_tags']
+        if 'scope' in parent:
+            child['resource_scope'] = parent['scope']
+        elif 'workshop_public_scope' in parent:
+            child['resource_scope'] = parent['workshop_public_scope']
+        elif 'workshop_private_scope' in parent:
+            child['resource_scope'] = parent['workshop_private_scope']
     if parent.objType == 'initiative':
         child['initiative_public'] = parent['public']
         child['initiative_url'] = parent['url']
@@ -103,6 +145,8 @@ def linkChildToParent(child, parent):
     if child.objType == 'comment':
         if 'title' in parent:
             child['parent_title'] = parent['title']
+        if 'discType' in parent:
+            child['discType'] = parent['discType']
         child['parent_url'] = parent['url']
         
     child[key] = code

@@ -49,7 +49,7 @@
             <a href="#signupLoginModal" data-toggle='modal'><textarea rows="2" class="col-sm-12 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         </div>
         <div class="col-sm-11 col-sm-offset-1">
-            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
             <a href="#signupLoginModal" data-toggle='modal' title="Login to comment." class="btn btn-primary" type="button">Submit</a>
         </div>
     </div>
@@ -72,7 +72,7 @@
             <a href="#activateAccountModal" data-toggle='modal'><textarea rows="2" class="col-sm-11 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
         </div>
         <div class="col-sm-11 col-sm-offset-1">
-            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
             <a href="${url}" title="Login to comment." class="btn btn-primary" type="button">Submit</a>
         </div>
     </div>
@@ -112,13 +112,19 @@
                 <div class="col-sm-11">
                     <small>
                         <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="yes"> Pro
-                        </span>
-                        <span class="radio inline right-space">
                             <input type=radio name="commentRole" value="neutral" checked> Neutral
                         </span>
                         <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="yes"> Pro
+                        </span>
+                        <span class="radio inline right-space">
                             <input type=radio name="commentRole" value="no"> Con
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="question"> Question
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type=radio name="commentRole" value="suggestion"> Suggestion
                         </span>
                     </small>
                     <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button></span>
@@ -126,7 +132,7 @@
             </div><!-- row -->
         % else:
         <div class="row">
-            <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
             <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button></span>
         </div><!-- row -->
         % endif
@@ -270,6 +276,16 @@
                     roleClass += "green"
                     roleLabel += "Pro"
                     headerClass += " favor"
+
+                elif comment['commentRole'] == 'question':
+                    roleClass += "question"
+                    roleLabel += "Question"
+                    headerClass += " question"
+
+                elif comment['commentRole'] == 'suggestion':
+                    roleClass += "suggestion"
+                    roleLabel += "Suggestion"
+                    headerClass += " suggestion"
 
                 else:
                     roleClass +="grey"

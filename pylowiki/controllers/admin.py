@@ -155,6 +155,8 @@ class AdminController(BaseController):
                 abort(404)
             elif (c.thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
                 abort(404)
+            elif (c.thing.objType.replace("Unpublished", "") == 'discussion' and c.thing['discType'] == 'organization_general') and not userLib.isAdmin(c.authuser.id):
+                abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
                 
@@ -346,9 +348,17 @@ class AdminController(BaseController):
         elif c.thing.objType.replace("Unpublished", "") == 'discussion':
             title = request.params['title']
             text = request.params['text']
+            if 'position' in request.params:
+                position = request.params['position']
+                if request.params['position'] == 'support':
+                    title = title.replace("We oppose", "We support")
+                if request.params['position'] == 'oppose':
+                    title = title.replace("We support", "We oppose")  
+            else:
+                position = False
             if title.strip() == '':
                 title = blankText
-            if discussionLib.editDiscussion(c.thing, title, text, c.authuser):
+            if discussionLib.editDiscussion(c.thing, title, text, c.authuser, position):
                 alert = {'type':'success'}
                 alert['title'] = 'Discussion edit.'
                 alert['content'] = 'Discussion edit successful.'
@@ -374,14 +384,26 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
+
+        if c.thing.objType == 'comment':
+            discussion = generic.getThing(c.thing['discussionCode'])
+            if discussion['discType'] == 'organization_position' or discussion['discType'] == 'organization_general':
+                c.thing = discussion
+                
         if 'workshopCode' in c.thing:
             return redirect(utils.thingURL(c.w, c.thing))
+        elif c.thing.objType == 'discussion' and (c.thing['discType'] == 'organization_position' or c.thing['discType'] == 'organization_general'):
+            user = generic.getThing(c.thing['userCode'])
+            return redirect(utils.thingURL(user, c.thing))
         elif 'initiativeCode' in c.thing:
             initiative = generic.getThing(c.thing['initiativeCode'])
             return redirect(utils.thingURL(initiative, c.thing))
         elif 'profileCode' in c.thing:
             user = generic.getThing(c.thing['profileCode'])
-            return redirect(utils.thingURL(c.user, c.thing))
+            return redirect(utils.thingURL(user, c.thing))
+        elif c.thing.objType == 'discussion' and c.thing['discType'] == 'organization_general':
+            user = generic.getThing(c.thing['userCode'])
+            return redirect(utils.thingURL(user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType.replace("Unpublished", ""))

@@ -104,7 +104,9 @@ class InitiativeController(BaseController):
             if c.iPrivs == False:
                 abort(404)
                 
-            c.complete = self.initiativeCheck()
+            # c.complete = self.initiativeCheck()
+            # removing requirements for publishing an initiative
+            c.complete = True
             
         c.resources = []
         c.updates = []
@@ -295,7 +297,9 @@ class InitiativeController(BaseController):
                 c.initiative['publishDate'] = startTime
                 c.initiative['unpublishDate'] = u'0000-00-00'
                 dbHelpers.commit(c.initiative)
-                c.saveMessage = "Your initiative is now live! It is publicly viewable."
+                c.saveMessage = "Your initiative is now live. Share it with your friends!"
+                return redirect('/initiative/%s/%s' % (c.initiative['urlCode'], c.initiative['url']))
+
         elif 'public' in request.params and request.params['public'] == 'unpublish':
             if c.initiative['public'] == '1':
                 c.initiative['public'] = '0'
@@ -419,7 +423,9 @@ class InitiativeController(BaseController):
             c.saveMessage = "Changes saved."
 
         c.editInitiative = True
-        c.complete = self.initiativeCheck()
+        #c.complete = self.initiativeCheck()
+        # removing requirements for publishing an intiative to make it easier/ encourage more ideation
+        c.complete = True
         
         return render('/derived/6_initiative_edit.bootstrap')
         
@@ -461,69 +467,92 @@ class InitiativeController(BaseController):
         if c.iPrivs == False:
             abort(404)
             
-        log.info(request.params)
+        cover = False
+        
         if 'files[]' in request.params:
             file = request.params['files[]']
             filename = file.filename
             file = file.file
             image = imageLib.openImage(file)
-            if not image:
-                abort(404) # Maybe make this a json response instead
-            imageHash = imageLib.generateHash(filename, c.authuser)
             
-            image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
-            
-            width = min(image.size)
-            x = 0
-            y = 0
-            if 'width' in request.params:
-                width = request.params['width']
-                if not width or width == 'undefined':
-                    width = 100
-                else:
-                    width = int(float(width))
-            if 'x' in request.params:
-                x = request.params['x']
-                if not x or x == 'undefined':
-                    x = 0
-                else:
-                    x = int(float(x))
-            if 'y' in request.params:
-                y = request.params['y']
-                if not y or y == 'undefined':
-                    y = 0
-                else:
-                    y = int(float(y))
-            dims = {'x': x, 
-                    'y': y, 
-                    'width':width,
-                    'height':width}
-            clientWidth = -1
-            clientHeight = -1
-            if 'clientWidth' in request.params:
-                clientWidth = request.params['clientWidth']
-                if not clientWidth or clientWidth == 'null':
-                    clientWidth = -1
-            if 'clientHeight' in request.params:
-                clientHeight = request.params['clientHeight']
-                if not clientHeight or clientHeight == 'null':
-                    clientHeight = -1
-            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
-            image = imageLib.resizeImage(image, imageHash, 480, 480)
-            image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
-            image = imageLib.resizeImage(image, imageHash, 160, 160)
-            image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
-            
-            jsonResponse =  {'files': [
-                                {
-                                    'name':filename,
-                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(c.initiative['directoryNum_photos'], imageHash),
-                                    'image_hash':imageHash
-                                }
-                            ]}
-            return json.dumps(jsonResponse)
+        elif 'cover[]' in request.params:
+            cover = True
+            file = request.params['cover[]']
+            filename = file.filename
+            file = file.file
+            image = imageLib.openImage(file)
         else:
             abort(404)
+                
+        if not image:
+            abort(404) # Maybe make this a json response instead
+        imageHash = imageLib.generateHash(filename, c.authuser)
+        
+        if cover:
+            log.info("I'm a cover!!")
+            image = imageLib.saveImage(image, imageHash, 'cover', 'orig', thing = c.initiative)
+        else:
+            log.info("I'm not a cover")
+            image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
+        
+        width = min(image.size)
+        x = 0
+        y = 0
+        if 'width' in request.params:
+            width = request.params['width']
+            if not width or width == 'undefined':
+                width = 100
+            else:
+                width = int(float(width))
+        if 'x' in request.params:
+            x = request.params['x']
+            if not x or x == 'undefined':
+                x = 0
+            else:
+                x = int(float(x))
+        if 'y' in request.params:
+            y = request.params['y']
+            if not y or y == 'undefined':
+                y = 0
+            else:
+                y = int(float(y))
+        dims = {'x': x, 
+                'y': y, 
+                'width':width,
+                'height':width}
+        clientWidth = -1
+        clientHeight = -1
+        if 'clientWidth' in request.params:
+            clientWidth = request.params['clientWidth']
+            if not clientWidth or clientWidth == 'null':
+                clientWidth = -1
+        if 'clientHeight' in request.params:
+            clientHeight = request.params['clientHeight']
+            if not clientHeight or clientHeight == 'null':
+                clientHeight = -1
+        
+        if cover:
+            picType = 'cover'
+        else:
+            picType = 'photos'
+             
+        image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+        image = imageLib.resizeImage(image, imageHash, 480, 480)
+        image = imageLib.saveImage(image, imageHash, picType, 'photo')
+        image = imageLib.resizeImage(image, imageHash, 160, 160)
+        image = imageLib.saveImage(image, imageHash, picType, 'thumbnail')
+        
+        
+        
+        jsonResponse =  {'files': [
+                            {
+                                'name':filename,
+                                'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(c.initiative['directoryNum_photos'], imageHash),
+                                'image_hash':imageHash
+                            }
+                        ]}
+        return json.dumps(jsonResponse)
+        
             
  
     def initiativeShowHandler(self):
@@ -551,7 +580,7 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-        
+                
         c.initiativeHome = True
 
         return render('/derived/6_initiative_home.bootstrap')
@@ -586,6 +615,7 @@ class InitiativeController(BaseController):
 
     @h.login_required
     def resourceEdit(self, id1, id2, id3):
+        c.editResource = True
         if 'user' not in session:
             log.info("someone not logged in tried to add a resource to an initiative...")
             abort(404)
@@ -608,12 +638,11 @@ class InitiativeController(BaseController):
         
     @h.login_required       
     def updateEdit(self):
-        
+        c.editUpdate = True
         return render('/derived/6_initiative_update.bootstrap')
         
     @h.login_required
     def updateEditHandler(self):
-        
         payload = json.loads(request.body)
         if 'title' in payload:
             title = payload['title']

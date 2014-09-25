@@ -32,8 +32,6 @@
                                 ${lib_6.userImage(author, className="avatar small-avatar")}
                             % endfor
                         </td>
-                    </tr>
-                    <tr>
                         <td>
                             <span class="grey">
                             % for author in c.authors[:showNum]:
@@ -78,21 +76,17 @@
             </div><!-- tab-pane -->
         </div><!-- tabcontent -->
     </div><!-- tabbable -->
-    <br>
     <span class="grey">
         Published: ${item.date}
     </span>
 </%def>
 
 <%def name="showUpdateList()">
-    % if c.updates:
-        Progress Reports:<br />
-        <ul>
-        % for update in c.updates:
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update.date} ${update['title']}</a></li>
-        % endfor
-        </ul>
-    % endif
+    <ul>
+    % for update in c.updates:
+        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update['title']} <span class="pull-right">${update.date}</span></a></li>
+    % endfor
+    </ul>
 </%def>
                         
 
@@ -124,11 +118,11 @@
 <%def name="watchButton(i, **kwargs)">
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-default pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
-            <span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>
+            <button class="btn btn-success followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
+            <span><i class="icon-bookmark"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn btn-default pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
+            <button class="btn btn-default followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
              <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -151,6 +145,14 @@
         
     %>
     ${printStr | n}
+</%def>
+
+
+
+<%def name="addUpdateButton()">
+    % if c.iPrivs:
+        <a class="btn btn-default btn-sm pull-right" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><i class="icon icon-plus"></i></a>
+    % endif
 </%def>
 
 <%def name="listResources()">
@@ -297,7 +299,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Initiative Title:</strong></label>
-                    <input type="text" name="title" class="col-sm-12 form-control" ng-model="initiativeTitle" value="{{initiativeTitle}}" ng-click="clearTitle()" ng-cloak>
+                    <input type="text" name="title" class="col-sm-12 form-control" value="${c.initiative['title']}">
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
@@ -421,10 +423,16 @@
                 </div>
             </div>
         </form>
+        
+        
+	
+            
+            
+        
         <div class="row" id="photo">
             <h3 class="initiative-title edit">4. Photo</h3>
         </div><!-- row -->
-        <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
+<form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
             <div id="fileinput-button-div">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
@@ -451,7 +459,8 @@
                 </div><!-- col-sm-10 -->
             </div><!-- row -->
             <!-- The table listing the files available for upload/download -->
-            <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+             
+             <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery" ng-if="fuType === 'files[]'">
                 <tbody><tr data-ng-repeat="file in queue">
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
@@ -470,7 +479,8 @@
 
                         </div><!-- preview -->
                         <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
-                            </td>
+                        	</td>
+                            
                             <td>
                                 <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
                             </td>
@@ -478,6 +488,7 @@
                                 <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
                                 <i class="icon-upload icon-white"></i>
                                 <span>Save</span>
+                                
                                 </button>
                                 <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
                                 <i class="icon-ban-circle icon-white"></i>
@@ -486,9 +497,72 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
-            </form>
+                </table> 
 
+<!-- BACKGROUND PHOTO UPLOAD-->
+<h4 class="initiative-title edit">Cover Photo</h4>
+	<form action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data"  ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="true" data-fileuploadcover="options">
+            <div id="fileinput-button-div">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                %if 'directoryNum_photos' in c.initiative and 'pictureHash_cover' in c.initiative:
+                    <% thumbnail_url = "/images/cover/%s/thumbnail/%s.png"%(c.initiative['directoryNum_cover'], c.initiative['pictureHash_cover']) %>
+                    <span class="pull-left">Current Cover Picture
+                    <div class="spacer"></div>
+                    <img src="${thumbnail_url}">
+                    </span>
+                % else:
+                    <span class="pull-left">Upload a Picture (Required)</span>
+                % endif
+                <input class="fileinput-button pull-right" type="file" name="cover[]" id="fileCover">
+                <input type="hidden" name="cover" value="True">
+                </span>
+                <!-- The loading indicator is shown during file processing -->
+                <div class="fileupload-loading"></div>
+                <!-- The global progress information -->
+            </div><!-- row -->
+            
+</form>
+
+<table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                <tbody><tr data-ng-repeat="file in queue" ng-if="fuType === 'cover[]'">
+                    <td data-ng-switch="" on="!!file.thumbnail_url">
+                        <div class="preview" data-ng-switch-when="true">
+                            <script type="text/javascript">
+                                function setAction(imageHash) {
+                                    actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
+                                    document.getElementById('fileupload').action = actionURL;
+                                }
+                            </script>
+                            <div class="row">
+                                <img src="{{file.thumbnail_url}}">
+                                New Picture Uploaded and Saved
+                                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</a>
+                            </div><!-- row -->
+                            </form>
+
+                        </div><!-- preview -->
+                        <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
+                        	</td>
+                            
+                            <td>
+                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Save</span>
+                                
+                                </button>
+                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>   
+<form></form>
+<br/>
         ${coAuthorInvite()}
     </div><!-- col-sm-12 -->
 </div>
@@ -569,26 +643,27 @@
     %>
     % if not c.resource:
         <form ng-controller="resourceController" ng-init="rType = 'initiative'; parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
-            <fieldset>
-                <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
+            <div class="form-group">
+                <label>Resource title</label>
                 <input type="text" class="input-block-level form-control" name="title" ng-model="title" maxlength = "120" required>
+                <span class="help-block">Try to keep your title informative, but concise.</span>
                 <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
+            </div>
+            <div class="form-group">
                 <label>Resource URL</label>
                 <input type="url" class="input-block-level form-control" name="link" ng-model="link" placeholder="http://" required>
                 <span ng-show="addResourceURLShow"><div class="alert alert-danger" ng-cloak>{{addResourceURLResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Additional information</strong><br>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
+            </div>
+            <div class="form-group">
+                <label><strong>Additional information</strong>
+                <a href="#" class="btn btn-xs btn-info left-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
                 <textarea name="text" rows="3" class="input-block-level form-control" ng-model="text"></textarea>
-                <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
-            </fieldset>
+                <span class="help-block">Any additional information you want to include.  This is optional.</span>
+            </div>
             <span ng-show="addResourceShow">{{addResourceResponse}}</span>
-            <fieldset>
-                <button class="btn btn-large btn-default pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-lg btn-success pull-right" type="submit" name="submit">Submit</button>
+            </div>
         </form>
     % endif
 </%def>
@@ -607,21 +682,20 @@
     %>
     % if not c.update:
         <form ng-controller="updateController" ng-init="parentCode = '${c.initiative['urlCode']}'; parentURL = '${c.initiative['url']}'; updateCode = '${updateCode}'; addUpdateTitleResponse=''; addUpdateTextResponse=''; addUpdateResponse='';"  id="addUpdateForm" name="addUpdateForm" ng-submit="submitUpdateForm(addUpdateForm)">
-            <fieldset>
-                <label>Progress Report Title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
-                <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+            <div class="form-group">
+                <label>Update Title</label>
+                <input type="text" class="form-control input-block-level" name="title" ng-model="title" maxlength = "120" required>
                 <span ng-show="addUpdateTitleShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTitleResponse}}</div></span>
-            </fieldset>
-            <fieldset>
-                <label><strong>Progress Report Text</strong>
-                <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
-                <textarea name="text" rows="3" class="input-block-level" ng-model="text" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Update Text</label>
+                <a href="#" class="btn btn-xs btn-info left-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a>
+                <textarea name="text" rows="3" class="form-control input-block-level" ng-model="text" required></textarea>
                 <span ng-show="addUpdateTextShow"><div class="alert alert-danger" ng-cloak>{{addUpdateTextResponse}}</div></span>
-                <span class="help-block"> (A description of the progress made on implementing the initiative since the last progress report.) </span>
-            </fieldset>
-            <fieldset>
-                <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-            </fieldset>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-lg btn-success pull-right" type="submit" name="submit">Submit</button>
+            </div>
         </form>
     % endif
 </%def>
@@ -862,4 +936,3 @@
         </div><!-- ng-init -->
     %endif   
 </%def>
-
