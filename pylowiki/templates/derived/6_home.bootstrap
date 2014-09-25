@@ -237,6 +237,26 @@
   </div><!-- /span8 -->
 
   <div class="col-sm-4">
+  % if c.authuser:
+      ###
+      ### Elections
+      ###
+      <div  ng-init="postalCode=${c.authuser['postalCode']};">
+          <div ng-controller="electionsHomeController">
+            <div ng-show="elections.length >= 1" ng-cloak>
+                <h2><small>Upcoming Elections</small></h2>
+                <div ng-repeat="item in elections">
+                    <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
+                        <tr>
+                        ${ng_helpers.election_home_listing()}
+                        </tr>
+                    </table>
+                <div><!-- ng-repeat -->
+            </div><!-- well -->
+          </div><!-- electionsHomeController -->
+        </div>
+    % endif
+    
     ###
     ### Following Initiatives
     ###
@@ -361,6 +381,7 @@
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/following.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/elections_home.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/follow_unfollow.js')}"></script>
   <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
 </%def>
