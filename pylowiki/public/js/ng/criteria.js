@@ -16,9 +16,6 @@ app.controller('ratingsController', function($scope, $http){
 	
 	$scope.addCriteriaToList = function(){
 		$scope.alert.message = '';
-		console.log($scope.rating.criteriaList.indexOf($scope.criteriaName));
-		console.log(!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1));
-		console.log(!$scope.rating.criteriaList.indexOf($scope.criteriaName)>-1);
 		if (!($scope.rating.criteriaList.indexOf($scope.criteriaName)>-1)) {
 			$scope.rating.criteriaList.push($scope.criteriaName);
 			$scope.criteriaName = '';	
@@ -35,9 +32,35 @@ app.controller('ratingsController', function($scope, $http){
 		}
 	};
 	
-	$scope.sendCriteriaList = function (){
-		
+	$scope.sendCriteriaList = function(){
+			$scope.alert.type = '';
+			$scope.alert.message = '';
+		if ($scope.rating.type === "criteria" && $scope.rating.criteriaList.length > 0 ) {
+			var criteria = listToString($scope.rating.criteriaList);	
+			//Logic for uploading a criteria list
+			console.log(criteria);
+		} else if ($scope.rating.type === "criteria" && $scope.rating.criteriaList.length == 0) {
+			$scope.alert.type = 'error';
+			$scope.alert.message = "Please add criteria to continue or choose a 'Yes/No' rating.";
+		} else if ($scope.rating.type === "yesno"){
+			//Logic for uploading a yesno
+		} else {
+			$scope.alert.type = 'error';
+			$scope.alert.message = "Please choose a type of Rating.";
+		};
 	};
+	
+	listToString = function(list){
+		var i = 0;
+		var listStr = "";
+		while ( i < list.length-1) {
+			listStr += list[i] + "|";
+			i++;	
+		}
+		listStr += list[i];
+		return listStr;
+	}
+
   /*
 	  Things that I need for this controller:
 	  	Adding a criteria

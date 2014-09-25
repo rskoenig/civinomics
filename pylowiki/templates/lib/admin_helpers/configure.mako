@@ -248,40 +248,45 @@
 </%def>
 
 <%def name="edit_ratings()">
+	${vars(c.w)}
 	<div class="section-wrapper wiki-well">
 		<div class="browse">
 			<h4 class="section-header smaller"> Ratings </h4>
 			<div class="col-sm-12" style="padding: 19px;" ng-controller="ratingsController">
 				<div class="form-group">
-					<form>
-					<p>Choose the type of rating for the ideas in this workshop:</p>
-					<div class="col-xs-6">			
-						<input type="radio" name="rating_type" value="yesno" ng-model="rating.type"> Yes / No
-					</div> <!-- col-xs-6 criteria -->
-					
-					<div class="col-xs-6">
-						<input type="radio" name="rating_type" value="criteria" ng-model="rating.type"> Rated criteria 
-						<div ng-show="rating.type === 'criteria'">
-						 <ul >
-                                            <li ng-repeat="criteria in rating.criteriaList">
-                                                <span>
-                                                <span class="goal-title">{{criteria}}      </span>
-                                                <a class="inline" class="" ng-click="deleteCriteriaFromList(criteria)"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:45%"></a></span>
-                                            </li>
-                                        </ul>
-                                        <div class="alert alert-danger" role="alert" ng-if="alert.message!='' && alert.type == 'error'">{{alert.message}}</div>
-                                        <form class="addGoal">
-                                            <div class="input-group">
-                                                <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" ng-model="criteriaName" class="addGoal form-control" id="">
-                                                <span class="input-group-btn">
-                                                    <button class="btn btn-primary" type="submit" value="add" ng-click="addCriteriaToList(criteriaName)">add</button>
-                                                </span>
-                                            </div>
-											<div class="alert alert-warning" role="alert" ng-if="alert.message!='' && alert.type == 'criteria'">{{alert.message}}</div>
-                                        </form>		
-						</div>
-					</div> <!-- col-xs-6 criteria -->
-					<div class="alert alert-danger" role="alert" ng-if="alert.message!='' && alert.type == 'error'">{{alert.message}}</div>
+					<form ng-submit="sendCriteriaList()">
+						<p>Choose the type of rating for the ideas in this workshop:</p>
+						<div class="col-xs-6">			
+							<input type="radio" name="rating_type" value="yesno" ng-model="rating.type"> Yes / No
+						</div> <!-- col-xs-6 yesno -->
+						
+						<div class="col-xs-6">
+							<input type="radio" name="rating_type" value="criteria" ng-model="rating.type"> Rated criteria 
+							<div ng-show="rating.type === 'criteria'">
+							 <ul >
+	                                            <li ng-repeat="criteria in rating.criteriaList">
+	                                                <span>
+	                                                <span class="goal-title">{{criteria}}      </span>
+	                                                <a class="inline" class="" ng-click="deleteCriteriaFromList(criteria)"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:45%"></a></span>
+	                                            </li>
+	                                        </ul>
+	                                        <div class="alert alert-danger" role="alert" ng-if="alert.message!='' && alert.type == 'error'">{{alert.message}}</div>
+	                                        
+	                                            <div class="input-group">
+	                                                <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" ng-model="criteriaName" class="addGoal form-control" id="">
+	                                                <span class="input-group-btn">
+	                                                    <button class="btn btn-primary" type="button" value="add" ng-click="addCriteriaToList(criteriaName)">add</button>
+	                                                </span>
+	                                            </div>
+												<div class="alert alert-warning" role="alert" ng-if="alert.message!='' && alert.type === 'criteria'">{{alert.message}}</div>	
+							</div>
+							
+						</div> <!-- col-xs-6 criteria -->
+						% if not c.published:
+                                <button type="submit" class="btn btn-warning btn-lg pull-right" style="margin-top:10px">Save Ratings and Continue</button>
+                            % else:
+                                <button type="submit" class="btn btn-warning btn-lg pull-right" style="margin-top:10px">Save Ratings</button>
+                            % endif
 					</form><!-- ratings form -->
 				</div> <!-- form-group -->
 			</div>	<!-- col-sm-12 -->
