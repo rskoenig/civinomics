@@ -248,13 +248,12 @@
 </%def>
 
 <%def name="edit_ratings()">
-	${vars(c.w)}
 	<div class="section-wrapper wiki-well">
 		<div class="browse">
 			<h4 class="section-header smaller"> Ratings </h4>
 			<div class="col-sm-12" style="padding: 19px;" ng-controller="ratingsController">
 				<div class="form-group">
-					<form ng-submit="sendCriteriaList()">
+					<form ng-submit="sendCriteriaList('${c.w['urlCode']}','${c.w['url']}')">
 						<p>Choose the type of rating for the ideas in this workshop:</p>
 						<div class="col-xs-6">			
 							<input type="radio" name="rating_type" value="yesno" ng-model="rating.type"> Yes / No

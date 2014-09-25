@@ -13,31 +13,34 @@ from pylowiki.lib.base import BaseController, render
 
 log = logging.getLogger(__name__)
 
-class GoalsController(BaseController):
+class CriteriaController(BaseController):
 
-    def __before__(self, action, workshopCode = None, goalCode = None):
-        if action not in ['getGoals']:
-            if 'user' not in session:
-                abort(404)
+    def __before__(self, action, workshopCode = None, worshopURL = None, criteria = None):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
         workshopLib.setWorkshopPrivs(c.w)
-        
-        if action in ['update', 'delete']:
-            c.goal = goalLib.getGoal(goalCode)
-            if not c.goal:
-                abort(404)
-            if not c.privs['admin'] and not c.privs['facilitator']:
-                abort(404)
-        if c.privs['visitor']:
-            if c.w['public_private'] == 'private':
-                abort(404)
-        elif not c.privs['admin'] and not c.privs['facilitator'] and not c.privs['participant']:
-            abort(404)
-
+       #  
+#         if action in ['update', 'delete']:
+#             c.goal = goalLib.getGoal(goalCode)
+#             if not c.goal:
+#                 abort(404)
+#             if not c.privs['admin'] and not c.privs['facilitator']:
+#                 abort(404)
+#         if c.privs['visitor']:
+#             if c.w['public_private'] == 'private':
+#                 abort(404)
+#         elif not c.privs['admin'] and not c.privs['facilitator'] and not c.privs['participant']:
+#             abort(404)
+    def addToWorkshop(self, workshopCode, workshopURL, criteria):
+        if criteria is '-1':
+            log.info("Hell naw.")
+        else:
+            log.info("I guess I'll have to do something.")
+    
+    
     def _returnGoal(self, goal, done = None):
         if done is None:
             return json.dumps({'title':goal['title'], 'done':goal['status'] == u'100', 'code':goal['urlCode']})
