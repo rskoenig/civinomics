@@ -369,6 +369,8 @@
     </div><!-- media -->
     <div class="spacer"></div>
 </%def>
+
+
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
@@ -720,6 +722,33 @@
     % endif
     </div>
     <br>
+</%def>
+
+<%def name="candidateVoteBlock()">
+    % if 'user' in session:
+        <a ng-click="updateCandidateVote(urlCode, url)" class="yesVote {{mycandidateVotes[urlCode]}}">
+            <div class="vote-icon yes-icon detail"></div>
+        </a>
+        <br>
+        <br>
+        <div class="totalVotesWrapper">
+            <span class="grey pull-left">Votes:</span>
+            <strong class="pull-right">
+                <span class="totalVotes">{{totalcandidateVotes[urlCode]}}</span>
+            </strong>
+        </div>
+    % else:
+        <a href="#signupLoginModal" role="button" data-toggle="modal" class="yesVote">
+            <div class="vote-icon yes-icon"></div>
+        </a>
+        <br>
+        <div class="totalVotesWrapper">
+            <small class="grey pull-left">Votes:</small>
+            <strong class="pull-right">
+                <span class="totalVotes">{{totalVotes}}</span>
+            </strong>
+        </div>
+    % endif
 </%def>
 
 <%def name="moreLess()">
