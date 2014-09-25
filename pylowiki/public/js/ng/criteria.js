@@ -33,16 +33,14 @@ app.controller('ratingsController', function($scope, $http){
 	};
 	
 	$scope.sendCriteriaList = function(workshopCode, workshopUrl){
-			$scope.alert.type = '';
-			$scope.alert.message = '';
-			var baseUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/criteria/add/";
-			console.log(baseUrl);
+		console.log($scope.rating.type);
+		$scope.alert.type = '';
+		$scope.alert.message = '';
+		var baseUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/criteria/add/";
 		if ($scope.rating.type === "criteria" && $scope.rating.criteriaList.length > 0 ) {
 			var criteria = listToString($scope.rating.criteriaList);	
-			//Logic for uploading a criteria list
 			requestUrl = baseUrl + criteria;
-			console.log(requestUrl);
-		    $http.get(baseUrl+criteria).success(function(data){
+		    $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
@@ -55,7 +53,9 @@ app.controller('ratingsController', function($scope, $http){
 			$scope.alert.message = "Please add criteria to continue or choose a 'Yes/No' rating.";
 		} else if ($scope.rating.type === "yesno"){
 			//Logic for uploading a yesno
-			requestUrl = baseUrl + "-1";
+			console.log("I'm here");
+			requestUrl = baseUrl + "0";
+			console.log(requestUrl);
 			$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					//Do something if they were added correctly (probably just update message or continue)
