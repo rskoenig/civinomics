@@ -7,7 +7,6 @@
 <%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
 <% import pylowiki.lib.graphData       as graphData %>
 
-
 <div class="spacer"></div>
 <% numIdeas = str(len(c.ideas)) %>
     <div class="col-sm-9">
@@ -181,15 +180,20 @@
    </div> <!-- /.col-sm-8 -->
 
    <div class="col-sm-3">
-      % if c.authuser:
-        % if c.privs and not c.privs['provisional']:
-          <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
+      % if c.w['readOnly'] == '0':
+        % if c.authuser:
+          % if c.privs and not c.privs['provisional']:
+            <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
+          % else:
+            <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+          % endif
         % else:
-          <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+          <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
         % endif
       % else:
-        <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+        <p>This workshop closed to voting and new items as of ${c.w['endTime']}.</p>
       % endif
+      
 
       <ul class="nav nav-pills workshop-menu">
         <li ng-class="{active: showSummary == true}">
