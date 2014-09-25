@@ -3261,9 +3261,7 @@ a.no-highlight{
 a.no-highlight.overlay{
   color:#fff;
 }
-a.no-highlight:hover{
-    color: #428bca;
-}
+
 a.no-highlight.no-hover:hover{
     color: #333333;
 }
@@ -3579,6 +3577,10 @@ hr.object-list-header{
 
 .activity-item h4{
   margin-bottom: 5px;
+}
+
+.ng-listing, h4 .ng-listing{
+  margin-top:19px;
 }
 
 .activity-item-content{

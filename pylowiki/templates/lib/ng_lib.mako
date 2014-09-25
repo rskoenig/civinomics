@@ -118,7 +118,7 @@
 <%def name="initiative_listing()">
     <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
-            ${authorPosting()}
+            ${metaData()}
             <div class="row" style="margin-top:19px;">
                 <div class="col-sm-3">
                     <div class="listed-photo">
@@ -129,13 +129,16 @@
                 </div>
                 <div class="col-sm-9 no-left">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    <p><small>${metaData()}</small></p>
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    <p><strong>
-                        <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
-                        <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
-                        <span class="pull-right">{{(item.cost | currency).replace(".00", "")}}</span>
-                    </strong></p>
+                    <p>
+                        <span ng-if="item.cost >= 0" class="grey">Net Cost:</span>
+                        <span ng-if="item.cost < 0" class="grey">Net Savings:</span>
+                        <strong class="pull-right">{{(item.cost | currency).replace(".00", "")}}</strong>
+                    </p>
+                    <p>
+                        <span class="grey">Posted by:</span>
+                        <span class="pull-right">${authorPosting()}</span>
+                    </p>
                 </div>
             </div>
             <div class="row">
@@ -199,16 +202,17 @@
 <%def name="idea_listing()">
     <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl">
-            ${authorPosting()}
-            <div class="row" style="margin-top:19px;">
+            % if not c.w:
+                ${metaData()}
+            % endif
+            <div class="row">
                 <div class="col-sm-12">
-                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    % if not c.w:
-                        <p><small>${metaData()}</small></p>
-                    % endif
+                    <h4 class="ng-listing"><a class="no-highlight" ng-href="{{item.href}}">{{item.title}}</a></h4>
                     <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
                     <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    <br>
+                    <p><small class="grey">Posted by:</small> ${authorPosting()}</p>
                 </div>
             </div>
             <div class="row">
@@ -222,15 +226,19 @@
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl">
             <div class="row">
+                <div class="col-xs-12">
+                % if not c.w:
+                    ${metaData()}
+                % endif
+                </div>
                 <div class="col-xs-11">
-                    <p>${authorPosting()}</p>
-                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a> <a ng-href="{{item.link}}"<small>({{item.link}})</small></a></h4>
-                    % if not c.w:
-                        <p><small>${metaData()}</small></p>
-                    % endif
+                    <h4 class="ng-listing"><a class="no-highlight" ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <p><a ng-href="{{item.link}}"<small>{{item.link}}</small></a></p>
+                    <br>
+                    <p><small class="grey">Posted by:</small> ${authorPosting()}</p>
                 </div>
                 <div class="col-xs-1">
-                    ${upDownVoteBlock()}
+                    <div style="margin-top:10px;">${upDownVoteBlock()}</div>
                 </div>
             </div>
             <div class="row">
@@ -243,16 +251,19 @@
 <%def name="discussion_listing()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
         <div class="row" ng-controller="yesNoVoteCtrl">
-            <div class="col-xs-11 media-body">
-                <p>${authorPosting()}</p>
-                <h4 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}} <small></small></a></h4>
+            <div class="col-xs-12">
                 % if not c.w:
-                    <p><small>${metaData()}</small></p>
+                    ${metaData()}
                 % endif
+            </div>
+            <div class="col-xs-11">
+                <h4 class="ng-listing"><a class="no-highlight" ng-href="{{item.href}}" target="_blank">{{item.title}}</a></h4>
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <br>
+                <p><small class="grey">Posted by:</small> ${authorPosting()}</p>
             </div>
             <div class="col-xs-1">
-                ${upDownVoteBlock()}
+                <div style="margin-top:10px;">${upDownVoteBlock()}</div>
             </div>
         </div>
         <div class="row">
@@ -265,15 +276,21 @@
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         ${authorPosting()}
         <div class="row" ng-controller="yesNoVoteCtrl">
+            <div class="col-xs-12">
+                % if not c.w:
+                    ${metaData()}
+                % endif
+            </div>
             <div class="col-xs-11 media-body">
                 <div class="listed-photo">
                     <a href = '{{item.href}}'>
                         <div class="main-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
                     </a>
                 </div>
-                <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                <p><small>${metaData()}</small></p>
+                <h4 class="ng-listing"><a class="no-highlight" ng-href="{{item.href}}">{{item.title}}</a></h4>
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                <br>
+                <p><small class="grey">Posted by:</small> ${authorPosting()}</p>
             </div>
             <div class="col-xs-1">
                 ${upDownVoteBlock()}
@@ -384,18 +401,19 @@
 
 <%def name="metaData()">
     <small>
-        <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
         <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
         <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
-        <span ng-if="item.parentHref">| <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
+        <span ng-if="item.tags"> / </span>
+        <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+        <span ng-if="item.parentHref"> / <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
+        <span class="date pull-right">{{item.fuzzyTime}} ago</span>
     </small>
 </%def>
 
 <%def name="authorPosting()">
     <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <small>
-        <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
-        <span class="date">{{item.fuzzyTime}} ago</span>
+        <a href="{{item.authorHref}}">{{item.authorName}}</a> 
     </small>
 </%def>
 
