@@ -276,10 +276,16 @@ class WorkshopController(BaseController):
                 c.w['endTime'] = endTime
                 wchanges = 1
                 weventMsg = "Set endTime."
-                endDate = datetime.datetime.strptime(c.w['endTime'],"%Y-%m-%d")
-                now = datetime.datetime.now()
-                if endDate < now:
-                    generic.setReadOnly(c.w, "1")
+                if c.w['endTime'] != "":
+                    endDate = datetime.datetime.strptime(c.w['endTime'],"%Y-%m-%d")
+                    if endDate:
+                        now = datetime.datetime.now()
+                        if endDate < now:
+                            generic.setReadOnly(c.w, "1")
+                        else:
+                            generic.setReadOnly(c.w, "0")
+                    else:
+                        generic.setReadOnly(c.w, "0")
                 else:
                     generic.setReadOnly(c.w, "0")
 
