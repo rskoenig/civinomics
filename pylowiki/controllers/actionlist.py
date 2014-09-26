@@ -115,7 +115,7 @@ class ActionlistController(BaseController):
                 parent = thisUser
                 baseURL = config['site_base_url'] + "/profile/" + parent['urlCode'] + "/" + parent['url']
             elif 'scope' in item:
-                baseURL = config['site_base_url'] + item.objType + "/" + item['urlCode'] + "/" + item['url']
+                baseURL = config['site_base_url'] + "/" + item.objType + "/" + item['urlCode'] + "/" + item['url']
                 scope = utils.getPublicScope(item)
                 baseTitle = scope['scopeString']
                 itemURL = baseURL
