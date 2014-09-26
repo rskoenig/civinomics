@@ -15,6 +15,7 @@ from pylowiki.lib.db.user import searchUsers, getUserByID, getUserByCode, search
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 import pylowiki.lib.db.initiative as initiativeLib
+import pylowiki.lib.utils as utils
 
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
@@ -113,6 +114,10 @@ class ActionlistController(BaseController):
             elif item.objType == 'photo':
                 parent = thisUser
                 baseURL = config['site_base_url'] + "/profile/" + parent['urlCode'] + "/" + parent['url']
+            elif 'scope' in item:
+                baseURL = config['site_base_url'] + item.objType + "/" + item['urlCode'] + "/" + item['url']
+                scope = utils.getPublicScope(item)
+                baseTitle = scope['scopeString']
             
             
             activityStr = ""
