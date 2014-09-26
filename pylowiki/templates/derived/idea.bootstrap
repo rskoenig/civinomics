@@ -1,0 +1,78 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+<%namespace name="comment_lib" file="/lib/6_comments.mako" />
+<%namespace name="helpers" file="/lib/derived/6_item_in_listing.mako" />
+
+
+<div class="container">
+	<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
+	<div ng-controller="showThingCtrl" ng-cloak>
+		<div class="row">
+			<table>
+				<tr>
+					<td><img ng-if="item.thumbnail" ng-src="{{item.thumbnail}}"></td>
+					<td class="title-cell">
+						<h3 class="well-header" ng-cloak>${ng_lib.metaData('inline')}</h3>
+					</td>
+				</tr>
+			</table>
+        </div>
+		<div class="row">
+			<div class="col-sm-9 well">
+				<h1 ng-cloak>{{item.title}}</h1>
+				<p class="markdown"><span ng-bind-html="item.html"></span></p>
+				<hr>
+
+				<div class="row">
+				    <div class="col-xs-12">
+				        <span class="right-space-md">${helpers.moderationPanel(c.thing)} </span>
+				        <span>${ng_lib.authorPosting()}</span>
+				    </div>
+				</div>
+
+				<hr>
+				<div ng-init="code = '${c.idea['urlCode']}'; objType = 'idea'"></div>
+			    <div ng-controller="positionsCtrl">
+			        ${ng_lib.showSupportOppose()}
+			    </div>
+
+				<div class="row">
+					<!-- Need to clean up angular comments the way displayObj.js controller interacts with comments controller -->
+					<div class="actions">
+        				${ng_lib.actions2()}
+        			</div>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="row">
+                	<div class="col-xs-12 section-wrapper overview well initiative-well">
+                		<div ng-if="item.objType != 'revision'">
+                			% if c.authuser and c.authuser['memberType'] == 'organization':
+                                <h4 class="text-center gray">Position</h4>
+                                <hr class="narrow">
+
+							    <div ng-init="code = '${c.idea['urlCode']}'; objType = 'idea'"></div>
+							    <div ng-controller="positionsCtrl">
+                                	${lib_6.orgPosition(c.idea)}
+                                </div>
+                            % else:
+			                    <h4 class="text-center gray">Vote</h4>
+			                    <hr class="narrow">
+			                    <div ng-controller="yesNoVoteCtrl">
+									${ng_lib.yesNoVoteBlock()}
+								</div>
+							% endif
+						</div>
+                	</div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%def name="headScripts()">
+	<script src="${lib_6.fingerprintFile('/js/ng/displayObj.js')}" type="text/javascript"></script>
+	<script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+	<script src="${lib_6.fingerprintFile('/js/ng/positions.js')}" type="text/javascript"></script>
+</%def>
