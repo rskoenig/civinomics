@@ -1840,6 +1840,15 @@
                                         workshopCode = None
                                 %>
                                 <input type="hidden" name="workshopCode" value="${workshopCode}">
+                                <%
+                                    if 'tags' in thing:
+                                        tags = thing['tags']
+                                    elif 'workshop_category_tags' in thing:
+                                        tags = thing['workshop_category_tags']
+                                    else:
+                                        tags = None
+                                %>
+                                <input type="hidden" name="tags" value="${tags}">
 
                                 <label>Reason:</label>
                                 <input type="text" name="reason" class="form-control">

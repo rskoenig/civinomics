@@ -27,16 +27,25 @@
     <div class="row">
         <div class="col-sm-9 col-md-9 bottom-space-lg">
             <div class="row" style="position: absolute; width: 100%">
+                <div class="col-xs-12">
+                    <h4> 
+                        <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a class="no-highlight overlay" href="${c.scopeHref}"></a>
+                        % if c.initiative['tags']:
+                            <span class="white"> / </span>
+                        % endif
+                        ${lib_6.showTags(c.initiative)}
+                        % if c.initiative['workshopCode']:
+                            <a class="no-highlight overlay" href="/workshop/${c.initiative['workshopCode']}/${c.initiative['workshop_url']}"> / ${c.initiative['workshop_title']}</a>
+                        % endif
+                        
+                    </h4>
+                </div>
                 <div class="col-xs-2">
                     <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
                 </div>
                 <% titleSpan = "col-xs-10" %>
                 <div class="${titleSpan}" style="position:relative;">
                     <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
-
-                    <h4> 
-                        ${lib_6.showTags(c.initiative)}<a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a href="${c.scopeHref}">${c.scopeTitle}</a>
-                    </h4>
                 </div>
             </div>
 

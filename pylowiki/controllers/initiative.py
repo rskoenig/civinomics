@@ -166,8 +166,8 @@ class InitiativeController(BaseController):
     def promoteIdea(self):
         # store request.params['reason'] somewhere 
         # functionality to message author of the (now) initiative
+        # functionality to mark idea as promoted and make it read only
         log.info("Hey author! Your idea has been promoted!")
-        
         self.initiativeNewHandler()
 
         return render('/derived/6_initiative_edit.bootstrap')
@@ -183,6 +183,11 @@ class InitiativeController(BaseController):
             description = request.params['initiativeDescription']
         else:
             description = ''
+
+        if 'tags' in request.params:
+            tags = request.params['tags']
+        else:
+            tags = None
 
         # the scope if initiative is created from a geoSearch page
         if 'initiativeRegionScope' in request.params:
@@ -223,7 +228,7 @@ class InitiativeController(BaseController):
         
             
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, workshop = workshop, goal = goal)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, tag = tags, workshop = workshop, goal = goal)
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
