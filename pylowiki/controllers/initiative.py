@@ -580,7 +580,7 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-        
+                
         c.initiativeHome = True
 
         return render('/derived/6_initiative_home.bootstrap')

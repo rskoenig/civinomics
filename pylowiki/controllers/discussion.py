@@ -9,21 +9,26 @@ from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.utils as utils
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.flag         as flagLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
-import pylowiki.lib.alerts          as  alertsLib
+import pylowiki.lib.alerts          as alertsLib
+
 
 from pylowiki.lib.facebook import FacebookShareObject
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
+import misaka as m
 import pylowiki.lib.helpers as h
 import simplejson as json
 
@@ -230,9 +235,57 @@ class DiscussionController(BaseController):
         c.title = c.thing['title']
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
         c.listingType = 'discussion'
+        if 'discType' in c.thing and c.thing['discType'] == 'organization_position':
+            c.listingType = 'position'
         
         if 'comment' in request.params:
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
             if not c.rootComment:
                 abort(404)
-        return render('/derived/6_resource.bootstrap')        
+        return render('/derived/6_resource.bootstrap') 
+
+    def getOrgPositions(self, objType, code):
+        if objType == 'initiative':
+            thing = initiativeLib.getInitiative(code)
+        elif objType == 'idea':
+            thing = ideaLib.getIdea(code)
+            
+        
+        pStr = ""
+        positions = discussionLib.getPositionsForItem(thing)
+
+        # jsonify
+        support = []
+        oppose = []
+        userStatement = {}
+        userStatement['madeStatement'] = False
+        for p in positions:
+            entry = {}
+            org = userLib.getUserByID(p.owner)
+            entry['authorName'] = org['name']
+            entry['authorPhoto'] = utils._userImageSource(org)
+            entry['authorHref'] = '/profile/' + org['urlCode'] + '/' + org['url']
+            entry['text'] = p['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['href'] = entry['authorHref'] + '/position/show/' + p['urlCode']
+
+            entry['fuzzyTime'] = fuzzyTime.timeSince(p.date)
+            
+            if p['position'] == 'support':
+                support.append(entry)
+            elif p['position'] == 'oppose':
+                oppose.append(entry)
+
+            if org['urlCode'] == c.authuser['urlCode']:
+                userStatement['madeStatement'] = True
+                userStatement['url'] = entry['href']
+                if p['position'] == 'support':
+                    userStatement['support'] = True
+                    userStatement['oppose'] = False
+                else:
+                    userStatement['support'] = False
+                    userStatement['oppose'] = True
+
+        else:
+            return json.dumps({'support': support, 'oppose': oppose, 'userStatement': userStatement})   
+             

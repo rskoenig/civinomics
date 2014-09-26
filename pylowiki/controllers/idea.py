@@ -237,7 +237,7 @@ class IdeaController(BaseController):
         c.ideaURL = ideaURL
 
         # won't need these once we angular look up comments
-        c.thing = ideaLib.getIdea(ideaCode)
+        c.thing = c.idea = ideaLib.getIdea(ideaCode)
         log.info('the thing code is %s' % c.thing['urlCode'])
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         log.info('the idea discussion code is %s' % c.discussion['urlCode'])

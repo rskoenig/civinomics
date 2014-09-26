@@ -127,6 +127,26 @@
     </div>
 </%def>
 
+<%def name="commentOnOrgGeneral()">
+    <div class="media">
+        <div class="media-body">
+            <p>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
+            </p>
+        </div>
+    </div>
+</%def>
+
+<%def name="commentOnOrgPosition()">
+    <div class="media">
+        <div class="media-body">
+            <p>
+                <a ng-href="{{itemLink}}" class="green green-hover">{{commentData}}</a>
+            </p>
+        </div>
+    </div>
+</%def>
+
 <%def name="commentOnResource()">
     <div class="media">
         <div class="media-body">
