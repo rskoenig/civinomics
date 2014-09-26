@@ -389,7 +389,7 @@
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
     <div class="btn-group btn-group-sm pull-left">
-        % if (c.curator or userLib.isAdmin(c.authuser.id)) and thing.objType != 'listenerUnpublished':
+        % if (userLib.isCurator(c.authuser, thing['scope']) or userLib.isAdmin(c.authuser.id)) and thing.objType != 'listenerUnpublished':
             <a href="/listener/${thing['urlCode']}/listenerEdit" class="btn btn-default">Edit</a>
             <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">Trash</a>
         % elif thing.objType == 'listenerUnpublished' and thing['unpublished_by'] != 'parent':
