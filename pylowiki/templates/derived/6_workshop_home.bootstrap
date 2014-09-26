@@ -9,6 +9,12 @@
 
 <div class="spacer"></div>
 <% numIdeas = str(len(c.ideas)) %>
+<%
+    if 'readOnly' in c.w and c.w['readOnly'] == '1':
+      readonly = '1'
+    else:
+      readonly = '0'
+%>
     <div class="col-sm-9">
 
       ${helpers.workshopHero()}
@@ -180,7 +186,7 @@
    </div> <!-- /.col-sm-8 -->
 
    <div class="col-sm-3">
-      % if c.w['readOnly'] == '0':
+      % if readonly == '0':
         % if c.authuser:
           % if c.privs and not c.privs['provisional']:
             <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
