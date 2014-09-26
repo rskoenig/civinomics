@@ -22,6 +22,7 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.hover3 = false;
 	$scope.hover4 = false;
 	$scope.hover5 = false;
+	
 	$scope.criteriaName = '';
 	
 	$scope.addCriteriaToList = function(){
