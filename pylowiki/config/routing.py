@@ -137,6 +137,7 @@ def make_map():
 
 	#Workshop rating criteria
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/add/{criteria}{end:/?}',controller='criteria', action='addToWorkshop', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', criteria = '{criteria}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/rate/{criteria}/{thingCode}/{rating}{end:/?}',controller='criteria', action='rateCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', criteria = '{criteria}', thingCode = '{thingCode}', rating = '{rating}')
 
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')

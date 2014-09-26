@@ -55,7 +55,7 @@ def getRatingForWorkshopObjects(user, workshopCode, objType):
             .filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
 
 
-def makeOrChangeRating(thing, user, amount, ratingType):
+def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
     if 'ups' not in thing.keys():
         thing['ups'] = 0
     if 'downs' not in thing.keys():
@@ -109,6 +109,9 @@ def makeOrChangeRating(thing, user, amount, ratingType):
 
         elif ratingType == 'criteria':
             ratingObj = Thing('rating', user.id)
+            if criteria is None:
+                return False
+            ratingObj['criteria'] = criteria
             ratingObj['amount'] = amount
             if user['activated'] == '0':
                 ratingObj['provisional'] = '1'

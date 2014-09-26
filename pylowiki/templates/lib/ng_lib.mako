@@ -215,9 +215,10 @@
                     <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                     ${yesNoVoteFooter()}
+                    ${rateCriteria()}
                 % endif
                 ${actions()}
             </div>
@@ -392,6 +393,24 @@
             </div>
         % endif
     </div>
+</%def>
+
+<%def name="rateCriteria()">
+	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" >
+		<div class="row" ng-init="initCriteria('${c.w['rating_criteria']}')">
+		Reason for your vote:
+		<form>
+			<ul class="list-inline" ng-repeat="criteria in rating.criteriaList">
+				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover1,'glyphicon-star-empty':!hover1}" ng-mouseenter="hover1 = true" ng-mouseleave="hover1 = false"></span></li>
+				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover2,'glyphicon-star-empty':!hover2}" ng-mouseenter="hover2 = true" ng-mouseleave="hover2 = false"></span></li>
+				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover3,'glyphicon-star-empty':!hover3}" ng-mouseenter="hover3 = true" ng-mouseleave="hover3 = false"></span></li>
+				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover4,'glyphicon-star-empty':!hover4}" ng-mouseenter="hover4 = true" ng-mouseleave="hover4 = false"></span></li>
+				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover5,'glyphicon-star-empty':!hover5}" ng-mouseenter="hover5 = true" ng-mouseleave="hover5 = false"></span></li>
+				<li>{{criteria}}</li>
+			</ul>
+		</form>
+		</div>
+	</div> <!-- container-div -->
 </%def>
 
 <%def name="upDownVoteBlock()"> 

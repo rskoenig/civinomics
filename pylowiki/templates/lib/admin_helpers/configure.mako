@@ -252,6 +252,9 @@
 		<div class="browse">
 			<h4 class="section-header smaller"> Ratings </h4>
 			<div class="col-sm-12" style="padding: 19px;" ng-controller="ratingsController">
+			%if c.w['rating_criteria']:
+				<p ng-init="initCriteria('${c.w['rating_criteria']}')"></p>
+			%endif
 				<div class="form-group">
 					<form ng-submit="sendCriteriaList('${c.w['urlCode']}','${c.w['url']}')">
 						<p>Choose the type of rating for the ideas in this workshop:</p>

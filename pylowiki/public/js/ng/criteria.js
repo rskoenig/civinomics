@@ -12,6 +12,16 @@ app.controller('ratingsController', function($scope, $http){
 		criteriaList: []
 	};
 	
+	$scope.criteria = {
+		name: "",
+		value: 0	
+	};
+	
+	$scope.hover1 = false;
+	$scope.hover2 = false;
+	$scope.hover3 = false;
+	$scope.hover4 = false;
+	$scope.hover5 = false;
 	$scope.criteriaName = '';
 	
 	$scope.addCriteriaToList = function(){
@@ -81,8 +91,12 @@ app.controller('ratingsController', function($scope, $http){
 		}
 		listStr += list[i];
 		return listStr;
-	}
-
+	};
+	
+	$scope.initCriteria = function(criteriaString){
+		$scope.rating.type = 'criteria';
+		$scope.rating.criteriaList = criteriaString.split("|");
+	};
   /*
 	  Things that I need for this controller:
 	  	Adding a criteria
