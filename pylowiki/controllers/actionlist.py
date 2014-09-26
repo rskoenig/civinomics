@@ -118,6 +118,7 @@ class ActionlistController(BaseController):
                 baseURL = config['site_base_url'] + item.objType + "/" + item['urlCode'] + "/" + item['url']
                 scope = utils.getPublicScope(item)
                 baseTitle = scope['scopeString']
+                itemURL = baseURL
             
             
             activityStr = ""
