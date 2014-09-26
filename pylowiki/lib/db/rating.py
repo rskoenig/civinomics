@@ -93,19 +93,25 @@ def makeOrChangeRating(thing, user, amount, ratingType):
                 thing['downs'] = int(thing['downs']) + 1
                 ratingObj['amount'] = amount
     else:
-        if amount == 0:
-            # Don't make a new neutral object
-            return False
-        # make a new vote
-        ratingObj = Thing('rating', user.id)
-        ratingObj['amount'] = amount
-        if amount == 1:
-            thing['ups'] = int(thing['ups']) + 1
-        else:
-            thing['downs'] = int(thing['downs']) + 1
-            
-        if user['activated'] == '0':
-            ratingObj['provisional'] = '1'
+        if ratingType == 'binary':    
+            if amount == 0:
+                # Don't make a new neutral object
+                return False
+            # make a new vote
+            ratingObj = Thing('rating', user.id)
+            ratingObj['amount'] = amount
+            if amount == 1:
+                thing['ups'] = int(thing['ups']) + 1
+            else:
+                thing['downs'] = int(thing['downs']) + 1
+            if user['activated'] == '0':
+                ratingObj['provisional'] = '1'
+
+        elif ratingType == 'criteria':
+            ratingObj = Thing('rating', user.id)
+            ratingObj['amount'] = amount
+            if user['activated'] == '0':
+                ratingObj['provisional'] = '1'
             
         generic.linkChildToParent(ratingObj, thing)
         ratingObj['ratingType'] = ratingType

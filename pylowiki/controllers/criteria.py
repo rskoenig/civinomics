@@ -2,14 +2,13 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
+from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
-
 import simplejson                   as json
-from pylowiki.lib.base import BaseController, render
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +21,7 @@ class CriteriaController(BaseController):
         if not c.w:
             abort(404)
         workshopLib.setWorkshopPrivs(c.w)
-       #  
+          
 #         if action in ['update', 'delete']:
 #             c.goal = goalLib.getGoal(goalCode)
 #             if not c.goal:
@@ -34,20 +33,26 @@ class CriteriaController(BaseController):
 #                 abort(404)
 #         elif not c.privs['admin'] and not c.privs['facilitator'] and not c.privs['participant']:
 #             abort(404)
+
     def addToWorkshop(self, workshopCode, workshopURL, criteria):
-        log.info(criteria == 0)
-        log.info(criteria is 0)
-        log.info(criteria == "0")
-        log.info(criteria is "0")
-        log.info(criteria == '0')
-        log.info(criteria is '0')
-        if not criteria == "0":
+        if not criteria == '0':
             log.info("I guess I'll have to do something.")
             log.info(criteria.split("|"))
+            criteriaList = criteria.split("|")
+            c.w['rating_criteria'] = criteria
+            dbHelpers.commit(c.w)
         else:
             log.info("Hell naw. I'm not sure if I want to do anything here")            
     
+    def getWorkshopCriteria(self, workshopCode, workshopURL):
+        # This function returns the criteria related to the workshop
+        # In case there's none, it should return false? 
+        log.info("")
     
+    #Make this workshop dependent?
+    def rateCriteria(self, criteria, rating):
+        log.info("empty")
+        
     def _returnGoal(self, goal, done = None):
         if done is None:
             return json.dumps({'title':goal['title'], 'done':goal['status'] == u'100', 'code':goal['urlCode']})

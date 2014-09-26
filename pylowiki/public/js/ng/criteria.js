@@ -37,7 +37,7 @@ app.controller('ratingsController', function($scope, $http){
 		$scope.alert.type = '';
 		$scope.alert.message = '';
 		var baseUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/criteria/add/";
-		if ($scope.rating.type === "criteria" && $scope.rating.criteriaList.length > 0 ) {
+		if ($scope.rating.type === "criteria" && $scope.rating.criteriaList.length > 0 ) { //Make this a switch block?
 			var criteria = listToString($scope.rating.criteriaList);	
 			requestUrl = baseUrl + criteria;
 		    $http.get(requestUrl).success(function(data){
@@ -66,7 +66,7 @@ app.controller('ratingsController', function($scope, $http){
 				$scope.activityLoading = false;
 			})
 			
-		} else {
+		} else { //This case needs to be fixed
 			$scope.alert.type = 'error';
 			$scope.alert.message = "Please choose a type of Rating.";
 		};
