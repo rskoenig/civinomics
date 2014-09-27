@@ -751,14 +751,6 @@ h1.workshop-title{
     margin-bottom:20px;
 }
 
-.workshop-title a{
-   color:#fff;
-}
-
-.workshop-title a:hover{
-   color:#fff;
-}
-
 .nav-logo{
   height: 40px;
   margin-top: 5px; 
@@ -1370,6 +1362,19 @@ td.scope-icon{
 .btn-group.four-up{
    width: 98%;
 }
+
+
+.btn-group.timeline>.btn-group:first-child>.btn:last-child{
+  border-bottom-left-radius: 30px;
+  border-top-left-radius: 30px;
+}
+
+.btn-group.timeline>.btn-group:last-child>.btn:last-child{
+  border-bottom-right-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+
 
 .btn-vote{
   width: 100px;

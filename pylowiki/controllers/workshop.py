@@ -983,6 +983,7 @@ class WorkshopController(BaseController):
         c.numAdopted = workshopLib.getIdeaCountForWorkshop(workshopCode, 1)
         c.numResources = workshopLib.getResourceCountForWorkshop(workshopCode)
         c.numDiscussions = workshopLib.getDiscussionCountForWorkshop(workshopCode)
+        c.numInitiatives = workshopLib.getInitiativeCountForWorkshop(workshopCode)
 
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
@@ -1489,6 +1490,7 @@ class WorkshopController(BaseController):
         numAdopted = 0
         numDiscussions = 0
         numIdeas = 0
+        numInitiatives = 0
         numResources = 0
         for item in workshopActivity:
             entry = jsonLib.getJsonProperties(item)

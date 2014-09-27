@@ -173,6 +173,19 @@ def getIdeaCountForWorkshop(code, adopted = 0, deleted = 0):
         return q.count()
     except:
         return False
+
+def getInitiativeCountForWorkshop(code, adopted = 0, deleted = 0):
+    try:
+        q = meta.Session.query(Thing)\
+            .filter_by(objType = 'initiative')\
+            .filter(Thing.data.any(wc('workshopCode', code)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))
+        if adopted == 1:
+            q = q.filter(Thing.data.any(wc('adopted', '1')))
+        
+        return q.count()
+    except:
+        return False
         
 def getResourceCountForWorkshop(code, deleted = 0):
     try:

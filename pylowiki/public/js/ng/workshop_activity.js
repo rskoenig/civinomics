@@ -102,6 +102,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
@@ -121,6 +122,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = true;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
@@ -140,6 +142,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = true;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
@@ -152,6 +155,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = true;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
@@ -164,12 +168,34 @@ function activityWorkshopController($scope, $http) {
             $scope.addObjType = 'idea';
         }
 	}
+
+	$scope.toggleInitiatives= function(){
+		$scope.showSummary = false;
+		$scope.showInfoPreview = false;
+		$scope.showInfo = false;
+		$scope.showStats = false;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = true;
+		$scope.showDiscussions = false;
+		$scope.showResources = false;
+		$scope.showAddNew = false;
+		$scope.query = {objType:'initiative'};
+		$scope.query2 = '!disabled';
+		$scope.objType = 'initiative'
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'initiative';
+        }
+	}
+
 	$scope.toggleAdopted= function(){
 		$scope.showSummary = false;
 		$scope.showInfoPreview = false;
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = true;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
@@ -184,6 +210,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = true;
 		$scope.showResources = false;
 		$scope.showAddNew = false;
@@ -199,6 +226,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = true;
 		$scope.showAddNew = false;
@@ -218,6 +246,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = false;
 		$scope.showAddNew = true;
