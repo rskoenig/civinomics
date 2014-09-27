@@ -55,6 +55,10 @@ def getListener(email, workshop):
         
 
 def getListenersForScope(limit, scope, offset = 0):
+    # kludge
+    if '0|' not in scope:
+        scope = '0' + scope.replace('||', '|0|')
+
     postList = []
     objectList = ['listener']
     q = meta.Session.query(Thing)\

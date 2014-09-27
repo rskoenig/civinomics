@@ -26,7 +26,6 @@ class GeoController(BaseController):
             # We aren't rendering a page, and instead are drilling down geo scope for workshop config
             return
         c.title = c.heading = 'Public workshops in '
-            
         c.rssURL = "/workshops/rss/earth"
         searchScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
         #country = 3, state = 5, county = 7, city = 9, zip = 10

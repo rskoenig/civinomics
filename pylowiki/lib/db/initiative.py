@@ -55,7 +55,7 @@ def getPublishedInitiatives():
         return False
         
 def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False):
-    log.info("searchInititives got %s and %s and count is %s"%(keys, values, count))
+    #log.info("searchInititives got %s and %s and count is %s"%(keys, values, count))
     try:
         if type(keys) != type([]):
             p_keys = [keys]
