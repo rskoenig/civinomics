@@ -27,6 +27,7 @@
     <div class="row">
         <div class="col-sm-9 col-md-9 bottom-space-lg">
             <div class="row" style="position: absolute; width: 100%">
+
                 <div class="col-xs-12">
                     <h4> 
                         <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a class="no-highlight overlay" href="${c.scopeHref}"></a>
@@ -40,19 +41,57 @@
                         
                     </h4>
                 </div>
+
                 <div class="col-xs-2">
                     <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
                 </div>
+
                 <% titleSpan = "col-xs-10" %>
                 <div class="${titleSpan}" style="position:relative;">
                     <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
                 </div>
+
             </div>
 
             <div class="content-offset" id="summary"></div>
 
             <div class="top-offset">
-                ${next.body()}
+                <div class="row">
+                    <div class="col-sm-2">
+                        % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
+                            <ul class="nav nav-pills nav-stacked" style="width: 100%;">
+                                <li><a ng-click="scrollTo('basics')">1. Basics</a></li>
+                                <li><a ng-click="scrollTo('summary')">2. Summary</a></li>
+                                <li><a ng-click="scrollTo('detail')">3. Detail</a></li>
+                                <li><a ng-click="scrollTo('photo')">4. Photo</a></li>
+                                <li><a ng-click="scrollTo('coauthors')">5. Coauthors</a></li>
+                                <!--
+                                <li><a href="#iStats" data-toggle="tab">Stats</a></li>
+                                <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
+                                <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
+                                -->
+                            </ul>
+                        % elif c.editUpdate or c.update or c.resource or c.editResource:
+                            <!-- direct linking to sections of the page not working due to angular '/' injection after '#' -->
+                            <ul class="nav nav-pills nav-stacked i-menu" style="width: 100%;">
+                                <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#summary">Summary</a></li>
+                                <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#updates">Updates</a></li>
+                                <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#resources">Resources</a></li>
+                                <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#comments">Comments</a></li>
+                            </ul>
+                        % else:
+                            <ul class="nav nav-pills nav-stacked i-menu" style="width: 100%;">
+                                <li><a ng-click="scrollTo('summary')">Summary</a></li>
+                                <li><a ng-click="scrollTo('updates')">Updates</a></li>
+                                <li><a ng-click="scrollTo('resources')">Resources</a></li>
+                                <li><a ng-click="scrollTo('comments')">Comments</a></li>
+                            </ul>
+                        % endif
+                    </div>
+                    <div class="col-sm-10">
+                        ${next.body()}
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-sm-3 col-md-3" id="sidebar">
@@ -86,18 +125,6 @@
                     </div>
 
                 </div>
-                <ul class="nav nav-pills nav-stacked" style="width: 100%;">
-                    <li><a ng-click="scrollTo('basics')">1. Basics</a></li>
-                    <li><a ng-click="scrollTo('summary')">2. Summary</a></li>
-                    <li><a ng-click="scrollTo('detail')">3. Detail</a></li>
-                    <li><a ng-click="scrollTo('photo')">4. Photo</a></li>
-                    <li><a ng-click="scrollTo('coauthors')">5. Coauthors</a></li>
-                    <!--
-                    <li><a href="#iStats" data-toggle="tab">Stats</a></li>
-                    <li><a href="#iUpdates" data-toggle="tab">Updates</a></li>
-                    <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
-                    -->
-                </ul>
             % elif not c.editInitiative and c.initiative.objType == 'initiative':
                 <div class="section-wrapper overview well initiative-well action-panel" style="overflow:visible;">
                     % if c.initiative.objType != 'revision':
@@ -202,23 +229,6 @@
                         -->
                     % endif 
                 </div><!-- section-wrapper -->
-                % if c.editUpdate or c.update or c.resource or c.editResource:
-                    <!-- direct linking to sections of the page not working due to angular '/' injection after '#' -->
-                    <ul class="nav nav-pills nav-stacked i-menu" style="width: 100%;">
-                        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#summary">Summary</a></li>
-                        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#updates">Updates</a></li>
-                        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#resources">Resources</a></li>
-                        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#comments">Comments</a></li>
-                    </ul>
-                % else:
-                    <ul class="nav nav-pills nav-stacked i-menu" style="width: 100%;">
-                        <li><a ng-click="scrollTo('summary')">Summary</a></li>
-                        <li><a ng-click="scrollTo('updates')">Updates</a></li>
-                        <li><a ng-click="scrollTo('resources')">Resources</a></li>
-                        <li><a ng-click="scrollTo('comments')">Comments</a></li>
-                    </ul>
-                % endif
-
             % endif
             </div> <!-- position:fixed -->
         </div><!-- span4 -->

@@ -6,11 +6,11 @@
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 
 <% lib.return_to() %>
-    <h4 class="initiative-title">Summary</h4>
+    <h3 class="initiative-title">Summary</h3>
     ${ihelpers.showDescription()}
 
     % if c.initiative['funding_summary']:
-        <h4 class="initiative-title">Estimate Net Fiscal Impact</h4>
+        <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
         ${ihelpers.showFunding_Summary()}
     % endif
 
@@ -32,19 +32,19 @@
 
     % if c.initiative['background']:
         <hr>
-        <h4 class="initiative-title">Background</h4>
+        <h3 class="initiative-title">Background</h3>
         ${ihelpers.showBackground()}
     % endif
 
     % if c.initiative['proposal']:
-        <h4 class="initiative-title">Proposal</h4>
+        <h3 class="initiative-title">Proposal</h3>
         ${ihelpers.showProposal()}
     % endif 
 
     % if c.updates:
         <hr>
         <div id="updates">
-            <h4 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h4>
+            <h3 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h3>
             ${ihelpers.showUpdateList()}
         </div>
     % endif
@@ -56,11 +56,11 @@
     </div>
 
     <hr>
-    <h4 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h4>
+    <h3 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h3>
     ${ihelpers.listResources()}
     <br>
     % if c.initiative.objType != 'initiativeUnpublished':
         <hr>
-        <h4 id="comments" class="initiative-title">Comments</h4>
+        <h3 id="comments" class="initiative-title">Comments</h3>
         ${comments(c.initiative, c.discussion)}
     % endif
