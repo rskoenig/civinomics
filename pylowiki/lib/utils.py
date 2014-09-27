@@ -10,6 +10,7 @@ import pylowiki.lib.db.generic          as generic
 import pylowiki.lib.fuzzyTime           as fuzzyTime    
 
 import urllib2
+import datetime
 
 import misaka as m
 import copy as copy
@@ -44,7 +45,15 @@ def badEmail(email):
         return True
     else:
         return False
-
+# validate proper date format
+def validate_date(dateString):
+    try:
+        datetime.datetime.strptime(dateString, '%Y-%m-%d')
+        return True
+    except ValueError:
+        return False
+    
+    
 # base_decode taken from http://stackoverflow.com/a/2549514
 def base_decode(string, reverse_base=BASE_DICT):
     length = len(reverse_base)

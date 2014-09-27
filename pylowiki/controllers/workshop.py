@@ -272,23 +272,32 @@ class WorkshopController(BaseController):
            
         if 'endTime' in request.params:
             endTime = request.params['endTime']
-            if c.w['endTime'] != endTime:
-                c.w['endTime'] = endTime
-                wchanges = 1
-                weventMsg = "Set endTime."
-                if c.w['endTime'] != "":
-                    endDate = datetime.datetime.strptime(c.w['endTime'],"%Y-%m-%d")
-                    if endDate:
-                        now = datetime.datetime.now()
-                        if endDate < now:
-                            generic.setReadOnly(c.w, "1")
+            if endTime != "" and endTime != "0000-00-00":
+                if not utils.validate_date(endTime):
+                    werror = 1
+                    werrMsg += "Incorrect date format. Use YYYY-MM-DD or leave blank to unset."
+                elif c.w['endTime'] != endTime:
+                
+                    c.w['endTime'] = endTime
+                    wchanges = 1
+                    weventMsg = "Set endTime."
+                    if c.w['endTime'] != "":
+                        endDate = datetime.datetime.strptime(c.w['endTime'],"%Y-%m-%d")
+                        if endDate:
+                            now = datetime.datetime.now()
+                            if endDate < now:
+                                generic.setReadOnly(c.w, "1")
+                            else:
+                                generic.setReadOnly(c.w, "0")
                         else:
                             generic.setReadOnly(c.w, "0")
                     else:
                         generic.setReadOnly(c.w, "0")
-                else:
-                    generic.setReadOnly(c.w, "0")
-
+            else:
+                wchanges = 1
+                weventMsg = "Unset endTime."
+                c.w['endTime'] = "0000-00-00"
+                generic.setReadOnly(c.w, "0")
         # save successful changes
         if wchanges:
             dbHelpers.commit(c.w)

@@ -122,8 +122,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <%
+                                    endTime = ""
+                                    if c.w['endTime'] != "0000-00-00":
+                                        endTime = c.w['endTime']
+                                %>
                                 <label for="endTime" class="control-label" required><strong>Workshop End Date (no new items or voting):</strong></label><br>
-                                <input type="text" name="endTime" class="col-xs-3" id="endTime" value="${c.w['endTime']}">
+                                <input type="text" name="endTime" class="col-xs-3" id="endTime" value="${endTime}">
                             </div><!-- form-group -->
                             <div class="form-group">
                                 <div class="col-sm-12">
