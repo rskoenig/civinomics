@@ -616,7 +616,7 @@
         % endif
         <br>
         % if readonly == "1":
-            Voting Complete
+            Voting Closed
         % endif
         <div ng-cloak>
             <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
@@ -642,7 +642,7 @@
         % if readonly == "1":
             <div class="row centered">
                 <div class="col-sm-12">
-                    Voting complete.<br>
+                    Voting Closed.<br>
                     <a class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
                     <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
@@ -702,7 +702,7 @@
         <a class="downVote {{voted}}">
             <i class="icon-chevron-sign-down icon-2x {{voted}}"></i>
         </a>
-        <br /><small>Voting Complete</small><br>
+        <br /><small>Voting Closed</small><br>
     % elif 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
             <i class="icon-chevron-sign-up icon-2x {{voted}}"></i>
