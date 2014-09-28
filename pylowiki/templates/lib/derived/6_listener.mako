@@ -23,11 +23,9 @@
         % if listener['ltype'] == 'elected':
             <img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"> ${scopeInfo['level']} of ${scopeInfo['name']}
         % endif
-        % if c.tags:
-            Interested in ${scopeInfo['level']} of ${scopeInfo['name']}  
-            % for tag in c.tags:
-                <span class="label workshop-tag ${tag}">${tag}</span>
-            % endfor
+        % if listener['ltype'] == 'agency':
+            Monitoring  <span class="label workshop-tag ${listener['tag1']}">${listener['tag1']}</span> and <span class="label workshop-tag ${listener['tag2']}">${listener['tag2']}</span> issues
+            in ${scopeInfo['level']} of ${scopeInfo['name']}
         % endif
     </div>
     <table class="info-table">
@@ -186,7 +184,7 @@
                     <input type="radio" name="listenerType" ng-model="listenerType" value="elected"> Elected Official<br />
                     <input type="radio" name="listenerType" ng-model="listenerType" value="agency"> Organization or Agency Representative
                     <div ng-show="listenerType == 'agency'">
-                        Choose 2 categories which describe the listener (required):<br />
+                        Choose 2 categories which describe the listener organization (required):<br />
 		                First Category:<br />
 		                <select name="listenerTag1">
 		                % for tag in c.tagList:
@@ -216,7 +214,7 @@
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        The type of the listener.
+                        The type of the listener. Elected listeners receive updates on everything in their scope. Agency listeners are only updated on items in their scope which share a category with them.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
