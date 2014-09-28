@@ -92,26 +92,26 @@
 
 <%def name="showDescription()">
     <div class="initiative-info">
-        ${m.html(c.initiative['description'], render_flags=m.HTML_SKIP_HTML) | n}
+        ${m.html(c.initiative['description']) | n}
     </div>
 </%def>
 
 <%def name="showFunding_Summary()">
     <div class="initiative-info">
-        ${m.html(c.initiative['funding_summary'], render_flags=m.HTML_SKIP_HTML) | n}
+        ${m.html(c.initiative['funding_summary']) | n}
     </div>
 </%def>
 
 
 <%def name="showBackground()">
     <div class="initiative-info">
-        ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
+        ${m.html(c.initiative['background']) | n}
     </div>
 </%def>
 
 <%def name="showProposal()">
     <div class="initiative-info">
-        ${m.html(c.initiative['proposal'], render_flags=m.HTML_SKIP_HTML) | n}
+        ${m.html(c.initiative['proposal']) | n}
     </div>
 </%def>
 

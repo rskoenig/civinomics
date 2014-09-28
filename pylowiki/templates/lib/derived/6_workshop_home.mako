@@ -433,8 +433,8 @@
 
 <%def name="showInfo(workshop)">
     <div>
-    % if c.information and 'data' in c.information: 
-        ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
+    % if c.information and 'data' in c.information:
+        ${m.html(c.information['data']) | n}
     % endif
     </div>
 </%def>
@@ -850,7 +850,7 @@
     </div>
     <div class="btn-group">
       <button type="button" class="btn btn-default" ng-click="toggleAdopted()">
-        <span class="workshop-metrics">Funded</span><br>
+        <span class="workshop-metrics">Winning Initiatives</span><br>
         <strong ng-cloak>${c.numAdopted}</strong>
       </button>
     </div>
