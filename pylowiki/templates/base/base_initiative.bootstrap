@@ -29,7 +29,7 @@
         <div class="col-sm-9 col-md-9 bottom-space-lg">
             <div class="row" style="position: absolute; width: 100%">
 
-                <div class="col-xs-12">
+                <div class="col-xs-12 white">
                     ${helpers.iTags()}
                 </div>
 
@@ -97,6 +97,20 @@
       $(".followButton").tooltip();
       $(".facebook.unpublished").tooltip();
       $(".email-invite").tooltip();
+
+      $('#info a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+      $('#photos a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+      $('#authors a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+
    </script>
    <script src="/js/bootstrap/bootstrap-affix.js"></script>
     <script type="text/javascript"> 
