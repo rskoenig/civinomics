@@ -215,7 +215,7 @@ def updateWorkshopChildren(workshop, workshopKey):
 
     try:
         itemList = meta.Session.query(Thing)\
-                .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
+                .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'initiative']))\
                 .filter(Thing.data.any(wc(key, code)))\
                 .all()
                 

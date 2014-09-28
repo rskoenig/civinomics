@@ -33,8 +33,7 @@ html,body{
 /* a */
 
 h5.listed-item-title{
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: 0px;
 }
 
 h4.listed-item-title{
@@ -42,10 +41,10 @@ h4.listed-item-title{
 }
 .listed-item-title a{
   color: #333333;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .listed-item-title a:hover{
-  color: #005d28;
+  color: #3c51bf;
 }
 
 .nav li a{
@@ -1186,13 +1185,13 @@ img.avatar, .avatar{
    margin-bottom:5px;
 }
 
-.small-avatar{
+.small-avatar, .avatar-sm{
    height: 30px;
    width: 30px;
    min-width: 30px;
 }
 
-.med-avatar{
+.med-avatar, .avatar-md{
    height: 40px;
    width: 40px;
    min-width: 40px;
@@ -3311,6 +3310,15 @@ tr.suggestion, .panel-heading.suggestion{
   /*border-color: #faebcc;*/
 }
 
+.grey-links> a{
+  color:grey;  
+}
+
+.grey-links> a:hover{
+  color: #3c51bf;
+}
+
+
 a.no-highlight{
   color:#333333;
 }
@@ -3318,7 +3326,7 @@ a.no-highlight.overlay{
   color:#fff;
 }
 a.no-highlight:hover{
-  color: #428bca;
+  color: #3c51bf;
 }
 a.no-highlight.no-hover:hover{
   color: #333333;
@@ -3642,10 +3650,6 @@ table.table-inline{
   display: inline;
 }
 
-.activity-item h4{
-  margin-bottom: 5px;
-}
-
 .activity-item-content{
   padding-top: 10px;
   padding-bottom: 10px;
@@ -3681,10 +3685,14 @@ div.activity-comments{
 
 .date{
   color:grey;
-  font-size: 85%;
+  font-size:.85em;
   margin-left: 5px;
   display:inline-block;
 }
+/*
+.date:before {
+content: "\00b7";
+}*/
 
 .edit-workshop-pane{
   background-color: #fff;

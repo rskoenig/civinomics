@@ -195,6 +195,10 @@ def getJsonProperties(item):
             log.info("no parentObjType item is %s"%item.keys())
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
 
+    if 'parentTitle' in entry:
+        if len(entry['parentTitle']) >= 35:
+            entry['parentTitleAbrv'] = entry['parentTitle'][0:32] + '...'
+
 
     # photo
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
@@ -203,14 +207,16 @@ def getJsonProperties(item):
     elif item.objType == 'initiative':
         entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
         entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
-    elif entry['parentObjType'] == 'workshop':
-        mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
-        if mainImage['pictureHash'] == 'supDawg':
-            entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
-        elif 'format' in mainImage.keys():
-            entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
-        else:
-            entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+
+    # to place workshop thumbnail in child listings
+    #elif entry['parentObjType'] == 'workshop':
+    #    mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
+    #    if mainImage['pictureHash'] == 'supDawg':
+    #        entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
+    #    elif 'format' in mainImage.keys():
+    #        entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+    #    else:
+    #        entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
 
     elif entry['parentObjType'] == 'initiative':
         initiative = initiativeLib.getInitiative(item['initiativeCode'])
