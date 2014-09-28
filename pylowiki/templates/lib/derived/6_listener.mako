@@ -21,6 +21,11 @@
         <h2>${c.listener['name']}</h2>
         <p>${c.listener['title']}</p>
         <img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"> ${scopeInfo['level']} of ${scopeInfo['name']}
+        % if c.tags:
+            % for tag in c.tags:
+                <span class="label workshop-tag ${tag}">{$tag}</span>
+            % endfor
+        % endif
     </div>
     <table class="info-table">
         % if 'group' in c.listener and c.listener['group'] != '':
@@ -76,6 +81,9 @@
             name = c.listener['name']
             title = c.listener['title']
             group = c.listener['group']
+            ltype = c.listener['type']
+            tag1 = c.listener['tag1']
+            tag2 = c.listener['tag2']
             text = c.listener['text']
             email = c.listener['email']
             lurl = c.listener['lurl']
@@ -86,6 +94,9 @@
             name = ""
             title = ""
             group = ""
+            ltype = "elected"
+            tag1 = ""
+            tag2 = ""
             text = ""
             email = ""
             lurl = ""
@@ -162,6 +173,59 @@
                 <div class="col-sm-6">
                     <div class="alert alert-info">
                         The name of the listener group or organization.
+                    </div><!-- alert -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            
+            <div class="row">
+                <%
+                    if ltype == 'elected':
+                        electedSelect = "checked"
+                        agencySelect = ""
+                    elif ltype == "agency":
+                        electedSelect = ""
+                        agencySelect = "checked"
+                    else:
+                        electedSelect = "checked"
+                        agencySelect = ""                    
+                %>
+                Elected: "${electedSelect}"  Agency: "${agencySelect}"
+                <div class="col-sm-6" ng-init="listenerType = '${ltype}'">
+                    <label for="title" class="control-label" required><strong>Listener Type:</strong></label><br />
+                    <input type="radio" name="listenerType" ng-model="listenerType" value="elected" checked> Elected Official<br />
+                    <input type="radio" name="listenerType" ng-model="listenerType" value="agency"> Organization or Agency Representative
+                    <div ng-show="listenerType == 'agency'">
+                        Choose 2 categories which describe the listener (required):<br />
+		                First Category:<br />
+		                <select name="listenerTag1">
+		                % for tag in c.tagList:
+		                    <% 
+		                        if tag1 == tag:
+		                            selected = "selected"
+		                        else:
+		                            selected = ""
+		                    %>
+		                    <option value="${tag}" ${selected}> ${tag}</option>
+		                % endfor
+		                </select>
+		                <br />Second Category:<br />
+		                <select name="listenerTag2">
+		                % for tag in c.tagList:
+		                    <% 
+		                        if tag1 == tag:
+		                            selected = "selected"
+		                        else:
+		                            selected = ""
+		                    %>
+		                    <option value="${tag}" ${selected}> ${tag}</option>
+		                % endfor
+		                </select>
+		                <div class="spacer"></div>
+                    </div><!- ng-show ->
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
+                    <div class="alert alert-info">
+                        The type of the listener.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->

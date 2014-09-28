@@ -364,7 +364,7 @@
                   <i class="icon-spinner icon-spin icon-4x"></i>
                 </div>
                 <div ng-show="noFollowingResult && !followLoading" class="alert alert-info" ng-cloak>
-                    You have not follwed or authored any initiatives yet.
+                    You have not followed or authored any initiatives yet.
                  </div>
                 <div class="large-spacer"></div>
             </div>

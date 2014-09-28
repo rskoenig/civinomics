@@ -115,7 +115,7 @@ def setListenersForUserInSession(lwdisabled = 0):
     session["listenerWorkshops"] = listenerWorkshops
     session.save()
 
-def Listener(name, title, group, lurl, text, email, scope, term_end):
+def Listener(name, title, group, ltype, tag1, tag2, lurl, text, email, scope, term_end):
     # recycle existing disabled listener objects for this user and this workshop
     listener = getListener(email, scope)
     if listener:
@@ -126,6 +126,9 @@ def Listener(name, title, group, lurl, text, email, scope, term_end):
         listener['name'] = name
         listener['title'] = title
         listener['group'] = group
+        listener['ltype'] = ltype
+        listener['tag1'] = tag1
+        listener['tag2'] = tag2
         listener['lurl'] = lurl
         listener['text'] = text
         listener['email'] = email

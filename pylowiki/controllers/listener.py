@@ -14,6 +14,7 @@ import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.tag          as tagLib
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +35,13 @@ class ListenerController(BaseController):
         if c.listener and 'userCode' in c.listener:
             userCode = c.listener['userCode']
             c.member = userLib.getUserByCode(userCode)
+            
+        c.tags = []
+        if 'tag1' in c.listener and c.listener['tag1'] != "":
+            c.tags.append(c.listener['tag1'])
+        if 'tag2' in c.listener and c.listener['tag2'] != "":
+            c.tags.append(c.listener['tag2'])
+            
         
         return render( "/derived/6_listener.bootstrap" )
      
@@ -47,6 +55,8 @@ class ListenerController(BaseController):
         c.city = "0"
         c.postal = "0"
         
+        c.tagList = tagLib.getTagCategories()
+
         if urlCode != 'new':
             c.listener = listenerLib.getListenerByCode(urlCode)
             
@@ -87,7 +97,7 @@ class ListenerController(BaseController):
         return render( "/derived/6_listener_edit.bootstrap" )
             
     @h.login_required
-    # name, title, group, lurl, text, email, scope, term_end
+    # name, title, group, ltype, tag1, tag2, lurl, text, email, scope, term_end
     def listenerEditHandler(self, urlCode):
         if 'listenerName' not in request.params or 'listenerTitle' not in request.params or 'listenerEmail' not in request.params:
             abort(404)
@@ -95,11 +105,22 @@ class ListenerController(BaseController):
         name = request.params['listenerName']
         title = request.params['listenerTitle']
         email = request.params['listenerEmail']
+        ltype = request.params['listenerType']
         
         if 'listenerGroup' in request.params and request.params['listenerGroup'] != '':
             group = request.params['listenerGroup']
         else:
             group = ""
+            
+        if 'listenerTag1' in request.params and request.params['listenerTag1'] != '':
+            tag1 = request.params['listenerTag1']
+        else:
+            tag1 = ""
+            
+        if 'listenerTag2' in request.params and request.params['listenerTag2'] != '':
+            tag2 = request.params['listenerTag2']
+        else:
+            tag2 = ""
         
         if 'listenerText' in request.params and request.params['listenerText'] != '':
             text = request.params['listenerText']
@@ -148,12 +169,18 @@ class ListenerController(BaseController):
             scope = "0|0|" + utils.urlify(geoTagCountry) + "|0|" + utils.urlify(geoTagState) + "|0|" + utils.urlify(geoTagCounty) + "|0|" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
-            
-
-        if not name or not title or not email:
-            return "Please enter complete information"
+        
+        if ltype == 'elected':    
+            if not name or not title or not email or not ltype:
+                return "Please enter complete information"
+            tag1 = ""
+            tag2 = ""
+        else:
+            if not name or not title or not email or not ltype or not tag1 or not tag2:
+                return "Please enter complete information"
+                
         if urlCode == 'new':
-            listener = listenerLib.Listener(name, title, group, lurl, text, email, scope, term_end)
+            listener = listenerLib.Listener(name, title, group, ltype, tag1, tag2, lurl, text, email, scope, term_end)
         else:
             listener = listenerLib.getListenerByCode(urlCode)
             if not listener:
@@ -163,7 +190,9 @@ class ListenerController(BaseController):
                 listener['title'] = title;
                 listener['email'] = email;
                 listener['group'] = group;
-                listener['lurl'] = lurl;
+                listener['ltype'] = ltype;
+                listener['tag1'] = tag1;
+                listener['tag2'] = tag2;
                 listener['text'] = text;
                 listener['scope'] = scope;
                 listener['term_end'] = term_end;
