@@ -4,9 +4,6 @@
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
-
-<div class="spacer"></div>
-
 <div class="row">
   <div class="col-xs-12">
     ${helpers.metaData()}

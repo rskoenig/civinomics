@@ -482,6 +482,10 @@
     ${scopeString | n}
 </%def>
 
+<%def name="metaData()">
+  <h4 class="inline">${displayWorkshopFlag(c.w, size='small-flag', noTitle = True)} ${lib_6.showTags(c.w)}</h4>
+</%def>
+
 <%def name="displayWorkshopFlag(w, **kwargs)">
     <%
         workshopFlag = '/images/flags/generalFlag.gif'
@@ -502,16 +506,14 @@
           obj = kwargs['objType'].title()
         else:
           obj = 'Workshop'
-
     %>
-    <a href="${href}"><img class="thumbnail flag ${flagSize}" src="${workshopFlag}"></a>
-    % if 'workshopFor' in kwargs and w['public_private'] == 'public':
-        ${obj} for
-        % if name == 'Earth':
-          <a href="${href}">${name}</a>
-        % else:
-          the <a href="${href}">${level} of ${name}</a>
-        % endif
+    <a href="${href}"><img class="thumbnail flag ${flagSize} no-bottom" src="${workshopFlag}"></a>
+    % if not 'noTitle' in kwargs:
+      % if name == 'Earth':
+        <a href="${href}">${name}</a>
+      % else:
+        <a href="${href}">${level} of ${name}</a>
+      % endif
     % endif
 </%def>
 
@@ -522,11 +524,6 @@
       </a>
     </h1>
 </%def>
-
-<%def name="metaData()">
-  <h4 style="color: #fff">${displayWorkshopFlag(c.w, size='small-flag', workshopFor=True)} ${lib_6.showTags(c.w)}</h4>
-</%def>
-
 
 <%def name="workshopHero()">
   <div class="well well workshop-hero">

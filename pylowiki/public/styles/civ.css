@@ -1705,8 +1705,8 @@ a.no-border:hover{
     box-shadow: none;
 }
 .no-bottom{
-    padding-bottom:0;
-    margin-bottom:0;
+    padding-bottom:0 !important;
+    margin-bottom:0 !important;
 }
 
 .no-top{
