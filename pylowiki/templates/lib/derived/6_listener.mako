@@ -20,8 +20,11 @@
     <div class="page-header">
         <h2>${c.listener['name']}</h2>
         <p>${c.listener['title']}</p>
-        <img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"> ${scopeInfo['level']} of ${scopeInfo['name']}
+        % if listener['ltype'] == 'elected':
+            <img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"> ${scopeInfo['level']} of ${scopeInfo['name']}
+        % endif
         % if c.tags:
+            Interested in ${scopeInfo['level']} of ${scopeInfo['name']}  
             % for tag in c.tags:
                 <span class="label workshop-tag ${tag}">${tag}</span>
             % endfor
@@ -30,7 +33,7 @@
     <table class="info-table">
         % if 'group' in c.listener and c.listener['group'] != '':
             <tr>
-                <td colspan="2">Group or organization: <strong>${c.listener['group']}</strong></td>
+                <td colspan="2">Organization: <strong>${c.listener['group']}</strong></td>
             </tr>
         % endif
         % if 'lurl' in c.listener and c.listener['lurl'] != '':

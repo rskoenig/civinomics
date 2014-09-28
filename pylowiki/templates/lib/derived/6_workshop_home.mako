@@ -17,12 +17,21 @@
     % if c.activeListeners:
         <ul class="media-list" id="workshopNotables">
         % for listener in c.activeListeners:
-            <% scopeInfo = utils.getPublicScope(listener['scope']) %>
-            <li class="media notables-item">
-                <div class="row">
-                    <div class="col-xs-3"><img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"></div><div class="col-xs-9"><a href="/listener/${listener['urlCode']}/listenerShow">${listener['name']}</a></br> <small>${listener['title']}, ${listener['group']}</small></div>
-                </div>
-            </li>
+            % if listener['ltype'] == 'elected':
+                <% scopeInfo = utils.getPublicScope(listener['scope']) %>
+                <li class="media notables-item">
+                    <div class="row">
+                        <div class="col-xs-3"><img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"></div><div class="col-xs-9"><a href="/listener/${listener['urlCode']}/listenerShow">${listener['name']}</a></br> <small>${listener['title']}, ${listener['group']}</small></div>
+                    </div>
+                </li>
+            % else:
+                <li class="media notables-item">
+                    <div class="row">
+                        <div class="col-xs-3"></div><div class="col-xs-9"><a href="/listener/${listener['urlCode']}/listenerShow">${listener['name']}</a></br> <small>${listener['title']}, ${listener['group']}</small>
+                        </div>
+                    </div>
+                </li>
+            % endif
         % endfor
         </ul>
      % endif
