@@ -196,6 +196,7 @@ class ListenerController(BaseController):
                 listener['text'] = text;
                 listener['scope'] = scope;
                 listener['term_end'] = term_end;
+                listener.sort = utils.urlify(group)
 
         dbHelpers.commit(listener)
         eventLib.Event('Listener edited', '%s edited listener info'%c.authuser['name'], listener, user = c.authuser)

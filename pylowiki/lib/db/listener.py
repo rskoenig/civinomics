@@ -6,10 +6,11 @@ from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
 import sqlalchemy as sa
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc, with_key_characteristic_like as wkcl
+from dbHelpers import with_characteristic as wc, with_key_characteristic_like as wkcl, with_characteristic_like as wcl
 from pylowiki.lib.utils import toBase62
 import generic
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.utils           as utils
 
 log = logging.getLogger(__name__)
 
@@ -74,24 +75,39 @@ def getListenersForScope(limit, scope, offset = 0):
     return postList
 
 def getListenersForWorkshop(workshop, disabled = 0):
-    try:
-        wkey = ''
-        if 'workshop_public_scope' in workshop:
-            wkey = 'workshop_public_scope'
-            wscope = '0' + workshop[wkey].replace('||', '|0|')
-        elif 'workshop_org_scope' in workshop:
-            wkey = 'workshop_org_scope'
-            wscope = workshop[wkey]
-        else:
-            wscope = "foo"
-            
-        return meta.Session.query(Thing)\
-                .filter_by(objType = 'listener')\
-                .filter(Thing.data.any(wc('scope', wscope)))\
-                .filter(Thing.data.any(wc('disabled', disabled)))\
-                .all()
-    except:
-        return False
+    wkey = ''
+    if 'workshop_public_scope' in workshop:
+        wkey = 'workshop_public_scope'
+        wscope = '0' + workshop[wkey].replace('||', '|0|')
+    elif 'workshop_org_scope' in workshop:
+        wkey = 'workshop_org_scope'
+        wscope = workshop[wkey]
+    else:
+        wscope = "foo"
+        
+    tagList = []
+    tags = workshop['workshop_category_tags'].split('|')
+    for tag in tags:
+        if tag != '':
+            tagList.append(tag)
+        
+    all = []
+        
+    # get all of the elected officials for the scope 
+    listeners =  meta.Session.query(Thing)\
+            .filter_by(objType = 'listener')\
+            .filter(Thing.data.any(wc('scope', wscope)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .order_by('sort')\
+            .all()
+    for l in listeners:
+        if l['ltype'] == 'elected':
+            all.append(l)
+        elif l['tag1'] in tagList or l['tag2'] in tagList:
+            all.append(l)
+                
+    return all
+
 
 def getListenersForUser(user, disabled = 0):
     try:
@@ -136,6 +152,7 @@ def Listener(name, title, group, ltype, tag1, tag2, lurl, text, email, scope, te
         listener['term_end'] = term_end
         listener['disabled'] = u'0'
         listener['views'] = u'0'
+        listener.sort = utils.urlify(group)
         commit(listener)
         listener['urlCode'] = toBase62(listener)
         user = userLib.getUserByEmail(email)

@@ -231,7 +231,14 @@
     		<div class="media well search-listing">
         	% for listener in c.activeListeners:
                 <div class="row">
-                	<p><a href="/listener/${listener['urlCode']}/listenerShow">${listener['name']}</a></br> <small>${listener['title']}, ${listener['group']}</small></p>
+                	<p><a href="/listener/${listener['urlCode']}/listenerShow">${listener['name']}</a></br> <small>${listener['title']}, ${listener['group']}</small>
+                	% if 'tag1' in listener and listener['tag1'] != '':
+                		<span class="label workshop-tag ${listener['tag1']}">${listener['tag1']}</span>
+                	% endif
+                	% if 'tag2' in listener and listener['tag2'] != '':
+                		<span class="label workshop-tag ${listener['tag2']}">${listener['tag2']}</span>
+                	% endif
+                	</p>
                 </div>
         	% endfor
         	</div><!-- media well -->

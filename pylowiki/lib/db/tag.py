@@ -44,6 +44,7 @@ def getTagCategories():
     tags.append('Economy')
     tags.append('Education')
     tags.append('Employment')
+    tags.append('Energy')
     tags.append('Environment')
     tags.append('Family')
     tags.append('Government')
@@ -80,6 +81,7 @@ def getTagColouring():
                 'Employment':           'black-tag',
                 'Education':            'black-tag',
                 'Housing':              'black-tag',
+                'Energy':               'blue-tag',
                 'Transportation':       'blue-tag',
                 'Infrastructure':       'blue-tag',
                 'Municipal Services':   'blue-tag',

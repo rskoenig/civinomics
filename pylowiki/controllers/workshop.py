@@ -1026,10 +1026,13 @@ class WorkshopController(BaseController):
               
         c.activeListeners = []
         c.pendingListeners = []
-        if not iPhoneApp:
-            for l in (listenerLib.getListenersForWorkshop(c.w)):
-                if l['disabled'] == '0':
-                    c.activeListeners.append(l)
+        listeners = listenerLib.getListenersForWorkshop(c.w)
+        if listeners:
+            for l in listeners:
+                c.activeListeners.append(l)
+        else:
+            log.info("no listeners")
+        
                         
               
         c.slides = []
