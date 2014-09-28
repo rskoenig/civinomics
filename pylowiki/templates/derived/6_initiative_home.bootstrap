@@ -6,7 +6,6 @@
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 
 <% lib.return_to() %>
-    <h3 class="initiative-title">Summary</h3>
     ${ihelpers.showDescription()}
 
     % if c.initiative['funding_summary']:
