@@ -138,7 +138,6 @@ class WorkshopController(BaseController):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
-        log.info(c.w['rating_criteria'])
         if not c.w:
             abort(404)
         #log.info("workshop before")

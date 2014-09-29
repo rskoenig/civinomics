@@ -218,7 +218,11 @@
             <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                     ${yesNoVoteFooter()}
-                    ${rateCriteria()}
+                    <div ng-if="item.parentObjType == 'workshop'">                    	
+                        <div ng-show="rating.type == 'criteria'">
+                    	${rateCriteria()}
+                    	</div>
+                    </div>
                 % endif
                 ${actions()}
             </div>
@@ -397,7 +401,8 @@
 
 <%def name="rateCriteria()">
 	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" >
-		<div class="row" ng-init="initCriteria('${c.w['rating_criteria']}')">
+		<div ng-init="getCriteriaList(item.parentHref)"></div>
+		<div class="row">
 		Reason for your vote:
 		<form>
 			<ul class="list-inline" ng-repeat="criteria in rating.criteriaList">

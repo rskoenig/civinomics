@@ -24,6 +24,7 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.hover5 = false;
 	
 	$scope.criteriaName = '';
+	$scope.hasCriteria = false;
 	
 	$scope.addCriteriaToList = function(){
 		$scope.alert.message = '';
@@ -41,6 +42,22 @@ app.controller('ratingsController', function($scope, $http){
 		if (deleteCriteria > -1) {
 			$scope.rating.criteriaList.splice(deleteCriteria, 1);
 		}
+	};
+	
+	$scope.getCriteriaList = function(parentHref){
+		if ($scope.hasCriteria) return;
+		var requestUrl = parentHref+"/criteria/get/";
+		$http.get(requestUrl).success(function(data){
+				if (data.statusCode == 1){
+					$scope.rating.criteriaList = data.criteria.split("|");
+					$scope.rating.type = 'criteria';
+					//Do something if they were added correctly (probably just update message or continue)
+				} 
+				else if (data.statusCode === 0){
+					return false;				
+				}
+				$scope.hasCriteria = true;
+			})
 	};
 	
 	$scope.sendCriteriaList = function(workshopCode, workshopUrl){
@@ -98,6 +115,7 @@ app.controller('ratingsController', function($scope, $http){
 		$scope.rating.type = 'criteria';
 		$scope.rating.criteriaList = criteriaString.split("|");
 	};
+	
   /*
 	  Things that I need for this controller:
 	  	Adding a criteria

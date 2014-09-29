@@ -19,15 +19,16 @@ class CriteriaController(BaseController):
     def __before__(self, action, workshopCode = None, worshopURL = None, criteria = None, thingCode = None, rating = None):
         if workshopCode is None:
             abort(404)
-        c.w = workshopLib.getWorkshopByCode(workshopCode)
-        if not c.w:
+        self.workshopCrit = workshopLib.getWorkshopByCode(workshopCode)
+        if not self.workshopCrit:
             abort(404)
-        workshopLib.setWorkshopPrivs(c.w)
+            #but is it broken?
+        workshopLib.setWorkshopPrivs(self.workshopCrit)
         if action in ['rateCriteria']:
             if not criteria:
                 log.info("Trying to rate nothing")
                 abort(404)
-            if criteria not in c.w['rating_criteria']:
+            if criteria not in self.workshopCrit['rating_criteria']:
                 log.info("Wrong criteria for thing")
                 abort(404)
           
@@ -38,7 +39,7 @@ class CriteriaController(BaseController):
 #             if not c.privs['admin'] and not c.privs['facilitator']:
 #                 abort(404)
 #         if c.privs['visitor']:
-#             if c.w['public_private'] == 'private':
+#             if workshopCrit['public_private'] == 'private':
 #                 abort(404)
 #         elif not c.privs['admin'] and not c.privs['facilitator'] and not c.privs['participant']:
 #             abort(404)
@@ -48,15 +49,19 @@ class CriteriaController(BaseController):
             log.info("I guess I'll have to do something.")
             log.info(criteria.split("|"))
             criteriaList = criteria.split("|")
-            c.w['rating_criteria'] = criteria
-            dbHelpers.commit(c.w)
+            self.workshopCrit['rating_criteria'] = criteria
+            dbHelpers.commit(self.workshopCrit)
         else:
             log.info("Hell naw. I'm not sure if I want to do anything here")            
     
-    def getWorkshopCriteria(self, workshopCode, workshopURL):
+    def getWorkshopCriteria(self):
+        log.info("In get workshop criteria")
         # This function returns the criteria related to the workshop
         # In case there's none, it should return false? 
-        log.info("")
+        if 'rating_criteria' in self.workshopCrit:
+            return json.dumps({'statusCode':1, 'criteria': self.workshopCrit['rating_criteria']})
+        else:
+            return json.dumps({'statusCode': 0})
     
     #Make this workshop dependent?
     def rateCriteria(self, criteria, thingCode, rating):

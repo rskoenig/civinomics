@@ -387,6 +387,7 @@
     <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/create.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/criteria.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
     <script type="text/javascript">
       $('.carousel').carousel({
