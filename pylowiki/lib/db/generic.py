@@ -83,9 +83,27 @@ def linkChildToParent(child, parent):
         child['initiative_title'] = parent['initiative_title']
     if parent.objType == 'meeting':
         child['meeting_url'] = parent['url']
+        child['meeting_scope'] = parent['scope']
     if 'meetingCode' in parent and 'meeting_url' in parent and child.objType != 'rating':
         child['meetingCode'] = parent['meetingCode']
         child['meeting_url'] = parent['meeting_url']
+        child['meeting_scope'] = parent['meeting_scope']
+    if parent.objType == 'election':
+        child['election_url'] = parent['url']
+        child['election_public'] = parent['election_public']
+        child['election_scope'] = parent['scope']
+        child['election_date'] = parent['electionDate']
+    if 'electionCode' in parent and 'election_url' in parent and child.objType != 'rating':
+        child['electionCode'] = parent['electionCode']
+        child['election_url'] = parent['election_url']
+        child['election_public'] = parent['election_public']
+        child['election_scope'] = parent['election_scope']
+        child['election_date'] = parent['election_date']
+    if parent.objType == 'ballot':
+        child['ballot_url'] = parent['url']
+    if 'ballotCode' in parent and 'ballot_url' in parent and child.objType != 'rating':
+        child['ballotCode'] = parent['ballotCode']
+        child['ballot_url'] = parent['ballot_url']
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:
@@ -159,6 +177,14 @@ def getChildrenOfParent(parent):
             .all()
     except:
         return False
+        
+def setReadOnly(thing, value = '1'):
+    thing['readOnly'] = value
+    commit(thing)
+    children = getChildrenOfParent(thing)
+    for child in children:
+        child['readOnly'] = value
+        commit(child)
         
 def getThingByID(thingID):
     try:

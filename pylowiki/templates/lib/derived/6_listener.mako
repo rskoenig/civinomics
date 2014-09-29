@@ -1,6 +1,5 @@
 <%!
     import pylowiki.lib.db.user         as userLib
-    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
     import misaka as m
@@ -16,81 +15,95 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showInfo(meeting, author)">
+<%def name="showInfo(listener, scopeInfo)">
     <div class="spacer"></div>
+    <div class="page-header">
+        <h2>${c.listener['name']}</h2>
+        <p>${c.listener['title']}</p>
+        % if listener['ltype'] == 'elected':
+            <img src="${scopeInfo['flag']}" class="thumbnail small-flag tight"> ${scopeInfo['level']} of ${scopeInfo['name']}
+        % endif
+        % if listener['ltype'] == 'agency':
+            Monitoring  <span class="label workshop-tag ${listener['tag1']}">${listener['tag1']}</span> and <span class="label workshop-tag ${listener['tag2']}">${listener['tag2']}</span> issues
+            in ${scopeInfo['level']} of ${scopeInfo['name']}
+        % endif
+    </div>
     <table class="info-table">
-        <tr>
-            <td class="left">Meeting Date:</td>
-            <td class="right">${meeting['meetingDate']}</td>
-        </tr>
-        <tr>
-            <td class="left">Meeting Time:</td>
-            <td class="right">${meeting['meetingTime']}</td>
-        </tr>
-        <tr>
-            <td class="left">Location:</td>
-            <td class="right">${meeting['location']}</td>
-        </tr>
-        <tr>
-            <td class="left">Group Meeting:</td>
-            <td class="right">${meeting['group']}</td>
-        </tr>
-        <tr>
-            <td class="left">Meeting Category:</td>
-            <td class="right">${meeting['tag']}</td>
-        </tr>
-        % if meeting['agendaPostDate'] != '':
+        % if 'group' in c.listener and c.listener['group'] != '':
             <tr>
-                <td class="left">Date Agenda is Posted:</td>
-                <td class="right">${meeting['agendaPostDate']}</td>
+                <td colspan="2">Organization: <strong>${c.listener['group']}</strong></td>
             </tr>
         % endif
-    </table>        
-    <span class="grey">Posted by: </span>
-    ${lib_6.userImage(author, className="avatar small-avatar")} ${lib_6.userLink(author)} <i class="icon-eye-open"></i> Views (${meeting['views']})
-    % if c.meeting.objType == 'revision':
+        % if 'lurl' in c.listener and c.listener['lurl'] != '':
+            <tr>
+                <td colspan="2">Listener Web Site: <strong><a href="${c.listener['lurl']}" target="_blank">${c.listener['lurl']}</a></strong></td>
+            </tr>
+        % endif
+        % if c.member:
+            <tr>
+                <td colspan="2">
+                    Civinomics Member Profile:</br>
+                    ${lib_6.userLink(c.member, className="listener-name")}<br />
+                    <small>${lib_6.userGreetingMsg(c.member)}</small>
+                </td>
+            </p>
+        % endif
+        % if 'text' in c.listener and c.listener['text'] != '':
+            <tr>
+                <td colspan=2>
+                    ${m.html(c.listener['text'], render_flags=m.HTML_SKIP_HTML) | n}
+                </td>
+            </tr>
+        % endif
+        % if 'term_end' in c.listener and c.listener['term_end'] != '':
+            <tr>
+                <td colspan="2">Term Ends:  ${c.listener['term_end']}</td>
+            </tr>
+        % endif
+    </table>
+    % if 'views' in c.listener:
+        &nbsp; <i class="icon-eye-open"></i> Views (${c.listener['views']})
+    % endif
+    % if listener.objType == 'revision':
         <div class="alert alert-error">
-            This is a revision dated ${c.meeting.date}
+            This is a revision dated ${listener.date}
         </div>
     % endif
 </%def>
 
 
-<%def name="editMeeting()">
+<%def name="editListener()">
     <% 
-        tagList = tagLib.getTagCategories()
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
-        if c.meeting:
-            mScope = c.meeting['scope']
-            title = c.meeting['title']
-            group = c.meeting['group']
-            tag = c.meeting['tag']
-            text = c.meeting['text']
-            location = c.meeting['location']
-            meetingDate = c.meeting['meetingDate']
-            meetingTime = c.meeting['meetingTime']
-            agendaPostDate = c.meeting['agendaPostDate']
-            public = c.meeting['public']
-            if public == 'on':
-                publicChecked = 'checked'
-            else:
-                publicChecked = ""
+        if c.listener:
+            scope = c.listener['scope']
+            name = c.listener['name']
+            title = c.listener['title']
+            group = c.listener['group']
+            ltype = c.listener['ltype']
+            tag1 = c.listener['tag1']
+            tag2 = c.listener['tag2']
+            text = c.listener['text']
+            email = c.listener['email']
+            lurl = c.listener['lurl']
+            termEnd = c.listener['term_end']
+
         else:
-            mScope = "0|0|0|0|0|0|0|0|0|0"
+            scope = "0|0|0|0|0|0|0|0|0|0"
+            name = ""
             title = ""
             group = ""
-            tag = ""
+            ltype = "elected"
+            tag1 = ""
+            tag2 = ""
             text = ""
-            location = ""
-            meetingDate = ""
-            meetingTime = ""
-            agendaPostDate = ""
-            public = ""
-            publicChecked = ""
+            email = ""
+            lurl = ""
+            termEnd = ""
             
-        scopeList = mScope.split('|')
+        scopeList = scope.split('|')
         if scopeList[9] == '0' and scopeList[8] == '0':
             countySelected = "selected"
         elif scopeList[9] == '0' and scopeList[8] != '0':
@@ -107,20 +120,20 @@
     % endif
     <div class="row>
         <div class="col-sm-12">
-            % if c.editMeeting:
-                <form method="POST" name="edit_meeting" id="edit_meeting" action="/meeting/${c.meeting['urlCode']}/${c.meeting['url']}/meetingEditHandler">
+            % if c.listener:
+                <form method="POST" name="edit_listener" id="edit_listener" action="/listener/${c.listener['urlCode']}/listenerEditHandler">
             % else:
-                <form method="POST" name="edit_meeting" id="edit_meeting" action="/meeting/${c.authuser['urlCode']}/${c.authuser['url']}/meetingNewHandler">
+                <form method="POST" name="edit_listener" id="edit_listener" action="/listener/new/listenerEditHandler">
             % endif
             <div class="row">
-                <h3>Meeting Information</h3>
+                <h3>Listener Information</h3>
             </div><!-- row -->
             <br>
             
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Meeting Title:</strong></label>
-                    <input type="text" name="meetingTitle" class="col-sm-12 form-control" value="${title}" required>
+                    <label for="title" class="control-label" required><strong>Listener Name:</strong></label>
+                    <input type="text" name="listenerName" class="col-sm-12 form-control" value="${name}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
@@ -131,36 +144,24 @@
             
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Meeting Date:</strong></label>
-                    <input type="text" name="meetingDate" id="meetingDate" class="col-sm-6 form-control" value="${meetingDate}" required>
+                    <label for="title" class="control-label" required><strong>Listener Title:</strong></label>
+                    <input type="text" name="listenerTitle" class="col-sm-12 form-control" value="${title}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        Date of meeting.
+                        Keep it short and descriptive.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
             
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="meetingTime" class="control-label" required><strong>Meeting Time:</strong></label>
-                    <input type="text" name="meetingTime" class="col-sm-6 form-control" value="${meetingTime}" required>
+                    <label for="title" class="control-label" required><strong>Listener Email:</strong></label>
+                    <input type="text" name="listenerEmail" class="col-sm-12 form-control" value="${email}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        Time of meeting.
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Agenda Post Date:</strong></label>
-                    <input type="text" name="agendaPostDate" id="agendaPostDate" class="col-sm-6 form-control" value="${agendaPostDate}">
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        Date the meeting agenda will be posted for this meeting.
+                        This needs to be a valid email address.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
@@ -168,23 +169,64 @@
             <div class="row">
                 <div class="col-sm-6">
                     <label for="title" class="control-label" required><strong>Name of group:</strong></label>
-                    <input type="text" name="meetingGroup" class="col-sm-12 form-control" value="${group}" required>
+                    <input type="text" name="listenerGroup" class="col-sm-12 form-control" value="${group}" required>
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        The name of the group which is meeting.
+                        The name of the listener group or organization.
+                    </div><!-- alert -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            
+            <div class="row">
+                <div class="col-sm-6" ng-init="listenerType = '${ltype}'">
+                    <label for="title" class="control-label" required><strong>Listener Type:</strong></label><br />
+                    <input type="radio" name="listenerType" ng-model="listenerType" value="elected"> Elected Official<br />
+                    <input type="radio" name="listenerType" ng-model="listenerType" value="agency"> Organization or Agency Representative
+                    <div ng-show="listenerType == 'agency'">
+                        Choose 2 categories which describe the listener organization (required):<br />
+		                First Category:<br />
+		                <select name="listenerTag1">
+		                % for tag in c.tagList:
+		                    <% 
+		                        if tag1 == tag:
+		                            selected = "selected"
+		                        else:
+		                            selected = ""
+		                    %>
+		                    <option value="${tag}" ${selected}> ${tag}</option>
+		                % endfor
+		                </select>
+		                <br />Second Category:<br />
+		                <select name="listenerTag2">
+		                % for tag in c.tagList:
+		                    <% 
+		                        if tag2 == tag:
+		                            selected = "selected"
+		                        else:
+		                            selected = ""
+		                    %>
+		                    <option value="${tag}" ${selected}> ${tag}</option>
+		                % endfor
+		                </select>
+                    </div><!- ng-show ->
+                    <div class="spacer"></div>
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
+                    <div class="alert alert-info">
+                        The type of the listener. Elected listeners receive updates on everything in their scope. Agency listeners are only updated on items in their scope which share a category with them.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
             
             <div class="row">
                 <div class="col-sm-6">
-                    <label for="title" class="control-label" required><strong>Meeting location:</strong></label>
-                    <input type="text" name="meetingLocation" class="col-sm-12 form-control" value="${location}" required>
+                    <label for="title" class="control-label" required><strong>URL of web site:</strong></label>
+                    <input type="text" name="listenerURL" class="col-sm-12 form-control" value="${lurl}">
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        Where the meeting is to be held.
+                        A web site with more information about the listener.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
@@ -196,61 +238,37 @@
                 </div><!-- col-sm-6 -->
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        The region or legal jurisdiction associated with the meeting.
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <label for="tag" class="control-label" required><strong>Meeting category:</strong></label>
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-8 no-left">
-                        <select name="tag" id="tag">
-                        % if (c.meeting and c.meeting['public'] == '0') or not c.meeting:
-                            <option value="">Choose one</option>
-                        % endif
-                        % for mtag in tagList:
-                            <% 
-                                selected = ""
-                                if tag == mtag:
-                                    selected = "selected"
-                            %>
-                            <option value="${mtag}" ${selected}/> ${mtag}</option>
-                        % endfor
-                        </select>
-                    </div><!-- col-sm-8 -->
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        The topic area associated with the meeting.
+                        The region or legal jurisdiction associated with the listener.
                     </div><!-- alert -->
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
             
             <div class="row spacer">
                 <div class="col-sm-6">
-                    <label for="text" class="control-label" required><strong>Description:</strong></label>
+                    <label for="title" class="control-label" required><strong>Term End Date:</strong></label>
+                    <input type="text" name="termEnd" id="termEnd" class="col-sm-6 form-control" value="${termEnd}">
+                </div><!-- col-sm-6 -->
+                <div class="col-sm-6">
+                    <div class="alert alert-info">
+                        Date term ends for this listener.
+                    </div><!-- alert -->
+                </div><!-- col-sm-6 -->
+            </div><!-- row -->
+            
+            
+            <div class="row spacer">
+                <div class="col-sm-6">
+                    <label for="text" class="control-label" required><strong>Listener Description:</strong></label>
                     ${lib_6.formattingGuide()}
                 </div>
                 <div class="col-sm-6">
                     <div class="alert alert-info">
-                        A short description about the meeting.
+                        A short description of the listener.
                     </div>
                 </div><!-- col-sm-6 -->
             </div><!-- row -->
-            <textarea rows="10" id="meetingText" name="meetingText" class="col-sm-12 form-control" required>${text}</textarea>
+            <textarea rows="10" id="meetingText" name="listenerText" class="col-sm-12 form-control">${text}</textarea>
             
-            <div class="row spacer">
-                <div class="col-sm-6">            
-                    <input type="checkbox" name="public" ${publicChecked}> Publish this meeting
-                </div><!-- col-sm-6 -->
-                <div class="col-sm-6">
-                    <div class="alert alert-info">
-                        Makes the meeting viewable by members and the public, with members able to comment and vote (where set).
-                    </div><!-- alert -->
-                </div><!-- col-sm-6 -->
-            </div><!-- row -->
 
             <button type="submit" class="btn btn-warning btn-large pull-right" name="submit_summary">Save Changes</button>
         </form>
@@ -259,7 +277,6 @@
 </%def>
 
 <%def name="geoSelect()">
-    <!-- need to get the c.initiative['scope'] and update the selects accordingly -->
     <% 
         countrySelected = ""
         countyMessage = ""
@@ -269,7 +286,7 @@
         if c.country!= "0":
             countrySelected = "selected"
             states = c.states
-            countyMessage = "Leave 'State' blank if the meeting jurisdiction applies to the entire country."
+            countyMessage = "Leave 'State' blank if the listener jurisdiction applies to the entire country."
         endif
     %>
     <div class="row"><span id="planetSelect">
@@ -319,13 +336,13 @@
                 </select>
             </div><!-- col-sm-8 -->
         % else:
-            Leave 'Country' blank if the meeting jurisdiction applies to the entire planet.
+            Leave 'Country' blank if the listener jurisdiction applies to the entire planet.
         % endif
     </span></div><!-- row -->
     <div class="row"><span id="countySelect">
         % if c.state != "0":
             <% counties = getCountyList("united-states", c.state) %>
-            <% cityMessage = "Leave blank 'County' blank if the meeting jurisdiction applies to the entire state." %>
+            <% cityMessage = "Leave blank 'County' blank if the listener jurisdiction applies to the entire state." %>
             <div class="col-sm-3">County:</div>
             <div class="col-sm-8">
                 <% 
@@ -359,7 +376,7 @@
     <div class="row"><span id="citySelect">
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
-            <% postalMessage = "Leave 'City' blank if the meeting jurisdiction applies to the entire county." %>
+            <% postalMessage = "Leave 'City' blank if the listener jurisdiction applies to the entire county." %>
             <div class="col-sm-3">City:</div>
             <div class="col-sm-8">
                 <% 
@@ -371,7 +388,7 @@
                         fieldName = "geoTagCity"
                 %>
                 % if disabled == "disabled":
-                    <input type=hidden name="geoTagCity" value="${c.city}">
+                    <input type=hidden name="geoTagCounty" value="${c.city}">
                 % endif
                 <select name="${fieldName}" id="geoTagCity" class="geoTagCity" ${disabled} onChange="geoTagCityChange(); return 1;">
                 <option value="0">Select a city</option>
@@ -393,7 +410,7 @@
     <div class="row"><span id="postalSelect">
         % if c.city != "0":
             <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
-            <% underPostalMessage = "or leave blank if your the meeting jurisdiction is specific to the entire city." %>
+            <% underPostalMessage = "or leave blank if the listener jurisdiction is specific to the entire city." %>
             <div class="col-sm-3">Zip Code:</div><div class="col-sm-8">
             <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
             <option value="0">Select a zip code</option>
@@ -416,60 +433,19 @@
     <br/>
 </%def>
 
-<%def name="addAgendaItem(meeting, author)">
-    % if 'user' in session and (userLib.isCurator(c.authuser, meeting['scope']) or userLib.isAdmin(c.authuser.id)):
-        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#addItem">New Agenda Item</button>
-        <div id="addItem" class="collapse">
-            <form class="col-sm-6 " action="/meeting/${meeting['urlCode']}/${meeting['url']}/meetingAgendaItemAddHandler" method="POST">
-                <div class="form-group">
-                    <label>Item Title</label>
-                    <input type="text" name="agendaItemTitle" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Agenda Item Number</label>
-                    <input type="text" name="agendaItemNumber" class="col-xs-2 col-sm-2 col-md-2 form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>Item Text</label>
-                    ${lib_6.formattingGuide()}<br>
-                    <textarea rows="3" name="agendaItemText" class="form-control" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="checkbox">
-                    <input type="checkbox" name="agendaItemVote" checked> People can vote on this
-                    </label>
-                    <label class="checkbox">
-                    <input type="checkbox" name="agendaItemComment" checked> People can comment on this
-                    </label>
-                </div>
-                <div class="form-group">
-                    <button class="btn btn-success" type="submit" class="btn">Save Item</button>
-                    <button class="btn btn-danger" type="reset" value="Reset">Cancel</button>
-                </div>
-            </form>
-        </div>
-    % endif
-</%def>
-
-<%def name="meetingModeration(thing)">
+<%def name="listenerModeration(thing)">
     <%
-        if 'user' not in session or thing.objType == 'revision' or c.privs['provisional']:
+        if 'user' not in session or thing.objType == 'revision':
             return
         adminID = 'admin-%s' % thing['urlCode']
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
-        if 'scope' in thing:
-            meetingScope = thing['scope']
-        elif 'meeting_scope' in thing:
-            meetingScope = thing['meeting_scope']
-        else:
-            meetingScope = "0|0|0|0|0|0|0|0|0|0|0"
     %>
-    <div class="btn-group btn-group-sm pull-right">
-        % if 'user' in session and (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)) and thing.objType != 'meetingUnpublished':
-            <a href="/meeting/${thing['urlCode']}/${thing['url']}/meetingEdit" class="btn btn-default">Edit</a>
+    <div class="btn-group btn-group-sm pull-left">
+        % if (userLib.isCurator(c.authuser, thing['scope']) or userLib.isAdmin(c.authuser.id)) and thing.objType != 'listenerUnpublished':
+            <a href="/listener/${thing['urlCode']}/listenerEdit" class="btn btn-default">Edit</a>
             <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">Trash</a>
-        % elif thing.objType == 'meetingUnpublished' and thing['unpublished_by'] != 'parent':
+        % elif thing.objType == 'listenerUnpublished' and thing['unpublished_by'] != 'parent':
             % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
                 <a class="btn btn-xs accordion-toggle" data-toggle="collapse" data-target="#${publishID}">Publish</a>
             % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
@@ -479,33 +455,22 @@
         % if c.revisions:
             <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#revisions">Revisions (${len(c.revisions)})</a>
         % endif
-
-        % if userLib.isAdmin(c.authuser.id):
-            <a class="btn btn-default accordion-toggle" data-toggle="collapse" data-target="#${adminID}">Admin</a>
-        % endif
     </div>
     
     % if thing['disabled'] == '0':
-        % if (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)):
-            % if thing.objType == 'meetingUnpublished':
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            % if thing.objType == 'listenerUnpublished':
                 ${lib_6.publishThing(thing)}
             % else:
                 ${lib_6.unpublishThing(thing)}
             % endif
-            % if userLib.isAdmin(c.authuser.id):
-                ${lib_6.adminThing(thing)}
-            % endif
-        % endif
-    % else:
-        % if userLib.isAdmin(c.authuser.id):
-            ${lib_6.adminThing(thing)}
         % endif
     % endif
     % if c.revisions:
         <div id="revisions" class="collapse">
             <ul class="unstyled">
             % for revision in c.revisions:
-                <li>Revision: <a href="/meeting/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>
+                <li>Revision: <a href="/listener/${revision['urlCode']}/show">${revision.date}</a></li>
             % endfor
             </ul>
         </div>

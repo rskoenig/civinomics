@@ -33,7 +33,8 @@ import pylowiki.lib.db.meeting 			as meetingLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.utils				as utils
 import pylowiki.lib.json				as jsonLib
-import pylowiki.lib.fuzzyTime			as fuzzyTime	
+import pylowiki.lib.fuzzyTime			as fuzzyTime
+import pylowiki.lib.db.ballot 			as ballotLib
 import misaka as m
 
 import simplejson as json
@@ -328,7 +329,8 @@ class HomeController(BaseController):
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
-		    countyScope = scopeList[6]
+		    countyScopeList = scopeList[0:7]
+		    countyScope = '|'.join(countyScopeList)
 		    #log.info("in old geo scope function")
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
@@ -362,7 +364,9 @@ class HomeController(BaseController):
 		    # try getting the activity of their area
 		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
 		    scopeList = userScope.split('|')
-		    countyScope = scopeList[6]
+		    countyScopeList = scopeList[0:7]
+		    countyScope = '|'.join(countyScopeList)
+		    countyScope = '0' + countyScope.replace('||', '|0|')
 		    #log.info("countyScope is %s"%countyScope)
 		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
 		    #log.info(countyScope)
@@ -404,9 +408,13 @@ class HomeController(BaseController):
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 
         for item in recentActivity:
-			entry = jsonLib.getJsonProperties(item)
+            # so the activity feed does not pick up discussion children of workshop, meeting and ballot objects
+            showList = ['general', 'update']
+            if 'discType' in item and item['discType'] not in showList :
+                continue
+            entry = jsonLib.getJsonProperties(item)
 
-			result.append(entry)
+            result.append(entry)
 
         if len(result) == 0:
 			return json.dumps({'statusCode':1})
