@@ -278,12 +278,18 @@
     <br /><br />
 </%def>
 
-<%def name="marked_items()">
+<%def name="manage_workshop()">
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Manage Workshop</h4>
-            <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
-            ${flaggedItems(c.flaggedItems)}
+            <div class="row">
+                <div class="col-xs-12">
+                    ${workshop_phase()}
+                    <hr>
+                    <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
+                    ${flaggedItems(c.flaggedItems)}
+                </div>
+            </div>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -364,4 +370,72 @@
             </table>
         % endif
     </div>
+</%def>
+
+<%def name="workshop_phase()">
+    <%
+        researchChecked = ''
+        ideasChecked = ''
+        initiativesChecked = ''
+        finalChecked = ''
+        winningChecked = ''
+        impactChecked = ''
+
+        if 'phase' in c.w:
+            if c.w['phase'] == 'research':
+                researchChecked = 'checked'
+            elif c.w['phase'] == 'ideas':
+                ideasChecked = 'checked'
+            elif c.w['phase'] == 'initiatives':
+                initiativesChecked = 'checked'
+            elif c.w['phase'] == 'final':
+                finalChecked = 'checked'
+            elif c.w['phase'] == 'winning':
+                winningChecked = 'checked'
+            elif c.w['phase'] == 'impact':
+                impactChecked = 'checked'
+        else:
+            researchChecked = 'checked'
+    %>
+    <form>
+        <label>Workshop Phase:</label>
+        <p class="text-info">Select the current phase your workshop is in.</p>
+        <div class="radio">
+          <label>
+            <input type="radio" name="workshop_phase" id="research" value="research" ${researchChecked}>
+            Research
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="workshop_phase" id="ideas" value="ideas" ${ideasChecked}>
+            Ideas
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="workshop_phase" id="initiatives" value="initiatives" ${initiativesChecked}>
+            Initiatives
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="workshop_phase" id="final" value="final" ${finalChecked}>
+            Final Rating
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="workshop_phase" id="adopted" value="adopted" ${winningChecked}>
+            Winning Initiatives
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input type="radio" name="workshop_phase" id="impact" value="impact" ${impactChecked}>
+            Impact
+          </label>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
 </%def>
