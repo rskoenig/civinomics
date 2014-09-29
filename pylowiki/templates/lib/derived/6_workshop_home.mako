@@ -522,6 +522,7 @@
       <a class="no-highlight" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
         {{workshopTitle}}
       </a>
+      <a ng-click="toggleBrief()" class="brief"><span class="label label-info">Read the Brief</span></a>
     </h1>
 </%def>
 
@@ -546,17 +547,10 @@
   </div><!-- workshop-hero -->
 </%def>
 
-<%def name="workshopAddNew()">
-  <div ng-show="showAddNew" ng-cloak>
+<%def name="workshopAddForm()">
+  <div ng-show="showAddForm" ng-cloak>
     <table class="addNewObj">
       <tr>
-        <td class="comment-avatar-cell">
-          % if c.authuser:
-            ${lib_6.userImage(c.authuser, className="media-object avatar", linkClass="topbar-avatar-link")}
-          % else:
-            <img src="/images/hamilton.png" class="avatar med-avatar">
-          % endif
-        </td>
         <td class="well" style="padding: 10px;">
           % if c.privs and not c.privs['provisional']:
             <form class="no-bottom" ng-submit="submitNewObj()">
@@ -585,7 +579,7 @@
                 </div>
                 <div class="form-group">
                   <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
-                  <button class="btn btn-default pull-right right-space" style="vertical-align: top;" ng-click="cancelAddNew()">Cancel</button>
+                  <button class="btn btn-default pull-right right-space" style="vertical-align: top;" ng-click="cancelAddForm()">Cancel</button>
                 </div>
             </form>
           % endif
@@ -641,7 +635,9 @@
 </%def>
 
 <%def name="workshopList()">
-  <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+  <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3' ng-show="showList">
+
+    ${workshopPhaseDescriptions()}
 
     ${workshopListFilters()}
 
@@ -702,25 +698,15 @@
   </div>
 </%def>
 
-<%def name="workshopBackground()">
-  <div class="alert alert-info wiki-well" ng-show="showInfoPreview" ng-cloak>
-    <div ng-hide="showInfo">
+<%def name="workshopBrief()">
+  <div class="well wiki-well" ng-show="showBrief" ng-cloak>
+    <div ng-cloak>
+      <p class="workshop-metrics-lg">Brief</p>
       <div class="row">
-        <div class="col-sm-8">
-          <p class="description">
-            ${lib_6.ellipsisIZE(c.w['description'], 285)}
-            <a class="green green-highlight" ng-click=" toggleInfo() ">read more</a>
-          </p>
-        </div>
-        <div class="col-sm-4">
-          <div class="photo-listing">
-            ${slideshow(c.w, 'listing')}
-          </div>
+        <div class="col-xs-12">
+          ${slideshow(c.w, 'listing')}
         </div>
       </div>
-    </div>
-
-    <div ng-show="showInfo" ng-cloak>
       <p class="description">
         ${c.w['description']}
       </p>
@@ -737,12 +723,12 @@
 <%def name="workshopMenu()">
   % if c.authuser:
     % if c.privs and not c.privs['provisional']:
-      <button class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" ng-click="toggleAddNew()" ng-cloak>Add your {{addObjType}}...</button>
+      <button class="btn btn-lg btn-block btn-success addBtn" ng-show="showAddBtn" ng-click="toggleAddForm()" ng-cloak>Add your {{addObjType}}</button>
     % else:
-      <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#activateAccountModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+      <a class="btn btn-lg btn-block btn-success addBtn" href="#activateAccountModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add your {{addObjType}}</a>
     % endif
   % else:
-    <a class="btn btn-lg btn-block btn-success" style="margin-top: 12px;" href="#signupLoginModal" data-toggle='modal' ng-cloak>Add your {{addObjType}}...</a>
+    <a class="btn btn-lg btn-block btn-success addBtn" href="#signupLoginModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add your {{addObjType}}</a>
   % endif
 
   <ul class="nav nav-pills workshop-menu">
@@ -819,26 +805,14 @@
 <%def name="workshopTimeline()">
   <div class="btn-group btn-group-justified timeline">
     <div class="btn-group" ng-click="toggleResources()">
-      <button type="button" class="btn btn-default" ng-click="toggleResources()">
+      <button type="button" class="btn btn-default" ng-click="toggleResearch()">
         <span class="workshop-metrics">Research</span><br>
         <strong ng-cloak>${c.numResources}</strong>
       </button>
     </div>
-    <!-- <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleDiscussions()">
-        <span class="workshop-metrics">discussions</span><br>
-        <strong ng-cloak>${c.numDiscussions}</strong>
-      </button>
-    </div> -->
     <div class="btn-group">
       <button type="button" class="btn btn-default" ng-click="toggleIdeas()">
         <span class="workshop-metrics">Ideas</span><br>
-        <strong ng-cloak>${c.numIdeas}</strong>
-      </button>
-    </div>
-    <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleIdeas()">
-        <span class="workshop-metrics">Refinement</span><br>
         <strong ng-cloak>${c.numIdeas}</strong>
       </button>
     </div>
@@ -849,15 +823,21 @@
       </button>
     </div>
     <div class="btn-group">
+      <button type="button" class="btn btn-default" ng-click="toggleFinal()">
+        <span class="workshop-metrics">Final Rating</span><br>
+        <strong ng-cloak>${c.numFinal}</strong>
+      </button>
+    </div>
+    <div class="btn-group">
       <button type="button" class="btn btn-default" ng-click="toggleAdopted()">
         <span class="workshop-metrics">Winning Initiatives</span><br>
         <strong ng-cloak>${c.numAdopted}</strong>
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleAdopted()">
+      <button type="button" class="btn btn-default" ng-click="toggleImpact()">
         <span class="workshop-metrics">Impact</span><br>
-        <strong ng-cloak>${c.numAdopted}</strong>
+        <strong ng-cloak>${c.numUpdates}</strong>
       </button>
     </div>
   </div>
@@ -872,6 +852,43 @@
     ${showFacilitators()}
     ${whoListening()}
   </div> <!--/.browse-->
+</%def>
+
+<%def name="workshopPhaseDescriptions()">
+  <div class="well" ng-show="showResearch" ng-cloak>
+      <p class="workshop-metrics-lg">Research</p>
+      <p>In the research phase we'll collect data, stories, news, and any other information that will help us learn about the problem.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showIdeas" ng-cloak>
+      <p class="workshop-metrics-lg">Ideas</p>
+      <p>In the ideas phase we'll brainstorm solutions to the problem using everything we learned during the research phase.</p>
+    </div>
+
+    <div class="well" ng-show="showInitiatives" ng-cloak>
+      <p class="workshop-metrics-lg">Initiatives</p>
+      <p>In the initiatives phase we'll take the best solutions from the ideas phase and continue to build on them. This is the time to build teams, collaborate, challenge each other with questions and think about concrete next steps.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showFinal" ng-cloak>
+      <p class="workshop-metrics-lg">Final Rating</p>
+      <p>In the final rating phase you cast your vote for the best initiatives - additional edits to the initiatives are not allowed at this time.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showAdopted" ng-cloak>
+      <p class="workshop-metrics-lg">Winning Initiatives</p>
+      <p>Winning initiatives announced.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showImpact" ng-cloak>
+      <p class="workshop-metrics-lg">Impact</p>
+      <p>In the impact phase we follow the progress of each of the winning initiatives to see how they're doing and continue learning and refinement.
+      </p>
+    </div>
 </%def>
 
 

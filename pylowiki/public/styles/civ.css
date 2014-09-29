@@ -750,6 +750,11 @@ h1.workshop-title{
     margin-bottom:20px;
 }
 
+.brief{
+  text-transform: uppercase;
+  font-size: .5em;
+}
+
 .nav-logo{
   height: 40px;
   margin-top: 5px; 
@@ -3243,14 +3248,6 @@ margin-right: -13px;
   /*text-transform:uppercase;*/
 }
 
-.wiki-well h1, .wiki-well h2, .wiki-well h3, .wiki-well h4{
-  text-transform:uppercase;
-  font-size: 18px;
-}
-.wiki-well h5{
-  text-transform:uppercase;
-}
-
 .initiative-title.edit{
   /*background-color:#dff0d8;*/
   background-color: whitesmoke;
@@ -3498,14 +3495,18 @@ hr.object-list-header{
   padding-top: 10px;
 }
 
-.workshop-metrics{
+.workshop-metrics, .workshop-metrics-lg{
   text-transform: uppercase;
   color: grey;
   font-size: .85em;
 }
 
-.metrics-large{
-  font-size: 24px !important;
+.workshop-metrics-lg, .metrics-large{
+  font-size: 1.5em !important;
+}
+
+.addBtn{
+  margin-top: 12px;
 }
 
 #metrics td{
