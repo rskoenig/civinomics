@@ -1028,13 +1028,8 @@ class WorkshopController(BaseController):
         c.pendingListeners = []
         listeners = listenerLib.getListenersForWorkshop(c.w)
         if listeners:
-            for l in listeners:
-                c.activeListeners.append(l)
-        else:
-            log.info("no listeners")
-        
-                        
-              
+            c.activeListeners = listeners
+
         c.slides = []
         if not iPhoneApp:
             c.slideshow = slideshowLib.getSlideshow(c.w)

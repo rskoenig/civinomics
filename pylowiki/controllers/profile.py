@@ -186,36 +186,11 @@ class ProfileController(BaseController):
         c.pendingListeners = []
         c.listeningWorkshops = []
         for l in c.listener:
-            lscope = l['scope']
-            lscope = lscope.replace('0|', '|')
-            lscope = lscope.replace('|0', '|')
-            
-            lw = workshopLib.getWorkshopsByScope(lscope, 9)
-            if lw:
-                for w in lw:
+            lworkshops = listenerLib.getWorkshopsForListener(l)
+            if lworkshops:
+                for w in lworkshops:
                     c.listeningWorkshops.append(w)
-        if iPhoneApp:
-            if displayWorkshops:
-                i = 0
-                for lWorkshop in c.listeningWorkshops:
-                    listeningWorkshopEntry = "listeningWorkshop" + str(i)
-                    lWorkshopCopy = copy.copy(lWorkshop)
-                    lWorkshopCopy['type'] = 'Listening'
-                    mainImage = mainImageLib.getMainImage(lWorkshop)
-                    lWorkshopCopy['imageURL'] = utils.workshopImageURL(lWorkshop, mainImage, thumbnail = True)
-                    if c.isUser:
-                        l = listenerLib.getListener(c.user['email'], lWorkshop)
-                        if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                            lWorkshopCopy['newItems'] = '1'
-                        else:
-                            lWorkshopCopy['newItems'] = '0'
-                        if 'digest' in l and l['digest'] == '1':
-                            lWorkshopCopy['dailyDigest'] = '1'
-                        else:
-                            lWorkshopCopy['dailyDigest'] = '0'
-                    entry[listeningWorkshopEntry] = dict(lWorkshopCopy)
-                    i = i + 1
-            
+
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
         c.facilitatorInitiatives = []

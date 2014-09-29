@@ -108,7 +108,38 @@ def getListenersForWorkshop(workshop, disabled = 0):
                 
     return all
 
-
+def getWorkshopsForListener(listener):
+    scope = listener['scope'].replace('0', '')
+    scopeList = scope.split('|')
+    if scopeList[8] == '':
+        scopeList[8] = '0'
+    scopeList[9] = '0'
+    scope = '|'.join(scopeList)
+    
+    workshops =  meta.Session.query(Thing)\
+            .filter_by(objType = 'workshop')\
+            .filter(Thing.data.any(wc('workshop_public_scope', scope)))\
+            .filter(Thing.data.any(wc('workshop_searchable', '1')))\
+            .order_by('-date')\
+            .all()
+    
+    workshopList = []        
+    if workshops:
+        for w in workshops:
+            if 'readOnly' in w and w['readOnly'] == '1':
+                continue
+            if listener['ltype'] == 'agency':
+                tagList = []
+                tags = w['workshop_category_tags'].split('|')
+                for t in tags:
+                    if t != '':
+                        tagList.append(t)
+                if listener['tag1'] in tagList or listener['tag2'] in tagList:
+                    workshopList.append(w)
+            else:
+                workshopList.append(w)
+    return workshopList
+    
 def getListenersForUser(user, disabled = 0):
     try:
         return meta.Session.query(Thing)\
