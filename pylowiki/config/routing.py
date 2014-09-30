@@ -120,6 +120,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePublicWorkshopHandler{end:/?}', controller = 'workshop', action = 'configurePublicWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'preferences', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePhase/handler{end:/?}', controller = 'workshop', action = 'configurePhase', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # workshop rss
     map.connect('/activity/rss{end:/?}', controller='actionlist', action='rss')
@@ -484,6 +485,7 @@ def make_map():
     ###############
     map.connect('/create/initiative{end:/?}', controller = 'create', action = 'showCreateForm')
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/initiative/{id1}/{id2}/promoteIdea{end:/?}', controller = 'initiative', action = 'promoteIdea', id1 = '{id1}', id2 = '{id2}')
     map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)

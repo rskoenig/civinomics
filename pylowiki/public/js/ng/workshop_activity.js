@@ -9,6 +9,7 @@ function activityWorkshopController($scope, $http) {
     }
 	$scope.listingType = 'activity';
 	$scope.objType = 'idea';
+	$scope.test = true
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
@@ -86,25 +87,41 @@ function activityWorkshopController($scope, $http) {
         });
 	};
 
+	// Inititial Values : Workshop Phases
+	$scope.showResearch = false;
+	$scope.showIdeas = false;
+	$scope.showInitiatives = false;
+	$scope.showFinal = false;
+	$scope.showWinning = false;
+	$scope.showImpact = false;
 
-	// Menu Items
-	$scope.showSummary = true;
-	$scope.showInfoPreview = true;
+	$scope.showBrief = false;
 	$scope.showStats = false;
-	$scope.showAddNew = false;
+	$scope.showAll = false;
+
+	$scope.showAddBtn = true;
+	$scope.showAddForm = false;
 	$scope.orderProp = '';
 	$scope.query = '';
 	$scope.query2 = '!disabled';
 
-	$scope.toggleSummary= function(){
-		$scope.showSummary = true;
-		$scope.showInfoPreview = true;
-		$scope.showInfo = false;
-		$scope.showStats = false;
+
+	$scope.toggleAllActivity= function(){
+		$scope.showResearch = false;
 		$scope.showIdeas = false;
-		$scope.showDiscussions = false;
-		$scope.showResources = false;
-		$scope.showAddNew = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = true;
+		$scope.showAddForm = false;
+		$scope.orderProp = '';
 		$scope.query = '';
 		$scope.query2 = '!disabled';
 		$scope.objType = 'idea';
@@ -115,46 +132,67 @@ function activityWorkshopController($scope, $http) {
         }
 	}
 
-	$scope.toggleInfo= function(){
-		$scope.showSummary = false;
-		$scope.showInfoPreview = true;
-		$scope.showInfo = true;
-		$scope.showStats = false;
+	$scope.toggleBrief= function(){
+		$scope.showResearch = false;
 		$scope.showIdeas = false;
-		$scope.showDiscussions = false;
-		$scope.showResources = false;
-		$scope.showAddNew = false;
-		$scope.query = {objType:'resource'};
-		$scope.query2 = '';
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = true;
+		$scope.showList = false;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = false;
+		$scope.showAddForm = false;
+	}
+
+	$scope.toggleResearch= function(){
+		$scope.showResearch = true;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = false;
+		$scope.showAddForm = false;
+
+		$scope.orderProp = '';
 		$scope.objType = 'resource';
+		$scope.query = {objType:'resource'};
+		$scope.query2 = '!disabled';
 		if ($scope.allowResources == '0') {
             $scope.addObjType = 'discussion';
         } else {
             $scope.addObjType = 'resource';
         }
-	}
-
-	$scope.toggleStats= function(){
-		$scope.showSummary = false;
-		$scope.showInfoPreview = false;
-		$scope.showInfo = false;
-		$scope.showStats = true;
-		$scope.showIdeas = false;
-		$scope.showDiscussions = false;
-		$scope.showResources = false;
-		$scope.showAddNew = false;
-		$scope.query = '';
-	}
+	};
 
 	$scope.toggleIdeas= function(){
-		$scope.showSummary = false;
-		$scope.showInfoPreview = false;
-		$scope.showInfo = false;
-		$scope.showStats = false;
+		$scope.showResearch = false;
 		$scope.showIdeas = true;
-		$scope.showDiscussions = false;
-		$scope.showResources = false;
-		$scope.showAddNew = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = true;
+		$scope.showAddForm = false;
+
+		$scope.orderProp = '';
 		$scope.query = {objType:'idea'};
 		$scope.query2 = '!disabled';
 		$scope.objType = 'idea'
@@ -164,18 +202,119 @@ function activityWorkshopController($scope, $http) {
             $scope.addObjType = 'idea';
         }
 	}
-	$scope.toggleAdopted= function(){
-		$scope.showSummary = false;
-		$scope.showInfoPreview = false;
-		$scope.showInfo = false;
+
+	$scope.toggleInitiatives= function(){
+		$scope.showResearch = false;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = true;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
 		$scope.showStats = false;
-		$scope.showIdeas = true;
-		$scope.showDiscussions = false;
-		$scope.showResources = false;
-		$scope.showAddNew = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = true;
+		$scope.showAddForm = false;
+
+		$scope.orderProp = '';
+		$scope.query = {objType:'initiative'};
+		$scope.query2 = '!disabled';
+		$scope.objType = 'initiative'
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'initiative';
+        }
+	}
+
+	$scope.toggleFinal= function(){
+		$scope.showResearch = false;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = true;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = false;
+		$scope.showAddForm = false;
+
+		$scope.orderProp = '';
+		$scope.query = {objType:'initiative'};
+		$scope.query2 = '!disabled';
+		$scope.objType = 'initiative'
+		if ($scope.allowIdeas == '0') {
+            $scope.addObjType = 'discussion';
+        } else {
+            $scope.addObjType = 'initiative';
+        }
+	}
+
+	$scope.toggleAdopted= function(){
+		$scope.showResearch = false;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = true;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = false;
+		$scope.showAddForm = false;
+		
 		$scope.query = {status:'adopted'};
 		$scope.query2 = {status:'adopted'};
-		$scope.objType = 'idea'
+		$scope.objType = 'initiative'
+	}
+
+	$scope.toggleImpact= function(){
+		$scope.showResearch = false;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = true;
+
+		$scope.showBrief = false;
+		$scope.showList = true;
+		$scope.showStats = false;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = false;
+		$scope.showAddForm = false;
+		
+		$scope.query = {objType:'update'};
+		$scope.query2 = '';
+		$scope.addObjType = 'update'
+	}
+
+
+	$scope.toggleStats= function(){
+		$scope.showResearch = false;
+		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
+		$scope.showFinal = false;
+		$scope.showAdopted = false;
+		$scope.showImpact = false;
+
+		$scope.showBrief = false;
+		$scope.showList = false;
+		$scope.showStats = true;
+		$scope.showAll = false;
+
+		$scope.showAddBtn = false;
+		$scope.showAddForm = false;
 	}
 
 	$scope.toggleDiscussions= function(){
@@ -184,8 +323,10 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = true;
 		$scope.showResources = false;
+		$scope.showAddBtn = true;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'discussion'};
 		$scope.query2 = '';
@@ -199,8 +340,10 @@ function activityWorkshopController($scope, $http) {
 		$scope.showInfo = false;
 		$scope.showStats = false;
 		$scope.showIdeas = false;
+		$scope.showInitiatives = false;
 		$scope.showDiscussions = false;
 		$scope.showResources = true;
+		$scope.showAddBtn = true;
 		$scope.showAddNew = false;
 		$scope.query = {objType:'resource'};
 		$scope.query2 = '';
@@ -212,23 +355,38 @@ function activityWorkshopController($scope, $http) {
         }
 	};
 
-	$scope.toggleAddNew= function(){
-		$scope.showSummary = false;
-		$scope.showInfoPreview = false;
-		$scope.showInfo = false;
-		$scope.showStats = false;
-		$scope.showIdeas = false;
-		$scope.showDiscussions = false;
-		$scope.showResources = false;
-		$scope.showAddNew = true;
+	$scope.toggleAddForm= function(){
+		$scope.showAddForm = true;
 	};
 
-	$scope.cancelAddNew= function(){
-        $scope.showAddNew = false;
+	$scope.cancelAddForm= function(){
+        $scope.showAddForm = false;
         $scope.newObjTitle = '';
         $scope.newObjText = '';
         $scope.newObjLink = '';
 	};
+
+
+	if ($scope.phase == 'research'){
+		$scope.researchClass = 'active-phase';
+		$scope.toggleResearch();
+	} else if ($scope.phase == 'ideas'){
+		$scope.ideasClass = 'active-phase';
+		$scope.toggleIdeas();
+	} else if ($scope.phase == 'initiatives'){
+		$scope.initiativesClass = 'active-phase';
+		$scope.toggleInitiatives();
+	} else if ($scope.phase == 'final rating'){
+		$scope.finalClass = 'active-phase';
+		$scope.toggleFinal();
+	} else if ($scope.phase == 'winning initiatives'){
+		$scope.adoptedClass = 'active-phase';
+		$scope.toggleAdopted();
+	} else if ($scope.phase == 'impact'){
+		$scope.impactedClass = 'active-phase';
+		$scope.toggleImpact();
+	};
+
 }
 
 function workshopMenuController($scope, Data) {
