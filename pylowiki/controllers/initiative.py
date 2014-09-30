@@ -32,7 +32,7 @@ log = logging.getLogger(__name__)
 
 class InitiativeController(BaseController):
     
-    def __before__(self, action, id1 = None, id2 = None, id3 = None):
+    def __before__(self, action, id1 = None, id2 = None, id3 = None, parentObj = None, parentCode = None):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
@@ -40,8 +40,11 @@ class InitiativeController(BaseController):
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler', 'promoteIdea']
         c.saveMessageClass = 'alert-success'
         c.error = False
-        if action == 'initiativeNewHandler' or action == 'promoteIdea' and id1 is not None and id2 is not None:
-            c.user = userLib.getUserByCode(id1)
+        if action == 'initiativeNewHandler' or action == 'promoteIdea':
+            if id1 is not None:
+                c.user = userLib.getUserByCode(id1)
+            elif c.authuser:
+                c.user = c.authuser
             if not c.user:
                 abort(404)
         elif action in existingList and id1 is not None and id2 is not None:
@@ -173,26 +176,51 @@ class InitiativeController(BaseController):
         return render('/derived/6_initiative_edit.bootstrap')
 
 
-    def initiativeNewHandler(self):
-        if 'initiativeTitle' in request.params:
-            title = request.params['initiativeTitle']
+    def initiativeNewHandler(self, parentObj, parentCode):
+        if request.params:
+            payload = request.params  
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+
+        if parentObj == 'workshop':
+            if parentCode != None:
+                wCode = parentCode
+        elif 'workshopCode' in payload:
+            wCode = payload['workshopCode']
+        if wCode:
+            workshop = workshopLib.getWorkshopByCode(wCode)
+        else:
+            workshop = None
+
+        if 'initiativeTitle' in payload:
+            title = payload['initiativeTitle']
+        elif 'title' in payload:
+            title = payload['title']
         else:
             title = 'New Initiative'
             
-        if 'initiativeDescription' in request.params:
-            description = request.params['initiativeDescription']
+        if 'initiativeDescription' in payload:
+            description = payload['initiativeDescription']
+        elif 'text' in payload:
+            description = payload['text']
         else:
             description = ''
 
-        if 'tags' in request.params:
-            tags = request.params['tags']
+        if 'tags' in payload:
+            tags = payload['tags']
+        elif parentObj:
+            if parentObj == 'workshop':
+                tags = workshop['workshop_category_tags']
         else:
-            tags = None
+            tags = ''
 
         # the scope if initiative is created from a geoSearch page
-        if 'initiativeRegionScope' in request.params:
-            scope = request.params['initiativeRegionScope']
-            
+        if 'initiativeRegionScope' in payload:
+            scope = payload['initiativeRegionScope']
+        elif parentObj:
+            if parentObj == 'workshop':
+                if 'workshop_public_scope' in workshop:
+                    scope = workshop['workshop_public_scope']
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
             
@@ -201,11 +229,7 @@ class InitiativeController(BaseController):
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
 
-        workshop = None
-        if 'workshopCode' in request.params:
-            log.info('workshop, we got a workshop here in the iController!')
-            workshop = workshopLib.getWorkshopByCode(request.params['workshopCode'])
-        
+
         # shortcut scoping for 'My County, My City, My Zip Code'
         #if 'initiativeScope' in request.params:
         #  level = request.params['initiativeScope']

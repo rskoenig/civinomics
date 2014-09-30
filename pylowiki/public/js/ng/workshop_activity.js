@@ -189,7 +189,11 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		$scope.showAddBtn = true;
+		if ($scope.phase != 'ideas' ) {
+			$scope.showAddBtn = false;
+		} else {
+			$scope.showAddBtn = true;	
+		}
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
@@ -216,7 +220,11 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		$scope.showAddBtn = true;
+		if ($scope.phase != 'initiatives' ) {
+			$scope.showAddBtn = false;
+		} else {
+			$scope.showAddBtn = true;	
+		}
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';

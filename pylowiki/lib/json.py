@@ -234,7 +234,8 @@ def getJsonProperties(item):
     tags = []
     tagList = []
     if 'tags' in item:
-        tagList = item['tags'].split('|')
+        if item['tags'] != None:
+            tagList = item['tags'].split('|')
     elif 'initiative_tags' in item:
         tagList = item['initiative_tags'].split('|')
     elif 'workshop_category_tags' in item:

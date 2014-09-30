@@ -548,6 +548,7 @@
                   <select name="objType" ng-model="addObjType">
                     % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
                       <option value="idea">Idea</option>
+                      <option value="initiative">Initiative</option>
                     % endif
                     <option value="discussion">Discussion</option>
                     % if c.w['allowResources'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
