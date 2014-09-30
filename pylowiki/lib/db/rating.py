@@ -101,6 +101,21 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
                 thing['ups'] = int(thing['ups']) - 1
                 thing['downs'] = int(thing['downs']) + 1
                 ratingObj['amount'] = amount
+        if ratingType == 'criteria':
+            if ratingObj['criteria'] == criteria:
+                log.info("Changing amount")
+                ratingObj['amount'] = amount
+            else:
+                log.info("Creating new one")
+                ratingObj = Thing('rating', user.id)
+                if criteria is None:
+                    return False
+                ratingObj['criteria'] = criteria
+                ratingObj['amount'] = amount
+                if user['activated'] == '0':
+                    ratingObj['provisional'] = '1'
+                generic.linkChildToParent(ratingObj, thing)
+                ratingObj['ratingType'] = ratingType
     else:
         if ratingType == 'binary':    
             if amount == 0:
