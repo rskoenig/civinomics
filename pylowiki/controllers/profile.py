@@ -33,6 +33,7 @@ import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.meeting          as meetingLib
+import pylowiki.lib.db.ballot           as ballotLib
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.mail                as mailLib
 import pylowiki.lib.db.rating           as ratingLib
@@ -181,34 +182,15 @@ class ProfileController(BaseController):
                     entry[privateWorkshopEntry] = dict(privateWorkshopCopy)
                     i = i + 1
 
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.listener = listenerLib.getListenersForUser(c.user, disabled = '0')
         c.pendingListeners = []
         c.listeningWorkshops = []
-        for l in listenerList:
-            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-            c.listeningWorkshops.append(lw)
-        if iPhoneApp:
-            if displayWorkshops:
-                i = 0
-                for lWorkshop in c.listeningWorkshops:
-                    listeningWorkshopEntry = "listeningWorkshop" + str(i)
-                    lWorkshopCopy = copy.copy(lWorkshop)
-                    lWorkshopCopy['type'] = 'Listening'
-                    mainImage = mainImageLib.getMainImage(lWorkshop)
-                    lWorkshopCopy['imageURL'] = utils.workshopImageURL(lWorkshop, mainImage, thumbnail = True)
-                    if c.isUser:
-                        l = listenerLib.getListener(c.user['email'], lWorkshop)
-                        if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                            lWorkshopCopy['newItems'] = '1'
-                        else:
-                            lWorkshopCopy['newItems'] = '0'
-                        if 'digest' in l and l['digest'] == '1':
-                            lWorkshopCopy['dailyDigest'] = '1'
-                        else:
-                            lWorkshopCopy['dailyDigest'] = '0'
-                    entry[listeningWorkshopEntry] = dict(lWorkshopCopy)
-                    i = i + 1
-            
+        for l in c.listener:
+            lworkshops = listenerLib.getWorkshopsForListener(l)
+            if lworkshops:
+                for w in lworkshops:
+                    c.listeningWorkshops.append(w)
+
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
         c.facilitatorInitiatives = []
@@ -320,15 +302,6 @@ class ProfileController(BaseController):
             #entry['isFollowing'] = c.isFollowing
             entry['isUser'] = c.isUser
             entry['browse'] = c.browse
-            # next entries represented as __workshop/facilitator/post0..len(c.__-1)
-            #entry['watching'] = c.watching
-            #entry['bookmarkedWorkshops'] = c.bookmarkedWorkshops
-            #entry['privateWorkshops'] = c.privateWorkshops
-            #entry['listeningWorkshops'] = c.listeningWorkshops
-            #entry['pendingFacilitators'] = c.pendingFacilitators
-            #entry['facilitatorWorkshops'] = c.facilitatorWorkshops
-            #entry['memberPosts'] = c.memberPosts
-            #entry['unpublishedActivity'] = c.unpublishedActivity
             
             result = []
             result.append(entry)
@@ -403,12 +376,16 @@ class ProfileController(BaseController):
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
             href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
-            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting':
+            if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot' or entry['objType'] == 'election' or entry['objType'] == 'ballotcandidate':
                 href += '/show'
             if entry['objType'] == 'agendaitem':
                 mCode = item['meetingCode']
                 mURL = item['meeting_url']
                 href = '/meeting/' + mCode + '/' + mURL + '/agendaitem/' + item['urlCode']
+            if entry['objType'] == 'ballotmeasure':
+                mCode = item['ballotCode']
+                mURL = item['ballot_url']
+                href = '/ballot/' + mCode + '/' + mURL + '/ballotmeasure/' + item['urlCode']
                 
             entry['href'] = href
                 
@@ -448,6 +425,65 @@ class ProfileController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result': result})
+        
+    def showUserElections(self, id1, id2):
+        return render("/derived/6_profile_elections.bootstrap")
+        
+    def getUserElections(self, id1, id2):
+        c.elections = ballotLib.getElectionsForUser(id1)
+        if not c.elections:
+            c.elections = []
+            
+        result = []
+        for item in c.elections:
+            entry = {}
+            entry['objType'] = 'election'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['electionDate'] = item['electionDate']
+            
+            scopeInfo = utils.getPublicScope(item['scope'])
+            entry['scopeName'] = scopeInfo['name']
+            entry['scopeLevel'] = scopeInfo['level']
+            entry['scopeHref'] = scopeInfo['href']
+            entry['flag'] = scopeInfo['flag']
+            entry['href']= '/election/' + entry['urlCode'] + '/' + entry['url'] + '/show'
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
+        
+        
+    def showUserBallots(self, id1, id2):
+        return render("/derived/6_profile_ballots.bootstrap")
+        
+    def getUserBallots(self, id1, id2):
+        c.ballots = ballotLib.getBallotsForUser(id1)
+        if not c.ballots:
+            c.ballots = []
+            
+        result = []
+        for item in c.ballots:
+            entry = {}
+            entry['objType'] = 'ballot'
+            entry['url']= item['url']
+            entry['urlCode']=item['urlCode']
+            entry['title'] = item['title']
+            entry['text'] = item['text']
+            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+
+            entry['href']= '/ballot/' + entry['urlCode'] + '/' + entry['url'] + '/show'
+            result.append(entry)
+            
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':0, 'result': result})
+        
         
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':
@@ -689,6 +725,67 @@ class ProfileController(BaseController):
             return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
+            
+    @h.login_required
+    def curate(self, id1, id2):
+        if userLib.isAdmin(c.authuser.id):
+            curateLevel = request.params['curateLevel']
+            scope = geoInfoLib.getGeoScope(c.user['postalCode'], 'United States')
+            scopeList = scope.split('|')
+            if curateLevel == '8':
+                # city
+                scopeName = scopeList[8].title()
+                curateLevelTitle = "City of %s"%scopeName
+                curateList = scopeList[0:9]
+                curateScope = '|'.join(curateList)
+            elif curateLevel == '6':
+                # county
+                scopeName = scopeList[6].title()
+                curateLevelTitle = "County of %s"%scopeName
+                curateList = scopeList[0:7]
+                curateScope = '|'.join(curateList) 
+            elif curateLevel == '4':
+                # state
+                scopeName = scopeList[4].title()
+                curateLevelTitle = "State of %s"%scopeName
+                curateList = scopeList[0:5]
+                curateScope = '|'.join(curateList)
+            elif curateLevel == '2':
+                # country
+                scopeName = scopeList[2].title()
+                curateLevelTitle = "Country of %s"%scopeName.replace('-','')
+                curateList = scopeList[0:3]
+                curateScope = '|'.join(curateList)
+            else:
+                abort(404)
+                
+            c.user['curateLevel'] = curateLevel
+            c.user['curateLevelTitle'] = curateLevelTitle
+            c.user['curateScope'] = curateScope
+            dbHelpers.commit(c.user)
+            
+            returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
+                
+            return redirect(returnURL)
+            
+        else:
+            abort(404)
+            
+    @h.login_required
+    def nocurate(self, id1, id2):
+        if userLib.isAdmin(c.authuser.id):
+            c.user['curateLevel'] = ''
+            c.user['curateLevelTitle'] = ''
+            c.user['curateScope'] = ''
+            dbHelpers.commit(c.user)
+            
+            returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
+                
+            return redirect(returnURL)
+            
+        else:
+            abort(404)
+
 
     @h.login_required
     def csv(self, id1, id2):

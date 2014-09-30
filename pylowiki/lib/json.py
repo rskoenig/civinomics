@@ -198,7 +198,7 @@ def getJsonProperties(item):
 
     # photo
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-        entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+        entry['mainPhoto'] = "/images/photos/%s/orig/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
         entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
     elif item.objType == 'initiative':
         entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
@@ -312,6 +312,11 @@ def getJsonProperties(item):
         entry['group'] = item['group']
         entry['href'] += '/show'
         entry['agendaItemCount'] = str(aCount)
+    
+    if 'readOnly' in item:
+        entry['readOnly'] = item['readOnly']
+    else:
+        entry['readOnly'] = "0"
 
     if 'commentRole' in item:
         entry['position'] = item['commentRole']

@@ -10,9 +10,9 @@ log = logging.getLogger(__name__)
 
 def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
     if unpublished == '1':
-        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished']
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished', 'ballotcandidateUnpublished']
     else:
-        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative']
+        activityTypes = activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative', 'meeting', 'agendaitem', 'ballot', 'ballotmeasure']
     discussionTypes = ['general', 'update', 'organization_general', 'organization_position']
     codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     keys = ['deleted']

@@ -11,6 +11,7 @@ function geoProfileController($scope, $http) {
 	$scope.showConditionalType = "";
 
 	$scope.getActivity = function() {
+		console.log("getActivity");
 		$scope.alertMsg = ''
 		$scope.activityLoading = true;
 		console.log($scope.activityType);
@@ -39,6 +40,7 @@ function geoProfileController($scope, $http) {
 	$scope.geoPopulation = '';
 
 	$scope.getAllActivity = function(){
+		console.log("getAllActivity");
 		$scope.geoScope = '';
 		$scope.activityType = '/all';
 		$scope.geoFlagUrl = '/images/flags/homeFlag.gif';
@@ -47,18 +49,21 @@ function geoProfileController($scope, $http) {
 	};
 
 	$scope.getFollowingActivity = function(){
+		console.log("getFollowingActivity");
 		$scope.activityType = '/following';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.getGeoActivity = function(){
+		console.log("getGeoActivity");
 		$scope.activityType = '/geo';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 	
 	$scope.getGeoScopedActivity = function(scope, name, url, population, href, photo){
+		console.log(scope);
 		$scope.activityType = '/geo/'+scope;
 		$scope.geoScope = scope;
 		$scope.geoScopeName = name;
@@ -72,17 +77,18 @@ function geoProfileController($scope, $http) {
 	
 	
 	$scope.getGeoScopedActivityType = function(scope, type){
+		console.log("getGeoScopedActivityType");
 		$scope.activityType = '/geo/'+scope + '/' + type;
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 	
 	$scope.getMeetingActivity = function(scope){
+		console.log("getMeetingActivity");
 		$scope.oldActivityType = $scope.activityType;
 		$scope.activityType = '/geomeetings/'+scope;
 		$scope.rightAlertMsg = ''
 		$scope.meetingsLoading = true;
-		console.log($scope.activityType);
 		$http.get('/getSiteActivity' + $scope.activityType).success(function(data){
 			if (data.statusCode == 1){
 				$scope.rightAlertMsg = data.alertMsg;
@@ -104,7 +110,7 @@ function geoProfileController($scope, $http) {
 	};
 
 	$scope.getActivitySlice = function() {
-		console.log("Hiya!");
+		console.log("getActivitySlice");
 		if ($scope.busy || $scope.noMoreSlices) return;
 		$scope.busy = true;
 		$scope.alertMsg = ''
@@ -127,8 +133,8 @@ function geoProfileController($scope, $http) {
 		})
 	};
 
-	$scope.geoInit = function(scope){	
-		console.log("I'm here");
+	$scope.geoInit = function(scope){
+		console.log("geoInit");
 		$scope.activity = null;
 		$scope.activityType = '/geo/'+scope;
 		$scope.isGeoInit = true;
@@ -137,6 +143,7 @@ function geoProfileController($scope, $http) {
 	};
 	
 	$scope.showOnly = function(type){
+		console.log("showOnly");
 		if (type === 'all') {
 /*
 			$scope.showConditional = false;

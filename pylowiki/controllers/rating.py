@@ -15,6 +15,7 @@ import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.meeting      as meetingLib
+import pylowiki.lib.db.ballot       as ballotLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.generic      as genericLib
 import pylowiki.lib.utils           as utils
@@ -56,6 +57,10 @@ class RatingController(BaseController):
             thing = initiativeLib.getInitiative(code)
         elif action == 'rateAgendaItem':
             thing = meetingLib.getAgendaItem(code)
+        elif action == 'rateBallotMeasure':
+            thing = ballotLib.getBallotMeasure(code)
+        elif action == 'rateBallotCandidate':
+            thing = ballotLib.getBallotCandidate(code)
         
         if thing['disabled'] == '1':
             # Should only get triggered when the user posts directly and bypasses the UI
@@ -115,6 +120,14 @@ class RatingController(BaseController):
         return redirect(session['return_to'])
 
     def rateAgendaItem(self, code, amount):
+        return redirect(session['return_to'])
+        
+    @h.login_required
+    def rateBallotMeasure(self, code, amount):
+        return redirect(session['return_to'])
+        
+    @h.login_required
+    def rateBallotCandidate(self, code, amount):
         return redirect(session['return_to'])
         
     ########################################################################

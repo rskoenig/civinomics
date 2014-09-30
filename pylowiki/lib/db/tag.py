@@ -43,14 +43,20 @@ def getTagCategories():
     tags.append('Community')
     tags.append('Economy')
     tags.append('Education')
+    tags.append('Employment')
+    tags.append('Energy')
     tags.append('Environment')
+    tags.append('Family')
     tags.append('Government')
     tags.append('Health')
     tags.append('Housing')
+    tags.append('Infrastructure')
+    tags.append('Justice')
     tags.append('Land Use')
     tags.append('Municipal Services')
     tags.append('Parks and Rec')
     tags.append('Safety')
+    tags.append('Sports')
     tags.append('Transportation')
     tags.append('Water')
     tags.append('Other')
@@ -75,6 +81,7 @@ def getTagColouring():
                 'Employment':           'black-tag',
                 'Education':            'black-tag',
                 'Housing':              'black-tag',
+                'Energy':               'blue-tag',
                 'Transportation':       'blue-tag',
                 'Infrastructure':       'blue-tag',
                 'Municipal Services':   'blue-tag',

@@ -122,35 +122,6 @@
                             </div><!-- row -->
                         </div><!-- margin-top -->
                     % endif
-                    % if role == 'Listening':
-                        <div style="margin-top: 10px;">
-                            <%
-                                l = listenerLib.getListener(c.user['email'], workshop)
-                                itemsChecked = ''
-                                digestChecked = ''
-                                if l:
-                                    if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                                        itemsChecked = 'checked'
-                                    if 'digest' in l and l['digest'] == '1':
-                                        digestChecked = 'checked'
-                            %>
-                            <div class="row" ng-controller="listenerController">
-                                <div class="col-sm-3">Email when:</div>
-                                <div class="col-sm-3">
-                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
-                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                    </form>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-3">
-                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Weekly Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
-                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
-                                    </form>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- row -->
-                        </div><!-- margin-top -->
-                    % endif
                     % if role == 'Bookmarked': 
                         <% f = followLib.getFollow(c.user, workshop) %>
                         % if f:
@@ -337,14 +308,23 @@
                             'idea': 'posed the idea',
                             'photo': 'added the picture',
                             'initiative': 'launched the initiative',
-                            'comment': 'commented on a'}
+                            'comment': 'commented on a',
+                            'meeting': 'posted a meeting',
+                            'agendaitem': 'posted an agenda item to a meeting',
+                            'ballot': 'posted a ballot',
+                            'ballotmeasure': 'posted a ballot measure to a ballot'}
 
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
                             'photo':'photo',
                             'initiative':'initiative',
-                            'comment':'comment'}
+                            'comment':'comment',
+                            'meeting':'meeting',
+                            'agendaitem':'agenda item',
+                            'ballot':'ballot',
+                            'ballotmeasure':'ballot measure',
+                            'ballotcandidate': 'ballot candidate'}
     %>
     <table class="table table-hover table-condensed">
         <tbody>
@@ -397,6 +377,11 @@
                         parentURL = item['meeting_url']
                         parentObjType = 'meeting'
                         parentLink = "/meeting/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'ballotCode' in item:
+                        parentCode = item['ballotCode']
+                        parentURL = item['ballot_url']
+                        parentObjType = 'ballot'
+                        parentLink = "/ballot/" + parentCode + "/" + parentURL + "/show/"
                     elif 'profileCode' in item:
                         # not a photo, must be an organization discussion
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/discussion/show/" + item['discussionCode']
@@ -404,10 +389,6 @@
                         parentObjType = 'discussion'
                         parentURL = item['parent_url']
                     else:
-                        log.info("no parentObjType item is %s"%item.keys())
-                        parentObjType = ""
-                        parentURL = ""
-                        parentCode = ""
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
                         
                     title = lib_6.ellipsisIZE(item['data'], 40)
@@ -416,6 +397,11 @@
                         parentCode = item['initiativeCode']
                         parentURL = item['initiative_url']
                         parentObjType = 'initiative'
+                        title = lib_6.ellipsisIZE(item['title'], 40)
+                elif objType == 'agendaitem' and 'meetingCode' in item:
+                        parentCode = item['meetingCode']
+                        parentURL = item['meeting_url']
+                        parentObjType = 'meeting'
                         title = lib_6.ellipsisIZE(item['title'], 40)
                 else:
                     parentCode = False
@@ -436,6 +422,24 @@
                 <% 
                     link = "/initiative/" + item['urlCode'] + "/" + item['url'] + "/show"
                     activityStr = "launched the initiative <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'meeting':
+                <% 
+                    link = "/meeting/" + item['urlCode'] + "/" + item['url'] + "/show"
+                    activityStr = "posted the meeting <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if (item['deleted'] == '0' and item['public'] == 'on') or 'Unpublished' in origObjType:
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'agendaitem':
+                <% 
+                    link = "/meeting/" + parentCode + "/" + parentURL + "/show"
+                    activityStr = "posted an agenda item to a meeting <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>
                 % if (item['deleted'] == '0' and item['public'] == '1') or 'Unpublished' in origObjType:
@@ -487,7 +491,14 @@
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n} </td></tr>
                 % endif
-            
+            % elif objType == 'comment' and 'ballotCode' in item:
+                <% 
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">ballot item</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 
                     activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
@@ -555,12 +566,20 @@
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
                             'photo': 'added the picture',
-                            'comment': 'commented on a'}
+                            'comment': 'commented on a',
+                            'ballot': 'posted a ballot',
+                            'ballotmeasure': 'posted a ballot measure to a ballot',
+                            'meeting': 'posted a meeting',
+                            'agendaitem': 'posted an agenda item to a meeting'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
                             'photo':'photo',
-                            'comment':'comment'}
+                            'comment':'comment',
+                            'meeting':'meeting',
+                            'agendaitem':'agendaitem',
+                            'ballot':'ballot',
+                            'ballotmeasure':'ballotmeasure'}
     %>
     <table class="table table-hover table-condensed">
         <tbody>
@@ -680,21 +699,6 @@
                         <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
                     % endfor                       
                     </select>
-                </form>
-                </div>
-            </div><!-- row -->
-        % endif
-        % if wListL:
-            <div class="row">
-                <div class="centered">
-                <form method="post" name="inviteListen" id="inviteListen" action="/profile/${c.user['urlCode']}/${c.user['url']}/listener/invite/handler" class="form-inline">
-                    <br />
-                    <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to be a listener of the selected workshop">Invite</button> to be a listener <select name="workshopCode">
-                    % for myW in wListL:
-                        <option value="${myW['urlCode']}">${myW['title']}</option>
-                    % endfor                       
-                    </select>
-                    <input type="text" name="lTitle" placeholder="Title or Description" required>
                 </form>
                 </div>
             </div><!-- row -->
@@ -885,6 +889,37 @@
                             </tr>
                         </table>
                         <p>${lib_6.userGeoLink(c.user)}</p>
+                        % if c.listener:
+                            % for l in c.listener:
+                                <% scopeInfo = utils.getPublicScope(l) %>
+                                <p>Listener for ${scopeInfo['level'].title()} of ${scopeInfo['name']}</p>
+                            % endfor
+                        % endif
+                        % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
+                            <p>Community curator for ${c.user['curateLevelTitle']}</p>
+                        % endif
+
+                        %if c.isAdmin:
+                            <div class="well">
+                            % if 'curateLevel' in c.user and c.user['curateLevel'] != '':
+                                <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/nocurate">
+                                    Remove as a curator: <button type="submit" class="btn btn-danger">Submit</button>
+                                </form>
+                            % else:
+                                <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/curate">
+                                    Make a curator for their &nbsp; &nbsp;
+                                    <select name="curateLevel">
+                                        <option value="8">City</option>
+                                        <option value="6" selected>County</option>
+                                        <option value="4">State</option>
+                                        <option value="2">Country</option>
+                                    </select>
+                                    <p><button type="submit" class="btn btn-primary">Submit</button></p>
+                                </form>
+                            % endif
+                            </div><!-- well -->
+                            <div class="spacer"></div>
+                        % endif
                     </div><!-- ng-controller -->
                 </div>
                 % else:

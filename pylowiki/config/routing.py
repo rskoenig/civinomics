@@ -205,7 +205,7 @@ def make_map():
     # resources
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/{resource:resource/?}', controller = 'resource', action = 'addResource') 
-    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler')
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler', parentCode = '{parentCode}')
     map.connect('/{initiative:initiatives?}/{parentCode}/{parentURL}/add/resource/{handler:handler/?}', controller = 'resource', action = 'addResourceHandler') 
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/{resource:resources?}/{resourceCode}/{resourceURL}{end:/?}', controller = 'resource', action = 'showResource')
     #show resource without a parent
@@ -248,16 +248,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
     
     # Listener management
-    map.connect('/profile/{userCode}/{userURL}/listener/invite/{handler:handler/?}', controller = 'listener', action = 'listenerInviteHandler', userCode = '{userCode}', userURL = '{userURL}')
-    map.connect('/profile/{userCode}/{userURL}/listener/response/{handler:handler/?}', controller = 'listener', action = 'listenerResponseHandler', userCode = '{userCode}', userURL = '{userURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/add/{handler:handler/?}', controller = 'listener', action = 'listenerAddHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/edit/{handler:handler/?}', controller = 'listener', action = 'listenerEditHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/toggle/{handler:handler/?}', controller = 'listener', action = 'listenerToggleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/email/{handler:handler/?}', controller = 'listener', action = 'listenerEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/suggest/{handler:handler/?}', controller = 'listener', action = 'listenerSuggestHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/list/{handler:handler/?}', controller = 'listener', action = 'listenerListHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/title/{handler:handler/?}', controller = 'listener', action = 'listenerTitleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/listener/{urlCode}/listenerShow{end:/?}', controller = 'listener', action = 'listenerShow', urlCode = '{urlCode}')
+    map.connect('/listener/{urlCode}/listenerEdit{end:/?}', controller = 'listener', action = 'listenerEdit', urlCode = '{urlCode}')
+    map.connect('/listener/{urlCode}/listenerEditHandler{end:/?}', controller = 'listener', action = 'listenerEditHandler', urlCode = '{urlCode}')
 
     # Share management
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/email/{handler:handler/?}', controller = 'share', action = 'shareEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
@@ -266,9 +259,6 @@ def make_map():
 
     # Comment notifications
     map.connect('/profile/preferences/{id1}/{id2}/comments/{handler:handler/?}', controller = 'profile', action = 'preferencesCommentsHandler', id1 = '{id1}', id2 = '{id2}')
-    
-    # Listener notifications
-    map.connect('/{workshop:workshops?}/{workshopCode}/{url}/listen/{userCode}/notifications/{handler:handler/?}', controller = 'listener', action = 'listenerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
@@ -288,7 +278,9 @@ def make_map():
     map.connect('/rate/initiative/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateInitiative', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/user/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateUser', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/agendaitem/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateAgendaItem', code = '{code}', url = '{url}', amount = '{amount}')
-    
+    map.connect('/rate/ballotmeasure/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateBallotMeasure', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/ballotcandidate/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateBallotCandidate', code = '{code}', url = '{url}', amount = '{amount}')
+        
     # Disable/enable/delete/edit/flag Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
     map.connect('/enable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'enable')
@@ -432,6 +424,14 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/meetings', controller = 'profile', action = 'showUserMeetings', id1 = '{id1}', id2 = '{id2}')
     map.connect('/getMeetings/{id1}/{id2}', controller = 'profile', action = 'getUserMeetings', id1 = '{id1}', id2 = '{id2}')
     map.connect('/unsubscribe/user/{id1}{end:/?}', controller = 'profile', action='unsubscribe', id1 = '{id1}')
+    map.connect('/profile/{id1}/{id2}/ballots', controller = 'profile', action = 'showUserBallots', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallots/{id1}/{id2}', controller = 'profile', action = 'getUserBallots', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/elections', controller = 'profile', action = 'showUserElections', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getElections/{id1}/{id2}', controller = 'profile', action = 'getUserElections', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/curate', controller = 'profile', action = 'curate', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/nocurate', controller = 'profile', action = 'nocurate', id1 = '{id1}', id2 = '{id2}')
+
+    
 
     # CSV Parsing 
     map.connect('/profile/{id1}/{id2}/{csv:csv/?}', controller = 'profile', action = 'csv', id1 = '{id1}', id2 = '{id2}')
@@ -451,6 +451,31 @@ def make_map():
     map.connect('/agendaitem/{id1}/{id2}/editHandler{end:/?}', controller = 'meeting', action = 'agendaitemEditHandler', id1 = '{id1}', id2 = '{id2}') 
     map.connect('/getMeetingAgendaItems/{id1}/{id2}{end:/?}', controller = 'meeting', action = 'getMeetingAgendaItems', id1 = '{id1}', id2 = '{id2}')
     
+    ####################################################################
+    # Elections, Ballots, Ballot Measures and Candidates for Office     #
+    ####################################################################
+    map.connect('/election/{id1}/{id2}/electionNew{end:/?}', controller = 'ballot', action = 'electionNew', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/election/{id1}/{id2}/electionNewHandler{end:/?}', controller = 'ballot', action = 'electionNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/election/{id1}/{id2}/electionEdit{end:/?}', controller = 'ballot', action = 'electionEdit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/election/{id1}/{id2}/electionEditHandler{end:/?}', controller = 'ballot', action = 'electionEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/election/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'electionShow', id1 = '{id1}', id2 = '{id2}')    
+    map.connect('/election/{id1}/{id2}/ballotNewHandler{end:/?}', controller = 'ballot', action = 'ballotNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotEdit{end:/?}', controller = 'ballot', action = 'ballotEdit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotEditHandler{end:/?}', controller = 'ballot', action = 'ballotEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotmeasure/{id3}{end:/?}', controller = 'ballot', action = 'ballotShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/ballot/{id1}/{id2}/ballotMeasureAddHandler{end:/?}', controller = 'ballot', action = 'ballotMeasureAddHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballotmeasure/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotmeasureEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballotmeasure/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotmeasureShow', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallots/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallots', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallotMeasures/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotMeasures', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballot/{id1}/{id2}/ballotCandidateAddHandler{end:/?}', controller = 'ballot', action = 'ballotCandidateAddHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballotcandidate/{id1}/{id2}/editHandler{end:/?}', controller = 'ballot', action = 'ballotcandidateEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/ballotcandidate/{id1}/{id2}/show{end:/?}', controller = 'ballot', action = 'ballotcandidateShow', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getBallotCandidates/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'getBallotCandidates', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/showSampleBallot/{id1}/{id2}{end:/?}', controller = 'ballot', action = 'showSampleBallot', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/getElectionsForPostalCode/{id1}{end:/?}' , controller = 'ballot', action = 'getElectionsForPostalCode', id1 = '{id1}')
+    map.connect('/getSampleBallotInfo/{id1}/{id2}{end:/?}' , controller = 'ballot', action = 'getSampleBallotInfo', id1 = '{id1}', id2 = '{id2}')
 
     ###############
     # Create #
