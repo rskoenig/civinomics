@@ -457,6 +457,21 @@
     % endif
 </%def>
 
+<%def name="showGoals2(goals)">
+    % if len(goals) == 0:
+        <p>This workshop has no goals!</p>
+    % else:
+        <div class="well goals" id="workshopGoals">
+          <% goalNum = 1 %>
+          % for goal in goals:
+            <h4>Goal ${goalNum}</h4>
+            <p>${goal['title']}</p>
+            <% goalNum += 1 %>
+          % endfor
+        </div><!-- workshopGoals -->
+    % endif
+</%def>
+
 <%def name="showScope()">
     <%
         if c.w['public_private'] == 'public':
@@ -725,12 +740,12 @@
 <%def name="workshopMenu()">
   % if c.authuser:
     % if c.privs and not c.privs['provisional']:
-      <button class="btn btn-lg btn-block btn-success addBtn" ng-show="showAddBtn" ng-click="toggleAddForm()" ng-cloak>Add your {{addObjType}}</button>
+      <button class="btn btn-lg btn-block btn-success addBtn" ng-show="showAddBtn" ng-click="toggleAddForm()" ng-cloak>Add {{addObjType}}</button>
     % else:
-      <a class="btn btn-lg btn-block btn-success addBtn" href="#activateAccountModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add your {{addObjType}}</a>
+      <a class="btn btn-lg btn-block btn-success addBtn" href="#activateAccountModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addObjType}}</a>
     % endif
   % else:
-    <a class="btn btn-lg btn-block btn-success addBtn" href="#signupLoginModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add your {{addObjType}}</a>
+    <a class="btn btn-lg btn-block btn-success addBtn" href="#signupLoginModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addObjType}}</a>
   % endif
 
   <ul class="nav nav-pills workshop-menu">
