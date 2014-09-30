@@ -119,6 +119,7 @@ app.controller('ratingsController', function($scope, $http){
 	
 	$scope.rateCriteria = function(parentHref, thingCode, criteria){
     	var requestUrl = parentHref+"/criteria/rate/"+thingCode+"/"+criteria.criteria+"/"+criteria.amount;
+    	$scope.vote = criteria.amount;
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					$scope.vote = criteria.amount;

@@ -32,6 +32,7 @@ class RatingController(BaseController):
         if amount is None:
             return
         log.info(code)
+        log.info(amount)
         amount = int(amount)
         if amount < 0:
             amount = -1

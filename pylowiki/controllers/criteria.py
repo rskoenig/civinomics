@@ -78,7 +78,6 @@ class CriteriaController(BaseController):
     def getRatingForCriteria(self, workshopCode, criteria, thingCode):
         thing = ideaLib.getIdea(thingCode)
         result = ratingLib.getCriteriaRatingForThing(workshopCode, thing, criteria)
-        log.info(result)
         if len(result) == 0:
             return 0  
         else:
