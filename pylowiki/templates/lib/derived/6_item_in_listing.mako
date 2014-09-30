@@ -93,7 +93,7 @@
                     if 'info' in thing:
                         link = link + '<div class="spacer"></div>' + thing['info']
             else:
-                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                title = '<span class="listed-item-title">%s</span>' %(thing['title']) 
         %>
         ${title | n}<br>
         <div class="spacer"></div>
@@ -137,7 +137,7 @@
         adminID = 'admin-%s' % thing['urlCode']
         #log.info("thing keys is %s"%thing.keys())
     %>
-    <div class="btn-group" style="margin-top: -10px;">
+    <div class="btn-group">
         % if thing['disabled'] == '0' and not c.privs['provisional']:
             <a class="btn btn-sm btn-default accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif

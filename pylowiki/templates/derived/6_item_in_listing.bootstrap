@@ -65,6 +65,7 @@
                     <div class="col-xs-11">
                         <div class="well yesNoWell">
                             ${lib_6.yesNoVote(c.thing, 'detail')}
+                            ${lib_6.showPositions(c.thing)}
                         </div>
                         ${helpers.showItemTitle(c.thing)}
                         <div class="spacer"></div>

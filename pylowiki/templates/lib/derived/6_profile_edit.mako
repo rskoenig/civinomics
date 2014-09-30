@@ -48,10 +48,10 @@
             <h1> Sorry, Civinomics is in read only mode right now </h1>
         % else:
             <div class="tabbable">
-                <div class="col-sm-3">
-                    <div class="section-wrapper">
-                        <div class="browse">
-                            <ul class="nav nav-pills nav-stacked">
+                <div class="col-sm-2">
+                    ${lib_6.userImage(c.user, className="avatar avatar-large")}
+                    <div>
+                        <ul class="nav nav-pills nav-stacked workshop-menu">
                             <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
                             </a></li>
                             <li class="${tab6active}"><a href="#tab6" data-toggle="tab">2. Picture
@@ -66,11 +66,14 @@
                             <li class="${tab5active}"><a href="#tab5" data-toggle="tab">6. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
-                            </ul>
-                        </div><!-- browse -->
-                    </div><!-- section-wrapper -->
-                </div> <!-- /.col-sm-3 -->
-                <div class="col-sm-9">
+                        </ul>
+                    </div>
+                </div> <!-- /.col-sm-2 -->
+                <div class="col-sm-10">
+                    <ul class="nav nav-tabs" id="editTabs">
+                        <li class="active"><a href="#tab-edit" data-toggle="tab" class="green green-hover">Edit Profile</a></li>
+                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></li>
+                    </ul>
                     ${lib_6.fields_alert()}
                     % if c.conf['read_only.value'] == 'true':
                         <!-- read only -->
@@ -118,6 +121,27 @@
                         <span class="error help-block" ng-show="infoEdit.member_name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
 				    </div> <!-- /.col-xs-12 -->
 			    </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="greetingMsg" class="control-label">Short bio:</label>
+                        <input class="form-control" type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="col-sm-10">
+                        <span class="help-block">Displayed with your posts (e.g. Thomas Jefferson, 3rd President of the United States; Founding Father; Principle Author, Declaration of Independence )</span>
+                    </div> <!-- /.col-xs-12 -->
+                </div> <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="orgLink" class="control-label">Your website:</label>
+                        <input type="text" class="col-sm-10 form-control" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
+                    </div> <!-- /.col-xs-12 -->
+                </div> <!-- /.form-group -->
+                <!--
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <label for="orgLinkMsg" class="control-label">A description of your website:</label>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="col-sm-10 form-control"></textarea>
+                    </div> 
+                </div>
+                -->
 			    <div class="form-group">
 				    <div class="col-xs-12">
                         <label for="email" class="control-label">Email:</label>
@@ -133,25 +157,54 @@
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.col-xs-12 -->
 			    </div> <!-- /.form-group -->
-        	    <div class="form-group">
-				    <div class="col-xs-12">
-                        <label for="greetingMsg" class="control-label">Short bio:</label>
-                        <input class="form-control" type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="col-sm-10">
-                        <span class="help-block">Displayed with your posts<br>(example: Thomas Jefferson, Founding Father)</span>
-				    </div> <!-- /.col-xs-12 -->
-			    </div> <!-- /.form-group -->
-       	        <div class="form-group">
-    			    <div class="col-xs-12">
-                        <label for="orgLink" class="control-label">Your website:</label>
-                        <input type="text" class="col-sm-10 form-control" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
-				    </div> <!-- /.col-xs-12 -->
-			    </div> <!-- /.form-group -->
-       	        <div class="form-group">
-				    <div class="col-xs-12">
-                        <label for="orgLinkMsg" class="control-label">A description of your website:</label>
-                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="col-sm-10 form-control"></textarea>
-				    </div> <!-- /.col-xs-12 -->
-			    </div> <!-- /.form-group -->
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <% 
+                            memberType = 'Individual'
+                            if c.user['memberType'] == 'organization':
+                                memberType = 'Organization'
+                        %>
+                        <label for="member-name" class="control-label">Membership Type:</label> ${memberType}<br>
+
+                        % if c.user['memberType'] != 'organization' and not c.privs['provisional']:
+
+                            <div class="panel-group" id="accordion">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#changeToOrg" class="btn btn-default top-space-md" data-toggle="modal">Change to Organization</a>
+
+                                <div id="changeToOrg" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                    <p>Organizations are special types of members:</p>
+                                    <ul>
+                                        <li>Organizations can post featured position statements.</li>
+                                        <!--<li>Members can post topics or ideas about an organization that other members can vote on.</li>-->
+                                        <li>Organization get easy to remember Civinomics addresses: civinomics.com/YourOrganization</li>
+                                        <li>Organizations are listed as a separate category in search results</li>
+                                        <li>Organizations can't vote, sorry.</li>
+                                    </ul>
+                                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/organization/upgrade/handler" class="btn btn-primary">Change to Organization</a>
+                                  </div>
+                                </div>
+                            </div>
+
+
+                            <div id="upgradeOrg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="upgradeOrgLabel" aria-hidden="true">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h3 id="myModalLabel">Change to Organization</h3>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                                    
+                                </div>
+                            </div>
+                        % endif
+                    </div>
+                </div> <!-- /.form-group -->
+
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
                     <input type="submit" class="btn btn-warning btn-lg" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes" ng-click="submitProfileEdit()"></input>
                     <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
@@ -227,7 +280,7 @@
                 <div id="fileupload-button-div" class="row fileupload-buttonbar collapse in">
                     <div class="col-sm-10 col-sm-offset-1">
                         <!-- The fileinput-button span is used to style the file input field as button -->
-                        <span class="btn btn-success fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
+                        <span class="btn btn-success btn-lg fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
                             <i class="icon-plus icon-white"></i>
                             <span>Select your picture</span>
                             <input type="file" name="files[]">
@@ -258,7 +311,7 @@
                             <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                            <button type="button" class="btn btn-primary btn-lg start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
                                 <i class="icon-upload icon-white"></i>
                                 <span>Start</span>
                             </button>

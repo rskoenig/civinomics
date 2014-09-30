@@ -6,7 +6,7 @@
 
 <%
     lib.return_to()
-    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
+    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea', 'position':'Position Statement'}
 %>
 
 <div class="row">
@@ -113,6 +113,7 @@
             </div>
             
             % if c.thing.objType != 'revision':
+            <hr>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="row">

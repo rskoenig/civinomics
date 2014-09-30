@@ -155,6 +155,7 @@ def editComment(comment, data, commentRole = 'neutral'):
 
 # Object
 def Comment(data, owner, discussion, privs, role = None, parent = 0):
+    profileTypes = ['photo', 'initiative', 'organization_general', 'organization_position']
     attachedThing = None
     thisComment = Thing('comment', owner.id)
     
@@ -169,18 +170,21 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
     if discussion['discType'] == 'photo':
         attachedThing = photoLib.getPhoto(discussion['photoCode'])
         profileOwner = generic.getThingByID(attachedThing.owner)
-    if discussion['discType'] == 'initiative':
+    elif discussion['discType'] == 'initiative':
         attachedThing = initiativeLib.getInitiative(discussion['initiativeCode'])
         profileOwner = generic.getThingByID(attachedThing.owner)
-    if discussion['discType'] == 'agendaitem':
+    elif discussion['discType'] == 'agendaitem':
         attachedThing = meetingLib.getAgendaItem(discussion['agendaitemCode'])
-    if discussion['discType'] == 'resource' and 'initiativeCode' in discussion:
+    elif discussion['discType'] == 'resource' and 'initiativeCode' in discussion:
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
     elif discussion['discType'] == 'resource' and 'initiativeCode' not in discussion:
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
-    if discussion['discType'] == 'idea':
+    elif discussion['discType'] == 'organization_general' or discussion['discType'] == 'organization_position':
+        attachedThing = discussion
+        profileOwner = generic.getThingByID(attachedThing.owner)
+    elif discussion['discType'] == 'idea':
         attachedThing = ideaLib.getIdea(discussion['ideaCode'])
         
             
@@ -188,17 +192,19 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
             
     thisComment = generic.linkChildToParent(thisComment, discussion)
     if attachedThing is not None:
-        thisComment = generic.linkChildToParent(thisComment, attachedThing)
+        if attachedThing.id != discussion.id:
+            thisComment = generic.linkChildToParent(thisComment, attachedThing)
         nComments = 0
-        if 'numComments' in attachedThing:
-            nComments = int(attachedThing['numComments'])
+        if attachedThing.objType != 'discussion':
+            if 'numComments' in attachedThing:
+                nComments = int(attachedThing['numComments'])
             
-        nComments += 1
+            nComments += 1
         
-        attachedThing['numComments'] = str(nComments)
-        commit(attachedThing)
+            attachedThing['numComments'] = str(nComments)
+            commit(attachedThing)
         
-        if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
+        if discussion['discType'] in profileTypes:
             thisComment['profileCode'] = profileOwner['urlCode']
             thisComment['profile_url'] = profileOwner['url']
     thisComment['disabled'] = '0'

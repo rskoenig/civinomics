@@ -58,6 +58,7 @@ app.controller('SearchCtrl', function($scope, $http){
     }
     $scope.workshopsURL = '/search/workshops/' + $scope.searchType + '/' + $scope.searchString;
     $scope.peopleURL = '/search/people/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.organizationsURL = '/search/organizations/orgURL/' + $scope.searchString;
     $scope.resourcesURL = '/search/resources/' + $scope.searchType + '/' + $scope.searchString;
     $scope.discussionsURL = '/search/discussions/' + $scope.searchType + '/' + $scope.searchString;
     $scope.ideasURL = '/search/ideas/' + $scope.searchType + '/' + $scope.searchString;
@@ -67,6 +68,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.showingWorkshops = {'class': '', 'show': false, 'create': false};
     //$scope.showingWorkshops = {'class': 'active', 'show': false, 'create': false};
     $scope.showingPeople = {'class': '', 'show': false, 'create': false};
+    $scope.showingOrganizations = {'class': '', 'show': false, 'create': false};
     $scope.showingResources = {'class': '', 'show': false, 'create': false};
     $scope.showingDiscussions = {'class': '', 'show': false, 'create': false};
     $scope.showingIdeas = {'class': '', 'show': false, 'create': false};
@@ -128,6 +130,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.searchWorkshops = function() {
         $scope.currentPage = 0;
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
@@ -166,6 +169,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.searchPeople = function() {
         $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
@@ -201,10 +205,50 @@ app.controller('SearchCtrl', function($scope, $http){
         }
     };
     
+    $scope.searchOrganizations = function() {
+        $scope.currentPage = 0;
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false}
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'organizations';
+        $http.get($scope.organizationsURL).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingOrganizations = {'class': 'active', 'show': false};
+                $scope.organizations = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingOrganizations = {'class': 'active', 'show': false};
+                $scope.organizations = null;
+            }
+            else if (data.statusCode === 0)
+            {
+                $scope.organizations = data.result;
+                $scope.showingOrganizations = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.organizations.length/$scope.pageSize);                
+        }
+    };
+    
     $scope.searchResources = function() {
         $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
@@ -243,6 +287,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
@@ -281,6 +326,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
@@ -319,6 +365,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
@@ -357,6 +404,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingOrganizations = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};

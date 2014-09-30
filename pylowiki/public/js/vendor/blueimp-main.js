@@ -16,7 +16,12 @@ $(function () {
     'use strict';
 
     // Initialize the jQuery File Upload widget:
-    $('#fileupload').fileupload();
+    $('.fileupload').each(function () {
+    	console.log("I'm being called");
+	    $(this).fileupload({
+	        dropZone: $(this)
+	    });
+	});
 
     // Enable iframe cross-domain access via redirect option:
     $('#fileupload').fileupload(
