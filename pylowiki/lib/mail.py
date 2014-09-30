@@ -200,6 +200,44 @@ def sendListenerAddMail(recipient, user, workshop):
 
     send(recipient, fromEmail, subject, textMessage)
     
+def sendNewListenerMail(listener):
+           
+    subject = 'You have been added as a Civinomics Listener'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/newlistener.txt"
+    scopeInfo = utils.getPublicScope(listener)
+    listenerScope = scopeInfo['level'] + " of " + scopeInfo['name']
+    
+    # 0|0|united-states|0|0|0|0|0|0|0
+    scopeList = listener['scope'].split('|')
+    state = scopeList[4]
+    county = scopeList[6]
+    city = scopeList[8]
+    
+    browseURL = config['app_conf']['site_base_url'] + "/workshops/geo/earth/united-states"
+    
+    if state != '0' and state != '':
+        browseURL += '/' + state
+    if county != '0' and county != '':
+        browseURL += '/' + county
+    if city != '0' and city != '':
+        browseURL += '/' + city
+
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.listenerScope}', listenerScope)
+    textMessage = textMessage.replace('${c.listenerName}', listener['name'])
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(listener['email'], fromEmail, subject, textMessage)
+    
 def sendShareMail(recipientEmail, memberMessage, user, item, itemURL):
            
     subject = '%s shared "%s" with you' % (user['name'], item['title'])

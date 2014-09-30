@@ -12,6 +12,9 @@ ${helpers.shortFooter()}
 	% if c.privs['provisional']:
 		${helpers.activateAccountModal()}
 	% endif
+% else:
+    ${helpers.signupLoginModal()}
 % endif
-${helpers.signupLoginModal()}
+
+
 
