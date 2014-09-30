@@ -9,6 +9,7 @@ function activityWorkshopController($scope, $http) {
     }
 	$scope.listingType = 'activity';
 	$scope.objType = 'idea';
+	$scope.test = true
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
@@ -364,6 +365,28 @@ function activityWorkshopController($scope, $http) {
         $scope.newObjText = '';
         $scope.newObjLink = '';
 	};
+
+
+	if ($scope.phase == 'research'){
+		$scope.researchClass = 'active-phase';
+		$scope.toggleResearch();
+	} else if ($scope.phase == 'ideas'){
+		$scope.ideasClass = 'active-phase';
+		$scope.toggleIdeas();
+	} else if ($scope.phase == 'initiatives'){
+		$scope.initiativesClass = 'active-phase';
+		$scope.toggleInitiatives();
+	} else if ($scope.phase == 'final rating'){
+		$scope.finalClass = 'active-phase';
+		$scope.toggleFinal();
+	} else if ($scope.phase == 'winning initiatives'){
+		$scope.adoptedClass = 'active-phase';
+		$scope.toggleAdopted();
+	} else if ($scope.phase == 'impact'){
+		$scope.impactedClass = 'active-phase';
+		$scope.toggleImpact();
+	};
+
 }
 
 function workshopMenuController($scope, Data) {

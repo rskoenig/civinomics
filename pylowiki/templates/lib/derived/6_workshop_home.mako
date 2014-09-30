@@ -807,37 +807,37 @@
 <%def name="workshopTimeline()">
   <div class="btn-group btn-group-justified timeline">
     <div class="btn-group" ng-click="toggleResources()">
-      <button type="button" class="btn btn-default" ng-click="toggleResearch()">
+      <button type="button" class="btn btn-default {{researchClass}}" ng-click="toggleResearch()">
         <span class="workshop-metrics">Research</span><br>
         <strong ng-cloak>${c.numResources}</strong>
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleIdeas()">
+      <button type="button" class="btn btn-default {{ideasClass}}" ng-click="toggleIdeas()">
         <span class="workshop-metrics">Ideas</span><br>
         <strong ng-cloak>${c.numIdeas}</strong>
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleInitiatives()">
+      <button type="button" class="btn btn-default {{initiativesClass}}" ng-click="toggleInitiatives()">
         <span class="workshop-metrics">Initiatives</span><br>
         <strong ng-cloak>${c.numInitiatives}</strong>
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleFinal()">
+      <button type="button" class="btn btn-default {{finalClass}}" ng-click="toggleFinal()">
         <span class="workshop-metrics">Final Rating</span><br>
         <strong ng-cloak>${c.numFinal}</strong>
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleAdopted()">
+      <button type="button" class="btn btn-default {{adoptedClass}}" ng-click="toggleAdopted()">
         <span class="workshop-metrics">Winning Initiatives</span><br>
         <strong ng-cloak>${c.numAdopted}</strong>
       </button>
     </div>
     <div class="btn-group">
-      <button type="button" class="btn btn-default" ng-click="toggleImpact()">
+      <button type="button" class="btn btn-default {{impactClass}}" ng-click="toggleImpact()">
         <span class="workshop-metrics">Impact</span><br>
         <strong ng-cloak>${c.numUpdates}</strong>
       </button>

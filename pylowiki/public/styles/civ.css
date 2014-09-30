@@ -1801,6 +1801,16 @@ button.transparent{
   padding-top: 0;
 }
 
+.btn.active-phase, .btn.active-phase:hover, .btn.active-phase:active{
+  color: #fff;
+  background-color: #f0ad4e;
+  border: 3px #eea236 solid !important;
+}
+
+.active-phase span{
+  color: #fff !important;
+}
+
 
 .btn-civ.round i{
   padding-right: 3px;
@@ -3323,7 +3333,7 @@ a.no-highlight.overlay{
   color:#fff;
 }
 a.no-highlight:hover{
-  color: #3c51bf;
+  color: #428bca;;
 }
 a.no-highlight.no-hover:hover{
   color: #333333;

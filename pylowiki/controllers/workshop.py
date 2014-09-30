@@ -129,7 +129,7 @@ class WorkshopController(BaseController):
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
+        ,'configureStartWorkshopHandler', 'configurePhase','adminWorkshopHandler', 'preferences']
         
         scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
@@ -690,9 +690,31 @@ class WorkshopController(BaseController):
             alert['title'] = 'Workshop Started!'
             alert['content'] = ' You may return to Workshop Preferences by clicking on the cog icon on the workshop front page. Have fun!'
             session['alert'] = alert
+            session['confTab'] = "participants"
             session.save()
             
         return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+
+
+    @h.login_required
+    def configurePhase(self, workshopCode, workshopURL):
+        log.info("in configurePhase!")
+        if 'workshop_phase' in request.params:
+            c.w['phase'] = request.params['workshop_phase'] 
+            log.info("workshop phase is now %s" % c.w['phase'])
+            dbHelpers.commit(c.w)
+
+            alert = {'type':'success'}
+            alert['title'] = 'Phase Updated'
+            alert['content'] = ' This workshop is now in %s Phase' % c.w['phase'].title()
+            session['alert'] = alert
+            session['confTab'] = "manageWs"
+            session.save()
+        else:
+            log.info("no phase dawg")
+
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
+
         
     @h.login_required
     def publishWorkshopHandler(self, workshopCode, workshopURL):
@@ -975,6 +997,9 @@ class WorkshopController(BaseController):
         # broken currently incrementing by 2-3
         if 'views' not in c.w:
             c.w['views'] = u'0'
+
+        if 'phase' not in c.w:
+            c.w['phase'] = None
         
         if c.w.objType != 'revision':    
             views = int(c.w['views']) + 1

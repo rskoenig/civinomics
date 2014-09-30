@@ -388,16 +388,16 @@
                 ideasChecked = 'checked'
             elif c.w['phase'] == 'initiatives':
                 initiativesChecked = 'checked'
-            elif c.w['phase'] == 'final':
+            elif c.w['phase'] == 'final rating':
                 finalChecked = 'checked'
-            elif c.w['phase'] == 'winning':
+            elif c.w['phase'] == 'winning initiatives':
                 winningChecked = 'checked'
             elif c.w['phase'] == 'impact':
                 impactChecked = 'checked'
         else:
             researchChecked = 'checked'
     %>
-    <form>
+    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePhase/handler">
         <label>Workshop Phase:</label>
         <p class="text-info">Select the current phase your workshop is in.</p>
         <div class="radio">
@@ -420,13 +420,13 @@
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="workshop_phase" id="final" value="final" ${finalChecked}>
+            <input type="radio" name="workshop_phase" id="final" value="final rating" ${finalChecked}>
             Final Rating
           </label>
         </div>
         <div class="radio">
           <label>
-            <input type="radio" name="workshop_phase" id="adopted" value="adopted" ${winningChecked}>
+            <input type="radio" name="workshop_phase" id="adopted" value="winning initiatives" ${winningChecked}>
             Winning Initiatives
           </label>
         </div>

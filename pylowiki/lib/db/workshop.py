@@ -433,6 +433,7 @@ def Workshop(title, owner, publicPrivate, type = "personal", desc = " ", **kwarg
     w['published'] = u'0'
     w['deleted'] = u'0'
     w['disabled'] = u'0'
+    w['phase'] = 'research'
     w['facilitators'] = c.authuser.id
     w['description'] = desc
     w['public_private'] = publicPrivate
