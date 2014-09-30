@@ -656,8 +656,6 @@
 
     ${workshopPhaseDescriptions()}
 
-    ${workshopListFilters()}
-
     <div class="alert alert-info" ng-class="alertType" ng-if="(alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0" ng-cloak>
       <span ng-show="query == ''">{{alertMsg}}</span>
       <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{objType}}s. Be the first to add one!</span>
