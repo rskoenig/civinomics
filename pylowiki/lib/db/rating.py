@@ -25,6 +25,20 @@ def getRatingForThing(user, thing):
     except:
         return False
 
+def getCriteriaRatingForThingUser(user, thing, criteria):
+    try:
+        thingCode = '%sCode' % thing.objType
+        log.info("Thing code is %s", thingCode)
+        q = meta.Session.query(Thing)\
+            .filter_by(objType = 'rating')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wc('criteria', criteria)))\
+            .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
+        log.info(q)
+        return q
+    except:
+        return False
+        
 def getCriteriaRatingForThing(workshopCode, thing, criteria):
     thingCode = '%sCode' % thing.objType
     log.info("Getting the ratings for %s in the idea %s", criteria, thing['urlCode'])
@@ -65,16 +79,21 @@ def getRatingForWorkshopObjects(user, workshopCode, objType):
 
 
 def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
+    log.info("User is %s", user.id)
     if 'ups' not in thing.keys():
         thing['ups'] = 0
     if 'downs' not in thing.keys():
         thing['downs'] = 0
-    
-    ratingObj = getRatingForThing(user, thing)
+    if criteria:
+        log.info("I have criteria")
+        ratingObj = getCriteriaRatingForThingUser(user, thing, criteria)
+    else:
+        ratingObj = getRatingForThing(user, thing)
     if ratingObj:
         # Just change the previous vote
         prevRating = int(ratingObj['amount'])
         if ratingType == 'binary':
+            log.info("I'm binary")
             if amount == 1 and amount == prevRating:
                 # user is 'undoing' their upvote
                 thing['ups'] = int(thing['ups']) - 1
@@ -102,6 +121,7 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
                 thing['downs'] = int(thing['downs']) + 1
                 ratingObj['amount'] = amount
         if ratingType == 'criteria':
+            log.info("I'm criteria")
             if ratingObj['criteria'] == criteria:
                 log.info("Changing amount")
                 ratingObj['amount'] = amount
@@ -118,6 +138,7 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
                 ratingObj['ratingType'] = ratingType
     else:
         if ratingType == 'binary':    
+            log.info("I don't exist but I'm binary")
             if amount == 0:
                 # Don't make a new neutral object
                 return False
@@ -132,6 +153,7 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
                 ratingObj['provisional'] = '1'
 
         elif ratingType == 'criteria':
+            log.info("I don't exist but I'm criteria")
             ratingObj = Thing('rating', user.id)
             if criteria is None:
                 return False

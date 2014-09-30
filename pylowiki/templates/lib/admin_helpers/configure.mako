@@ -252,7 +252,7 @@
 		<div class="browse">
 			<h4 class="section-header smaller"> Ratings </h4>
 			<div class="col-sm-12" style="padding: 19px;" ng-controller="ratingsController">
-			%if c.w['rating_criteria']:
+			%if 'rating_criteria' in c.w:
 				<p ng-init="initCriteria('${c.w['rating_criteria']}')"></p>
 			%endif
 				<div class="form-group">
