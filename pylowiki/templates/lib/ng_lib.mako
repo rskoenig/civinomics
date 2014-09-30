@@ -728,11 +728,11 @@
 </%def>
 
 <%def name="rateCriteria()">
-	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" >
+	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" ng-cloak>
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
 		Rate this idea:
-		<form style="text-align: left; padding-left: 300px; margin-top:15px;">
+		<form style="text-align: left; margin-top:15px;">
 			<ul class="list-inline" ng-repeat="criteria in rating.criteriaList" style="">
 				<li> <span class="glyphicon" 
 				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
@@ -752,7 +752,6 @@
 		</div>
 	</div> <!-- container-div -->
 </%def>
-
 
 <%def name="candidateVoteBlock()">
     % if 'user' in session:

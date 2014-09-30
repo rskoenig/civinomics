@@ -46,15 +46,20 @@ app.controller('ratingsController', function($scope, $http){
 	};
 	
 	$scope.getCriteriaList = function(parentHref,thingCode){
+	    console.log($scope.hasCriteria);
 		if ($scope.hasCriteria) return;
+		console.log(parentHref);
 		var requestUrl = parentHref+"/criteria/get/"+thingCode;
+        console.log(requestUrl);
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					$scope.rating.type = 'criteria';
 					$scope.rating.criteriaList = data.criteria;
+					console.log($scope.rating.criteriaList);
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
+    				console.log($scope.rating.criteriaList);
 					return false;				
 				}
 				$scope.hasCriteria = true;
