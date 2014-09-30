@@ -475,7 +475,7 @@
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                     ${yesNoVoteFooter()}
                     <div ng-if="item.parentObjType == 'workshop'">                    	
-                        <div ng-show="rating.type == 'criteria'" class="criteria-workshop">
+                        <div ng-show="rating.type == 'criteria'">
                     	${rateCriteria()}
                     	</div>
                     </div>
@@ -732,7 +732,7 @@
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
 		Rate this idea:
-		<form style="">
+		<form style="text-align: left; padding-left: 3%; margin-top:15px;">
 			<ul class="list-inline" ng-repeat="criteria in rating.criteriaList" style="">
 				<li> <span class="glyphicon" 
 				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
