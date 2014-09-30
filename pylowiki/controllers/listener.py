@@ -15,6 +15,7 @@ import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.tag          as tagLib
+import pylowiki.lib.mail            as mailLib
 
 log = logging.getLogger(__name__)
 
@@ -181,6 +182,7 @@ class ListenerController(BaseController):
                 
         if urlCode == 'new':
             listener = listenerLib.Listener(name, title, group, ltype, tag1, tag2, lurl, text, email, scope, term_end)
+            mailLib.sendNewListenerMail(listener)
         else:
             listener = listenerLib.getListenerByCode(urlCode)
             if not listener:
