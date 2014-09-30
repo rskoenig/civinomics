@@ -1,7 +1,8 @@
 function activityController($scope, $http) {
 	$scope.listingType = 'activity';
+
 	if ($scope.activityType == undefined) {
-	    $scope.activityType = '/all';
+	    $scope.activityType = 'all';
 	}
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
@@ -13,7 +14,12 @@ function activityController($scope, $http) {
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
 		$scope.activityLoading = true;
-		$http.get('/getSiteActivity' + $scope.activityType).success(function(data){
+		if ($scope.code){
+	        $scope.activityUrl = '/getObjActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
+	    }else{
+	    	$scope.activityUrl = '/getSiteActivity/' + $scope.activityType
+	    }
+		$http.get($scope.activityUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
 				$scope.activity = []
@@ -30,7 +36,8 @@ function activityController($scope, $http) {
 		})
 	};
 
-	$scope.getActivity();
+        
+    $scope.getActivity(); 
 
 	$scope.geoScope = '';
 	$scope.geoFlagUrl = '/images/flags/homeFlag.gif';
@@ -38,26 +45,26 @@ function activityController($scope, $http) {
 
 	$scope.getAllActivity = function(){
 		$scope.geoScope = '';
-		$scope.activityType = '/all';
+		$scope.activityType = 'all';
 		$scope.geoFlagUrl = '/images/flags/homeFlag.gif';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.getFollowingActivity = function(){
-		$scope.activityType = '/following';
+		$scope.activityType = 'following';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.getGeoActivity = function(){
-		$scope.activityType = '/geo';
+		$scope.activityType = 'geo';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 	
 	$scope.getGeoScopedActivity = function(scope, name, url, population, href, photo){
-		$scope.activityType = '/geo/'+scope;
+		$scope.activityType = 'geo/'+ scope;
 		$scope.geoScope = scope;
 		$scope.geoScopeName = name;
 		$scope.geoFlagUrl = url;
@@ -69,13 +76,19 @@ function activityController($scope, $http) {
 	};
 	
 	$scope.getMeetingActivity = function(){
-		$scope.activityType = '/meetings';
+		$scope.activityType = 'meetings';
+		$scope.getActivity();
+		$scope.offset = $scope.sliceSize;
+	};
+
+	$scope.getMemberActivity = function(){
+		$scope.activityType = 'member';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
 
 	$scope.browseInitiatives = function(){
-		$scope.activityType = '/initiatives';
+		$scope.activityType = 'initiatives';
 		$scope.getActivity();
 		$scope.offset = $scope.sliceSize;
 	};
@@ -85,10 +98,15 @@ function activityController($scope, $http) {
 		$scope.busy = true;
 		$scope.alertMsg = ''
 		$scope.activitySliceLoading = true;
-		console.log($scope.offset);
-		$http.get('/getActivitySlice/0' + $scope.activityType + '/' + $scope.offset).success(function(data){
+		if ($scope.code){
+		    $scope.sliceUrl = '/getObjActivitySlice/0/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url + '/' + $scope.offset;
+		}else{
+		    $scope.sliceUrl = '/getActivitySlice/0/' + $scope.activityType + '/' + $scope.offset;
+		}
+		$http.get($scope.sliceUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
+				$scope.alertMsg = data.alertMsg;
 			} 
 			else if (data.statusCode === 0){
 				activitySlice = data.result;

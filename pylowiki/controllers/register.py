@@ -236,12 +236,12 @@ class RegisterController(BaseController):
             session.save()
             return redirect(returnPage)
         username = name
-        maxChars = 50;
+        maxChars = 200;
         errorFound = False;
         # These warnings should all be collected onto the stack, then at the end we should render the page
         if name and email and checkTOS:
             if len(name) > maxChars:
-                name = name[:50]
+                name = name[:200]
             if len(email) > maxChars:
                 log.info("Error: Long email")
                 errorFound = True

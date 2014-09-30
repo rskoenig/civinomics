@@ -281,14 +281,19 @@ ${templateHelpers.signupLoginModal()}
 <%def name="headScripts()">
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
-    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
     <script type="text/javascript">
+        $('.modal i[rel="tooltip"]')
+        .tooltip({placement: 'top'})
+        .data('tooltip')
+        .tip()
+        .css('z-index', 2080);
         $('.signup-tooltip').tooltip();
         $('.icon-question-sign').tooltip();
         $('.upVote.nullvote').tooltip();

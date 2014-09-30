@@ -217,8 +217,8 @@
         </script>
         <div class="btn-group facebook">
           % if 'btn' in kwargs:
-            <a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
-              <i class="icon-facebook icon-light right-space"></i> | Share
+            <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
+              <strong><i class="glyphicon glyphicon-share-alt"></i> Share </strong>
             </a>
           % else:
             <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
@@ -226,6 +226,16 @@
             </a>
           % endif
           <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
+            % if not c.privs['provisional'] and c.initiative:
+                <%
+                    subj = 'Vote on "' + c.initiative['title'] + '"'
+                    subj = subj.replace(' ','%20')
+                    body = initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+                %>
+                <li>
+                    <a href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope"></i> Email</i></a>
+                </li>
+            % endif
             <li>
               % if shareOnWall:
                 <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
@@ -599,6 +609,81 @@
    </div>
 </%def>
 
+<%def name="showPositions(thing)">
+    <% 
+        pStr = ""
+        positions = discussionLib.getPositionsForItem(thing)
+    %>
+    % for p in positions:
+        <% org = userLib.getUserByID(p.owner) %>
+        ${userImage(org, className="avatar small-avatar")}
+        % if p['position'] == 'support':
+            <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> supports this initiative.</br>' %>
+        % else:
+            <% pStr += '<a href="/profile/' + p['userCode'] + '/' + p['user_url'] + '">' + p['user_name'] + '</a> opposes this initiative.</br>' %>
+        % endif
+    % endfor
+    ${pStr | n}                                
+</%def>
+
+<%def name="orgPosition(thing)">
+
+    <!-- if org has already made a position statement -->
+
+    <div ng-show="userStatement.support" class="alert alert-success" ng-cloak>Your organization has posted a position statement in support of this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+
+    <div ng-show="userStatement.oppose" class="alert alert-danger" ng-cloak>Your organization has posted a position statement in opposition to this {{objType}}.<br><a ng-href="{{userStatement.url}}" target="_blank">View or Edit Position</a></div>
+
+    <div ng-init="inPage = true;">
+        <div ng-controller="yesNoVoteCtrl">
+            <div ng-show="userStatement.madeStatement" ng-cloak>
+                <small class="grey">{{totalVotes}} votes <span>| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small> 
+                <div class="progress" style="height: 12px; margin-bottom: 5px;">
+                    <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
+                </div>
+                <div class="text-right">
+                    <small ng-if="item.goal == 100" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+                    <small ng-if="!(item.goal == 100)" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- if org has not yet made a position statement -->
+
+    <form role="form" ng-hide="checkingMadeStatement || userStatement.madeStatement" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/add/position/handler/${thing['urlCode']}" method="POST" ng-cloak>
+        <div class="form-group">
+            <label class="radio-inline">
+                <input type="radio" name="position" id="positionSupport" value="support" checked>
+                Support
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="position" id="positionOppose" value="oppose">
+                Oppose
+            </label>
+        </div>
+        <div class="form-group">
+            <label style="font-weight: 400;">
+                Statement:
+            </label>
+            % if not c.privs['provisional']:
+                <textarea class="form-control min-textarea" rows="3" name="text" required></textarea>
+            % else:
+                <a href="#activateAccountModal" data-toggle="modal">
+                    <textarea class="form-control min-textarea" rows="3" name="text" required></textarea>
+                </a>
+            % endif
+        </div>
+        <div class="text-right">
+        % if not c.privs['provisional']:
+            <button class="btn btn-success">Submit</button>
+        % else:
+            <a class="btn btn-success" href="#activateAccountModal" data-toggle="modal">Submit</a>
+        % endif
+        </div>
+    </form>
+</%def>
+
 <%def name="yesNoVote(thing, *args)">
    <div class="yesNoWrapper">
       % if thing['disabled'] == '1' or thing.objType == 'revision':
@@ -619,7 +704,9 @@
         else:
             myRatings = {}
       %>
-      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['provisional']) and not self.isReadOnly() and c.authuser['memberType'] == 'organization':
+        ${orgPosition(thing)}
+      % elif 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 
             thingCode = thing['urlCode']
             #log.info("thingCode is %s"%thingCode)
@@ -966,14 +1053,14 @@
    ${ideaStr | n}
 </%def>
 
-<%def name="discussionLink(d, w, **kwargs)">
+<%def name="discussionLink(d, p, **kwargs)">
     <%
-        if 'workshopCode' in d:
+        if 'workshopCode' in d and p != None:
             log.info("It has a discussion code")
             if 'noHref' in kwargs:
-                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+                discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
             else:
-                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+                discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
             discussionStr += commentLinkAppender(**kwargs)
             if 'noHref' in kwargs:
                 discussionStr += ''
@@ -984,8 +1071,16 @@
                 discussionStr = '/initiative/%s/%s/updateShow/%s'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
             else:
                 discussionStr = 'href="/initiative/%s/%s/updateShow/%s"'%(d['initiativeCode'], d['initiative_url'], d['urlCode'])
+
+        elif 'discType' in d and d['discType'] == 'organization_general':
+            if 'noHref' in kwargs:
+                discussionStr = '/profile/%s/%s/discussion/show/%s'%(d['userCode'], d['user_url'], d['urlCode'])
+            else:
+                discussionStr = 'href="/profile/%s/%s/discussion/show/%s"'%(d['userCode'], d['user_url'], d['urlCode'])
+
         else:
             discussionStr = 'href="/discussion/%s/%s"'%(d['urlCode'], d['url'])
+
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -1064,7 +1159,7 @@
 </%def>
 
 <%def name="userImage(user, **kwargs)">
-   <%
+    <%
       if type(user) == type(1L):
          user = userLib.getUserByID(user)
       imgStr = ''
@@ -1094,12 +1189,16 @@
          imgStr += ' data-placement="%s"' % kwargs['placement']
       
       imgStr += '></a>'
-   %>
-   % if 'noLink' in kwargs:
+    %>
+    % if 'noLink' in kwargs:
       <img src="${_userImageSource(user, **kwargs)}" class="${kwargs['className']}" alt="${title}" title="${title}">
-   % else:
+    % elif 'bgImage' in kwargs:
+        <!-- to handle large facebook photos which are not cropped to squares -->
+        <div class="avatar avatar-large" style="background-image: url(${_userImageSource(user, **kwargs)}); background-size: cover cover; background-position: center top"></div>
+
+    % else:
     ${imgStr | n}
-   % endif
+    % endif
 </%def>
 
 <%def name="_userImageSource(user, **kwargs)">
@@ -1159,7 +1258,7 @@
                         else:
                             source = user['facebookProfileSmall']
         if large and gravatar:
-            source += '&s=200'
+            source += '&s=170'
         return source
         %>
 </%def>
@@ -1481,8 +1580,8 @@
 
 <%def name="flagThing(thing, **kwargs)">
     <% flagID = 'flag-%s' % thing['urlCode'] %>
-    <div class="row-fluid collapse" id="${flagID}">
-        <div class="span11 offset1 alert">
+    <div class="row collapse" id="${flagID}">
+        <div class="col-sm-11 col-sm-offset-1 alert">
             <strong>Are you sure you want to flag this ${thing.objType}?</strong>
             <br />
             <a ${flagThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
@@ -1519,6 +1618,7 @@
 </%def>
 
 <%def name="editThing(thing, **kwargs)">
+
     <% editID = 'edit-%s' % thing['urlCode'] %>
     <% 
         text = ''
@@ -1527,7 +1627,9 @@
             
         ctype = ""
         if thing.objType == 'comment':
-            if 'initiativeCode' in thing and 'resourceCode' not in thing:
+            if c.discussion and c.discussion['discType'] == 'organization_position':
+                ctype = "regular"
+            elif 'initiativeCode' in thing and 'resourceCode' not in thing:
                 ctype = "initiative"
             elif 'ideaCode' in thing:
                 ctype = "idea"
@@ -1548,14 +1650,23 @@
                         neutralChecked = 'checked'
                 else:
                     neutralChecked = 'checked'
+        if thing.objType == 'discussion' and 'position' in thing:
+            supportChecked = ""
+            opposeChecked = ""
+            if thing['position'] == 'support':
+                supportChecked = 'checked'
+            else:
+                opposeChecked = 'checked'
+            ctype = ""
+            if 'initiativeCode' in thing:
+                ctype = 'initiative'
+            elif 'ideaCode' in thing:
+                ctype = 'idea'
     %>
     <div class="row collapse" id="${editID}">
-        <div class="col-xs-11 col-xs-offset-1">
+        <div class="col-xs-12">
             <div class="spacer"></div>
             <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
-                <fieldset>
-                <label>Edit</label>
-                <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
                     % if ctype == 'initiative' or ctype == 'idea':
                         <div class="row">
@@ -1574,25 +1685,50 @@
                     % endif
                     <textarea class="comment-reply col-sm-10 form-control" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
-                    <label>Idea title</label>
-                    <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
-                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional nformation <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                        <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
+                    </div>
                 % elif thing.objType == 'discussion':
-                    <label>Topic title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
-                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
+                    <div class="form-group">
+                        <label>Topic title</label>
+                        <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    </div>
+                    % if 'position' in thing:
+                        <div class="form-group">
+                            <label class="radio inline">
+                                <input type=radio name="position" value="support" ${supportChecked}> We support this ${ctype}
+                            </label>
+                            <label class="radio inline">
+                                <input type=radio name="position" value="oppose" ${opposeChecked}> We oppose this ${ctype}
+                            </label>
+                        </div><!-- row-->
+                    % endif
+                    <div class="form-group">
+                        <label>Additional information <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                        <textarea name="text" rows="3" class="input-block-level form-control">${text}</textarea>
+                    </div>
                 % elif thing.objType == 'resource':
-                    <label>Resource title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id="title" required>
-                    <label>Resource URL</label>
-                    <input type="url" class="input-block-level" name="link" value = "${thing['link']}" id = "link" required>
-                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                    <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
+                    <div class="form-group">
+                        <label>Resource title</label>
+                        <input type="text" class="input-block-level form-control" name="title" value = "${thing['title']}" maxlength="120" id="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Resource URL</label>
+                        <input type="url" class="input-block-level form-control" name="link" value = "${thing['link']}" id = "link" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional information <a href="#" class="btn btn-xs btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+                        <textarea name="text" rows="3" class="input-block-level form-control">${thing['text']}</textarea>
+                    </div>
                 % endif
-                </fieldset>
-                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
+                </div>
             </form>
         </div>
     </div>
@@ -1735,6 +1871,8 @@
                                         dparent = c.initiative
                                     elif c.user:
                                         dparent = c.user
+                                    else:
+                                        dparent = None
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
                                 %>
                                 <tr>
@@ -2037,3 +2175,4 @@
       <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
 </%def>
+

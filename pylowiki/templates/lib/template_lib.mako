@@ -35,8 +35,8 @@
                 </form>
                 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/home">Home</a></li>
                     % if c.authuser:
+                        <li><a href="/home">Home</a></li>
                         % if c.authuser['activated'] == '1':
                             <li class="dropdown">
                                 <a href="/create" class="dropdown-toggle">Create <b class="caret"></b></a>
@@ -95,6 +95,7 @@
                             </ul>
                         </li>
                     % else:
+                        <li><a href="/home">Browse</a></li>
                         <li><a href="/login">Login</a></li>
                         <li><a href="/signup">Signup</a></li>
                     % endif
@@ -477,12 +478,25 @@
                     <input class="form-control" type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
+                <div class="col-sm-8">
+                    <label class="radio">
+                        <input type="radio" name="memberType" id="memberType1" ng-model="memberType1" value="professional" checked>
+                        Individual <span class="light">(vote, suggest new ideas)</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="memberType" id="memberType2" ng-model="memberType2" value="organization">
+                        Organization <span class="light">(take positions, have members)</span>
+                    </label>
+                </div>
+            </div>
             <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
                 <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
                 <div class="col-sm-4">
                     <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
-                    <div id="postalCodeResult"></div>
+                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
                 </div>
             </div>
             <div class="form-group">
@@ -601,7 +615,7 @@
                     <p>You can't add comments, ideas, discussions or resources until you've activated your account.</p>
 
                     <p>To activate your account, click the link in your activation email from <strong>registration@civinomics.com</strong>. Don't see the email? Check your Spam or Junk folder.</p>
-                    <div class="top-space green" id="resendMessage"></div>
+                    <div class="" id="resendMessage"></div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Close</button>

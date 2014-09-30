@@ -38,7 +38,7 @@
 				        <input type="file" name="avatar[]" id="imgAvatar" />
 				        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
                 <h4>Cover Photo</h4>
-				        <input type='file' id="imgCover" name="cover" />
+				        <input type='file' id="imgCover" name="cover[]" />
 				        <img id="cover" style="display:none;" name="cover[]" src="#" alt="your cover image" />
 				</div>
                 <div>

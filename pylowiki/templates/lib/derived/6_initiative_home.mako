@@ -118,11 +118,11 @@
 <%def name="watchButton(i, **kwargs)">
     % if 'user' in session:
         % if c.isFollowing or 'following' in kwargs:
-            <button class="btn btn-default pull-right followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
-            <span><i class="icon-bookmark med-green"></i><strong> Following </strong></span>
+            <button class="btn btn-success followButton following" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
+            <span><i class="icon-bookmark"></i><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn btn-default pull-right followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" rel="tooltip" data-placement="bottom" data-original-title="this initiative" id="initiativeBookmark">
+            <button class="btn btn-default followButton" data-URL-list="initiative_${i['urlCode']}_${i['url']}" id="initiativeBookmark">
              <span><i class="icon-bookmark med-green"></i><strong> Follow </strong></span>
             </button>
         % endif
@@ -423,10 +423,16 @@
                 </div>
             </div>
         </form>
+        
+        
+	
+            
+            
+        
         <div class="row" id="photo">
             <h3 class="initiative-title edit">4. Photo</h3>
         </div><!-- row -->
-        <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
+<form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
             <div id="fileinput-button-div">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
@@ -453,7 +459,8 @@
                 </div><!-- col-sm-10 -->
             </div><!-- row -->
             <!-- The table listing the files available for upload/download -->
-            <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+             
+             <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery" ng-if="fuType === 'files[]'">
                 <tbody><tr data-ng-repeat="file in queue">
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
@@ -472,7 +479,8 @@
 
                         </div><!-- preview -->
                         <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
-                            </td>
+                        	</td>
+                            
                             <td>
                                 <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
                             </td>
@@ -480,6 +488,7 @@
                                 <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
                                 <i class="icon-upload icon-white"></i>
                                 <span>Save</span>
+                                
                                 </button>
                                 <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
                                 <i class="icon-ban-circle icon-white"></i>
@@ -488,9 +497,72 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
-            </form>
+                </table> 
 
+<!-- BACKGROUND PHOTO UPLOAD-->
+<h4 class="initiative-title edit">Cover Photo</h4>
+	<form action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data"  ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="true" data-fileuploadcover="options">
+            <div id="fileinput-button-div">
+                <!-- The fileinput-button span is used to style the file input field as button -->
+                %if 'directoryNum_photos' in c.initiative and 'pictureHash_cover' in c.initiative:
+                    <% thumbnail_url = "/images/cover/%s/thumbnail/%s.png"%(c.initiative['directoryNum_cover'], c.initiative['pictureHash_cover']) %>
+                    <span class="pull-left">Current Cover Picture
+                    <div class="spacer"></div>
+                    <img src="${thumbnail_url}">
+                    </span>
+                % else:
+                    <span class="pull-left">Upload a Picture (Required)</span>
+                % endif
+                <input class="fileinput-button pull-right" type="file" name="cover[]" id="fileCover">
+                <input type="hidden" name="cover" value="True">
+                </span>
+                <!-- The loading indicator is shown during file processing -->
+                <div class="fileupload-loading"></div>
+                <!-- The global progress information -->
+            </div><!-- row -->
+            
+</form>
+
+<table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                <tbody><tr data-ng-repeat="file in queue" ng-if="fuType === 'cover[]'">
+                    <td data-ng-switch="" on="!!file.thumbnail_url">
+                        <div class="preview" data-ng-switch-when="true">
+                            <script type="text/javascript">
+                                function setAction(imageHash) {
+                                    actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
+                                    document.getElementById('fileupload').action = actionURL;
+                                }
+                            </script>
+                            <div class="row">
+                                <img src="{{file.thumbnail_url}}">
+                                New Picture Uploaded and Saved
+                                <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" class="btn btn-warning btn-large pull-right" name="submit_photo">Save Changes</a>
+                            </div><!-- row -->
+                            </form>
+
+                        </div><!-- preview -->
+                        <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
+                        	</td>
+                            
+                            <td>
+                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Save</span>
+                                
+                                </button>
+                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>   
+<form></form>
+<br/>
         ${coAuthorInvite()}
     </div><!-- col-sm-12 -->
 </div>
@@ -864,4 +936,3 @@
         </div><!-- ng-init -->
     %endif   
 </%def>
-

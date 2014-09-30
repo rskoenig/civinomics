@@ -59,7 +59,7 @@
                         disableImageResize: true,
                         maxFileSize: 5000000, // 5MB
                         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                        maxNumberOfFiles: 1,
+                        maxNumberOfFiles: 2,
                         previewMaxWidth: 400,
                         imageMaxWidth: 400,
                     });

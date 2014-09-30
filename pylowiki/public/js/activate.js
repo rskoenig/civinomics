@@ -26,6 +26,8 @@ $('button.resendActivateEmailButton').click(function(e){
         async : false,
         url  : urlString
     });
-    var message = "Registration email resent!" ;  
-    document.getElementById('resendMessage').innerText = message;
+    var message = "Registration email resent! Close or refresh this page after clicking the emailed link." ;  
+    resendMessage = document.getElementById('resendMessage')
+    resendMessage.innerText = message;
+    resendMessage.className = "alert alert-success";
 });
