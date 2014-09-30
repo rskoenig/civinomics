@@ -54,21 +54,38 @@ class CriteriaController(BaseController):
         else:
             log.info("Hell naw. I'm not sure if I want to do anything here")            
     
-    def getWorkshopCriteria(self):
+    def getWorkshopCriteria(self, workshopCode, thingCode):
         log.info("In get workshop criteria")
         # This function returns the criteria related to the workshop
         # In case there's none, it should return false? 
         if 'rating_criteria' in self.workshopCrit:
-            return json.dumps({'statusCode':1, 'criteria': self.workshopCrit['rating_criteria']})
+            criteriaList = []
+            for criteria in self.workshopCrit['rating_criteria'].split("|"):
+                amount = self.getRatingForCriteria(workshopCode, criteria, thingCode)
+                criteriaFull = {'criteria':criteria, 'amount': amount}
+                criteriaList.append(criteriaFull)
+            return json.dumps({'statusCode':1, 'criteria': criteriaList})
         else:
             return json.dumps({'statusCode': 0})
     
     #Make this workshop dependent?
     def rateCriteria(self, criteria, thingCode, rating):
-        log.info("empty")
-        thing = ideaLib.getIdea(code)
-        ratingObj = ratingLib.makeOrChangeRating(thing, c.authuser, rating, ratingType, criteria = criteria)
+        thing = ideaLib.getIdea(thingCode)
+        ratingObj = ratingLib.makeOrChangeRating(thing, c.authuser, rating, 'criteria', criteria = criteria)
+        if ratingObj:
+            return json.dumps({'statusCode':1})
     
-    def getRatingForCriteria(self, criteria, thingCode):
-        lo.info("")   
-    
+    def getRatingForCriteria(self, workshopCode, criteria, thingCode):
+        thing = ideaLib.getIdea(thingCode)
+        result = ratingLib.getCriteriaRatingForThing(workshopCode, thing, criteria)
+        log.info(result)
+        if len(result) == 0:
+            return 0  
+        else:
+            sumVotes = 0
+            numVotes  = len(result)
+            for vote in result:
+                log.info(vars(vote))
+                sumVotes += int(vote['amount'])
+            amount = int(sumVotes/numVotes)
+            return amount

@@ -24,6 +24,15 @@ def getRatingForThing(user, thing):
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
     except:
         return False
+
+def getCriteriaRatingForThing(workshopCode, thing, criteria):
+    thingCode = '%sCode' % thing.objType
+    log.info("Getting the ratings for %s in the idea %s", criteria, thing['urlCode'])
+    q = meta.Session.query(Thing)\
+        .filter_by(objType = 'rating')\
+        .filter(Thing.data.any(wc('criteria', criteria)))\
+        .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).all()
+    return q
      
 def getRatingsForUser():
     userRatings = {}

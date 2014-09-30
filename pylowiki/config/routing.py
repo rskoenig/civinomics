@@ -137,8 +137,8 @@ def make_map():
 
 	#Workshop rating criteria
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/add/{criteria}{end:/?}',controller='criteria', action='addToWorkshop', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', criteria = '{criteria}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/rate/{criteria}/{thingCode}/{rating}{end:/?}',controller='criteria', action='rateCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', criteria = '{criteria}', thingCode = '{thingCode}', rating = '{rating}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/get{end:/?}',controller='criteria', action='getWorkshopCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/rate/{thingCode}/{criteria}/{rating}{end:/?}',controller='criteria', action='rateCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thingCode = '{thingCode}', criteria = '{criteria}', rating = '{rating}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/get/{thingCode}{end:/?}',controller='criteria', action='getWorkshopCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thingCode = '{thingCode}')
     
     
     # Workshop slideshow

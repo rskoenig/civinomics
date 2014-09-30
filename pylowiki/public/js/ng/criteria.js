@@ -18,10 +18,11 @@ app.controller('ratingsController', function($scope, $http){
 	};
 	
 	$scope.hover1 = false;
-	$scope.hover2 = false;
-	$scope.hover3 = false;
-	$scope.hover4 = false;
-	$scope.hover5 = false;
+	$scope.hover2 = false || $scope.hover1;
+	$scope.hover3 = false || $scope.hover1 || $scope.hover2;
+	$scope.hover4 = false || $scope.hover1 || $scope.hover2 || $scope.hover3;
+	$scope.hover5 = false || $scope.hover1 || $scope.hover2 || $scope.hover3 || $scope.hover4;
+	$scope.vote = 0;
 	
 	$scope.criteriaName = '';
 	$scope.hasCriteria = false;
@@ -44,13 +45,13 @@ app.controller('ratingsController', function($scope, $http){
 		}
 	};
 	
-	$scope.getCriteriaList = function(parentHref){
+	$scope.getCriteriaList = function(parentHref,thingCode){
 		if ($scope.hasCriteria) return;
-		var requestUrl = parentHref+"/criteria/get/";
+		var requestUrl = parentHref+"/criteria/get/"+thingCode;
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
-					$scope.rating.criteriaList = data.criteria.split("|");
 					$scope.rating.type = 'criteria';
+					$scope.rating.criteriaList = data.criteria;
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
@@ -100,6 +101,33 @@ app.controller('ratingsController', function($scope, $http){
 		};
 	};
 	
+	$scope.initCriteria = function(criteriaString){
+		$scope.rating.type = 'criteria';
+		$scope.rating.criteriaList = criteriaString.split("|");
+	};
+	
+	$scope.addVote = function(hover, amount, criteria){
+    	hover = !hover;
+    	$scope.vote = criteria.amount; 
+    	criteria.amount = amount;
+	};
+	
+	$scope.removeVote = function(hover, criteria){
+        hover = !hover;	
+        criteria.amount = $scope.vote;
+	};
+	
+	$scope.rateCriteria = function(parentHref, thingCode, criteria){
+    	var requestUrl = parentHref+"/criteria/rate/"+thingCode+"/"+criteria.criteria+"/"+criteria.amount;
+		$http.get(requestUrl).success(function(data){
+				if (data.statusCode == 1){
+					$scope.vote = criteria.amount;
+				} 
+				else if (data.statusCode === 0){			
+				}
+        })
+	};
+	
 	listToString = function(list){
 		var i = 0;
 		var listStr = "";
@@ -111,10 +139,6 @@ app.controller('ratingsController', function($scope, $http){
 		return listStr;
 	};
 	
-	$scope.initCriteria = function(criteriaString){
-		$scope.rating.type = 'criteria';
-		$scope.rating.criteriaList = criteriaString.split("|");
-	};
 	
   /*
 	  Things that I need for this controller:
@@ -124,10 +148,11 @@ app.controller('ratingsController', function($scope, $http){
 	  		Removing from the array
 	  	Sending the criteria to the workshop
 	  		Array to string with pipes
-	  			Custom cast?
+	  			Custom cast? Yup
 	  		Getting the workshop code
-	  			URL split? Mako injection?
+	  			URL split? no Mako injection? yes
 	  		Do I really need a criteria controller then?
+	  		   YUP
 	  		Are they ever gonna be separated from workshops?
 	  			Not for now.
 	  		
