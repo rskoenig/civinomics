@@ -8,7 +8,7 @@ from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from sqlalchemy import or_
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, greaterThan_characteristic as gtc
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
@@ -53,6 +53,16 @@ def getAllUsers(disabled = '0', deleted = '0'):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'user')\
             .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+    except:
+        return False
+        
+
+def getAllCurators(disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(gtc('curateLevel', '0')))\
             .all()
     except:
         return False
@@ -111,6 +121,25 @@ def isAdmin(id):
         else:
            return False
     except:
+        return False
+        
+def isCurator(user, scope):
+    if 'curateScope' in user and user['curateScope'] != '':
+        if 'curateLevel' in user and user['curateLevel'] != '':
+            curateLevel = int(user['curateLevel']) + 1
+            curateScope = user['curateScope']
+            scope = scope.replace('0', '')
+            scopeList = scope.split('|')[0:curateLevel]
+            scope = '|'.join(scopeList)
+            #log.info("curateScope is %s and curateLevel is %s and scope is %s"%(curateScope, curateLevel, scope))
+            if curateScope == scope:
+                #log.info("is a curator")
+                return True
+            else:
+                return False
+        else:
+            return False
+    else:
         return False
     
 def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'1', count = False):

@@ -135,7 +135,7 @@ class CommentController(BaseController):
                 parentAuthor = userLib.getUserByID(discussion.owner)
             log.info(c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
@@ -143,7 +143,7 @@ class CommentController(BaseController):
 
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
-            if parentAuthor != c.authuser and thing.objType != 'agendaitem':
+            if parentAuthor != c.authuser and thing.objType != 'agendaitem'  and thing.objType != 'ballotmeasure' and thing.objType != 'ballotcandidate':
                 title = ' replied to a post you made'
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'

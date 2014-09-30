@@ -558,19 +558,29 @@
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
                if rated['amount'] == '1':
-                  commentClass = 'voted upVote'
+                  voted = "voted"
+                  commentClass = 'upVote'
                   voteClass = 'icon-chevron-sign-up icon-2x voted'
                else:
+                  voted = ""
                   commentClass = 'upVote'
                   voteClass = 'icon-chevron-sign-up icon-2x'
             else:
+               voted = ""
                commentClass = 'upVote'
                voteClass = 'icon-chevron-sign-up icon-2x'
+               
+            if 'readOnly' in thing:
+                readonly = thing['readOnly']
+            else:
+                readonly = "0"
          %>
-         % if thing.objType != 'comment':
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
+         % if readonly == "1":
+            <a href="#" class="${voted}" style="color: #b6b6b6">
+         % elif thing.objType != 'comment':
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${voted} ${commentClass}">
          % else:
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${voted} ${commentClass}">
          % endif
          <i class="${voteClass}"></i>
          </a>
@@ -579,22 +589,30 @@
          <%
             if rated:
                if rated['amount'] == '-1':
-                  commentClass = 'voted downVote'
+                  voted = "voted"
+                  commentClass = 'downVote'
                   voteClass = 'icon-chevron-sign-down icon-2x voted'
                else:
+                  voted = ""
                   commentClass = 'downVote'
                   voteClass = 'icon-chevron-sign-down icon-2x'
             else:
+               voted = ""
                commentClass = 'downVote'
                voteClass = 'icon-chevron-sign-down icon-2x'
          %>
-         % if thing.objType != 'comment':
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
+         % if readonly == "1":
+            <a href="#" class="${voted}" style="color: #b6b6b6">
+         % elif thing.objType != 'comment':
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${voted} ${commentClass}">
          % else:
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${voted} ${commentClass}">
          % endif
          <i class="${voteClass}"></i>
          </a>
+         % if readonly == "1":
+            <br /><div class="centered"><small>Voting Complete</small></div>
+         % endif
       % else:
          <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          <i class="icon-chevron-sign-up icon-2x"></i>
@@ -703,6 +721,12 @@
             myRatings = session["ratings"]
         else:
             myRatings = {}
+            
+        if 'readOnly' in thing:
+            readonly = thing['readOnly']
+        else:
+            readonly = "0"
+            
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['provisional']) and not self.isReadOnly() and c.authuser['memberType'] == 'organization':
         ${orgPosition(thing)}
@@ -712,7 +736,6 @@
             #log.info("thingCode is %s"%thingCode)
             if thingCode in myRatings:
                 myRating = myRatings[thingCode]
-                log.info("thingCode %s myRating %s"%(thingCode, myRating))
             else:
                 myRating = "0"
                 
@@ -727,13 +750,18 @@
                 if myRating == '0' :
                     displayTally = 'hidden'
                     displayPrompt = ''
+                    
+            if readonly == '1':
+                href = "#"
+            else:
+                href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/"
 
             #else:
             #   commentClass = 'yesVote'
             #   displayTally = 'hidden'
             #   displayPrompt = ''
          %>
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
+         <a href="${href}1" class="${commentClass}">
               <div class="vote-icon yes-icon detail"></div>
               <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>
          </a>
@@ -745,7 +773,7 @@
             else:
                 commentClass = 'noVote'
          %>
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
+         <a href="${href}-1" class="${commentClass}">
               <div class="vote-icon no-icon detail"></div>
               <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}</span>%</div> 
          </a>

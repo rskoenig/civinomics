@@ -80,12 +80,16 @@
 
 </%def>
 
+########################################################################
+##
+## Add a comment to the root of the discussion tree
+##
+########################################################################
 <%def name="addCommentToDiscussion(thing, discussion)">
-    ########################################################################
-    ##
-    ## Add a comment to the root of the discussion tree
-    ##
-    ########################################################################
+    <% 
+        if 'readOnly' in thing and thing['readOnly'] == '1':
+            return
+    %>
     <div class="spacer"></div>
     <form action="/comment/add/handler" id="commentAddHandler_root">
         <input type="hidden" id="type" name="type" value="${thing.objType}" />
@@ -385,18 +389,26 @@
         adminID = 'admin-%s' % comment['urlCode']
     %>
     <div class="row">
+        <%
+            if 'readOnly' in comment and comment['readOnly'] == '1':
+                readonly = '1'
+            else:
+                readonly = '0'
+        %>
         <div class="col-sm-11 col-sm-offset-1">
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
-                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
-                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                    % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
-                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
+                    % if readonly == '0':
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                        % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
+                            <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
+                        % endif
                     % endif
                     % if c.privs['facilitator'] or c.privs['admin']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
-                % elif not c.privs['provisional']:
+                % elif not c.privs['provisional'] and readonly == '0':
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif

@@ -68,14 +68,35 @@ class MeetingController(BaseController):
             c.author = userLib.getUserByCode(c.meeting['userCode'])
     
     def meetingNew(self):
-        
         # initialize the scope dropdown selector in the edit template
         c.states = geoInfoLib.getStateList('United-States')
-        c.country = "0"
-        c.state = "0"
-        c.county = "0"
-        c.city = "0"
-        c.postal = "0"
+
+        if userLib.isAdmin(c.authuser.id):
+            c.country = "United States"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
+            c.postal = "0"
+        elif 'curateLevel' in c.authuser and c.authuser['curateLevel'] != '':
+            scope = '0' + c.authuser['curateScope']
+            clevel = c.authuser['curateLevel']
+            if clevel == '2':
+                scope += '|0|0|0|0|0|0|0'
+            elif clevel == '4':
+                scope += '|0|0|0|0|0'
+            elif clevel == '6':
+                scope += '|0|0|0'
+            elif clevel == '8':
+                scope += '|0'
+            
+            geoTags = scope.split('|')
+            c.country = utils.geoDeurlify(geoTags[2])
+            c.state = utils.geoDeurlify(geoTags[4])
+            c.county = utils.geoDeurlify(geoTags[6])
+            c.city = utils.geoDeurlify(geoTags[8])
+            c.postal = utils.geoDeurlify(geoTags[9])
+        else:
+            abort(404)
         
         c.editMeeting = False
        
@@ -161,12 +182,6 @@ class MeetingController(BaseController):
             
         #create the meeting
         c.meeting = meetingLib.Meeting(c.authuser, title, text, scope, group, location, meetingDate, meetingTime, tag, public, agendaPostDate)
-        if 'meeting_counter' in c.authuser:
-            meeting_counter = int(c.authuser['meeting_counter'])
-        else:
-            meeting_counter = 0
-        meeting_counter += 1
-        c.authuser['meeting_counter'] = str(meeting_counter)
 
         c.level = scope
 
@@ -199,7 +214,8 @@ class MeetingController(BaseController):
             c.postal = "0"
 
         c.editMeeting = True
-       
+        c.curator = True
+
         return render('/derived/6_meeting.bootstrap')
     
 
@@ -221,8 +237,6 @@ class MeetingController(BaseController):
             c.city = "0"
             c.postal = "0"
 
-        if 'public' in request.params:
-            log.info("got %s"%request.params['public'])
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.meeting['public'] == '0':
                 c.meeting['public'] = '1'
@@ -351,7 +365,12 @@ class MeetingController(BaseController):
 
         c.revisions = revisionLib.getRevisionsForThing(c.meeting)
         c.author = userLib.getUserByCode(c.meeting['userCode'])
-        
+        if 'user' in session and c.authuser:
+            if userLib.isCurator(c.authuser, c.meeting['scope']):
+                c.curator = True
+            else:
+                c.curator = False
+
         if c.meeting.objType != 'revision' and 'views' in c.meeting:
             views = int(c.meeting['views']) + 1
             c.meeting['views'] = str(views)
@@ -436,8 +455,13 @@ class MeetingController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         for item in c.agendaItems:
+            if 'meeting_scope' in item:
+                meetingScope = item['meeting_scope']
+            else:
+                meetingScope = "0|0|0|0|0|0|0|0|0|0|0"
+                
             entry = {}
-            if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+            if 'user' in session and (userLib.isCurator(c.authuser, meetingScope) or userLib.isAdmin(c.authuser.id)):
                 entry['canEdit'] = 'yes'
             else:
                 entry['canEdit'] = 'no'

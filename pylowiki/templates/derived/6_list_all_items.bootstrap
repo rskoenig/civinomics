@@ -12,78 +12,8 @@
 %>
 
 <div class="spacer"></div>
+<h3>${c.title}</h3>
 <div class="row">
-    <div class="col-sm-2">
-        <ul class="nav nav-list">
-            <li class="nav-header">Item Type</li>
-            % if itemType == 'user':
-                <li class="active"><a href="/admin/users">Users</a></li>
-            % else:
-                <li><a href="/admin/users">Users</a></li>
-            % endif
-            
-            % if itemType == 'workshop':
-                <li class="active"><a href="/admin/workshops">Workshops</a></li>
-            % else:
-                <li><a href="/admin/workshops">Workshops</a></li>
-            % endif
-            
-            % if itemType == 'idea':
-                <li class="active"><a href="/admin/ideas">Ideas</a></li>
-            % else:
-                <li><a href="/admin/ideas">Ideas</a></li>
-            % endif
-            
-            % if itemType == 'resource':
-                <li class="active"><a href="/admin/resources">Resources</a></li>
-            % else:
-                <li><a href="/admin/resources">Resources</a></li>
-            % endif
-            
-            % if itemType == 'discussion':
-                <li class="active"><a href="/admin/discussions">Discussions</a></li>
-            % else:
-                <li><a href="/admin/discussions">Discussions</a></li>
-            % endif
-            
-            % if itemType == 'comment':
-                <li class="active"><a href="/admin/comments">Comments</a></li>
-            % else:
-                <li><a href="/admin/comments">Comments</a></li>
-            % endif
-            
-             % if itemType == 'photo':
-                <li class="active"><a href="/admin/photos">Photos</a></li>
-            % else:
-                <li><a href="/admin/photos">Photos</a></li>
-            % endif
-            
-            % if itemType == 'flaggedphoto':
-                <li class="active"><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
-            % else:
-                <li><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
-            % endif
-            
-            % if itemType == 'initiative':
-                <li class="active"><a href="/admin/initiatives">Initiatives</a></li>
-            % else:
-                <li><a href="/admin/initiatives">Initiatives</a></li>
-            % endif
-            
-            % if itemType == 'flaggedinitiative':
-                <li class="active"><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-            % else:
-                <li><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
-            % endif
-            
-            % if itemType == 'meeting':
-                <li class="active"><a href="/admin/meetings">All Meetings</a></li>
-            % else:
-                <li><a href="/admin/meetings">All Meetings</a></li>
-            % endif
-        </ul>
-    </div><!--/.col-sm-2 -->
-
     <div class="col-sm-10">
         <table class="table table-striped">
             <thead>
@@ -148,6 +78,12 @@
                             <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
                         % elif itemType == 'meeting' or itemType == 'meetingUnpublished':
                             <td><a href="/meeting/${item['urlCode']}/${item['url']}/show/">${item['meetingDate']} ${item['title']}</a></td>
+                        % elif itemType == 'listener' or itemType == 'listenerUnpublished':
+                            <td><a href="/listener/${item['urlCode']}/listenerShow/">${item['name']} ${item['title']}</a></td>
+                        % elif itemType == 'election' or itemType == 'electionUnpublished':
+                            <td><a href="/election/${item['urlCode']}/${item['url']}/show/">${item['electionDate']} ${item['title']}</a></td>
+                        % elif itemType == 'ballot' or itemType == 'ballotUnpublished':
+                            <td><a href="/ballot/${item['urlCode']}/${item['url']}/show/">${item['title']}</a></td>
                         % elif itemType == 'initiative':
                             <% 
                                 if 'directoryNum_photos' in item:
@@ -157,7 +93,7 @@
                             %>
                             <td><a href="/initiative/${item['urlCode']}/${item['url']}/show"><img src="${imgSrc}">${item['title']}</a></td>
                         % endif
-                        <td>                             
+                        <td>
                         % if 'activated' in item and item['activated'] == "1":
                             Activated
                         % elif 'activated' in item and item['activated'] == "0":
@@ -165,7 +101,10 @@
                             <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
                             </button>
                         % endif
-                        % if 'disabled' in item:
+                        <% unpublishedTypes = ['listenerUnpublished'] %>
+                        % if item.objType in unpublishedTypes:
+                            Unpublished
+                        % elif 'disabled' in item:
                             Disabled: ${item['disabled']} 
                         % elif 'deleted' in item:
                             Deleted: ${item['deleted']}
