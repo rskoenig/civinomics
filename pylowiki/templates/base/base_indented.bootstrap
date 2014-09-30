@@ -1,0 +1,17 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+
+<div id="wrap">
+   ${helpers.mainNavbar()}
+   <div class="container main">
+      ${next.body()}
+   </div>
+</div><!-- close wrap -->
+${helpers.shortFooter()}
+% if c.authuser and c.privs:
+	% if c.privs['provisional']:
+		${helpers.activateAccountModal()}
+	% endif
+% endif
+${helpers.signupLoginModal()}
+
