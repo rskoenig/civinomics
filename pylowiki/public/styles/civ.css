@@ -3899,3 +3899,27 @@ div.geo-profile-info-data p{
 	margin-top: -15px;
 	font-size: 1.5em;
 }
+
+/*
+    Criteria classes
+    
+*/
+
+.criteria-idea{
+    
+}
+
+form.criteria-idea{
+    text-align: left; margin-top:15px; padding-left: 300px;
+}
+span.criteria-idea{
+    margin: -3px;
+}
+
+.criteria-workshop{
+    
+}
+
+form.criteria-workshop{
+    text-align: left; margin-top:15px;
+}
