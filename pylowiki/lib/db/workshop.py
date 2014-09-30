@@ -383,8 +383,14 @@ def setWorkshopPrivs(workshop):
     c.privs['provisional'] = False
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
+    # If readonly, no new objects, no new comments, no new votes
+    if 'readOnly' in workshop and workshop['readOnly'] == '1':
+        c.privs['readonly'] = True
+    else:
+        c.privs['readonly'] = False
     # is a demo workshop
     c.privs['demo'] = isDemo(workshop)
+    
     
     if 'user' in session:
         if c.authuser['activated'] == '0':
@@ -395,6 +401,7 @@ def setWorkshopPrivs(workshop):
             c.privs['participant'] = isScoped(c.authuser, workshop)
             c.privs['guest'] = False
             c.privs['visitor'] = False
+            c.privs['readonly'] = True
         else:
             c.privs['provisional'] = False
             c.privs['admin'] = userLib.isAdmin(c.authuser.id)
@@ -403,8 +410,9 @@ def setWorkshopPrivs(workshop):
             if testL and testL['pending'] != '1':
                 c.privs['listener'] = True
             c.privs['participant'] = isScoped(c.authuser, workshop)
-            c.privs['guest'] = False
             c.privs['visitor'] = False
+            c.privs['guest'] = False
+            
 
 
 def Workshop(title, owner, publicPrivate, type = "personal", desc = " ", **kwargs):

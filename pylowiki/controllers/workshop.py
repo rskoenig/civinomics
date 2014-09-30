@@ -269,7 +269,35 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Allow Resources '
+           
+        if 'endTime' in request.params:
+            endTime = request.params['endTime']
+            if endTime != "" and endTime != "0000-00-00":
+                if not utils.validate_date(endTime):
+                    werror = 1
+                    werrMsg += "Incorrect date format. Use YYYY-MM-DD or leave blank to unset."
+                elif c.w['endTime'] != endTime:
                 
+                    c.w['endTime'] = endTime
+                    wchanges = 1
+                    weventMsg = "Set endTime."
+                    if c.w['endTime'] != "":
+                        endDate = datetime.datetime.strptime(c.w['endTime'],"%Y-%m-%d")
+                        if endDate:
+                            now = datetime.datetime.now()
+                            if endDate < now:
+                                generic.setReadOnly(c.w, "1")
+                            else:
+                                generic.setReadOnly(c.w, "0")
+                        else:
+                            generic.setReadOnly(c.w, "0")
+                    else:
+                        generic.setReadOnly(c.w, "0")
+            else:
+                wchanges = 1
+                weventMsg = "Unset endTime."
+                c.w['endTime'] = "0000-00-00"
+                generic.setReadOnly(c.w, "0")
         # save successful changes
         if wchanges:
             dbHelpers.commit(c.w)
@@ -373,8 +401,8 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
-            c.w['workshop_public_scope'] =  "||united-states||0||0||0|0"
-            workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
+            #c.w['workshop_public_scope'] =  "||united-states||0||0||0|0"
+            #workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             if c.w['disabled'] == '0' and c.w['deleted'] == '0' and c.w['published'] == '1':
                 c.w['workshop_searchable'] = '1'
                 workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
@@ -679,9 +707,9 @@ class WorkshopController(BaseController):
                 workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             startTime = datetime.datetime.now(None)
             c.w['startTime'] = startTime
-            endTime = datetime.datetime.now(None)
-            endTime = endTime.replace(year = endTime.year + 1)
-            c.w['endTime'] = endTime
+            #endTime = datetime.datetime.now(None)
+            #endTime = endTime.replace(year = endTime.year + 1)
+            #c.w['endTime'] = endTime
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
             dbHelpers.commit(c.w)
 
@@ -998,15 +1026,10 @@ class WorkshopController(BaseController):
               
         c.activeListeners = []
         c.pendingListeners = []
-        if not iPhoneApp:
-            for l in (listenerLib.getListenersForWorkshop(c.w)):
-                if l['disabled'] == '0':
-                    if 'userCode' in l:
-                        user = generic.getThing(l['userCode'])
-                        c.activeListeners.append(user)
-                    else:
-                        c.pendingListeners.append(l)
-              
+        listeners = listenerLib.getListenersForWorkshop(c.w)
+        if listeners:
+            c.activeListeners = listeners
+
         c.slides = []
         if not iPhoneApp:
             c.slideshow = slideshowLib.getSlideshow(c.w)
@@ -1029,7 +1052,7 @@ class WorkshopController(BaseController):
         
         if not iPhoneApp:
             c.activity = activityLib.getActivityForWorkshop(0, 0, c.w['urlCode'])
-        
+
         if not iPhoneApp:
             if c.w['public_private'] == 'public':
                 c.scope = workshopLib.getPublicScope(c.w)
@@ -1616,6 +1639,11 @@ class WorkshopController(BaseController):
 
             entry['parentTitle'] = item['workshop_title']
             entry['parentObjType'] = 'workshop'
+            
+            if 'readOnly' in item and item['readOnly'] == '1':
+                entry['readOnly'] = '1'
+            else:
+                entry['readOnly'] = '0'
             
             numItems += 1
 
