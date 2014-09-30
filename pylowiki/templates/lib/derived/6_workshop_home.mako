@@ -290,7 +290,7 @@
     <div class="${spanX}">
         <ul class="gallery thumbnails no-bottom" data-clearing>
         <%
-          for slide in slides:
+          for slide in slides[0:4]:
             if slide['deleted'] != '1':
               if 'hero' in args:
                 _slideListing(slide, slideNum, 'hero')
@@ -511,7 +511,7 @@
         {{workshopTitle}}
       </a>
       %if c.display:
-        <a ng-click="toggleBrief()" class="brief"><span class="label label-info">Read the Brief</span></a>
+        <a ng-click="toggleBrief()" class="brief"><span class="label label-info">Read the Intro</span></a>
       %endif
     </h1>
 </%def>
@@ -689,7 +689,7 @@
 <%def name="workshopBrief()">
   <div class="well wiki-well" ng-show="showBrief" ng-cloak>
     <div ng-cloak>
-      <p class="workshop-metrics-lg">Brief</p>
+      <p class="workshop-metrics-lg">Intro</p>
       <div class="row">
         <div class="col-xs-12">
           ${slideshow(c.w, 'listing')}
@@ -698,9 +698,6 @@
       <p class="description">
         ${c.w['description']}
       </p>
-      <hr class="list-header">
-      <h4>Goals</h4>
-      ${showGoals(c.goals)}
       <hr class="list-header">
       ${showInfo(c.w)}
       <a href="#top" class="green green-highlight" ng-click=" showInfo = false ">less</a>
