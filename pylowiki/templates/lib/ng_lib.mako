@@ -732,7 +732,7 @@
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
 		Rate this idea:
-		<form style="text-align: left; padding-left: 3%; margin-top:15px;">
+		<form style="">
 			<ul class="list-inline" ng-repeat="criteria in rating.criteriaList" style="">
 				<li> <span class="glyphicon" 
 				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
