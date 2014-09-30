@@ -764,7 +764,7 @@
 </%def>
 
 <%def name="metaData(*args)">
-    <span ng-repeat="tag in item.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+    <span ng-repeat="tag in item.tags"><span class="label workshop-tag {{tag}}">{{tag}}</span> </span>
 
     % if 'inline' in args:
         <img class="thumbnail flag inline-title-flag border no-bottom" src="{{item.flag}}"> 
