@@ -220,6 +220,10 @@ class AdminController(BaseController):
         c.list = userLib.getNotActivatedUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
         
+    def curators(self):
+        c.list = userLib.getAllCurators()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
     def photos(self):
         c.list = photoLib.getAllPhotos()
         if not c.list:

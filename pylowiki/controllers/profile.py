@@ -735,7 +735,7 @@ class ProfileController(BaseController):
             if curateLevel == '8':
                 # city
                 scopeName = scopeList[8].title()
-                curateLevelTitle = "City of %s"%scopeName
+                curateLevelTitle = "City of %s"%scopeName.replace
                 curateList = scopeList[0:9]
                 curateScope = '|'.join(curateList)
             elif curateLevel == '6':
@@ -753,14 +753,14 @@ class ProfileController(BaseController):
             elif curateLevel == '2':
                 # country
                 scopeName = scopeList[2].title()
-                curateLevelTitle = "Country of %s"%scopeName.replace('-','')
+                curateLevelTitle = "Country of %s"%scopeName
                 curateList = scopeList[0:3]
                 curateScope = '|'.join(curateList)
             else:
                 abort(404)
                 
             c.user['curateLevel'] = curateLevel
-            c.user['curateLevelTitle'] = curateLevelTitle
+            c.user['curateLevelTitle'] = curateLevelTitle.replace('-',' ')
             c.user['curateScope'] = curateScope
             dbHelpers.commit(c.user)
             
