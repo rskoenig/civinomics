@@ -326,19 +326,27 @@ class HomeController(BaseController):
 
         # inclusive county activity function
         elif type == 'geo' and c.authuser and scope == 'none':
+            log.info("COUNTY ACTIVITY!!!!!!!")
 		    # try getting the activity of their area
-		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
-		    scopeList = userScope.split('|')
-		    countyScopeList = scopeList[0:7]
-		    countyScope = '|'.join(countyScopeList)
-		    #log.info("in old geo scope function")
-		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    countyActivity = activityLib.getRecentGeoActivity(max, countyScope, 0, offset)
-		    if countyActivity:
-		    	recentActivity = countyActivity
-		    else:
-		    	alertMsg = "There is no activity in your county yet. Add something!"
-		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+            userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+            log.info(userScope)
+            scopeList = userScope.split('|')
+            countyScopeList = scopeList[0:7]
+            countyScope = '|'.join(countyScopeList)
+            countyScope = countyScope+"|0|0"
+            initScope = countyScope.replace('||', '|0|')
+            initScope = "0" + initScope
+            initScope2 = initScope + "|0"
+            countyScopes = [countyScope, initScope, initScope2]
+            log.info(countyScopes)
+            #log.info("in old geo scope function")
+            # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+            countyActivity = activityLib.getRecentGeoActivity(max, countyScopes, 0, offset)
+            if countyActivity:
+            	recentActivity = countyActivity
+            else:
+            	alertMsg = "There is no activity in your county yet. Add something!"
+            	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 		    	
         elif type=='geo' and scope is not 'none':
             # try getting the activity of their area
