@@ -124,7 +124,16 @@ class DemographicsController(BaseController):
         
     def checkUserDemographics(self, workshopCode, workshopURL):
         log.info("Checking if the user has the demographics required by the workshop")
+        if 'demographics' not in c.authuser:
+            return json.dumps({'statusCode':0, 'error': "User doesn't have demographics"})
+            
+        userDemo = c.authuser['demographics'].split("|")
         
+        for demographic in self.workshop['demographics'].split("|"):
+            if demographic not in userDemo:
+                return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic"})
+                
+        return return json.dumps({'statusCode':1})
         
     #Helper function to convert from array to string
     def demographicsArrayToString(self, demographicsArray):
@@ -137,9 +146,9 @@ class DemographicsController(BaseController):
                 demographicsString += "0|"
         
         if 'language' in demographicsArray:
-                demographicsString += demographicsArray[7]
-            else:
-                demographicsString += "0"
+            demographicsString += demographicsArray[7]
+        else:
+            demographicsString += "0"
                 
         return demographicsString
 

@@ -204,6 +204,18 @@
     </div><!-- section-wrapper -->              
 </%def>
 
+<%def name="demographics()">
+    <div class="browse" ng-controller="demographicsController">
+        <h4 class="section-header smaller">Demographics</h4>
+        Do you want to collect demographics?
+        <form name=""> <!-- I don't really need a form -->
+        <input type="radio" ng-model="workshop" value="true">Yes<br/>
+        <input type="radio" ng-model=""
+        </form>
+        
+    </div><!-- browse -->
+</%def>
+
 <%def name="tags()">
     <div class="section-wrapper">
         <div class="browse">

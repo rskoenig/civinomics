@@ -1,6 +1,6 @@
 var app = angular.module('civ');
 
-app.controller('ratingsController', function($scope, $http){
+app.controller('demographicsController', function($scope, $http){
 
 	$scope.alert = {
 		message : '',
@@ -11,18 +11,6 @@ app.controller('ratingsController', function($scope, $http){
 		type: '',
 		criteriaList: []
 	};
-	
-	$scope.criteria = {
-		name: "",
-		value: 0	
-	};
-	
-	$scope.hover1 = false;
-	$scope.hover2 = false || $scope.hover1;
-	$scope.hover3 = false || $scope.hover1 || $scope.hover2;
-	$scope.hover4 = false || $scope.hover1 || $scope.hover2 || $scope.hover3;
-	$scope.hover5 = false || $scope.hover1 || $scope.hover2 || $scope.hover3 || $scope.hover4;
-	$scope.vote = 0;
 	
 	$scope.criteriaName = '';
 	$scope.hasCriteria = false;
