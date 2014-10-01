@@ -187,6 +187,7 @@
     %>
         
     <div class="section-wrapper">
+        ${demographics()}
         <div class="browse">
             <h4 class="section-header smaller">Participants</h4>
             Specifiy if the workshop is public or private, and who may participate.
@@ -205,13 +206,14 @@
 </%def>
 
 <%def name="demographics()">
-    <div class="browse" ng-controller="demographicsController">
+    <div class="browse" ng-controller="demograpController">
         <h4 class="section-header smaller">Demographics</h4>
-        Do you want to collect demographics?
-        <form name=""> <!-- I don't really need a form -->
-        <input type="radio" ng-model="workshop" value="true">Yes<br/>
-        <input type="radio" ng-model=""
-        </form>
+        Do you want to collect demographics?<br/>
+        <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="true">Yes
+        <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="false">No<br/>
+        <div id="demographics-wizard" ng-if="hasDemographics">
+            Demographics here! 
+        </div>
         
     </div><!-- browse -->
 </%def>
