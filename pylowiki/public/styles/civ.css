@@ -1503,7 +1503,7 @@ a.yesVote, a.noVote{
   background-color:whitesmoke;
 }
 
-.well.greyWell{
+.well.greyWell, .well.well-grey{
   background-color:whitesmoke; 
 }
 
@@ -3648,7 +3648,6 @@ table.table-inline{
 .activity-item.follow{
     border-bottom: solid 1px #ddd;
     margin-bottom: 4px;
-    margin-left: -10px;
     margin-right: -10px;
     position: relative;
 }

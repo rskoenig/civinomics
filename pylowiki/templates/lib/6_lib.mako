@@ -28,6 +28,7 @@
 %>
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako"/>
 
 <%def name="facebookDialogShare2(**kwargs)">
     <%
@@ -2262,5 +2263,148 @@
   <a ${initiativeLink(i)}>
       <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
+</%def>
+
+<%def name="create()">
+    <div ng-controller="createController" ng-cloak>
+        <div class="media well well-grey search-listing">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
+                    </span>
+                    <p>
+                        <span>Create: &nbsp; </span>
+                        <select ng-model="thing" ng-change="showAll = true">
+                            <option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
+                        </select>                           
+                    </p>
+
+                    ###Basic
+                    % if 'user' in session:
+                        <form enctype="multipart/form-data" action="/create/{{thing}}/${c.authuser['urlCode']}/${c.authuser['url']}" method="POST">     
+                    % endif 
+
+                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  
+
+                    <div ng-show="thing == 'Resource'">
+                        <input class="form-control ng-pristine ng-valid" ng-if="showAll" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
+                    </div>
+
+                    <textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
+            
+            
+                    <div ng-show="showAll">
+                        <hr>
+                        <div class="col-xs-5" ng-show="geoScope == ''">
+                            <h4>Geographic Scope</h4>
+                            ${ng_helpers.ngGeoSelect()}
+                        </div>
+                        <div class="col-xs-5">
+                            <h4>Tag</h4>
+                            <select name="tags" ng-model="tag">
+                                <option value="">Tags</option>
+                                % for tag in c.tagList:
+                                    <option value="${tag}"> ${tag}</option>
+                                % endfor
+                            </select>
+                        </div>
+                    </div>
+
+                    ###Conditional Fields
+                    <div ng-if="thing == 'Workshop' && showAll">
+                        <h4>Privacy level</h4>
+                        <select ng-model="workshopAccess" name="privacy" required>
+                            <option value=""></option>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+            
+                    <div ng-show="false" class="col-xs-12">
+                        <h4>Deadline</h4>
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'" ng-if="showAll">
+                        <hr>
+                        <p class="lead">{{thing}} Images</p>
+                        <h5>{{thing}} Photo</h5>
+                        <input type="file" name="avatar[]" id="imgAvatar" />
+                        <img style="display:none;" id="avatarPreview" name="avatarPreview" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
+                        <div ng-show="thing == 'Initiative'">
+                            <h5>Cover Photo</h5>
+                            <input type='file' id="imgCover" name="cover[]" />
+                            <img style="display:none;" id="coverPreview" name="coverPreview" src="#" alt="your cover image" />
+                        </div>
+                    </div>
+
+                    ###Extra info (hidden)
+                    <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
+                    <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
+                    <input type="hidden" name="deadline" value="{{date}}" \>
+                </div><!-- col-xs-12 -->
+            </div><!-- row -->
+
+            <div ng-show="showAll" class="row">
+                <div class="col-xs-12">
+                    % if 'user' in session:
+                        <button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button>
+                    % else:
+                        <a href="#signupLoginModal" role="button" data-toggle="modal"><button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button></a>
+                    % endif
+                    </form>   
+                </div>
+            </div>
+            <br/>
+        </div><!-- media-well -->
+    </div><!-- ng-controller -->
+</%def>
+
+<%def name="zipLookup()">
+    <div ng-init="zipValue = ${c.postalCode}">
+        <div ng-controller="zipLookupCtrl" ng-cloak>
+          <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
+          <table ng-show="!loading" class="full-width">
+            <tr>
+                <td>
+                      <a ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag med-flag bottom-space" src="/images/flags/homeFlag.gif" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+                  </td>
+            </tr>
+            <tr ng-repeat="geo in geos">
+              <td>
+                  <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population, geo.href, geo.photo)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+              </td>
+            </tr>
+          </table>
+
+          <div class="btn-group" ng-show="!loading">
+            <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="grey icon-search centered"></i>
+            </a>
+            <ul class="dropdown-menu" >
+              <li class="dropdown-form">
+                <p>Look up a zip code</p>
+                <form class="form-inline" name="zipForm">
+                  <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                      <input class="input-small form-control" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                      <button class="btn btn-primary top-space" ng-click="lookup()">Search</button><br>
+                      <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                  </div>
+                </form>
+              </li>
+            </ul>
+          </div>
+          
+        </div><!-- ng-controller ziplookup-->
+    </div><!-- ng-init -->
 </%def>
 
