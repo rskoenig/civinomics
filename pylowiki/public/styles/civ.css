@@ -3938,3 +3938,10 @@ div.geo-profile-info-data p{
 	margin-top: -15px;
 	font-size: 1.5em;
 }
+
+.badge.badge-warning{
+  background-color: #f0ad4e;
+}
+.badge.badge-danger {
+background-color: #d9534f;
+}
