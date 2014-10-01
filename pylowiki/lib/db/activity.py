@@ -289,7 +289,7 @@ def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = '')
         postList += q.all()
     
     return postList
-    
+
 def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
     now = datetime.datetime.now()
     twodays = datetime.timedelta(days=2)
