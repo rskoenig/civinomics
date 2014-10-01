@@ -1,0 +1,33 @@
+// Lists
+// ------------
+// Remember to recompile ../civinomics.less
+// after you're done editing this file
+// ------------
+// Styling for lists
+
+.civ-col-list li {
+	padding: 5px 0;
+	margin: 2px 0;
+	.clearfix();
+	img:first-child {
+		float: left;
+		padding-right: 7px;
+		// max-width: 30px;
+	}
+	&:hover {
+		background: @grayLighter; // @tableBackgroundHover;
+	}
+}
+
+.nav-thing {
+	li {
+		float: left;
+		display: inline-block;
+		&:nth-child(n + 2) {
+			padding-left: 10px;
+		}
+	}
+	.current {
+		font-weight: bold;
+	}
+}
