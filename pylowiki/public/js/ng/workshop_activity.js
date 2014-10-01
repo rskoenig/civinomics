@@ -167,7 +167,7 @@ function activityWorkshopController($scope, $http) {
 
 		$scope.orderProp = '';
 		$scope.thing = 'resource';
-		$scope.query = {thing:'Resource'};
+		$scope.query = {objType:'Resource'};
 		$scope.query2 = '!disabled';
 		if ($scope.allowResources == '0') {
             $scope.addThing = 'Discussion';
@@ -197,7 +197,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.query = {thing:'Idea'};
+		$scope.query = {objType:'Idea'};
 		$scope.query2 = '!disabled';
 		$scope.thing = 'Idea'
 		if ($scope.allowIdeas == '0') {
@@ -228,7 +228,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.query = {thing:'Initiative'};
+		$scope.query = {objType:'Initiative'};
 		$scope.query2 = '!disabled';
 		$scope.thing = 'Initiative'
 		if ($scope.allowIdeas == '0') {
@@ -255,7 +255,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.query = {thing:'Initiative'};
+		$scope.query = {objType:'Initiative'};
 		$scope.query2 = '!disabled';
 		$scope.thing = 'Initiative'
 		if ($scope.allowIdeas == '0') {
@@ -302,7 +302,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 		
-		$scope.query = {thing:'Update'};
+		$scope.query = {objType:'Update'};
 		$scope.query2 = '';
 		$scope.addThing = 'Update'
 	}
@@ -336,7 +336,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddBtn = true;
 		$scope.showAddNew = false;
-		$scope.query = {thing:'Discussion'};
+		$scope.query = {objType:'Discussion'};
 		$scope.query2 = '';
 		$scope.thing = 'Discussion';
 		$scope.addThing = 'Discussion';
@@ -353,7 +353,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = true;
 		$scope.showAddBtn = true;
 		$scope.showAddNew = false;
-		$scope.query = {thing:'Resource'};
+		$scope.query = {objType:'Resource'};
 		$scope.query2 = '';
 		$scope.thing = 'Resource';
 		if ($scope.allowResources == '0') {
