@@ -1035,7 +1035,7 @@ class WorkshopController(BaseController):
             dbHelpers.commit(c.w)
             
         c.numIdeas = workshopLib.getIdeaCountForWorkshop(workshopCode)
-        c.numAdopted = workshopLib.getIdeaCountForWorkshop(workshopCode, 1)
+        c.numAdopted = workshopLib.getInitiativeCountForWorkshop(workshopCode, 1)
         c.numResources = workshopLib.getResourceCountForWorkshop(workshopCode)
         c.numDiscussions = workshopLib.getDiscussionCountForWorkshop(workshopCode)
         c.numInitiatives = workshopLib.getInitiativeCountForWorkshop(workshopCode)
