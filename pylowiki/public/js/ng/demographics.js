@@ -5,6 +5,17 @@ function demograpController($scope, $http){
 		type: ''
 	};
 	
+	$scope.demographics = {
+        demographicsList : ['birthday',
+                            'gender',
+                            'ethnicity',
+                            'education',
+                            'kids',
+                            'house',
+                            'income',
+                            'language']
+	}
+	
 	$scope.hasDemographics = false;
 		
 	listToString = function(list){

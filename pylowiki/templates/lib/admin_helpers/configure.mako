@@ -213,6 +213,7 @@
         <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="false">No<br/>
         <div id="demographics-wizard" ng-if="hasDemographics">
             Demographics here! 
+                <input type="checkbox" ng-model="">
         </div>
         
     </div><!-- browse -->
