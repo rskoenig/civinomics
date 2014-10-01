@@ -31,7 +31,9 @@
 
     ${helpers.workshopBrief()}
 
-    ${helpers.workshopAddForm()}
+    <div ng-show="showAddForm" ng-cloak>
+      ${lib_6.create(parentCode = c.w['urlCode'], parentObjType = 'workshop', returnTo = lib_6.workshopLink(c.w, embed=True,raw=True))}
+    </div>
 
     ${helpers.workshopList()}
 
@@ -66,4 +68,5 @@
     <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/workshop_activity.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/create.js')}" type="text/javascript"></script>
 </%def>

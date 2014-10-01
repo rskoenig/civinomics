@@ -1,14 +1,14 @@
 
 function activityWorkshopController($scope, $http) {
-    $scope.addObjType = 'idea';
+    $scope.addThing = 'Idea';
     if ($scope.allowIdeas == '0') {
-        $scope.addObjType = 'discussion';
+        $scope.addThing = 'Discussion';
     }
     if ($scope.allowResources == '0' && $scope.allowIdeas == '0') {
-        $scope.addObjType = 'discussion';
+        $scope.addThing = 'Discussion';
     }
 	$scope.listingType = 'activity';
-	$scope.objType = 'idea';
+	$scope.thing = 'Idea';
 	$scope.test = true
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
@@ -73,11 +73,11 @@ function activityWorkshopController($scope, $http) {
 
 
 	// Add a new object
-	$scope.objType = $scope.addObjType;
+	$scope.thing = $scope.addThing;
 	$scope.submitNewObj = function(){
 		$scope.showAddNew = false;
 		var newObjData = {'submit':'submit', 'title': $scope.newObjTitle, 'text': $scope.newObjText, 'link': $scope.newObjLink};
-		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.addObjType + '/handler';
+		$scope.newObjURL = '/workshop/' + $scope.code + '/' + $scope.url + '/add/' + $scope.addThing + '/handler';
 		$http.post($scope.newObjURL, newObjData).success(function(data){
 			//$scope.numComments = Number($scope.numComments) + 1;
             $scope.getActivity();
@@ -124,11 +124,11 @@ function activityWorkshopController($scope, $http) {
 		$scope.orderProp = '';
 		$scope.query = '';
 		$scope.query2 = '!disabled';
-		$scope.objType = 'idea';
+		$scope.thing = 'Idea';
 		if ($scope.allowIdeas == '0') {
-            $scope.addObjType = 'discussion';
+            $scope.addThing = 'Discussion';
         } else {
-            $scope.addObjType = 'idea';
+            $scope.addThing = 'Idea';
         }
 	}
 
@@ -166,13 +166,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.objType = 'resource';
-		$scope.query = {objType:'resource'};
+		$scope.thing = 'resource';
+		$scope.query = {thing:'Resource'};
 		$scope.query2 = '!disabled';
 		if ($scope.allowResources == '0') {
-            $scope.addObjType = 'discussion';
+            $scope.addThing = 'Discussion';
         } else {
-            $scope.addObjType = 'resource';
+            $scope.addThing = 'Resource';
         }
 	};
 
@@ -197,13 +197,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.query = {objType:'idea'};
+		$scope.query = {thing:'Idea'};
 		$scope.query2 = '!disabled';
-		$scope.objType = 'idea'
+		$scope.thing = 'Idea'
 		if ($scope.allowIdeas == '0') {
-            $scope.addObjType = 'discussion';
+            $scope.addThing = 'Discussion';
         } else {
-            $scope.addObjType = 'idea';
+            $scope.addThing = 'Idea';
         }
 	}
 
@@ -228,13 +228,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.query = {objType:'initiative'};
+		$scope.query = {thing:'Initiative'};
 		$scope.query2 = '!disabled';
-		$scope.objType = 'initiative'
+		$scope.thing = 'Initiative'
 		if ($scope.allowIdeas == '0') {
-            $scope.addObjType = 'discussion';
+            $scope.addThing = 'Discussion';
         } else {
-            $scope.addObjType = 'initiative';
+            $scope.addThing = 'Initiative';
         }
 	}
 
@@ -255,13 +255,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
-		$scope.query = {objType:'initiative'};
+		$scope.query = {thing:'Initiative'};
 		$scope.query2 = '!disabled';
-		$scope.objType = 'initiative'
+		$scope.thing = 'Initiative'
 		if ($scope.allowIdeas == '0') {
-            $scope.addObjType = 'discussion';
+            $scope.addThing = 'Discussion';
         } else {
-            $scope.addObjType = 'initiative';
+            $scope.addThing = 'Initiative';
         }
 	}
 
@@ -283,7 +283,7 @@ function activityWorkshopController($scope, $http) {
 		
 		$scope.query = {status:'adopted'};
 		$scope.query2 = {status:'adopted'};
-		$scope.objType = 'initiative'
+		$scope.thing = 'Initiative'
 	}
 
 	$scope.toggleImpact= function(){
@@ -302,9 +302,9 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 		
-		$scope.query = {objType:'update'};
+		$scope.query = {thing:'Update'};
 		$scope.query2 = '';
-		$scope.addObjType = 'update'
+		$scope.addThing = 'Update'
 	}
 
 
@@ -336,10 +336,10 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = false;
 		$scope.showAddBtn = true;
 		$scope.showAddNew = false;
-		$scope.query = {objType:'discussion'};
+		$scope.query = {thing:'Discussion'};
 		$scope.query2 = '';
-		$scope.objType = 'discussion';
-		$scope.addObjType = 'discussion';
+		$scope.thing = 'Discussion';
+		$scope.addThing = 'Discussion';
 	};
 
 	$scope.toggleResources= function(){
@@ -353,13 +353,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showResources = true;
 		$scope.showAddBtn = true;
 		$scope.showAddNew = false;
-		$scope.query = {objType:'resource'};
+		$scope.query = {thing:'Resource'};
 		$scope.query2 = '';
-		$scope.objType = 'resource';
+		$scope.thing = 'Resource';
 		if ($scope.allowResources == '0') {
-            $scope.addObjType = 'discussion';
+            $scope.addThing = 'Discussion';
         } else {
-            $scope.addObjType = 'resource';
+            $scope.addThing = 'Resource';
         }
 	};
 

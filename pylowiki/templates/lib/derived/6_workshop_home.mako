@@ -545,7 +545,7 @@
           % if c.privs and not c.privs['provisional']:
             <form class="no-bottom" ng-submit="submitNewObj()">
                 <div class="form-group">
-                  <select name="objType" ng-model="addObjType">
+                  <select name="thing" ng-model="addThing">
                     % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
                       <option value="idea">Idea</option>
                       <option value="initiative">Initiative</option>
@@ -560,7 +560,7 @@
                   <label for="newObjTitle">Title</label>
                   <input type="text" class="form-control" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Enter title...">
                 </div>
-                <div class="form-group" ng-show="addObjType == 'resource'">
+                <div class="form-group" ng-show="addThing == 'resource'">
                   <label for="newObjLink">Link</label>
                   <input type="text" class="form-control" name="newObjLink" ng-model="newObjLink" placeholder="http://">
                 </div>
@@ -587,7 +587,7 @@
         <tr>
         
           <!--<td style="vertical-align: middle;">
-            <span class="lead grey expl-phrase right-indent" style="text-transform: capitalize;"><span ng-if="showSummary">All Activity</span><span ng-if="!showSummary">{{objType}}s</span></span>
+            <span class="lead grey expl-phrase right-indent" style="text-transform: capitalize;"><span ng-if="showSummary">All Activity</span><span ng-if="!showSummary">{{thing}}s</span></span>
           </td>-->
 
           <td style="padding-bottom: 10px;">
@@ -632,7 +632,7 @@
 
     <div class="alert alert-info" ng-class="alertType" ng-if="(alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0" ng-cloak>
       <span ng-show="query == ''">{{alertMsg}}</span>
-      <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{objType}}s. Be the first to add one!</span>
+      <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{thing}}s. Be the first to add one!</span>
     </div>
 
     <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
@@ -729,12 +729,12 @@
   % if readonly == '0':
     % if c.authuser:
       % if c.privs and not c.privs['provisional']:
-        <button class="btn btn-lg btn-block btn-success addBtn" ng-show="showAddBtn" ng-click="toggleAddForm()" ng-cloak>Add {{addObjType}}</button>
+        <button class="btn btn-lg btn-block btn-success addBtn" ng-show="showAddBtn" ng-click="toggleAddForm()" ng-cloak>Add {{addThing}}</button>
       % else:
-        <a class="btn btn-lg btn-block btn-success addBtn" href="#activateAccountModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addObjType}}</a>
+        <a class="btn btn-lg btn-block btn-success addBtn" href="#activateAccountModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addThing}}</a>
       % endif
     % else:
-      <a class="btn btn-lg btn-block btn-success addBtn" href="#signupLoginModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addObjType}}</a>
+      <a class="btn btn-lg btn-block btn-success addBtn" href="#signupLoginModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addThing}}</a>
     % endif
   % endif
 </%def>

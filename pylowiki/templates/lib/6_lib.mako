@@ -2265,7 +2265,7 @@
   </a>
 </%def>
 
-<%def name="create()">
+<%def name="create(parentCode = None, parentObjType = None, returnTo = None)">
     <div ng-controller="createController" ng-cloak>
         <div class="media well well-grey search-listing">
             <div class="row">
@@ -2275,7 +2275,7 @@
                     <p>
                         <span>Create: &nbsp; </span>
                         <select ng-model="thing" ng-change="showAll = true">
-                            <option ng-repeat="type in thingList" ng-value="type">{{type}}</option>
+                            <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
                         </select>                           
                     </p>
 
@@ -2351,6 +2351,9 @@
                     <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
                     <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
                     <input type="hidden" name="deadline" value="{{date}}" \>
+                    <input type="hidden" name="parentCode" value="${parentCode}" \>
+                    <input type="hidden" name="parentObjType" value="${parentObjType}" \>
+                    <input type="hidden" name="returnTo" value="${returnTo}" \>
                 </div><!-- col-xs-12 -->
             </div><!-- row -->
 
