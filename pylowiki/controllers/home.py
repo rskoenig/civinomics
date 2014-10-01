@@ -333,7 +333,6 @@ class HomeController(BaseController):
             scopeList = userScope.split('|')
             countyScopeList = scopeList[0:7]
             countyScope = '|'.join(countyScopeList)
-            countyScope = countyScope+"|0|0"
             initScope = countyScope.replace('||', '|0|')
             initScope = "0" + initScope
             initScope2 = initScope + "|0"
