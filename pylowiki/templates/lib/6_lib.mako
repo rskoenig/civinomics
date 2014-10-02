@@ -2306,9 +2306,9 @@
                                 ${ng_helpers.ngGeoSelect()}
                             </div>
                             <div class="col-xs-5">
-                                <label>Category</label><br>
+                                <label>Category Tag</label><br>
                                 <select name="tags" ng-model="tag">
-                                    <option value="">none</option>
+                                    <option value="">Select One</option>
                                     % for tag in c.tagList:
                                         <option value="${tag}"> ${tag}</option>
                                     % endfor

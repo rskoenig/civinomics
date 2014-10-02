@@ -630,12 +630,14 @@
 
     ${workshopPhaseDescriptions()}
 
-    <div class="alert alert-info" ng-class="alertType" ng-if="(alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0" ng-cloak>
+    <div ng-if="thisPhaseStatus == 'past'" class="alert alert-warning" ng-cloak>This phase has concluded.</div>
+    <div ng-if="thisPhaseStatus == 'future'" class="alert alert-warning" ng-cloak>This phase has not started yet.</div>
+    <div class="alert alert-info" ng-class="alertType" ng-if="((alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0) && thisPhaseStatus == 'present'" ng-cloak>
       <span ng-show="query == ''">{{alertMsg}}</span>
       <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{thing}}s. Be the first to add one!</span>
     </div>
 
-    <table ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
+    <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
       <tr>
         <td ng-if="item.objType == 'initiative'">
           ${ng_helpers.initiative_listing()}
@@ -852,18 +854,18 @@
 <%def name="workshopPhaseDescriptions()">
   <div class="well" ng-show="showResearch" ng-cloak>
       <p class="workshop-metrics-lg">Research</p>
-      <p>In the research phase we'll collect data, stories, news, and any other information that will help us learn about the problem.
+      <p>In the research phase we collect data, stories, news, and any other information that will help us learn about the problem.
       </p>
     </div>
 
     <div class="well" ng-show="showIdeas" ng-cloak>
       <p class="workshop-metrics-lg">Ideas</p>
-      <p>In the ideas phase we'll brainstorm solutions to the problem using everything we learned during the research phase.</p>
+      <p>In the ideas phase we brainstorm solutions to the problem using everything we learned during the research phase.</p>
     </div>
 
     <div class="well" ng-show="showInitiatives" ng-cloak>
       <p class="workshop-metrics-lg">Initiatives</p>
-      <p>In the initiatives phase we'll take the best solutions from the ideas phase and continue to build on them. This is the time to build teams, collaborate, challenge each other with questions and think about concrete next steps.
+      <p>In the initiatives phase we take the best solutions from the ideas phase and continue to build on them. This is the time to build teams, collaborate, challenge each other with questions and think about concrete next steps.
       </p>
     </div>
 
@@ -875,7 +877,7 @@
 
     <div class="well" ng-show="showAdopted" ng-cloak>
       <p class="workshop-metrics-lg">Winning Initiatives</p>
-      <p>Winning initiatives announced.
+      <p>Winning initiatives announced. How the winners are determined depends on the workshop facilitators. Some may choose to use voting as the only factor. Others may include their own assessment of factors such as how well an initiative meets the workshop goals or its feasibility.
       </p>
     </div>
 

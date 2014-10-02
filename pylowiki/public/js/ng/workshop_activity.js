@@ -145,6 +145,8 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
+		$scope.thisPhaseStatus = false;
+
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 	}
@@ -164,6 +166,12 @@ function activityWorkshopController($scope, $http) {
 
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
+
+		if($scope.phase == 'research'){
+			$scope.thisPhaseStatus = 'present'
+		} else{
+			$scope.thisPhaseStatus = 'past'
+		};
 
 		$scope.orderProp = '';
 		$scope.thing = 'resource';
@@ -189,11 +197,16 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		if ($scope.phase != 'ideas' ) {
-			$scope.showAddBtn = false;
-		} else {
+		if($scope.phase == 'ideas'){
+			$scope.thisPhaseStatus = 'present'
 			$scope.showAddBtn = true;	
-		}
+		} else if($scope.phase == 'research'){
+			$scope.thisPhaseStatus = 'future'
+			$scope.showAddBtn = false;
+		} else{
+			$scope.thisPhaseStatus = 'past'
+			$scope.showAddBtn = false;
+		};
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
@@ -220,11 +233,16 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		if ($scope.phase != 'initiatives' ) {
-			$scope.showAddBtn = false;
-		} else {
+		if($scope.phase == 'initiatives'){
+			$scope.thisPhaseStatus = 'present'
 			$scope.showAddBtn = true;	
-		}
+		} else if($scope.phase == 'research' || $scope.phase == 'ideas'){
+			$scope.thisPhaseStatus = 'future'
+			$scope.showAddBtn = false;
+		} else{
+			$scope.thisPhaseStatus = 'past'
+			$scope.showAddBtn = false;
+		};
 		$scope.showAddForm = false;
 
 		$scope.orderProp = '';
@@ -251,6 +269,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
+		if($scope.phase == 'future'){
+			$scope.thisPhaseStatus = 'present'
+		} else if($scope.phase == 'research' || $scope.phase == 'ideas' || $scope.phase == 'initiatives'){
+			$scope.thisPhaseStatus = 'future'
+		} else{
+			$scope.thisPhaseStatus = 'past'
+		};
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 
@@ -278,6 +303,13 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
+		if($scope.phase == 'adopted'){
+			$scope.thisPhaseStatus = 'present'
+		} else if($scope.phase != 'impact'){
+			$scope.thisPhaseStatus = 'future'
+		} else{
+			$scope.thisPhaseStatus = 'past'
+		};
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 		
@@ -299,6 +331,11 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
+		if($scope.phase == 'impact'){
+			$scope.thisPhaseStatus = 'present'
+		} else{
+			$scope.thisPhaseStatus = 'future'
+		};
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 		
@@ -321,6 +358,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = true;
 		$scope.showAll = false;
 
+		$scope.thisPhaseStatus = false;
 		$scope.showAddBtn = false;
 		$scope.showAddForm = false;
 	}
