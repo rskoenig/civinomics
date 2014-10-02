@@ -269,7 +269,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		if($scope.phase == 'future'){
+		if($scope.phase == 'final rating'){
 			$scope.thisPhaseStatus = 'present'
 		} else if($scope.phase == 'research' || $scope.phase == 'ideas' || $scope.phase == 'initiatives'){
 			$scope.thisPhaseStatus = 'future'
@@ -303,7 +303,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		if($scope.phase == 'adopted'){
+		if($scope.phase == 'winning initiatives'){
 			$scope.thisPhaseStatus = 'present'
 		} else if($scope.phase != 'impact'){
 			$scope.thisPhaseStatus = 'future'
