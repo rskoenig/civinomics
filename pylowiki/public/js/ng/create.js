@@ -18,6 +18,7 @@ function createController($scope, $http) {
 	}
 	
 	// Scope
+	
 	$scope.showAll = false
 	if ($scope.thing == undefined) {
 	    $scope.thing = 'Idea';
