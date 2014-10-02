@@ -421,7 +421,7 @@
 </%def>
 
 <%def name="preview()">
-    <a class="btn btn-default" target="_blank" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>Preview</strong></a>
+    <a class="btn btn-default" id="previewBtn" target="_blank" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>Preview</strong></a>
 </%def>
 
 
@@ -647,7 +647,6 @@
                 <pre>![The Civinomics Logo](https://civinomics.com/images/logo.png "Civinomics Logo")</pre>
                 <p>For more... 
                     ${lib_6.formattingGuide()}
-                    ${preview()}
                 </p>
             </div>
             <textarea rows="8" type="text" name="description" class="form-control">${c.initiative['description']}</textarea>

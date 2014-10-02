@@ -338,6 +338,8 @@ class InitiativeController(BaseController):
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.initiative['public'] == '0':
                 c.initiative['public'] = '1'
+                if 'workshop_searchable' in c.initiative:
+                    c.initiative['workshop_searchable'] = '1'
                 startTime = datetime.datetime.now(None)
                 c.initiative['publishDate'] = startTime
                 c.initiative['unpublishDate'] = u'0000-00-00'
