@@ -22,6 +22,9 @@ function activityWorkshopController($scope, $http) {
 	if ($scope.offset == undefined) {
 	    $scope.offset = 0;
 	}
+	if ($scope.phase == undefined || $scope.phase == '') {
+	    $scope.phase = 'ideas';
+	}
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = '';

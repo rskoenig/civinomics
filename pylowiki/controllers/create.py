@@ -217,7 +217,7 @@ class CreateController(BaseController):
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
 
-        if query['parentCode'] != None and query['parentCode'] != '':
+        if 'parentCode' in query and query['parentCode'] != None and query['parentCode'] != '':
             log.info('there is a parent query code and it is: %s' %query['parentCode'])
             if query['parentObjType'] == 'workshop':
                 workshop = workshopLib.getWorkshopByCode(query['parentCode'])
@@ -465,7 +465,7 @@ class CreateController(BaseController):
         
         log.info(payload)
 
-        if payload['parentCode'] != None and payload['parentCode'] != '':
+        if 'parentCode' in payload and payload['parentCode'] != None and payload['parentCode'] != '':
             if payload['parentObjType'] == 'workshop':
                 parent = workshop = workshopLib.getWorkshopByCode(payload['parentCode'])
             else: 

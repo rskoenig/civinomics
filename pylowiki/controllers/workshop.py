@@ -1040,6 +1040,8 @@ class WorkshopController(BaseController):
         c.numDiscussions = workshopLib.getDiscussionCountForWorkshop(workshopCode)
         c.numInitiatives = workshopLib.getInitiativeCountForWorkshop(workshopCode)
         c.numFinal = 0
+        if 'phase' in c.w and (c.w['phase'] == 'final rating' or c.w['phase'] == 'winning initiatives' or c.w['phase'] == 'impact'):
+            c.numFinal = workshopLib.getInitiativeCountForWorkshop(workshopCode)
         c.numUpdates = 0
 
         # check to see if this is a request from the iphone app
