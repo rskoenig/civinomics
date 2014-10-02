@@ -394,9 +394,14 @@
                     </strong></p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                     ${yesNoVoteFooter()}
+                    <div ng-if="item.parentObjType == 'workshop'">                    	
+                        <div ng-show="rating.type == 'criteria'">
+                    	${rateCriteria()}
+                    	</div>
+                    </div>
                 % endif
                 ${actions()}
             </div>
@@ -428,10 +433,16 @@
                     </h4>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    ${yesNoVoteFooter(noStats = True)}
+                    ${yesNoVoteFooter()}
+                    <div ng-if="item.parentObjType == 'workshop'">                    	
+                        <div ng-show="rating.type == 'criteria'">
+                    	${rateCriteria()}
+                    	</div>
+                    </div>
                 % endif
+                ${actions()}
             </div>
         </div>
     </div>
@@ -496,7 +507,8 @@
                         <p><small>${metaData()}</small></p>
                     % endif
                 </div>
-                <div class="col-xs-1">
+                <div class="col-xs-1" ng-controller="demographicsController">
+                    <div class="row" ng-if="!checkDemographics(item.parentCode, item.parentUrl)">${upDownVoteBlock(demographics = '1')}</div>
                     <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
                     <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
@@ -517,7 +529,8 @@
                     <p>${authorPosting()} <small class="left-space right-space">in</small> <small>${metaData()}</small></p>
                     <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
                 </div>
-                <div class="col-xs-1">
+                <div class="col-xs-1" ng-controller="demographicsController">
+                    <div class="row" ng-if="!checkDemographics(item.parentCode, item.parentUrl)">${upDownVoteBlock(demographics = '1')}</div>
                     <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
                     <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
@@ -538,9 +551,10 @@
                 % endif
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
-            <div class="col-xs-1">
+            <div class="col-xs-1" ng-controller="demographicsController">
+                <div class="row" ng-if="!checkDemographics(item.parentCode, item.parentUrl)">${upDownVoteBlock(demographics = '1')}</div>
                 <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
-                <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
+                <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>            
             </div>
         </div>
         <div class="row">
@@ -612,7 +626,6 @@
         % elif 'user' in session:
             <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
             <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
-
         % else:
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>

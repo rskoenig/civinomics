@@ -17,9 +17,9 @@ function demograpController($scope, $http){
             {name: 'language', checked:false, text:'Native Language'} ],
         values : {
             birthday : '',
-            gender: ['Male', 'Female'],
-            ethnicity: ['Caucasian','Hispanic', 'African american', 'Asian', 'Extraterrestrial'],
-            education: ['None', 'A lot'],
+            gender: ['Male', 'Female', 'Other'],
+            ethnicity: ['Caucasian','Hispanic', 'African american', 'Asian', 'Extraterrestrial', 'Other'],
+            education: ['None', 'A lot', 'Other'],
             kids:['Yes', 'No'],
             house:['Yes', 'No'],
             income:['Millionaire', 'Multimillionaire'],
@@ -28,40 +28,38 @@ function demograpController($scope, $http){
 	
 	$scope.hasDemographics = false;
 	
-	$scope.updateList = function(){
-    	console.log($scope.demographics.list);
+	$scope.updateList = function(workshopCode, workshopUrl){        
+	    var stringDemographicsList = conditionalListToString($scope.demographics.list);
+	    
+	    var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/add/"+stringDemographicsList;
+        console.log(stringDemographicsList);
+        $http.get(requestUrl).success(function(data){
+				if (data.statusCode == 1){
+					//Do something if they were added correctly (probably just update message or continue)
+				} 
+				else if (data.statusCode === 0){
+					//Do something if it fails		
+					//I'd rather do this			
+				}
+			});
+	};
+	
+	$scope.checkDemographics = function(){
     	
-    	console.log($scope.demographics.list);
-        var oldList = $scope.demographics.list;
+	};
+	
+	conditionalListToString = function(oldList){
         var listStr = "";
+        var arrayAux = []
     	for(var i in oldList){
-    	    if (oldList[i].name === 'language' && oldList[i].checked){
-        	    listStr += 'language';
-    	    }
-            else if (oldList[i].checked){
-                console.log("it's checked");
-                listStr += oldList[i].name + "|";
+    	    if (oldList[i].checked){
+                arrayAux.push(oldList[i].name);
             }
     	}
+    	listStr = listToString(arrayAux);
     	console.log(listStr);
-	}
-	
-/*
-	
-	$scope.$watch('demographics.list',function(){
-    	console.log("list changed");
-    	
-    	console.log($scope.demographics.list);
-	});
-*/
-
-/*
-	conditionalListToString = function(list){
-        for(var demo in ){
-            
-        }
+    	return listStr;
 	};
-*/
 		
 	listToString = function(list){
 		var i = 0;

@@ -67,7 +67,7 @@ class DemographicsController(BaseController):
             return False
             
         self.workshop = workshopLib.getWorkshopByCode(workshopCode)
-        if not self.workshopCrit:
+        if not self.workshop:
             abort(404)
             
         workshopLib.setWorkshopPrivs(self.workshop)
@@ -126,6 +126,9 @@ class DemographicsController(BaseController):
         log.info("Checking if the user has the demographics required by the workshop")
         if 'demographics' not in c.authuser:
             return json.dumps({'statusCode':0, 'error': "User doesn't have demographics"})
+        
+        if 'demographics' not in self.workshop:
+            return json.dumps({'statusCode':0, 'error': "User doesn't have demographics"})
             
         userDemo = c.authuser['demographics'].split("|")
         
@@ -133,7 +136,7 @@ class DemographicsController(BaseController):
             if demographic not in userDemo:
                 return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic"})
                 
-        return return json.dumps({'statusCode':1})
+        return json.dumps({'statusCode':1})
         
     #Helper function to convert from array to string
     def demographicsArrayToString(self, demographicsArray):

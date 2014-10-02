@@ -216,7 +216,7 @@
             <ul class="list-unstyled">
             {{demographics.list[1].key}}
                 <li ng-repeat="demo in demographics.list">
-                <input type="checkbox" ng-model="demo.checked" ng-change="updateList()"> {{demo.text}}<br/>
+                <input type="checkbox" ng-model="demo.checked" ng-change="updateList('${c.w['urlCode']}','${c.w['url']}')"> {{demo.text}}<br/>
                 </li>
             </ul>
         </div>

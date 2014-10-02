@@ -140,6 +140,10 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/rate/{thingCode}/{criteria}/{rating}{end:/?}',controller='criteria', action='rateCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thingCode = '{thingCode}', criteria = '{criteria}', rating = '{rating}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/get/{thingCode}{end:/?}',controller='criteria', action='getWorkshopCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thingCode = '{thingCode}')
     
+    #Workshop demographics
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/add/{demographics}{end:/?}', controller='demographics', action='setWorkshopDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/set/{end:/?}', controller='demographics', action='setUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/check/{end:/?}', controller='demographics', action='checkUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')
