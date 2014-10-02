@@ -26,6 +26,9 @@
                     </div>
                 % else:
                     <strong>${alert['title']}</strong>
+                    % if 'content' in alert:
+                        <span>${alert['content']}</span>
+                    % endif
                 % endif
             </div>
         <% 

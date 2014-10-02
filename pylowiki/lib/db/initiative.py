@@ -117,6 +117,7 @@ def Initiative(owner, title, description, scope, goal = None, workshop = None, *
     generic.linkChildToParent(i, owner)
     if workshop is not None:
         generic.linkChildToParent(i, workshop)
+        i['workshop_searchable'] = '0' 
     commit(i)
     i['urlCode'] = utils.toBase62(i)
     i['title'] = title
