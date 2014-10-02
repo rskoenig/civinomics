@@ -412,7 +412,6 @@ function activityWorkshopController($scope, $http) {
         $scope.newObjLink = '';
 	};
 
-
 	if ($scope.phase == 'research'){
 		$scope.researchClass = 'active-phase';
 		$scope.toggleResearch();

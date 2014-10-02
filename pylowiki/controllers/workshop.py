@@ -1026,8 +1026,8 @@ class WorkshopController(BaseController):
         if 'views' not in c.w:
             c.w['views'] = u'0'
 
-        if 'phase' not in c.w:
-            c.w['phase'] = None
+        if not 'phase' in c.w:
+            c.w['phase'] = 'ideas'
         
         if c.w.objType != 'revision':    
             views = int(c.w['views']) + 1

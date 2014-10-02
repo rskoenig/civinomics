@@ -2359,13 +2359,13 @@
                     <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
                     <input type="hidden" name="deadline" value="{{date}}" \>
                     % if 'parentCode' in kwargs:
-                        <input type="hidden" name="parentCode" value="${parentCode}" \>
+                        <input type="hidden" name="parentCode" value="${kwargs['parentCode']}" \>
                     % endif
                     % if 'parentObjType' in kwargs:
-                        <input type="hidden" name="parentObjType" value="${parentObjType}" \>
+                        <input type="hidden" name="parentObjType" value="${kwargs['parentObjType']}" \>
                     % endif
                     % if 'returnTo' in kwargs:
-                        <input type="hidden" name="returnTo" value="${returnTo}" \>
+                        <input type="hidden" name="returnTo" value="${kwargs['returnTo']}" \>
                     % endif
                 </div><!-- col-xs-12 -->
             </div><!-- row -->
