@@ -2265,7 +2265,7 @@
   </a>
 </%def>
 
-<%def name="create(parentCode = None, parentObjType = None, returnTo = None)">
+<%def name="create(**kwargs)">
     <div ng-controller="createController" ng-cloak>
         <div class="media well well-grey search-listing">
             <div class="row">
@@ -2358,9 +2358,15 @@
                     <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
                     <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
                     <input type="hidden" name="deadline" value="{{date}}" \>
-                    <input type="hidden" name="parentCode" value="${parentCode}" \>
-                    <input type="hidden" name="parentObjType" value="${parentObjType}" \>
-                    <input type="hidden" name="returnTo" value="${returnTo}" \>
+                    % if 'parentCode' in kwargs:
+                        <input type="hidden" name="parentCode" value="${parentCode}" \>
+                    % endif
+                    % if 'parentObjType' in kwargs:
+                        <input type="hidden" name="parentObjType" value="${parentObjType}" \>
+                    % endif
+                    % if 'returnTo' in kwargs:
+                        <input type="hidden" name="returnTo" value="${returnTo}" \>
+                    % endif
                 </div><!-- col-xs-12 -->
             </div><!-- row -->
 
