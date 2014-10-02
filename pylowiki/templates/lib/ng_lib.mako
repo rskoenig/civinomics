@@ -784,12 +784,16 @@
     % endif
     <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
 
-    <span ng-repeat="tag in item.tags"> / <span class="label workshop-tag {{tag}}">{{tag}}</span>
+    <span ng-repeat="tag in item.tags"> / <span class="label workshop-tag {{tag}}">{{tag}}</span></span>
 
     % if not c.w or c.initiative:
         <span ng-if="item.parentHref && item.parentTitle != '' && item.objType != 'position'"> / <a ng-href="{{item.parentHref}}">{{item.parentTitleAbrv}}</a></span>
     % endif
 
+</%def>
+
+<%def name="date()">
+    <span class="date">{{item.fuzzyTime}} ago</span>
 </%def>
 
 <%def name="meta2(*args)">
@@ -810,10 +814,6 @@
 <%def name="author()">
     <img class="avatar avatar-md inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <a href="{{item.authorHref}}">{{item.authorName}}</a> 
-</%def>
-
-<%def name="date()">
-    <span class="date">{{item.fuzzyTime}} ago</span>
 </%def>
 
 <%def name="status()">
