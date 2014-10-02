@@ -484,7 +484,11 @@
             </div>
             <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    ${yesNoVoteFooter()}
+                    <div ng-controller="demographicsController">
+                    {{checkDemographics(item.parentHref)}}
+                        <span ng-if="demographics.required == ''"> ${yesNoVoteFooter()}</span>
+                        <span ng-if="demographics.required != ''">${yesNoVoteFooter(needs_demographics = '1')}</span>
+                    </div>
                     <div ng-if="item.parentObjType == 'workshop'">                    	
                         <div ng-show="rating.type == 'criteria'">
                     	${rateCriteria()}
@@ -507,8 +511,7 @@
                         <p><small>${metaData()}</small></p>
                     % endif
                 </div>
-                <div class="col-xs-1" ng-controller="demographicsController">
-                    <div class="row" ng-if="!checkDemographics(item.parentCode, item.parentUrl)">${upDownVoteBlock(demographics = '1')}</div>
+                <div class="col-xs-1">
                     <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
                     <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
@@ -529,8 +532,7 @@
                     <p>${authorPosting()} <small class="left-space right-space">in</small> <small>${metaData()}</small></p>
                     <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
                 </div>
-                <div class="col-xs-1" ng-controller="demographicsController">
-                    <div class="row" ng-if="!checkDemographics(item.parentCode, item.parentUrl)">${upDownVoteBlock(demographics = '1')}</div>
+                <div class="col-xs-1">
                     <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
                     <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
                 </div>
@@ -551,8 +553,7 @@
                 % endif
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
             </div>
-            <div class="col-xs-1" ng-controller="demographicsController">
-                <div class="row" ng-if="!checkDemographics(item.parentCode, item.parentUrl)">${upDownVoteBlock(demographics = '1')}</div>
+            <div class="col-xs-1">
                 <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
                 <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>            
             </div>
@@ -654,6 +655,11 @@
                 readonly = kwargs['readonly']
             else:
                 readonly = "0"
+            if 'needs_demographics' in kwargs:
+                needs_demographics = True
+            else:
+                needs_demographics = False
+            
         %>
         % if readonly == "1":
             <div class="row centered">
@@ -661,6 +667,13 @@
                     Voting Closed.<br>
                     <a class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
                     <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            </div>
+        % elif needs_demographics:
+            <div class="row centered">
+                <div class="col-sm-12">
+                    <a href="#demographicsModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a href="#demographicsModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
         % elif 'user' in session:

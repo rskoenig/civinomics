@@ -640,14 +640,21 @@
 <%def name="demographicsModal()">
     <div class="modal fade" id="demographicsModal" tabindex="-1" role="dialog" aria-labelledby="demographicsModal" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" ng-controller="demographicsController">
                 <div class="modal-header">
                     <h3 class="no-top">Missing Required Demographics <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></h3>
                 </div>
                 <div class="modal-body">
                     <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
-
-                    <p>DEMOGRAPHICS SHOULD LOAD HERE</p>
+                        <p>DEMOGRAPHICS WILL LOAD HERE</p>
+                    <ul class="list-unstyled centered">
+                        %if c.w and 'demographics' in c.w:
+                        <li ng-repeat="d in '${c.w['demographics']}'.split('|')">
+                            {{demographics.values[demographics.indexList[d]].text}}
+                            <input type="{{demographics.values[demographics.indexList[d]].type}}" name="{{demographics.values[demographics.indexList[d]].name}}" ng-model="demographics.values[demographics.indexList[d]].values"\>
+                        </li>
+                        %endif
+                    </ul>
                     <div class="" id="resendMessage"></div>
                 </div>
                 <div class="modal-footer">

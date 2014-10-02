@@ -82,7 +82,7 @@ class DemographicsController(BaseController):
         log.info("Checking to see if the workshop has the required demographics")
         if 'demographics' in self.workshop:
             if demographics == self.workshop['demographics']:
-                return json.dumps({'statusCode':1})
+                return json.dumps({'statusCode':1, 'required': self.workshop['demographics']})
             else:
                 return json.dumps({'statusCode':0, 'error': "Different demographics"})
         else:
@@ -123,12 +123,19 @@ class DemographicsController(BaseController):
         
         
     def checkUserDemographics(self, workshopCode, workshopURL):
+        log.info(workshopCode)
+        self.workshop = workshopLib.getWorkshopByCode(workshopCode)
         log.info("Checking if the user has the demographics required by the workshop")
-        if 'demographics' not in c.authuser:
-            return json.dumps({'statusCode':0, 'error': "User doesn't have demographics"})
-        
         if 'demographics' not in self.workshop:
-            return json.dumps({'statusCode':0, 'error': "User doesn't have demographics"})
+            log.info("workshop missing demo")
+            return json.dumps({'statusCode':2, 'error': "Workshop doesn't have demographics"})
+        
+        if 'demographics' not in c.authuser and 'demographics' in self.workshop:
+            log.info("User missing demo")
+            c.required_demographics = self.workshop['demographics']
+            return json.dumps({'statusCode':0, 'error': "User doesn't have demographics", 'required': self.workshop['demographics']})
+        
+        
             
         userDemo = c.authuser['demographics'].split("|")
         

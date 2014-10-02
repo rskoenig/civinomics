@@ -52,11 +52,9 @@ app.controller('ratingsController', function($scope, $http){
 				if (data.statusCode == 1){
 					$scope.rating.type = 'criteria';
 					$scope.rating.criteriaList = data.criteria;
-					console.log($scope.rating.criteriaList);
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
-    				console.log($scope.rating.criteriaList);
 					return false;				
 				}
 				$scope.hasCriteria = true;
@@ -83,9 +81,7 @@ app.controller('ratingsController', function($scope, $http){
 			$scope.alert.message = "Please add criteria to continue or choose a 'Yes/No' rating.";
 		} else if ($scope.rating.type === "yesno"){
 			//Logic for uploading a yesno
-			console.log("I'm here");
 			requestUrl = baseUrl + "0";
-			console.log(requestUrl);
 			$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					//Do something if they were added correctly (probably just update message or continue)

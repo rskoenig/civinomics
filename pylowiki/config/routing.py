@@ -142,8 +142,9 @@ def make_map():
     
     #Workshop demographics
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/add/{demographics}{end:/?}', controller='demographics', action='setWorkshopDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/set/{end:/?}', controller='demographics', action='setUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/check/{end:/?}', controller='demographics', action='checkUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/get{end:/?}', controller='demographics', action='checkWorkshopDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/set{end:/?}', controller='demographics', action='setUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/check{end:/?}', controller='demographics', action='checkUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')

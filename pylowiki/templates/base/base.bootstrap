@@ -46,8 +46,10 @@
             % if c.privs['provisional']:
                 ${template_lib.activateAccountModal()}
             % endif
+            ${template_lib.demographicsModal()}
         % endif
         ${template_lib.signupLoginModal()}
+        
         
         
         <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
