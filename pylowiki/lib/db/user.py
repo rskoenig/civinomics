@@ -71,7 +71,7 @@ def getUsers(limit, offset = '0',disabled = '0', deleted = '0'):
     q = meta.Session.query(Thing)\
         .filter_by(objType = 'user')\
         .filter(Thing.data.any(wc('disabled', disabled)))\
-		.offset(offset)
+		.order_by('-date').offset(offset)
     if limit:
         postList = q.limit(limit)
     else: 
