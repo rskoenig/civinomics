@@ -32,15 +32,8 @@
             <li><a href="#iPhotos" data-toggle="tab">Photos</a></li>
             -->
         </ul>
-    % elif c.editUpdate or c.update or c.resource or c.editResource:
-        <!-- direct linking to sections of the page not working due to angular '/' injection after '#' -->
-        <ul class="nav nav-pills nav-stacked i-menu" style="width: 100%;">
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#summary">Info</a></li>
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#updates">Updates</a></li>
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#resources">Resources</a></li>
-            <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}#comments">Comments</a></li>
-        </ul>
-    % else:
+    % elif not (c.editUpdate or c.update or c.resource or c.editResource):
+        <!-- direct linking to sections of the page not working due to angular '/' injection after '#' currently no menu visible on sub initiative pages-->
         <ul class="nav nav-pills nav-stacked i-menu" style="width: 100%;">
             <li><a ng-click="scrollTo('summary')">Info</a></li>
             <li><a ng-click="scrollTo('resources')">Resources</a></li>

@@ -82,11 +82,17 @@
 </%def>
 
 <%def name="showUpdateList()">
-    <ul>
-    % for update in c.updates:
-        <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update['title']} <span class="pull-right">${update.date}</span></a></li>
-    % endfor
-    </ul>
+    % if len(c.updates) <= 0:
+        <div class="alert alert-info top-space-md">
+            There are no updates yet.
+        </div>
+    % else:
+        % for update in c.updates:
+            <ul>
+                <li><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateShow/${update['urlCode']}">${update['title']} <span class="pull-right">${update.date}</span></a></li>
+            </ul>
+        % endfor
+    % endif
 </%def>
                         
 
