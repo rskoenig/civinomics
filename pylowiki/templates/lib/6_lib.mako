@@ -2273,16 +2273,20 @@
                     <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
                     </span>
                     <p>
-                        <span>Create: &nbsp; </span>
-                        <select ng-model="thing" ng-change="showAll = true">
+                        <label>Add<span ng-show="phase"> {{thing}}</span>: &nbsp;</label>
+
+                        <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
                             <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
-                        </select>                           
+                        </select>    
+
                     </p>
 
                     ###Basic
                     % if 'user' in session:
                         <form enctype="multipart/form-data" action="/create/{{thing}}/${c.authuser['urlCode']}/${c.authuser['url']}" method="POST">     
-                    % endif 
+                    % else:
+                        <form>
+                    % endif
 
                     <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  
 
@@ -2290,29 +2294,32 @@
                         <input class="form-control ng-pristine ng-valid" ng-if="showAll" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
                     </div>
 
-                    <textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
-            
+                    <div class="form-group">
+                        <textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
+                    </div>
             
                     <div ng-show="showAll">
-                        <hr>
-                        <div class="col-xs-5" ng-show="geoScope == ''">
-                            <h4>Geographic Scope</h4>
-                            ${ng_helpers.ngGeoSelect()}
-                        </div>
-                        <div class="col-xs-5">
-                            <h4>Tag</h4>
-                            <select name="tags" ng-model="tag">
-                                <option value="">Tags</option>
-                                % for tag in c.tagList:
-                                    <option value="${tag}"> ${tag}</option>
-                                % endfor
-                            </select>
-                        </div>
+                        % if parentCode == None:
+                            <hr>
+                            <div class="col-xs-5" ng-show="geoScope == ''">
+                                <label>Geographic Scope</label>
+                                ${ng_helpers.ngGeoSelect()}
+                            </div>
+                            <div class="col-xs-5">
+                                <label>Category</label><br>
+                                <select name="tags" ng-model="tag">
+                                    <option value="">none</option>
+                                    % for tag in c.tagList:
+                                        <option value="${tag}"> ${tag}</option>
+                                    % endfor
+                                </select>
+                            </div>
+                        % endif
                     </div>
 
                     ###Conditional Fields
                     <div ng-if="thing == 'Workshop' && showAll">
-                        <h4>Privacy level</h4>
+                        <label>Privacy level</label>
                         <select ng-model="workshopAccess" name="privacy" required>
                             <option value=""></option>
                             <option value="public">Public</option>
@@ -2321,9 +2328,9 @@
                     </div>
             
                     <div ng-show="false" class="col-xs-12">
-                        <h4>Deadline</h4>
-                        <div class="row-fluid">
-                            <div class="span6">
+                        <label>Deadline</label>
+                        <div class="row-">
+                            <div class="col-xs-6">
                                 <p class="input-group">
                                     <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" />
                                     <span class="input-group-btn">
@@ -2336,8 +2343,8 @@
 
                     <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'" ng-if="showAll">
                         <hr>
-                        <p class="lead">{{thing}} Images</p>
-                        <h5>{{thing}} Photo</h5>
+                        <label>Photos</label>
+                        <h5>ID Photo</h5>
                         <input type="file" name="avatar[]" id="imgAvatar" />
                         <img style="display:none;" id="avatarPreview" name="avatarPreview" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
                         <div ng-show="thing == 'Initiative'">
@@ -2357,17 +2364,14 @@
                 </div><!-- col-xs-12 -->
             </div><!-- row -->
 
-            <div ng-show="showAll" class="row">
-                <div class="col-xs-12">
-                    % if 'user' in session:
-                        <button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button>
-                    % else:
-                        <a href="#signupLoginModal" role="button" data-toggle="modal"><button type="submit" class="btn btn-large btn-success pull-right">Add {{thing}}</button></a>
-                    % endif
-                    </form>   
-                </div>
+            <div ng-show="showAll" class="form-group text-right">
+                % if 'user' in session:
+                    <button type="submit" class="btn btn-large btn-success">Submit</button>
+                % else:
+                    <a href="#signupLoginModal" role="button" data-toggle="modal"><button type="submit" class="btn btn-large btn-success">Submit</button></a>
+                % endif
             </div>
-            <br/>
+            </form> 
         </div><!-- media-well -->
     </div><!-- ng-controller -->
 </%def>
