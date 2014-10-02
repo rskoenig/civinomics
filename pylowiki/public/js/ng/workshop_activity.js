@@ -429,7 +429,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.adoptedClass = 'active-phase';
 		$scope.toggleAdopted();
 	} else if ($scope.phase == 'impact'){
-		$scope.impactedClass = 'active-phase';
+		$scope.impactClass = 'active-phase';
 		$scope.toggleImpact();
 	};
 
