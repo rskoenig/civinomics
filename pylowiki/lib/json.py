@@ -108,7 +108,7 @@ def getJsonProperties(item):
 
         if 'workshopCode' in item:
             entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
-            entry['href'] = entry['parentHref'] + entry['href']
+            #entry['href'] = entry['parentHref'] + entry['href']
         elif 'initiativeCode' in item:
             entry['parentHref'] = '/initiative/' + item['initiativeCode'] + '/' + item['initiative_url']
             if entry['objType'] == 'update':
@@ -195,6 +195,10 @@ def getJsonProperties(item):
             log.info("no parentObjType item is %s"%item.keys())
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
 
+    if 'parentTitle' in entry:
+        if len(entry['parentTitle']) >= 35:
+            entry['parentTitleAbrv'] = entry['parentTitle'][0:32] + '...'
+
 
     # photo
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
@@ -203,14 +207,16 @@ def getJsonProperties(item):
     elif item.objType == 'initiative':
         entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
         entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
-    elif entry['parentObjType'] == 'workshop':
-        mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
-        if mainImage['pictureHash'] == 'supDawg':
-            entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
-        elif 'format' in mainImage.keys():
-            entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
-        else:
-            entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+
+    # to place workshop thumbnail in child listings
+    #elif entry['parentObjType'] == 'workshop':
+    #    mainImage = mainImageLib.getMainImageByCode(item['workshopCode'])
+    #    if mainImage['pictureHash'] == 'supDawg':
+    #        entry['thumbnail'] = "/images/slide/thumbnail/supDawg.thumbnail"
+    #    elif 'format' in mainImage.keys():
+    #        entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+    #    else:
+    #        entry['thumbnail'] = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
 
     elif entry['parentObjType'] == 'initiative':
         initiative = initiativeLib.getInitiative(item['initiativeCode'])
@@ -228,7 +234,8 @@ def getJsonProperties(item):
     tags = []
     tagList = []
     if 'tags' in item:
-        tagList = item['tags'].split('|')
+        if item['tags'] != None:
+            tagList = item['tags'].split('|')
     elif 'initiative_tags' in item:
         tagList = item['initiative_tags'].split('|')
     elif 'workshop_category_tags' in item:
@@ -320,5 +327,17 @@ def getJsonProperties(item):
 
     if 'commentRole' in item:
         entry['position'] = item['commentRole']
+
+    if 'adopted' in item and item['adopted'] == '1':
+        entry['status'] = 'adopted'
+    elif 'disabled' in item and item['disabled'] == '1':
+        entry['status'] = 'disabled'
+    else:
+        entry['status'] = '0'
+
+    if 'readOnly' in item and item['readOnly'] == '1':
+        entry['readOnly'] = '1'
+    else:
+        entry['readOnly'] = '0'
 
     return entry

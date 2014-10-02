@@ -28,6 +28,7 @@
 %>
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako"/>
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako"/>
 
 <%def name="facebookDialogShare2(**kwargs)">
     <%
@@ -1528,8 +1529,25 @@
                 return 'href = ' + adoptStr
         adoptStr = 'href = ' + adoptStr
     %>
-    ${immunifyStr | n}
+    ${adoptStr | n}
 </%def>
+
+<%def name="promoteThingLink(thing, **kwargs)">
+    <%
+        author = userLib.getUserByID(thing.owner)
+        promoteStr = '"/initiative/%s/%s/promoteIdea"' %(author['urlCode'], author['url'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return promoteStr
+                    return 'href = ' + promoteStr
+                return 'href = ' + promoteStr
+        promoteStr = 'href = ' + promoteStr
+    %>
+    ${promoteStr | n}
+</%def>
+
 
 <%def name="deleteThingLink(thing, **kwargs)">
     <%
@@ -1777,6 +1795,7 @@
                     <li><a href="#immunify-${adminID}" data-toggle="tab">Immunify</a></li>
                     % if thing.objType == 'idea':
                     <li><a href="#adopt-${adminID}" data-toggle="tab">Adopt</a></li>
+                    <li><a href="#promote-${adminID}" data-toggle="tab">Promote</a></li>
                     % endif
                     % if c.privs['admin']:
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
@@ -1824,6 +1843,48 @@
                             </div>
                         </form>
                         <span id="adoptResponse-${thing['urlCode']}"></span>
+                    </div>
+                    % endif
+                    % if thing.objType == 'idea':
+                    <div class="tab-pane" id="promote-${adminID}">
+                        <form class="form-inline" action = ${promoteThingLink(thing, embed=True, raw=True) | n}>
+                            <div class="form-group">
+
+                                <input type="hidden" name="initiativeTitle" value="${thing['title']}">
+                                <input type="hidden" name="initiativeDescription" value="${thing['text']}">
+
+                                <%
+                                    if 'scope' in thing:
+                                        scope = thing['scope']
+                                    elif 'workshop_public_scope' in thing:
+                                        scope = thing['workshop_public_scope']
+                                    else: 
+                                        scope = None
+                                %>
+                                <input type="hidden" name="initiativeRegionScope" value="${scope}">
+                                <%
+                                    if 'workshopCode' in thing:
+                                        workshopCode = thing['workshopCode']
+                                    else:
+                                        workshopCode = None
+                                %>
+                                <input type="hidden" name="workshopCode" value="${workshopCode}">
+                                <%
+                                    if 'tags' in thing:
+                                        tags = thing['tags']
+                                    elif 'workshop_category_tags' in thing:
+                                        tags = thing['workshop_category_tags']
+                                    else:
+                                        tags = None
+                                %>
+                                <input type="hidden" name="tags" value="${tags}">
+
+                                <label>Reason:</label>
+                                <input type="text" name="reason" class="form-control">
+                                <button class="btn btn-default adoptButton" type="submit" name="submit" ${promoteThingLink(thing, embed=True) | n}>Submit</button>
+                            </div>
+                        </form>
+                        <span id="promoteResponse-${thing['urlCode']}"></span>
                     </div>
                     % endif
                     % if c.privs['admin']:
@@ -2091,7 +2152,7 @@
 </%def>
 
 <%def name="formattingGuide()">
-  <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-picture"></i> <i class="icon-list"></i> View Formatting Guide</a></label>
+  <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-picture"></i> <i class="icon-list"></i> View Formatting Guide</a>
 </%def>
 
 <%def name="showTags(item)">
@@ -2107,7 +2168,7 @@
               <% 
                 tagValue = tag.replace(" ", "_")
               %>
-              <a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+              <span> / </span><a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
           % endif
       % endfor
 </%def>
@@ -2202,5 +2263,155 @@
   <a ${initiativeLink(i)}>
       <div style="height:80px; width:110px; background-image:url('${imgURL}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
   </a>
+</%def>
+
+<%def name="create(parentCode = None, parentObjType = None, returnTo = None)">
+    <div ng-controller="createController" ng-cloak>
+        <div class="media well well-grey search-listing">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
+                    </span>
+                    <p>
+                        <label>Add<span ng-show="phase"> {{thing}}</span>: &nbsp;</label>
+
+                        <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
+                            <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
+                        </select>    
+
+                    </p>
+
+                    ###Basic
+                    % if 'user' in session:
+                        <form enctype="multipart/form-data" action="/create/{{thing}}/${c.authuser['urlCode']}/${c.authuser['url']}" method="POST">     
+                    % else:
+                        <form>
+                    % endif
+
+                    <input class="form-control ng-pristine ng-valid" type="text" ng-click="showAll = true" ng-model="title" placeholder="{{thing}} Title" name="title" required style="margin-bottom:8px;"></input>  
+
+                    <div ng-show="thing == 'Resource'">
+                        <input class="form-control ng-pristine ng-valid" ng-if="showAll" type="text" ng-model="link" placeholder="Link - http://" style="margin-bottom:8px;" name="link" ng-required="thing == 'Resource'"></input> 
+                    </div>
+
+                    <div class="form-group">
+                        <textarea ng-if="showAll"  class="form-control ng-pristine ng-valid" rows="4" type="text" ng-model="description" placeholder="{{thing}} Description" name="description"></textarea>
+                    </div>
+            
+                    <div ng-show="showAll">
+                        % if parentCode == None:
+                            <hr>
+                            <div class="col-xs-5" ng-show="geoScope == ''">
+                                <label>Geographic Scope</label>
+                                ${ng_helpers.ngGeoSelect()}
+                            </div>
+                            <div class="col-xs-5">
+                                <label>Category Tag</label><br>
+                                <select name="tags" ng-model="tag">
+                                    <option value="">Select One</option>
+                                    % for tag in c.tagList:
+                                        <option value="${tag}"> ${tag}</option>
+                                    % endfor
+                                </select>
+                            </div>
+                        % endif
+                    </div>
+
+                    ###Conditional Fields
+                    <div ng-if="thing == 'Workshop' && showAll">
+                        <label>Privacy level</label>
+                        <select ng-model="workshopAccess" name="privacy" required>
+                            <option value=""></option>
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                    </div>
+            
+                    <div ng-show="false" class="col-xs-12">
+                        <label>Deadline</label>
+                        <div class="row-">
+                            <div class="col-xs-6">
+                                <p class="input-group">
+                                    <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="date" is-open="opened" min="minDate" max="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" ng-click="open($event)"><i class="icon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12" ng-show="thing == 'Initiative' || thing == 'Workshop'" ng-if="showAll">
+                        <hr>
+                        <label>Photos</label>
+                        <h5>ID Photo</h5>
+                        <input type="file" name="avatar[]" id="imgAvatar" />
+                        <img style="display:none;" id="avatarPreview" name="avatarPreview" src="#" alt="your {{thing}} image" ng-required="thing=='Initiative'"/>
+                        <div ng-show="thing == 'Initiative'">
+                            <h5>Cover Photo</h5>
+                            <input type='file' id="imgCover" name="cover[]" />
+                            <img style="display:none;" id="coverPreview" name="coverPreview" src="#" alt="your cover image" />
+                        </div>
+                    </div>
+
+                    ###Extra info (hidden)
+                    <input ng-if="scope != ''" type="hidden" name="geoScope" value="{{scope}}" \>
+                    <input ng-if="geoScope != ''" type="hidden" name="geoScope" value="{{geoScope}}" \>
+                    <input type="hidden" name="deadline" value="{{date}}" \>
+                    <input type="hidden" name="parentCode" value="${parentCode}" \>
+                    <input type="hidden" name="parentObjType" value="${parentObjType}" \>
+                    <input type="hidden" name="returnTo" value="${returnTo}" \>
+                </div><!-- col-xs-12 -->
+            </div><!-- row -->
+
+            <div ng-show="showAll" class="form-group text-right">
+                % if 'user' in session:
+                    <button type="submit" class="btn btn-large btn-success">Submit</button>
+                % else:
+                    <a href="#signupLoginModal" role="button" data-toggle="modal"><button type="submit" class="btn btn-large btn-success">Submit</button></a>
+                % endif
+            </div>
+            </form> 
+        </div><!-- media-well -->
+    </div><!-- ng-controller -->
+</%def>
+
+<%def name="zipLookup()">
+    <div ng-init="zipValue = ${c.postalCode}">
+        <div ng-controller="zipLookupCtrl" ng-cloak>
+          <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
+          <table ng-show="!loading" class="full-width">
+            <tr>
+                <td>
+                      <a ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag med-flag bottom-space" src="/images/flags/homeFlag.gif" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+                  </td>
+            </tr>
+            <tr ng-repeat="geo in geos">
+              <td>
+                  <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population, geo.href, geo.photo)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+              </td>
+            </tr>
+          </table>
+
+          <div class="btn-group" ng-show="!loading">
+            <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="grey icon-search centered"></i>
+            </a>
+            <ul class="dropdown-menu" >
+              <li class="dropdown-form">
+                <p>Look up a zip code</p>
+                <form class="form-inline" name="zipForm">
+                  <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                      <input class="input-small form-control" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                      <button class="btn btn-primary top-space" ng-click="lookup()">Search</button><br>
+                      <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                  </div>
+                </form>
+              </li>
+            </ul>
+          </div>
+          
+        </div><!-- ng-controller ziplookup-->
+    </div><!-- ng-init -->
 </%def>
 

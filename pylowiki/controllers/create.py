@@ -213,14 +213,24 @@ class CreateController(BaseController):
             scope = query['geoScope']
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
-            
-        goal = self.getInitiativeGoal(scope)
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
+
+        if query['parentCode'] != None:
+            if query['parentObjType'] == 'workshop':
+                workshop = workshopLib.getWorkshopByCode(query['parentCode'])
+                if 'workshop_public_scope' in workshop:
+                    log.info('got a workshop scope')
+                    scope = workshop['workshop_public_scope']
+                if 'workshop_category_tags' in workshop:
+                    tags = workshop['workshop_category_tags']
+                    kwargs['tag'] = tags
+
+        goal = self.getInitiativeGoal(scope)
         
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal, **kwargs)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal, workshop = workshop, **kwargs)
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
@@ -288,9 +298,13 @@ class CreateController(BaseController):
     @h.login_required
     def addResourceHandler(self):
         log.info(request.params)
+        payload = request.params
 
         if c.w:
             parent = c.w
+        elif payload['parentCode'] != None:
+            if payload['parentObjType'] == 'workshop':
+                c.w = parent = workshopLib.getWorkshopByCode(payload['parentCode'])
         elif c.initiative:
             parent = c.initiative
             userLib.setUserPrivs()
@@ -300,7 +314,6 @@ class CreateController(BaseController):
             parent = None
             userLib.setUserPrivs()
             
-        payload = request.params
         if 'title' not in payload:
             return redirect(session['return_to'])
         title = payload['title'].strip()
@@ -364,7 +377,13 @@ class CreateController(BaseController):
         elif json.loads(request.body):
             payload = json.loads(request.body)
         
-        c.w = None
+        if c.w:
+            workshop = c.w
+        elif payload['parentCode'] != None:
+            if payload['parentObjType'] == 'workshop':
+                workshop = parent = workshopLib.getWorkshopByCode(payload['parentCode'])
+        else:
+            workshop = None
         
 #         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
 #             if request.params:
@@ -381,7 +400,11 @@ class CreateController(BaseController):
         else:
             text = ''
             
-        if 'geoScope' in payload:
+        if parent:
+            if payload['parentObjType'] == 'workshop':
+                if 'workshop_public_scope' in workshop:
+                    scope = workshop['workshop_public_scope']
+        elif 'geoScope' in payload:
             log.info("it has a scope in create")
             scope = payload['geoScope']
         else:
@@ -389,10 +412,15 @@ class CreateController(BaseController):
             scope = '0|0|united-states|0|0|0|0|0|0|0'
         kwargs = {'geoScope' : scope}
         
-        if 'tags' in payload:
+        if parent:
+            if payload['parentObjType'] == 'workshop':
+                if 'workshop_category_tags' in workshop:
+                    tags = workshop['workshop_category_tags']
+                    kwargs['tags'] = tags
+        elif 'tags' in payload:
         	tags = payload['tags']
         	kwargs['tags'] = tags
-        
+            
         if not title or title=='':
             if request.params:
                 return redirect(session['return_to'])
@@ -403,17 +431,18 @@ class CreateController(BaseController):
                 title = title[:120]
             
             d = discussionLib.Discussion(owner = c.authuser, discType = 'general',\
-                title = title, text = text, privs = c.privs, role = None, **kwargs)
+                title = title, text = text, privs = c.privs, role = None, workshop = workshop, **kwargs)
             alertsLib.emailAlerts(d.d)
             #commit(c.w)
-        
-        log.info(vars(d.d))
+
         if d:
-            redirectUrl2 = "/home"
-            if 'returnTo' in request.params:
-                redirectUrl2 = payload['returnTo']
-            redirectUrl = "/discussion/" + d.d['urlCode'] +"/"+ d.d['url']
-            redirect(redirectUrl2)
+            redirectUrl2 = "/discussion/" + d.d['urlCode'] +"/"+ d.d['url']
+            redirectUrl = "/home"
+            if 'returnTo' in payload:
+                redirectUrl = payload['returnTo']
+            redirect(redirectUrl)
+        else:
+            return json.dumps({"state":"Error", "errorMessage":"Discussion not added!"})
 
 #################
 # Ideas
@@ -434,6 +463,13 @@ class CreateController(BaseController):
             payload = json.loads(request.body)
         
         log.info(payload)
+
+        if payload['parentCode'] != None:
+            if payload['parentObjType'] == 'workshop':
+                parent = workshop = workshopLib.getWorkshopByCode(payload['parentCode'])
+            else: 
+                workshop = None;
+
         if 'title' not in payload:
             log.info("submit or title not in req params")
             if request.params:
@@ -445,7 +481,14 @@ class CreateController(BaseController):
             text = payload['description']
         else:
             text = ''
-        if 'geoScope' in payload:
+
+
+        if parent:
+            if payload['parentObjType'] == 'workshop':
+                if 'workshop_public_scope' in workshop:
+                    log.info('got a workshop public scope and its %s' % workshop['workshop_public_scope'])
+                    scope = workshop['workshop_public_scope']
+        elif 'geoScope' in payload:
             log.info("it has a scope in create")
             scope = payload['geoScope']
         else:
@@ -454,7 +497,12 @@ class CreateController(BaseController):
         
         kwargs = {'geoScope' : scope}
         
-        if 'tags' in payload:
+        if parent:
+            if payload['parentObjType'] == 'workshop':
+                if 'workshop_category_tags' in workshop:
+                    tags = workshop['workshop_category_tags']
+                    kwargs['tags'] = tags
+        elif 'tags' in payload:
         	tags = payload['tags']
         	kwargs['tags'] = tags
         
@@ -466,7 +514,7 @@ class CreateController(BaseController):
                 return json.dumps({'statusCode':1})
         if len(title) > 120:
             title = title[:120]
-        newIdea = ideaLib.Idea(c.authuser, title, text, None, c.privs, **kwargs)
+        newIdea = ideaLib.Idea(c.authuser, title, text, workshop, c.privs, **kwargs)
         log.info("made new idea")
         alertsLib.emailAlerts(newIdea)
         if iPhoneApp:

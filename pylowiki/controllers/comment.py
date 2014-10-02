@@ -191,12 +191,12 @@ class CommentController(BaseController):
             
             if request.params:
                 log.info("commentCCN where oh where")
-                if 'workshopCode' in thing:   
+                if thing.objType == 'initiative' or 'initiativeCode' in thing and thing.objType != 'discussion':
+                    return redirect(utils.initiativeURL(thing))
+                elif 'workshopCode' in thing:   
                     return redirect(utils.thingURL(workshop, thing))
                 elif thing.objType == 'photo' or 'photoCode' in thing:
                     return redirect(utils.profilePhotoURL(thing))
-                elif thing.objType == 'initiative' or 'initiativeCode' in thing and thing.objType != 'discussion':
-                    return redirect(utils.initiativeURL(thing))
                 elif thing.objType == 'discussion':
                     return redirect(utils.profileDiscussionURL(thing))
             elif json.loads(request.body):
