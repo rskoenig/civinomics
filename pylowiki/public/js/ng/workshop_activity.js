@@ -167,7 +167,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		$scope.showAddBtn = false;
+		$scope.showAddBtn = true;
 		$scope.showAddForm = false;
 
 		if($scope.phase == 'research'){
