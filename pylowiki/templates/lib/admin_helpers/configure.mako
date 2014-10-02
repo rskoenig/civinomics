@@ -212,8 +212,13 @@
         <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="true">Yes
         <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="false">No<br/>
         <div id="demographics-wizard" ng-if="hasDemographics">
-            Demographics here! 
-                <input type="checkbox" ng-model="">
+            <br\>
+            <ul class="list-unstyled">
+            {{demographics.list[1].key}}
+                <li ng-repeat="demo in demographics.list">
+                <input type="checkbox" ng-model="demo.checked" ng-change="updateList()"> {{demo.text}}<br/>
+                </li>
+            </ul>
         </div>
         
     </div><!-- browse -->

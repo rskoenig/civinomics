@@ -84,7 +84,7 @@ class CriteriaController(BaseController):
             sumVotes = 0
             numVotes  = len(result)
             for vote in result:
-                log.info(vars(vote))
                 sumVotes += int(vote['amount'])
             amount = int(sumVotes/numVotes)
+            log.info("%s %s", sumVotes, numVotes)
             return amount
