@@ -134,7 +134,7 @@ class DemographicsController(BaseController):
         
         for demographic in self.workshop['demographics'].split("|"):
             if userDemo[self.demographicsKeys[demographic]] == '0':
-                return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic", 'required':demographic})
+                return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic", 'required':self.workshop['demographics']})
                      
         return json.dumps({'statusCode':1})
         
