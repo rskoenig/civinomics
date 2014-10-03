@@ -211,7 +211,7 @@ class Discussion(object):
             d['tags'] = kwargs['tags']
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
         # Optional arguments
-        if 'workshop' in kwargs:
+        if 'workshop' in kwargs and kwargs['workshop'] != None:
             workshop = kwargs['workshop']
             d = generic.linkChildToParent(d, workshop)
             d = generic.addedItemAs(d, kwargs['privs'], role)

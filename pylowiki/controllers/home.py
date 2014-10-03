@@ -67,6 +67,9 @@ class HomeController(BaseController):
         return render('/derived/6_home.bootstrap')
 
     def getFollowingInitiatives(self, offset=0, limit=0):
+        if not c.authuser:
+            return json.dumps({'statusCode':1})
+
 #         log.info("in get following initiatives")
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']

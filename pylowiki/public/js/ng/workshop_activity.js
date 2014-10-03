@@ -22,6 +22,9 @@ function activityWorkshopController($scope, $http) {
 	if ($scope.offset == undefined) {
 	    $scope.offset = 0;
 	}
+	if ($scope.phase == undefined || $scope.phase == '') {
+	    $scope.phase = 'ideas';
+	}
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = '';
@@ -164,7 +167,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showStats = false;
 		$scope.showAll = false;
 
-		$scope.showAddBtn = false;
+		$scope.showAddBtn = true;
 		$scope.showAddForm = false;
 
 		if($scope.phase == 'research'){
@@ -411,7 +414,6 @@ function activityWorkshopController($scope, $http) {
         $scope.newObjText = '';
         $scope.newObjLink = '';
 	};
-
 
 	if ($scope.phase == 'research'){
 		$scope.researchClass = 'active-phase';

@@ -198,7 +198,8 @@ def getJsonProperties(item):
     if 'parentTitle' in entry:
         if len(entry['parentTitle']) >= 35:
             entry['parentTitleAbrv'] = entry['parentTitle'][0:32] + '...'
-
+        else:
+            entry['parentTitleAbrv'] = entry['parentTitle']
 
     # photo
     if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
