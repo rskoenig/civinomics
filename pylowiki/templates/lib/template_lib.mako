@@ -646,19 +646,31 @@
                 </div>
                 <div class="modal-body">
                     <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
-                        <p>DEMOGRAPHICS WILL LOAD HERE</p>
+                        <p><br/></p>
                     <ul class="list-unstyled centered">
                         %if c.w and 'demographics' in c.w:
+                        {{userDemographics}}
                         <li ng-repeat="d in '${c.w['demographics']}'.split('|')">
-                            {{demographics.values[demographics.indexList[d]].text}}
-                            <input type="{{demographics.values[demographics.indexList[d]].type}}" name="{{demographics.values[demographics.indexList[d]].name}}" ng-model="demographics.values[demographics.indexList[d]].values"\>
+                            {{demographics.values[demographics.indexList[d]].text}} <br/>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'radio'" ng-repeat="v in demographics.values[demographics.indexList[d]].values">
+                                <input type="radio" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" value="{{v}}"> {{v}} <br/>
+                            </span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'select'">
+                                <select ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" ng-options="v for v in demographics.values[demographics.indexList[d]].values">
+                                </select>
+                            </span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'text'"></span>
                         </li>
                         %endif
                     </ul>
                     <div class="" id="resendMessage"></div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Send</button>
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"
+                    %if c.w:
+                     ng-click="sendUserDemographics('${c.w['urlCode']}','${c.w['url']}')"
+                    %endif
+                     >Send</button>
                 </div>
             </div>
         </div>

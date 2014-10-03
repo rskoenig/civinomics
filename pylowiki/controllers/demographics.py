@@ -74,12 +74,10 @@ class DemographicsController(BaseController):
         
 
     def setWorkshopDemographics(self, workshopCode, workshopURL, demographics):
-        log.info("Setting workshop demographics - we override every time as we suppose that the previous ones have been handled properly")
         self.workshop['demographics'] = demographics
         dbHelpers.commit(self.workshop)
         
     def checkWorkshopDemographics(self, demographics):
-        log.info("Checking to see if the workshop has the required demographics")
         if 'demographics' in self.workshop:
             if demographics == self.workshop['demographics']:
                 return json.dumps({'statusCode':1, 'required': self.workshop['demographics']})
@@ -88,61 +86,56 @@ class DemographicsController(BaseController):
         else:
             return json.dumps({'statusCode':0, 'error': "Workshop doesn't have demographics"})
 
-            
-        log.info("Do something")
+                
+    def setUserDemographics(self, demographics):
+
+#         Will change to POST as soon as I can.
+#         requestKeys = request.params.keys()
+#         kwargs = {}
+#         query = request.POST
+#         log.info(vars(query))
+#         demographics = ['0','0','0','0','0','0','0','0']
+#         
+#         if 'birthday' in query:
+#             demograpics[demograpicsKeys['birthday']] = query['birthday']
+#         if 'gender' in query:
+#             demograpics[demograpicsKeys['gender']] = query['gender']
+#         if 'ethnicity' in query:
+#             demograpics[demograpicsKeys['ethnicity']] = query['ethnicity']
+#         if 'education' in query:
+#             demograpics[demograpicsKeys['education']] = query['education']
+#         if 'kids' in query:
+#             demograpics[demograpicsKeys['kids']] = query['kids']
+#         if 'house' in query:
+#             demograpics[demograpicsKeys['house']] = query['house']
+#         if 'income' in query:
+#             demograpics[demograpicsKeys['income']] = query['income']
+#         if 'language' in query:
+#             demograpics[demograpicsKeys['language']] = query['language']
+#             
+#         demographicsString = '|'.join(demographics)
         
-    def setUserDemographics(self):
-        log.info("Setting the user's demographics")
-        requestKeys = request.params.keys()
-        kwargs = {}
-        query = request.POST
-        
-        demographics = []
-        
-        if 'birthday' in query:
-            demograpics[demograpicsKeys['birthday']] = query['birthday']
-        if 'gender' in query:
-            demograpics[demograpicsKeys['gender']] = query['gender']
-        if 'ethnicity' in query:
-            demograpics[demograpicsKeys['ethnicity']] = query['ethnicity']
-        if 'education' in query:
-            demograpics[demograpicsKeys['education']] = query['education']
-        if 'kids' in query:
-            demograpics[demograpicsKeys['kids']] = query['kids']
-        if 'house' in query:
-            demograpics[demograpicsKeys['house']] = query['house']
-        if 'income' in query:
-            demograpics[demograpicsKeys['income']] = query['income']
-        if 'language' in query:
-            demograpics[demograpicsKeys['language']] = query['language']
-            
-        demographicsString = demographicsArrayToString(demographics)
-        
-        c.authuser['demographics'] = demographicsString
+        c.authuser['demographics'] = demographics
         dbHelpers.commit(c.authuser)
         
         
     def checkUserDemographics(self, workshopCode, workshopURL):
-        log.info(workshopCode)
         self.workshop = workshopLib.getWorkshopByCode(workshopCode)
-        log.info("Checking if the user has the demographics required by the workshop")
         if 'demographics' not in self.workshop:
-            log.info("workshop missing demo")
             return json.dumps({'statusCode':2, 'error': "Workshop doesn't have demographics"})
         
         if 'demographics' not in c.authuser and 'demographics' in self.workshop:
-            log.info("User missing demo")
             c.required_demographics = self.workshop['demographics']
             return json.dumps({'statusCode':0, 'error': "User doesn't have demographics", 'required': self.workshop['demographics']})
         
         
-            
+        #I need to change this            
         userDemo = c.authuser['demographics'].split("|")
         
         for demographic in self.workshop['demographics'].split("|"):
-            if demographic not in userDemo:
-                return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic"})
-                
+            if userDemo[self.demographicsKeys[demographic]] == '0':
+                return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic", 'required':demographic})
+                     
         return json.dumps({'statusCode':1})
         
     #Helper function to convert from array to string

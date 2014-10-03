@@ -46,8 +46,6 @@ class CriteriaController(BaseController):
 
     def addToWorkshop(self, workshopCode, workshopURL, criteria):
         if not criteria == '0':
-            log.info("I guess I'll have to do something.")
-            log.info(criteria.split("|"))
             criteriaList = criteria.split("|")
             self.workshopCrit['rating_criteria'] = criteria
             dbHelpers.commit(self.workshopCrit)
@@ -55,7 +53,6 @@ class CriteriaController(BaseController):
             log.info("Hell naw. I'm not sure if I want to do anything here")            
     
     def getWorkshopCriteria(self, workshopCode, thingCode):
-        log.info("In get workshop criteria")
         # This function returns the criteria related to the workshop
         # In case there's none, it should return false? 
         if 'rating_criteria' in self.workshopCrit:
@@ -86,5 +83,5 @@ class CriteriaController(BaseController):
             for vote in result:
                 sumVotes += int(vote['amount'])
             amount = int(sumVotes/numVotes)
-            log.info("%s %s", sumVotes, numVotes)
+           # log.info("%s %s", sumVotes, numVotes)
             return amount

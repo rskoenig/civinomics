@@ -39,21 +39,28 @@ function demographicsController($scope, $http){
         required : ""
 	}
 	
+	$scope.userDemographics = {
+    	birthday: "0",
+    	gender: "0",
+    	ethnicity: "0",
+    	education: "0",
+    	kids: "0",
+    	house: "0",
+    	income: "0",
+    	language: "0"
+	};
+	
 	$scope.hasDemographics = false;
 	
 	$scope.updateList = function(workshopCode, workshopUrl){        
 	    var stringDemographicsList = conditionalListToString($scope.demographics.list);
-	    
 	    var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/add/"+stringDemographicsList;
-        console.log(stringDemographicsList);
         $http.get(requestUrl).success(function(data){
-            console.log(data);
 				if (data.statusCode == 1){
 				
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
-				    console.log(data.error);
 					//Do something if it fails		
 					//I'd rather do this			
 				}
@@ -81,6 +88,28 @@ function demographicsController($scope, $http){
        $scope.userDemoChecked = true;     
 	};
 	
+	$scope.sendUserDemographics = function(workshopCode, workshopUrl){
+	    var userData = $scope.userDemographics.birthday +"|"+$scope.userDemographics.gender+"|"+$scope.userDemographics.ethnicity+"|"+$scope.userDemographics.education+"|"+$scope.userDemographics.kids+"|"+$scope.userDemographics.house+"|"+$scope.userDemographics.income+"|"+$scope.userDemographics.language
+        var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"+userData;
+        $http.get(requestUrl).success(function(data){
+				if (data.statusCode == 1){
+				    return '1';
+				} 
+				else if (data.statusCode === 0){
+				    return '0';	
+				}
+			});
+        /* Fancy, but doesn't work
+$http.post(requestUrl, $scope.userDemographics).success(function(data){
+            console.log("success!!!");
+            $scope.success = true
+            $scope.newObjUrl = data.newObjUrl
+            $scope.newObjCode = data.newObjCode
+		});
+*/
+
+	};
+	
 	conditionalListToString = function(oldList){
         var listStr = "";
         var arrayAux = []
@@ -90,7 +119,6 @@ function demographicsController($scope, $http){
             }
     	}
     	listStr = listToString(arrayAux);
-    	console.log(listStr);
     	return listStr;
 	};
 		
