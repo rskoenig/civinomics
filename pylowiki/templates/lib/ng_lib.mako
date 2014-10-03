@@ -816,7 +816,7 @@
             </td>
 		    <td>
 		        <span ng-switch="showAverage">
-        			<ul class="list-inline" style="" ng-switch-when="false">
+        			<ul class="list-inline" style="" ng-switch-when="false" style="width: 110px">
         				<li class="criteria-list"> <span class="glyphicon" 
         				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
                                               'glyphicon-star-empty':!hover1 && (criteria.amount <1)}" 

@@ -646,6 +646,7 @@
                 </div>
                 <div class="modal-body">
                     <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
+                    <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
                     <ul class="list-unstyled centered">
                         %if c.w and 'demographics' in c.w:
                         <li ng-repeat="d in '${c.w['demographics']}'.split('|')">
@@ -661,6 +662,9 @@
                                 <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
                             </span>
                         </li>
+                        <li><input type="checkbox" name="opt-out">I would like to opt out from the demographics.</input></li>
+                        %else:
+                            <p>Please access the workshop in order to fill in your demographics or opt out and continue</p>
                         %endif
                     </ul>
                     <div class="" id="resendMessage"></div>
