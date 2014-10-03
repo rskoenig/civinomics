@@ -3289,6 +3289,9 @@ margin-right: -13px;
 .initiative-info{
   line-height: 2em;
 }
+.initiative-info img{
+  max-width: 100%;
+}
 
 #initiative-dashboard.affix{
   right: 0%;
