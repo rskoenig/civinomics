@@ -11,6 +11,7 @@ import pylowiki.lib.db.dbHelpers    as dbHelpers
 import simplejson                   as json
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.rating       as ratingLib
+import pylowiki.lib.db.initiative   as initiativeLib
 
 log = logging.getLogger(__name__)
 
