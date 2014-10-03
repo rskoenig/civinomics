@@ -2561,6 +2561,10 @@ hr.stats{
       hyphens: auto;
 }
 
+.markdown.markdown-listed h1, .markdown.markdown-listed h2, .markdown.markdown-listed h3, .markdown.markdown-listed h4, .markdown.markdown-listed h5, .markdown.markdown-listed h6{
+  font-size: 1em;
+}
+
 .med-width{
   width: 150px;
 }
