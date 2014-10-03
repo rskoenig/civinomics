@@ -26,6 +26,11 @@ app.controller('ratingsController', function($scope, $http){
 	
 	$scope.criteriaName = '';
 	$scope.hasCriteria = false;
+	$scope.showAverage = false;
+	
+	$scope.changeShowAverage = function(){
+    	$scope.showAverage = !$scope.showAverage;
+	}
 	
 	$scope.addCriteriaToList = function(){
 		$scope.alert.message = '';

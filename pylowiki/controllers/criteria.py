@@ -58,8 +58,14 @@ class CriteriaController(BaseController):
         if 'rating_criteria' in self.workshopCrit:
             criteriaList = []
             for criteria in self.workshopCrit['rating_criteria'].split("|"):
+                thing = ideaLib.getIdea(thingCode)
+                rating = ratingLib.getCriteriaRatingForThingUser(c.authuser, thing, criteria)
+                if not rating:
+                    userRat = 0
+                else:
+                    userRat = rating['amount']
                 amount = self.getRatingForCriteria(workshopCode, criteria, thingCode)
-                criteriaFull = {'criteria':criteria, 'amount': amount}
+                criteriaFull = {'criteria':criteria, 'average': amount[0], 'numVotes':amount[1], 'amount': userRat}
                 criteriaList.append(criteriaFull)
             return json.dumps({'statusCode':1, 'criteria': criteriaList})
         else:
@@ -84,4 +90,4 @@ class CriteriaController(BaseController):
                 sumVotes += int(vote['amount'])
             amount = int(sumVotes/numVotes)
            # log.info("%s %s", sumVotes, numVotes)
-            return amount
+            return [amount, numVotes]
