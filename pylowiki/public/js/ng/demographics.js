@@ -106,6 +106,7 @@ function demographicsController($scope, $http){
       var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"
 $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
+            demographics.required = "";
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl
             $scope.newObjCode = data.newObjCode
