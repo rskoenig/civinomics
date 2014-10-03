@@ -3290,11 +3290,6 @@ margin-right: -13px;
   line-height: 2em;
 }
 
-.initiative-info h2{
-  text-transform: uppercase;
-  font-size: 17.5px;
-}
-
 #initiative-dashboard.affix{
   right: 0%;
   width: 360px;
