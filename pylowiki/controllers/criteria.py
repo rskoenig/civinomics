@@ -74,7 +74,7 @@ class CriteriaController(BaseController):
     #Make this workshop dependent?
     def rateCriteria(self, criteria, thingCode, rating):
         thing = ideaLib.getIdea(thingCode)
-        if no thing:
+        if not thing:
             thing = initiativeLib.getInitiative(thingCode)
         ratingObj = ratingLib.makeOrChangeRating(thing, c.authuser, rating, 'criteria', criteria = criteria)
         if ratingObj:
@@ -82,7 +82,7 @@ class CriteriaController(BaseController):
     
     def getRatingForCriteria(self, workshopCode, criteria, thingCode):
         thing = ideaLib.getIdea(thingCode)
-        if no thing:
+        if not thing:
             thing = initiativeLib.getInitiative(thingCode)
         result = ratingLib.getCriteriaRatingForThing(workshopCode, thing, criteria)
         if len(result) == 0:
