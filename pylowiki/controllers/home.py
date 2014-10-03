@@ -327,7 +327,6 @@ class HomeController(BaseController):
 
         # inclusive county activity function
         elif type == 'geo' and c.authuser and scope == 'none':
-            log.info("COUNTY ACTIVITY!!!!!!!")
 		    # try getting the activity of their area
             userScope = getGeoScope( c.authuser['postalCode'], "United States" )
             log.info(userScope)

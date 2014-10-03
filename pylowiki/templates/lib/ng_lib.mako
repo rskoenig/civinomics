@@ -758,23 +758,30 @@
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
 		Rate this idea:
-		<form style="">
-			<ul class="list-inline" ng-repeat="criteria in rating.criteriaList" style="">
-				<li> <span class="glyphicon" 
-				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
-                                      'glyphicon-star-empty':!hover1 && (criteria.amount <1)}" 
-                           ng-mouseenter="addVote(hover1, 1, criteria)" 
-                           ng-mouseleave="removeVote(hover1, criteria)" 
-                           ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
-                     </span>
-                </li>
-				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star-empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star-empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star-empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star-empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-				<li>{{criteria.criteria}}</li>
-			</ul>
-		</form>
+		<table class="centered" style="margin: 0 auto !important;float: none !important;">
+		<tr ng-repeat="criteria in rating.criteriaList">
+		    <td><ul class="list-inline" style="">
+    				<li>{{criteria.criteria}}</li>
+                </ul>
+            </td>
+		    <td>
+    			<ul class="list-inline" style="">
+    				<li> <span class="glyphicon" 
+    				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
+                                          'glyphicon-star-empty':!hover1 && (criteria.amount <1)}" 
+                               ng-mouseenter="addVote(hover1, 1, criteria)" 
+                               ng-mouseleave="removeVote(hover1, criteria)" 
+                               ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
+                         </span>
+                    </li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star-empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star-empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star-empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star-empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    			</ul>
+            </td>
+			</tr>
+		</table>
 		</div>
 	</div> <!-- container-div -->
 </%def>
