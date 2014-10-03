@@ -830,7 +830,7 @@
 </%def>
 
 <%def name="text()">
-    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+    <p ng-init="stringLimit=300" class="markdown markdown-listed"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
 </%def>
 
 <%def name="additionalMetrics()">
