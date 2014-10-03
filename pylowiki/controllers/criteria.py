@@ -61,7 +61,7 @@ class CriteriaController(BaseController):
                 thing = ideaLib.getIdea(thingCode)
                 rating = ratingLib.getCriteriaRatingForThingUser(c.authuser, thing, criteria)
                 if not rating:
-                    userRat = 0
+                    userRat = '0'
                 else:
                     userRat = rating['amount']
                 amount = self.getRatingForCriteria(workshopCode, criteria, thingCode)
@@ -82,7 +82,8 @@ class CriteriaController(BaseController):
         thing = ideaLib.getIdea(thingCode)
         result = ratingLib.getCriteriaRatingForThing(workshopCode, thing, criteria)
         if len(result) == 0:
-            return 0  
+            amount = 0  
+            numVotes = 0
         else:
             sumVotes = 0
             numVotes  = len(result)
@@ -90,4 +91,4 @@ class CriteriaController(BaseController):
                 sumVotes += int(vote['amount'])
             amount = int(sumVotes/numVotes)
            # log.info("%s %s", sumVotes, numVotes)
-            return [amount, numVotes]
+        return [amount, numVotes]
