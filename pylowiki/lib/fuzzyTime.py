@@ -32,6 +32,8 @@ def timeSince(d, now=None):
     Adapted from http://blog.natbat.co.uk/archive/2003/Jun/14/time_since
     
     """
+
+    """
     chunks = (
       (60 * 60 * 24 * 365, lambda n: ungettext('year', 'years', n)),
       (60 * 60 * 24 * 30, lambda n: ungettext('month', 'months', n)),
@@ -40,6 +42,17 @@ def timeSince(d, now=None):
       (60 * 60, lambda n: ungettext('hour', 'hours', n)),
       (60, lambda n: ungettext('minute', 'minutes', n)),
     )
+    """
+
+    chunks = (
+      (60 * 60 * 24 * 365, lambda n: ungettext('y', 'y', n)),
+      (60 * 60 * 24 * 30, lambda n: ungettext('m', 'm', n)),
+      (60 * 60 * 24 * 7, lambda n : ungettext('w', 'w', n)),
+      (60 * 60 * 24, lambda n : ungettext('d', 'd', n)),
+      (60 * 60, lambda n: ungettext('h', 'h', n)),
+      (60, lambda n: ungettext('m', 'm', n)),
+    )
+    
 
     # Check for unicodeness
     if isinstance(d, unicode):
@@ -69,13 +82,13 @@ def timeSince(d, now=None):
         count = since // seconds
         if count != 0:
             break
-    s = ugettext('%(number)d %(type)s') % {'number': count, 'type': name(count)}
+    s = ugettext('%(number)d%(type)s') % {'number': count, 'type': name(count)}
     if i + 1 < len(chunks):
         # Now get the second item
         seconds2, name2 = chunks[i + 1]
         count2 = (since - (seconds * count)) // seconds2
         if count2 != 0:
-            s += ugettext(', %(number)d %(type)s') % {'number': count2, 'type': name2(count2)}
+            s += ugettext(', %(number)d%(type)s') % {'number': count2, 'type': name2(count2)}
     if s == "0 minute":
         return "0 minutes"
     return s

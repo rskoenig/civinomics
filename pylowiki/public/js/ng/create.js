@@ -18,10 +18,13 @@ function createController($scope, $http) {
 	}
 	
 	// Scope
+	
 	$scope.showAll = false
-	$scope.thing = "Idea"
+	if ($scope.thing == undefined) {
+	    $scope.thing = 'Idea';
+	}
 	$scope.file = "";
-	$scope.thingList = ['Initiative', 'Workshop', 'Resource', 'Discussion', 'Idea']
+	$scope.thingList = ['Idea','Initiative', 'Resource', 'Discussion', 'Workshop']
 	$scope.tagList = []
 	$scope.id1 = ""
 	$scope.id2 = ""

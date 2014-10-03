@@ -87,7 +87,7 @@
                                 numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
                                 if numMessages:
                                     if numMessages > 0:
-                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                                        messageCount += '<span class="badge badge-danger left-space"> %s</span>' % numMessages
                             %>
                             <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
                         </li>

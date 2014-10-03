@@ -11,10 +11,9 @@
         itemType = c.list[0].objType
 %>
 
-<div class="row-fluid">
-    <div class="span2">
+<div class="row">
+    <div class="col-sm-2">
         <ul class="nav nav-list">
-            <li class="nav-header">Item Type</li>
             % if itemType == 'user':
                 <li class="active"><a href="/admin/users">Users</a></li>
             % else:
@@ -75,11 +74,15 @@
                 <li><a href="/admin/flaggedInitiatives">Flagged Initiatives</a></li>
             % endif
         </ul>
-    </div><!--/.span3-->
+    </div><!--/.col-sm-2-->
 
-    <div class="span10" ng-controller = "adminlistController">
+    <div class="col-sm-10" ng-controller = "adminlistController">
     <br/>
-       	<input type="search" ng-model="userFilter" placeholder="Filter users" />
+        <div class="form-group">
+            <div class="col-xs-6">
+       	        <input class="form-control" type="search" ng-model="userFilter" placeholder="Filter users" />
+            </div>
+        </div>
         <table class="table table-striped" infinite-scroll="getActivity()" infinite-scroll-disabled="activityLoading" infinite-scroll-distance="7">
             <thead>
                 <tr>
@@ -101,7 +104,7 @@
 				   <td>{{item.poll_name}}</td>
 				   <td><a href="{{item.link}}"><img src="{{item.image}}" alt="{{item.name}}" title="{{item.name}}" class="avatar small-avatar"></a> 
 				   <a href="{{item.link}}">{{item.name}}</a></td>
-				   <td ng-if="item.activated == '0'"><button class="btn btn-civ activateButton notactivated" data-URL-list="user_{{item.urlCode}}_{{item.url}}" rel="tooltip" data-placement="bottom" data-original-title="Activate this user" id="userActivate"> 
+				   <td ng-if="item.activated == '0'"><button class="btn btn-success activateButton notactivated" data-URL-list="user_{{item.urlCode}}_{{item.url}}" rel="tooltip" data-placement="bottom" data-original-title="Activate this user" id="userActivate"> 
                             <span><i class="icon-user btn-height icon-light"></i><strong> Activate </strong></span>
                             </button>
 							| Disabled: {{item.disabled}}</td> </td>
@@ -112,8 +115,8 @@
         <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i>
       </div>
-    </div><!--/.span9-->
-</div> <!--/.row-fluid-->
+    </div><!--/.col-sm-10-->
+</div> <!--/.row-->
 
 <%def name="headScripts()">
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/adminlist.js')}"></script>

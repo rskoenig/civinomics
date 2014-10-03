@@ -44,9 +44,11 @@
         else:
             manageWs_active = "active"
 %>
+
 <div class="row">
     <div class="col-sm-9">
-        ${home_helpers.workshopHero()}
+        ${home_helpers.metaData()}
+        ${home_helpers.workshopTitle()}
         % if c.conf['read_only.value'] == 'true':
             <!-- read only -->
         % else:
@@ -80,7 +82,7 @@
                         </div>
                     </div><!-- notables -->
                     <div class="tab-pane ${manageWs_active}" id="manageWs">
-                        ${admin_helpers.marked_items()}
+                        ${admin_helpers.manage_workshop()}
                     </div><!-- manageWs -->
                     <div class="tab-pane ${eventLog_active}" id="eventLog">    
                         ${admin_helpers.admin_event_log()}

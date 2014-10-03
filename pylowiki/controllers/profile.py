@@ -186,10 +186,11 @@ class ProfileController(BaseController):
         c.pendingListeners = []
         c.listeningWorkshops = []
         for l in c.listener:
-            lworkshops = listenerLib.getWorkshopsForListener(l)
-            if lworkshops:
-                for w in lworkshops:
-                    c.listeningWorkshops.append(w)
+            if 'scope' in l:
+                lworkshops = listenerLib.getWorkshopsForListener(l)
+                if lworkshops:
+                    for w in lworkshops:
+                        c.listeningWorkshops.append(w)
 
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
