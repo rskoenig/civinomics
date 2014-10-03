@@ -87,35 +87,34 @@ class DemographicsController(BaseController):
             return json.dumps({'statusCode':0, 'error': "Workshop doesn't have demographics"})
 
                 
-    def setUserDemographics(self, demographics):
+    def setUserDemographics(self):
 
-#         Will change to POST as soon as I can.
-#         requestKeys = request.params.keys()
-#         kwargs = {}
-#         query = request.POST
-#         log.info(vars(query))
-#         demographics = ['0','0','0','0','0','0','0','0']
-#         
-#         if 'birthday' in query:
-#             demograpics[demograpicsKeys['birthday']] = query['birthday']
-#         if 'gender' in query:
-#             demograpics[demograpicsKeys['gender']] = query['gender']
-#         if 'ethnicity' in query:
-#             demograpics[demograpicsKeys['ethnicity']] = query['ethnicity']
-#         if 'education' in query:
-#             demograpics[demograpicsKeys['education']] = query['education']
-#         if 'kids' in query:
-#             demograpics[demograpicsKeys['kids']] = query['kids']
-#         if 'house' in query:
-#             demograpics[demograpicsKeys['house']] = query['house']
-#         if 'income' in query:
-#             demograpics[demograpicsKeys['income']] = query['income']
-#         if 'language' in query:
-#             demograpics[demograpicsKeys['language']] = query['language']
-#             
-#         demographicsString = '|'.join(demographics)
+        # Will change to POST as soon as I can.
+        requestKeys = request.params.keys()
+        kwargs = {}
+        query = json.loads(request.body)
+        log.info(query)
+        demographics = ['0','0','0','0','0','0','0','0']
         
-        c.authuser['demographics'] = demographics
+        if 'birthday' in query:
+            demographics[self.demographicsKeys['birthday']] = query['birthday']
+        if 'gender' in query:
+            demographics[self.demographicsKeys['gender']] = query['gender']
+        if 'ethnicity' in query:
+            demographics[self.demographicsKeys['ethnicity']] = query['ethnicity']
+        if 'education' in query:
+            demographics[self.demographicsKeys['education']] = query['education']
+        if 'kids' in query:
+            demographics[self.demographicsKeys['kids']] = query['kids']
+        if 'house' in query:
+            demographics[self.demographicsKeys['house']] = query['house']
+        if 'income' in query:
+            demographics[self.demographicsKeys['income']] = query['income']
+        if 'language' in query:
+            demographics[self.demographicsKeys['language']] = query['language']
+            
+        demographicsString = '|'.join(demographics)
+        c.authuser['demographics'] = demographicsString
         dbHelpers.commit(c.authuser)
         
         
@@ -131,10 +130,13 @@ class DemographicsController(BaseController):
         
         #I need to change this            
         userDemo = c.authuser['demographics'].split("|")
-        
+        requiredDemos =[]
         for demographic in self.workshop['demographics'].split("|"):
             if userDemo[self.demographicsKeys[demographic]] == '0':
-                return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic", 'required':self.workshop['demographics']})
+                log.info("missing %s", demographic)
+                requiredDemos.append(demographic)
+        if len(requiredDemos) > 0:
+            return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic", 'required':self.workshop['demographics']})
                      
         return json.dumps({'statusCode':1})
         

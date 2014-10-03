@@ -27,7 +27,7 @@ function demographicsController($scope, $http){
             {name: 'language', checked:false, text:'Native Language'} 
             ],
         values : [
-            {name: 'birtday', type: 'date', text: 'What is your birth date?', placeholder: 'YYYY-MM-DD', values : ''},
+            {name: 'birthday', type: 'date', text: 'What is your birth date?', placeholder: 'YYYY-MM-DD', values : ''},
             {name: 'gender', type: 'radio', text: 'What is your gender?', placeholder: '', values : ['Male', 'Female', 'Other']},
             {name: 'ethnicity', type: 'select', text: 'What is your ethnicity?', placeholder: '', values : ["White/Caucasian","Latino/Hispanic","African American", "Asian, or Pacific Islander", "Native American", "Mixed Race", "Other"]},
             {name: 'education', type: 'select', text: 'What is the highest education level you have completed?', placeholder: '', values : ["Some High School","High School Diploma/GED","Some College","Bachelor's or 4 year degree", "Post Graduate/Masters","PhD"]},
@@ -89,7 +89,9 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.sendUserDemographics = function(workshopCode, workshopUrl){
+/*
 	    var userData = $scope.userDemographics.birthday +"|"+$scope.userDemographics.gender+"|"+$scope.userDemographics.ethnicity+"|"+$scope.userDemographics.education+"|"+$scope.userDemographics.kids+"|"+$scope.userDemographics.house+"|"+$scope.userDemographics.income+"|"+$scope.userDemographics.language
+	    console.log(userData);
         var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"+userData;
         $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
@@ -99,14 +101,16 @@ function demographicsController($scope, $http){
 				    return '0';	
 				}
 			});
-        /* Fancy, but doesn't work
+*/
+      /*   Fancy, but doesn't work */
+      var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"
 $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl
             $scope.newObjCode = data.newObjCode
 		});
-*/
+
 
 	};
 	
