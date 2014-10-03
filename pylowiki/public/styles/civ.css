@@ -3947,3 +3947,13 @@ div.geo-profile-info-data p{
 .badge.badge-danger {
 background-color: #d9534f;
 }
+
+/*
+    Criteria classes
+    
+*/
+
+.criteria-list{
+    margin-left: -5px;
+    margin-right: -5px;
+}

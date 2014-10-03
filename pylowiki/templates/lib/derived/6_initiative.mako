@@ -117,6 +117,13 @@
                                         <div ng-controller="yesNoVoteCtrl">
                                             ${ng_lib.yesNoVoteBlock()}
                                         </div>
+                                        <div ng-controller="ratingsController" ng-if="item.parentObjType == 'workshop'">                    	
+                                            <div ng-init="getCriteriaList(item.parentHref, item.urlCode)">
+                                                <div ng-if="rating.type == 'criteria'" class="criteria-idea">
+                                            	${ng_lib.rateCriteria()}
+                                            	</div>
+                                        	</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
