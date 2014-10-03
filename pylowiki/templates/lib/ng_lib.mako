@@ -454,7 +454,41 @@
 
 
 <%def name="initiative_listing()">
-    ${general_listing_yesno()}
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+        <div ng-controller="yesNoVoteCtrl"> 
+            ${authorPosting()}
+            <div class="row" style="margin-top:19px;">
+                <div class="col-xs-2">
+                    <div class="listed-photo">
+                        <a href = '{{item.href}}'>
+                            <img class="thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xs-10 no-left">
+                    <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <p><small>${metaData()}</small></p>
+                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                    <p><strong>
+                        <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
+                        <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
+                        <span class="pull-right">{{(item.cost | currency).replace(".00", "")}}</span>
+                    </strong></p>
+                </div>
+            </div>
+            <div class="row" ng-controller="ratingsController">
+                % if not c.authuser or c.authuser['memberType'] != 'organization':
+                    ${yesNoVoteFooter()}
+                    <div ng-if="item.parentObjType == 'workshop'">                    	
+                        <div ng-show="rating.type == 'criteria'">
+                    	${rateCriteria()}
+                    	</div>
+                    </div>
+                % endif
+                ${actions()}
+            </div>
+        </div>
+    </div>
 </%def>
 
 
@@ -481,9 +515,14 @@
                     </h4>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                     ${yesNoVoteFooter(noStats = True)}
+                    <div ng-if="item.parentObjType == 'workshop'">                    	
+                        <div ng-show="rating.type == 'criteria'">
+                    	${rateCriteria()}
+                    	</div>
+                    </div>
                 % endif
             </div>
         </div>
@@ -510,7 +549,36 @@
 
 
 <%def name="idea_listing()">
-    ${general_listing_yesno()}
+    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+        <div ng-controller="yesNoVoteCtrl">
+            ${authorPosting()}
+            <div class="row" style="margin-top:19px;">
+                <div class="col-sm-12">
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    % if not c.w:
+                        <p><small>${metaData()}</small></p>
+                    % endif
+                    <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
+                    <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
+                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+                </div>
+            </div>
+            <div class="row" ng-controller="ratingsController">
+                % if not c.authuser or c.authuser['memberType'] != 'organization':
+                    <div ng-controller="demographicsController">
+                    {{checkDemographics(item.parentHref)}}
+                        <span ng-if="demographics.required == ''"> ${yesNoVoteFooter()}</span>
+                        <span ng-if="demographics.required != ''">${yesNoVoteFooter(needs_demographics = '1')}</span>
+                    </div>
+                    <div ng-if="item.parentObjType == 'workshop'">                    	
+                        <div ng-show="rating.type == 'criteria'">
+                    	${rateCriteria()}
+                    	</div>
+                    </div>
+                % endif
+                ${actions()}
+            </div>
+    </div><!-- media well -->
 </%def>
 
 <%def name="resource_listing()">
@@ -637,6 +705,11 @@
                 readonly = kwargs['readonly']
             else:
                 readonly = "0"
+            if 'needs_demographics' in kwargs:
+                needs_demographics = True
+            else:
+                needs_demographics = False
+            
         %>
         % if readonly == "1":
             <div class="row centered">
@@ -644,6 +717,13 @@
                     Voting Closed.<br>
                     <a class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
                     <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            </div>
+        % elif needs_demographics:
+            <div class="row centered">
+                <div class="col-sm-12">
+                    <a href="#demographicsModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
+                    <a href="#demographicsModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
         % elif 'user' in session:
@@ -723,6 +803,39 @@
     <br>
 </%def>
 
+<%def name="rateCriteria()">
+	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" ng-cloak>
+		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
+		<div class="row">
+		Rate this idea:
+		<table class="centered" style="margin: 0 auto !important;float: none !important;">
+		<tr ng-repeat="criteria in rating.criteriaList">
+		    <td><ul class="list-inline" style="">
+    				<li>{{criteria.criteria}}</li>
+                </ul>
+            </td>
+		    <td>
+    			<ul class="list-inline" style="">
+    				<li> <span class="glyphicon" 
+    				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
+                                          'glyphicon-star-empty':!hover1 && (criteria.amount <1)}" 
+                               ng-mouseenter="addVote(hover1, 1, criteria)" 
+                               ng-mouseleave="removeVote(hover1, criteria)" 
+                               ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
+                         </span>
+                    </li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star-empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star-empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star-empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    				<li> <span class="glyphicon" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star-empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+    			</ul>
+            </td>
+			</tr>
+		</table>
+		</div>
+	</div> <!-- container-div -->
+</%def>
+
 <%def name="candidateVoteBlock()">
     % if 'user' in session:
         <a ng-click="updateCandidateVote(urlCode, url)" class="yesVote {{mycandidateVotes[urlCode]}}">
@@ -763,8 +876,11 @@
 </%def>
 
 <%def name="metaData(*args)">
+    <span ng-repeat="tag in item.tags"><span class="label workshop-tag {{tag}}">{{tag}}</span> </span>
+
     % if 'inline' in args:
         <img class="thumbnail flag inline-title-flag border no-bottom" src="{{item.flag}}"> 
+
     % else:
         <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
     % endif
