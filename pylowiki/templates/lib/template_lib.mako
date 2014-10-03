@@ -646,12 +646,10 @@
                 </div>
                 <div class="modal-body">
                     <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
-                        <p><br/></p>
                     <ul class="list-unstyled centered">
                         %if c.w and 'demographics' in c.w:
-                        {{userDemographics}}
                         <li ng-repeat="d in '${c.w['demographics']}'.split('|')">
-                            {{demographics.values[demographics.indexList[d]].text}} <br/>
+                           <br/> {{demographics.values[demographics.indexList[d]].text}} <br/>
                             <span ng-if="demographics.values[demographics.indexList[d]].type == 'radio'" ng-repeat="v in demographics.values[demographics.indexList[d]].values">
                                 <input type="radio" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" value="{{v}}"> {{v}} <br/>
                             </span>
@@ -659,7 +657,9 @@
                                 <select ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" ng-options="v for v in demographics.values[demographics.indexList[d]].values">
                                 </select>
                             </span>
-                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'text'"></span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'date'">
+                                <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
+                            </span>
                         </li>
                         %endif
                     </ul>

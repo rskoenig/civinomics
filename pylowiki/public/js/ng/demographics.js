@@ -27,14 +27,14 @@ function demographicsController($scope, $http){
             {name: 'language', checked:false, text:'Native Language'} 
             ],
         values : [
-            {name: 'birtday', type: 'date', text: 'Birthday', placeholder: 'YYYY-MM-DD', values : ''},
-            {name: 'gender', type: 'radio', text: 'Gender', placeholder: '', values : ['Male', 'Female', 'Other']},
-            {name: 'ethnicity', type: 'select', text: 'Ethnicity', placeholder: '', values : ['Caucasian','Hispanic', 'African american', 'Asian', 'Extraterrestrial', 'Other']},
-            {name: 'education', type: 'select', text: 'Education Level', placeholder: '', values : ['None', 'A lot', 'Other']},
-            {name: 'kids', type: 'radio', text: 'Do you have kids?', placeholder: '', values : ['Yes', 'No']},
-            {name: 'house', type: 'radio', text: 'Do you own a house?', placeholder: '', values : ['Yes', 'No']},
-            {name: 'income', type: 'select', text: 'Income level', placeholder: '', values : ['Millionaire', 'Multimillionaire']},
-            {name: 'language', type: 'select', text: 'Native language', placeholder: '', values : ['English','Spanish','Russian','Swahili']}
+            {name: 'birtday', type: 'date', text: 'What is your birth date?', placeholder: 'YYYY-MM-DD', values : ''},
+            {name: 'gender', type: 'radio', text: 'What is your gender?', placeholder: '', values : ['Male', 'Female', 'Other']},
+            {name: 'ethnicity', type: 'select', text: 'What is your ethnicity?', placeholder: '', values : ["White/Caucasian","Latino/Hispanic","African American", "Asian, or Pacific Islander", "Native American", "Mixed Race", "Other"]},
+            {name: 'education', type: 'select', text: 'What is the highest education level you have completed?', placeholder: '', values : ["Some High School","High School Diploma/GED","Some College","Bachelor's or 4 year degree", "Post Graduate/Masters","PhD"]},
+            {name: 'kids', type: 'radio', text: 'Do you have children?', placeholder: '', values : ['Yes', 'No']},
+            {name: 'house', type: 'radio', text: 'Do you own or rent the house or apartment in which you live?', placeholder: '', values : ['Own', 'Rent']},
+            {name: 'income', type: 'select', text: 'Estimate your annual household income.', placeholder: '', values : ["Under $10,000", "$10,000-$18,000","$18,000-$32,000","$32,000-$54,000","$54,000-$86,000","$86,000-$120,000","$120,000-$200,000","Over $200,000"]},
+            {name: 'language', type: 'select', text: 'Native language', placeholder: '', values : ['English','Spanish','Russian','Other']}
             ],
         required : ""
 	}
