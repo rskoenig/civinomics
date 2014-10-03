@@ -33,8 +33,7 @@ html,body{
 /* a */
 
 h5.listed-item-title{
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: 0px;
 }
 
 h4.listed-item-title{
@@ -42,10 +41,10 @@ h4.listed-item-title{
 }
 .listed-item-title a{
   color: #333333;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 .listed-item-title a:hover{
-  color: #005d28;
+  color: #3c51bf;
 }
 
 .nav li a{
@@ -653,6 +652,12 @@ padding: 0;
   min-height: 104px;
 }
 
+.well.goals{
+  background-color: whitesmoke;
+  margin-top: 12px;
+  font-size: .85em;
+}
+
 .well.footer{
    background-color: #333;
    opacity:0.9;
@@ -751,12 +756,9 @@ h1.workshop-title{
     margin-bottom:20px;
 }
 
-.workshop-title a{
-   color:#fff;
-}
-
-.workshop-title a:hover{
-   color:#fff;
+.brief{
+  text-transform: uppercase;
+  font-size: .5em;
 }
 
 .nav-logo{
@@ -1194,13 +1196,13 @@ img.avatar, .avatar{
    margin-bottom:5px;
 }
 
-.small-avatar{
+.small-avatar, .avatar-sm{
    height: 30px;
    width: 30px;
    min-width: 30px;
 }
 
-.med-avatar{
+.med-avatar, .avatar-md{
    height: 40px;
    width: 40px;
    min-width: 40px;
@@ -1371,6 +1373,19 @@ td.scope-icon{
    width: 98%;
 }
 
+
+.btn-group.timeline>.btn-group:first-child>.btn:last-child{
+  border-bottom-left-radius: 30px;
+  border-top-left-radius: 30px;
+}
+
+.btn-group.timeline>.btn-group:last-child>.btn:last-child{
+  border-bottom-right-radius: 30px;
+  border-top-right-radius: 30px;
+}
+
+
+
 .btn-vote{
   width: 100px;
   background-color: #fff;
@@ -1488,7 +1503,7 @@ a.yesVote, a.noVote{
   background-color:whitesmoke;
 }
 
-.well.greyWell{
+.well.greyWell, .well.well-grey{
   background-color:whitesmoke; 
 }
 
@@ -1701,8 +1716,8 @@ a.no-border:hover{
     box-shadow: none;
 }
 .no-bottom{
-    padding-bottom:0;
-    margin-bottom:0;
+    padding-bottom:0 !important;
+    margin-bottom:0 !important;
 }
 
 .no-top{
@@ -1713,6 +1728,11 @@ a.no-border:hover{
 .no-left{
     padding-left:0 !important;
     margin-left:0 !important;
+}
+
+.no-right{
+    padding-right:0 !important;
+    margin-right:0 !important;
 }
 
 .gallery{
@@ -1790,6 +1810,16 @@ button.transparent{
   background-color: none;
   margin-top: 0;
   padding-top: 0;
+}
+
+.btn.active-phase, .btn.active-phase:hover, .btn.active-phase:active{
+  color: #fff;
+  background-color: #f0ad4e;
+  border: 3px #eea236 solid !important;
+}
+
+.active-phase span{
+  color: #fff !important;
 }
 
 
@@ -2531,6 +2561,10 @@ hr.stats{
       hyphens: auto;
 }
 
+.markdown.markdown-listed h1, .markdown.markdown-listed h2, .markdown.markdown-listed h3, .markdown.markdown-listed h4, .markdown.markdown-listed h5, .markdown.markdown-listed h6{
+  font-size: 1em;
+}
+
 .med-width{
   width: 150px;
 }
@@ -3239,14 +3273,6 @@ margin-right: -13px;
   /*text-transform:uppercase;*/
 }
 
-.wiki-well h1, .wiki-well h2, .wiki-well h3, .wiki-well h4{
-  text-transform:uppercase;
-  font-size: 18px;
-}
-.wiki-well h5{
-  text-transform:uppercase;
-}
-
 .initiative-title.edit{
   /*background-color:#dff0d8;*/
   background-color: whitesmoke;
@@ -3259,9 +3285,12 @@ margin-right: -13px;
   padding-right: 10px;
   margin-top: 35px;
 }
-.initiative-info h2{
-  text-transform: uppercase;
-  font-size: 17.5px;
+
+.initiative-info{
+  line-height: 2em;
+}
+.initiative-info img{
+  max-width: 100%;
 }
 
 #initiative-dashboard.affix{
@@ -3301,6 +3330,15 @@ tr.suggestion, .panel-heading.suggestion{
   /*border-color: #faebcc;*/
 }
 
+.grey-links> a{
+  color:grey;  
+}
+
+.grey-links> a:hover{
+  color: #3c51bf;
+}
+
+
 a.no-highlight{
   color:#333333;
 }
@@ -3308,7 +3346,7 @@ a.no-highlight.overlay{
   color:#fff;
 }
 a.no-highlight:hover{
-  color: #428bca;
+  color: #428bca;;
 }
 a.no-highlight.no-hover:hover{
   color: #333333;
@@ -3480,14 +3518,18 @@ hr.object-list-header{
   padding-top: 10px;
 }
 
-.workshop-metrics{
+.workshop-metrics, .workshop-metrics-lg{
   text-transform: uppercase;
   color: grey;
   font-size: .85em;
 }
 
-.metrics-large{
-  font-size: 24px !important;
+.workshop-metrics-lg, .metrics-large{
+  font-size: 1.5em !important;
+}
+
+.addBtn{
+  margin-top: 12px;
 }
 
 #metrics td{
@@ -3608,7 +3650,6 @@ table.table-inline{
 .activity-item.follow{
     border-bottom: solid 1px #ddd;
     margin-bottom: 4px;
-    margin-left: -10px;
     margin-right: -10px;
     position: relative;
 }
@@ -3630,10 +3671,6 @@ table.table-inline{
 
 .activity-item .avatar{
   display: inline;
-}
-
-.activity-item h4{
-  margin-bottom: 5px;
 }
 
 .activity-item-content{
@@ -3671,10 +3708,14 @@ div.activity-comments{
 
 .date{
   color:grey;
-  font-size: 85%;
+  font-size:.85em;
   margin-left: 5px;
   display:inline-block;
 }
+/*
+.date:before {
+content: "\00b7";
+}*/
 
 .edit-workshop-pane{
   background-color: #fff;
@@ -3817,7 +3858,7 @@ svg{
   left:0;
   height: 100%;
   width: 100%;
-  background-color: rgba(0,0,0,.3);
+  background-color: rgba(0,0,0,.6);
   z-index: 1;
 }
 
@@ -3900,26 +3941,9 @@ div.geo-profile-info-data p{
 	font-size: 1.5em;
 }
 
-/*
-    Criteria classes
-    
-*/
-
-.criteria-idea{
-    
+.badge.badge-warning{
+  background-color: #f0ad4e;
 }
-
-form.criteria-idea{
-    text-align: left; margin-top:15px; padding-left: 300px;
-}
-span.criteria-idea{
-    margin: -3px;
-}
-
-.criteria-workshop{
-    
-}
-
-form.criteria-workshop{
-    text-align: left; margin-top:15px;
+.badge.badge-danger {
+background-color: #d9534f;
 }
