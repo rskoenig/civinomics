@@ -150,6 +150,7 @@ class BallotController(BaseController):
                     electionDate = item['electionDate']
                     if electionDate != c.electionDate:
                         continue
+
                     scopeInfo = utils.getPublicScope(item['scope'])
                     flag = scopeInfo['flag']
                     name = scopeInfo['level'].title() + ' of ' + scopeInfo['name']
@@ -187,11 +188,19 @@ class BallotController(BaseController):
                         entry['title'] = ballot['title']
                         entry['text'] = ballot['text']
                         entry['number'] = ballot.sort
-                        entry['views'] = ballot['views']
                         entry['href'] = "/ballot/" + entry['urlCode'] + "/" + entry['url'] + "/show"
                         entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
                         entry['instructions'] = m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML)
+                        views = 0
+                        if 'views' in ballot:
+                            views = int(ballot['views'])
+                        views += 1
+                        ballot['views'] = str(views)
+                        dbHelpers.commit(ballot)
+                        entry['views'] = ballot['views']
+                        
                         entry['ballotItems'] = []
+
                         
                         # get the ballot items
                         urlCode = ballot['urlCode']
