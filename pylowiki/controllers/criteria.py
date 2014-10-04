@@ -3,6 +3,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from pylowiki.lib.base import BaseController, render
+from pylons.controllers.util    import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.goal         as goalLib
@@ -12,6 +13,7 @@ import simplejson                   as json
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.initiative   as initiativeLib
+
 
 log = logging.getLogger(__name__)
 
@@ -46,12 +48,20 @@ class CriteriaController(BaseController):
 #             abort(404)
 
     def addToWorkshop(self, workshopCode, workshopURL, criteria):
+        c.ratingConfig = 0
         if not criteria == '0':
             criteriaList = criteria.split("|")
             self.workshopCrit['rating_criteria'] = criteria
             dbHelpers.commit(self.workshopCrit)
+            c.ratingConfig = 1
+            return json.dumps({'statusCode':1, 'criteria': criteriaList})
         else:
-            log.info("Hell naw. I'm not sure if I want to do anything here")            
+            c.ratingConfig = 1
+            log.info("Hell naw. I'm not sure if I want to do anything here")    
+        log.info(c.ratingConfig)
+        returnURL = '/workshop/%s/%s/preferences'%(workshopCode, workshopURL)
+        log.info(returnURL)
+        return redirect(returnURL)    
     
     def getWorkshopCriteria(self, workshopCode, thingCode):
         # This function returns the criteria related to the workshop

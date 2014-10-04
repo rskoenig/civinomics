@@ -75,6 +75,8 @@ app.controller('ratingsController', function($scope, $http){
 			requestUrl = baseUrl + criteria;
 		    $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
+    				$scope.alert.message = 'Criteria added correctly.';	
+                    $scope.alert.type = 'criteria'
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){

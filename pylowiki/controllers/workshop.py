@@ -1257,6 +1257,11 @@ class WorkshopController(BaseController):
         else:
             c.tagConfig = 0
             
+        if 'rating_criteria' in c.w:
+            c.ratingConfig = 1
+        else:
+            c.ratingConfig = 0
+        
         slides = slideshowLib.getSlideshow(c.w)
         slideshow = slideshowLib.getAllSlides(slides)
         published = 0
