@@ -52,6 +52,24 @@ function demographicsController($scope, $http){
 	
 	$scope.hasDemographics = false;
 	
+	$scope.getDemographics = function(workshopCode, workshopUrl){
+        var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/check/";
+        $http.get(requestUrl).success(function(data){
+				if (data.statusCode == 1){
+				    console.log("yay");
+				    $scope.hasDemographics = true;
+				    
+				    for (var d in data.required){
+    				    $scope.demographics.list[$scope.demographics.list[d]].checked = true;
+				    };
+					//Do something if they were added correctly (probably just update message or continue)
+				} 
+				else if (data.statusCode === 0){
+				    console.log("nay");					//Do something if it fails		
+				}
+			});
+	};
+	
 	$scope.updateList = function(workshopCode, workshopUrl){        
 	    var stringDemographicsList = conditionalListToString($scope.demographics.list);
 	    var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/add/"+stringDemographicsList;
@@ -89,22 +107,8 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.sendUserDemographics = function(workshopCode, workshopUrl){
-/*
-	    var userData = $scope.userDemographics.birthday +"|"+$scope.userDemographics.gender+"|"+$scope.userDemographics.ethnicity+"|"+$scope.userDemographics.education+"|"+$scope.userDemographics.kids+"|"+$scope.userDemographics.house+"|"+$scope.userDemographics.income+"|"+$scope.userDemographics.language
-	    console.log(userData);
-        var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"+userData;
-        $http.get(requestUrl).success(function(data){
-				if (data.statusCode == 1){
-				    return '1';
-				} 
-				else if (data.statusCode === 0){
-				    return '0';	
-				}
-			});
-*/
-      /*   Fancy, but doesn't work */
       var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"
-$http.post(requestUrl, $scope.userDemographics).success(function(data){
+      $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
             demographics.required = "";
             $scope.success = true

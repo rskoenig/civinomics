@@ -79,11 +79,10 @@ class DemographicsController(BaseController):
         
     def checkWorkshopDemographics(self, demographics):
         if 'demographics' in self.workshop:
-            if demographics == self.workshop['demographics']:
-                return json.dumps({'statusCode':1, 'required': self.workshop['demographics']})
-            else:
-                return json.dumps({'statusCode':0, 'error': "Different demographics"})
+            log.info(self.workshop['demographics'])
+            return json.dumps({'statusCode':1, 'required': self.workshop['demographics']})
         else:
+            log.info("huh")
             return json.dumps({'statusCode':0, 'error': "Workshop doesn't have demographics"})
 
                 

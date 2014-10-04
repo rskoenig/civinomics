@@ -210,7 +210,7 @@
 
 <%def name="demographics()">
     <div class="browse" ng-controller="demographicsController">
-        <h4 class="section-header smaller">Demographics</h4>
+        <h4 class="section-header smaller" ng-init="getDemographics('${c.w['urlCode']}','${c.w['url']}')">Demographics</h4>
         Do you want to collect demographics?<br/>
         <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="true">Yes
         <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="false">No<br/>
