@@ -44,6 +44,7 @@
                         ${m.html(ballot['text'], render_flags=m.HTML_SKIP_HTML) | n}
                         <p><strong>Instructions:</strong></p>
                         ${m.html(ballot['instructions'], render_flags=m.HTML_SKIP_HTML) | n}
+                        <p><i class="glyphicon glyphicon-eye-open"></i> Views (${ballot['views']})</p>
                         % if ballot['ballotSlate'] == 'measures':
                             <div ng-init="url = '${ballot['url']}'; code = '${ballot['urlCode']}'; ballotSlate = 'measures';">
                                 <div ng-controller="ballotsController">
