@@ -478,7 +478,11 @@
             </div>
             <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    ${yesNoVoteFooter()}
+                    <div ng-controller="demographicsController">
+                    {{checkDemographics(item.parentHref)}}
+                        <span ng-if="demographics.required == ''"> ${yesNoVoteFooter()}</span>
+                        <span ng-if="demographics.required != ''">${yesNoVoteFooter(needs_demographics = '1')}</span>
+                    </div>
                     <div ng-if="item.parentObjType == 'workshop'">                    	
                         <div ng-show="rating.type == 'criteria'">
                     	${rateCriteria()}
@@ -518,6 +522,11 @@
             <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                     ${yesNoVoteFooter(noStats = True)}
+                    <div ng-controller="demographicsController">
+                    {{checkDemographics(item.parentHref)}}
+                        <span ng-if="demographics.required == ''"> ${yesNoVoteFooter(noStats = True)}</span>
+                        <span ng-if="demographics.required != ''">${yesNoVoteFooter(needs_demographics = '1', noStats = True)}</span>
+                    </div>
                     <div ng-if="item.parentObjType == 'workshop'">                    	
                         <div ng-show="rating.type == 'criteria'">
                     	${rateCriteria()}

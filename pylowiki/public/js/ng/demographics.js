@@ -53,7 +53,7 @@ function demographicsController($scope, $http){
 	$scope.hasDemographics = false;
 	
 	$scope.getDemographics = function(workshopCode, workshopUrl){
-        var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/check/";
+        var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/get/";
         $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 				    console.log("yay");
