@@ -217,7 +217,6 @@
 </%def>
 
 <%def name="election_home_listing()">
-    <div class="media well search-listing">
         <div class="row">
             <div class="col-xs-11">
                 <h4>{{item.niceDate}}</h4>
@@ -232,7 +231,6 @@
             </div>
         </div>
         <div class="spacer"></div>
-    </div><!-- media-well -->
 </%def>
 
 <%def name="sample_ballot_listing()">
