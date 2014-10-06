@@ -241,7 +241,7 @@
             eScope = c.election['scope']
             title = c.election['title']
             text = c.election['text']
-            public = c.election['election_public']
+            public = c.election['election_published']
             electionDate = c.election['electionDate']
             electionOfficialURL = c.election['electionOfficialURL']
             if public == '1':

@@ -48,7 +48,7 @@ def getElectionsForScope(scope):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'election')\
             .filter(Thing.data.any(wc('scope', scope)))\
-            .filter(Thing.data.any(wc('election_public', '1')))\
+            .filter(Thing.data.any(wc('election_published', '1')))\
             .filter(Thing.data.any(gtc('electionDate', checkDate)))\
             .all()
     except:
@@ -188,7 +188,7 @@ def Election(owner, title, text, scope, electionDate, electionOfficialURL, publi
     b['electionOfficialURL'] = electionOfficialURL
     b['deleted'] = u'0'
     b['disabled'] = u'0'
-    b['election_public'] = public
+    b['election_published'] = public
     b['archived'] = u'0'
     b['views'] = '0'
     commit(b)
