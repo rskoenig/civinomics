@@ -70,11 +70,14 @@ class CriteriaController(BaseController):
             criteriaList = []
             for criteria in self.workshopCrit['rating_criteria'].split("|"):
                 thing = ideaLib.getIdea(thingCode)
+                if not thing:
+                    thing = initiativeLib.getInitiative(thingCode)
                 rating = ratingLib.getCriteriaRatingForThingUser(c.authuser, thing, criteria)
                 if not rating:
                     userRat = '0'
                 else:
                     userRat = rating['amount']
+
                 amount = self.getRatingForCriteria(workshopCode, criteria, thingCode)
                 criteriaFull = {'criteria':criteria, 'average': amount[0], 'numVotes':amount[1], 'amount': userRat}
                 criteriaList.append(criteriaFull)

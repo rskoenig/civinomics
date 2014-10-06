@@ -754,7 +754,6 @@
 	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" ng-cloak>
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
-		Rate this idea:
 		<table class="centered" style="margin: 0 auto !important;float: none !important;">
 		<tr ng-repeat="criteria in rating.criteriaList">
 		    <td ><ul class="list-inline" style="">
