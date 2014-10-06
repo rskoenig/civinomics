@@ -126,10 +126,13 @@ class ActionlistController(BaseController):
             if item.objType == 'resource':
                activityStr += 'A new resource added to ' + baseTitle + ' by ' + userName
             elif item.objType == 'discussion':
-                if 'initiativeCode' in item:
-                    activityStr += 'A new progress report added to ' + baseTitle + ' by ' + userName
+                if item['discType'] == "update" or item['discType'] == 'general':
+                    if 'initiativeCode' in item:
+                        activityStr += 'A new progress report added to ' + baseTitle + ' by ' + userName
+                    else:
+                        activityStr += 'A new discussion started in ' + baseTitle + ' by ' + userName
                 else:
-                    activityStr += 'A new discussion started in ' + baseTitle + ' by ' + userName
+                    continue
             elif item.objType == 'idea':
                 activityStr += 'A new idea posed in ' + baseTitle + ' by ' + userName
             elif item.objType == 'initiative':

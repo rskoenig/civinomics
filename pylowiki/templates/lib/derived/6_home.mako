@@ -154,16 +154,14 @@
 	% if c.authuser:
 		<div  ng-init="postalCode=${c.authuser['postalCode']};">
 		  <div ng-controller="electionsHomeController">
-		    <div ng-show="elections.length >= 1" ng-cloak>
-		        <h2><small>Upcoming Elections</small></h2>
-		        <div ng-repeat="item in elections">
-		            <table ng-show="!restored" class="table" style="margin-bottom: 0;" ng-cloak>
-		                <tr>
-		                ${ng_helpers.election_home_listing()}
-		                </tr>
-		            </table>
-		        <div><!-- ng-repeat -->
-		    </div><!-- well -->
+		    <div ng-show="elections.length >= 1" ng-cloak class="media well search-listing">
+		    	<h4 class="well-header grey">Upcoming Elections</h4>
+					<table ng-show="!restored" class="activity-item follow" style="margin-bottom: 0;" ng-cloak>
+						<tr ng-repeat="item in elections">
+							<td>${ng_helpers.election_home_listing()}</td>
+						</tr>
+					</table>
+		    </div><!-- ng-show -->
 		  </div><!-- electionsHomeController -->
 		</div>
 	% endif
