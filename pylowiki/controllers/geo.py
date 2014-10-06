@@ -281,6 +281,7 @@ class GeoController(BaseController):
         response.headers['Content-type'] = 'application/json'
         postalInfo = geoInfoLib.getPostalInfo(id1)
         if postalInfo:
+            log.info('%s' %id1)
             countryTitle = "United States"
             countryURL = "/workshops/geo/earth/united-states"
             stateTitle = postalInfo['StateFullName'].title()

@@ -407,7 +407,12 @@ class HomeController(BaseController):
 
         elif type == 'member':
             user = userLib.getUserByCode(code)
-            memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
+            
+            if objectType is not 'all':
+                memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset, itemType = [objectType])
+            else:
+                memberActivity = activityLib.getMemberPosts(user, limit = max, offset = offset)
+
             if memberActivity:
                 recentActivity = memberActivity
             else:

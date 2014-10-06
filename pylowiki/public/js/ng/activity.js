@@ -10,6 +10,7 @@ function activityController($scope, $http) {
 	$scope.busy = false;
 	$scope.sliceSize = 7;
 	$scope.offset = $scope.sliceSize;
+	$scope.objType = undefined;
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = ''
@@ -19,6 +20,11 @@ function activityController($scope, $http) {
 	    }else{
 	    	$scope.activityUrl = '/getSiteActivity/' + $scope.activityType
 	    }
+
+	    if ($scope.objType) {
+	    	$scope.activityUrl += '/' + $scope.objType
+	    };
+
 		$http.get($scope.activityUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
@@ -103,6 +109,9 @@ function activityController($scope, $http) {
 		}else{
 		    $scope.sliceUrl = '/getActivitySlice/0/' + $scope.activityType + '/' + $scope.offset;
 		}
+		if ($scope.objType) {
+	    	$scope.sliceUrl += '/' + $scope.objType
+	    };
 		$http.get($scope.sliceUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
@@ -121,6 +130,11 @@ function activityController($scope, $http) {
 			console.log($scope.offset);
 		})
 	};
+
+	$scope.showOnly = function(type){
+		$scope.objType = type;
+		$scope.getActivity();
+	}
 }
 
 

@@ -177,7 +177,9 @@ def make_map():
     map.connect('/getActivitySlice/{comments}/{type}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', offset = '{offset}')
 
     map.connect('/getObjActivity/{type}/{code}/{url}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}', code = '{code}', url = '{url}')
+    map.connect('/getObjActivity/{type}/{code}/{url}/{objectType}{end:/?}' , controller = 'home', action = 'getActivity', type = '{type}', code = '{code}', url = '{url}', objectType = '{objectType}')
     map.connect('/getObjActivitySlice/{comments}/{type}/{code}/{url}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', code = '{code}', url = '{url}', offset = '{offset}')
+    map.connect('/getObjActivitySlice/{comments}/{type}/{code}/{url}/{offset}/{objectType}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', code = '{code}', url = '{url}', offset = '{offset}', objectType = '{objectType}')
 
     map.connect('/getActivitySlice/{comments}/{type}/{scope}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', scope = '{scope}', offset = '{offset}')
     map.connect('/getActivitySlice/{comments}/{type}/{scope}/{objectType}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', scope = '{scope}', objectType = '{objectType}', offset = '{offset}')

@@ -8,12 +8,14 @@ import logging
 import datetime
 log = logging.getLogger(__name__)
 
-def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
+def getMemberPosts(user, limit = None, offset = None, unpublished = '0', itemType = ''):
     if unpublished == '1':
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished', 'ballotcandidateUnpublished']
+    elif itemType == '':
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative', 'meeting', 'agendaitem', 'ballot', 'ballotmeasure']
     else:
-        activityTypes = activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo', 'initiative', 'meeting', 'agendaitem', 'ballot', 'ballotmeasure']
-    discussionTypes = ['general', 'update', 'organization_general', 'organization_position']
+        activityTypes = itemType
+    #discussionTypes = ['general', 'update', 'organization_general', 'organization_position']
     codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     keys = ['deleted']
     values = ['0']
@@ -24,14 +26,14 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
             .filter(Thing.data.any(wc('deleted', '0')))\
             .order_by('-date').offset(offset)
         if limit:
-            initialActivityList = q.limit(limit)
+            finalActivityList = q.limit(limit)
         
         # Messy
-        for activity in initialActivityList:
-            if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:
-                continue
-            else:                
-                finalActivityList.append(activity)
+        #for activity in initialActivityList:
+        #    if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:
+        #        continue
+        #    else:                
+        #finalActivityList.append(activity)
         return finalActivityList
     except:
         return False

@@ -871,7 +871,7 @@
 
 <%def name="horizontalDashboard()">
     <div class="well">
-        <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();">
+        <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; websiteLink='${c.user['websiteLink']}'; zipValue='${c.user['postalCode']}'; postalCode='${c.user['postalCode']}';">
             <div class="row">
                 % if c.user['memberType'] != 'organization':
                 <div class="col-sm-7">
@@ -949,9 +949,8 @@
                     % if c.user['memberType'] != 'organization':
                         <table id="metrics" class="table-inline">
                             <tr>
-                                <td style="padding-left: 0px;">
+                                <td class="clickable" style="padding-left: 0px;" ng-click="showOnly('idea')">
                                     <% 
-                                        thingListingURL = "/profile/%s/%s/ideas" %(c.user['urlCode'], c.user['url'])
                                         if 'idea_counter' in c.user:
                                             numThings = c.user['idea_counter']
                                         else:
@@ -960,9 +959,8 @@
                                     <span class="workshop-metrics">Ideas</span><br>
                                       <strong ng-cloak><span class="black">${numThings}</span></strong>
                                 </td>
-                                <td>
+                                <td class="clickable" ng-click="showOnly('discussion')">
                                     <% 
-                                        thingListingURL = "/profile/%s/%s/discussions" %(c.user['urlCode'], c.user['url'])
                                         if 'discussion_counter' in c.user:
                                             numThings = c.user['discussion_counter']
                                         else:
@@ -971,7 +969,7 @@
                                     <span class="workshop-metrics">Discussions</span><br>
                                       <strong ng-cloak><span class="black">${numThings}</span></strong>
                                 </td>
-                                <td>
+                                <td class="clickable" ng-click="showOnly('resource')">
                                     <% 
                                         thingListingURL = "/profile/%s/%s/resources" %(c.user['urlCode'], c.user['url'])
                                         if 'resource_counter' in c.user:
