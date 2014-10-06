@@ -2274,7 +2274,6 @@
                     </span>
                     <p>
                         <label>Add<span ng-show="phase"> {{thing}}</span>: &nbsp;</label>
-
                         <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
                             <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
                         </select>    
@@ -2299,7 +2298,7 @@
                     </div>
             
                     <div ng-show="showAll">
-                        % if parentCode == None:
+                        % if not 'parentCode' in kwargs:
                             <hr>
                             <div class="col-xs-5" ng-show="geoScope == ''">
                                 <label>Geographic Scope</label>
