@@ -638,11 +638,11 @@ class BallotController(BaseController):
         if 'public' in request.params:
             public = request.params['public']
             if public == 'on':
-                c.election['election_public'] = '1'
+                c.election['election_published'] = '1'
             else:
-                c.election['election_public'] = '0'
+                c.election['election_published'] = '0'
         else:
-            c.election['election_public'] = '0'
+            c.election['election_published'] = '0'
 
         dbHelpers.commit(c.election)
         
@@ -650,7 +650,7 @@ class BallotController(BaseController):
         children = generic.getChildrenOfParent(c.election)
         for child in children:
             child['election_url'] = c.election['url']
-            child['election_public'] = c.election['election_public']
+            child['election_published'] = c.election['election_published']
             child['election_date'] = c.election['electionDate']
             child['election_scope'] = c.election['scope']
             dbHelpers.commit(child)
