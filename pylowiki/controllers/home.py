@@ -416,7 +416,7 @@ class HomeController(BaseController):
 
         else:
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
-
+			
         for item in recentActivity:
             # so the activity feed does not pick up discussion children of workshop, meeting and ballot objects
             showList = ['general', 'update']

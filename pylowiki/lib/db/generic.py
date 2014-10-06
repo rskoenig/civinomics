@@ -90,13 +90,13 @@ def linkChildToParent(child, parent):
         child['meeting_scope'] = parent['meeting_scope']
     if parent.objType == 'election':
         child['election_url'] = parent['url']
-        child['election_public'] = parent['election_public']
+        child['election_published'] = parent['election_published']
         child['election_scope'] = parent['scope']
         child['election_date'] = parent['electionDate']
     if 'electionCode' in parent and 'election_url' in parent and child.objType != 'rating':
         child['electionCode'] = parent['electionCode']
         child['election_url'] = parent['election_url']
-        child['election_public'] = parent['election_public']
+        child['election_published'] = parent['election_published']
         child['election_scope'] = parent['election_scope']
         child['election_date'] = parent['election_date']
     if parent.objType == 'ballot':
