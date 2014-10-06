@@ -217,6 +217,7 @@
 </%def>
 
 <%def name="election_home_listing()">
+    <div class="media well search-listing">
         <div class="row">
             <div class="col-xs-11">
                 <h4>{{item.niceDate}}</h4>
@@ -231,6 +232,7 @@
             </div>
         </div>
         <div class="spacer"></div>
+    </div><!-- media-well -->
 </%def>
 
 <%def name="sample_ballot_listing()">
@@ -452,47 +454,7 @@
 
 
 <%def name="initiative_listing()">
-    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
-        <div ng-controller="yesNoVoteCtrl"> 
-            ${authorPosting()}
-            <div class="row" style="margin-top:19px;">
-                <div class="col-xs-2">
-                    <div class="listed-photo">
-                        <a href = '{{item.href}}'>
-                            <img class="thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-xs-10 no-left">
-                    <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    <p><small>${metaData()}</small></p>
-                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                    <p><strong>
-                        <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
-                        <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
-                        <span class="pull-right">{{(item.cost | currency).replace(".00", "")}}</span>
-                    </strong></p>
-                </div>
-            </div>
-            <div class="row" ng-controller="ratingsController">
-                % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    <div ng-controller="demographicsController">
-                        <div ng-if="item.parentObjType == 'workshop'">
-                            {{checkDemographics(item.parentHref)}}
-                            <span ng-if="demographics.required == ''"> ${yesNoVoteFooter()}</span>
-                            <span ng-if="demographics.required != ''">${yesNoVoteFooter(needs_demographics = '1')}</span>
-                        </div>
-                    </div>
-                    <div ng-if="item.parentObjType == 'workshop'">                    	
-                        <div ng-show="rating.type == 'criteria'">
-                    	${rateCriteria()}
-                    	</div>
-                    </div>
-                % endif
-                ${actions()}
-            </div>
-        </div>
-    </div>
+    ${general_listing_yesno()}
 </%def>
 
 
@@ -558,38 +520,7 @@
 
 
 <%def name="idea_listing()">
-    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
-        <div ng-controller="yesNoVoteCtrl">
-            ${authorPosting()}
-            <div class="row" style="margin-top:19px;">
-                <div class="col-sm-12">
-                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    % if not c.w:
-                        <p><small>${metaData()}</small></p>
-                    % endif
-                    <strong ng-if="item.status == 'adopted'" class="green"><i class="icon-star"></i> Adopted</strong>
-                    <strong ng-if="item.status == 'disabled'" class="red"><i class="icon-flag"></i> Disabled</strong>
-                    <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
-                </div>
-            </div>
-            <div class="row" ng-controller="ratingsController">
-                % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    <div ng-controller="demographicsController">
-                    <div ng-if="item.parentObjType == 'workshop'">
-                        {{checkDemographics(item.parentHref)}}
-                        <span ng-if="demographics.required == ''"> ${yesNoVoteFooter()}</span>
-                        <span ng-if="demographics.required != ''">${yesNoVoteFooter(needs_demographics = '1')}</span>
-                    </div>
-                    </div>
-                    <div ng-if="item.parentObjType == 'workshop'">                    	
-                        <div ng-show="rating.type == 'criteria'">
-                    	${rateCriteria()}
-                    	</div>
-                    </div>
-                % endif
-                ${actions()}
-            </div>
-    </div><!-- media well -->
+        ${general_listing_yesno()}
 </%def>
 
 <%def name="resource_listing()">
@@ -772,6 +703,11 @@
                 </div>
             </div>
         % endif
+    </div>
+    <div ng-if="item.parentObjType == 'workshop'" ng-controller="ratingsController">               	
+        <div ng-show="rating.type == 'criteria'">
+    	${rateCriteria()}
+    	</div>
     </div>
 </%def>
 
