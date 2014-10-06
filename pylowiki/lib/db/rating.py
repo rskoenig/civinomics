@@ -177,18 +177,20 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
       
     commit(ratingObj)
     commit(thing)
-    if 'ratings' in user:
-        myRatings = pickle.loads(str(user["ratings"]))
-    else:
-        myRatings = {}
-    thingCode = thing['urlCode']
-    myRatings[thingCode] = str(ratingObj['amount'])
-    user["ratings"] = str(pickle.dumps(myRatings))
-    commit(user)
-    #if c.personalRatings:
-    if 'user' in session and (c.authuser['email'] == user['email']):
-        session["ratings"] = myRatings
-        session.save()
+    if ratingType == 'binary':
+        if 'ratings' in user:
+            myRatings = pickle.loads(str(user["ratings"]))
+            log.info(myRatings)
+        else:
+            myRatings = {}
+        thingCode = thing['urlCode']
+        myRatings[thingCode] = str(ratingObj['amount'])
+        user["ratings"] = str(pickle.dumps(myRatings))
+        commit(user)
+        #if c.personalRatings:
+        if 'user' in session and (c.authuser['email'] == user['email']):
+            session["ratings"] = myRatings
+            session.save()
 
     return ratingObj
     
