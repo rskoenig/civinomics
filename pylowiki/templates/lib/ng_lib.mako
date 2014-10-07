@@ -706,7 +706,11 @@
     </div>
     <div ng-if="item.parentObjType == 'workshop'" ng-controller="ratingsController">               	
         <div ng-show="rating.type == 'criteria'">
-    	${rateCriteria()}
+        % if 'user' in session:
+            ${rateCriteria()}
+        %else: 
+        	<a role="button" data-toggle="modal">Log in to rate</a>
+    	%endif
     	</div>
     </div>
 </%def>
