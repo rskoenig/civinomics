@@ -697,10 +697,10 @@
             </div>
         % endif
     </div>
-    <div ng-if="item.parentObjType == 'workshop'"> }     
+    <div ng-if="item.parentObjType == 'workshop'">    
         <div ng-show="demographics.required != ''" ng-controller="demographicsController">
             {{checkDemographics(item.parentHref)}}
-            ${demographics()}
+            <div ng-show="hasVoted">${demographics()}</div>
         </div>
         <div ng-show="rating.type == 'criteria'" ng-controller="ratingsController">
         % if 'user' in session:
@@ -1409,10 +1409,10 @@
 </%def>
 
 <%def name="demographics()">
-    <div>
-        <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
+    <div class="actions centered" style="padding: 10px">
+        <p>Help us know more about you!</p>
         <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
-        <ul class="list-unstyled centered">
+        <ul class="list-unstyled">
             <li ng-repeat="d in demographics.required">
                <br/> {{demographics.values[demographics.indexList[d]].text}} <br/>
                 <span ng-if="demographics.values[demographics.indexList[d]].type == 'radio'" ng-repeat="v in demographics.values[demographics.indexList[d]].values">
@@ -1426,15 +1426,10 @@
                     <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
                 </span>
             </li>
-            <li><input type="checkbox" name="opt-out">I would like to opt out from the demographics.</input></li>
+            <li><span><br/><input type="checkbox" name="opt-out"> I would like to opt out from the demographics.</input></span></li>
         </ul>
         <div class="" id="resendMessage"></div>
-    </div>
-    <div>
-        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"
-        %if c.w:
-         ng-click="sendUserDemographics('${c.w['urlCode']}','${c.w['url']}')"
-        %endif
-         >Send</button>
+        <button class="btn btn-default pull-right" data-dismiss="modal" aria-hidden="true" ng-click="sendUserDemographics(item.parentHref)">Send</button>
+        <br/><br/>&nbsp;
     </div>
 </%def>

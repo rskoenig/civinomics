@@ -40,6 +40,7 @@ function yesNoVoteCtrl($scope) {
             $scope.rated = 1;
         } else if ($scope.voted = 'yesVoted'){
             // the user is undoing their yes vote
+            $scope.hasVoted = false;
             $scope.totalVotes -= 1;
             $scope.netVotes -= 1;
             $scope.yesVotes -= 1;
@@ -82,6 +83,7 @@ function yesNoVoteCtrl($scope) {
             $scope.rated = -1;
         }else if ($scope.voted = 'noVoted'){
             // the user is undoing a no vote
+            $scope.hasVoted = false;
             $scope.totalVotes -= 1
             $scope.netVotes += 1
             $scope.noVotes -=1

@@ -106,8 +106,8 @@ function demographicsController($scope, $http){
        $scope.userDemoChecked = true;     
 	};
 	
-	$scope.sendUserDemographics = function(workshopCode, workshopUrl){
-      var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/set/"
+	$scope.sendUserDemographics = function(parentHref){
+      var requestUrl = parentHref+"/demographics/set/"
       $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
             demographics.required = "";
