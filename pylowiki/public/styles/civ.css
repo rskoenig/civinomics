@@ -3957,3 +3957,8 @@ background-color: #d9534f;
     margin-left: -5px;
     margin-right: -5px;
 }
+
+.golden-stars{
+    color: gold;
+    text-shadow: 0.5px 0.5px 0.3px goldenrod;
+}
