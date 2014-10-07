@@ -94,25 +94,28 @@ class DemographicsController(BaseController):
         query = json.loads(request.body)
         log.info(query)
         demographics = ['0','0','0','0','0','0','0','0']
-        
-        if 'birthday' in query:
-            demographics[self.demographicsKeys['birthday']] = query['birthday']
-        if 'gender' in query:
-            demographics[self.demographicsKeys['gender']] = query['gender']
-        if 'ethnicity' in query:
-            demographics[self.demographicsKeys['ethnicity']] = query['ethnicity']
-        if 'education' in query:
-            demographics[self.demographicsKeys['education']] = query['education']
-        if 'kids' in query:
-            demographics[self.demographicsKeys['kids']] = query['kids']
-        if 'house' in query:
-            demographics[self.demographicsKeys['house']] = query['house']
-        if 'income' in query:
-            demographics[self.demographicsKeys['income']] = query['income']
-        if 'language' in query:
-            demographics[self.demographicsKeys['language']] = query['language']
-            
-        demographicsString = '|'.join(demographics)
+
+        if 'opt-out' in query:
+            demographicsString = "-1"
+        else:
+            if 'birthday' in query:
+                demographics[self.demographicsKeys['birthday']] = query['birthday']
+            if 'gender' in query:
+                demographics[self.demographicsKeys['gender']] = query['gender']
+            if 'ethnicity' in query:
+                demographics[self.demographicsKeys['ethnicity']] = query['ethnicity']
+            if 'education' in query:
+                demographics[self.demographicsKeys['education']] = query['education']
+            if 'kids' in query:
+                demographics[self.demographicsKeys['kids']] = query['kids']
+            if 'house' in query:
+                demographics[self.demographicsKeys['house']] = query['house']
+            if 'income' in query:
+                demographics[self.demographicsKeys['income']] = query['income']
+            if 'language' in query:
+                demographics[self.demographicsKeys['language']] = query['language']
+                
+            demographicsString = '|'.join(demographics)
         c.authuser['demographics'] = demographicsString
         dbHelpers.commit(c.authuser)
         
@@ -129,6 +132,10 @@ class DemographicsController(BaseController):
         
         #I need to change this            
         userDemo = c.authuser['demographics'].split("|")
+
+        if userDemo == '-1':
+            return json.dumps({'statusCode':1})
+            
         requiredDemos =[]
         for demographic in self.workshop['demographics'].split("|"):
             if userDemo[self.demographicsKeys[demographic]] == '0':

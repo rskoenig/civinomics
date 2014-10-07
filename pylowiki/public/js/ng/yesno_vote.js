@@ -1,5 +1,7 @@
 function yesNoVoteCtrl($scope) {
     // initialize the yes/no percentages
+    $scope.hasVoted = false;
+    
     if ($scope.totalVotes == 0){
         $scope.yesPercent = 0;
         $scope.noPercent = 0;
@@ -21,7 +23,7 @@ function yesNoVoteCtrl($scope) {
     }
 
     $scope.updateYesVote = function(){
-
+        $scope.hasVoted = true;
         if ($scope.voted == ''){
             // the user is voting yes from a neutral vote; the score goes up by one
             $scope.totalVotes += 1;
@@ -63,6 +65,7 @@ function yesNoVoteCtrl($scope) {
     }
 
     $scope.updateNoVote = function(){
+        $scope.hasVoted = true;
         if ($scope.voted == ''){
             // the user is voting no from a neutral vote; the score goes down by one
             $scope.totalVotes += 1;

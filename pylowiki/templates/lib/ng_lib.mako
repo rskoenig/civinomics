@@ -661,13 +661,6 @@
                     <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
-        % elif needs_demographics:
-            <div class="row centered">
-                <div class="col-sm-12">
-                    <a href="#demographicsModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
-                    <a href="#demographicsModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
-                </div>
-            </div>
         % elif 'user' in session:
             <div class="row centered">
                 <div class="col-sm-12">
@@ -704,8 +697,12 @@
             </div>
         % endif
     </div>
-    <div ng-if="item.parentObjType == 'workshop'" ng-controller="ratingsController">               	
-        <div ng-show="rating.type == 'criteria'">
+    <div ng-if="item.parentObjType == 'workshop'"> }     
+        <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+            {{checkDemographics(item.parentHref)}}
+            ${demographics()}
+        </div>
+        <div ng-show="rating.type == 'criteria'" ng-controller="ratingsController">
         % if 'user' in session:
             ${rateCriteria()}
         %else: 
@@ -1408,5 +1405,36 @@
                 </tr>
             </table>
         </div>
+    </div>
+</%def>
+
+<%def name="demographics()">
+    <div>
+        <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
+        <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
+        <ul class="list-unstyled centered">
+            <li ng-repeat="d in demographics.required">
+               <br/> {{demographics.values[demographics.indexList[d]].text}} <br/>
+                <span ng-if="demographics.values[demographics.indexList[d]].type == 'radio'" ng-repeat="v in demographics.values[demographics.indexList[d]].values">
+                    <input type="radio" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" value="{{v}}"> {{v}} <br/>
+                </span>
+                <span ng-if="demographics.values[demographics.indexList[d]].type == 'select'">
+                    <select ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" ng-options="v for v in demographics.values[demographics.indexList[d]].values">
+                    </select>
+                </span>
+                <span ng-if="demographics.values[demographics.indexList[d]].type == 'date'">
+                    <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
+                </span>
+            </li>
+            <li><input type="checkbox" name="opt-out">I would like to opt out from the demographics.</input></li>
+        </ul>
+        <div class="" id="resendMessage"></div>
+    </div>
+    <div>
+        <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"
+        %if c.w:
+         ng-click="sendUserDemographics('${c.w['urlCode']}','${c.w['url']}')"
+        %endif
+         >Send</button>
     </div>
 </%def>
