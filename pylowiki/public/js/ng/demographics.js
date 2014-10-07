@@ -51,6 +51,7 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.hasDemographics = false;
+	$scope.demographicsSent = false;
 	
 	$scope.getDemographics = function(workshopCode, workshopUrl){
         var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/get/";
@@ -107,9 +108,11 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.sendUserDemographics = function(parentHref){
+	
       var requestUrl = parentHref+"/demographics/set/"
       $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
+            $scope.demographicsSent = true;
             demographics.required = "";
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl

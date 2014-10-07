@@ -1409,7 +1409,7 @@
 </%def>
 
 <%def name="demographics()">
-    <div class="actions centered" style="padding: 10px">
+    <div class="actions centered" style="padding: 10px" ng-hide="demographicsSent">
         <p>Help us know more about you!</p>
         <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
         <ul class="list-unstyled">
