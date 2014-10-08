@@ -101,7 +101,7 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
         # Just change the previous vote        
         if ratingType == 'binary':
             prevRating = int(ratingObj['amount'])
-            log.info("I'm binary")
+            #log.info("I'm binary")
             if amount == 1 and amount == prevRating:
                 # user is 'undoing' their upvote
                 thing['ups'] = int(thing['ups']) - 1
@@ -129,12 +129,12 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
                 thing['downs'] = int(thing['downs']) + 1
                 ratingObj['amount'] = amount
         if ratingType == 'criteria':
-            log.info("I'm criteria")
+            #log.info("I'm criteria")
             if ratingObj['criteria'] == criteria:
-                log.info("Changing amount")
+                #log.info("Changing amount")
                 ratingObj['amount'] = amount
             else:
-                log.info("Creating new one")
+                #log.info("Creating new one")
                 ratingObj = Thing('rating', user.id)
                 if criteria is None:
                     return False
@@ -146,7 +146,7 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
                 ratingObj['ratingType'] = ratingType
     else:
         if ratingType == 'binary':    
-            log.info("I don't exist but I'm binary")
+            #log.info("I don't exist but I'm binary")
             if amount == 0:
                 # Don't make a new neutral object
                 return False
@@ -154,16 +154,16 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
             ratingObj = Thing('rating', user.id)
             ratingObj['amount'] = amount
             if amount == 1:
-                log.info("Going up")
+                #log.info("Going up")
                 thing['ups'] = int(thing['ups']) + 1
             else:
-                log.info("Going down")
+                #log.info("Going down")
                 thing['downs'] = int(thing['downs']) + 1
             if user['activated'] == '0':
                 ratingObj['provisional'] = '1'
 
         elif ratingType == 'criteria':
-            log.info("I don't exist but I'm criteria")
+            #log.info("I don't exist but I'm criteria")
             ratingObj = Thing('rating', user.id)
             if criteria is None:
                 return False
@@ -180,7 +180,7 @@ def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
     if ratingType == 'binary':
         if 'ratings' in user:
             myRatings = pickle.loads(str(user["ratings"]))
-            log.info(myRatings)
+            #log.info(myRatings)
         else:
             myRatings = {}
         thingCode = thing['urlCode']

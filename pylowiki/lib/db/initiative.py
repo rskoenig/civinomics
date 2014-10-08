@@ -63,7 +63,7 @@ def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False
         else:
             p_keys = keys
             p_values = values
-        log.info("search initiatives %s %s"%(keys, values))
+        #log.info("search initiatives %s %s"%(keys, values))
         map_initiatives = map(wcl, p_keys, p_values)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'initiative')\

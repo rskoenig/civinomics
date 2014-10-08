@@ -302,7 +302,7 @@ class HomeController(BaseController):
 
         if type == 'all':
 		    recentActivity = activityLib.getRecentActivity(max, 0, offset)
-		    log.info("oh right")
+		    #log.info("oh right")
 
         elif type == 'following' and c.authuser:
 			if c.privs['participant'] or c.privs['provisional']:
