@@ -135,6 +135,7 @@ class FacilitatorController(BaseController):
             itemURL = request.params['initiativeURL']
             itemType = 'i'
             mType = "CoAuthor"
+
         if itemCode and itemCode != '':
             if 'messageCode' not in request.params:
                 abort(404)
@@ -151,11 +152,9 @@ class FacilitatorController(BaseController):
             doF = False
 
             for f in fList:
-              try:
-                if f['workshopCode'] == item['urlCode']:
-                  doF = f
-              except:
-                if f['initiativeCode'] == item['urlCode']:
+              if 'workshopCode' in f and f['workshopCode'] == item['urlCode']:
+                doF = f
+              elif 'initiativeCode' in f and f['initiativeCode'] == item['urlCode']:
                   doF = f
 
             if doF and 'acceptInvite' in request.params:
