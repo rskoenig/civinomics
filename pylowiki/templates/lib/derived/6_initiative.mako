@@ -120,7 +120,7 @@
                                         <div ng-controller="ratingsController" ng-if="item.parentObjType == 'workshop'">                    	
                                             <div ng-init="getCriteriaList(item.parentHref, item.urlCode)">
                                                 <div ng-if="rating.type == 'criteria'" class="criteria-idea">
-                                            	${ng_lib.rateCriteria()}
+                                            	${ng_lib.rateCriteria(type = 'sidebar')}
                                             	</div>
                                         	</div>
                                         </div>

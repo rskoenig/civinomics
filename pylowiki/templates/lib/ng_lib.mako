@@ -751,17 +751,28 @@
     <br>
 </%def>
 
-<%def name="rateCriteria()">
+<%def name="rateCriteria(**kwargs)">
+    <%
+        if 'type' in kwargs:
+            sidebar = True
+        else:
+            sidebar = False
+    %>
 	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" ng-cloak>
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
 		<table class="centered" style="margin: 0 auto !important;float: none !important;  text-align:left !important;">
 		<tr ng-repeat="criteria in rating.criteriaList">
-		    <td ><ul class="list-inline" style="">
+		  %if not sidebar:
+		    <td><ul class="list-inline" style="">
     				<li style="margin-right:5px;">{{criteria.criteria}}  </li>
                 </ul>
             </td>
+            <td>
+		%elif sidebar:
 		    <td>
+    		  {{criteria.criteria}}<br/>
+        %endif
 		        <span ng-switch="showAverage">
         			<ul class="list-inline" style="" ng-switch-when="false" style="width: 110px">
         				<li class="criteria-list"> <span class="glyphicon golden-stars" 
