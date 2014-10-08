@@ -801,7 +801,7 @@
         				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.average >=3,'glyphicon-star-empty':!hover3 && (criteria.average <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
         				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.average >=4,'glyphicon-star-empty':!hover4 && (criteria.average <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
         				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.average == 5,'glyphicon-star-empty':!hover5 && (criteria.average < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list">{{criteria.numVotes}} rating<span ng-if="criteria.numVotes > 1">s </span></li>
+        				<li class="criteria-list">{{criteria.numVotes}} rating<span ng-if="criteria.numVotes > 1">s</span></li>
         			</ul>
     			</span>
             </td>
