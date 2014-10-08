@@ -8,8 +8,9 @@ function userLookupCtrl($scope, $http) {
 	$scope.alertDisplay = 'show';
 	$scope.userLookupURL = '/search/people/name/' + $scope.userValue;
 
+	// looks up both people and organizations
 	$scope.lookup = function() {
-		$scope.userLookupURL = '/search/people/name/' + $scope.userValue;
+		$scope.userLookupURL = '/search/people/usersAndOrgs/' + $scope.userValue;
 		$http.get($scope.userLookupURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.users = ''
