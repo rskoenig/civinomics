@@ -127,6 +127,7 @@ app.controller('ratingsController', function($scope, $http){
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					$scope.vote = criteria.amount;
+					$scope.getCriteriaList(parentHref,thingCode);
 				} 
 				else if (data.statusCode === 0){			
 				}
