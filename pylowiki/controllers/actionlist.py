@@ -87,7 +87,9 @@ class ActionlistController(BaseController):
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
     '''
-
+    def santacruzwater( self ):
+        return redirect('/workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention')
+        
     def rss( self ):
         c.activity = getRecentActivity(30)
         feed = feedgenerator.Rss201rev2Feed(

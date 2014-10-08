@@ -19,6 +19,13 @@ def make_map():
     map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
+    
+    ########################################################################################################
+    # 
+    # Special Event routes
+    # 
+    ########################################################################################################
+    map.connect('/santacruzwater{end:/?}', controller='actionlist', action='santacruzwater')
 
     ########################################################################################################
     # 
@@ -184,6 +191,7 @@ def make_map():
 
     map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
     map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}/{objectType}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', objectType = '{objectType}', offset = '{offset}')
     
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
