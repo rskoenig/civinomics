@@ -144,8 +144,12 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
     except:
        return False  
 
-def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0', deleted = '0'):
-    objectList = ['idea', 'resource', 'discussion', 'initiative']
+def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0', deleted = '0', itemType = ''):
+    log.info('itemtype = %s' % itemType)
+    if itemType == '' or itemType == 'all':
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+    else:
+        objectList = itemType
     workshop = generic.getThing(workshopCode)
     public_private = workshop['public_private']
     if public_private == 'public':

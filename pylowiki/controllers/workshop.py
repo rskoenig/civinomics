@@ -1529,7 +1529,7 @@ class WorkshopController(BaseController):
         return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
 
 
-    def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
+    def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7, objectType = 'all'):
         #log.info("offset is %s"%str(offset))
         # get recent activity and return it into json format
         result = []
@@ -1543,7 +1543,10 @@ class WorkshopController(BaseController):
         else:
             sort = 0
 
-        workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'])
+        if objectType is not 'all':
+            workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'], itemType = [objectType])
+        else:
+            workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'])
         for item in workshopActivity:
             entry = jsonLib.getJsonProperties(item)
             result.append(entry)
