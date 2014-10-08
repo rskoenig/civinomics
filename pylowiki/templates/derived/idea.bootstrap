@@ -19,7 +19,7 @@
 				<tr>
 					<td><img ng-if="item.thumbnail" ng-src="{{item.thumbnail}}"></td>
 					<td class="title-cell">
-						<h3 class="well-header" ng-cloak>${ng_lib.metaData('inline')}</h3>
+						<h4 class="well-header" ng-cloak>${ng_lib.metaData('inline')}</h4>
 					</td>
 				</tr>
 			</table>
