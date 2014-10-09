@@ -95,8 +95,12 @@ class DemographicsController(BaseController):
         requestKeys = request.params.keys()
         kwargs = {}
         query = json.loads(request.body)
-        log.info(query)
-        demographics = ['0','0','0','0','0','0','0','0','0','0','0']
+        if 'demographics' not in c.authuser:
+            demographics = ['0','0','0','0','0','0','0','0','0','0','0']
+        else:
+            demographics = c.authuser['demographics'].split("|")
+            while len(demographics) < 11:
+                demographics.append('0')
 
         if 'opt-out' in query:
             demographicsString = "-1"
@@ -147,8 +151,6 @@ class DemographicsController(BaseController):
             
         requiredDemos =[]
         for demographic in self.workshop['demographics'].split("|"):
-            log.info(len(userDemo))
-            log.info(self.demographicsKeys[demographic]+1)
             if len(userDemo) < self.demographicsKeys[demographic]+1:
                 requiredDemos.append(demographic)
             else:

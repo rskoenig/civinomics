@@ -68,9 +68,13 @@ function demographicsController($scope, $http){
 				if (data.statusCode == 1){
 				    console.log("yay");
 				    $scope.hasDemographics = true;
-				    
-				    for (var d in data.required){
-    				    $scope.demographics.list[$scope.demographics.list[d]].checked = true;
+				    var requiredDemo = data.required.split("|");
+				    console.log(requiredDemo);
+				    for (var i = 0; i < requiredDemo.length; i++){
+				        console.log(requiredDemo[i]);
+				        console.log($scope.demographics.indexList[requiredDemo[i]]);
+                        console.log();
+    				    $scope.demographics.list[$scope.demographics.indexList[requiredDemo[i]]].checked = true;
 				    };
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
@@ -122,7 +126,7 @@ function demographicsController($scope, $http){
       $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
             $scope.demographicsSent = true;
-            demographics.required = "";
+            $scope.demographics.required = "";
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl
             $scope.newObjCode = data.newObjCode
