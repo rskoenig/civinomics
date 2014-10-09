@@ -43,7 +43,7 @@ function demographicsController($scope, $http){
             {name: 'language', type: 'select', text: 'Native language', placeholder: '', values : ['English','Spanish','Russian','Other']},
             {name: 'residential', type: 'select', text: 'Are you a residential or commercial customer of the Santa Cruz Water Department?', placeholder: '', values : ["Residential","Commercial", "Both", "I am not a customer of the Santa Cruz Water Department"]},
             {name: 'multifamily', type: 'select', text: 'Do you live in a single family or multifamily home?', placeholder: '', values : ["Single Family", "Multifamily"]},
-            {name: 'peoplehousehold', type: 'select', text: 'How many people live in your household?', placeholder: '', values : [1,2,3,4,5,6,7,8,9,10]}
+            {name: 'peoplehousehold', type: 'select', text: 'How many people live in your household?', placeholder: '', values : ['1','2','3','4','5','6','7','8','9','10']}
             ],
         required : ""
 	}
