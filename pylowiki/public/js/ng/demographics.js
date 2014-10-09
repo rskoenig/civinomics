@@ -61,25 +61,21 @@ function demographicsController($scope, $http){
 	
 	$scope.hasDemographics = false;
 	$scope.demographicsSent = false;
+	$scope.userHasDemographics = false;
 	
 	$scope.getDemographics = function(workshopCode, workshopUrl){
         var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/get/";
         $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
-				    console.log("yay");
 				    $scope.hasDemographics = true;
 				    var requiredDemo = data.required.split("|");
-				    console.log(requiredDemo);
 				    for (var i = 0; i < requiredDemo.length; i++){
-				        console.log(requiredDemo[i]);
-				        console.log($scope.demographics.indexList[requiredDemo[i]]);
-                        console.log();
     				    $scope.demographics.list[$scope.demographics.indexList[requiredDemo[i]]].checked = true;
 				    };
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
-				    console.log("nay");					//Do something if it fails		
+					//Do something if it fails		
 				}
 			});
 	};
@@ -107,6 +103,7 @@ function demographicsController($scope, $http){
         $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 				    return '1';
+				    $scope.userHasDemographics = true;
 				} 
 				else if (data.statusCode === 0){
 				    $scope.demographics.required = data.required.split("|");
