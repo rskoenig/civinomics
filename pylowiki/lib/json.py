@@ -106,7 +106,7 @@ def getJsonProperties(item):
         entry['href'] = '/' + item.objType + '/' + item['urlCode'] + '/' + item['url']
         # need to account for comment obj type
 
-        if 'workshopCode' in item:
+        if 'workshopCode' in item and 'initiativeCode' not in item:
             entry['parentHref'] = '/workshop/' + item['workshopCode'] + '/' + item['workshop_url']
             #entry['href'] = entry['parentHref'] + entry['href']
         elif 'initiativeCode' in item:
@@ -119,7 +119,7 @@ def getJsonProperties(item):
     # modifications for children of workshops and initiatives
     entry['parentTitle'] = ''
     entry['parentObjType'] = ''
-    if 'workshopCode' in item:
+    if 'workshopCode' in item and 'initiativeCode' not in item:
         entry['parentTitle'] = item['workshop_title']
         entry['parentObjType'] = 'workshop'
     elif 'initiativeCode' in item:
