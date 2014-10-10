@@ -104,12 +104,13 @@ function demographicsController($scope, $http){
 				if (data.statusCode == 1){
 				    return '1';
 				    $scope.userHasDemographics = true;
+				    console.log("all good")
 				} 
 				else if (data.statusCode === 0){
 				    $scope.demographics.required = data.required.split("|");
 				    $scope.hasDemographics = true;
 				    return '0';
-				    
+				    console.log("missing");
 					//Do something if it fails		
 					//I'd rather do this			
 				}

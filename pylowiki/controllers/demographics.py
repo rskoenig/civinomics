@@ -147,6 +147,7 @@ class DemographicsController(BaseController):
         userDemo = c.authuser['demographics'].split("|")
 
         if userDemo == '-1':
+            log.info("opted out")
             return json.dumps({'statusCode':1})
             
         requiredDemos =[]
@@ -159,7 +160,8 @@ class DemographicsController(BaseController):
                     requiredDemos.append(demographic)
         if len(requiredDemos) > 0:
             return json.dumps({'statusCode':0, 'error': "User doesn't have that demographic", 'required':self.workshop['demographics']})
-                     
+        
+        log.info("all ok")
         return json.dumps({'statusCode':1})
         
     #Helper function to convert from array to string
