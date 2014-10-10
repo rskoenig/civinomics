@@ -420,7 +420,6 @@
 <%
     c.returnTo = request.url
 %>
-${request.url}
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
