@@ -42,6 +42,7 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
+            
         if action in ['users', 'usersNotActivated', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos', 'flaggedInitiatives', 'initiatives', 'activate']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
