@@ -1,0 +1,1 @@
+<%inherit file = "/email/private_invite.html"/>
