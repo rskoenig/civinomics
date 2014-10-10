@@ -4024,8 +4024,11 @@ background-color: #d9534f;
 }
 
 .demographics h5{
-    font-size: 16px;
-    
+    font-size: 16px;    
+}
+
+.demographics h4, .demographics b, .demographics strong{
+    color:#333333;   
 }
 
 .demographics a{

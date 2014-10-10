@@ -1431,8 +1431,8 @@
     <div class="actions centered demographics" style="padding: 10px" ng-hide="demographicsSent">
         <div ng-show="closingDemoWindow == false" class="animate-switch">
         <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-remove pull-right"></span></a>
-        <h5>Help us know more about you!</h5>
-        <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
+        <h4>Demographics</h4>
+        <p>Tell us more about yourself!<br>This information helps the analysis and interpretation of the results.<br> It will never be shared or displayed with your profile.</p>
         <ul class="list-unstyled">
             <li ng-repeat="d in demographics.required">
                <br/> {{demographics.values[demographics.indexList[d]].text}} <br/>
@@ -1452,14 +1452,15 @@
         </div>
         <div ng-show="closingDemoWindow == true" class="animate-switch">
             <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
-            <h5>Do you want to opt out of the demographics?</h5>
-            <p>In case you are not sure, you can choose to respond next time you participate.</p>
+            <h4>Do you want to opt out of the demographics?</h4>
+            <p>If you are not sure, you can choose to respond next time you participate.</p>
             <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">
                 <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>Yes</b>, I want to opt out.</li>
                 <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>No</b>, ask me again later.</li>
             </ul>
         </div>
-        <button class="btn btn-default pull-right" data-dismiss="modal" aria-hidden="true" ng-click="sendUserDemographics(item.parentHref)">Send</button>
+        <br>
+        <button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true" ng-click="sendUserDemographics(item.parentHref)">Submit</button>
         <br/><br/>&nbsp;
     </div>
 </%def>
