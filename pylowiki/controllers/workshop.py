@@ -1328,7 +1328,7 @@ class WorkshopController(BaseController):
             
         c.slides = c.published_slides
             
-        c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w)
+        #c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w)
         c.listeners = listenerLib.getListenersForWorkshop(c.w, disabled = '0')
         c.disabledListeners = listenerLib.getListenersForWorkshop(c.w, disabled = '1')
 
@@ -1361,7 +1361,7 @@ class WorkshopController(BaseController):
             
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
-            c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w)
+            c.facilitators = c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w)
             c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w, 1)
         
         c.flaggedItems = flagLib.getFlaggedThingsInWorkshop(c.w)

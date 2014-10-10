@@ -418,10 +418,6 @@ class HomeController(BaseController):
 			recentActivity = activityLib.getRecentActivity(max, 0, offset)
 			
         for item in recentActivity:
-            # so the activity feed does not pick up discussion children of workshop, meeting and ballot objects
-            showList = ['general', 'update']
-            if 'discType' in item and item['discType'] not in showList :
-                continue
             entry = jsonLib.getJsonProperties(item)
 
             result.append(entry)
