@@ -56,12 +56,17 @@ function demographicsController($scope, $http){
     	kids: "0",
     	house: "0",
     	income: "0",
-    	language: "0"
+    	language: "0",
+        residential: "0",
+        multifamily: "0",
+        peoplehousehold: "0",
+        optout: "0",
 	};
 	
 	$scope.hasDemographics = false;
 	$scope.demographicsSent = false;
 	$scope.userHasDemographics = false;
+	$scope.closingDemoWindow = false;
 	
 	$scope.getDemographics = function(workshopCode, workshopUrl){
         var requestUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/demographics/get/";
@@ -119,7 +124,6 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.sendUserDemographics = function(parentHref){
-	
       var requestUrl = parentHref+"/demographics/set/"
       $http.post(requestUrl, $scope.userDemographics).success(function(data){
             console.log("success!!!");
@@ -129,8 +133,11 @@ function demographicsController($scope, $http){
             $scope.newObjUrl = data.newObjUrl
             $scope.newObjCode = data.newObjCode
 		});
-
-
+	};
+	
+	$scope.changeClosingWindow = function(){
+        console.log("LOL");
+    	$scope.closingDemoWindow = !$scope.closingDemoWindow;
 	};
 	
 	conditionalListToString = function(oldList){

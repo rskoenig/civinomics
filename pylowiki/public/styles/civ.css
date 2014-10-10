@@ -4013,3 +4013,21 @@ background-color: #d9534f;
   color: #428BCA;
   text-shadow: 0.5px 0.5px 0.3px #357EBD;
 }
+
+/*
+    Demographics classes
+*/
+
+.demographics{
+    color:grey;
+    font-size: 14px;
+}
+
+.demographics h5{
+    font-size: 16px;
+    
+}
+
+.demographics a{
+    color:black;
+}

@@ -701,7 +701,7 @@
         % endif
     </div>
     <div ng-if="item.parentObjType == 'workshop'">    
-        <div ng-if="hasVoted">
+        <div ng-show="hasVoted">
             <div ng-show="demographics.required != ''" ng-controller="demographicsController">
                 {{checkDemographics(item.parentHref)}}
                 ${demographics()}
@@ -1428,8 +1428,10 @@
 </%def>
 
 <%def name="demographics()">
-    <div class="actions centered" style="padding: 10px" ng-hide="demographicsSent">
-        <p>Help us know more about you!</p>
+    <div class="actions centered demographics" style="padding: 10px" ng-hide="demographicsSent">
+        <div ng-show="closingDemoWindow == false" class="animate-switch">
+        <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-remove pull-right"></span></a>
+        <h5>Help us know more about you!</h5>
         <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
         <ul class="list-unstyled">
             <li ng-repeat="d in demographics.required">
@@ -1448,6 +1450,16 @@
             <li><span><br/><input type="checkbox" name="opt-out"> I would like to opt out from the demographics.</input></span></li>
         </ul>
         <div class="" id="resendMessage"></div>
+        </div>
+        <div ng-show="closingDemoWindow == true" class="animate-switch">
+            <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
+            <h5>Do you want to opt out of the demographics?</h5>
+            <p>In case you are not sure, you can choose to respond next time you participate.</p>
+            <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">
+                <li><input type="radio" ng-model="userDemographics[optout]" value="True"> <b>Yes</b>, I want to opt out.</li>
+                <li><input type="radio" ng-model="userDemographics[optout]" value="0"> <b>No</b>, ask me again later.</li>
+            </ul>
+        </div>
         <button class="btn btn-default pull-right" data-dismiss="modal" aria-hidden="true" ng-click="sendUserDemographics(item.parentHref)">Send</button>
         <br/><br/>&nbsp;
     </div>
