@@ -701,10 +701,12 @@
         % endif
     </div>
     <div ng-if="item.parentObjType == 'workshop'">    
-        <div ng-show="demographics.required != ''" ng-controller="demographicsController">
-            {{checkDemographics(item.parentHref)}}
-            <div ng-show="hasVoted">${demographics()}</div>
-        </div>
+        <div ng-if="hasVoted">
+            <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                {{checkDemographics(item.parentHref)}}
+                ${demographics()}
+            </div>
+        </DIV>
         <div ng-show="rating.type == 'criteria'" ng-controller="ratingsController">
         % if 'user' in session:
             ${rateCriteria()}
