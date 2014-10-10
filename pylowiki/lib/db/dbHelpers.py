@@ -1,6 +1,6 @@
 import logging
 from pylowiki.model import meta, Data
-from sqlalchemy import and_, or_, not_
+from sqlalchemy import and_, or_
 
 log = logging.getLogger(__name__)
 
@@ -53,13 +53,6 @@ def with_key(key, case_insensitive = True):
         return and_(Data.key == key, Data.value.ilike(value))
     else:
         return and_(Data.key == key, Data.value.like(value))
-
-def without_key(key, case_insensitive = True):
-    value = '%'
-    if case_insensitive:
-        return not_(Data.key == key, Data.value.ilike(value))
-    else:
-        return not_(Data.key == key, Data.value.like(value))
 
 def lessThan_characteristic(key, value):
     return and_(Data.key == key, Data.value < value)

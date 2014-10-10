@@ -420,6 +420,7 @@
 <%
     c.returnTo = request.url
 %>
+
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -579,6 +580,8 @@
       #### After Login URL
       ####
       alURL= session._environ['PATH_INFO']
+      if not alURL:
+        alURL = request.url
       if 'QUERY_STRING' in session._environ :
         alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL

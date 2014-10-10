@@ -606,6 +606,7 @@ class LoginController(BaseController):
         log.info(session)
         if 'afterLoginURL' in session:
             log.info("there's one!!")
+            log.info(session['afterLoginURL'])
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
             if 'loginResetPassword' in loginURL:
