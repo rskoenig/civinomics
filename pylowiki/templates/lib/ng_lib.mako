@@ -1447,7 +1447,6 @@
                     <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
                 </span>
             </li>
-            <li><span><br/><input type="checkbox" name="opt-out"> I would like to opt out from the demographics.</input></span></li>
         </ul>
         <div class="" id="resendMessage"></div>
         </div>
@@ -1455,7 +1454,6 @@
             <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
             <h5>Do you want to opt out of the demographics?</h5>
             <p>In case you are not sure, you can choose to respond next time you participate.</p>
-            {{userDemographics}}
             <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">
                 <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>Yes</b>, I want to opt out.</li>
                 <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>No</b>, ask me again later.</li>
