@@ -623,7 +623,6 @@
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
             <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
         % endif
-        <br>
         % if readonly == "1":
             Voting Closed
         % endif
@@ -633,8 +632,12 @@
             <div class="progress" style="height: 12px; margin-bottom: 5px;">
                 <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
             </div>
-            <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
-            <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+            <div class="row">
+                <div class="col-xs-12 text-right">
+                    <small ng-if="item.goal == 100" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+                    <small ng-if="!(item.goal == 100)" class="grey text-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+                </div>
+            <div>
         </div>
     </div>
 </%def>
@@ -677,7 +680,7 @@
             </div>
         % endif
         % if not 'noStats' in kwargs:
-            <div class="row text-center" style="margin: 0 19px; height:35px">
+            <div class="row text-center rating-details">
                 <!-- multi-colored progress bar test
                 <div class="progress col-sm-8">
                     <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
@@ -755,61 +758,64 @@
     <%
         if 'type' in kwargs:
             sidebar = True
+            locationClass = 'sidebar'
         else:
             sidebar = False
+            locationClass = 'listing'
     %>
-	<div class="actions centered" style="padding:10px; padding-bottom: 10px;" ng-cloak>
+	<div class="actions" style="padding:10px; padding-bottom: 10px;" ng-cloak>
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
-		<table class="centered" style="margin: 0 auto !important;float: none !important;  text-align:left !important;">
-		<tr ng-repeat="criteria in rating.criteriaList">
-		  %if not sidebar:
-		    <td><ul class="list-inline" style="">
-    				<li style="margin-right:5px;">{{criteria.criteria}}  </li>
-                </ul>
-            </td>
-            <td>
-		%elif sidebar:
-		    <td>
-    		  {{criteria.criteria}}<br/>
-        %endif
-		        <span ng-switch="showAverage">
-        			<ul class="list-inline" style="" ng-switch-when="false" style="width: 110px">
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" 
-        				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
-                                              'glyphicon-star-empty':!hover1 && (criteria.amount <1)}" 
-                                   ng-mouseenter="addVote(hover1, 1, criteria)" 
-                                   ng-mouseleave="removeVote(hover1, criteria)" 
-                                   ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
-                             </span>
-                        </li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star-empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star-empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star-empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star-empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        			</ul>
-        			<ul class="list-inline" style="" ng-switch-when="true">
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" 
-        				           ng-class="{'glyphicon-star':hover1 || criteria.average >=1,
-                                              'glyphicon-star-empty':!hover1 && (criteria.average <1)}" 
-                                   ng-mouseenter="addVote(hover1, 1, criteria)" 
-                                   ng-mouseleave="removeVote(hover1, criteria)" 
-                                   ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
-                             </span>
-                        </li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.average >=2,'glyphicon-star-empty':!hover2 && (criteria.average <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.average >=3,'glyphicon-star-empty':!hover3 && (criteria.average <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.average >=4,'glyphicon-star-empty':!hover4 && (criteria.average <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.average == 5,'glyphicon-star-empty':!hover5 && (criteria.average < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
-        				<li class="criteria-list">{{criteria.numVotes}} rating<span ng-if="criteria.numVotes > 1">s</span></li>
-        			</ul>
-    			</span>
-            </td>
-            
-			</tr>
-			<tr><td></td><td></td></tr>
-		</table>
-		<span ng-if="!showAverage"><a ng-click="changeShowAverage()">Show average</a></span><span ng-if="showAverage"><a ng-click="changeShowAverage()">Show my ratings</a></span>
+    		<table class="criteria-table ${locationClass} centered">
+    		<tr ng-repeat="criteria in rating.criteriaList">
+    		%if not sidebar:
+    		    <td><ul class="list-inline" style="">
+        				<li style="margin-right:5px;"><span class="criteria-name">{{criteria.criteria}}</span></li>
+                    </ul>
+                </td>
+                <td>
+    		%elif sidebar:
+    		    <td>
+                    <span class="criteria-name">{{criteria.criteria}}</span><br/>
+            %endif
+    		        <span ng-switch="showAverage">
+            			<ul class="list-inline criteria-stars" style="" ng-switch-when="false" style="width: 110px">
+            				<li class="criteria-list">
+                                <span class="glyphicon golden-stars" 
+            				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
+                                                  'glyphicon-star empty':!hover1 && (criteria.amount <1)}" 
+                                       ng-mouseenter="addVote(hover1, 1, criteria)" 
+                                       ng-mouseleave="removeVote(hover1, criteria)" 
+                                       ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
+                                 </span>
+                            </li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            			</ul>
+            			<ul class="list-inline criteria-stars averages" style="" ng-switch-when="true">
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" 
+            				           ng-class="{'glyphicon-star':hover1 || criteria.average >=1,
+                                                  'glyphicon-star empty':!hover1 && (criteria.average <1)}" 
+                                       ng-mouseenter="addVote(hover1, 1, criteria)" 
+                                       ng-mouseleave="removeVote(hover1, criteria)" 
+                                       ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)">
+                                 </span>
+                            </li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.average >=2,'glyphicon-star empty':!hover2 && (criteria.average <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.average >=3,'glyphicon-star empty':!hover3 && (criteria.average <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.average >=4,'glyphicon-star empty':!hover4 && (criteria.average <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.average == 5,'glyphicon-star empty':!hover5 && (criteria.average < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
+            				<li class="criteria-list num-ratings">{{criteria.numVotes}} rating<span ng-if="criteria.numVotes > 1">s</span></li>
+            			</ul>
+        			</span>
+                </td>
+    			</tr>
+    		</table>
+            <div class="row text-center rating-details ${locationClass}">
+                <small ng-if="!showAverage"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowAverage()">view my ratings</a></small>
+            </div>
 		</div>
 	</div> <!-- container-div -->
 </%def>
