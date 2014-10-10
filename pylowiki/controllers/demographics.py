@@ -102,7 +102,8 @@ class DemographicsController(BaseController):
             while len(demographics) < 11:
                 demographics.append('0')
 
-        if 'opt-out' in query:
+        if query['optout'] == 'True':
+            log.info(query['optout'])
             demographicsString = "-1"
         else:
             if 'birthday' in query:
@@ -145,8 +146,8 @@ class DemographicsController(BaseController):
         
         #I need to change this            
         userDemo = c.authuser['demographics'].split("|")
-
-        if userDemo == '-1':
+        log.info(userDemo[0] == '-1')
+        if userDemo[0] == '-1':
             log.info("opted out")
             return json.dumps({'statusCode':1})
             

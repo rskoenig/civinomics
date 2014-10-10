@@ -701,7 +701,7 @@
         % endif
     </div>
     <div ng-if="item.parentObjType == 'workshop'">    
-        <div ng-show="hasVoted">
+        <div ng-if="hasVoted">
             <div ng-show="demographics.required != ''" ng-controller="demographicsController">
                 {{checkDemographics(item.parentHref)}}
                 ${demographics()}
@@ -1455,9 +1455,10 @@
             <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
             <h5>Do you want to opt out of the demographics?</h5>
             <p>In case you are not sure, you can choose to respond next time you participate.</p>
+            {{userDemographics}}
             <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">
-                <li><input type="radio" ng-model="userDemographics[optout]" value="True"> <b>Yes</b>, I want to opt out.</li>
-                <li><input type="radio" ng-model="userDemographics[optout]" value="0"> <b>No</b>, ask me again later.</li>
+                <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>Yes</b>, I want to opt out.</li>
+                <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>No</b>, ask me again later.</li>
             </ul>
         </div>
         <button class="btn btn-default pull-right" data-dismiss="modal" aria-hidden="true" ng-click="sendUserDemographics(item.parentHref)">Send</button>
