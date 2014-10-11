@@ -112,11 +112,16 @@
                             <h4 class="text-center gray">Vote</h4>
                             <hr class="narrow">
                             <div class="row">
-                                <div class="col-xs-10 col-xs-offset-1">
-                                    <div ng-init="inPage = true;">
-                                        <div ng-controller="yesNoVoteCtrl">
-                                            ${ng_lib.yesNoVoteBlock()}
-                                        </div>
+                                <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;">
+                                    <div ng-controller="yesNoVoteCtrl">
+                                        ${ng_lib.yesNoVoteBlock()}
+                                    </div>
+                                    <div ng-controller="ratingsController" ng-if="item.parentObjType == 'workshop'">                    	
+                                        <div ng-init="getCriteriaList(item.parentHref, item.urlCode)">
+                                            <div ng-if="rating.type == 'criteria'" class="criteria-idea">
+                                        	${ng_lib.rateCriteria(type = 'sidebar')}
+                                        	</div>
+                                    	</div>
                                     </div>
                                 </div>
                             </div>

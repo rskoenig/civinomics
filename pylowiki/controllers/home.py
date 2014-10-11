@@ -302,6 +302,7 @@ class HomeController(BaseController):
 
         if type == 'all':
 		    recentActivity = activityLib.getRecentActivity(max, 0, offset)
+		    #log.info("oh right")
 
         elif type == 'following' and c.authuser:
 			if c.privs['participant'] or c.privs['provisional']:
@@ -329,7 +330,6 @@ class HomeController(BaseController):
 
         # inclusive county activity function
         elif type == 'geo' and c.authuser and scope == 'none':
-            log.info("COUNTY ACTIVITY!!!!!!!")
 		    # try getting the activity of their area
             userScope = getGeoScope( c.authuser['postalCode'], "United States" )
             log.info(userScope)
