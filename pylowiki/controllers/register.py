@@ -743,6 +743,10 @@ class RegisterController(BaseController):
                 returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
                 session.pop('afterLoginURL')
                 session.save()
+
+        if 'alURL' in request.params:
+            returnPage = request.params['alURL']
+                
         name = False
         password = False
         postalCode = False

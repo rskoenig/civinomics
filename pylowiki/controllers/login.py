@@ -638,7 +638,7 @@ class LoginController(BaseController):
 
         iPhoneApp = utils.iPhoneRequestTest(request)
         
-        log.info("HEREEEE")
+        log.info(request.params['alURL'])
         
         try:
             email = request.params["email"].lower()
@@ -659,9 +659,8 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
-                        log.info(request.url)
-                        log.info(c.returnTo)
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
+                        loginURL = request.params['alURL']
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             # iphone app is having problems with the case where a user logs in after 
