@@ -2385,7 +2385,7 @@
     <div ng-init="zipValue = ${c.postalCode}">
         <div ng-controller="zipLookupCtrl" ng-cloak>
           <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
-          <div class="row" ng-show="!loading" class="full-width">
+          <div class="row" ng-show="!loading">
             <div class="col-sm-12 col-xs-3">
                 <a class="flag-filter" ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag bottom-space full-width" src="/images/flags/homeFlag.gif" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
             </div>

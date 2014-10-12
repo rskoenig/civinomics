@@ -11,77 +11,78 @@
 %>
 
 <div class="container-fluid" ng-controller = "activityController">
-  <div class="col-xs-12 col-sm-1 col-md-1">
-    ${lib_6.zipLookup()}
-  </div><!-- home-left-panel -->
-  
-  ###
-  ### Activity Feed
-  ###
-  <div class="col-sm-7 col-md-7">
-  	
-    ${lib_6.create()}
-
-    <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
-
-      <small>${helpers.feedFilters()}</small>
-
-      <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '')" ng-cloak>
-          {{alertMsg}}
-      </div>
-	  
-      <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
-        <!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
-        <tr>
-          <td ng-if="item.objType == 'workshop'">
-				${ng_helpers.workshop_listing()}
-		      </td>
-		  
-          <td ng-if="item.objType == 'initiative'">
-            ${ng_helpers.initiative_listing()}
-          </td>
-          
-          <td ng-if="item.objType == 'meeting'">
-            ${ng_helpers.meeting_listing()}
-          </td>
-
-          <td ng-if="item.objType == 'idea'">
-            ${ng_helpers.idea_listing()}
-          </td>
-
-          <td ng-if="item.objType == 'resource'">
-            ${ng_helpers.resource_listing()}
-          </td>
-
-          <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
-            ${ng_helpers.discussion_listing()}
-          </td>
-          
-          <td ng-if="item.objType == 'position'">
-            ${ng_helpers.position_listing()}
-          </td>
-
-          <td ng-if="item.objType == 'photo'">
-            ${ng_helpers.photo_listing()}
-          </td>
-        </tr>
-      </table>
-	  
-      <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
-        <i class="icon-spinner icon-spin icon-4x"></i>
-      </div>
-
-    </div><!-- infinite-scroll -->
-  </div><!-- /col-sm-8 -->
-
-  <div class="col-sm-4">
-
-    ${helpers.elections()}
+  <div class="row">
+    <div class="col-xs-12 col-sm-1 col-md-1">
+      ${lib_6.zipLookup()}
+    </div><!-- home-left-panel -->
     
-    ${helpers.followingInitiatives()}
+    ###
+    ### Activity Feed
+    ###
+    <div class="col-sm-7 col-md-7">
+    	
+      ${lib_6.create()}
 
-  </div><!-- /span4 -->
-</div><!-- /row -->
+      <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+
+        <small>${helpers.feedFilters()}</small>
+
+        <div class="alert" ng-class="alertType" ng-if="alertMsg && !(alertMsg == '')" ng-cloak>
+            {{alertMsg}}
+        </div>
+  	  
+        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+          <!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
+          <tr>
+            <td ng-if="item.objType == 'workshop'">
+  				${ng_helpers.workshop_listing()}
+  		      </td>
+  		  
+            <td ng-if="item.objType == 'initiative'">
+              ${ng_helpers.initiative_listing()}
+            </td>
+            
+            <td ng-if="item.objType == 'meeting'">
+              ${ng_helpers.meeting_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'idea'">
+              ${ng_helpers.idea_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'resource'">
+              ${ng_helpers.resource_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+              ${ng_helpers.discussion_listing()}
+            </td>
+            
+            <td ng-if="item.objType == 'position'">
+              ${ng_helpers.position_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'photo'">
+              ${ng_helpers.photo_listing()}
+            </td>
+          </tr>
+        </table>
+  	  
+        <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
+        </div>
+
+      </div><!-- infinite-scroll -->
+    </div><!-- /col-sm-8 -->
+
+    <div class="col-sm-4">
+
+      ${helpers.elections()}
+      
+      ${helpers.followingInitiatives()}
+
+    </div><!-- /col-sm-4 -->
+  </div><!-- /row -->
 </div>
 
 <%def name="headScripts()">

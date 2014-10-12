@@ -45,9 +45,10 @@
             <div class="spacer"></div>
 
             <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
-                <div class="col-xs-2">
+                <div class="col-sm-2 col-xs-12">
                     <a href = '{{item.href}}'>
-                        <img class="thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
+                        <img class="hidden-xs thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
+                        <div class="hidden-lg hidden-md hidden-sm landscape-id-photo" style="background-image:url('{{item.thumbnail}}')"></div>
                     </a>
                 </div>
                 <div class="col-xs-10 no-left">
