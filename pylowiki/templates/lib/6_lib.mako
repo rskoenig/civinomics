@@ -2385,36 +2385,35 @@
     <div ng-init="zipValue = ${c.postalCode}">
         <div ng-controller="zipLookupCtrl" ng-cloak>
           <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
-          <table ng-show="!loading" class="full-width">
-            <tr>
-                <td>
-                      <a ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag med-flag bottom-space" src="/images/flags/homeFlag.gif" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
-                  </td>
-            </tr>
-            <tr ng-repeat="geo in geos">
-              <td>
-                  <a ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population, geo.href, geo.photo)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag med-flag bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
-              </td>
-            </tr>
-          </table>
+          <div class="hidden-sm hidden-md hidden-lg" style="height:60px;"></div>
+          <div class="row" ng-show="!loading" class="full-width">
+            <div class="col-sm-12 col-xs-3">
+                <a class="flag-filter" ng-click="getAllActivity()" tooltip-placement="right" tooltip="Home"><img class="thumbnail flag bottom-space full-width" src="/images/flags/homeFlag.gif" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+            </div>
+            <div class="col-sm-12 col-xs-3" ng-repeat="geo in geos">
+                <a class="flag-filter" ng-click="getGeoScopedActivity(geo.scope, geo.fullName, geo.flag, geo.population, geo.href, geo.photo)" tooltip-placement="right" tooltip="{{geo.name}}"><img class="thumbnail flag full-width bottom-space" src="{{geo.flag}}" ng-class="{activeGeo : geoScope === geo.scope, inactiveGeo: geo.scope != '' && geoScope}"></a>
+            </div>
+            <div class="col-sm-12 col-xs-3">
+                <div class="btn-group" ng-show="!loading">
+                    <a class="btn clear dropdown-toggle flag-filter" data-toggle="dropdown" href="#">
+                      <i class="grey icon-search centered"></i>
+                    </a>
+                    <ul class="dropdown-menu" >
+                      <li class="dropdown-form">
+                        <p>Look up a zip code</p>
+                        <form class="form-inline" name="zipForm">
+                          <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
+                              <input class="input-small form-control" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
+                              <button class="btn btn-primary top-space" ng-click="lookup()">Search</button><br>
+                              <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
+                          </div>
+                        </form>
+                      </li>
+                    </ul>
+                </div>
+            </div>
 
-          <div class="btn-group" ng-show="!loading">
-            <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
-              <i class="grey icon-search centered"></i>
-            </a>
-            <ul class="dropdown-menu" >
-              <li class="dropdown-form">
-                <p>Look up a zip code</p>
-                <form class="form-inline" name="zipForm">
-                  <div ng-class=" {'error': zipForm.zipValue.$error.pattern} " ng-cloak>
-                      <input class="input-small form-control" type="number" name="zipValue" id="zipValue" ng-model="zipValue" ng-pattern="zipValueRegex" ng-minlength="5" ng-maxlength="5" placeholder="{{zipValue}}" ng-cloak>
-                      <button class="btn btn-primary top-space" ng-click="lookup()">Search</button><br>
-                      <span class="error help-block" ng-show="zipForm.zipValue.$error.pattern" ng-cloak>Invalid zip code!</span>
-                  </div>
-                </form>
-              </li>
-            </ul>
-          </div>
+          </div><!-- row -->
           
         </div><!-- ng-controller ziplookup-->
     </div><!-- ng-init -->

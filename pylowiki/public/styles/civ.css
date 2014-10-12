@@ -3516,6 +3516,17 @@ hr.object-list-header{
   width: 100%;
 }
 
+.full-height{
+  height: 100%;
+}
+
+.flag-filter{
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2; 
+}
+
 .section-wrapper.metrics{
   background-color: whitesmoke;
   padding-top: 10px;
