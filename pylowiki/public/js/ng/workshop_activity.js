@@ -8,7 +8,7 @@ function activityWorkshopController($scope, $http) {
         $scope.addThing = 'Discussion';
     }
 	$scope.listingType = 'activity';
-	$scope.thing = 'Idea';
+	//$scope.thing = 'Idea';
 	$scope.test = true
 	$scope.activityLoading = true;
 	$scope.activitySliceLoading = false;
@@ -28,8 +28,12 @@ function activityWorkshopController($scope, $http) {
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = '';
+		$scope.activityURL = '/workshop/' + $scope.code + '/' + $scope.url + '/getActivity/0'
+		if ($scope.thing){
+			$scope.activityURL += '/' + $scope.thing
+		}
 		$scope.activityLoading = true;
-		$http.get('/workshop/' + $scope.code + '/' + $scope.url + '/getActivity').success(function(data){
+		$http.get($scope.activityURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
 				$scope.activity = [];
@@ -50,14 +54,17 @@ function activityWorkshopController($scope, $http) {
 		})
 	};
 
-	$scope.getActivity();
-
 	$scope.getActivitySlice = function() {
 		if ($scope.busy || $scope.noMoreSlices) return;
 		$scope.busy = true;
 		$scope.alertMsg = ''
+		$scope.activityURL = '/workshop/' + $scope.code + '/' + $scope.url + '/getActivity/' + $scope.offset
+		$scope.activityURL
+		if ($scope.thing){
+			$scope.activityURL += '/' + $scope.thing
+		}
 		$scope.activitySliceLoading = true;
-		$http.get('/workshop/' + $scope.code + '/' + $scope.url + '/getActivity/' + $scope.offset).success(function(data){
+		$http.get($scope.activityURL).success(function(data){
 			if (data.statusCode == 1){
 				$scope.noMoreSlices = true;
 			} 
@@ -127,12 +134,15 @@ function activityWorkshopController($scope, $http) {
 		$scope.orderProp = '';
 		$scope.query = '';
 		$scope.query2 = '!disabled';
-		$scope.thing = 'Idea';
+		$scope.thing = undefined;
 		if ($scope.allowIdeas == '0') {
             $scope.addThing = 'Discussion';
         } else {
             $scope.addThing = 'Idea';
         }
+
+        $scope.getActivity();
+
 	}
 
 	$scope.toggleBrief= function(){
@@ -185,6 +195,9 @@ function activityWorkshopController($scope, $http) {
         } else {
             $scope.addThing = 'Resource';
         }
+
+		$scope.getActivity();
+
 	};
 
 	$scope.toggleIdeas= function(){
@@ -221,6 +234,9 @@ function activityWorkshopController($scope, $http) {
         } else {
             $scope.addThing = 'Idea';
         }
+
+        $scope.getActivity();
+
 	}
 
 	$scope.toggleInitiatives= function(){
@@ -257,6 +273,9 @@ function activityWorkshopController($scope, $http) {
         } else {
             $scope.addThing = 'Initiative';
         }
+
+        $scope.getActivity();
+
 	}
 
 	$scope.toggleFinal= function(){
@@ -291,6 +310,9 @@ function activityWorkshopController($scope, $http) {
         } else {
             $scope.addThing = 'Initiative';
         }
+
+		$scope.getActivity();
+
 	}
 
 	$scope.toggleAdopted= function(){
@@ -319,6 +341,9 @@ function activityWorkshopController($scope, $http) {
 		$scope.query = {status:'adopted'};
 		$scope.query2 = {status:'adopted'};
 		$scope.thing = 'Initiative'
+
+		$scope.getActivity();
+
 	}
 
 	$scope.toggleImpact= function(){
@@ -345,6 +370,9 @@ function activityWorkshopController($scope, $http) {
 		$scope.query = {objType:'Update'};
 		$scope.query2 = '';
 		$scope.addThing = 'Update'
+
+		$scope.getActivity();
+
 	}
 
 
@@ -381,6 +409,9 @@ function activityWorkshopController($scope, $http) {
 		$scope.query2 = '';
 		$scope.thing = 'Discussion';
 		$scope.addThing = 'Discussion';
+
+		$scope.getActivity();
+
 	};
 
 	$scope.toggleResources= function(){
@@ -402,6 +433,9 @@ function activityWorkshopController($scope, $http) {
         } else {
             $scope.addThing = 'Resource';
         }
+
+        $scope.getActivity();
+
 	};
 
 	$scope.toggleAddForm= function(){

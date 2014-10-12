@@ -485,6 +485,9 @@ hr.civ-topbar-hr{
 
 hr.narrow{
   margin: 10px 0 10px 0;
+  border-color: #ddd;
+  background-color: #ddd;
+  color: #ddd;
 }
 
 hr.subMenu{
@@ -3946,4 +3949,88 @@ div.geo-profile-info-data p{
 }
 .badge.badge-danger {
 background-color: #d9534f;
+}
+
+/*
+    Criteria classes
+    
+*/
+
+.rating-details{
+  margin: 0 19px;
+  height:35px
+}
+.sidebar.rating-details{
+  margin: 0 19px;
+  height:12px
+}
+
+.criteria-list{
+    margin-left: -5px;
+    margin-right: -5px;
+}
+
+.criteria-name{
+  color: grey;
+}
+
+.criteria-table{
+  float: none !important;
+  text-align:left !important;
+}
+
+.criteria-table.sidebar{
+  margin: 0 0 !important;
+}
+
+.criteria-table.listing{
+  margin: 0 auto !important;
+}
+
+.criteria-list.num-ratings{
+  font-size: .85em;
+  font-weight: 500;
+  padding-left: 8px;
+}
+
+.criteria-stars.list-inline{
+  margin-left: 0;
+}
+
+.criteria-stars li .glyphicon.golden-stars{
+  font-size: 1.5em;
+}
+.criteria-stars li .glyphicon.glyphicon-star.empty, .criteria-stars.averages li .glyphicon.glyphicon-star.empty{
+  color:#dddddd;
+  text-shadow: 0.5px 0.5px 0.3px #c4c4c4;
+}
+
+.criteria-stars li .glyphicon.glyphicon-star{
+  color: #F0AD4E;
+  text-shadow: 0.5px 0.5px 0.3px #EEA236;
+}
+.criteria-stars.averages li .glyphicon.glyphicon-star{
+  color: #428BCA;
+  text-shadow: 0.5px 0.5px 0.3px #357EBD;
+}
+
+/*
+    Demographics classes
+*/
+
+.demographics{
+    color:grey;
+    font-size: 14px;
+}
+
+.demographics h5{
+    font-size: 16px;    
+}
+
+.demographics h4, .demographics b, .demographics strong{
+    color:#333333;   
+}
+
+.demographics a{
+    color:black;
 }

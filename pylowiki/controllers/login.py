@@ -601,9 +601,12 @@ class LoginController(BaseController):
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
         commit(user)
         log.info("login:logUserIn commit user")
-
-        
+        log.info(request.url)
+        log.info(c.returnTo)
+        log.info(session)
         if 'afterLoginURL' in session:
+            log.info("there's one!!")
+            log.info(session['afterLoginURL'])
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
             if 'loginResetPassword' in loginURL:
@@ -611,6 +614,7 @@ class LoginController(BaseController):
             session.pop('afterLoginURL')
             session.save()
         else:
+            log.info("No after login url")
             loginURL = "/"
         
         #if 'fbLogin' in kwargs:
@@ -633,7 +637,9 @@ class LoginController(BaseController):
         splashMsg['title'] = 'Error'
 
         iPhoneApp = utils.iPhoneRequestTest(request)
-
+        
+        log.info("HEREEEE")
+        
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
@@ -653,6 +659,8 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
+                        log.info(request.url)
+                        log.info(c.returnTo)
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
@@ -762,6 +770,7 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
+        log.info("Login display")
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':

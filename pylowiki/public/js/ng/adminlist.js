@@ -34,4 +34,14 @@ function adminlistController($scope, $http){
 	      $scope.activityLoading = false;
 		})
 	};
+	
+	$scope.activateButton = function(urlCode) {
+    	var urlString = '/activate/user/' + urlCode;
+    	$http.get(urlString).success(function(data){
+    		var buttonID = "userActivate" + urlCode;
+        	var button = document.getElementById(buttonID);
+        	var bText = 'User Activated';
+        	button.innerText = bText;
+		});
+	}
 }

@@ -189,9 +189,13 @@ class ListenerController(BaseController):
                 return 'No such listener!'
             else:
                 user = userLib.getUserByEmail(email)
-                if user and 'userCode' not in listener or listener['userCode'] != user['urlCode']:
+                if user and 'userCode' not in listener:
                     listener = generic.linkChildToParent(listener, user)
                     listener['name'] = user['name']
+                elif user and 'userCode' in listener:
+                    if user['urlCode'] != listener['userCode']:
+                        listener = generic.linkChildToParent(listener, user)
+                        listener['name'] = user['name']
                 else:
                     listener['name'] = name;
                 listener['title'] = title;

@@ -417,6 +417,10 @@
 
 
 <%def name="tabbableSignupLogin(*args)">
+<%
+    c.returnTo = request.url
+%>
+
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -576,6 +580,8 @@
       #### After Login URL
       ####
       alURL= session._environ['PATH_INFO']
+      if not alURL:
+        alURL = request.url
       if 'QUERY_STRING' in session._environ :
         alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL
@@ -637,3 +643,47 @@
 </%def>
 
 
+<%def name="demographicsModal()">
+    <div class="modal fade" id="demographicsModal" tabindex="-1" role="dialog" aria-labelledby="demographicsModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" ng-controller="demographicsController">
+                <div class="modal-header">
+                    <h3 class="no-top">Missing Required Demographics <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></h3>
+                </div>
+                <div class="modal-body">
+                    <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
+                    <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
+                    <ul class="list-unstyled centered">
+                        %if c.w and 'demographics' in c.w:
+                        <li ng-repeat="d in '${c.w['demographics']}'.split('|')">
+                           <br/> {{demographics.values[demographics.indexList[d]].text}} <br/>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'radio'" ng-repeat="v in demographics.values[demographics.indexList[d]].values">
+                                <input type="radio" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" value="{{v}}"> {{v}} <br/>
+                            </span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'select'">
+                                <select ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" ng-options="v for v in demographics.values[demographics.indexList[d]].values">
+                                </select>
+                            </span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'date'">
+                                <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
+                            </span>
+                        </li>
+                        <li><input type="checkbox" name="opt-out">I would like to opt out from the demographics.</input></li>
+                        %else:
+                            <p>Please access the workshop in order to fill in your demographics or opt out and continue</p>
+                        %endif
+                    </ul>
+                    <div class="" id="resendMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"
+                    %if c.w:
+                     ng-click="sendUserDemographics('${c.w['urlCode']}','${c.w['url']}')"
+                    %endif
+                     >Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="${lib_6.fingerprintFile('/js/ng/demographics.js')}" type="text/javascript"></script>
+</%def>

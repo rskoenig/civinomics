@@ -190,6 +190,7 @@
     %>
         
     <div class="section-wrapper">
+        ${demographics()}
         <div class="browse">
             <h4 class="section-header smaller">Participants</h4>
             Specifiy if the workshop is public or private, and who may participate.
@@ -205,6 +206,25 @@
 
         </div><!-- browse -->
     </div><!-- section-wrapper -->              
+</%def>
+
+<%def name="demographics()">
+    <div class="browse" ng-controller="demographicsController">
+        <h4 class="section-header smaller" ng-init="getDemographics('${c.w['urlCode']}','${c.w['url']}')">Demographics</h4>
+        Do you want to collect demographics?<br/>
+        <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="true">Yes
+        <input type="radio" ng-model="hasDemographics" name="hasDemographics" ng-value="false">No<br/>
+        <div id="demographics-wizard" ng-if="hasDemographics">
+            <br\>
+            <ul class="list-unstyled">
+            {{demographics.list[1].key}}
+                <li ng-repeat="demo in demographics.list">
+                <input type="checkbox" ng-model="demo.checked" ng-change="updateList('${c.w['urlCode']}','${c.w['url']}')"> {{demo.text}}<br/>
+                </li>
+            </ul>
+        </div>
+        
+    </div><!-- browse -->
 </%def>
 
 <%def name="tags()">
@@ -259,6 +279,54 @@
     </script>
 </%def>
 
+<%def name="edit_ratings()">
+	<div class="section-wrapper wiki-well">
+		<div class="browse">
+			<h4 class="section-header smaller"> Ratings </h4>
+			<div class="col-sm-12" style="padding: 19px;" ng-controller="ratingsController">
+			%if 'rating_criteria' in c.w:
+				<p ng-init="initCriteria('${c.w['rating_criteria']}')"></p>
+			%endif
+				<div class="form-group">
+					<form ng-submit="sendCriteriaList('${c.w['urlCode']}','${c.w['url']}')">
+						<p>Choose the type of rating for the ideas in this workshop:</p>
+						<div class="col-xs-6">			
+							<input type="radio" name="rating_type" value="yesno" ng-model="rating.type"> Yes / No
+						</div> <!-- col-xs-6 yesno -->
+						
+						<div class="col-xs-6">
+							<input type="radio" name="rating_type" value="criteria" ng-model="rating.type"> Rated criteria 
+							<div ng-show="rating.type === 'criteria'">
+							 <ul >
+	                                            <li ng-repeat="criteria in rating.criteriaList">
+	                                                <span>
+	                                                <span class="goal-title">{{criteria}}      </span>
+	                                                <a class="inline" class="" ng-click="deleteCriteriaFromList(criteria)"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:45%"></a></span>
+	                                            </li>
+	                                        </ul>
+	                                        <div class="alert alert-danger" role="alert" ng-if="alert.message!='' && alert.type == 'error'">{{alert.message}}</div>
+	                                        
+	                                            <div class="input-group">
+	                                                <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" ng-model="criteriaName" class="addGoal form-control" id="">
+	                                                <span class="input-group-btn">
+	                                                    <button class="btn btn-primary" type="button" value="add" ng-click="addCriteriaToList(criteriaName)">add</button>
+	                                                </span>
+	                                            </div>
+												<div class="alert alert-warning" role="alert" ng-if="alert.message!='' && alert.type === 'criteria'">{{alert.message}}</div>	
+							</div>
+							
+						</div> <!-- col-xs-6 criteria -->
+						% if not c.published:
+                                <button type="submit" class="btn btn-warning btn-lg pull-right" style="margin-top:10px">Save Ratings and Continue</button>
+                            % else:
+                                <button type="submit" class="btn btn-warning btn-lg pull-right" style="margin-top:10px">Save Ratings</button>
+                            % endif
+					</form><!-- ratings form -->
+				</div> <!-- form-group -->
+			</div>	<!-- col-sm-12 -->
+		</div> <!-- browse -->
+	</div> <!-- section-wrapper -->
+</%def>
 
 
 <%def name="edit_background()">
