@@ -664,8 +664,11 @@ class LoginController(BaseController):
                         workshopCode = request.params['alURL'].split("/")[2]
                         WSAC = "4VQV"
                         if workshopCode == WSAC:
-                            user['participatingWorkshop'] = workshopCode
-                            dbHelpers.commit(user)
+                            workshop = workshopLib.getWorkshopByCode(workshopCode)
+                            wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                            user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+                            commit(user)
+
                         log.info(workshopCode)
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'

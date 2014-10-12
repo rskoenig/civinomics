@@ -20,6 +20,10 @@
   ###
   <div class="col-sm-7 col-md-7">
   	
+  	%if c.authuser and 'participatingWorkshop' in c.authuser:
+  	 <div class="alert alert-warning" role="alert">Click here to go back to <a href="${c.authuser['participatingWorkshop'].split("|")[0]}">${c.authuser['participatingWorkshop'].split("|")[1]}</a></div>
+  	%endif
+  	
     ${lib_6.create()}
 
     <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
