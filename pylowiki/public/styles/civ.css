@@ -272,17 +272,15 @@ box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
 /* Navs */
 
-.nav > li > a {
-   display: inline-block;
-}
-
 .nav .divider {
    color: #CCC;
 }
 
+/* screwing up mobile-nav - if this is needed it should be more specific
 .nav > li > a {
    display: inline-block;
 }
+*/
 
 .civ-search > .nav.nav-tabs > li > a{
     max-width:150px;
@@ -2837,10 +2835,6 @@ border-radius: 14px 0 0 14px;
     width: 100%;
     margin-left: 2.75%
   }
-}
-
-ul.nav li.dropdown:hover > ul.dropdown-menu {
-    display: block;    
 }
 
 .dropdown-menu.bookmark-options li{
