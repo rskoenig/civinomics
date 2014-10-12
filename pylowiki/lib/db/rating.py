@@ -24,6 +24,38 @@ def getRatingForThing(user, thing):
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
     except:
         return False
+
+def getBinaryRatingForThing(user, thing):
+    try:
+        thingCode = '%sCode' % thing.objType
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'rating')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wc('ratingType', 'binary')))\
+            .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
+    except:
+        return False
+
+def getCriteriaRatingForThingUser(user, thing, criteria):
+    try:
+        thingCode = '%sCode' % thing.objType
+        q = meta.Session.query(Thing)\
+            .filter_by(objType = 'rating')\
+            .filter_by(owner = user.id)\
+            .filter(Thing.data.any(wc('criteria', criteria)))\
+            .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
+        return q
+    except:
+        return False
+        
+
+def getCriteriaRatingForThing(workshopCode, thing, criteria):
+    thingCode = '%sCode' % thing.objType
+    q = meta.Session.query(Thing)\
+        .filter_by(objType = 'rating')\
+        .filter(Thing.data.any(wc('criteria', criteria)))\
+        .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).all()
+    return q
      
 def getRatingsForUser():
     userRatings = {}
@@ -55,17 +87,21 @@ def getRatingForWorkshopObjects(user, workshopCode, objType):
             .filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
 
 
-def makeOrChangeRating(thing, user, amount, ratingType):
-    if 'ups' not in thing.keys():
-        thing['ups'] = 0
-    if 'downs' not in thing.keys():
-        thing['downs'] = 0
-    
-    ratingObj = getRatingForThing(user, thing)
+def makeOrChangeRating(thing, user, amount, ratingType, criteria = None):
+    if criteria:
+        ratingObj = getCriteriaRatingForThingUser(user, thing, criteria)
+    else:
+        if 'ups' not in thing.keys():
+            thing['ups'] = 0
+        if 'downs' not in thing.keys():
+            thing['downs'] = 0
+        ratingObj = getBinaryRatingForThing(user, thing)
+
     if ratingObj:
-        # Just change the previous vote
-        prevRating = int(ratingObj['amount'])
+        # Just change the previous vote        
         if ratingType == 'binary':
+            prevRating = int(ratingObj['amount'])
+            #log.info("I'm binary")
             if amount == 1 and amount == prevRating:
                 # user is 'undoing' their upvote
                 thing['ups'] = int(thing['ups']) - 1
@@ -92,38 +128,69 @@ def makeOrChangeRating(thing, user, amount, ratingType):
                 thing['ups'] = int(thing['ups']) - 1
                 thing['downs'] = int(thing['downs']) + 1
                 ratingObj['amount'] = amount
+        if ratingType == 'criteria':
+            #log.info("I'm criteria")
+            if ratingObj['criteria'] == criteria:
+                #log.info("Changing amount")
+                ratingObj['amount'] = amount
+            else:
+                #log.info("Creating new one")
+                ratingObj = Thing('rating', user.id)
+                if criteria is None:
+                    return False
+                ratingObj['criteria'] = criteria
+                ratingObj['amount'] = amount
+                if user['activated'] == '0':
+                    ratingObj['provisional'] = '1'
+                generic.linkChildToParent(ratingObj, thing)
+                ratingObj['ratingType'] = ratingType
     else:
-        if amount == 0:
-            # Don't make a new neutral object
-            return False
-        # make a new vote
-        ratingObj = Thing('rating', user.id)
-        ratingObj['amount'] = amount
-        if amount == 1:
-            thing['ups'] = int(thing['ups']) + 1
-        else:
-            thing['downs'] = int(thing['downs']) + 1
-            
-        if user['activated'] == '0':
-            ratingObj['provisional'] = '1'
+        if ratingType == 'binary':    
+            #log.info("I don't exist but I'm binary")
+            if amount == 0:
+                # Don't make a new neutral object
+                return False
+            # make a new vote
+            ratingObj = Thing('rating', user.id)
+            ratingObj['amount'] = amount
+            if amount == 1:
+                #log.info("Going up")
+                thing['ups'] = int(thing['ups']) + 1
+            else:
+                #log.info("Going down")
+                thing['downs'] = int(thing['downs']) + 1
+            if user['activated'] == '0':
+                ratingObj['provisional'] = '1'
+
+        elif ratingType == 'criteria':
+            #log.info("I don't exist but I'm criteria")
+            ratingObj = Thing('rating', user.id)
+            if criteria is None:
+                return False
+            ratingObj['criteria'] = criteria
+            ratingObj['amount'] = amount
+            if user['activated'] == '0':
+                ratingObj['provisional'] = '1'
             
         generic.linkChildToParent(ratingObj, thing)
         ratingObj['ratingType'] = ratingType
       
     commit(ratingObj)
     commit(thing)
-    if 'ratings' in user:
-        myRatings = pickle.loads(str(user["ratings"]))
-    else:
-        myRatings = {}
-    thingCode = thing['urlCode']
-    myRatings[thingCode] = str(ratingObj['amount'])
-    user["ratings"] = str(pickle.dumps(myRatings))
-    commit(user)
-    #if c.personalRatings:
-    if 'user' in session and (c.authuser['email'] == user['email']):
-        session["ratings"] = myRatings
-        session.save()
+    if ratingType == 'binary':
+        if 'ratings' in user:
+            myRatings = pickle.loads(str(user["ratings"]))
+            #log.info(myRatings)
+        else:
+            myRatings = {}
+        thingCode = thing['urlCode']
+        myRatings[thingCode] = str(ratingObj['amount'])
+        user["ratings"] = str(pickle.dumps(myRatings))
+        commit(user)
+        #if c.personalRatings:
+        if 'user' in session and (c.authuser['email'] == user['email']):
+            session["ratings"] = myRatings
+            session.save()
 
     return ratingObj
     

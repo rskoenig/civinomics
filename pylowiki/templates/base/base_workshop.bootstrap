@@ -64,7 +64,9 @@ ${helpers.whoListeningModals()}
 </%def>
 
 <%def name="headScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/ng/demographics.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/goals.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/criteria.js')}"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/share.js')}"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/workshop_activity.js')}"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/resource.js')}" type="text/javascript"></script>

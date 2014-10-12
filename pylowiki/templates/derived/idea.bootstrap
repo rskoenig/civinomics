@@ -6,12 +6,6 @@
 
 
 <div class="container">
-	<%
-		if 'readOnly' in c.thing and c.thing['readOnly'] == '1':
-			readonly = '1'
-		else:
-			readonly = '0'
-	%>
 	<span ng-init="objType = 'idea'; thingCode = '${c.ideaCode}'; thingUrl = '${c.ideaURL}';"></span>
 	<div ng-controller="showThingCtrl" ng-cloak>
 		<div class="row">
@@ -19,7 +13,7 @@
 				<tr>
 					<td><img ng-if="item.thumbnail" ng-src="{{item.thumbnail}}"></td>
 					<td class="title-cell">
-						<h3 class="well-header" ng-cloak>${ng_lib.metaData('inline')}</h3>
+						<h4 class="well-header" ng-cloak>${ng_lib.metaData('inline')}</h4>
 					</td>
 				</tr>
 			</table>
@@ -46,11 +40,7 @@
 				<div class="row">
 					<!-- Need to clean up angular comments the way displayObj.js controller interacts with comments controller -->
 					<div class="actions">
-					% if readonly == '1':
-						${ng_lib.actions2(readonly = '1')}
-					% else:
-						${ng_lib.actions2(readonly = '0')}
-					% endif
+        				${ng_lib.actions2()}
         			</div>
 				</div>
 			</div>
@@ -64,21 +54,21 @@
 
 							    <div ng-init="code = '${c.idea['urlCode']}'; objType = 'idea'"></div>
 							    <div ng-controller="positionsCtrl">
-							    	% if readonly == '0':
-                                		${lib_6.orgPosition(c.idea)}
-                                	% else:
-                                		${ng_lib.yesNoVoteBlock(readonly = "1")}
-                                	% endif
+                                	${lib_6.orgPosition(c.idea)}
                                 </div>
                             % else:
 			                    <h4 class="text-center gray">Vote</h4>
 			                    <hr class="narrow">
-								% if readonly == '1':
-									${ng_lib.yesNoVoteBlock(readonly = "1")}
-								% else:
-									${ng_lib.yesNoVoteBlock(readonly = "0")}
-								% endif
+			                    <div ng-controller="yesNoVoteCtrl">
+									${ng_lib.yesNoVoteBlock()}
 								</div>
+								<div ng-controller="ratingsController" ng-if="item.parentObjType == 'workshop'">                    	
+                                    <div ng-init="getCriteriaList(item.parentHref, item.urlCode)">
+                                        <div ng-if="rating.type == 'criteria'" class="criteria-idea">
+                                    	${ng_lib.rateCriteria(type = 'sidebar')}
+                                    	</div>
+                                	</div>
+                                </div>
 							% endif
 						</div>
                 	</div>
@@ -92,4 +82,5 @@
 	<script src="${lib_6.fingerprintFile('/js/ng/displayObj.js')}" type="text/javascript"></script>
 	<script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
 	<script src="${lib_6.fingerprintFile('/js/ng/positions.js')}" type="text/javascript"></script>
+	<script src="${lib_6.fingerprintFile('/js/ng/criteria.js')}" type="text/javascript"></script>
 </%def>

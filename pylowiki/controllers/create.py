@@ -225,8 +225,8 @@ class CreateController(BaseController):
                     log.info('got a workshop scope')
                     scope = workshop['workshop_public_scope']
                 if 'workshop_category_tags' in workshop:
-                    tags = workshop['workshop_category_tags']
-                    kwargs['tag'] = tags
+                    tags = workshop['workshop_category_tags'].split('|')
+                    kwargs['tag'] = tags[1]
         else:
             workshop = None
 

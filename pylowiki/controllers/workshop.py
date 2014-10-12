@@ -1257,6 +1257,11 @@ class WorkshopController(BaseController):
         else:
             c.tagConfig = 0
             
+        if 'rating_criteria' in c.w:
+            c.ratingConfig = 1
+        else:
+            c.ratingConfig = 0
+        
         slides = slideshowLib.getSlideshow(c.w)
         slideshow = slideshowLib.getAllSlides(slides)
         published = 0
@@ -1323,7 +1328,7 @@ class WorkshopController(BaseController):
             
         c.slides = c.published_slides
             
-        c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w)
+        #c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w)
         c.listeners = listenerLib.getListenersForWorkshop(c.w, disabled = '0')
         c.disabledListeners = listenerLib.getListenersForWorkshop(c.w, disabled = '1')
 
@@ -1356,7 +1361,7 @@ class WorkshopController(BaseController):
             
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
-            c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w)
+            c.facilitators = c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w)
             c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w, 1)
         
         c.flaggedItems = flagLib.getFlaggedThingsInWorkshop(c.w)
@@ -1524,7 +1529,7 @@ class WorkshopController(BaseController):
         return json.dumps({'statusCode': 0, 'result': result, 'adopted' : adopted, 'numIdeas' : numIdeas})
 
 
-    def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7):
+    def getWorkshopActivity(self, comments = 0, type = 'auto', offset = 0, max = 7, objectType = 'all'):
         #log.info("offset is %s"%str(offset))
         # get recent activity and return it into json format
         result = []
@@ -1538,7 +1543,10 @@ class WorkshopController(BaseController):
         else:
             sort = 0
 
-        workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'])
+        if objectType is not 'all':
+            workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'], itemType = [objectType])
+        else:
+            workshopActivity = activityLib.getActivityForWorkshop(max, offset, c.w['urlCode'], sort, c.w['public_private'])
         for item in workshopActivity:
             entry = jsonLib.getJsonProperties(item)
             result.append(entry)

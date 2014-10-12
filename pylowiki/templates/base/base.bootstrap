@@ -25,6 +25,7 @@
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/geoSearch.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/signup_login.js')}"></script>
       <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/comments.js')}"></script>
+      <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/demographics.js')}"></script>
       <script>
         var dummyApp = angular.module('civ', ['ngSanitize', 'infinite-scroll', 'ui.bootstrap']);
       </script>
@@ -46,8 +47,10 @@
             % if c.privs['provisional']:
                 ${template_lib.activateAccountModal()}
             % endif
+            ${template_lib.demographicsModal()}
         % endif
         ${template_lib.signupLoginModal()}
+        
         
         
         <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
