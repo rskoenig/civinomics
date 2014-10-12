@@ -472,6 +472,7 @@ ${url.current()}
 
 <%def name="signupForm()">
         <form id="sign_in" action="/signup/handler" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST" role="form">
+            <input type="hidden" name="alURL" value="${url.current()}">
             <input type="hidden"  name="country" value="United States">
             <input type="hidden" name="memberType" value="professional">
              <input type="hidden" name="alURL" value="${url.current()}">
