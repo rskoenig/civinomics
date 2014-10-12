@@ -816,22 +816,23 @@
             %if readOnly:
     		            
             			 <ul class="list-inline criteria-stars" style="" ng-switch-when="false" style="width: 110px">
-            				<a href="#signupLoginModal" role="button" data-toggle="modal"><li class="criteria-list">
+            				<li class="criteria-list">
+            				<a href="#signupLoginModal" role="button" data-toggle="modal">
                                 <span class="glyphicon golden-stars" 
             				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
                                                   'glyphicon-star empty':!hover1 && (criteria.amount <1)}" 
                                        ng-mouseenter="addVote(hover1, 1, criteria)" 
                                        ng-mouseleave="removeVote(hover1, criteria)" 
                                        >
-                                 </span>
-                            </li></a>
-            				<a href="#signupLoginModal" role="button" data-toggle="modal" ><li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)"></span></li></a>
+                                 </span></a>
+                            </li>
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal" > <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)"></span></a></li>
             				
-            				<a href="#signupLoginModal" role="button" data-toggle="modal"><li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)"></span></li></a>
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)"></span></a></li>
             				
-            				<a href="#signupLoginModal" role="button" data-toggle="modal"><li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)"></span></li></a>
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)"></span></a></li>
             				
-            				<a href="#signupLoginModal" role="button" data-toggle="modal"><li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)"></span></li></a>
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)"></span></a></li>
             			</ul>
             			
             % elif not readOnly:
