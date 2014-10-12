@@ -49,9 +49,11 @@ app.controller('ratingsController', function($scope, $http){
 			$scope.rating.criteriaList.splice(deleteCriteria, 1);
 		}
 	};
-	
+	$scope.gettingCriteria = false;
 	$scope.getCriteriaList = function(parentHref,thingCode){
+	    if ($scope.gettingCriteria) return;
 		if ($scope.hasCriteria) return;
+		$scope.gettingCriteria = true;
 		var requestUrl = parentHref+"/criteria/get/"+thingCode;
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
