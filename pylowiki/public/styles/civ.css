@@ -32,13 +32,11 @@ html,body{
 
 /* a */
 
-h5.listed-item-title{
+h5.listed-item-title, h4.listed-item-title, h3.listed-item-title, h2.listed-item-title, h1.listed-item-title{
   margin-top: 0px;
 }
 
-h4.listed-item-title{
-  margin-top: 0px;
-}
+
 .listed-item-title a{
   color: #333333;
   margin-bottom: 15px;
