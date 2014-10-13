@@ -112,17 +112,39 @@
                             <h4 class="text-center gray">Vote</h4>
                             <hr class="narrow">
                             <div class="row">
-                                <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;">
-                                    <div ng-controller="yesNoVoteCtrl">
-                                        ${ng_lib.yesNoVoteBlock()}
-                                    </div>
-                                    <div ng-controller="ratingsController" ng-if="item.parentObjType == 'workshop'">                    	
-                                        <div ng-init="getCriteriaList(item.parentHref, item.urlCode)">
-                                            <div ng-if="rating.type == 'criteria'" class="criteria-idea">
-                                        	${ng_lib.rateCriteria(type = 'sidebar')}
-                                        	</div>
-                                    	</div>
-                                    </div>
+                                <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
+                                    TEST NG-IF<br/>
+                                    <span ng-if="item.parentObjType == 'workshop'">ngif I belong to a workshop.</span>
+                                    <span ng-if="item.parentObjType != 'workshop'">ngif, I don't belong to a workshop.</span>
+                                    TEST NG-SWITCH<br/>
+                                    <div ng-switch="item.parentObjType" ng-cloak>
+                                        <div ng-switch-when="workshop" ng-controller="ratingsController">
+                                            Workshop
+                                            {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                            <div ng-switch="rating.type">
+                                                <div ng-switch-when="criteria">
+                                                    %if 'user' in session:
+                                                     ${ng_lib.rateCriteria(type = 'sidebar')}
+                                                     %else:
+                                                     ${ng_lib.rateCriteria(readOnly = "1", type = 'sidebar')}
+                                                     %endif
+                                                </div><!-- close criteria inner-->
+                                                <div ng-switch-when="yesno">
+                                                    <div ng-controller="yesNoVoteCtrl">
+                                                    ${ng_lib.yesNoVoteBlock()}
+                                                    </div>
+                                                </div> <!-- close yesno inner-->
+                                                <div ng-switch-default>
+                                                </div> <!-- close default inner-->
+                                            </div> <!-- close switch inner-->
+                                        </div>
+                                        <div ng-switch-default>
+                                            OtherThanWorkshop
+                                            <div ng-controller="yesNoVoteCtrl">
+                                                    ${ng_lib.yesNoVoteBlock()}
+                                            </div>
+                                        </div>
+</div>
                                 </div>
                             </div>
                         % endif

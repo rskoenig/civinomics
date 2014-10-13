@@ -21,10 +21,12 @@ class CriteriaController(BaseController):
 
     def __before__(self, action, workshopCode = None, worshopURL = None, criteria = None, thingCode = None, rating = None):
         if workshopCode is None:
+            log.info("wC is none")
             return json.dumps({'statusCode': 0})
 
         self.workshopCrit = workshopLib.getWorkshopByCode(workshopCode)
         if not self.workshopCrit:
+            log.info("cant get that workshop")
             return json.dumps({'statusCode': 0})
 
             #but is it broken?
