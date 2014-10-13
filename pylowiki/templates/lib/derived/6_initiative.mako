@@ -112,11 +112,8 @@
                             <h4 class="text-center gray">Vote</h4>
                             <hr class="narrow">
                             <div class="row">
+                            hello
                                 <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
-                                    TEST NG-IF<br/>
-                                    <span ng-if="item.parentObjType == 'workshop'">ngif I belong to a workshop.</span>
-                                    <span ng-if="item.parentObjType != 'workshop'">ngif, I don't belong to a workshop.</span>
-                                    TEST NG-SWITCH<br/>
                                     <div ng-switch="item.parentObjType" ng-cloak>
                                         <div ng-switch-when="workshop" ng-controller="ratingsController">
                                             Workshop
@@ -138,13 +135,15 @@
                                                 </div> <!-- close default inner-->
                                             </div> <!-- close switch inner-->
                                         </div>
-                                        <div ng-switch-default>
+                                        <div ng-switch-when="">
                                             OtherThanWorkshop
                                             <div ng-controller="yesNoVoteCtrl">
                                                     ${ng_lib.yesNoVoteBlock()}
                                             </div>
                                         </div>
-</div>
+                                        <div ng-switch-default>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         % endif

@@ -41,9 +41,32 @@
     % endif 
     <hr>
     <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
-    <div ng-controller="positionsCtrl">
-        ${ng_lib.showSupportOppose()}
+    <div ng-switch="item.parentObjType" ng-cloak>
+        <div ng-switch-when="workshop" ng-controller="ratingsController">
+            Workshop
+            {{getCriteriaList(item.parentHref, item.urlCode)}}
+            <div ng-switch="rating.type">
+                <div ng-switch-when="criteria">
+
+                </div><!-- close criteria inner-->
+                <div ng-switch-when="yesno">
+                    <div ng-controller="positionsCtrl">
+                        ${ng_lib.showSupportOppose()}
+                    </div>
+                </div> <!-- close yesno inner-->
+                <div ng-switch-default>
+                </div> <!-- close default inner-->
+            </div> <!-- close switch inner-->
+        </div>
+        <div ng-switch-when="">
+        </div>
+        <div ng-switch-default>
+            <div ng-controller="positionsCtrl">
+                ${ng_lib.showSupportOppose()}
+            </div>
+        </div>
     </div>
+
     <hr>
     <h3 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h3>
     ${ihelpers.listResources()}
