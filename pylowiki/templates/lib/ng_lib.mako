@@ -66,35 +66,43 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row">        
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                <div ng-show="rating.type == 'criteria'" ng-controller="ratingsController">
-                    {{getCriteriaList(item.parentHref, item.urlCode)}}
-                    <span ng-if="item.readOnly == '1'">
-                        <span ng-if="rating.type == 'criteria'">
-                            %if 'user' in session:
-                             ${rateCriteria()}
-                             %else:
-                             ${rateCriteria(readOnly = "1")}
-                             %endif
-                        </span>
-                        <span ng-if="rating.type != 'criteria'">
-                            ${yesNoVoteFooter(readonly = "1")}
-                        </span>
-                    </span>
-                    <span ng-if="item.readOnly == '0'">
-                        <span ng-if="rating.type == 'criteria'">
-                            %if 'user' in session:
-                             ${rateCriteria()}
-                             %else:
-                             ${rateCriteria(readOnly = "1")}
-                             %endif
-                        </span>
-                        <span ng-if="rating.type != 'criteria'">
-                            ${yesNoVoteFooter(readonly = "0")}
-                        </span>
-                    </span>
-                </div>
+                        <div ng-switch="item.parentObjType" ng-cloak>
+                            <div ng-switch-when="workshop" ng-controller="ratingsController">
+                                        {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                        <div ng-switch="rating.type">
+                                            <div ng-switch-when="criteria">
+                                                %if 'user' in session:
+                                                 ${rateCriteria()}
+                                                 %else:
+                                                 ${rateCriteria(readOnly = "1")}
+                                                 %endif
+                                            </div><!-- close criteria inner-->
+                                            <div ng-switch-when="yesno">
+                                                <span ng-if="item.readOnly == '1'">
+                                                    ${yesNoVoteFooter(readonly = "1")}
+                                                </span>
+                                                <span ng-if="item.readOnly == '0'">
+                                                    ${yesNoVoteFooter(readonly = "0")}
+                                                </span>
+                                            </div> <!-- close yesno inner-->
+                                            <div ng-switch-default>
+        
+                                            </div> <!-- close default inner-->
+                                        </div> <!-- close switch inner-->
+                            </div><!-- close when outer-->
+                            <div ng-switch-default>
+                                        <span ng-if="item.readOnly == '1'">
+                                            ${yesNoVoteFooter(readonly = "1")}
+                                        </span>
+                                        </span>
+                                        <span ng-if="item.readOnly == '0'">
+                                            ${yesNoVoteFooter(readonly = "0")}
+                                        </span>
+                            </div> <!-- close default outer-->
+                        </div>  
+
                 % endif
                 <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
                 <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>

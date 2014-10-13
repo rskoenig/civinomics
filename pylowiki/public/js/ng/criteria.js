@@ -8,9 +8,11 @@ app.controller('ratingsController', function($scope, $http){
 	};
 	
 	$scope.rating = {
-		type: '',
+		type: 'default',
 		criteriaList: []
 	};
+	
+	$scope.rating.type = 'default';
 	
 	$scope.criteria = {
 		name: "",
@@ -62,7 +64,7 @@ app.controller('ratingsController', function($scope, $http){
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
-					return false;				
+    				$scope.rating.type = 'yesno';			
 				}
 				$scope.hasCriteria = true;
 			})
