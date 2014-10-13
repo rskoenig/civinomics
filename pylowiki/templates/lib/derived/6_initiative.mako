@@ -112,11 +112,9 @@
                             <h4 class="text-center gray">Vote</h4>
                             <hr class="narrow">
                             <div class="row">
-                            hello
                                 <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
                                     <div ng-switch="item.parentObjType" ng-cloak>
                                         <div ng-switch-when="workshop" ng-controller="ratingsController">
-                                            Workshop
                                             {{getCriteriaList(item.parentHref, item.urlCode)}}
                                             <div ng-switch="rating.type">
                                                 <div ng-switch-when="criteria">
@@ -136,7 +134,6 @@
                                             </div> <!-- close switch inner-->
                                         </div>
                                         <div ng-switch-when="">
-                                            OtherThanWorkshop
                                             <div ng-controller="yesNoVoteCtrl">
                                                     ${ng_lib.yesNoVoteBlock()}
                                             </div>

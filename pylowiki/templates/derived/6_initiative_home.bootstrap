@@ -43,7 +43,6 @@
     <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
     <div ng-switch="item.parentObjType" ng-cloak>
         <div ng-switch-when="workshop" ng-controller="ratingsController">
-            Workshop
             {{getCriteriaList(item.parentHref, item.urlCode)}}
             <div ng-switch="rating.type">
                 <div ng-switch-when="criteria">
