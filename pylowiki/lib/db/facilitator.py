@@ -13,7 +13,14 @@ log = logging.getLogger(__name__)
 
 # Getters
 def isFacilitator( user, workshop ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '0'))).all()
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator')\
+   .filter_by(owner = user.id)\
+   .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+   .filter(not_(Thing.data.any(wk('initiative_url'))))\
+   .filter(Thing.data.any(wc('disabled', '0')))\
+   .filter(Thing.data.any(wc('pending', '0')))\
+   .all()
+
    if f:
       return True
    else:
@@ -109,6 +116,7 @@ def getFacilitatorInWorkshop(user, workshop):
             .filter_by(objType = 'facilitator')\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .filter(not_(Thing.data.any(wk('initiative_url'))))\
             .one()
     except:
         return False
