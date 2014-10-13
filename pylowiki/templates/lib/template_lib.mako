@@ -12,7 +12,7 @@
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#civ-main-nav">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -25,8 +25,8 @@
                 % endif
             </div>
 
-            <div class="collapse navbar-collapse">
-
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="civ-main-nav">
                 <form class="navbar-form navbar-left" action="/search">
                   <div class="form-group">
                     <input type="text" class="form-control" name="searchQuery" placeholder="Search">
@@ -92,15 +92,15 @@
                             <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
                         </li>
                         <li class="dropdown">
-                            <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                            <a href="#" class="dropdown-toggle" style="padding-bottom:0px;" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a></li>
                                 % if c.authuser['activated'] == '1':
-                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                                    <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a></li>
                                 % endif
                                 <li><a href="/help">Help</a></li>
                                 <li class="divider"></li>
-                                <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                                <li><a href="/login/logout">Logout</a></li>
                             </ul>
                         </li>
                     % else:
@@ -110,7 +110,7 @@
                     % endif
 
                 </ul>
-            </div><!-- /.navbar-collapse -->
+            </div>
         </div><!-- container fluid -->
     </nav>
 </%def>
