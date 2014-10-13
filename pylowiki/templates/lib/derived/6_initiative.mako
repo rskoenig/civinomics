@@ -132,7 +132,6 @@
                                                 <div ng-switch-default>
                                                 </div> <!-- close default inner-->
                                             </div> <!-- close switch inner-->
-                                        </div>
                                         %else:
                                             <div ng-controller="yesNoVoteCtrl">
                                                     ${ng_lib.yesNoVoteBlock()}
