@@ -877,12 +877,13 @@ class RegisterController(BaseController):
                     if 'alURL' in request.params:
                         returnPage = request.params['alURL']
                         log.info("HELLOOOOOOO")
-                        workshopCode = request.params['alURL'].split("/")[2]
-                        WSAC = "4VQV"
-                        if workshopCode == WSAC:
-                            workshop = workshopLib.getWorkshopByCode(workshopCode)
-                            wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
-                            user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+                        if len(request.params) >= 3:
+                            workshopCode = request.params['alURL'].split("/")[2]
+                            WSAC = "4VQV"
+                            if workshopCode == WSAC:
+                                workshop = workshopLib.getWorkshopByCode(workshopCode)
+                                wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                                user['participatingWorkshop'] = wUrl + "|" + workshop['title']
                     commit(user)
                     session["user"] = user['name']
                     session["userCode"] = user['urlCode']

@@ -661,15 +661,15 @@ class LoginController(BaseController):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         loginURL = request.params['alURL']
-                        workshopCode = request.params['alURL'].split("/")[2]
-                        WSAC = "4VQV"
-                        if workshopCode == WSAC:
-                            workshop = workshopLib.getWorkshopByCode(workshopCode)
-                            wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
-                            user['participatingWorkshop'] = wUrl + "|" + workshop['title']
-                            commit(user)
+                        if len(request.params) >= 3:
+                            workshopCode = request.params['alURL'].split("/")[2]
+                            WSAC = "4VQV"
+                            if workshopCode == WSAC:
+                                workshop = workshopLib.getWorkshopByCode(workshopCode)
+                                wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                                user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+                                commit(user)
 
-                        log.info(workshopCode)
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             # iphone app is having problems with the case where a user logs in after 
