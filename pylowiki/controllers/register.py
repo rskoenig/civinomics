@@ -877,7 +877,7 @@ class RegisterController(BaseController):
                     if 'alURL' in request.params:
                         returnPage = request.params['alURL']
                         log.info("HELLOOOOOOO")
-                        if len(request.params) >= 3:
+                        if len(request.params['alURL'].split("/")) >= 3:
                             workshopCode = request.params['alURL'].split("/")[2]
                             WSAC = "4VQV"
                             if workshopCode == WSAC:

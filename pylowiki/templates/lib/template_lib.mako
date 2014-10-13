@@ -424,7 +424,6 @@
       alURL = url.current()
       session['afterLoginURL'] = alURL
     %>
-${url.current()}
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -535,7 +534,6 @@ ${url.current()}
 </%def>
 
 <%def name="loginForm()">
-${url.current()}
     <form id="sign_in" action="/loginHandler" class="form-horizontal" method="post">
         <input type="hidden" name="alURL" value="${url.current()}">
         <div class="form-group">
@@ -611,7 +609,6 @@ ${url.current()}
                     <h3 ng-show="showTitle == 'pTitle'" class="modal-title login top centered" ng-cloak>Forgot Password</h3>
                 </div>
                 <div class="modal-body">
-                    ${url.current()}
                     ${tabbableSignupLogin()}
                 </div>
                 <div class="modal-footer">
