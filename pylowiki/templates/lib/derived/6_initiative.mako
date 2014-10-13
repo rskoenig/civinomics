@@ -113,9 +113,9 @@
                             <hr class="narrow">
                             <div class="row">
                                 <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
-                                    <div ng-switch="item.parentObjType" ng-cloak>
-                                        <div ng-switch-when="workshop" ng-controller="ratingsController">
-                                            {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                 % if 'workshopCode' in c.initiative:
+                                        <div ng-controller="ratingsController">
+                                            {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
                                             <div ng-switch="rating.type">
                                                 <div ng-switch-when="criteria">
                                                     %if 'user' in session:
@@ -133,13 +133,11 @@
                                                 </div> <!-- close default inner-->
                                             </div> <!-- close switch inner-->
                                         </div>
-                                        <div ng-switch-when="">
+                                        %else:
                                             <div ng-controller="yesNoVoteCtrl">
                                                     ${ng_lib.yesNoVoteBlock()}
                                             </div>
-                                        </div>
-                                        <div ng-switch-default>
-                                        </div>
+                                        %endif
                                     </div>
                                 </div>
                             </div>

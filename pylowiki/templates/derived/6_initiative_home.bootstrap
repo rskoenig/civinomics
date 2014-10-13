@@ -40,9 +40,9 @@
         ${ihelpers.showProposal()}
     % endif 
     <hr>
+    % if 'workshopCode' in c.initiative:
     <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
-    <div ng-switch="item.parentObjType" ng-cloak>
-        <div ng-switch-when="workshop" ng-controller="ratingsController">
+        <div ng-controller="ratingsController">
             {{getCriteriaList(item.parentHref, item.urlCode)}}
             <div ng-switch="rating.type">
                 <div ng-switch-when="criteria">
@@ -57,14 +57,12 @@
                 </div> <!-- close default inner-->
             </div> <!-- close switch inner-->
         </div>
-        <div ng-switch-when="">
-        </div>
-        <div ng-switch-default>
-            <div ng-controller="positionsCtrl">
+    %else:
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+        <div ng-controller="positionsCtrl">
                 ${ng_lib.showSupportOppose()}
             </div>
-        </div>
-    </div>
+    %endif
 
     <hr>
     <h3 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h3>

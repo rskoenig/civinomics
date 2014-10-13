@@ -660,7 +660,8 @@ class LoginController(BaseController):
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
-                        if request.params['alURL'] is not "/login":
+                        log.info(request.params['alURL'] != "/login")
+                        if request.params['alURL'] != "/login" and request.params['alURL'] != "/signup":                            
                             loginURL = request.params['alURL']
                         if len(request.params['alURL'].split("/")) >= 3:
                             workshopCode = request.params['alURL'].split("/")[2]
