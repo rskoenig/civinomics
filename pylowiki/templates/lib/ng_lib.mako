@@ -936,6 +936,10 @@
     <p ng-init="stringLimit=300" class="markdown markdown-listed"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
 </%def>
 
+<%def name="summary()">
+    <p class="markdown markdown-listed">{{item.text}}</p>
+</%def>
+
 <%def name="additionalMetrics()">
     <p><strong>
         <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>

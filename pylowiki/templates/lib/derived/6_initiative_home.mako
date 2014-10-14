@@ -97,8 +97,9 @@
                         
 
 <%def name="showDescription()">
-    <div class="initiative-info">
-        ${m.html(c.initiative['description']) | n}
+    <h2 class="no-top">Summary</h2>
+    <div class="initiative-summary">
+        ${m.html(c.summary) | n}
     </div>
 </%def>
 
@@ -412,7 +413,7 @@
     %>
     <div class="row">
         <h4 class="initiative-title">
-            <div class="col-sm-6 pull-left">
+            <div class="col-sm-6 pull-left grey">
                 Cost Estimate
             </div>
             <div class="col-sm-6">

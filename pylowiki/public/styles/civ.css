@@ -3330,6 +3330,14 @@ margin-right: -13px;
   max-width: 100%;
 }
 
+.initiative-summary{
+  font-size: 1.2em;
+  line-height: 1.7em;
+}
+.initiative-summary h1, .initiative-summary h2, .initiative-summary h3, .initiative-summary h4, .initiative-summary h5, .initiative-summary h6{
+  font-weight: 300;
+}
+
 #initiative-dashboard.affix{
   right: 0%;
   width: 360px;
