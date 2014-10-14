@@ -45,14 +45,13 @@
             <div class="spacer"></div>
 
             <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
-                <div class="col-sm-3">
+                <div class="col-xs-2">
                     <a href = '{{item.href}}'>
-                        <img class="hidden-xs thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
-                        <div class="hidden-lg hidden-md hidden-sm landscape-id-photo" style="background-image:url('{{item.mainPhoto}}')"></div>
+                        <img class="thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
                     </a>
                 </div>
-                <div class="col-sm-9">
-                    <h3 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h3>
+                <div class="col-xs-10 no-left">
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
                     ${status()}
                     ${text()}
                     ${additionalMetrics()}
@@ -67,10 +66,49 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row">        
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    <span ng-if="item.readOnly == '1'">${yesNoVoteFooter(readonly = "1")}</span>
-                    <span ng-if="item.readOnly == '0'">${yesNoVoteFooter(readonly = "0")}</span>
+                        <div ng-switch="item.parentObjType" ng-cloak>
+                            <div ng-switch-when="workshop" ng-controller="ratingsController">
+                                        {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                        <div ng-switch="rating.type">
+                                            <div ng-switch-when="criteria">
+                                                %if 'user' in session:
+                                                 ${rateCriteria()}
+                                                 <div ng-if="hasVoted">
+                                                    <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                                                        {{checkDemographics(item.parentHref)}}
+                                                        ${demographics()}
+                                                    </div>
+                                                </div>
+                                                 %else:
+                                                 ${rateCriteria(readOnly = "1")}
+                                                 %endif
+                                            </div><!-- close criteria inner-->
+                                            <div ng-switch-when="yesno">
+                                                <span ng-if="item.readOnly == '1'">
+                                                    ${yesNoVoteFooter(readonly = "1")}
+                                                </span>
+                                                <span ng-if="item.readOnly == '0'">
+                                                    ${yesNoVoteFooter(readonly = "0")}
+                                                </span>
+                                            </div> <!-- close yesno inner-->
+                                            <div ng-switch-default>
+        
+                                            </div> <!-- close default inner-->
+                                        </div> <!-- close switch inner-->
+                            </div><!-- close when outer-->
+                            <div ng-switch-default>
+                                        <span ng-if="item.readOnly == '1'">
+                                            ${yesNoVoteFooter(readonly = "1")}
+                                        </span>
+                                        </span>
+                                        <span ng-if="item.readOnly == '0'">
+                                            ${yesNoVoteFooter(readonly = "0")}
+                                        </span>
+                            </div> <!-- close default outer-->
+                        </div>  
+
                 % endif
                 <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
                 <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
@@ -645,7 +683,6 @@
 
 <%def name="yesNoVoteFooter(**kwargs)">
     <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
-
         <%
             if 'readonly' in kwargs:
                 readonly = kwargs['readonly']
@@ -655,6 +692,10 @@
                 needs_demographics = True
             else:
                 needs_demographics = False
+            if 'criteria' in kwargs:
+                criteria = True
+            else:
+                criteria = False
             
         %>
         % if readonly == "1":
@@ -672,6 +713,10 @@
                     <a ng-click="updateNoVote()" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
                 </div>
             </div>
+        % elif 'user' in session and criteria:
+            ${rateCriteria()}
+        % elif 'user' not in session and criteria:
+            
         % else:
             <div class="row centered">
                 <div class="col-sm-12">
@@ -709,11 +754,7 @@
             </div>
         </DIV>
         <div ng-show="rating.type == 'criteria'" ng-controller="ratingsController">
-        % if 'user' in session:
             ${rateCriteria()}
-        %else: 
-        	<a role="button" data-toggle="modal">Log in to rate</a>
-    	%endif
     	</div>
     </div>
 </%def>
@@ -765,6 +806,10 @@
         else:
             sidebar = False
             locationClass = 'listing'
+        if 'readOnly' in kwargs:
+            readOnly = True
+        else:
+            readOnly = False
     %>
 	<div class="actions" style="padding:10px; padding-bottom: 10px;" ng-cloak>
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
@@ -782,6 +827,29 @@
                     <span class="criteria-name">{{criteria.criteria}}</span><br/>
             %endif
     		        <span ng-switch="showAverage">
+            %if readOnly:
+    		            
+            			 <ul class="list-inline criteria-stars" style="" ng-switch-when="false" style="width: 110px">
+            				<li class="criteria-list">
+            				<a href="#signupLoginModal" role="button" data-toggle="modal">
+                                <span class="glyphicon golden-stars" 
+            				           ng-class="{'glyphicon-star':hover1 || criteria.amount >=1,
+                                                  'glyphicon-star empty':!hover1 && (criteria.amount <1)}" 
+                                       ng-mouseenter="addVote(hover1, 1, criteria)" 
+                                       ng-mouseleave="removeVote(hover1, criteria)" 
+                                       >
+                                 </span></a>
+                            </li>
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal" > <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover2 || criteria.amount >=2,'glyphicon-star empty':!hover2 && (criteria.amount <2)}" ng-mouseenter="addVote(hover2, 2, criteria)" ng-mouseleave="removeVote(hover2, criteria)"></span></a></li>
+            				
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover3 || criteria.amount >=3,'glyphicon-star empty':!hover3 && (criteria.amount <3)}" ng-mouseenter="addVote(hover3, 3, criteria)" ng-mouseleave="removeVote(hover3, criteria)"></span></a></li>
+            				
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)"></span></a></li>
+            				
+            				<li class="criteria-list"><a href="#signupLoginModal" role="button" data-toggle="modal"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)"></span></a></li>
+            			</ul>
+            			
+            % elif not readOnly:
             			<ul class="list-inline criteria-stars" style="" ng-switch-when="false" style="width: 110px">
             				<li class="criteria-list">
                                 <span class="glyphicon golden-stars" 
@@ -797,6 +865,7 @@
             				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover4 || criteria.amount >=4,'glyphicon-star empty':!hover4 && (criteria.amount <4)}" ng-mouseenter="addVote(hover4, 4, criteria)" ng-mouseleave="removeVote(hover4, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
             				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.amount == 5,'glyphicon-star empty':!hover5 && (criteria.amount < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
             			</ul>
+            %endif
             			<ul class="list-inline criteria-stars averages" style="" ng-switch-when="true">
             				<li class="criteria-list"> <span class="glyphicon golden-stars" 
             				           ng-class="{'glyphicon-star':hover1 || criteria.average >=1,
@@ -812,6 +881,7 @@
             				<li class="criteria-list"> <span class="glyphicon golden-stars" ng-class="{'glyphicon-star':hover5 || criteria.average == 5,'glyphicon-star empty':!hover5 && (criteria.average < 5)}" ng-mouseenter="addVote(hover5, 5, criteria)" ng-mouseleave="removeVote(hover5, criteria)" ng-click="rateCriteria(item.parentHref, item.urlCode, criteria)"></span></li>
             				<li class="criteria-list num-ratings">{{criteria.numVotes}} rating<span ng-if="criteria.numVotes > 1">s</span></li>
             			</ul>
+            			
         			</span>
                 </td>
     			</tr>
@@ -1457,11 +1527,11 @@
         </div>
         <div ng-show="closingDemoWindow == true" class="animate-switch">
             <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
-            <h4>Do you want to opt out of the demographics?</h4>
+            <h4>Do you want to provide demographic information later?</h4>
             <p>If you are not sure, you can choose to respond next time you participate.</p>
-            <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">
-                <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>Yes</b>, I want to opt out.</li>
-                <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>No</b>, ask me again later.</li>
+            <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">  
+                <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>Yes</b>, ask me again later.</li>
+                <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>No</b>, I want to opt out.</li>
             </ul>
         </div>
         <br>

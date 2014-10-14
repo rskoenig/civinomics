@@ -8,9 +8,11 @@ app.controller('ratingsController', function($scope, $http){
 	};
 	
 	$scope.rating = {
-		type: '',
+		type: 'default',
 		criteriaList: []
 	};
+	
+	$scope.rating.type = 'default';
 	
 	$scope.criteria = {
 		name: "",
@@ -27,6 +29,7 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.criteriaName = '';
 	$scope.hasCriteria = false;
 	$scope.showAverage = false;
+	$scope.hasVoted = false;
 	
 	$scope.changeShowAverage = function(){
     	$scope.showAverage = !$scope.showAverage;
@@ -49,9 +52,11 @@ app.controller('ratingsController', function($scope, $http){
 			$scope.rating.criteriaList.splice(deleteCriteria, 1);
 		}
 	};
-	
+	$scope.gettingCriteria = false;
 	$scope.getCriteriaList = function(parentHref,thingCode){
+	    if ($scope.gettingCriteria) return;
 		if ($scope.hasCriteria) return;
+		$scope.gettingCriteria = true;
 		var requestUrl = parentHref+"/criteria/get/"+thingCode;
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
@@ -60,7 +65,7 @@ app.controller('ratingsController', function($scope, $http){
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
-					return false;				
+    				$scope.rating.type = 'yesno';			
 				}
 				$scope.hasCriteria = true;
 			})
@@ -124,6 +129,7 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.rateCriteria = function(parentHref, thingCode, criteria){
     	var requestUrl = parentHref+"/criteria/rate/"+thingCode+"/"+criteria.criteria+"/"+criteria.amount;
     	$scope.vote = criteria.amount;
+    	$scope.hasVoted = true;
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					$scope.vote = criteria.amount;

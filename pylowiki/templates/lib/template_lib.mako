@@ -417,10 +417,13 @@
 
 
 <%def name="tabbableSignupLogin(*args)">
-<%
-    c.returnTo = request.url
-%>
-
+ <% 
+      ####
+      #### After Login URL
+      ####
+      alURL = url.current()
+      session['afterLoginURL'] = alURL
+    %>
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -468,8 +471,10 @@
 
 <%def name="signupForm()">
         <form id="sign_in" action="/signup/handler" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST" role="form">
+            <input type="hidden" name="alURL" value="${url.current()}">
             <input type="hidden"  name="country" value="United States">
             <input type="hidden" name="memberType" value="professional">
+             <input type="hidden" name="alURL" value="${url.current()}">
 
             <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
                 <label class="col-sm-3 control-label" for="name"> Full name: </label>
@@ -530,10 +535,11 @@
 
 <%def name="loginForm()">
     <form id="sign_in" action="/loginHandler" class="form-horizontal" method="post">
+        <input type="hidden" name="alURL" value="${url.current()}">
         <div class="form-group">
             <label class="col-sm-3 control-label" for="email"> Email: </label>
             <div class="col-sm-8">
-                <input class="form-control" type="email" name="email" id="email" required>
+                <input class="form-control" type="email" name="email" id="email" required>            
             </div>
         </div>
         <div class="form-group">
@@ -579,7 +585,8 @@
       ####
       #### After Login URL
       ####
-      alURL= session._environ['PATH_INFO']
+      alURL = url.current()
+      #alURL= session._environ['PATH_INFO']
       if not alURL:
         alURL = request.url
       if 'QUERY_STRING' in session._environ :
@@ -590,8 +597,6 @@
             alURL = session._environ['HTTP_REFERER']
         except:
             alURL = '/browse/initiatives'
-      if 'zip/lookup' in alURL or '/signup' in alURL:
-        alURL = '/home'
       session['afterLoginURL'] = alURL
     %>
     <div class="modal fade" id="signupLoginModal" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">

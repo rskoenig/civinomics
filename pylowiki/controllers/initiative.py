@@ -617,7 +617,11 @@ class InitiativeController(BaseController):
             views = int(c.initiative['views']) + 1
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
-
+        
+        if 'parentObjType' in c.initiative:
+            log.info("Has parent and it's %s", c.initiative['parentObjType'])
+            log.info(c.initiative)
+        
         c.numComments = 0
         if 'numComments' in c.initiative:
             c.numComments = c.initiative['numComments']

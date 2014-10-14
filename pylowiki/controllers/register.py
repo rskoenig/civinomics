@@ -20,6 +20,7 @@ import pylowiki.lib.mail          as mailLib
 import pylowiki.lib.db.photo      as photoLib
 import pylowiki.lib.sort          as sort
 import pylowiki.lib.db.user       as userLib
+import pylowiki.lib.db.workshop     	as workshopLib
 import re
 import simplejson as json
 
@@ -743,6 +744,10 @@ class RegisterController(BaseController):
                 returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
                 session.pop('afterLoginURL')
                 session.save()
+
+        if 'alURL' in request.params:
+            returnPage = request.params['alURL']
+                
         name = False
         password = False
         postalCode = False
@@ -869,6 +874,16 @@ class RegisterController(BaseController):
                     #user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    if 'alURL' in request.params:
+                        returnPage = request.params['alURL']
+                        log.info("HELLOOOOOOO")
+                        if len(request.params['alURL'].split("/")) >= 3:
+                            workshopCode = request.params['alURL'].split("/")[2]
+                            WSAC = "4VQV"
+                            if workshopCode == WSAC:
+                                workshop = workshopLib.getWorkshopByCode(workshopCode)
+                                wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                                user['participatingWorkshop'] = wUrl + "|" + workshop['title']
                     commit(user)
                     session["user"] = user['name']
                     session["userCode"] = user['urlCode']
@@ -912,6 +927,10 @@ class RegisterController(BaseController):
                             returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
                             session.pop('afterLoginURL')
                             session.save()
+                    
+                    if 'alURL' in request.params:
+                        returnPage = request.params['alURL']
+
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'

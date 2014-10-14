@@ -21,10 +21,14 @@ class CriteriaController(BaseController):
 
     def __before__(self, action, workshopCode = None, worshopURL = None, criteria = None, thingCode = None, rating = None):
         if workshopCode is None:
-            abort(404)
+            log.info("wC is none")
+            return json.dumps({'statusCode': 0})
+
         self.workshopCrit = workshopLib.getWorkshopByCode(workshopCode)
         if not self.workshopCrit:
-            abort(404)
+            log.info("cant get that workshop")
+            return json.dumps({'statusCode': 0})
+
             #but is it broken?
         workshopLib.setWorkshopPrivs(self.workshopCrit)
         if action in ['rateCriteria']:
@@ -33,7 +37,7 @@ class CriteriaController(BaseController):
                 abort(404)
             if criteria not in self.workshopCrit['rating_criteria']:
                 log.info("Wrong criteria for thing")
-                abort(404)
+                return json.dumps({'statusCode': 0})
           
 #         if action in ['update', 'delete']:
 #             c.goal = goalLib.getGoal(goalCode)

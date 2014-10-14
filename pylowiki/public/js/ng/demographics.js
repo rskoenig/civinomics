@@ -1,5 +1,5 @@
 function demographicsController($scope, $http){
-
+    $scope.inDemographics = false;
 	$scope.alert = {
 		message : '',
 		type: ''
@@ -41,7 +41,7 @@ function demographicsController($scope, $http){
             {name: 'house', type: 'radio', text: 'Do you own or rent the house or apartment in which you live?', placeholder: '', values : ['Own', 'Rent']},
             {name: 'income', type: 'select', text: 'Estimate your annual household income.', placeholder: '', values : ["Under $10,000", "$10,000-$18,000","$18,000-$32,000","$32,000-$54,000","$54,000-$86,000","$86,000-$120,000","$120,000-$200,000","Over $200,000"]},
             {name: 'language', type: 'select', text: 'Native language', placeholder: '', values : ['English','Spanish','Russian','Other']},
-            {name: 'residential', type: 'select', text: 'Are you a residential or commercial customer of the Santa Cruz Water Department?', placeholder: '', values : ["Residential","Commercial", "Both", "I am not a customer of the Santa Cruz Water Department"]},
+            {name: 'residential', type: 'select', text: 'Are you a residential or commercial customer of the Santa Cruz Water Department?', placeholder: '', values : ["Residential","Commercial", "Both", "Neither"]},
             {name: 'multifamily', type: 'select', text: 'Do you live in a single family or multifamily home?', placeholder: '', values : ["Single Family", "Multifamily"]},
             {name: 'peoplehousehold', type: 'select', text: 'How many people live in your household?', placeholder: '', values : ['1','2','3','4','5','6','7','8','9','10']}
             ],
@@ -109,13 +109,12 @@ function demographicsController($scope, $http){
 				if (data.statusCode == 1){
 				    return '1';
 				    $scope.userHasDemographics = true;
-				    console.log("all good")
 				} 
 				else if (data.statusCode === 0){
 				    $scope.demographics.required = data.required.split("|");
+				    $scope.inDemographics = true;
 				    $scope.hasDemographics = true;
 				    return '0';
-				    console.log("missing");
 					//Do something if it fails		
 					//I'd rather do this			
 				}
@@ -124,19 +123,20 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.sendUserDemographics = function(parentHref){
-      var requestUrl = parentHref+"/demographics/set/"
+      $scope.inDemographics = false;
+      $scope.hasVoted = false;
+      var requestUrl = parentHref+"/demographics/set/";
       $http.post(requestUrl, $scope.userDemographics).success(function(data){
-            console.log("success!!!");
             $scope.demographicsSent = true;
             $scope.demographics.required = "";
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl
             $scope.newObjCode = data.newObjCode
+            
 		});
 	};
 	
 	$scope.changeClosingWindow = function(){
-        console.log("LOL");
     	$scope.closingDemoWindow = !$scope.closingDemoWindow;
 	};
 	
