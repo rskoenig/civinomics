@@ -1523,11 +1523,11 @@
         </div>
         <div ng-show="closingDemoWindow == true" class="animate-switch">
             <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
-            <h4>Do you want to opt out of the demographics?</h4>
+            <h4>Do you want to provide demographic information later?</h4>
             <p>If you are not sure, you can choose to respond next time you participate.</p>
-            <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">
-                <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>Yes</b>, I want to opt out.</li>
-                <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>No</b>, ask me again later.</li>
+            <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">  
+                <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>Yes</b>, ask me again later.</li>
+                <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>No</b>, I want to opt out.</li>
             </ul>
         </div>
         <br>
