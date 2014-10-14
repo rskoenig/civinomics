@@ -12,12 +12,30 @@
         <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
         ${ihelpers.showFunding_Summary()}
     % endif
-
     % if c.initiative['cost']:
         ${ihelpers.showCost(c.initiative)}
     % endif
 
-    <!-- metadata -->
+    % if c.initiative['proposal'] or c.initiative['background']:
+        <br>
+        <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+            Read Full Text
+        </a>
+        <div id="fullText" class="panel-collapse collapse">
+            % if c.initiative['background']:
+                ${ihelpers.showBackground()}
+            % endif
+
+            % if c.initiative['proposal']:
+                ${ihelpers.showProposal()}
+            % endif
+            <br>
+            <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+                Close Full Text
+            </a>
+        </div>
+    % endif
+
     <hr>
     ${ihelpers.showAuthor(c.initiative)}
     % if c.initiative.objType == 'revision':
@@ -28,17 +46,6 @@
             ${ihelpers.initiativeModerationPanel(c.initiative)}
         </div>
     % endif
-
-    % if c.initiative['background']:
-        <hr>
-        <h3 class="initiative-title">Background</h3>
-        ${ihelpers.showBackground()}
-    % endif
-
-    % if c.initiative['proposal']:
-        <h3 class="initiative-title">Proposal</h3>
-        ${ihelpers.showProposal()}
-    % endif 
     <hr>
     % if 'workshopCode' in c.initiative:
     <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>

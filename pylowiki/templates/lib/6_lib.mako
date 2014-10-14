@@ -2266,8 +2266,14 @@
 </%def>
 
 <%def name="create(**kwargs)">
+    <% 
+    if 'createClass' in kwargs:
+        createClass = kwargs['createClass']
+    else:
+        createClass = 'well-grey'
+    %>
     <div ng-controller="createController" ng-cloak>
-        <div class="media well well-grey search-listing">
+        <div class="media well ${createClass} search-listing">
             <div class="row">
                 <div class="col-xs-12">
                     <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">

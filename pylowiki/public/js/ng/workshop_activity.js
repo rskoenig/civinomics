@@ -178,7 +178,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAll = false;
 
 		$scope.showAddBtn = true;
-		$scope.showAddForm = false;
+		$scope.showAddForm = true;
 
 		if($scope.phase == 'research'){
 			$scope.thisPhaseStatus = 'present'
@@ -221,9 +221,13 @@ function activityWorkshopController($scope, $http) {
 			$scope.showAddBtn = false;
 		} else{
 			$scope.thisPhaseStatus = 'past'
-			$scope.showAddBtn = false;
+			$scope.showAddBtn = true;
 		};
-		$scope.showAddForm = false;
+		if ($scope.allowIdeas == '1' && $scope.showAddBtn == true) {
+			$scope.showAddForm = true;	
+		} else{
+			$scope.showAddForm = false;	
+		}
 
 		$scope.orderProp = '';
 		$scope.query = {objType:'Idea'};
@@ -262,7 +266,13 @@ function activityWorkshopController($scope, $http) {
 			$scope.thisPhaseStatus = 'past'
 			$scope.showAddBtn = false;
 		};
-		$scope.showAddForm = false;
+
+		if ($scope.allowIdeas == '1' && $scope.showAddBtn == true) {
+			$scope.showAddForm = true;	
+		} else{
+			$scope.showAddForm = false;	
+		}
+		
 
 		$scope.orderProp = '';
 		$scope.query = {objType:'Initiative'};

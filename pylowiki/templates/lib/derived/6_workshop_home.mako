@@ -628,8 +628,6 @@
 <%def name="workshopList()">
   <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3' ng-show="showList">
 
-    ${workshopPhaseDescriptions()}
-
     <div ng-if="thisPhaseStatus == 'past'" class="alert alert-warning" ng-cloak>This phase has concluded.</div>
     <div ng-if="thisPhaseStatus == 'future'" class="alert alert-warning" ng-cloak>This phase has not started yet.</div>
     <div class="alert alert-info" ng-class="alertType" ng-if="((alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0) && thisPhaseStatus == 'present'" ng-cloak>
@@ -827,7 +825,7 @@
     </div>
     <div class="btn-group">
       <button type="button" class="btn btn-default {{adoptedClass}}" ng-click="toggleAdopted()">
-        <span class="workshop-metrics">Winning Initiatives</span><br>
+        <span class="workshop-metrics">Winners Announced</span><br>
         <strong ng-cloak>${c.numAdopted}</strong>
       </button>
     </div>

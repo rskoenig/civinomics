@@ -17,22 +17,22 @@
     ${helpers.workshopTitle()}
   </div>
 </div>
-<div class="row">
+<div class="row hidden-xs ">
   <div class="col-xs-12">
     ${helpers.workshopTimeline()}
   </div>
 </div>
 <div class="row">
-  <div class="col-sm-2 no-right">
-    ${helpers.addBtn()}
+  <div class="hidden-xs hidden-sm col-md-2 no-right">
     ${helpers.showGoals2(c.goals)}
   </div>
-  <div class="col-sm-10" style="margin-top: 12px;">
+  <div class="col-md-10" style="margin-top: 12px;">
 
     ${helpers.workshopBrief()}
 
+    ${helpers.workshopPhaseDescriptions()}
     <div ng-show="showAddForm" ng-cloak>
-      ${lib_6.create(parentCode = c.w['urlCode'], parentObjType = 'workshop', returnTo = lib_6.workshopLink(c.w, embed=True,raw=True))}
+      ${lib_6.create(createClass = "well-green", parentCode = c.w['urlCode'], parentObjType = 'workshop', returnTo = lib_6.workshopLink(c.w, embed=True,raw=True))}
     </div>
 
     ${helpers.workshopList()}
