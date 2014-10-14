@@ -117,11 +117,13 @@
                                         <div ng-controller="ratingsController">
                                             {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
                                             <div ng-switch="rating.type">
-                                                <div ng-switch-when="criteria">
+                                                <div ng-switch-when="criteria"  ng-controller="demographicsController">
                                                     %if 'user' in session:
+                                                     <div ng-hide="inDemographics" >
                                                      ${ng_lib.rateCriteria(type = 'sidebar')}
+                                                     </div>
                                                      <div ng-if="hasVoted">
-                                                        <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                                                        <div ng-show="demographics.required != ''">
                                                             {{checkDemographics(item.parentHref)}}
                                                             ${ng_lib.demographics()}
                                                         </div>

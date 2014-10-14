@@ -1,5 +1,5 @@
 function demographicsController($scope, $http){
-
+    $scope.inDemographics = false;
 	$scope.alert = {
 		message : '',
 		type: ''
@@ -109,13 +109,12 @@ function demographicsController($scope, $http){
 				if (data.statusCode == 1){
 				    return '1';
 				    $scope.userHasDemographics = true;
-				    console.log("all good")
 				} 
 				else if (data.statusCode === 0){
 				    $scope.demographics.required = data.required.split("|");
+				    $scope.inDemographics = true;
 				    $scope.hasDemographics = true;
 				    return '0';
-				    console.log("missing");
 					//Do something if it fails		
 					//I'd rather do this			
 				}
@@ -124,19 +123,20 @@ function demographicsController($scope, $http){
 	};
 	
 	$scope.sendUserDemographics = function(parentHref){
-      var requestUrl = parentHref+"/demographics/set/"
+      $scope.inDemographics = false;
+      $scope.hasVoted = false;
+      var requestUrl = parentHref+"/demographics/set/";
       $http.post(requestUrl, $scope.userDemographics).success(function(data){
-            console.log("success!!!");
             $scope.demographicsSent = true;
             $scope.demographics.required = "";
             $scope.success = true
             $scope.newObjUrl = data.newObjUrl
             $scope.newObjCode = data.newObjCode
+            
 		});
 	};
 	
 	$scope.changeClosingWindow = function(){
-        console.log("LOL");
     	$scope.closingDemoWindow = !$scope.closingDemoWindow;
 	};
 	
