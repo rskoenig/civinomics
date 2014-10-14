@@ -42,7 +42,7 @@
     </head>
     <body ${self.bodyTag_extras()}>
         ${template_lib.mainNavbar()}
-        <div class="hidden-sm hidden-md hidden-lg" style="height:60px;"></div>
+        <div class="hidden-md hidden-lg" style="height:60px;"></div>
         ${next.body()}
 
         % if c.authuser and c.privs:
@@ -51,9 +51,8 @@
             % endif
             ${template_lib.demographicsModal()}
         % endif
+        
         ${template_lib.signupLoginModal()}
-        
-        
         
         <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
         <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>

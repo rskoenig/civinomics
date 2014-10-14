@@ -631,6 +631,12 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
+
+        c.summary = c.initiative['description']
+        c.summary = c.summary.split(' ')
+        c.summary = c.summary[0:101]
+        c.summary = ' '.join(c.summary)
+
                 
         c.initiativeHome = True
 

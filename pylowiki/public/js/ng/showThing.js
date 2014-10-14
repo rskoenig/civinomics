@@ -11,6 +11,15 @@ function showThingCtrl($scope, $http, $location, $anchorScroll) {
       $anchorScroll();
    	}
 
+   	$scope.wordCount = $scope.summary.trim().split(/\s+/).length;
+   	$scope.getWordCount = function() {
+   		if ($scope.summary == ''){
+   			$scope.wordCount = 0;
+   		} else{
+        	$scope.wordCount = $scope.summary.trim().split(/\s+/).length;
+        };
+    }
+
     $scope.getUrl = '/' + $scope.objType + '/' + $scope.thingCode + '/' + $scope.thingUrl + '/json';
 
     $scope.getThingData = function(){

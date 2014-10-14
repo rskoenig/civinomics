@@ -354,7 +354,7 @@
 
 
 <%def name="coAuthorInvite()">
-    <h2>Users</h2>
+    <h2 class="no-top">Users</h2>
     % if 'user' in session and c.authuser:
         <div ng-init="urlCode = '${c.initiative['urlCode']}'; url = '${c.initiative['url']}'; authuserCode = '${c.authuser['urlCode']}'">
             <div ng-controller="userLookupCtrl">
@@ -449,7 +449,7 @@
 <%def name="photosEdit()">
 
     <div class="row" id="photo">
-        <div class="col-xs-12"><h2>Photos</h2></div>
+        <div class="col-xs-12"><h2 class="no-top">Photos</h2></div>
     </div><!-- row -->
 
     <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="true">
@@ -612,7 +612,7 @@
         </div>
     % endif
 
-    <h2>Info</h2>
+    <h2 class="no-top">Info</h2>
     <form method="POST" name="edit_initiative_summary" id="edit_initiative_summary" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler" ng-controller="showThingCtrl" ng-init="cost = '${c.initiative['cost']}'">
 
         <div class="form-group">
@@ -662,15 +662,23 @@
             </p>
         </div>
         <div class="form-group">
-            <label class="control-label" required>Description:</label>
+            <label class="control-label" required>Summary:</label>
             <div class="text-info">
-                <p>The description uses markdown and accepts html (like youtube iframes) as well. For example, to insert an image, make sure the file is uploaded to the internet somewhere and then insert the image URL into the info sectionlike so:</p>
+                <p>This is a concise description that should be easy for anyone who might rate your initiative to understand. The summary must be no longer than 100 words. <strong ng-class="{red: wordCount >= 101}" ng-cloak>{{wordCount}}</span> words</strong>
+                </p>
+            </div>
+            <textarea rows="8" type="text" name="description" class="form-control" ng-model="summary" ng-keydown="getWordCount()"></textarea>
+        </div>
+        <div class="form-group">
+            <label class="control-label" required>Full Text:</label>
+            <div class="text-info">
+                <p>The full text of your initiative can be as long as needed and should touch on the background and details of what you are proposing. This section uses markdown and accepts html (like youtube iframes) as well. For example, to insert an image, make sure the file is uploaded to the internet somewhere and then insert the image URL into the info sectionlike so:</p>
                 <pre>![The Civinomics Logo](https://civinomics.com/images/logo.png "Civinomics Logo")</pre>
                 <p>For more... 
                     ${lib_6.formattingGuide()}
                 </p>
             </div>
-            <textarea rows="8" type="text" name="description" class="form-control">${c.initiative['description']}</textarea>
+            <textarea rows="8" type="text" name="proposal" class="form-control">${c.initiative['proposal']}</textarea>
         </div>
         <button type="submit" class="btn btn-success btn-block btn-lg top" name="submit_summary">Save Changes</button>
     </form>

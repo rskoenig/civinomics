@@ -83,7 +83,6 @@ def getJsonProperties(item):
     elif 'data' in item:
         entry['text'] = item['data']
 
-
     entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
     if 'link' in item:
         entry['link'] = item['link']

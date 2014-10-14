@@ -1542,6 +1542,12 @@ a.yesVote, a.noVote{
   background-color:whitesmoke; 
 }
 
+.well.well-green{
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
 .search-listing .well.yesNoWell{
   width: 130px;
   margin-left: 10px;
@@ -3322,6 +3328,14 @@ margin-right: -13px;
 }
 .initiative-info img{
   max-width: 100%;
+}
+
+.initiative-summary{
+  font-size: 1.2em;
+  line-height: 1.7em;
+}
+.initiative-summary h1, .initiative-summary h2, .initiative-summary h3, .initiative-summary h4, .initiative-summary h5, .initiative-summary h6{
+  font-weight: 300;
 }
 
 #initiative-dashboard.affix{
