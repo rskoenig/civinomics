@@ -11,15 +11,6 @@ function showThingCtrl($scope, $http, $location, $anchorScroll) {
       $anchorScroll();
    	}
 
-   	$scope.wordCount = $scope.summary.trim().split(/\s+/).length;
-   	$scope.getWordCount = function() {
-   		if ($scope.summary == ''){
-   			$scope.wordCount = 0;
-   		} else{
-        	$scope.wordCount = $scope.summary.trim().split(/\s+/).length;
-        };
-    }
-
     $scope.getUrl = '/' + $scope.objType + '/' + $scope.thingCode + '/' + $scope.thingUrl + '/json';
 
     $scope.getThingData = function(){
@@ -31,6 +22,10 @@ function showThingCtrl($scope, $http, $location, $anchorScroll) {
 				$scope.noResult = false;
 				$scope.item = data.thing;
 
+				$scope.summary = $scope.item.text;
+				if ($scope.summary) {
+					$scope.getWordCount()
+				};
 				$scope.urlCode= $scope.item.urlCode;
 				$scope.url= $scope.item.url;
 				$scope.totalVotes= $scope.item.voteCount;
@@ -57,4 +52,16 @@ function showThingCtrl($scope, $http, $location, $anchorScroll) {
     };
 
     $scope.getThingData();
+
+    if ($scope.summary) {
+		$scope.wordCount = $scope.summary.trim().split(/\s+/).length;
+   	};
+	$scope.getWordCount = function() {
+   		if ($scope.summary == ''){
+   			$scope.wordCount = 0;
+   		} else{
+        	$scope.wordCount = $scope.summary.trim().split(/\s+/).length;
+        };
+	}   	
+
 }

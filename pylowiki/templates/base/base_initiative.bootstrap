@@ -23,7 +23,7 @@
         <div class="darkened-bg-cover"></div>
     </div>
 
-<span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}'; summary = '${c.initiative['description']}';"></span>
+<span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}';"></span>
 <div class="container" ng-controller="showThingCtrl">
     <div class="row">
         <div class="col-sm-9 col-md-9 bottom-space-lg">
