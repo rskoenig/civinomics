@@ -120,6 +120,12 @@
                                                 <div ng-switch-when="criteria">
                                                     %if 'user' in session:
                                                      ${ng_lib.rateCriteria(type = 'sidebar')}
+                                                     <div ng-if="hasVoted">
+                                                        <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                                                            {{checkDemographics(item.parentHref)}}
+                                                            ${demographics()}
+                                                        </div>
+                                                    </div>
                                                      %else:
                                                      ${ng_lib.rateCriteria(readOnly = "1", type = 'sidebar')}
                                                      %endif

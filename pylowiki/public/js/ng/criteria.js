@@ -29,6 +29,7 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.criteriaName = '';
 	$scope.hasCriteria = false;
 	$scope.showAverage = false;
+	$scope.hasVoted = false;
 	
 	$scope.changeShowAverage = function(){
     	$scope.showAverage = !$scope.showAverage;
@@ -128,6 +129,7 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.rateCriteria = function(parentHref, thingCode, criteria){
     	var requestUrl = parentHref+"/criteria/rate/"+thingCode+"/"+criteria.criteria+"/"+criteria.amount;
     	$scope.vote = criteria.amount;
+    	$scope.hasVoted = true;
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					$scope.vote = criteria.amount;
