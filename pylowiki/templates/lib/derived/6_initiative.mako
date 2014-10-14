@@ -123,7 +123,7 @@
                                                      <div ng-if="hasVoted">
                                                         <div ng-show="demographics.required != ''" ng-controller="demographicsController">
                                                             {{checkDemographics(item.parentHref)}}
-                                                            ${demographics()}
+                                                            ${ng_lib.demographics()}
                                                         </div>
                                                     </div>
                                                      %else:
