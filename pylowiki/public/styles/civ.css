@@ -2588,6 +2588,11 @@ hr.stats{
   margin-bottom: 5px;
 }
 
+.initiative-well .actions{
+  border-top: 0px solid #ddd;
+  padding-top: 0px !important;
+}
+
 .break, .markdown, h4{
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -4023,7 +4028,7 @@ background-color: #d9534f;
 }
 .sidebar.rating-details{
   margin: 0 19px;
-  height:12px
+  height:24px
 }
 
 .criteria-list{
