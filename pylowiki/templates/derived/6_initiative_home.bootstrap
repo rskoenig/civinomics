@@ -1,0 +1,80 @@
+<%inherit file="/base/base_initiative.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+
+<% lib.return_to() %>
+    ${ihelpers.showDescription()}
+
+    % if c.initiative['funding_summary']:
+        <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
+        ${ihelpers.showFunding_Summary()}
+    % endif
+
+    % if c.initiative['cost']:
+        ${ihelpers.showCost(c.initiative)}
+    % endif
+
+    <!-- metadata -->
+    <hr>
+    ${ihelpers.showAuthor(c.initiative)}
+    % if c.initiative.objType == 'revision':
+        This is a revision dated ${c.initiative.date}<br />
+    % else:
+        <br>
+        <div class="text-right">
+            ${ihelpers.initiativeModerationPanel(c.initiative)}
+        </div>
+    % endif
+
+    % if c.initiative['background']:
+        <hr>
+        <h3 class="initiative-title">Background</h3>
+        ${ihelpers.showBackground()}
+    % endif
+
+    % if c.initiative['proposal']:
+        <h3 class="initiative-title">Proposal</h3>
+        ${ihelpers.showProposal()}
+    % endif 
+    <hr>
+    % if 'workshopCode' in c.initiative:
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+        <div ng-controller="ratingsController">
+            {{getCriteriaList(item.parentHref, item.urlCode)}}
+            <div ng-switch="rating.type">
+                <div ng-switch-when="criteria">
+
+                </div><!-- close criteria inner-->
+                <div ng-switch-when="yesno">
+                    <div ng-controller="positionsCtrl">
+                        ${ng_lib.showSupportOppose()}
+                    </div>
+                </div> <!-- close yesno inner-->
+                <div ng-switch-default>
+                </div> <!-- close default inner-->
+            </div> <!-- close switch inner-->
+        </div>
+    %else:
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+        <div ng-controller="positionsCtrl">
+                ${ng_lib.showSupportOppose()}
+            </div>
+    %endif
+
+    <hr>
+    <h3 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h3>
+    ${ihelpers.listResources()}
+    <hr>
+    <div id="updates">
+        <h3 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h3>
+        ${ihelpers.showUpdateList()}
+    </div>
+
+    % if c.initiative.objType != 'initiativeUnpublished':
+        <hr>
+        <h3 id="comments" class="initiative-title">Comments</h3>
+        ${comments(c.initiative, c.discussion)}
+    % endif
