@@ -727,8 +727,12 @@ class RegisterController(BaseController):
         """
         log.info("in signup handler")
 
+        log.info(json.loads(request.body))
+        
+        
         try:
             useJson = request.params['json']
+            
             if useJson == '1':
                 returnJson = True
             else:
@@ -736,6 +740,9 @@ class RegisterController(BaseController):
         except KeyError:
             returnJson = False
 
+        returnJson = True
+        query = json.loads(request.body)
+        
         returnPage = "/signup"
         if 'afterLoginURL' in session:
         # look for accelerator cases: workshop home, item listing, item home
@@ -745,8 +752,8 @@ class RegisterController(BaseController):
                 session.pop('afterLoginURL')
                 session.save()
 
-        if 'alURL' in request.params:
-            returnPage = request.params['alURL']
+        if 'alURL' in query and query['alURL'] is not '':
+            returnPage = query['alURL']
                 
         name = False
         password = False
@@ -756,10 +763,10 @@ class RegisterController(BaseController):
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
-        if  'password' not in request.params:
+        if  'password' not in query:
             log.info('password missing')
         else:
-            password = request.params['password']
+            password = query['password']
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])
@@ -771,30 +778,30 @@ class RegisterController(BaseController):
                 if 'addItem' in request.params:
                     c.listingType = request.params['addItem']
         else:
-            if  'email' not in request.params:
+            if  'email' not in query:
                 log.info('email missing')
             else:
-                email = request.params['email']
-        if  'postalCode' not in request.params:
+                email = query['email']
+        if  'postalCode' not in query:
             log.info('postalCode missing')
         else:
-            postalCode = request.params['postalCode']
-        if  'country' not in request.params:
+            postalCode = query['postalCode']
+        if  'country' not in query:
             log.info('country missing')
         else:
-            country = request.params['country']
-        if  'memberType' not in request.params:
+            country = query['country']
+        if  'memberType' not in query:
             log.info('memberType missing')
         else:
-            memberType = request.params['memberType']
-        if  'name' not in request.params:
+            memberType = query['memberType']
+        if  'name' not in query:
             log.info('name missing')
         else:
-            name = request.params['name']
-        if  'chkTOS' not in request.params:
+            name = query['name']
+        if  'chkTOS' not in query:
             log.info('chkTOS missing')
         else:
-            checkTOS = request.params['chkTOS']
+            checkTOS = query['chkTOS']
 
         schema = plaintextForm()
         try:
@@ -874,11 +881,11 @@ class RegisterController(BaseController):
                     #user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                    if 'alURL' in request.params:
-                        returnPage = request.params['alURL']
+                    if 'alURL' in query:
+                        returnPage = query['alURL']
                         log.info("HELLOOOOOOO")
-                        if len(request.params['alURL'].split("/")) >= 3:
-                            workshopCode = request.params['alURL'].split("/")[2]
+                        if len(query['alURL'].split("/")) >= 3:
+                            workshopCode = query['alURL'].split("/")[2]
                             WSAC = "4VQV"
                             if workshopCode == WSAC:
                                 workshop = workshopLib.getWorkshopByCode(workshopCode)
@@ -914,7 +921,7 @@ class RegisterController(BaseController):
                             returnPage += "/add/" + c.listingType
                         if returnJson:
                             response.headers['Content-type'] = 'application/json'
-                            return json.dumps({'statusCode':0, 'user':dict(user)})
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo': returnPage})
                         else:
                             return redirect(returnPage)
                             
@@ -928,13 +935,13 @@ class RegisterController(BaseController):
                             session.pop('afterLoginURL')
                             session.save()
                     
-                    if 'alURL' in request.params:
-                        returnPage = request.params['alURL']
+                    if 'alURL' in query:
+                        returnPage = query['alURL']
 
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
-                        return json.dumps({'statusCode':0, 'user':dict(u.u)})
+                        return json.dumps({'statusCode':0, 'user':dict(u.u), 'returnTo': returnPage})
                     else:
                         return redirect(returnPage)
                 else:
