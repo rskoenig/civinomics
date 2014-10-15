@@ -635,6 +635,8 @@ class LoginController(BaseController):
         splashMsg = {}
         splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
+        
+        log.info(c.returnTo)
 
         iPhoneApp = utils.iPhoneRequestTest(request)
         
@@ -672,6 +674,16 @@ class LoginController(BaseController):
                                 user['participatingWorkshop'] = wUrl + "|" + workshop['title']
                                 commit(user)
 
+                        if 'returnTo' in session:
+                            returnPage = session['returnTo']
+                            if len(query['alURL'].split("/")) >= 3:
+                                workshopCode = session['returnTo'].split("/")[2]
+                                WSAC = "4VQV"
+                                if workshopCode == WSAC:
+                                    workshop = workshopLib.getWorkshopByCode(workshopCode)
+                                    wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                                    user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+                                
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             # iphone app is having problems with the case where a user logs in after 
@@ -784,6 +796,7 @@ You can change your password to something you prefer on your profile page.\n\n''
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
         log.info("Login display")
+        log.info(session['returnTo'])
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':

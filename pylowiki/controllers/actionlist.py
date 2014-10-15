@@ -90,6 +90,35 @@ class ActionlistController(BaseController):
     def santacruzwater( self ):
         return redirect('/workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention')
         
+    def santacruzwaterlogin( self ):
+        session['returnTo'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        session.save()
+        #THIS IS PROBABLY THE HACKIEST THING EVER
+        if c.authuser:
+            WSAC = "4VQV"
+            workshop = workshopLib.getWorkshopByCode(WSAC)
+            wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+            user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+        else:
+            session['afterLoginURL'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+            c.returnTo = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        return redirect('/login')
+        
+    def santacruzwatersignup( self ):
+        session['returnTo'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        session.save()
+        #THIS IS PROBABLY THE HACKIEST THING EVER
+        if c.authuser:
+            WSAC = "4VQV"
+            workshop = workshopLib.getWorkshopByCode(WSAC)
+            wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+            user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+        else:
+            session['afterLoginURL'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+            c.returnTo = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        
+        return redirect('/signup')
+        
     def rss( self ):
         c.activity = getRecentActivity(30)
         feed = feedgenerator.Rss201rev2Feed(

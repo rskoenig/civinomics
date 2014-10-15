@@ -471,6 +471,7 @@
 
 <%def name="signupForm()">
         <form id="sign_in" class="form-horizontal" ng-controller="signupController" name="signupForm" role="form" ng-submit="submitSignup()">
+        ${c.returnTo}
             <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
             <input type="hidden"  ng-model="user.country" value="United States">
              <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
@@ -533,6 +534,7 @@
 
 <%def name="loginForm()">
     <form id="sign_in" class="form-horizontal" ng-controller="signupController" ng-submit="submitLogin()">
+     ${c.returnTo}
         <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
         <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
         <div class="form-group">

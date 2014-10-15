@@ -883,9 +883,17 @@ class RegisterController(BaseController):
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                     if 'alURL' in query:
                         returnPage = query['alURL']
-                        log.info("HELLOOOOOOO")
                         if len(query['alURL'].split("/")) >= 3:
                             workshopCode = query['alURL'].split("/")[2]
+                            WSAC = "4VQV"
+                            if workshopCode == WSAC:
+                                workshop = workshopLib.getWorkshopByCode(workshopCode)
+                                wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                                user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+                    if 'returnTo' in session:
+                        returnPage = session['returnTo']
+                        if len(query['alURL'].split("/")) >= 3:
+                            workshopCode = session['returnTo'].split("/")[2]
                             WSAC = "4VQV"
                             if workshopCode == WSAC:
                                 workshop = workshopLib.getWorkshopByCode(workshopCode)
