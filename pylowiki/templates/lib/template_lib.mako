@@ -471,10 +471,14 @@
 
 <%def name="signupForm()">
         <form id="sign_in" class="form-horizontal" ng-controller="signupController" name="signupForm" role="form" ng-submit="submitSignup()">
-        ${c.returnTo}
+            %if 'returnTo' in session:
+                <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
+            %else:
+                <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+            %endif
             <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
             <input type="hidden"  ng-model="user.country" value="United States">
-             <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+             
             <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
                 <label class="col-sm-3 control-label" for="name"> Full name: </label>
                 <div class="col-sm-8">

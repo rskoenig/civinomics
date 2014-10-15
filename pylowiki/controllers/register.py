@@ -729,6 +729,7 @@ class RegisterController(BaseController):
 
         log.info(json.loads(request.body))
         
+        log.info(vars(session))
         
         try:
             useJson = request.params['json']
