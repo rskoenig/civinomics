@@ -24,7 +24,14 @@
 </div>
 <div class="row">
   <div class="hidden-xs hidden-sm col-md-2 no-right">
-    ${helpers.showGoals2(c.goals)}
+
+    <div ng-if="showInitiatives">
+      ${helpers.workshopMenu2()}
+    </div>
+    <div ng-if="!(showInitiatives)">
+      ${helpers.showGoals2(c.goals)}
+    </div>
+
   </div>
   <div class="col-md-10" style="margin-top: 12px;">
 

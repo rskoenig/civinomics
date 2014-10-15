@@ -732,6 +732,21 @@
   </ul>
 </%def>
 
+<%def name="workshopMenu2()">
+  <div class="workshop-menu">
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#">Background</a></li>
+      <li><a href="#">Initiatives</a>
+        <ul class="nav">
+        % for i in c.workshopInitiatives: 
+            <li><a href="/initiative/${i['urlCode']}/${i['url']}" target="_blank">${i['title']}</a></li>
+        % endfor
+        </ul>
+      </li>
+    </ul>
+  </div>
+</%def>
+
 <%def name="addBtn()">
   <%
     if 'readOnly' in c.w and c.w['readOnly'] == '1':

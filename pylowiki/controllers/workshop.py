@@ -1044,6 +1044,8 @@ class WorkshopController(BaseController):
             c.numFinal = workshopLib.getInitiativeCountForWorkshop(workshopCode)
         c.numUpdates = 0
 
+        c.workshopInitiatives = workshopLib.getInitiativesForWorkshop(workshopCode) 
+
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
         # iphone app json data structure:
