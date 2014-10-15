@@ -31,9 +31,13 @@
     ${helpers.workshopBrief()}
 
     ${helpers.workshopPhaseDescriptions()}
-    <div ng-show="showAddForm" ng-cloak>
-      ${lib_6.create(createClass = "well-green", parentCode = c.w['urlCode'], parentObjType = 'workshop', returnTo = lib_6.workshopLink(c.w, embed=True,raw=True))}
-    </div>
+
+    
+    % if c.w['allowIdeas'] == '1':
+      <div ng-show="showAddForm" ng-cloak>
+        ${lib_6.create(createClass = "well-green", parentCode = c.w['urlCode'], parentObjType = 'workshop', returnTo = lib_6.workshopLink(c.w, embed=True,raw=True))}
+      </div>
+    % endif
 
     ${helpers.workshopList()}
 

@@ -863,7 +863,14 @@
 
     <div class="well" ng-show="showInitiatives" ng-cloak>
       <p class="workshop-metrics-lg">Initiatives</p>
-      <p>In the initiatives phase we take the best solutions from the ideas phase and continue to build on them. This is the time to build teams, collaborate, challenge each other with questions and think about concrete next steps.
+      <p>The following initiatives are submited to the Water Supply Advisory Committee by members of the public. Please rate them in terms of the following critiera:
+
+        <ul>
+          <li><strong>Effectiveness:</strong> The expected decrease in demand OR increase in storage or supply related to this proposal.</li>
+          <li><strong>Practicability:</strong> Cost, community and political support, regulatory considerations.</li>
+          <li><strong>Environment:</strong> Environmental consequences, considering energy intensity, and riverine, marine, and terrestrial benefits or impacts.</li>
+          <li><strong>Local Economy:</strong> Potential to create sustainable local jobs in the planning, implementation, and support of the proposal.</li>
+        </ul>
       </p>
     </div>
 
