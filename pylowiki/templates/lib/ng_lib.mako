@@ -33,7 +33,7 @@
 </%def>
 
 <%def name="general_listing_yesno()">
-    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+    <div class="media well search-listing {{item.status}}" id={{item.url}} ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
 
             <div class="row">

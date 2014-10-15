@@ -246,12 +246,12 @@ function activityWorkshopController($scope, $http) {
 	$scope.toggleInitiatives= function(){
 		$scope.showResearch = false;
 		$scope.showIdeas = false;
+		$scope.showBrief = true;
 		$scope.showInitiatives = true;
 		$scope.showFinal = false;
 		$scope.showAdopted = false;
 		$scope.showImpact = false;
 
-		$scope.showBrief = false;
 		$scope.showList = true;
 		$scope.showStats = false;
 		$scope.showAll = false;

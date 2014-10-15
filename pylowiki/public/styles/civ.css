@@ -53,6 +53,22 @@ a, .clickable{
   cursor:pointer;
 }
 
+.workshop-menu .nav .nav>li>a {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 30px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.workshop-menu .nav>li>a {
+  display: block;
+  padding: 4px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #999;
+}
+
 
 /* h */
 

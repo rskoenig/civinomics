@@ -511,7 +511,7 @@
         {{workshopTitle}}
       </a>
       %if c.display:
-        <a ng-click="toggleBrief()" class="brief"><span class="label label-info">Read the Intro</span></a>
+        <!--<a ng-click="toggleBrief()" class="brief"><span class="label label-info">Read the Intro</span></a>-->
       %endif
     </h1>
 </%def>
@@ -690,7 +690,7 @@
 <%def name="workshopBrief()">
   <div class="well wiki-well" ng-show="showBrief" ng-cloak>
     <div ng-cloak>
-      <p class="workshop-metrics-lg">Intro</p>
+      <p class="workshop-metrics-lg">Background</p>
       <div class="row">
         <div class="col-xs-12">
           ${slideshow(c.w, 'listing')}
@@ -699,9 +699,24 @@
       <p class="description">
         ${c.w['description']}
       </p>
+
+
       <hr class="list-header">
-      ${showInfo(c.w)}
-      <a href="#top" class="green green-highlight" ng-click=" showInfo = false ">less</a>
+
+      <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+            Read More
+        </a>
+        <div id="fullText" class="panel-collapse collapse">
+
+            ${showInfo(c.w)}
+
+            <br>
+            <a class="btn btn-lg btn-default" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+                Close
+            </a>
+        </div>
+
+
     </div>
   </div>
 </%def>
@@ -797,6 +812,25 @@
   </table>
 </%def>
 
+<%def name="workshopMenu2()">
+  <div class="workshop-menu" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+    <!-- <div  style="position:fixed; width: inherit; overflow: scroll; height: 80%;"> -->
+    <ul class="nav nav-pills nav-stacked">
+      <li class="active"><a href="#">Background</a></li>
+
+      <li><a href="#">Initiatives</a>
+        <ul class="nav">
+        % for i in c.workshopInitiatives: 
+            <li><a href="#${i['url']}">${i['title']}</a></li>
+        % endfor
+        </ul>
+      </li>
+
+    </ul>
+  </div>
+
+</%def>
+
 <%def name="workshopTimeline()">
   <div class="btn-group btn-group-justified timeline">
     <div class="btn-group" ng-click="toggleResources()">
@@ -863,7 +897,14 @@
 
     <div class="well" ng-show="showInitiatives" ng-cloak>
       <p class="workshop-metrics-lg">Initiatives</p>
-      <p>In the initiatives phase we take the best solutions from the ideas phase and continue to build on them. This is the time to build teams, collaborate, challenge each other with questions and think about concrete next steps.
+      <p>The following initiatives are submited to the Water Supply Advisory Committee by members of the public. Please rate them in terms of the following critiera:
+
+        <ul>
+          <li><strong>Effectiveness:</strong> The expected decrease in demand OR increase in storage or supply related to this proposal.</li>
+          <li><strong>Practicability:</strong> Cost, community and political support, regulatory considerations.</li>
+          <li><strong>Environment:</strong> Environmental consequences, considering energy intensity, and riverine, marine, and terrestrial benefits or impacts.</li>
+          <li><strong>Local Economy:</strong> Potential to create sustainable local jobs in the planning, implementation, and support of the proposal.</li>
+        </ul>
       </p>
     </div>
 
