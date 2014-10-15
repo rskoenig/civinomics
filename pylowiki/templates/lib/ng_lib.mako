@@ -43,15 +43,15 @@
             </div>
 
             <div class="spacer"></div>
-
             <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
-                <div class="col-xs-2">
+                <div class="col-sm-3">
                     <a href = '{{item.href}}'>
-                        <img class="thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
+                        <img class="hidden-xs thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
+                        <div class="hidden-lg hidden-md hidden-sm landscape-id-photo" style="background-image:url('{{item.mainPhoto}}')"></div>
                     </a>
                 </div>
-                <div class="col-xs-10 no-left">
-                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                <div class="col-sm-9">
+                    <h3 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h3>
                     ${status()}
                     ${text()}
                     ${additionalMetrics()}
@@ -816,16 +816,8 @@
 		<div class="row">
     		<table class="criteria-table ${locationClass} centered">
     		<tr ng-repeat="criteria in rating.criteriaList">
-    		%if not sidebar:
-    		    <td><ul class="list-inline" style="">
-        				<li style="margin-right:5px;"><span class="criteria-name">{{criteria.criteria}}</span></li>
-                    </ul>
-                </td>
-                <td>
-    		%elif sidebar:
     		    <td>
                     <span class="criteria-name">{{criteria.criteria}}</span><br/>
-            %endif
     		        <span ng-switch="showAverage">
             %if readOnly:
     		            
