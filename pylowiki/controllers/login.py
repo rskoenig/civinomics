@@ -637,6 +637,8 @@ class LoginController(BaseController):
         splashMsg['title'] = 'Error'
         
         log.info(c.returnTo)
+        if 'returnTo' in session:
+            log.info("Hello")
 
         iPhoneApp = utils.iPhoneRequestTest(request)
         

@@ -471,7 +471,7 @@
 
 <%def name="signupForm()">
         <form id="sign_in" class="form-horizontal" ng-controller="signupController" name="signupForm" role="form" ng-submit="submitSignup()">
-            %if 'returnTo' in session:
+            %if 'returnTo' in session: 
                 <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
             %else:
                 <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
@@ -538,9 +538,12 @@
 
 <%def name="loginForm()">
     <form id="sign_in" class="form-horizontal" ng-controller="signupController" ng-submit="submitLogin()">
-     ${c.returnTo}
         <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
-        <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+        %if 'returnTo' in session: 
+            <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
+        %else:
+            <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+        %endif
         <div class="form-group">
             <label class="col-sm-3 control-label" for="email"> Email: </label>
             <div class="col-sm-8">
