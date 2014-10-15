@@ -470,41 +470,39 @@
 </%def>
 
 <%def name="signupForm()">
-        <form id="sign_in" action="/signup/handler" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST" role="form">
-            <input type="hidden" name="alURL" value="${url.current()}">
-            <input type="hidden"  name="country" value="United States">
-            <input type="hidden" name="memberType" value="professional">
-             <input type="hidden" name="alURL" value="${url.current()}">
-
+        <form id="sign_in" class="form-horizontal" ng-controller="signupController" name="signupForm" role="form" ng-submit="submitSignup()">
+            <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
+            <input type="hidden"  ng-model="user.country" value="United States">
+             <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
             <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
                 <label class="col-sm-3 control-label" for="name"> Full name: </label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                    <input type="text" class="form-control" name="name" id="name" ng-model="user.name" ng-pattern="fullNameRegex" required>
                     <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="email"> Email: </label>
                 <div class="col-sm-8">
-                    <input class="form-control" type="email" name="email" id="email" ng-model="email" required>
+                    <input class="form-control" type="email" name="email" id="email" ng-model="user.email" required>
                     <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
                 <div class="col-sm-8">
-                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
+                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "user.password" required>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
                 <div class="col-sm-8">
                     <label class="radio">
-                        <input type="radio" name="memberType" id="memberType1" ng-model="memberType1" value="professional" checked>
+                        <input type="radio" name="memberType" id="memberType1" ng-model="user.memberType" value="professional" checked>
                         Individual <span class="light">(vote, suggest new ideas)</span>
                     </label>
                     <label class="radio">
-                        <input type="radio" name="memberType" id="memberType2" ng-model="memberType2" value="organization">
+                        <input type="radio" name="memberType" id="memberType2" ng-model="user.memberType" value="organization">
                         Organization <span class="light">(take positions, have members)</span>
                     </label>
                 </div>
@@ -512,7 +510,7 @@
             <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
                 <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
                     <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
                 </div>
