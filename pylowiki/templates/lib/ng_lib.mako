@@ -816,16 +816,8 @@
 		<div class="row">
     		<table class="criteria-table ${locationClass} centered">
     		<tr ng-repeat="criteria in rating.criteriaList">
-    		%if not sidebar:
-    		    <td><ul class="list-inline" style="">
-        				<li style="margin-right:5px;"><span class="criteria-name">{{criteria.criteria}}</span></li>
-                    </ul>
-                </td>
-                <td>
-    		%elif sidebar:
     		    <td>
                     <span class="criteria-name">{{criteria.criteria}}</span><br/>
-            %endif
     		        <span ng-switch="showAverage">
             %if readOnly:
     		            
