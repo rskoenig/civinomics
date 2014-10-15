@@ -19,6 +19,13 @@ app.controller('ratingsController', function($scope, $http){
 		value: 0	
 	};
 	
+	$scope.descriptions = {
+    	Effectiveness : "The expected decrease in demand OR increase in storage or supply related to this proposal.",
+    	Practicability : "Cost, community and political support, regulatory considerations.",
+    	'Environmental Benefits' : "Environmental consequences, considering energy intensity, and riverine, marine, and terrestrial benefits or impacts.",
+    	'Local Economy Benefits' : "Potential to create sustainable local jobs in the planning, implementation, and support of the proposal."
+	};
+	
 	$scope.hover1 = false;
 	$scope.hover2 = false || $scope.hover1;
 	$scope.hover3 = false || $scope.hover1 || $scope.hover2;
