@@ -48,8 +48,19 @@ function signupController($scope, $http) {
     	$http.post(signupUrl, $scope.user).success(function(data){   	
     	    console.log(data);
     	    if (data.statusCode == 0){
-    	        console.log(data);
-    //            window.location.assign(data.returnTo);
+                window.location.assign(data.returnTo);
+    	    }
+			else if (data.statusCode === 2){
+                $scope.alertMessage = data.message;
+			}
+    	});
+	};
+	
+	$scope.submitLogin = function() {
+    	var loginUrl = "/loginHandler";
+    	$http.post(loginUrl, $scope.user).success(function(data){   	
+    	    if (data.statusCode == 0){
+                window.location.assign(data.returnTo);
     	    }
 			else if (data.statusCode === 2){
                 $scope.alertMessage = data.message;

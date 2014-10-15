@@ -532,18 +532,19 @@
 </%def>
 
 <%def name="loginForm()">
-    <form id="sign_in" action="/loginHandler" class="form-horizontal" method="post">
-        <input type="hidden" name="alURL" value="${url.current()}">
+    <form id="sign_in" class="form-horizontal" ng-controller="signupController" ng-submit="submitLogin()">
+        <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
+        <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
         <div class="form-group">
             <label class="col-sm-3 control-label" for="email"> Email: </label>
             <div class="col-sm-8">
-                <input class="form-control" type="email" name="email" id="email" required>            
+                <input class="form-control" type="email" ng-model="user.email" id="email" required>            
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3  control-label" for="passphrase"> Password: </label>
             <div class="col-sm-8">
-                <input class="form-control" type="password" name="password" id="password"><br>
+                <input class="form-control" type="password" ng-model="user.password" id="password"><br>
                 <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
             </div>
         </div>

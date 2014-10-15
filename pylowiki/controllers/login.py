@@ -638,11 +638,11 @@ class LoginController(BaseController):
 
         iPhoneApp = utils.iPhoneRequestTest(request)
         
-        log.info(request.params['alURL'])
-        
+        query = json.loads(request.body)
+       
         try:
-            email = request.params["email"].lower()
-            password = request.params["password"]
+            email = query["email"].lower()
+            password = query["password"]
                 
             log.info('user %s attempting to log in' % email)
             if email and password:
@@ -660,11 +660,11 @@ class LoginController(BaseController):
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
-                        log.info(request.params['alURL'] != "/login")
-                        if request.params['alURL'] != "/login" and request.params['alURL'] != "/signup":                            
-                            loginURL = request.params['alURL']
-                        if len(request.params['alURL'].split("/")) >= 3:
-                            workshopCode = request.params['alURL'].split("/")[2]
+
+                        if query['alURL'] != "/login" and query['alURL'] != "/signup":                            
+                            loginURL = query['alURL']
+                        if len(query['alURL'].split("/")) >= 3:
+                            workshopCode = query['alURL'].split("/")[2]
                             WSAC = "4VQV"
                             if workshopCode == WSAC:
                                 workshop = workshopLib.getWorkshopByCode(workshopCode)
@@ -679,21 +679,24 @@ class LoginController(BaseController):
                             #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
                         else:
-                            return redirect(loginURL)
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo':loginURL})
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
+                        return json.dumps({'statusCode':2, 'message':'Incorrect username or password'})
                         if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
+                    return json.dumps({'statusCode':2, 'message':'Incorrect username or password'})
                     if iPhoneApp:
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
             else:
                 splashMsg['content'] = 'missing username or password'
+                return json.dumps({'statusCode':1, 'message':'Missing username or password'})
                 if iPhoneApp:
                     response.headers['Content-type'] = 'application/json'
                     return json.dumps({'statusCode':1, 'message':'missing username or password'})
