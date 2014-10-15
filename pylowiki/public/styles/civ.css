@@ -4122,6 +4122,10 @@ background-color: #d9534f;
   text-shadow: 0.5px 0.5px 0.3px #357EBD;
 }
 
+.tooltip > .tooltip-inner {
+  font-size: 1.3em;
+}
+
 /*
     Demographics classes
 */
