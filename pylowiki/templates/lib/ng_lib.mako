@@ -818,7 +818,7 @@
     		<tr ng-repeat="criteria in rating.criteriaList">
     		    <td>
                     <span class="criteria-name">{{criteria.criteria}}</span>
-                    <span data-toggle="tooltip" data-placement="top" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip"></span><br/>
+                    <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip"></span><br/>
     		        <span ng-switch="showAverage">
             %if readOnly:
     		            
