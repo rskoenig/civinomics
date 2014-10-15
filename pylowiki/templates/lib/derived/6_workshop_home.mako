@@ -511,7 +511,7 @@
         {{workshopTitle}}
       </a>
       %if c.display:
-        <a ng-click="toggleBrief()" class="brief"><span class="label label-info">Read the Intro</span></a>
+        <a ng-click="toggleBrief()" ng-show="!(showBrief)" class="brief"><span class="label label-info">Read Background</span></a>
       %endif
     </h1>
 </%def>
@@ -690,7 +690,7 @@
 <%def name="workshopBrief()">
   <div class="well wiki-well" ng-show="showBrief" ng-cloak>
     <div ng-cloak>
-      <p class="workshop-metrics-lg">Intro</p>
+      <p class="workshop-metrics-lg">Background</p>
       <div class="row">
         <div class="col-xs-12">
           ${slideshow(c.w, 'listing')}
@@ -699,9 +699,22 @@
       <p class="description">
         ${c.w['description']}
       </p>
+
+
       <hr class="list-header">
-      ${showInfo(c.w)}
-      <a href="#top" class="green green-highlight" ng-click=" showInfo = false ">less</a>
+
+      <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+            Read More
+        </a>
+        <div id="fullText" class="panel-collapse collapse">
+
+            ${showInfo(c.w)}
+
+            <br>
+            <a class="btn btn-lg btn-default" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+                Close
+            </a>
+        </div>
     </div>
   </div>
 </%def>
