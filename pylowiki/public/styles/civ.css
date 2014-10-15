@@ -3758,7 +3758,17 @@ table.table-inline{
 .comment-avatar-cell{
   vertical-align: top;
   width: 35px !important;
+  padding-top: 10px;
 }
+.comment-avatar-cell img{
+  margin-left: 10px;
+}
+
+.comment-type .radio.inline{
+  margin-bottom: 0;
+  font-size: .85em;
+}
+
 .comment-main-cell{
   padding: 10px;
 }

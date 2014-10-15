@@ -1020,6 +1020,9 @@
     % if not c.searchQuery or c.geoScope:
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;">
             <div ng-controller="commentsController">
+
+                ${addComment()}
+
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
                         <ul class="horizontal-list iconListing">
@@ -1034,6 +1037,7 @@
                         </ul>
                     </div>
                 </div>
+
                 ### Comments
                 <div class="activity-comments">
                 <table class="activity-comments">
@@ -1124,84 +1128,6 @@
                             </div>
                         </td>
                     </tr>
-                    % if readonly == '0':
-                    <tr ng-hide="newCommentLoading || commentsHidden">
-                        % if c.authuser:
-                            <td class="comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
-                            <td class="col-xs-10" style="padding: 10px 0px;">
-                                <form class="no-bottom form-inline" ng-submit="submitComment()">
-                                    <div class="form-group col-sm-10 text-right" style="margin-left: 0; padding-left:0;">
-                                        % if c.privs and not c.privs['provisional']:
-                                            <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
-                                        % else:
-                                            <a href="#activateAccountModal" data-toggle='modal'>
-                                            <textarea class="form-control" style="width: 100%;" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea></a>
-                                        % endif
-
-                                        <small class="left-space" ng-show="type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate'">
-                                            <span class="radio inline no-top right-space">
-                                                <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
-                                            </span>
-                                            <span class="radio inline no-top right-space">
-                                                <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
-                                            </span>
-                                            <span class="radio inline no-top right-space">
-                                                <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
-                                            </span>
-                                            <span class="radio inline no-top right-space">
-                                                <input type="radio" name="commentRole" ng-model="commentRole" value="question"> Question 
-                                            </span>
-                                            <span class="radio inline no-top right-space">
-                                                <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
-                                            </span>
-                                        </small>
-                                        
-                                    </div>
-                                    <div class="form-group">
-                                        % if c.privs and not c.privs['provisional']:
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        % else:
-                                            <a href="#activateAccountModal" data-toggle='modal' class="btn btn-primary">Submit</a>
-                                        % endif
-                                    </div>
-                                </form>
-                            </td>
-                        % else:
-                        <!-- if not c.authuser -->
-                            <td class="col-xs-1 comment-avatar-cell"><img src="/images/hamilton.png" class="media-object avatar topbar-avatar"></td>
-                            <td class="col-xs-11" style="padding: 10px;">
-                                <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
-                                    <form class="no-bottom" ng-submit="submitEditComment()">
-                                            <div class="form-group">
-                                                <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                                <div ng-show="(comment.doCommentRole == 'yes')">
-                                                    &nbsp;
-                                                    <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
-                                                    </label>
-                                                    <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
-                                                    </label>
-                                                    <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
-                                                    </label>
-                                                    <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
-                                                    </label>
-                                                    <label class="radio inline">
-                                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
-                                                    </label>
-                                                </div><!-- ng-show -->
-                                            </div>
-                                        </form>
-                            </td>
-                        % endif
-                        <td></td>
-                    </tr>
-                    % endif
                 </table>
                 </div><!-- activity comments -->
             </div>
@@ -1530,4 +1456,76 @@
         <button class="btn btn-default btn-lg" data-dismiss="modal" aria-hidden="true" ng-click="sendUserDemographics(item.parentHref)">Submit</button>
         <br/><br/>&nbsp;
     </div>
+</%def>
+
+<%def name="addComment(**kwargs)">
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = '0'
+    %>  
+    % if readonly == '0':
+    <table class="criteria-table listing col-xs-10">
+        <tr ng-hide="newCommentLoading">
+            <td class="comment-avatar-cell">
+                % if c.authuser:
+                    ${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}
+                % else:
+                    <img src="/images/hamilton.png" class="media-object avatar topbar-avatar">
+                % endif
+            </td>
+            <td style="padding: 10px 0px;">
+                <form class="no-bottom form-inline" ng-submit="submitComment()">
+                    <div class="form-group col-sm-10 text-right" style="margin-left: 0; padding-left:0; margin-right:10px;">
+                        % if c.authuser:
+                            % if c.privs and not c.privs['provisional']:
+                                <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                            % else:
+                                <a href="#activateAccountModal" data-toggle='modal'>
+                                <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                            </a>
+                            % endif
+                        % else:
+                            <a href="#signupLoginModal" data-toggle='modal' class="no-highlight no-hover">
+                                <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                            </a>
+                        % endif
+
+                        <div class="left-space comment-type" ng-show="type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate'">
+                            <span class="radio inline right-space">
+                                <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
+                            </span>
+                            <span class="radio inline right-space">
+                                <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
+                            </span>
+                            <span class="radio inline right-space">
+                                <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
+                            </span>
+                            <span class="radio inline right-space">
+                                <input type="radio" name="commentRole" ng-model="commentRole" value="question"> Question 
+                            </span>
+                            <span class="radio inline right-space">
+                                <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
+                            </span>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        % if c.authuser:
+                            % if c.privs and not c.privs['provisional']:
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            % else:
+                                <a href="#activateAccountModal" data-toggle='modal' class="btn btn-primary">Submit</a>
+                            % endif
+                        % else:
+                            <a href="#signupLoginModal" data-toggle='modal' class="btn btn-primary">Submit</a>
+                        % endif
+                    </div>
+                </form>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+    % endif
 </%def>
