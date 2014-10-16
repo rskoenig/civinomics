@@ -798,7 +798,6 @@ You can change your password to something you prefer on your profile page.\n\n''
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
         log.info("Login display")
-        log.info(session['returnTo'])
         if workshopCode != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None' and thing != 'newWorkshop':
