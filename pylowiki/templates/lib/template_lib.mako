@@ -442,7 +442,7 @@
                 </div> 
             </div>
         % endif
-      ${socialLogins()}
+      <!-- ${socialLogins()} -->
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
         ${signupForm()}
       </div>
