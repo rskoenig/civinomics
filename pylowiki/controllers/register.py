@@ -727,8 +727,13 @@ class RegisterController(BaseController):
         """
         log.info("in signup handler")
 
+        log.info(json.loads(request.body))
+        
+        log.info(vars(session))
+        
         try:
             useJson = request.params['json']
+            
             if useJson == '1':
                 returnJson = True
             else:
@@ -736,6 +741,9 @@ class RegisterController(BaseController):
         except KeyError:
             returnJson = False
 
+        returnJson = True
+        query = json.loads(request.body)
+        
         returnPage = "/signup"
         if 'afterLoginURL' in session:
         # look for accelerator cases: workshop home, item listing, item home
@@ -745,8 +753,8 @@ class RegisterController(BaseController):
                 session.pop('afterLoginURL')
                 session.save()
 
-        if 'alURL' in request.params:
-            returnPage = request.params['alURL']
+        if 'alURL' in query and query['alURL'] is not '':
+            returnPage = query['alURL']
                 
         name = False
         password = False
@@ -756,10 +764,10 @@ class RegisterController(BaseController):
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
-        if  'password' not in request.params:
+        if  'password' not in query:
             log.info('password missing')
         else:
-            password = request.params['password']
+            password = query['password']
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])
@@ -771,39 +779,37 @@ class RegisterController(BaseController):
                 if 'addItem' in request.params:
                     c.listingType = request.params['addItem']
         else:
-            if  'email' not in request.params:
+            if  'email' not in query:
                 log.info('email missing')
             else:
-                email = request.params['email']
-        if  'postalCode' not in request.params:
+                email = query['email']
+        if  'postalCode' not in query:
             log.info('postalCode missing')
         else:
-            postalCode = request.params['postalCode']
-        if  'country' not in request.params:
+            postalCode = query['postalCode']
+        if  'country' not in query:
             log.info('country missing')
         else:
-            country = request.params['country']
-        if  'memberType' not in request.params:
+            country = query['country']
+        if  'memberType' not in query:
             log.info('memberType missing')
         else:
-            memberType = request.params['memberType']
-        if  'name' not in request.params:
+            memberType = query['memberType']
+        if  'name' not in query:
             log.info('name missing')
         else:
-            name = request.params['name']
-        if  'chkTOS' not in request.params:
+            name = query['name']
+        if  'chkTOS' not in query:
             log.info('chkTOS missing')
         else:
-            checkTOS = request.params['chkTOS']
+            checkTOS = query['chkTOS']
 
         schema = plaintextForm()
         try:
             namecheck = name.replace(' ', '')
             nameTst = schema.to_python(dict(username = namecheck))
         except formencode.Invalid, error:
-            splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
-            session['splashMsg'] = splashMsg
-            session.save()
+
             if returnJson:
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':2, 'message':'Full name: Enter only letters, numbers, or _ (underscore)'})
@@ -820,28 +826,28 @@ class RegisterController(BaseController):
                 log.info("Error: Long email")
                 errorFound = True
                 splashMsg['content'] = "Email can be " + unicode(maxChars) + " characters at most"
-                session['splashMsg'] = splashMsg
-                session.save()
+
+
             if len(password) > maxChars:
                 log.info("Error: Long password")
                 errorFound = True
                 splashMsg['content'] = "Password can be " + unicode(maxChars) + " characters at most"
-                session['splashMsg'] = splashMsg
-                session.save() 
+
+
             if postalCode:
                 pInfo = getPostalInfo(postalCode)
                 if pInfo == None:
                     log.info("Error: Bad Postal Code")
                     errorFound = True
                     splashMsg['content'] = "Invalid postal code"
-                    session['splashMsg'] = splashMsg
-                    session.save() 
+
+
             else: 
                 log.info("Error: Bad Postal Code")
                 errorFound = True
                 splashMsg['content'] = "Invalid postal code"
-                session['splashMsg'] = splashMsg
-                session.save()
+
+
             if errorFound:
                 if returnJson:
                     response.headers['Content-type'] = 'application/json'
@@ -874,11 +880,19 @@ class RegisterController(BaseController):
                     #user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                    if 'alURL' in request.params:
-                        returnPage = request.params['alURL']
-                        log.info("HELLOOOOOOO")
-                        if len(request.params['alURL'].split("/")) >= 3:
-                            workshopCode = request.params['alURL'].split("/")[2]
+                    if 'alURL' in query:
+                        returnPage = query['alURL']
+                        if len(query['alURL'].split("/")) >= 3:
+                            workshopCode = query['alURL'].split("/")[2]
+                            WSAC = "4VQV"
+                            if workshopCode == WSAC:
+                                workshop = workshopLib.getWorkshopByCode(workshopCode)
+                                wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
+                                user['participatingWorkshop'] = wUrl + "|" + workshop['title']
+                    if 'returnTo' in session:
+                        returnPage = session['returnTo']
+                        if len(query['alURL'].split("/")) >= 3:
+                            workshopCode = session['returnTo'].split("/")[2]
                             WSAC = "4VQV"
                             if workshopCode == WSAC:
                                 workshop = workshopLib.getWorkshopByCode(workshopCode)
@@ -914,7 +928,7 @@ class RegisterController(BaseController):
                             returnPage += "/add/" + c.listingType
                         if returnJson:
                             response.headers['Content-type'] = 'application/json'
-                            return json.dumps({'statusCode':0, 'user':dict(user)})
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo': returnPage})
                         else:
                             return redirect(returnPage)
                             
@@ -928,13 +942,17 @@ class RegisterController(BaseController):
                             session.pop('afterLoginURL')
                             session.save()
                     
-                    if 'alURL' in request.params:
-                        returnPage = request.params['alURL']
+                    if 'alURL' in query:
+                        log.info("there's an alURL")
+                        returnPage = query['alURL']
 
+                    if returnPage == "/login" or returnPage == "/signup":
+                        returnPage = '/'
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
-                        return json.dumps({'statusCode':0, 'user':dict(u.u)})
+                        log.info(returnPage)
+                        return json.dumps({'statusCode':0, 'user':dict(u.u), 'returnTo': returnPage})
                     else:
                         return redirect(returnPage)
                 else:
@@ -956,15 +974,11 @@ class RegisterController(BaseController):
                         return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
                 else:
                     splashMsg['content'] = "The email '" + email + "' is already in use. If you own this account, try Log in or Forgot password."
-                    session['splashMsg'] = splashMsg
-                    session.save()
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':'This email is already in use.'})
         else:
             splashMsg['content'] = "Please fill all fields"
-            session['splashMsg'] = splashMsg
-            session.save()
             if returnJson:
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':2, 'message':'Please fill all fields'})

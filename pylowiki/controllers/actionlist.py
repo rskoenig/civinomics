@@ -90,6 +90,18 @@ class ActionlistController(BaseController):
     def santacruzwater( self ):
         return redirect('/workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention')
         
+    def santacruzwaterlogin( self ):
+        #THIS IS PROBABLY THE HACKIEST THING EVER
+        session['returnTo'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        session.save()
+        return redirect('/login')
+        
+    def santacruzwatersignup( self ):
+        session['returnTo'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        session.save()
+        #THIS IS PROBABLY THE HACKIEST THING EVER 
+        return redirect('/signup')
+        
     def rss( self ):
         c.activity = getRecentActivity(30)
         feed = feedgenerator.Rss201rev2Feed(
