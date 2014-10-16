@@ -44,6 +44,7 @@ function signupController($scope, $http) {
 		});
 	};
 	$scope.submitSignup = function() {
+	    $scope.alertMessage = '';
     	var signupUrl = "/signup/handler";
     	$http.post(signupUrl, $scope.user).success(function(data){   	
     	    console.log(data);
@@ -57,6 +58,7 @@ function signupController($scope, $http) {
 	};
 	
 	$scope.submitLogin = function() {
+		    $scope.alertMessage = '';
     	var loginUrl = "/loginHandler";
     	$http.post(loginUrl, $scope.user).success(function(data){   	
     	    if (data.statusCode == 0){
