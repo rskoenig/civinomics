@@ -634,7 +634,7 @@ class InitiativeController(BaseController):
 
         c.summary = c.initiative['description']
         c.summary = c.summary.split(' ')
-        c.summary = c.summary[0:101]
+        c.summary = c.summary[0:108]
         c.summary = ' '.join(c.summary)
 
                 
