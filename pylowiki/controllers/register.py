@@ -809,9 +809,7 @@ class RegisterController(BaseController):
             namecheck = name.replace(' ', '')
             nameTst = schema.to_python(dict(username = namecheck))
         except formencode.Invalid, error:
-            splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
-            session['splashMsg'] = splashMsg
-            session.save()
+
             if returnJson:
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':2, 'message':'Full name: Enter only letters, numbers, or _ (underscore)'})
@@ -828,28 +826,28 @@ class RegisterController(BaseController):
                 log.info("Error: Long email")
                 errorFound = True
                 splashMsg['content'] = "Email can be " + unicode(maxChars) + " characters at most"
-                session['splashMsg'] = splashMsg
-                session.save()
+
+
             if len(password) > maxChars:
                 log.info("Error: Long password")
                 errorFound = True
                 splashMsg['content'] = "Password can be " + unicode(maxChars) + " characters at most"
-                session['splashMsg'] = splashMsg
-                session.save() 
+
+
             if postalCode:
                 pInfo = getPostalInfo(postalCode)
                 if pInfo == None:
                     log.info("Error: Bad Postal Code")
                     errorFound = True
                     splashMsg['content'] = "Invalid postal code"
-                    session['splashMsg'] = splashMsg
-                    session.save() 
+
+
             else: 
                 log.info("Error: Bad Postal Code")
                 errorFound = True
                 splashMsg['content'] = "Invalid postal code"
-                session['splashMsg'] = splashMsg
-                session.save()
+
+
             if errorFound:
                 if returnJson:
                     response.headers['Content-type'] = 'application/json'
@@ -945,11 +943,15 @@ class RegisterController(BaseController):
                             session.save()
                     
                     if 'alURL' in query:
+                        log.info("there's an alURL")
                         returnPage = query['alURL']
 
+                    if returnPage == "/login" or returnPage == "/signup":
+                        returnPage = '/'
                     
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
+                        log.info(returnPage)
                         return json.dumps({'statusCode':0, 'user':dict(u.u), 'returnTo': returnPage})
                     else:
                         return redirect(returnPage)
@@ -972,15 +974,11 @@ class RegisterController(BaseController):
                         return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
                 else:
                     splashMsg['content'] = "The email '" + email + "' is already in use. If you own this account, try Log in or Forgot password."
-                    session['splashMsg'] = splashMsg
-                    session.save()
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':'This email is already in use.'})
         else:
             splashMsg['content'] = "Please fill all fields"
-            session['splashMsg'] = splashMsg
-            session.save()
             if returnJson:
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':2, 'message':'Please fill all fields'})
