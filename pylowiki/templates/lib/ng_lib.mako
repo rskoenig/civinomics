@@ -14,7 +14,7 @@
 
                     <div class="spacer"></div>
 
-                    <h4 class="listed-item-title"><a class="no-highlight" ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    <h4 class="listed-item-title"><a class="no-highlight" ng-href="{{item.href}}" target="_blank">{{item.title}}</a></h4>
                     <a ng-if="item.link" ng-href="{{item.link}}">{{item.link}}</a>
                     <div class="spacer"></div>
 
@@ -51,7 +51,7 @@
                     </a>
                 </div>
                 <div class="col-sm-9">
-                    <h3 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h3>
+                    <h3 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}}</a></h3>
                     ${status()}
                     ${text()}
                     ${additionalMetrics()}
@@ -818,7 +818,7 @@
     		<tr ng-repeat="criteria in rating.criteriaList">
     		    <td>
                     <span class="criteria-name">{{criteria.criteria}}</span>
-                    <span data-toggle="tooltip" data-placement="top" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip"></span><br/>
+                    <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip"></span><br/>
     		        <span ng-switch="showAverage">
             %if readOnly:
     		            
@@ -914,11 +914,12 @@
 </%def>
 
 <%def name="moreLess()">
-    <a class="green green-hover" ng-show="item.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{item.urlCode}}" class="green green-hover"  ng-show="item.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a ng-show="item.text.length > 799 && stringLimit == 800" ng-click="stringLimit = 1000000">... more</a>
+    <a href="#{{item.urlCode}}" ng-show="item.text.length > 800 && stringLimit == 1000000" ng-click="stringLimit = 800">less</a>
 </%def>
 
 <%def name="moreLessComment()">
-    <a class="green green-hover" ng-show="comment.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" class="green green-hover"  ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
+    <a ng-show="comment.text.length > 200 && stringLimit == 300" ng-click="stringLimit = 10000">more</a><a href="#{{comment.urlCode}}" ng-show="comment.text.length > 300 && stringLimit == 10000" ng-click="stringLimit = 300">less</a>
 </%def>
 
 <%def name="moreLessStatement()">
@@ -996,11 +997,29 @@
 </%def>
 
 <%def name="text()">
-    <p ng-init="stringLimit=300" class="markdown markdown-listed"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
+    <span ng-init="stringLimit=800" class="markdown markdown-listed">
+        <span ng-bind-html="item.html | limitTo:stringLimit"></span>
+        ${moreLess()}
+    </span>
 </%def>
 
-<%def name="summary()">
-    <p class="markdown markdown-listed">{{item.text}}</p>
+<%def name="fullText()">
+    <!--
+    <div ng-if="item.fullText != ''">
+        <a class="btn btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
+             Read More
+        </a>
+        <div id="fullText{{item.url}}" class="panel-collapse collapse">
+
+            <p class="markdown markdown-listed"><span ng-bind-html="item.fullText"></span></p>
+
+            <br>
+            <a class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
+                Close
+            </a>
+        </div>
+    </div>
+    -->
 </%def>
 
 <%def name="additionalMetrics()">
