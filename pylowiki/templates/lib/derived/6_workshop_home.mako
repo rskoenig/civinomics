@@ -733,7 +733,7 @@
 </%def>
 
 <%def name="workshopMenu2()">
-  <div class="workshop-menu">
+  <div class="workshop-menu" data-spy="affix" data-offset-top="200" ng-cloak">
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#">Background</a></li>
       <li><a href="#">Initiatives</a>
