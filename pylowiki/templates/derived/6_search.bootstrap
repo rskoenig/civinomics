@@ -596,7 +596,7 @@
                             </div>
                             
                             <td>
-                                ${ng_helpers.initiative_listing()}
+                                ${ng_helpers.general_listing_yesno()}
                             </td>
 
                         </tr>

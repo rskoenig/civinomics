@@ -105,9 +105,6 @@ def Idea(user, title, text, workshop, privs, role = None, **kwargs):
     idea['downs'] = '0'
     idea['views'] = '0'
     idea['url'] = urlify(title[:20])
-    if 'geoScope' in kwargs:
-        idea['scope'] = kwargs['geoScope']
-        idea['public'] = '1'
     if 'tags' in kwargs:
             idea['tags'] = kwargs['tags']
     idea = generic.addedItemAs(idea, privs, role)
@@ -118,6 +115,10 @@ def Idea(user, title, text, workshop, privs, role = None, **kwargs):
         idea = generic.linkChildToParent(idea, workshop)
     else:
         d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, privs = privs, role = role)
+        # if it has a workshop parent, it needs to use the workshop_public_scope and workshop_searchable keys
+        if 'geoScope' in kwargs:
+            idea['scope'] = kwargs['geoScope']
+            idea['public'] = '1'
 
 	
     idea['discussion_child'] = d.d['urlCode']

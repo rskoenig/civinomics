@@ -153,7 +153,7 @@ def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0'
     workshop = generic.getThing(workshopCode)
     public_private = workshop['public_private']
     if public_private == 'public':
-        svalue = '1'
+        svalue = workshop['published']
     else:
         svalue = '2'
         
