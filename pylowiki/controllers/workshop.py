@@ -1044,7 +1044,8 @@ class WorkshopController(BaseController):
             c.numFinal = workshopLib.getInitiativeCountForWorkshop(workshopCode)
         c.numUpdates = 0
 
-        c.workshopInitiatives = workshopLib.getInitiativesForWorkshop(workshopCode) 
+
+        c.workshopInitiatives = sorted(workshopLib.getInitiativesForWorkshop(workshopCode))
 
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
