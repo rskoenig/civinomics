@@ -3380,6 +3380,12 @@ margin-right: -13px;
   width: 360px;
 }
 
+.affix {
+  position: fixed;
+  top: 60px;
+}
+
+
 .commentRole{
   text-transform: uppercase;
   line-height: 20px;

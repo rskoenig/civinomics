@@ -20,6 +20,7 @@
 
 <%def name="iMenu()">
 
+    <div data-spy="affix" data-offset-top="350">
     % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
         <ul class="nav nav-pills nav-stacked" style="width: 100%;">
             <li><a href="#info" role="tab" data-toggle="tab">Info</a></li>
@@ -41,6 +42,7 @@
             <li><a ng-click="scrollTo('comments')">Comments</a></li>
         </ul>
     % endif
+    </div>
 
 </%def>
 
