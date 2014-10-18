@@ -44,13 +44,13 @@
 
             <div class="spacer"></div>
             <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
-                <div class="col-sm-3">
+                <div class="col-sm-3 col-md-2">
                     <a href = '{{item.href}}'>
                         <img class="hidden-xs thumbnail tight initiative-thumb no-top" src="{{item.thumbnail}}">
                         <div class="hidden-lg hidden-md hidden-sm landscape-id-photo" style="background-image:url('{{item.mainPhoto}}')"></div>
                     </a>
                 </div>
-                <div class="col-sm-9">
+                <div class="col-sm-9 col-md-10">
                     <h3 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}}</a></h3>
                     ${status()}
                     ${text()}
@@ -814,8 +814,15 @@
 	<div class="actions" style="padding:10px; padding-bottom: 10px;" ng-cloak>
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
-    		<table class="criteria-table ${locationClass} centered">
-    		<tr ng-repeat="criteria in rating.criteriaList">
+            %if locationClass == 'listing': 
+                <div ng-repeat="criteria in rating.criteriaList" class="col-md-3 col-sm-6">
+                    <table class="criteria-table ${locationClass} centered">
+                        <tr>
+            %else:
+                <div>
+                    <table class="criteria-table ${locationClass} centered">
+                        <tr ng-repeat="criteria in rating.criteriaList">
+            %endif
     		    <td>
                     <span class="criteria-name">{{criteria.criteria}}</span>
                     <span data-toggle="tooltip" data-placement="bottom" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip"></span><br/>
@@ -879,7 +886,8 @@
                 </td>
     			</tr>
     		</table>
-            <div class="row text-center rating-details ${locationClass}">
+            </div><!-- col-md-3 -->
+            <div class="col-md-3 col-sm-12 rating-details ${locationClass}">
                 <small ng-if="!showAverage"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowAverage()">view my ratings</a></small>
             </div>
 		</div>
@@ -1275,7 +1283,7 @@
                         <td class="col-xs-1 comment-avatar-cell">${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}</td>
                         <td class="col-xs-11" style="padding: 10px 0px;">
                             <form class="no-bottom form-inline" ng-submit="submitComment()">
-                                <div class="form-group col-sm-10 text-right" style="margin-left: 0; padding-left:0;">
+                                <div class="form-group col-sm-12" style="margin-left: 0; padding-left:0;">
                                     % if c.privs and not c.privs['provisional']:
                                         <textarea class="form-control" style="width: 100%;" rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                                     % else:
@@ -1486,7 +1494,7 @@
             readonly = '0'
     %>  
     % if readonly == '0':
-    <table class="criteria-table listing col-xs-10">
+    <table class="criteria-table listing col-xs-11">
         <tr ng-hide="newCommentLoading">
             <td class="comment-avatar-cell">
                 % if c.authuser:
@@ -1497,7 +1505,7 @@
             </td>
             <td style="padding: 10px 0px;">
                 <form class="no-bottom form-inline" ng-submit="submitComment()">
-                    <div class="form-group col-sm-10 text-right" style="margin-left: 0; padding-left:0; margin-right:10px;">
+                    <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px;">
                         % if c.authuser:
                             % if c.privs and not c.privs['provisional']:
                                 <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
@@ -1511,7 +1519,6 @@
                                 <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                             </a>
                         % endif
-
                         <div class="left-space comment-type" ng-show="type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate'">
                             <span class="radio inline right-space">
                                 <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
@@ -1529,9 +1536,8 @@
                                 <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
                             </span>
                         </div>
-                        
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="vertical-align:top;">
                         % if c.authuser:
                             % if c.privs and not c.privs['provisional']:
                                 <button type="submit" class="btn btn-primary">Submit</button>
