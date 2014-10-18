@@ -34,15 +34,15 @@ html,body{
 
 h5.listed-item-title, h4.listed-item-title, h3.listed-item-title, h2.listed-item-title, h1.listed-item-title{
   margin-top: 0px;
+  margin-bottom: 15px;
 }
-
 
 .listed-item-title a{
   color: #333333;
-  margin-bottom: 15px;
 }
-.listed-item-title a:hover{
-  color: #3c51bf;
+
+a.a-default{
+  color: #428bca !important;
 }
 
 .nav li a{
@@ -3376,7 +3376,7 @@ margin-right: -13px;
 }
 
 .initiative-summary{
-  font-size: 1.2em;
+  font-size: 1.5em;
   line-height: 1.7em;
 }
 .initiative-summary h1, .initiative-summary h2, .initiative-summary h3, .initiative-summary h4, .initiative-summary h5, .initiative-summary h6{

@@ -18,10 +18,13 @@
 
     % if c.initiative['proposal'] or c.initiative['background']:
         <br>
+        <!--
         <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
             Read Full Text
         </a>
         <div id="fullText" class="panel-collapse collapse">
+        -->
+        <div id="fullText">
             % if c.initiative['background']:
                 ${ihelpers.showBackground()}
             % endif
@@ -29,10 +32,12 @@
             % if c.initiative['proposal']:
                 ${ihelpers.showProposal()}
             % endif
+
+            <!--
             <br>
             <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
                 Close Full Text
-            </a>
+            </a>-->
         </div>
     % endif
 

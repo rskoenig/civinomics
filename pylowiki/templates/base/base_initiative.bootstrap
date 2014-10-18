@@ -26,8 +26,8 @@
 <span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}';"></span>
 <div class="container" ng-controller="showThingCtrl">
     <div class="row">
-        <div class="col-sm-9 col-md-9 bottom-space-lg">
-            <div class="row" style="position: absolute; width: 100%">
+        <div class="col-sm-9 col-md-9">
+            <div class="row" style="width: 100%; min-height:300px;">
 
                 <div class="col-xs-12 white">
                     ${helpers.iTags()}
@@ -44,11 +44,11 @@
 
             </div>
 
-            <div class="content-offset" id="summary"></div>
+            <div id="summary"></div>
 
             <div class="top-offset">
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 hidden-xs">
                         ${helpers.iMenu()}
                     </div>
                     <div class="col-sm-10">

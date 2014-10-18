@@ -36,7 +36,7 @@
     <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
 
-            <div class="row">
+            <div class="row" id="{{item.url}}">
                 <div class="col-xs-12">
                     ${meta2()}
                 </div>
@@ -51,10 +51,10 @@
                     </a>
                 </div>
                 <div class="col-sm-9 col-md-10">
-                    <h3 class="listed-item-title"><a ng-href="{{item.href}}" target="_blank">{{item.title}}</a></h3>
+                    <h3 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h3>
                     ${status()}
                     ${text()}
-                    ${additionalMetrics()}
+                    ${fullText()}
                 </div>
             </div>
 
@@ -887,7 +887,7 @@
     			</tr>
     		</table>
             </div><!-- col-md-3 -->
-            <div class="col-md-3 col-sm-12 rating-details ${locationClass}">
+            <div class="col-xs-12 rating-details ${locationClass}">
                 <small ng-if="!showAverage"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowAverage()">view my ratings</a></small>
             </div>
 		</div>
@@ -1012,29 +1012,35 @@
 </%def>
 
 <%def name="fullText()">
-    <!--
+    
     <div ng-if="item.fullText != ''">
-        <a class="btn btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
-             Read More
-        </a>
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="a-default" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
+            Full Text
+            </a>
+          </h4>
+        </div>
         <div id="fullText{{item.url}}" class="panel-collapse collapse">
 
             <p class="markdown markdown-listed"><span ng-bind-html="item.fullText"></span></p>
 
             <br>
+            <!-- disorienting cause it doesnt go back to the top 
             <a class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
                 Close
             </a>
+            -->
         </div>
     </div>
-    -->
+    
 </%def>
 
 <%def name="additionalMetrics()">
     <p><strong>
         <span ng-if="item.cost >= 0" class="grey centered">Net Cost:</span>
         <span ng-if="item.cost < 0" class="grey centered">Net Savings:</span>
-        <span class="pull-right">{{(item.cost | currency).replace(".00", "")}}</span>
+        <span>{{(item.cost | currency).replace(".00", "")}}</span>
     </strong></p>
 </%def>
 

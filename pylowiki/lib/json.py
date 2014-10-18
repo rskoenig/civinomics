@@ -86,21 +86,22 @@ def getJsonProperties(item):
     # cut off the <p> </p> misaka is injecting
     entry['html'] = entry['html'][3:-5]
 
-    """
-    This is likely to be to large...
+    
+    #This is likely to be too large...
 
     if item.objType == 'initiative':
         entry['fullText'] = item['proposal']
     else:
         entry['fullText'] = ''
     entry['fullText'] = m.html(entry['fullText'], render_flags=m.HTML_SKIP_HTML)
-    """
+
+    """    
     if item.objType == 'initiative':
         if item['proposal'] != None and item['proposal'] != '':
             entry['fullText'] = True;
     else:
         entry['fullText'] = False
-
+    """
 
     if 'link' in item:
         entry['link'] = item['link']

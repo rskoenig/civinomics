@@ -97,7 +97,7 @@
                         
 
 <%def name="showDescription()">
-    <h2 class="no-top">Summary</h2>
+    <!--<h2 class="no-top">Summary</h2>-->
     <div class="initiative-summary">
         ${m.html(c.summary) | n}
     </div>
