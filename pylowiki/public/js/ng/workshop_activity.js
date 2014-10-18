@@ -1,4 +1,3 @@
-
 function activityWorkshopController($scope, $http) {
     $scope.addThing = 'Idea';
     if ($scope.allowIdeas == '0') {
@@ -484,4 +483,24 @@ function activityWorkshopController($scope, $http) {
 function workshopMenuController($scope, Data) {
 	$scope.data = Data
 }
+
+function initiativeListCtrl($scope, $http){
+
+	$scope.iListTest = 'ilist foo'
+
+	$scope.getInitiativeList = function(){
+		$scope.getURL = '/workshop/' + $scope.code + '/' + $scope.url + '/getInitiativeList'
+		$http.get($scope.getURL).success(function(data){
+			if (data.statusCode == 1){
+				$scope.initiativeNumber = 0;
+			} else if (data.statusCode === 0){
+				$scope.list = data.result
+				$scope.initiativeNumber = 1;
+			}
+		})
+	};
+
+	$scope.getInitiativeList()
+
+};
 

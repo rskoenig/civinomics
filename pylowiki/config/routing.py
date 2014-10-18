@@ -250,7 +250,9 @@ def make_map():
     #show resource without a parent
     map.connect('/idea/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showIdeaSingle')
 
-    
+    # Initiatives
+    map.connect('/workshop/{workshopCode}/{workshopURL}/getInitiativeList', controler = 'workshop', action = 'getInitiativeList', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+
     # ADD HERE: threaded discussion route
 
     # Cofacilitation invitation and response

@@ -738,6 +738,19 @@
       <li><a href="#">Background</a></li>
       <li><a href="#">Initiatives</a>
         <ul class="nav">
+        <input type="text" class="form-control rounded" placeholder="Search" ng-model='listQuery'>
+        <div>
+          <div ng-controller="initiativeListCtrl">
+            Test List:
+            {{iListTest}}
+            {{listQuery}}
+            {{getURL}}
+            iNum: {{initiativeNumber}}
+            <div ng-repeat="i in list | filter:query">
+              !!{{i.title}}!!
+            </div>
+          </div>
+        </div>
         % for i in c.workshopInitiatives: 
             <li><a href="/initiative/${i['urlCode']}/${i['url']}" target="_blank">${i['title']}</a></li>
         % endfor

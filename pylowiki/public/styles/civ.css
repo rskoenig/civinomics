@@ -102,6 +102,10 @@ h5.h45, h4.h45{
 
 /* Set the fixed height of the footer here */
 
+.rounded{
+  border-radius: 19px;
+}
+
 .footer.rounded{
   background-color: #f8f8f8 !important;
   padding: 30px 0;

@@ -131,7 +131,7 @@ class WorkshopController(BaseController):
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'configurePhase','adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources', 'getInitiativeList']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -1557,4 +1557,21 @@ class WorkshopController(BaseController):
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':  result})
+
+    def getInitiativeList(self, workshopCode, workshopURL):
+
+        c.workshopInitiatives = sorted(workshopLib.getInitiativesForWorkshop(workshopCode))
+
+        result = []
+
+        for i in c.workshopInitiatives:
+            entry = {}
+            entry['title'] = i['title']
+            entry['href'] = '/'+ i['urlCode'] + '/' + i['url']
+            result.append(entry)
+
+        if len(result) == 0:
+            return json.dumps({'statusCode':1})
+        else:
+            return json.dumps({'statusCode':0, 'result':result})
 
