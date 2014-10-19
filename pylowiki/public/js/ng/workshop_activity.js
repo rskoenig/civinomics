@@ -14,7 +14,7 @@ function activityWorkshopController($scope, $http) {
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
 	$scope.busy = false;
-	$scope.sliceSize = 7;
+	$scope.sliceSize = 3;
 	$scope.numAdopted = 0;
 	$scope.numIdeas = 0;
 	$scope.numDiscussions = 0;
@@ -28,7 +28,7 @@ function activityWorkshopController($scope, $http) {
 
 	$scope.getActivity = function() {
 		$scope.alertMsg = '';
-		$scope.activityURL = '/workshop/' + $scope.code + '/' + $scope.url + '/getActivity/0'
+		$scope.activityURL = '/workshop/' + $scope.code + '/' + $scope.url + '/' + $scope.sliceSize + '/getActivity/0'
 		if ($scope.thing){
 			$scope.activityURL += '/' + $scope.thing
 		}
@@ -58,7 +58,7 @@ function activityWorkshopController($scope, $http) {
 		if ($scope.busy || $scope.noMoreSlices) return;
 		$scope.busy = true;
 		$scope.alertMsg = ''
-		$scope.activityURL = '/workshop/' + $scope.code + '/' + $scope.url + '/getActivity/' + $scope.offset
+		$scope.activityURL = '/workshop/' + $scope.code + '/' + $scope.url + '/' + $scope.sliceSize + '/getActivity/' + $scope.offset
 		$scope.activityURL
 		if ($scope.thing){
 			$scope.activityURL += '/' + $scope.thing

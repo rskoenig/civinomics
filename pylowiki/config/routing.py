@@ -202,9 +202,9 @@ def make_map():
     map.connect('/getActivitySlice/{comments}/{type}/{scope}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', scope = '{scope}', offset = '{offset}')
     map.connect('/getActivitySlice/{comments}/{type}/{scope}/{objectType}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', scope = '{scope}', objectType = '{objectType}', offset = '{offset}')
 
-    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
-    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
-    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}/{objectType}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', objectType = '{objectType}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/{sliceSize}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', sliceSize= '{sliceSize}') 
+    map.connect('/workshop/{workshopCode}/{workshopURL}/{sliceSize}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}', sliceSize= '{sliceSize}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/{sliceSize}/getActivity/{offset}/{objectType}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', objectType = '{objectType}', offset = '{offset}', sliceSize= '{sliceSize}')
     
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
