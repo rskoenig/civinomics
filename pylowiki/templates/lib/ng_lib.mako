@@ -53,7 +53,7 @@
                 <div class="col-sm-9 col-md-10">
                     <h3 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h3>
                     ${status()}
-                    ${text()}
+                    ${summary()}
                     ${fullText()}
                 </div>
             </div>
@@ -1009,6 +1009,29 @@
         <span ng-bind-html="item.html | limitTo:stringLimit"></span>
         ${moreLess()}
     </span>
+</%def>
+    
+<%def name="summary()">
+
+    <div class="hidden-xs visible-sm-block markdown markdown-listed">
+        <span ng-bind-html="item.html"></span>
+    </div>
+
+    <div class="visible-xs">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a class="a-default" data-toggle="collapse" data-parent="#accordion" href="#summary{{item.url}}">
+            Summary
+            </a>
+          </h4>
+        </div>
+        <div id="summary{{item.url}}" class="panel-collapse collapse">
+
+            <p class="markdown markdown-listed"><span ng-bind-html="item.html"></span></p>
+
+            <br>
+        </div>
+    </div>
 </%def>
 
 <%def name="fullText()">
