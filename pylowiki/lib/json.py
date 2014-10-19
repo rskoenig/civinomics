@@ -310,9 +310,21 @@ def getJsonProperties(item):
         if 'numComments' in item:
             entry['numComments'] = item['numComments']
 
+    
+
+    
+    author = userLib.getUserByID(item.owner)
+
+    #hack to show initiative authors/coauthors
+    # better to add featured author data to the object
+    if author['name'] == 'Civinomics Facilitator' and item.objType == 'initiative':
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
+        if len(coAuthors) != 0:
+            f = coAuthors[0]
+            author = userLib.getUserByID(f.owner)
+        
     # author data
     # CCN - need to find a way to optimize this lookup
-    author = userLib.getUserByID(item.owner)
     entry['authorName'] = author['name']
     entry['authorPhoto'] = utils._userImageSource(author)
     entry['authorCode'] = author['urlCode']
