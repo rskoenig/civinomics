@@ -251,7 +251,7 @@ function activityWorkshopController($scope, $http) {
 		$scope.showAdopted = false;
 		$scope.showImpact = false;
 
-		$scope.showBrief = true;
+		$scope.showBrief = false;
 		$scope.showList = true;
 		$scope.showStats = false;
 		$scope.showAll = false;

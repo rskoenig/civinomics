@@ -25,7 +25,7 @@
 <div class="row">
   <div class="hidden-xs hidden-sm col-md-2 no-right">
 
-    <div ng-if="showInitiatives" ng-cloak>
+    <div ng-if="showInitiatives || showBrief" ng-cloak>
       ${helpers.workshopMenu2()}
     </div>
     <div ng-if="!(showInitiatives)" ng-cloak>

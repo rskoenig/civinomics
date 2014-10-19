@@ -703,6 +703,10 @@
 
       <hr class="list-header">
 
+      ${showInfo(c.w)}
+
+      <!--
+
       <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
             Read More
         </a>
@@ -715,6 +719,7 @@
                 Close
             </a>
         </div>
+      -->
     </div>
   </div>
 </%def>
@@ -733,10 +738,10 @@
 </%def>
 
 <%def name="workshopMenu2()">
-  <div class="workshop-menu" data-spy="affix" data-offset-top="200" ng-cloak">
+  <div class="workshop-menu" data-spy="affix" data-offset-top="200" ng-cloak>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#">Background</a></li>
-      <li><a href="#">Initiatives</a>
+      <li><a ng-click="toggleBrief()">Background</a></li>
+      <li><a ng-click="toggleInitiatives()">Initiatives</a>
         <ul class="nav">
         % for i in c.workshopInitiatives: 
             <li><a href="/initiative/${i['urlCode']}/${i['url']}" target="_blank">${i['title']}</a></li>
