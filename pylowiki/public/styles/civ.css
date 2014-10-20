@@ -4087,6 +4087,10 @@ background-color: #d9534f;
   height:24px
 }
 
+.home-activity .criteria-col{
+  width: 50%;
+}
+
 .criteria-list{
     margin-left: -5px;
     margin-right: -5px;

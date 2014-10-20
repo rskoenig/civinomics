@@ -815,7 +815,7 @@
 		<div ng-init="getCriteriaList(item.parentHref, item.urlCode)"></div>
 		<div class="row">
             %if locationClass == 'listing': 
-                <div ng-repeat="criteria in rating.criteriaList" class="col-md-3 col-sm-6">
+                <div ng-repeat="criteria in rating.criteriaList" class="col-md-3 col-sm-6 criteria-col">
                     <table class="criteria-table ${locationClass} centered">
                         <tr>
             %else:

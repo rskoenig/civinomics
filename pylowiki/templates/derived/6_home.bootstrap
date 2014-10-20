@@ -28,7 +28,7 @@
     	
       ${lib_6.create()}
 
-      <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
+      <div class="home-activity" infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
         <small>${helpers.feedFilters()}</small>
 
