@@ -442,7 +442,7 @@
                 </div> 
             </div>
         % endif
-      <!-- ${socialLogins()} -->
+      ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
         ${signupForm()}
       </div>
@@ -456,7 +456,12 @@
 </%def>
 
 <%def name="socialLogins()">
+    <%
+        session['returnToSocial'] = url.current()
+        session.save()
+    %>
     <div class="row social-login centered">
+        ${session['returnToSocial']}
         <div id="fbLoginButton2">
             <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
         </div>
