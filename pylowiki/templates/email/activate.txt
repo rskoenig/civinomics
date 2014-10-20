@@ -1,0 +1,10 @@
+
+Greetings from Civinomics!
+
+Your registration is almost complete.
+Please click on the link below to activate your account.
+
+${c.activationLink}
+
+
+The Civinomics Team
