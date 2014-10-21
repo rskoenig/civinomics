@@ -1,0 +1,129 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_messages" file="/lib/ng_messages.mako" />
+
+<div class="spacer"></div>
+<div class="row-fluid">
+    <div class="span8">
+        <span class="lead grey expl-phrase">Messages</span>
+        <div id="tab-messages">
+            <div ng-init="code = '${c.userCode}'; url = '${c.userUrl}'">
+                <div class="browse" ng-controller="profileMessagesCtrl">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <ul class="nav nav-pills" ng-cloak>
+                                <li ng-class="{active : messagesType == '/all'}"><a ng-click="getAllMessages()">All</a></li>
+                                <li ng-class="{active : messagesType == '/unread'}"><a ng-click="getUnreadMessages()">Unread</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="alert alert-info" ng-show="messagesNoResult" ng-cloak>
+                        There are no messages to display.
+                    </div>
+                    <div infinite-scroll='getMessagesSlice()' infinite-scroll-disabled='messagesLoading' infinite-scroll-distance='3'>
+                        
+                        <div class="row-fluid" ng-repeat="message in messages" ng-cloak>
+                            <!-- this init clause covers all varaiables that can possibly be used in the following cases -->
+                            <div ng-init="messageCode=message.messageCode; action=message.action; combinedInfo=message.combinedInfo; commentData=message.commentData; eventAction=message.eventAction; eventReason=message.eventReason; extraInfo=message.extraInfo; formLink=message.formLink;fuzzyTime=message.fuzzyTime; itemCode=message.itemCode; itemImage=message.itemImage; itemLink=message.itemLink; itemTitle=message.itemTitle; itemUrl=message.itemUrl; messageDate=message.messageDate; messageText=message.messageText; messageTitle=message.messageTitle; read=message.read; rowClass=message.rowClass; responseAction=message.responseAction; userImage=message.userImage; userName=message.userName; userLink=message.userLink;">
+                                <div ng-controller="messageDisplayCtrl">
+                                    <div ng-click="updateReadStatus(false)" class="{{classUnread}}">
+                                        <div class="{{classUnread}} border-top" style="padding: 10px;">
+                                            <table class="message-table " data-code="{{messageCode}}">
+                                                <tr>
+                                                  <td class="avatar-cell" rowspan="3"><img class="avatar" src="{{userImage}}" title="{{userName}}" alt="{{userName}}"></td>
+                                                  <td></td>
+                                                </tr>
+                                                <tr>
+                                                  <td>
+                                                    <div class="activity-item-content-header">
+                                                        <a ng-href="{{userLink}}"><strong>{{userName}}</strong></a>
+                                                        <strong>{{messageTitle}}</strong> 
+                                                        <span class="date pull-right">{{fuzzyTime}} ago</span>
+                                                    </div>
+                                                  </td>
+                                                </tr>
+                                                <tr ng-switch on="combinedInfo">
+                                                    <td ng-switch-when="listenerFacilitationInvite">
+                                                        ${ng_messages.listenerFacilitationInvite()}
+                                                    </td>
+                                                    <td ng-switch-when="listenerSuggestion">
+                                                        ${ng_messages.listenerSuggestion()}
+                                                    </td>
+                                                    <td ng-switch-when="authorInvite">
+                                                        ${ng_messages.authorInvite()}
+                                                    </td>
+                                                    <td ng-switch-when="authorResponse">
+                                                        ${ng_messages.authorResponse()}
+                                                    </td>
+                                                    <td ng-switch-when="commentResponse">
+                                                        ${ng_messages.commentResponse()}
+                                                    </td>
+                                                    <td ng-switch-when="commentOnPhotoOnInitiative">
+                                                        ${ng_messages.commentOnPhotoOnInitiative()}
+                                                    </td>
+                                                    <td ng-switch-when="commentOnResource">
+                                                        ${ng_messages.commentOnResource()}
+                                                    </td>
+                                                    <td ng-switch-when="commentOnUpdate">
+                                                        ${ng_messages.commentOnUpdate()}
+                                                    </td>
+                                                    <td ng-switch-when="commentOnOrgGeneral">
+                                                        ${ng_messages.commentOnOrgGeneral()}
+                                                    </td>
+                                                    <td ng-switch-when="commentOnOrgPosition">
+                                                        ${ng_messages.commentOnOrgPosition()}
+                                                    </td>
+                                                    <td ng-switch-when="disabledEnabledDeletedPhoto">
+                                                        ${ng_messages.disabledEnabledDeletedPhoto()}
+                                                    </td>
+                                                    <td ng-switch-when="disabledEnabledDeletedInitiative">
+                                                        ${ng_messages.disabledEnabledDeletedInitiative()}
+                                                    </td>
+                                                    <td ng-switch-when="disabledEnabledDeletedInitiativeResource">
+                                                        ${ng_messages.disabledEnabledDeletedInitiativeResource()}
+                                                    </td>
+                                                    <td ng-switch-when="disabledEnabledDeletedInitiativeUpdate">
+                                                        ${ng_messages.disabledEnabledDeletedInitiativeUpdate()}
+                                                    </td>
+                                                    <td ng-switch-when="disabledEnabledDeletedAdopted">
+                                                        ${ng_messages.disabledEnabledDeletedAdopted()}
+                                                    </td>
+                                                    <td ng-switch-default>
+                                                        ${ng_messages.defaultMessage()}
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="centered" ng-show="messagesLoading || messagesSliceLoading" ng-cloak>
+                            <i class="icon-spinner icon-spin icon-4x"></i>
+                        </div>
+
+                    </div> <!-- infinite scroll -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%def name = 'extraScripts()'>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts()">
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+            <!-- <script src="$-{-lib_6-.-fingerprintFile('-/js/profile-.-js')}" type="text/javascript"></script> -->
+            <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/ng/messages.js')}" type="text/javascript"></script>
+            <script src="${lib_6.fingerprintFile('/js/ng/message_display.js')}" type="text/javascript"></script>
+        % endif
+    % endif
+</%def>
+
+
