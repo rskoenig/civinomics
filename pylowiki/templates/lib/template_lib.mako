@@ -461,7 +461,6 @@
         session.save()
     %>
     <div class="row social-login centered">
-        ${session['returnToSocial']}
         <div id="fbLoginButton2">
             <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
         </div>

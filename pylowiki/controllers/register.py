@@ -137,7 +137,7 @@ class RegisterController(BaseController):
         """ This is an intermediary page for the signup process when a facebook user first
         creates an account. """
 
-        c.title = c.heading = "Registration using your Facbook Account"
+        c.title = c.heading = "Registration using your Facebook Account"
         c.success = False
         splashMsg = {}
         splashMsg['type'] = 'success'
