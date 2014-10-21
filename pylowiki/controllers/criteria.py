@@ -53,7 +53,7 @@ class CriteriaController(BaseController):
 
     def addToWorkshop(self, workshopCode, workshopURL, criteria):
         c.ratingConfig = 0
-        if not criteria == '0':
+        if criteria != '0':
             criteriaList = criteria.split("|")
             self.workshopCrit['rating_criteria'] = criteria
             dbHelpers.commit(self.workshopCrit)
@@ -61,11 +61,14 @@ class CriteriaController(BaseController):
             return json.dumps({'statusCode':1, 'criteria': criteriaList})
         else:
             c.ratingConfig = 1
-            log.info("Hell naw. I'm not sure if I want to do anything here")    
+            if 'rating_criteria' in self.workshopCrit:
+                self.workshopCrit['rating_criteria'] = ""
+                dbHelpers.commit(self.workshopCrit)
         log.info(c.ratingConfig)
         returnURL = '/workshop/%s/%s/preferences'%(workshopCode, workshopURL)
         log.info(returnURL)
-        return redirect(returnURL)    
+        # this does nothing, it is being called from js ajax
+        #return redirect(returnURL)    
     
     def getWorkshopCriteria(self, workshopCode, thingCode):
         # This function returns the criteria related to the workshop
