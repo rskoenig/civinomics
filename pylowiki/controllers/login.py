@@ -94,9 +94,11 @@ class LoginController(BaseController):
         #: https://github.com/ryanmcgrath/twython
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
+        log.info(twitter)
         # callback url is set in the app on twitter, otherwise it can be set in this call
         auth = twitter.get_authentication_tokens(force_login=True)
 
+        log.info(auth)
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
         session['oauth_token'] = auth['oauth_token']
@@ -112,10 +114,13 @@ class LoginController(BaseController):
         # The final step is exchanging the request token for an access token. The access 
         # token is the “key” for opening the Twitter API
         #oauth_verifier = request.GET['oauth_verifier']
+        log.info(request.params['oauth_token'])
 
         oauth_verifier = request.params['oauth_verifier']
         oauth_token = request.params['oauth_token']
 
+        log.info(vars(session))
+        
         # We should verify that the token matches the request token received in step 1.
         if not oauth_token == session['oauth_token']:
             log.error('Invalid oauth_token')

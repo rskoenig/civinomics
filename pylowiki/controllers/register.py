@@ -165,6 +165,7 @@ class RegisterController(BaseController):
 
     def twitterSigningUp( self ):
         log.info("register:twitterSigningUp signing up with twt")
+        log.info(vars(request.params))
         """ handles creating an account for a twitter user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
@@ -173,6 +174,7 @@ class RegisterController(BaseController):
         returnPage = "/signup"
         name = False
         postalCode = False
+#        email = False
         log.info('postalCode1 expect false: %s'%postalCode)
         checkTOS = False
         c.title = c.heading = "Registration"
