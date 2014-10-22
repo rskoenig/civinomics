@@ -568,23 +568,36 @@
 </%def>
 
 <%def name="forgotPassword()">
-    <div class="row-fluid">
-        <div class="span8 offset2">
-            <p class="centered">Enter your email and click 'Reset Password.' Then check your inbox for your new password.</p>
-        </div>
+    <div class="row">
+        <div class="col-sm-11">
+            <p class="centered">Enter your email and click 'Reset Password.'</p>
+            <p class="centered">Your new password will be emailed to you.</p>
+        </div><!-- col-sm-11 -->
+    </div><!-- row -->
     <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
-        <div class="control-group">
-            <label class="control-label" for="email"> Email: </label>
-            <div class="controls">
-                <input type="email" name="email" id="email"><br>
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="control-group centered">
+                    <div class="controls">
+                        <strong>Email: </strong><input type="email" name="email" id="email"><br>
+                    </div><!-- controls -->
+                </div><!-- control-group -->
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="control-group centered spacer">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-success"> Reset Password </button>
+                    </div><!-- controls -->
+                </div><!-- control-group -->
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-sm-11 centered">
                 <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-success"> Reset Password </button>
-            </div>
-        </div>
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
     </form>
 </%def>
 

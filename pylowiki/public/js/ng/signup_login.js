@@ -58,7 +58,7 @@ function signupController($scope, $http) {
 	};
 	
 	$scope.submitLogin = function() {
-		    $scope.alertMessage = '';
+		$scope.alertMessage = '';
     	var loginUrl = "/loginHandler";
     	$http.post(loginUrl, $scope.user).success(function(data){   	
     	    if (data.statusCode == 0){
