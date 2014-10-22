@@ -554,7 +554,7 @@
             <label class="col-sm-3  control-label" for="passphrase"> Password: </label>
             <div class="col-sm-8">
                 <input class="form-control" type="password" ng-model="user.password" id="password"><br>
-                <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
+                
             </div>
         </div>
         <div class="form-group">
@@ -563,6 +563,7 @@
             </div>
         </div>
     </form>
+    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a></p>
     <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
 </%def>
 

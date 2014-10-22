@@ -67,8 +67,7 @@ class CriteriaController(BaseController):
         log.info(c.ratingConfig)
         returnURL = '/workshop/%s/%s/preferences'%(workshopCode, workshopURL)
         log.info(returnURL)
-        # this does nothing, it is being called from js ajax
-        #return redirect(returnURL)    
+        return redirect(returnURL)    
     
     def getWorkshopCriteria(self, workshopCode, thingCode):
         # This function returns the criteria related to the workshop

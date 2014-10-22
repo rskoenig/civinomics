@@ -20,13 +20,13 @@ function signupController($scope, $http) {
         $scope.email = '';
     };
     $scope.switchLoginTitle = function(){
-    	$scope.showTitle = 'lTitle'
+    	$scope.showTitle = 'lTitle';
     };
     $scope.switchSignupTitle = function(){
-    	$scope.showTitle = 'sTitle'
+    	$scope.showTitle = 'sTitle';
     };
     $scope.switchPasswordTitle = function(){
-    	$scope.showTitle = 'pTitle'
+    	$scope.showTitle = 'pTitle';
     };
 	$scope.lookup = function() {
 		$scope.loading = true;
