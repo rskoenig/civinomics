@@ -544,7 +544,6 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        log.info("login:logUserIn session save 1")
 
         c.authuser = user
         
@@ -563,7 +562,6 @@ class LoginController(BaseController):
         session["positions"] = positions
         session.save()
         
-        log.info("login:logUserIn session save 2 session keys are %s"%session.keys())
         
         # get their workshops and initiatives of interest
         followLib.setWorkshopFollowsInSession()
@@ -573,21 +571,17 @@ class LoginController(BaseController):
         facilitatorLib.setFacilitatorsByUserInSession()
         initiativeLib.setInitiativesForUserInSession()
         followLib.setInitiativeFollowsInSession()
-        
-        log.info("login:logUserIn session save 3 session keys are %s"%session.keys())
 
         #log.info("login:logUserIn")
         if 'externalAuthType' in user.keys():
             log.info("login:logUserIn externalAuthType in user keys")
             if user['externalAuthType'] == 'facebook' and 'fbAccessToken' in session:
-                log.info("logUserIn 3")
                 user['facebookAccessToken'] = session['fbAccessToken']
                 if 'fbSmallPic' in session:
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
             else:
                 user['externalAuthType'] = ''
-        log.info("login:logUserIn 4 after externalAuthType")
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -655,10 +649,9 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
-                        log.info("handing off to logUserIn")
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
 
-                        if query['alURL'] != "/login" and query['alURL'] != "/signup":                            
+                        if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
                         if len(query['alURL'].split("/")) >= 3:
                             workshopCode = query['alURL'].split("/")[2]
@@ -686,7 +679,9 @@ class LoginController(BaseController):
                             #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
                         else:
+                            log.info("returning %s"%loginURL)
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo':loginURL})
+
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
