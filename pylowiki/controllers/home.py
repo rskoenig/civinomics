@@ -70,11 +70,17 @@ class HomeController(BaseController):
         if not c.authuser:
             return json.dumps({'statusCode':1})
 
-#         log.info("in get following initiatives")
+        # log.info("in get following initiatives")
+        # is session['facilitatorInitiatives'] even being used right now?
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
         else:
             facilitatorInitiativeCodes = []
+
+        facilitatorInitiatives = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
+        if len(facilitatorInitiatives) != 0:
+            for f in facilitatorInitiatives:
+                facilitatorInitiativeCodes.append(f['initiativeCode'])            
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
@@ -183,6 +189,11 @@ class HomeController(BaseController):
             
         else:
             facilitatorInitiativeCodes = []
+
+        facilitatorInitiatives = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
+        if len(facilitatorInitiatives) != 0:
+            for f in facilitatorInitiatives:
+                facilitatorInitiativeCodes.append(f['initiativeCode']) 
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
