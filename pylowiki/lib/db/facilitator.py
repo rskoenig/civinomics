@@ -64,12 +64,15 @@ def getFacilitatorsByUser(user, disabled = '0'):
         return False
 
 def getInitiativeFacilitatorsByUser(user, disabled = '0'):
-    return meta.Session.query(Thing)\
-    .filter_by(objType = 'facilitator')\
-    .filter_by(owner = user.id)\
-    .filter(Thing.data.any(wk('initiative_url')))\
-    .filter(Thing.data.any(wc('disabled', disabled)))\
-    .all()
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'facilitator')\
+        .filter_by(owner = user.id)\
+        .filter(Thing.data.any(wk('initiative_url')))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .all()
+    except:
+        return False
         
 def setFacilitatorsByUserInSession(fdisabled = '0'):
     if 'facilitatorWorkshops' not in c.authuser or 'facilitatorInitatives' not in c.authuser:

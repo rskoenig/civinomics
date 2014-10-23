@@ -15,26 +15,26 @@ from pylowiki.lib.db.geoInfo import getGeoInfo, getGeoScope, getUserScopes, getW
 from pylowiki.lib.db.workshop import getActiveWorkshops
 from pylowiki.lib.db.tag import getTagCategories
 
-import pylowiki.lib.db.user         	as userLib
-import pylowiki.lib.db.message      	as messageLib
-import pylowiki.lib.db.photo        	as photoLib
-import pylowiki.lib.db.pmember      	as pMemberLib
-import pylowiki.lib.sort            	as sort
-import pylowiki.lib.db.mainImage    	as mainImageLib
-import pylowiki.lib.db.follow       	as followLib
-import pylowiki.lib.db.workshop     	as workshopLib
+import pylowiki.lib.db.user             as userLib
+import pylowiki.lib.db.message          as messageLib
+import pylowiki.lib.db.photo            as photoLib
+import pylowiki.lib.db.pmember          as pMemberLib
+import pylowiki.lib.sort                as sort
+import pylowiki.lib.db.mainImage        as mainImageLib
+import pylowiki.lib.db.follow           as followLib
+import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
-import pylowiki.lib.db.initiative   	as initiativeLib
-import pylowiki.lib.db.activity   	    as activityLib
-import pylowiki.lib.db.discussion 		as discussionLib
-import pylowiki.lib.db.comment 			as commentLib
-import pylowiki.lib.db.meeting 			as meetingLib
+import pylowiki.lib.db.initiative       as initiativeLib
+import pylowiki.lib.db.activity         as activityLib
+import pylowiki.lib.db.discussion       as discussionLib
+import pylowiki.lib.db.comment          as commentLib
+import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
-import pylowiki.lib.utils				as utils
-import pylowiki.lib.json				as jsonLib
-import pylowiki.lib.fuzzyTime			as fuzzyTime
-import pylowiki.lib.db.ballot 			as ballotLib
+import pylowiki.lib.utils               as utils
+import pylowiki.lib.json                as jsonLib
+import pylowiki.lib.fuzzyTime           as fuzzyTime
+import pylowiki.lib.db.ballot           as ballotLib
 import misaka as m
 
 import simplejson as json
@@ -59,9 +59,9 @@ class HomeController(BaseController):
 
     def index(self):
         c.tagList = getTagCategories()
-    	c.postalCode = '95060'
-    	if c.authuser:
-    		c.postalCode = c.authuser['postalCode']
+        c.postalCode = '95060'
+        if c.authuser:
+            c.postalCode = c.authuser['postalCode']
         c.title = c.heading = c.workshopTitlebar = 'Home'
         c.rssURL = "/activity/rss"
         return render('/derived/6_home.bootstrap')
@@ -70,20 +70,11 @@ class HomeController(BaseController):
         if not c.authuser:
             return json.dumps({'statusCode':1})
 
-        # log.info("in get following initiatives")
-        # initiative urls were added to children in generic.py, NOT codes! Could be simplified with a database script to fix that.
-        facilitatorInitiativeURLs = []
-
-        if 'facilitatorInitiatives' in session and len(session['facilitatorInitiatives']) != 0:
+#         log.info("in get following initiatives")
+        if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
         else:
-            initiativeFacilitators = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
-            if len(initiativeFacilitators) != 0:
-                facilitatorInitiativeURLs = []
-                for f in initiativeFacilitators:
-                    facilitatorInitiativeURLs.append(f['initiative_url'])
-            else:
-                facilitatorInitiativeCodes = []
+            facilitatorInitiativeCodes = []
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
@@ -97,127 +88,6 @@ class HomeController(BaseController):
         offset = int(offset)
         limit = int(limit)
         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
-        facilitatorInitiativeURLs = facilitatorInitiativeURLs[offset:limit]
-
-        interestedInitiatives = []
-        for code in interestedInitiativeCodes:
-			#log.info('%s' % code)
-			i = initiativeLib.getInitiative(code)
-			interestedInitiatives.append(i)
-
-        if len(facilitatorInitiativeURLs) != 0:
-            for url in facilitatorInitiativeURLs:
-                log.info('url is  %s' % url)
-                i = initiativeLib.getInitiativeByURL(url)
-                interestedInitiatives.append(i)
-
-        if len(interestedInitiatives) == 0:
-			return json.dumps({'statusCode':1})
-        else:
-			result = []
-
-			myRatings = {}
-			if 'ratings' in session:
-				myRatings = session['ratings']
-
-			for item in interestedInitiatives:
-				entry = {}
-				#entry['urlCode'] = item
-				entry['title'] = item['title']
-				entry['urlCode'] = item['urlCode']
-				entry['url'] = item['url']
-
-				# user rating
-				if entry['urlCode'] in myRatings:
-					entry['rated'] = myRatings[entry['urlCode']]
-					entry['vote'] = 'voted'
-				else:
-					entry['rated'] = 0
-					entry['vote'] = 'nvote'
-
-				# votes
-				entry['voteCount'] = int(item['ups']) + int(item['downs'])
-				entry['ups'] = int(item['ups'])
-				entry['downs'] = int(item['downs'])
-				entry['netVotes'] = int(item['ups']) - int(item['downs'])
-
-				#goal votes
-				if entry['voteCount'] < 100:
-				    entry['goal'] = 100
-				elif 'goal' in item:
-					entry['goal'] = item['goal']
-				else:
-					entry['goal'] = 100
-
-				# comments
-				entry['numComments'] = 0
-				if 'numComments' in item:
-					entry['numComments'] = item['numComments']
-
-				#tags
-				tags = []
-				tagList = []
-				if 'tags' in item:
-					if item['tags'] != None:
-						tagList = item['tags'].split('|')
-				for tag in tagList:
-				    if tag and tag != '':
-				        tags.append(tag)
-				entry['tags'] = tags
-
-				# photo
-				if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
-					entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-					entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
-				else:
-					entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
-
-				entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
-
-				# scope attributes
-				if 'scope' in item:
-					entry['scope'] = item['scope']
-				else:
-				    entry['scope'] = '0||united-states||0||0||0|0'
-				scopeInfo = utils.getPublicScope(entry['scope'])
-				entry['scopeName'] = scopeInfo['name']
-				entry['scopeLevel'] = scopeInfo['level']
-				entry['scopeHref'] = scopeInfo['href']
-				entry['flag'] = scopeInfo['flag']
-
-				entry['authorID'] = item.owner
-				
-				result.append(entry)
-
-			if len(result) == 0:
-				return json.dumps({'statusCode':1})
-			return json.dumps({'statusCode':0, 'result': result})
-
-    def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
-
-        log.info("in GEO get following initiatives")
-        # initiative urls were added to children in generic.py, NOT codes! Could be simplified with a database script to fix that.
-        facilitatorInitiativeURLs = []
-
-        if 'facilitatorInitiatives' in session and len(session['facilitatorInitiatives']) != 0:
-            facilitatorInitiativeCodes = session['facilitatorInitiatives']
-        else:
-            initiativeFacilitators = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
-            if len(initiativeFacilitators) != 0:
-                facilitatorInitiativeURLs = []
-                for f in initiativeFacilitators:
-                    facilitatorInitiativeURLs.append(f['initiative_url'])
-            else:
-                facilitatorInitiativeCodes = []
-
-        if 'bookmarkedInitiatives' in session:
-            bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
-        else:
-            bookmarkedInitiativeCodes = []
-
-        interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
-        # reverse list so most recent first
-        interestedInitiativeCodes = interestedInitiativeCodes[::-1]
 
         interestedInitiatives = []
         for code in interestedInitiativeCodes:
@@ -225,11 +95,104 @@ class HomeController(BaseController):
             i = initiativeLib.getInitiative(code)
             interestedInitiatives.append(i)
 
-        if len(facilitatorInitiativeURLs) != 0:
-            for url in facilitatorInitiativeURLs:
-                log.info('url is  %s' % url)
-                i = initiativeLib.getInitiativeByURL(url)
-                interestedInitiatives.append(i)
+        if len(interestedInitiatives) == 0:
+            return json.dumps({'statusCode':1})
+        else:
+            result = []
+
+            myRatings = {}
+            if 'ratings' in session:
+                myRatings = session['ratings']
+
+            for item in interestedInitiatives:
+                entry = {}
+                #entry['urlCode'] = item
+                entry['title'] = item['title']
+                entry['urlCode'] = item['urlCode']
+                entry['url'] = item['url']
+
+                # user rating
+                if entry['urlCode'] in myRatings:
+                    entry['rated'] = myRatings[entry['urlCode']]
+                    entry['vote'] = 'voted'
+                else:
+                    entry['rated'] = 0
+                    entry['vote'] = 'nvote'
+
+                # votes
+                entry['voteCount'] = int(item['ups']) + int(item['downs'])
+                entry['ups'] = int(item['ups'])
+                entry['downs'] = int(item['downs'])
+                entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+                #goal votes
+                if entry['voteCount'] < 100:
+                    entry['goal'] = 100
+                elif 'goal' in item:
+                    entry['goal'] = item['goal']
+                else:
+                    entry['goal'] = 100
+
+                # comments
+                entry['numComments'] = 0
+                if 'numComments' in item:
+                    entry['numComments'] = item['numComments']
+
+                #tags
+                tags = []
+                tagList = []
+                if 'tags' in item:
+                    if item['tags'] != None:
+                        tagList = item['tags'].split('|')
+                for tag in tagList:
+                    if tag and tag != '':
+                        tags.append(tag)
+                entry['tags'] = tags
+
+                # photo
+                if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+                    entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                    entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+                else:
+                    entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
+
+                entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
+
+                # scope attributes
+                if 'scope' in item:
+                    entry['scope'] = item['scope']
+                else:
+                    entry['scope'] = '0||united-states||0||0||0|0'
+                scopeInfo = utils.getPublicScope(entry['scope'])
+                entry['scopeName'] = scopeInfo['name']
+                entry['scopeLevel'] = scopeInfo['level']
+                entry['scopeHref'] = scopeInfo['href']
+                entry['flag'] = scopeInfo['flag']
+
+                entry['authorID'] = item.owner
+                
+                result.append(entry)
+
+            if len(result) == 0:
+                return json.dumps({'statusCode':1})
+            return json.dumps({'statusCode':0, 'result': result})
+
+    def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
+        if 'facilitatorInitiatives' in session:
+            facilitatorInitiativeCodes = session['facilitatorInitiatives']
+            
+        else:
+            facilitatorInitiativeCodes = []
+
+        if 'bookmarkedInitiatives' in session:
+            bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
+        else:
+            bookmarkedInitiativeCodes = []
+
+
+        interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
+        # reverse list so most recent first
+        interestedInitiativeCodes = interestedInitiativeCodes[::-1]
         
         if geoScope:
             initScope = geoScope.replace('||', '|0|')
@@ -240,6 +203,12 @@ class HomeController(BaseController):
 #         offset = int(offset)
 #         limit = int(limit)
 #         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+
+        interestedInitiatives = []
+        for code in interestedInitiativeCodes:
+            #log.info('%s' % code)
+            i = initiativeLib.getInitiative(code)
+            interestedInitiatives.append(i)
         
         if len(interestedInitiatives) == 0:
             return json.dumps({'statusCode':1})
@@ -304,8 +273,6 @@ class HomeController(BaseController):
 
                 entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
 
-
-                log.info('yup, still assembling properties for %s' % entry['title'])
                 # scope attributes
                 if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope or item['scope'] == initScope2):
                     entry['scope'] = item['scope']
@@ -317,7 +284,7 @@ class HomeController(BaseController):
                     entry['flag'] = scopeInfo['flag']
 
                     entry['authorID'] = item.owner
-				
+                
                     result.append(entry)
 
             if len(result) == 0:
@@ -334,36 +301,36 @@ class HomeController(BaseController):
         commments = int(comments)
 
         if type == 'all':
-		    recentActivity = activityLib.getRecentActivity(max, 0, offset)
-		    #log.info("oh right")
+            recentActivity = activityLib.getRecentActivity(max, 0, offset)
+            #log.info("oh right")
 
         elif type == 'following' and c.authuser:
-			if c.privs['participant'] or c.privs['provisional']:
-				# combine the list of interested workshops
-				interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
+            if c.privs['participant'] or c.privs['provisional']:
+                # combine the list of interested workshops
+                interestedWorkshops = list(set(session['listenerWorkshops'] + session['bookmarkedWorkshops'] + session['privateWorkshops'] + session['facilitatorWorkshops']))
 
-				# combine the list of interested initiatives
-				interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
+                # combine the list of interested initiatives
+                interestedInitiatives = list(set(session['facilitatorInitiatives'] + session['bookmarkedInitiatives']))
 
-				interestedObjects = interestedWorkshops + interestedInitiatives
-				#log.info("activity interestedObjects is %s"%interestedObjects)
+                interestedObjects = interestedWorkshops + interestedInitiatives
+                #log.info("activity interestedObjects is %s"%interestedObjects)
 
-				# users being followed
-				interestedUsers = session['followingUsers']
-				#log.info("activity interestedUsers is %s"%interestedUsers)
+                # users being followed
+                interestedUsers = session['followingUsers']
+                #log.info("activity interestedUsers is %s"%interestedUsers)
 
-				# this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
-				followingActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, offset)
+                # this is sorted by reverse date order by the SELECT in getActivityForObjectAndUserList
+                followingActivity = activityLib.getActivityForObjectAndUserList(max, interestedObjects, interestedUsers, 0, offset)
 
-			if followingActivity:
-				recentActivity = followingActivity
-			else:
-				alertMsg = "You are not following any people, workshops or initiatives yet!"
-				return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+            if followingActivity:
+                recentActivity = followingActivity
+            else:
+                alertMsg = "You are not following any people, workshops or initiatives yet!"
+                return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
         # inclusive county activity function
         elif type == 'geo' and c.authuser and scope == 'none':
-		    # try getting the activity of their area
+            # try getting the activity of their area
             userScope = getGeoScope( c.authuser['postalCode'], "United States" )
             log.info(userScope)
             scopeList = userScope.split('|')
@@ -378,14 +345,14 @@ class HomeController(BaseController):
             # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
             countyActivity = activityLib.getRecentGeoActivity(max, countyScopes, 0, offset)
             if countyActivity:
-            	recentActivity = countyActivity
+                recentActivity = countyActivity
             else:
-            	alertMsg = "There is no activity in your county yet. Add something!"
-            	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
-		    	
+                alertMsg = "There is no activity in your county yet. Add something!"
+                return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+                
         elif type=='geo' and scope is not 'none':
             # try getting the activity of their area
-		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+            # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
             initScope = scope.replace('||', '|0|')
             initScope = "0" + initScope
             initScope2 = initScope + "|0"
@@ -404,37 +371,37 @@ class HomeController(BaseController):
                 return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
         
         elif type == 'meetings' and c.authuser:
-		    # try getting the activity of their area
-		    userScope = getGeoScope( c.authuser['postalCode'], "United States" )
-		    scopeList = userScope.split('|')
-		    countyScopeList = scopeList[0:7]
-		    countyScope = '|'.join(countyScopeList)
-		    countyScope = '0' + countyScope.replace('||', '|0|')
-		    #log.info("countyScope is %s"%countyScope)
-		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    #log.info(countyScope)
-		    countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
-		    if countyActivity:
-		    	recentActivity = countyActivity
-		    else:
-		    	alertMsg = "There are no upcoming meetings listed for your county yet."
-		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+            # try getting the activity of their area
+            userScope = getGeoScope( c.authuser['postalCode'], "United States" )
+            scopeList = userScope.split('|')
+            countyScopeList = scopeList[0:7]
+            countyScope = '|'.join(countyScopeList)
+            countyScope = '0' + countyScope.replace('||', '|0|')
+            #log.info("countyScope is %s"%countyScope)
+            # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+            #log.info(countyScope)
+            countyActivity = activityLib.getUpcomingGeoMeetings(max, countyScope, 0, offset)
+            if countyActivity:
+                recentActivity = countyActivity
+            else:
+                alertMsg = "There are no upcoming meetings listed for your county yet."
+                return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
         elif type == 'geomeetings' and scope is not 'none':
-		    # try getting the activity of their area
-		    userScope = scope
-		    scopeList = userScope.split('|')
-		    countyScope = scopeList[6]
-		    #log.info("countyScope is %s"%countyScope)
-		    # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-		    formattedScope = scope.replace('||', '|0|')
-		    countyActivity = activityLib.getUpcomingGeoMeetings(max, formattedScope, 0, offset)
-		    if countyActivity:
-		    	recentActivity = countyActivity
-		    else:
-		    	alertMsg = "There are no upcoming meetings listed for this area yet."
-		    	return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
-		    	
+            # try getting the activity of their area
+            userScope = scope
+            scopeList = userScope.split('|')
+            countyScope = scopeList[6]
+            #log.info("countyScope is %s"%countyScope)
+            # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
+            formattedScope = scope.replace('||', '|0|')
+            countyActivity = activityLib.getUpcomingGeoMeetings(max, formattedScope, 0, offset)
+            if countyActivity:
+                recentActivity = countyActivity
+            else:
+                alertMsg = "There are no upcoming meetings listed for this area yet."
+                return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
+                
         elif type == 'initiatives' and scope is 'none':
             recentActivity = activityLib.getInitiativeActivity(max, 0, offset)
 
@@ -448,16 +415,13 @@ class HomeController(BaseController):
                 return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
         else:
-			recentActivity = activityLib.getRecentActivity(max, 0, offset)
-			
+            recentActivity = activityLib.getRecentActivity(max, 0, offset)
+            
         for item in recentActivity:
             entry = jsonLib.getJsonProperties(item)
 
             result.append(entry)
 
         if len(result) == 0:
-			return json.dumps({'statusCode':1})
+            return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result': result})
-
-
-
