@@ -70,6 +70,7 @@ app.controller('ratingsController', function($scope, $http){
 					$scope.rating.type = 'criteria';
 					$scope.rating.criteriaList = data.criteria;
 					//Do something if they were added correctly (probably just update message or continue)
+					$scope.checkRatingComplete()
 				} 
 				else if (data.statusCode === 0){
     				$scope.rating.type = 'yesno';			
@@ -148,6 +149,7 @@ app.controller('ratingsController', function($scope, $http){
 				if (data.statusCode == 1){
 					$scope.vote = criteria.amount;
 					$scope.getCriteriaList(parentHref,thingCode);
+					$scope.checkRatingComplete()
 				} 
 				else if (data.statusCode === 0){			
 				}
@@ -163,6 +165,17 @@ app.controller('ratingsController', function($scope, $http){
 		}
 		listStr += list[i];
 		return listStr;
+	};
+
+	$scope.checkRatingComplete = function() {
+		$scope.ratingComplete = true;
+		for (i = 0; i < $scope.rating.criteriaList.length; i++) { 
+			if ($scope.rating.criteriaList[i]['amount'] == '0'){
+				$scope.ratingComplete = false;
+				break
+			};
+		}
+
 	};
 	
 	

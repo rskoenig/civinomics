@@ -146,27 +146,38 @@
 
             <div class="row" style="min-height: 50px;">
                 <div class="actions">
-                    <div class="panel-heading">
-                        <ul class="horizontal-list iconListing">
-                            <li>
-                                <span class="glyphicon glyphicon-unchecked grey"></span>
-                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}">
-                                    Rate
-                                </a>
-                            </li>
-                            <li>
-                                <span class="glyphicon glyphicon-unchecked grey left-space"></span>
-                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
-                                    Comment
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
      
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                         <div ng-switch="item.parentObjType" ng-cloak>
                             <div ng-switch-when="workshop" ng-controller="ratingsController">
                                         {{getCriteriaList(item.parentHref, item.urlCode)}}
+
+                                        <div class="panel-heading">
+                                            <ul class="horizontal-list iconListing">
+                                                <li ng-show="!ratingComplete" ng-cloak>
+                                                    <span class="glyphicon glyphicon-unchecked grey"></span>
+                                                    <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}">
+                                                        Rate
+                                                    </a>
+                                                </li>
+                                                <li class="med-green" ng-show="ratingComplete" ng-cloak>
+                                                    <span class="glyphicon glyphicon-check"></span>
+                                                    <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}">
+                                                        Rated
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <span class="glyphicon glyphicon-unchecked grey left-space"></span>
+                                                    <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
+                                                        Comment
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+
+
+
                                         <div ng-switch="rating.type">
                                             <div ng-switch-when="criteria">
                                                 <div id="rate{{item.url}}" class="panel-collapse collapse">
