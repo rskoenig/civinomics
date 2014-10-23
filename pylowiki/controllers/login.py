@@ -655,6 +655,7 @@ class LoginController(BaseController):
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
+                        log.info("loginURL is %s"%loginURL)
 
                         if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
@@ -666,6 +667,8 @@ class LoginController(BaseController):
                                 wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
                                 user['participatingWorkshop'] = wUrl + "|" + workshop['title']
                                 commit(user)
+                                
+                        log.info("loginURL is now %s"%loginURL)
 
                         if 'returnTo' in session:
                             returnPage = session['returnTo']

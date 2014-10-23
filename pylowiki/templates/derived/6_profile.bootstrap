@@ -18,11 +18,14 @@
     <!-- inline style kludge to handle fixed nav bar -->
     <div class="spacer"></div>
     <% 
-        if c.user['memberType'] == 'organization':
-            who = "Our"
+        if c.authuser.id == c.user.id:
+            if c.user['memberType'] == 'organization':
+                who = "Our"
+            else:
+                who = "My"
         else:
-            who = "My"
-        
+            who = ''
+
         if 'alert' in session:
             message = session['alert']
             session.pop('alert')
@@ -42,7 +45,7 @@
                         <!-- <li><a href="#tab-activity" data-toggle="tab">Members</a></li>
                         <li><a href="#tab-activity" data-toggle="tab">Followers</a></li> 
                         <li><a href="#tab-forum" data-toggle="tab">Forum</a></li>-->
-                        <li><a href="#tab-endorsements" data-toggle="tab">Org Positions</a></li>
+                        <li><a href="#tab-endorsements" data-toggle="tab">Positions</a></li>
                     % endif
                     <li><a href="#tab-workshops" data-toggle="tab">${who} Workshops</a></li>
                     <li><a href="#tab-initiatives" data-toggle="tab">${who} Initiatives</a></li>
