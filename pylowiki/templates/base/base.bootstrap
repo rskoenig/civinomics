@@ -268,13 +268,13 @@
                 async.series([
                     function(callback) {
                         var query = '/fql?q={SELECT name, pic_square, pic_big FROM user WHERE uid=' + response.authResponse.userID + '}';
-                        FB.api('/me/', 'get', {fields: 'first_name, last_name, pic_square, pic_big'}, function(apiResponse){
-			    console.log(apiResponse);
-                name = apiResponse[0].first_name + ' ' + apiResponse[0].last_name;
-                smallPic = apiResponse[0].pic_square;
-                bigPic = apiResponse[0].pic_big;
-                callback();
-                });                    
+                        FB.api('/me/', 'get', {fields: 'first_name, last_name, picture'}, function(apiResponse){
+            			    console.log(apiResponse);
+                            name = apiResponse.first_name + ' ' + apiResponse.last_name;
+                            smallPic = apiResponse.picture;
+                            bigPic = apiResponse.picture;
+                            callback();
+                        });                    
                     },
                     function(callback) {
                         // perform fbauthcheck now that the pic urls have been loaded
