@@ -70,11 +70,20 @@ class HomeController(BaseController):
         if not c.authuser:
             return json.dumps({'statusCode':1})
 
-#         log.info("in get following initiatives")
-        if 'facilitatorInitiatives' in session:
+        # log.info("in get following initiatives")
+        # initiative urls were added to children in generic.py, NOT codes! Could be simplified with a database script to fix that.
+        facilitatorInitiativeURLs = []
+
+        if 'facilitatorInitiatives' in session and len(session['facilitatorInitiatives']) != 0:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
         else:
-            facilitatorInitiativeCodes = []
+            initiativeFacilitators = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
+            if len(initiativeFacilitators) != 0:
+                facilitatorInitiativeURLs = []
+                for f in initiativeFacilitators:
+                    facilitatorInitiativeURLs.append(f['initiative_url'])
+            else:
+                facilitatorInitiativeCodes = []
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
@@ -88,12 +97,19 @@ class HomeController(BaseController):
         offset = int(offset)
         limit = int(limit)
         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+        facilitatorInitiativeURLs = facilitatorInitiativeURLs[offset:limit]
 
         interestedInitiatives = []
         for code in interestedInitiativeCodes:
 			#log.info('%s' % code)
 			i = initiativeLib.getInitiative(code)
 			interestedInitiatives.append(i)
+
+        if len(facilitatorInitiativeURLs) != 0:
+            for url in facilitatorInitiativeURLs:
+                log.info('url is  %s' % url)
+                i = initiativeLib.getInitiativeByURL(url)
+                interestedInitiatives.append(i)
 
         if len(interestedInitiatives) == 0:
 			return json.dumps({'statusCode':1})
@@ -178,21 +194,42 @@ class HomeController(BaseController):
 			return json.dumps({'statusCode':0, 'result': result})
 
     def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
-        if 'facilitatorInitiatives' in session:
+
+        log.info("in GEO get following initiatives")
+        # initiative urls were added to children in generic.py, NOT codes! Could be simplified with a database script to fix that.
+        facilitatorInitiativeURLs = []
+
+        if 'facilitatorInitiatives' in session and len(session['facilitatorInitiatives']) != 0:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
-            
         else:
-            facilitatorInitiativeCodes = []
+            initiativeFacilitators = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
+            if len(initiativeFacilitators) != 0:
+                facilitatorInitiativeURLs = []
+                for f in initiativeFacilitators:
+                    facilitatorInitiativeURLs.append(f['initiative_url'])
+            else:
+                facilitatorInitiativeCodes = []
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
         else:
             bookmarkedInitiativeCodes = []
 
-
         interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
         # reverse list so most recent first
         interestedInitiativeCodes = interestedInitiativeCodes[::-1]
+
+        interestedInitiatives = []
+        for code in interestedInitiativeCodes:
+            #log.info('%s' % code)
+            i = initiativeLib.getInitiative(code)
+            interestedInitiatives.append(i)
+
+        if len(facilitatorInitiativeURLs) != 0:
+            for url in facilitatorInitiativeURLs:
+                log.info('url is  %s' % url)
+                i = initiativeLib.getInitiativeByURL(url)
+                interestedInitiatives.append(i)
         
         if geoScope:
             initScope = geoScope.replace('||', '|0|')
@@ -203,12 +240,6 @@ class HomeController(BaseController):
 #         offset = int(offset)
 #         limit = int(limit)
 #         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
-
-        interestedInitiatives = []
-        for code in interestedInitiativeCodes:
-            #log.info('%s' % code)
-            i = initiativeLib.getInitiative(code)
-            interestedInitiatives.append(i)
         
         if len(interestedInitiatives) == 0:
             return json.dumps({'statusCode':1})
@@ -273,6 +304,8 @@ class HomeController(BaseController):
 
                 entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
 
+
+                log.info('yup, still assembling properties for %s' % entry['title'])
                 # scope attributes
                 if 'scope' in item and (item['scope'] == geoScope or item['scope'] == initScope or item['scope'] == initScope2):
                     entry['scope'] = item['scope']
