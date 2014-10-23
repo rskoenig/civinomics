@@ -75,6 +75,7 @@ def linkChildToParent(child, parent):
         child['initiative_tags'] = parent['tags']
         child['initiative_scope'] = parent['scope']
         child['initiative_title'] = parent['title']
+        child['initiativeCode'] = parent['urlCode']
     if 'initiativeCode' in parent and 'initiative_url' in parent and child.objType != 'rating':
         child['initiativeCode'] = parent['initiativeCode']
         child['initiative_url'] = parent['initiative_url']
