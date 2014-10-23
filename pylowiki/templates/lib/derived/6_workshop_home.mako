@@ -638,7 +638,7 @@
     <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
       <tr>
         <td ng-if="item.objType == 'initiative'">
-          ${ng_helpers.initiative_listing()}
+          ${ng_helpers.general_listing_yesno_condensed()}
         </td>
 
         <td ng-if="item.objType == 'idea'">

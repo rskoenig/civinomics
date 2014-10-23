@@ -118,6 +118,108 @@
     </div>
 </%def>
 
+<%def name="general_listing_yesno_condensed()">
+    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+        <div ng-controller="yesNoVoteCtrl" id="{{item.url}}"> 
+            <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
+                <div class="col-xs-2 col-sm-1">
+                    <a href = '{{item.href}}'>
+                        <img class="thumbnail tight initiative-thumb no-top no-bottom" src="{{item.thumbnail}}">
+                    </a>
+                </div>
+                <div class="col-xs-10 col-sm-7">
+                    <strong><a ng-href="{{item.href}}">{{item.title}}</a></strong><br>
+                    ${summary_condensed()}
+                </div>
+                <div class="col-sm-3">
+                    ${author(size = 'xs')}
+                </div>
+            </div>
+
+            <div class="row" ng-if="item.thumbnail == False || item.thumbnail=='0'">
+                <div class="col-xs-12">
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    ${status()}
+                    ${text()}
+                </div>
+            </div>
+
+            <div class="row" style="min-height: 50px;">
+                <div class="actions">
+                    <div class="panel-heading">
+                        <ul class="horizontal-list iconListing">
+                            <li>
+                                <span class="glyphicon glyphicon-unchecked grey"></span>
+                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}">
+                                    Rate
+                                </a>
+                            </li>
+                            <li>
+                                <span class="glyphicon glyphicon-unchecked grey left-space"></span>
+                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
+                                    Comment
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+     
+                % if not c.authuser or c.authuser['memberType'] != 'organization':
+                        <div ng-switch="item.parentObjType" ng-cloak>
+                            <div ng-switch-when="workshop" ng-controller="ratingsController">
+                                        {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                        <div ng-switch="rating.type">
+                                            <div ng-switch-when="criteria">
+                                                <div id="rate{{item.url}}" class="panel-collapse collapse">
+                                                    %if 'user' in session:
+                                                     ${rateCriteria()}
+                                                     <div ng-if="hasVoted">
+                                                        <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                                                            {{checkDemographics(item.parentHref)}}
+                                                            ${demographics()}
+                                                        </div>
+                                                    </div>
+                                                    %else:
+                                                        ${rateCriteria(readOnly = "1")}
+                                                    %endif
+                                                </div>
+                                            </div><!-- close criteria inner-->
+                                            <div ng-switch-when="yesno">
+                                                <span ng-if="item.readOnly == '1'">
+                                                    ${yesNoVoteFooter(readonly = "1")}
+                                                </span>
+                                                <span ng-if="item.readOnly == '0'">
+                                                    ${yesNoVoteFooter(readonly = "0")}
+                                                </span>
+                                            </div> <!-- close yesno inner-->
+                                            <div ng-switch-default>
+        
+                                            </div> <!-- close default inner-->
+                                        </div> <!-- close switch inner-->
+                            </div><!-- close when outer-->
+                            <div ng-switch-default>
+                                        <span ng-if="item.readOnly == '1'">
+                                            ${yesNoVoteFooter(readonly = "1")}
+                                        </span>
+                                        </span>
+                                        <span ng-if="item.readOnly == '0'">
+                                            ${yesNoVoteFooter(readonly = "0")}
+                                        </span>
+                            </div> <!-- close default outer-->
+                        </div>  
+
+                % endif
+                <div id="comment{{item.url}}" class="panel-collapse collapse" style="padding-bottom: 19px;">
+                    <span ng-show="item.readOnly == '1'">${addComment(readonly = '1')}</span>
+                    <span ng-show="item.readOnly == '0'">${addComment(readonly = '0')}</span>
+                </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</%def>
+
 
 
 <%def name="basic_listing()">
@@ -986,8 +1088,15 @@
     </small>
 </%def>
 
-<%def name="author()">
-    <img class="avatar avatar-md inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+<%def name="author(**kwargs)">
+    <%
+        if 'size' in kwargs:
+            authorClass = 'avatar-' + kwargs['size'] 
+        else:
+            authorClas = 'avatar-md'
+    %>
+
+    <img class="avatar ${authorClass} inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <a href="{{item.authorHref}}">{{item.authorName}}</a> 
 </%def>
 
@@ -1032,6 +1141,17 @@
             <br>
         </div>
     </div>
+</%def>
+
+<%def name="summary_condensed()">
+    <span ng-init="stringLimit=60">
+        <span>{{item.html | limitTo:stringLimit}}
+
+            <span ng-show="item.html.length > 60 && stringLimit == 60"><a ng-click="stringLimit = 10000">...more</a></span>
+            <span><a ng-show="stringLimit == 10000" ng-click="stringLimit = 60"> less</a></span>
+
+        </span>
+    </span>
 </%def>
 
 <%def name="fullText()">

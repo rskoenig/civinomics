@@ -47,6 +47,7 @@ def getJsonProperties(item):
         entry['title'] = item['title']
     else: 
         entry['title'] = ''
+
     entry['objType'] = item.objType
     if item.objType == 'discussion':
         if item['discType'] == 'update':
