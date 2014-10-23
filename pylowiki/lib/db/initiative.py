@@ -21,6 +21,12 @@ def getInitiative(initiativeCode):
     except:
         return False
 
+def getInitiativeByURL(initiativeURL):
+    try:
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('url', initiativeURL))).one()
+    except:
+        return False
+
 def getInitiativesForUser(user):
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative'])).filter(Thing.data.any(wc('deleted', '0'))).filter_by(owner = user.id).all()
