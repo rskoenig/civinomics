@@ -271,8 +271,9 @@
                         FB.api('/me/', 'get', {fields: 'first_name, last_name, picture'}, function(apiResponse){
             			    console.log(apiResponse);
                             name = apiResponse.first_name + ' ' + apiResponse.last_name;
-                            smallPic = apiResponse.picture;
-                            bigPic = apiResponse.picture;
+                            console.log(apiResponse.picture.data.url);
+                            smallPic = apiResponse.picture.data.url;
+                            bigPic = apiResponse.picture.data.url;
                             callback();
                         });                    
                     },
@@ -331,6 +332,7 @@
                 thePicFql.wait(function (rows) {
                   // the big pic link
                   thePic = rows[0].url;
+                  console.log(thePic);
                 });
                 callback(null, thePic);
             }

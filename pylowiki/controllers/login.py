@@ -200,11 +200,26 @@ class LoginController(BaseController):
         return redirect("/login")
 
     def fbAuthCheckEmail(self, id1):
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'danger'
+        splashMsg['title'] = 'Error'
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
         name, email, access, expires, signed, facebookAuthId, smallPic, bigPic = id1.split("&")
-        
+        if utils.badEmail(email):
+            # simple is best, this next line is what was here
+            # if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            # invalid email, could be the 'undefined' case
+            # we'll make a unique email for this user
+            if 'facebookAuthId' in session:
+                email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                log.info("created email %s"%email)
+            else:
+                email = "%s@%s.com"%(facebookAuthId,facebookAuthId)
+                log.info("created email %s"%email)
+
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
         # ajax it over here
@@ -220,7 +235,10 @@ class LoginController(BaseController):
             return None
         log.info("login:fbAuthCheckEmail made it past verifyFbSignature")
 
+        log.info(facebookAuthId)
         user = userLib.getUserByFacebookAuthId( facebookAuthId )
+        log.info(user)
+        log.info(email)
         if not user:
             user = userLib.getUserByEmail( email )
             if user:
@@ -256,6 +274,7 @@ class LoginController(BaseController):
         splashMsg = {}
         splashMsg['type'] = 'danger'
         splashMsg['title'] = 'Error'
+        log.info(vars(session))
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
         #if 'fbAccessToken' in session and 'fbEmail' in session:
@@ -549,6 +568,7 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
+        #log.info("login:logUserIn session save")
 
         c.authuser = user
         
@@ -567,7 +587,6 @@ class LoginController(BaseController):
         session["positions"] = positions
         session.save()
         
-        
         # get their workshops and initiatives of interest
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
@@ -578,15 +597,29 @@ class LoginController(BaseController):
         followLib.setInitiativeFollowsInSession()
 
         #log.info("login:logUserIn")
-        if 'externalAuthType' in user.keys():
-            log.info("login:logUserIn externalAuthType in user keys")
-            if user['externalAuthType'] == 'facebook' and 'fbAccessToken' in session:
-                user['facebookAccessToken'] = session['fbAccessToken']
-                if 'fbSmallPic' in session:
-                    user['facebookProfileSmall'] = session['fbSmallPic']
-                    user['facebookProfileBig'] = session['fbBigPic']
-            else:
-                user['externalAuthType'] = ''
+        if 'iPhoneApp' in kwargs:
+            if kwargs['iPhoneApp'] != True:
+                if 'externalAuthType' in user.keys():
+                    log.info("login:logUserIn externalAuthType in user keys")
+                    if user['externalAuthType'] == 'facebook':
+                        log.info("login:logUserIn externalAuthType facebook")
+                        user['facebookAccessToken'] = session['fbAccessToken']
+                        if 'fbSmallPic' in session:
+                            user['facebookProfileSmall'] = session['fbSmallPic']
+                            user['facebookProfileBig'] = session['fbBigPic']
+                    else:
+                        user['externalAuthType'] = ''
+        else:
+            if 'externalAuthType' in user.keys():
+                log.info("login:logUserIn externalAuthType in user keys")
+                if user['externalAuthType'] == 'facebook':
+                    log.info("login:logUserIn externalAuthType facebook")
+                    user['facebookAccessToken'] = session['fbAccessToken']
+                    if 'fbSmallPic' in session:
+                        user['facebookProfileSmall'] = session['fbSmallPic']
+                        user['facebookProfileBig'] = session['fbBigPic']
+                else:
+                    user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -657,7 +690,7 @@ class LoginController(BaseController):
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         log.info("loginURL is %s"%loginURL)
 
-                        if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/signup":                            
+                        if query['alURL'] != "/login" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
                         if len(query['alURL'].split("/")) >= 3:
                             workshopCode = query['alURL'].split("/")[2]
@@ -687,9 +720,7 @@ class LoginController(BaseController):
                             #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
                         else:
-                            log.info("returning %s"%loginURL)
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo':loginURL})
-
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'

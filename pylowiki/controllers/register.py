@@ -583,10 +583,11 @@ class RegisterController(BaseController):
                 session['splashMsg'] = splashMsg
                 session.save() 
                 return redirect('/signup')
-            
+            log.info(facebookAuthId)
             user = getUserByFacebookAuthId( facebookAuthId )
             if not user:
                 log.info("did not find by fb id")
+                log.info(email)
                 user = getUserByEmail( email )
 
 
@@ -708,6 +709,7 @@ class RegisterController(BaseController):
                             returnPage = "/"
                             return redirect(returnPage)
                 log.info("register:fbSigningUp found user, should have been logged in")
+                log.info(user)
                 splashMsg['content'] = "You should have been logged in already"
                 session['splashMsg'] = splashMsg
                 session.save() 
