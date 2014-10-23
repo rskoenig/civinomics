@@ -287,7 +287,8 @@ class ProfileController(BaseController):
         #        entry[mPostEntry] = dict(mPost)
         #        i = i + 1
 
-        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        #c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        c.unpublishedActivity = False
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
         #if iPhoneApp:

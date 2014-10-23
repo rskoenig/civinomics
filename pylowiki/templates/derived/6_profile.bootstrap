@@ -20,12 +20,14 @@
     <% 
         if c.user['memberType'] == 'organization':
             who = "Our"
+        else:
+            who = "My"
+        
         if 'alert' in session:
             message = session['alert']
             session.pop('alert')
             session.save()
         else:
-            who = "My"
             message = ''
     %>
 

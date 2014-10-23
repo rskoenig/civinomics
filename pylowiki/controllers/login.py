@@ -549,7 +549,6 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        #log.info("login:logUserIn session save")
 
         c.authuser = user
         
@@ -568,6 +567,7 @@ class LoginController(BaseController):
         session["positions"] = positions
         session.save()
         
+        
         # get their workshops and initiatives of interest
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
@@ -578,29 +578,15 @@ class LoginController(BaseController):
         followLib.setInitiativeFollowsInSession()
 
         #log.info("login:logUserIn")
-        if 'iPhoneApp' in kwargs:
-            if kwargs['iPhoneApp'] != True:
-                if 'externalAuthType' in user.keys():
-                    log.info("login:logUserIn externalAuthType in user keys")
-                    if user['externalAuthType'] == 'facebook':
-                        log.info("login:logUserIn externalAuthType facebook")
-                        user['facebookAccessToken'] = session['fbAccessToken']
-                        if 'fbSmallPic' in session:
-                            user['facebookProfileSmall'] = session['fbSmallPic']
-                            user['facebookProfileBig'] = session['fbBigPic']
-                    else:
-                        user['externalAuthType'] = ''
-        else:
-            if 'externalAuthType' in user.keys():
-                log.info("login:logUserIn externalAuthType in user keys")
-                if user['externalAuthType'] == 'facebook':
-                    log.info("login:logUserIn externalAuthType facebook")
-                    user['facebookAccessToken'] = session['fbAccessToken']
-                    if 'fbSmallPic' in session:
-                        user['facebookProfileSmall'] = session['fbSmallPic']
-                        user['facebookProfileBig'] = session['fbBigPic']
-                else:
-                    user['externalAuthType'] = ''
+        if 'externalAuthType' in user.keys():
+            log.info("login:logUserIn externalAuthType in user keys")
+            if user['externalAuthType'] == 'facebook' and 'fbAccessToken' in session:
+                user['facebookAccessToken'] = session['fbAccessToken']
+                if 'fbSmallPic' in session:
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
+            else:
+                user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -670,7 +656,7 @@ class LoginController(BaseController):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
 
-                        if query['alURL'] != "/login" and query['alURL'] != "/signup":                            
+                        if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
                         if len(query['alURL'].split("/")) >= 3:
                             workshopCode = query['alURL'].split("/")[2]
@@ -698,7 +684,9 @@ class LoginController(BaseController):
                             #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
                         else:
+                            log.info("returning %s"%loginURL)
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo':loginURL})
+
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'

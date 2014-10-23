@@ -55,7 +55,6 @@ function createController($scope, $http) {
 	}
 	
 	$scope.getCountyList = function() {
-		alert($scope.state);
         $http.get('/geo/countyListJSON/'+ $scope.country + '/' + $scope.state).success(function(data){
             $scope.countyList = data.result;
             $scope.showCountySelect = true;
@@ -179,10 +178,8 @@ function createController($scope, $http) {
 	    }
 	    
 	    $("#imgAvatar").change(function(){
-	    	alert("YUP");
 	        readURL(this);
 	    });
 	    $("#imgCover").change(function(){
-	    	alert("AHA");
 	        readURL2(this);
 	    });

@@ -174,6 +174,16 @@ def getJsonProperties(item):
             else:
                 entry['parentTitle'] == ''
             entry['parentHref'] = "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        elif 'initiativeCode' in item and 'resourceCode' in item:
+            parentCode = item['resourceCode']
+            parentURL = item['parent_url']
+            parentObjType = 'resource'
+            entry['parentHref'] = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
+        elif 'initiativeCode' in item:
+            parentCode = item['initiativeCode']
+            parentURL = item['parent_url']
+            parentObjType = 'initiative'
+            entry['parentHref'] = "/initiative/" + parentCode + "/" + parentURL + "/show/"
         elif 'discussionCode' in item:
             parentCode = item['discussionCode']
             parentURL = item['parent_url']
@@ -188,16 +198,6 @@ def getJsonProperties(item):
             parentURL = item['parent_url']
             parentObjType = 'photo'
             entry['parentHref'] = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
-        elif 'initiativeCode' in item and 'resourceCode' in item:
-            parentCode = item['resourceCode']
-            parentURL = item['parent_url']
-            parentObjType = 'resource'
-            entry['parentHref'] = "/initiative/" + item['initiativeCode'] + "/" + item['initiative_url'] + "/resource/"+ parentCode + "/" + parentURL
-        elif 'initiativeCode' in item:
-            parentCode = item['initiativeCode']
-            parentURL = item['parent_url']
-            parentObjType = 'initiative'
-            entry['parentHref'] = "/initiative/" + parentCode + "/" + parentURL + "/show/"
         elif 'meetingCode' in item:
             parentCode = item['meetingCode']
             parentURL = item['meeting_url']
