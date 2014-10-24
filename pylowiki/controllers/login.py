@@ -201,6 +201,12 @@ class LoginController(BaseController):
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
         name, email, access, expires, signed, facebookAuthId, smallPic, bigPic = id1.split("&")
         
+        if name:
+            log.info("fbAuthCheckEmail name is %s"%name)
+            
+        if email:
+            log.info("fbAuthCheckEmail email is %s"%email)
+        
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
         # ajax it over here
