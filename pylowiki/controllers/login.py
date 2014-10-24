@@ -24,6 +24,7 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.discussion   	as discussionLib
+import pylowiki.lib.db.geoInfo   	    as geoInfoLib
 
 # twython imports
 from twython import Twython
@@ -651,7 +652,19 @@ class LoginController(BaseController):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         log.info("loginURL is %s"%loginURL)
-
+                        
+                        # patch to catch cases where user was created without a geoInfo
+                        geoInfo = geoInfoLib.getGeoInfo(user.id)
+                        if not geoInfo:
+                            log.info("user %s has no geoInfo."%user['name'])
+                            postalCode = user['postalCode']
+                            if postalCode != '':
+                                geoInfoLib.GeoInfo(postalCode, "United States", user.id )
+                                                        # patch to catch cases where user was created without a geoInfo
+                                geoInfo = geoInfoLib.getGeoInfo(user.id)
+                                if not geoInfo:
+                                    log.info("user %s STILL has no geoInfo."%user['name'])
+                                
                         if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
                         if len(query['alURL'].split("/")) >= 3:
