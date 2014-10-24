@@ -166,10 +166,16 @@
                                                         Rated
                                                     </a>
                                                 </li>
-                                                <li>
+                                                <li ng-show="!item.userCommented">
                                                     <span class="glyphicon glyphicon-unchecked grey left-space"></span>
                                                     <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
                                                         Comment
+                                                    </a>
+                                                </li>
+                                                <li class="med-green" ng-show="item.userCommented" ng-cloak>
+                                                    <span class="glyphicon glyphicon-check"></span>
+                                                    <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
+                                                        Commented
                                                     </a>
                                                 </li>
                                             </ul>

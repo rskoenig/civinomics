@@ -50,7 +50,17 @@ def getCommentsInDiscussion(discussion, deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
     except:
-       return False  
+       return False 
+
+def checkUserCommentInDiscussion(user, discussionCode, deleted = '0', disabled = '0'):
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'comment')\
+        .filter(Thing.data.any(wc('discussionCode', discussionCode)))\
+        .filter_by(owner = user.id)\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .all()
+             
 
 def getCommentsInDiscussionByCode(discussionCode, deleted = '0', disabled = '0'):
     try:

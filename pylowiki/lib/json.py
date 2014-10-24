@@ -311,8 +311,10 @@ def getJsonProperties(item):
         if 'numComments' in item:
             entry['numComments'] = item['numComments']
 
-    
-
+        entry['userCommented'] = False
+        result = commentLib.checkUserCommentInDiscussion(c.authuser, entry['discussion'])
+        if result:
+            entry['userCommented'] = True
     
     author = userLib.getUserByID(item.owner)
 
