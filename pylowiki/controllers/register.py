@@ -536,7 +536,7 @@ class RegisterController(BaseController):
             log.info('chkTOS missing')
         else:
             checkTOS = request.params['chkTOS']
-
+        log.info(vars(session))
         schema = plaintextForm()
         try:
             namecheck = name.replace(' ', '')
