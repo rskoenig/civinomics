@@ -262,6 +262,7 @@ class GeoController(BaseController):
             if city is None:
                 statusCode = 2
                 result = "No such zipcode."
+                return json.dumps({'statusCode':statusCode, 'result':result})
             state = postalInfo['StateFullName']
             if state is None:
                 statusCode = 2
