@@ -178,11 +178,18 @@
                                                         Commented
                                                     </a>
                                                 </li>
+                                                <li>
+                                                    |
+                                                </li>
+
+                                                <li>
+                                                    <a class="grey">Total Ratings (23)</a>
+                                                </li>
+                                                <li>
+                                                    <a class="grey">Total Comments (17)</a>
+                                                </li>
                                             </ul>
                                         </div>
-
-
-
 
                                         <div ng-switch="rating.type">
                                             <div ng-switch-when="criteria">
