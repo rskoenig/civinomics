@@ -1,0 +1,30 @@
+// Fixes for civinomics pages
+// --------------------------
+// Remember to recompile ../civinomics.less
+// after you're done editing this file
+
+// http://twitter.github.com/bootstrap/components.html#navbar
+// This reserves space taken up by the navbar
+// since it's taken out of the page flow
+
+body {padding-top: 60px;}
+
+.squarify(@dim) {
+	height: @dim;
+	width: @dim;
+}
+
+.fix-plus {
+	.squarify(15px);
+	text-indent: -9999px;
+	background: url("civ-img/plus.png") no-repeat scroll center;
+	border: 1px solid #ccc;
+	.box-shadow(0 0 2px #ccc);
+}
+
+// PURELY FOR WIREFRAMING
+.civ-filler {
+	width: 100%;
+	height: 0;
+	text-indent: -9999px;
+}
