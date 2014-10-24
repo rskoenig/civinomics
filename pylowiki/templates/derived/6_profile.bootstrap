@@ -18,7 +18,7 @@
     <!-- inline style kludge to handle fixed nav bar -->
     <div class="spacer"></div>
     <% 
-        if c.authuser.id == c.user.id:
+        if c.authuser and c.authuser.id == c.user.id:
             if c.user['memberType'] == 'organization':
                 who = "Our"
             else:
