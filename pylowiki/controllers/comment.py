@@ -206,22 +206,22 @@ class CommentController(BaseController):
 
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
                 if 'workshopCode' in thing:
-                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, workshop, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, workshop, comment)
                 elif thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in thing:
-                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, comment)
                 elif thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in thing:
-                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, comment)
                 else:
-                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, comment)
 
             if coauthors:
                 for author in coauthors:
                     if 'commentAlerts' in author and author['commentAlerts'] == '1' and (author['email'] != c.authuser['email']):
                         if author != parentAuthor:
                             if 'workshopCode' in thing:
-                                mailLib.sendCommentMail(author['email'], c.authuser, thing, workshop, data)
+                                mailLib.sendCommentMail(author['email'], c.authuser, thing, workshop, comment)
                             else:
-                                mailLib.sendCommentMail(author['email'], c.authuser, thing, thing, data)  
+                                mailLib.sendCommentMail(author['email'], c.authuser, thing, thing, comment)  
             
             if request.params:
                 log.info("commentCCN where oh where")

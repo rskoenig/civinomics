@@ -394,6 +394,8 @@ class MessageController(BaseController):
                     else:
                         entry['itemTitle'] = thing['title']
 
+                entry['itemLink'] += '#comment-' + comment['urlCode']
+
             except:
                 log.info('error in message type: %s'%(message['extraInfo']))
                 pass

@@ -3839,6 +3839,12 @@ div.activity-comments{
     padding-bottom:19px;
 }
 
+.comment-id-offset{
+  display: block; 
+  margin-top: -60px; 
+  height: 60px; 
+}
+
 .date{
   color:grey;
   font-size:.85em;

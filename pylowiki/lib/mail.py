@@ -133,7 +133,7 @@ def sendAccountMail(recipient):
 
     send(recipient, fromEmail, subject, textMessage)
 
-def sendCommentMail(recipient, sender, parent, dparent, text):
+def sendCommentMail(recipient, sender, parent, dparent, comment):
            
     subject = 'Civinomics Alert: A new comment has been added to one of your items'
     fromEmail = 'Civinomics Alerts <alerts@civinomics.com>'
@@ -148,8 +148,8 @@ def sendCommentMail(recipient, sender, parent, dparent, text):
         parentBase = "workshop"
         textMessage += ' in the ' + parentBase + ' titled "' + dparent['title'] + '"'
 
-    textMessage += ': civ.io/' + parent.objType.replace("Unpublished", "") + '/' + parent['urlCode'] + '/' + parent['url']
-    textMessage += '\n\n"' + text + '"\n\n'
+    textMessage += ': civ.io/' + parent.objType.replace("Unpublished", "") + '/' + parent['urlCode'] + '/' + parent['url'] + '#comment-' + comment['urlCode']
+    textMessage += '\n\n"' + comment['data'] + '"\n\n'
     textMessage += "\n\nThis is an automated message. Your Civinomics profile preferences are set to email \nnotifications when someone comments on one of your items.\nTo change this, login to your Civinomics account, and go to the Preferences menu\nof your Edit Profile tab." 
 
     send(recipient, fromEmail, subject, textMessage)

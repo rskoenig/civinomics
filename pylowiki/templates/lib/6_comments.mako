@@ -233,7 +233,7 @@
                         return
         else:
             return
-        panelID = 'panel-%s' % comment['urlCode']
+        commentID = 'comment-%s' % comment['urlCode']
         collapseID = 'collapse-%s' % comment['urlCode']
         
         if curDepth % 2 == 1:
@@ -242,15 +242,16 @@
             backgroundShade = ' evenComment'
         
     %>
-    <div class="panel panel-default" id="${panelID}">
+    <div class="panel panel-default">
+        <span class="comment-id-offset" id="${commentID}"> &nbsp; </span>
         <div class="${backgroundShade}">
-            ${commentHeading(comment, author, panelID, collapseID, parent)}
-            ${commentContent(comment, commentType, curDepth, maxDepth, author, panelID, collapseID)}
+            ${commentHeading(comment, author, commentID, collapseID, parent)}
+            ${commentContent(comment, commentType, curDepth, maxDepth, author, commentID, collapseID)}
         </div>
     </div>
 </%def>
 
-<%def name="commentHeading(comment, author, panelID, collapseID, parent)">
+<%def name="commentHeading(comment, author, commentID, collapseID, parent)">
     <%
         headerClass = "panel-heading"
         if comment['addedAs'] == 'admin':
@@ -297,7 +298,7 @@
 
     %>
     <div class="${headerClass}" style="border-bottom: 1px solid #ddd">
-        <!--<button class="panel-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${panelID}" href="#${collapseID}">
+        <!--<button class="panel-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${commentID}" href="#${collapseID}">
             Hide
         </button> -->
         <%
@@ -342,7 +343,7 @@
     </div> <!--/.panel-heading-->
 </%def>
 
-<%def name="commentContent(comment, commentType, curDepth, maxDepth, author, panelID, collapseID)">
+<%def name="commentContent(comment, commentType, curDepth, maxDepth, author, commentID, collapseID)">
     <%
         thisClass = 'panel-collapse collapse'
         if comment['disabled'] == '0' and comment['deleted'] == '0':
