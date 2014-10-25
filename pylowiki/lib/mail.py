@@ -148,11 +148,8 @@ def sendCommentMail(recipient, sender, parent, dparent, text):
         parentBase = "workshop"
         textMessage += ' in the ' + parentBase + ' titled "' + dparent['title'] + '"'
 
-    textMessage += ':\n\n"' + text + '"\n\n'
-
-    if parent.objType != 'comment':
-        textMessage += 'View and respond here:\n\n civ.io/' + parent.objType.replace("Unpublished", "") + '/' + parent['urlCode'] + '/' + parent['url']
-
+    textMessage += ': civ.io/' + parent.objType.replace("Unpublished", "") + '/' + parent['urlCode'] + '/' + parent['url']
+    textMessage += '\n\n"' + text + '"\n\n'
     textMessage += "\n\nThis is an automated message. Your Civinomics profile preferences are set to email \nnotifications when someone comments on one of your items.\nTo change this, login to your Civinomics account, and go to the Preferences menu\nof your Edit Profile tab." 
 
     send(recipient, fromEmail, subject, textMessage)
