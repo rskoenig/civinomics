@@ -159,15 +159,15 @@ class CommentController(BaseController):
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
 
-                if 'workshopCode' in thing:
+                if thing.objType.replace("Unpublished", "") == 'initiative':
+                    title = ' commented on one of your initiatives'
+                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
+                elif 'workshopCode' in thing:
                     title = ' replied to a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
                 elif thing.objType.replace("Unpublished", "") == 'photo':
                     title = ' commented on one of your pictures'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
-                elif thing.objType.replace("Unpublished", "") == 'initiative':
-                    title = ' commented on one of your initiatives'
-                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
                 elif thing.objType.replace("Unpublished", "") == 'resource':
                     title = ' commented on a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
