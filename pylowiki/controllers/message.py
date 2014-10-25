@@ -152,13 +152,14 @@ class MessageController(BaseController):
 
             # fields used in all if not most of the message types are loaded here
             if 'title' in message:    
-                entry['messageTitle'] = message['title']            
+                entry['messageTitle'] = message['title']          
             if 'text' in message:
                 entry['messageText'] = message['text']
             if 'urlCode' in message:
                 entry['messageCode'] = message['urlCode']
             if 'read' in message:
                 entry['read'] = message['read']
+
             # there is one edge case we've found so far that makes authorResponse throw an error
             # this code is set up to gather the basic info we expect every message to have, so
             # at the least a message will be somewhat useful even if this part throws an error.
