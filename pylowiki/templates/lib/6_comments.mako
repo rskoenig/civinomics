@@ -330,6 +330,8 @@
                                 dparent = c.user
                             elif c.initiative:
                                 dparent = c.initiative
+                            else:
+                                dparent = None
                         %>
                         <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n}>Parent</a>
                     % endif
