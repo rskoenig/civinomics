@@ -96,7 +96,7 @@ class DiscussionController(BaseController):
 
     def topic(self, workshopCode, workshopURL, discussionCode, discussionURL):
         #get the scope to display jurisidction flag
-        if c.w['public_private'] == 'public':
+        if c.w and c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
         
         # sharing - extra details
