@@ -24,10 +24,10 @@ function commentsController($rootScope, $scope, $http, editService) {
 			$scope.commentsLoading = true	
 			$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 				if (data.statusCode == 1){
-					$scope.commentsResult = true;
+					$scope.commentsResult = false;
 				} 
 				else if (data.statusCode === 0){
-					$scope.commentsResult = false;
+					$scope.commentsResult = true;
 					$scope.comments = data.result;
 				}
 				$scope.commentsLoading = false;
@@ -41,11 +41,12 @@ function commentsController($rootScope, $scope, $http, editService) {
 	$scope.getUpdatedComments = function(){
 		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 			if (data.statusCode == 1){
-				$scope.commentsResult = true;
+				$scope.commentsResult = false;
 			} 
 			else if (data.statusCode === 0){
-				$scope.commentsResult = false;
+				$scope.commentsResult = true;
 				$scope.comments = data.result;
+				$scope.commentsHidden = false;
 			}
 			$scope.newCommentLoading = false
 		})
@@ -68,6 +69,7 @@ function commentsController($rootScope, $scope, $http, editService) {
             $scope.getUpdatedComments();
             $scope.commentRole = '';
             $scope.commentText = '';
+            $scope.commented = true
         });
 	};
 	

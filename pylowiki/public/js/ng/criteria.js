@@ -39,7 +39,11 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.hasVoted = false;
 	
 	$scope.changeShowAverage = function(){
-    	$scope.showAverage = !$scope.showAverage;
+    	$scope.showAverage = true;
+	}
+
+	$scope.changeShowMyRatings = function(){
+    	$scope.showAverage = false;
 	}
 	
 	$scope.addCriteriaToList = function(){

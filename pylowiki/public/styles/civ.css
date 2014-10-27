@@ -3792,6 +3792,7 @@ table.table-inline{
 
 .comment-main-cell{
   padding: 10px;
+  vertical-align: top;
 }
 
 .comment-row{
@@ -3825,7 +3826,7 @@ table.table-inline{
 }
 
 .activity-comments .avatar{
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   margin-left: 10px;
   margin-right: 0;
 }
