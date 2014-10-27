@@ -487,6 +487,12 @@ class RegisterController(BaseController):
         #    log.info('password2 missing')
         #else:
         #    password2 = request.params['password2']
+#         session['facebookAuthId'] = facebookAuthId
+#         session['fbEmail'] = email
+#         session['fbAccessToken'] = access
+#         session['fbName'] = name
+#         session['fbBigPic'] = bigPic
+#         session['fbSmallPic'] = smallPic
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])

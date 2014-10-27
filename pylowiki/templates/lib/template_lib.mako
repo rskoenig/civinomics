@@ -417,13 +417,6 @@
 
 
 <%def name="tabbableSignupLogin(*args)">
- <% 
-      ####
-      #### After Login URL
-      ####
-      alURL = url.current()
-      session['afterLoginURL'] = alURL
-    %>
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -458,8 +451,8 @@
 
 <%def name="socialLogins()">
     <%
-        session['returnToSocial'] = url.current()
-        session.save()
+       # session['returnToSocial'] = url.current()
+       # session.save()
     %>
     <div class="row social-login centered">
         <div id="fbLoginButton2">
@@ -612,19 +605,19 @@
       ####
       #### After Login URL
       ####
-      alURL = url.current()
+      #alURL = url.current()
       #alURL= session._environ['PATH_INFO']
-      if not alURL:
-        alURL = request.url
-      if 'QUERY_STRING' in session._environ :
-        alURL = alURL + '?' + session._environ['QUERY_STRING'] 
+      #if not alURL:
+      #  alURL = request.url
+      #if 'QUERY_STRING' in session._environ :
+      #  alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL
-      if '{{' in alURL:
-        try:
-            alURL = session._environ['HTTP_REFERER']
-        except:
-            alURL = '/browse/initiatives'
-      session['afterLoginURL'] = alURL
+      #if '{{' in alURL:
+      #  try:
+      #      alURL = session._environ['HTTP_REFERER']
+      #  except:
+      #      alURL = '/browse/initiatives'
+      #session['afterLoginURL'] = alURL
     %>
     <div class="modal fade" id="signupLoginModal" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
         <div class="modal-dialog">
