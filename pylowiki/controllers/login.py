@@ -207,6 +207,18 @@ class LoginController(BaseController):
         if email:
             log.info("fbAuthCheckEmail email is %s"%email)
         
+        if utils.badEmail(email):
+             # simple is best, this next line is what was here
+             # if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+             # invalid email, could be the 'undefined' case
+             # we'll make a unique email for this user
+             if 'facebookAuthId' in session:
+                 email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                 log.info("created email %s"%email)
+             else:
+                 email = "%s@%s.com"%(facebookAuthId,facebookAuthId)
+                 log.info("created email %s"%email)
+        
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
         # ajax it over here
