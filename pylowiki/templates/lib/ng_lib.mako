@@ -155,26 +155,26 @@
                                     <div class="panel-heading">
                                         <ul class="horizontal-list iconListing">
                                             <li ng-show="!ratingComplete" ng-cloak>
-                                                <span class="glyphicon glyphicon-unchecked grey"></span>
                                                 <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                    <span class="glyphicon glyphicon-unchecked"></span>
                                                     Rate
                                                 </a>
                                             </li>
                                             <li class="med-green" ng-show="ratingComplete" ng-cloak>
-                                                <span class="glyphicon glyphicon-check"></span>
                                                 <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                    <span class="glyphicon glyphicon-check"></span>
                                                     Rated
                                                 </a>
                                             </li>
                                             <li ng-show="!(item.userCommented || commented)">
-                                                <span class="glyphicon glyphicon-unchecked grey left-space"></span>
                                                 <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
+                                                    <span class="glyphicon glyphicon-unchecked left-space"></span>
                                                     Comment
                                                 </a>
                                             </li>
                                             <li class="med-green" ng-show="item.userCommented || commented" ng-cloak>
-                                                <span class="glyphicon glyphicon-check"></span>
                                                 <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}" ng-click="getComments()">
+                                                    <span class="glyphicon glyphicon-check"></span>
                                                     Commented
                                                 </a>
                                             </li>
