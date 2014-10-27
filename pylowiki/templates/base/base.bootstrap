@@ -98,7 +98,7 @@
         %>
         <script type="text/javascript" src="/js/vendor/async.min.js"></script>
         <div id="fb-root"></div>
-        <script>
+      <!--  <script>
 
             // Load the SDK asynchronously
             (function(d, s, id) {
@@ -343,7 +343,7 @@
                 result = fbCheckAccount(response, authResponse, smallPic, bigPic);            
                 callback(null, result);
             }
-        </script>
+        </script> -->
     
     </body>
 </html>

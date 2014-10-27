@@ -141,6 +141,17 @@ class CommentController(BaseController):
                     comment['commentRole'] = commentRole
                     dbHelpers.commit(comment)
 
+            ## also check for coAuthors of initiatives
+            # note - coauthors currently get emails/messages about REPLIES to comments in their initaitives while authors do not - erring on the side of more messaging in general for now
+            coauthors = None
+            if thing.objType.replace("Unpublished", "") == 'initiative':
+                iFacilitators = facilitatorLib.getFacilitatorsByInitiativeCode(thing['urlCode'])
+                if len(iFacilitators) != 0:
+                    coauthors = []
+                    for f in iFacilitators:
+                        coauthor = userLib.getUserByID(f.owner)
+                        coauthors.append(coauthor)
+
             # Notifications that the comment was made via message and email
             # don't send message if the object owner is the commenter
             if parentAuthor != c.authuser and thing.objType != 'agendaitem'  and thing.objType != 'ballotmeasure' and thing.objType != 'ballotcandidate':
@@ -148,15 +159,15 @@ class CommentController(BaseController):
                 text = '(This is an automated message)'
                 extraInfo = 'commentResponse'
 
-                if 'workshopCode' in thing:
+                if thing.objType.replace("Unpublished", "") == 'initiative':
+                    title = ' commented on one of your initiatives'
+                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
+                elif 'workshopCode' in thing:
                     title = ' replied to a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
                 elif thing.objType.replace("Unpublished", "") == 'photo':
                     title = ' commented on one of your pictures'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
-                elif thing.objType.replace("Unpublished", "") == 'initiative':
-                    title = ' commented on one of your initiatives'
-                    message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
                 elif thing.objType.replace("Unpublished", "") == 'resource':
                     title = ' commented on a post you made'
                     message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnResource")
@@ -181,13 +192,36 @@ class CommentController(BaseController):
                 dbHelpers.commit(message)
                 alertsLib.emailAlerts(comment)
 
+            if coauthors:
+                title = ' commented on one of your initiatives'
+                text = '(This is an automated message)'
+                extraInfo = 'commentResponse'
+                for author in coauthors:
+                    if author != parentAuthor and author != c.authuser:
+                        message = messageLib.Message(owner = author, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
+
+                        message = genericLib.linkChildToParent(message, comment)
+                        dbHelpers.commit(message)
+                        alertsLib.emailAlerts(comment)
+
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
                 if 'workshopCode' in thing:
-                    mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, workshop, comment)
                 elif thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in thing:
-                    mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, comment)
                 elif thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in thing:
-                    mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, comment)
+                else:
+                    mailLib.sendCommentMail(parentAuthor['email'], c.authuser, thing, thing, comment)
+
+            if coauthors:
+                for author in coauthors:
+                    if 'commentAlerts' in author and author['commentAlerts'] == '1' and (author['email'] != c.authuser['email']):
+                        if author != parentAuthor:
+                            if 'workshopCode' in thing:
+                                mailLib.sendCommentMail(author['email'], c.authuser, thing, workshop, comment)
+                            else:
+                                mailLib.sendCommentMail(author['email'], c.authuser, thing, thing, comment)  
             
             if request.params:
                 log.info("commentCCN where oh where")

@@ -176,18 +176,20 @@ class InitiativeController(BaseController):
         return render('/derived/6_initiative_edit.bootstrap')
 
 
-    def initiativeNewHandler(self, parentObj, parentCode):
+    def initiativeNewHandler(self, parentObj = None, parentCode = None):
         if request.params:
             payload = request.params  
-        elif json.loads(request.body):
+        elif request.body and json.loads(request.body):
             payload = json.loads(request.body)
+        else:
+            payload = ''
 
         if parentObj == 'workshop':
             if parentCode != None:
                 wCode = parentCode
+                workshop = workshopLib.getWorkshopByCode(wCode)
         elif 'workshopCode' in payload:
             wCode = payload['workshopCode']
-        if wCode:
             workshop = workshopLib.getWorkshopByCode(wCode)
         else:
             workshop = None

@@ -178,6 +178,9 @@ class HomeController(BaseController):
             return json.dumps({'statusCode':0, 'result': result})
 
     def getFollowingInitiativesGeo(self, offset=0, limit=0, geoScope=''):
+        if not c.authuser:
+            return json.dumps({'statusCode':1})
+
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
             
