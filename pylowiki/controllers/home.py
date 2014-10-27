@@ -73,7 +73,7 @@ class HomeController(BaseController):
 #         log.info("in get following initiatives")
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
-            log.info(session['facilitatorInitiatives'])
+#             log.info(session['facilitatorInitiatives'])
         else:
             session['facilitatorInitiatives'] = []
             session.save()
