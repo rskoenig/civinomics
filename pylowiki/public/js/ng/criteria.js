@@ -37,12 +37,23 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.hasCriteria = false;
 	$scope.showAverage = false;
 	$scope.hasVoted = false;
-	
+
+	$scope.showRatingPanel = false;
 	$scope.changeShowAverage = function(){
+		if ($scope.showRatingPanel == true && $scope.showAverage == true) {
+    		$scope.showRatingPanel = false;
+    	} else{
+    		$scope.showRatingPanel = true;
+    	};
     	$scope.showAverage = true;
 	}
 
 	$scope.changeShowMyRatings = function(){
+		if ($scope.showRatingPanel == true && $scope.showAverage == false) {
+    		$scope.showRatingPanel = false;
+    	} else{
+    		$scope.showRatingPanel = true;
+    	};
     	$scope.showAverage = false;
 	}
 	

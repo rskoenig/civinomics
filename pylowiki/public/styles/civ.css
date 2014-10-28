@@ -817,8 +817,14 @@ div.unread-message:hover {
 
 .horizontal-list.iconListing{
   margin-left: 0px;
-  font-size: .85em;
+  font-size: .9em;
   font-weight: 500;
+  color:grey;
+}
+
+.horizontal-list.iconListing .btn{
+  margin-bottom: 0;
+  /*background-color: whitesmoke;*/
 }
 
 
@@ -1865,7 +1871,7 @@ a.no-border:hover{
     color:#ffffff;
 }
 .orange{
-    color:#D15D00;
+    color:#f0ad4e;
 }
 .purple{
     color:#56005D;

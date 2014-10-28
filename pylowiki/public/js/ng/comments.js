@@ -32,9 +32,11 @@ function commentsController($rootScope, $scope, $http, editService) {
 				}
 				$scope.commentsLoading = false;
 				$scope.commentsHidden = false;
+				$scope.showNewComment = true;
 			})
 		} else {
-			$scope.commentsHidden = true
+			$scope.commentsHidden = true;
+			$scope.showNewComment = false;
 		}
 	};
 
@@ -47,6 +49,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 				$scope.commentsResult = true;
 				$scope.comments = data.result;
 				$scope.commentsHidden = false;
+				$scope.showNewComment = true;
 			}
 			$scope.newCommentLoading = false
 		})
@@ -59,6 +62,16 @@ function commentsController($rootScope, $scope, $http, editService) {
 			$scope.commentsHidden = true;
 		}
 	};
+
+	$scope.showNewComment = false;
+	$scope.toggleNewComment = function(){
+		if ($scope.showNewComment == true){
+			$scope.showNewComment = false;
+			$scope.commentsHidden = true;
+		} else{
+			$scope.showNewComment = true;
+		}
+	}
 
 	$scope.submitComment = function(){
 		$scope.newCommentLoading = true

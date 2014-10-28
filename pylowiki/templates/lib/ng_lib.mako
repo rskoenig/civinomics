@@ -155,7 +155,7 @@
                                     <div class="panel-heading">
                                         <ul class="horizontal-list iconListing">
                                             <li ng-show="!ratingComplete" ng-cloak>
-                                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                <a class="orange" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
                                                     <span class="glyphicon glyphicon-unchecked"></span>
                                                     Rate
                                                 </a>
@@ -167,13 +167,13 @@
                                                 </a>
                                             </li>
                                             <li ng-show="!(item.userCommented || commented)">
-                                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}">
+                                                <a class="orange" ng-click="toggleNewComment()">
                                                     <span class="glyphicon glyphicon-unchecked left-space"></span>
                                                     Comment
                                                 </a>
                                             </li>
-                                            <li class="med-green" ng-show="item.userCommented || commented" ng-cloak>
-                                                <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#comment{{item.url}}" ng-click="getComments()">
+                                            <li ng-show="item.userCommented || commented">
+                                                <a ng-click="getComments()" class="med-green">
                                                     <span class="glyphicon glyphicon-check"></span>
                                                     Commented
                                                 </a>
@@ -183,7 +183,7 @@
                                             </li>
 
                                             <li>
-                                                <a class="grey" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
+                                                <a class="grey" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
                                             </li>
                                             <li>
                                                 <a class="grey" ng-click="getComments()">Total Comments ({{numComments}})</a>
@@ -193,7 +193,7 @@
 
                                     <div ng-switch="rating.type">
                                         <div ng-switch-when="criteria">
-                                            <div id="rate{{item.url}}" class="panel-collapse collapse">
+                                            <div ng-show="showRatingPanel">
                                                 %if 'user' in session:
                                                  ${rateCriteria()}
                                                  <div ng-if="hasVoted">
@@ -231,7 +231,8 @@
                                 </div> <!-- close default outer-->
                             </div><!-- ng-switch -->
                         % endif
-                        <div id="comment{{item.url}}" class="panel-collapse collapse" style="padding-bottom: 19px;">
+
+                        <div ng-show="showNewComment" style="padding-bottom: 19px;">
                             <span ng-show="item.readOnly == '1'">${addComment(readonly = '1')}</span>
                             <span ng-show="item.readOnly == '0'">${addComment(readonly = '0')}</span>
                         </div>
@@ -1229,12 +1230,12 @@
                     <div class="col-xs-12 iconListing-row">
                         <ul class="horizontal-list iconListing">
                             <li ng-if="item.objType != 'workshop'">
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
+                                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
                             <li ng-show="(item.objType != 'ballotmeasure' && item.objType != 'ballotcandidate')"><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
                             % if c.authuser and c.authuser['memberType'] == 'organization':
-                                <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a class="no-highlight" ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
+                                <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
                             % endif 
                         </ul>
                     </div>
@@ -1262,8 +1263,8 @@
                     <td colspan="2" style="padding: 10px;">
                         <ul class="horizontal-list iconListing">
                             <li>
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="grey" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                             </li>
                             <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
                         </ul>
