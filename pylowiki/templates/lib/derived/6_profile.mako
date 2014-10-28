@@ -804,7 +804,11 @@
             <form class="well" ng-controller="topicController" ng-init="userCode = '${c.user['urlCode']}'; userURL = '${c.user['url']}'; topicCode = 'new'; addTopicTitleResponse=''; addUpdateTextResponse=''; addTopicResponse='';"  id="addTopicForm" name="addTopicForm" ng-submit="submitTopicForm(addTopicForm)">
                 <div class="row">
                     <div class="col-xs-1 form-group">
-                        ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+                        % if c.authuser:
+                            ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+                        % else:
+                            <img src="/images/hamilton.png" class="avatar med-avatar">
+                        % endif
                     </div>
                     <div class="col-xs-11">
                         <div class="form-group">

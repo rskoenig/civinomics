@@ -1440,15 +1440,18 @@
     <%
         if type(user) == type(1L):
             user = userLib.getUserByID(user)
-        userGeo = getGeoInfo(user.id)[0]
-        geoLinkStr = ''
-        
-        geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'city'), userGeo['cityTitle'])
-        geoLinkStr += ', '
-        geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'state'), userGeo['stateTitle'])
-        if 'comment' not in kwargs:
-            geoLinkStr += ', '
-            geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'country'), userGeo['countryTitle'])
+        if user:
+            try:
+                userGeo = getGeoInfo(user.id)[0]
+                geoLinkStr = ''
+                geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'city'), userGeo['cityTitle'])
+                geoLinkStr += ', '
+                geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'state'), userGeo['stateTitle'])
+                if 'comment' not in kwargs:
+                    geoLinkStr += ', '
+                    geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'country'), userGeo['countryTitle'])
+            except:
+                geoLinkStr = ''
     %>
     ${geoLinkStr | n}
 </%def>

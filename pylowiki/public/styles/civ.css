@@ -121,6 +121,10 @@ h5.h45, h4.h45{
   color: #fff;
 }
 
+#footerContainer{
+  padding-top: 30px;
+}
+
 #baseTemplate_footer{
   height:40px;
 }
@@ -164,6 +168,10 @@ h5.h45, h4.h45{
   min-height: 100vh;
   padding-left: 0px;
   padding-right: 0px;
+}
+
+.container{
+  margin-bottom:20px;
 }
 
 @media(max-width: 1200px){
@@ -610,9 +618,10 @@ font-size: 14px;
 }
 
 #signupLoginModal .modal-footer{
-  margin-left: -15px;
-  margin-right: -15px;
+  /*margin-left: -15px;
+  margin-right: -15px;*/
   margin-bottom: -15px;
+  padding-top: 5px;
 }
 
 #signupLoginModal .modal-body{
@@ -3843,6 +3852,12 @@ table.activity-comments{
 }
 div.activity-comments{
     padding-bottom:19px;
+}
+
+.comment-id-offset{
+  display: block; 
+  margin-top: -60px; 
+  height: 60px; 
 }
 
 .date{

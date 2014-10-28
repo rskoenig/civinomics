@@ -286,21 +286,21 @@
     </div><!-- kludge for case of missing close div tag -->
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer rounded well">
-                <div class="col-sm-8 no-left">
+            <div class="row">
+                <div class="col-sm-12 text-right" style="padding-top:40px">
                     <ul class="horizontal-list">
-                        <li><a class="green green-hover" href="/corp/about">About</a></li> 
-                        <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
-                        <li><a class="green green-hover" href="/corp/polling">Polling</a></li>
-                        <li><a class="green green-hover" href="/corp/contact">Contact</a></li>
-                        <li><a class="green green-hover" href="/corp/terms">Terms</a></li>
-                        <li><a class="green green-hover" href="/help">Help</a></li>
-                        <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
+                        <li><a class="grey" href="/corp/about">About</a></li> 
+                        <li><a class="grey" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a class="grey" href="/corp/polling">Polling</a></li>
+                        <li><a class="grey" href="/corp/contact">Contact</a></li>
+                        <li><a class="grey" href="/corp/terms">Terms</a></li>
+                        <li><a class="grey" href="/help">Help</a></li>
+                        <li><a class="grey" href="#" id="footerFeedbackButton">Feedback</a></li>
+                        <li class="grey">
+                            © 2014 Civinomics
+                        </li>
                     </ul>
-                </div><!-- col-sm-8 -->
-                <div class="span pull-right">
-                  © 2014 Civinomics
-                </div><!-- span pull-right -->
+                </div><!-- div text-right -->
             </div><!-- row footer well -->
         </div><!-- footerContainer -->
     </div><!-- baseTemplate_footer -->
@@ -431,6 +431,7 @@
             <h2 ng-show="showTitle == 'sTitle'" class="no-top centered" ng-cloak>Sign up</h2>
             <h2 ng-show="showTitle == 'lTitle'" class="no-top centered" ng-cloak>Log in</h2>
             <h2 ng-show="showTitle == 'pTitle'" class="no-top centered" ng-cloak>Forgot Password</h2>
+            <hr>
         % endif
         ${fields_alert()}
         % if c.splashMsg:
@@ -499,6 +500,14 @@
                     <input class="form-control" type="password" name="password" id="passphrase" ng-model= "user.password" required>
                 </div>
             </div>
+            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
+                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
                 <div class="col-sm-8">
@@ -510,14 +519,6 @@
                         <input type="radio" name="memberType" id="memberType2" ng-model="user.memberType" value="organization">
                         Organization <span class="light">(take positions, have members)</span>
                     </label>
-                </div>
-            </div>
-            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
-                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
-                <div class="col-sm-4">
-                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
-                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
-                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
                 </div>
             </div>
             <div class="form-group">
@@ -633,6 +634,7 @@
                 <div class="modal-body">
                     ${tabbableSignupLogin()}
                 </div>
+                <!--
                 <div class="modal-footer">
                     <div class="row centered tcs">
                       <div class="col-sm-10 col-sm-offset-1">
@@ -640,6 +642,7 @@
                       </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>

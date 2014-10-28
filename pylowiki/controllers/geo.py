@@ -259,12 +259,21 @@ class GeoController(BaseController):
         postalInfo = geoInfoLib.getPostalInfo(id1)
         if postalInfo:
             city = postalInfo['City'].title()
+            if city is None:
+                statusCode = 2
+                result = "No such zipcode."
+                return json.dumps({'statusCode':statusCode, 'result':result})
             state = postalInfo['StateFullName']
+            if state is None:
+                statusCode = 2
+                result = "No such zipcode."
+                return json.dumps({'statusCode':statusCode, 'result':result})
             result = city + ", " + state + ', United States'
             statusCode = 0
         else:
             statusCode = 2
             result = "No such zipcode."
+            return json.dumps({'statusCode':statusCode, 'result':result})
         if iPhoneApp:
             response.headers['Content-type'] = 'application/json'
             result = {

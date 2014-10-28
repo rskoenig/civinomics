@@ -238,6 +238,8 @@ class IdeaController(BaseController):
 
         # won't need these once we angular look up comments
         c.thing = c.idea = ideaLib.getIdea(ideaCode)
+        if not c.thing:
+            abort(404)
         log.info('the thing code is %s' % c.thing['urlCode'])
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         log.info('the idea discussion code is %s' % c.discussion['urlCode'])

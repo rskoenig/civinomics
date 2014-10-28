@@ -62,6 +62,17 @@ def getFacilitatorsByUser(user, disabled = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
+
+def getInitiativeFacilitatorsByUser(user, disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'facilitator')\
+        .filter_by(owner = user.id)\
+        .filter(Thing.data.any(wk('initiative_url')))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .all()
+    except:
+        return False
         
 def setFacilitatorsByUserInSession(fdisabled = '0'):
     if 'facilitatorWorkshops' not in c.authuser or 'facilitatorInitatives' not in c.authuser:
@@ -103,6 +114,17 @@ def getFacilitatorsByInitiative(initiative, disabled = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('initiativeCode', initiative['urlCode']))).all()
     except:
         return False
+
+def getFacilitatorsByInitiativeCode(initiativeCode, disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'facilitator')\
+        .filter(Thing.data.any(wc('initiativeCode', initiativeCode)))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('pending', '0')))\
+        .all()
+    except:
+        return False        
 
 def getFacilitatorsByUserAndInitiative(user, item, disabled = '0'):
     try:

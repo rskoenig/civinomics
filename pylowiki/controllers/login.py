@@ -24,6 +24,7 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.discussion   	as discussionLib
+import pylowiki.lib.db.geoInfo   	    as geoInfoLib
 
 # twython imports
 from twython import Twython
@@ -199,6 +200,12 @@ class LoginController(BaseController):
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
         name, email, access, expires, signed, facebookAuthId, smallPic, bigPic = id1.split("&")
+        
+        if name:
+            log.info("fbAuthCheckEmail name is %s"%name)
+            
+        if email:
+            log.info("fbAuthCheckEmail email is %s"%email)
         
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
@@ -537,6 +544,20 @@ class LoginController(BaseController):
         return redirect("/login")
 
     def logUserIn(self, user, **kwargs):
+        # patch to catch cases where user was created without a geoInfo
+        geoInfo = geoInfoLib.getGeoInfo(user.id)
+        if not geoInfo:
+            log.info("user %s has no geoInfo."%user['name'])
+            postalCode = user['postalCode']
+            if postalCode != '':
+                geoInfoLib.GeoInfo(postalCode, "United States", user.id )
+                                                        # patch to catch cases where user was created without a geoInfo
+                geoInfo = geoInfoLib.getGeoInfo(user.id)
+                if not geoInfo:
+                    log.info("user %s STILL has no geoInfo."%user['name'])
+            else:
+                log.info("user %s has no postal code!"%user['name'])
+                
         # NOTE - need to store the access token? kee in session or keep on user?
         # keeping it on the user will allow interaction with user's facebook after they've logged off
         # and by other people
@@ -651,8 +672,8 @@ class LoginController(BaseController):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
                         log.info("loginURL is %s"%loginURL)
-
-                        if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/signup":                            
+                                
+                        if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/loginNoExtAuth" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
                         if len(query['alURL'].split("/")) >= 3:
                             workshopCode = query['alURL'].split("/")[2]

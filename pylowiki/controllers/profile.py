@@ -197,19 +197,10 @@ class ProfileController(BaseController):
         c.facilitatorInitiatives = []
         c.pendingFacilitators = []
         for f in facilitatorList:
-           if 'pending' in f and f['pending'] == '1':
-              c.pendingFacilitators.append(f)
-           elif f['disabled'] == '0':
-                try:
-                    myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-                    if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-                     # show to the workshop owner, show to the facilitator owner, show to admin
-                        if 'user' in session: 
-                            if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                                c.facilitatorWorkshops.append(myW)
-                    else:
-                        c.facilitatorWorkshops.append(myW)
-                except:
+            if 'pending' in f and f['pending'] == '1':
+                c.pendingFacilitators.append(f)
+            elif f['disabled'] == '0':
+                if 'initiativeCode' in f:
                     myI = initiativeLib.getInitiative(f['initiativeCode'])
                     if myI['public'] == '0':
                      # show to the workshop owner, show to the facilitator owner, show to admin
@@ -218,6 +209,16 @@ class ProfileController(BaseController):
                                 c.facilitatorInitiatives.append(myI)
                     else:
                         c.facilitatorInitiatives.append(myI)
+
+                elif 'workshopCode' in f:
+                    myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+                    if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+                     # show to the workshop owner, show to the facilitator owner, show to admin
+                        if 'user' in session: 
+                            if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                                c.facilitatorWorkshops.append(myW)
+                    else:
+                        c.facilitatorWorkshops.append(myW)
 
                     
         # initiatives

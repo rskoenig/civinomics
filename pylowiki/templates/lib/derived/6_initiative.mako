@@ -48,7 +48,7 @@
 
 <%def name="iTags()">
     <h4> 
-        <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a> <a class="no-highlight overlay" href="${c.scopeHref}"></a>
+        <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a>
         ${lib_6.showTags(c.initiative)}
         % if 'workshopCode' in c.initiative and c.initiative['workshopCode']:
             <a class="no-highlight overlay" href="/workshop/${c.initiative['workshopCode']}/${c.initiative['workshop_url']}"> / ${c.initiative['workshop_title']}</a>
