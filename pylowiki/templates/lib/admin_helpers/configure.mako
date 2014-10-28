@@ -264,7 +264,7 @@
                     <br />
                     <strong>Subcategory tags:</strong>
                     %if 'workshop_subcategory_tags' in c.w:
-                        <span ng-init="initTags(${c.w['workshop_subcategory_tags']})"></span>
+                        <span ng-init="initTags('${c.w['workshop_subcategory_tags']}')"></span>
                     %endif
                     <ul>
                         <li ng-repeat="tag in subcategories.tagsList" ng-if="subcategories.tagsList.length > 0">
@@ -280,7 +280,9 @@
                                 <button class="btn btn-primary" type="button" value="add" ng-click="addTagsToList(tagsName)">add</button>
                             </span><!-- input-group-btn -->
                         </div><!-- input-group -->
-                        <div class="alert alert-warning" role="alert" ng-if="alert.message!='' && alert.type === 'tags'">{{alert.message}}</div>	
+                        <button class="btn btn-warning btn-lg pull-right" style="margin-top:10px" ng-click="sendTagsList('${c.w['urlCode']}','${c.w['url']}')">Save</button>
+                        <div class="alert alert-warning" role="alert" ng-if="alert.message!='' && alert.type === 'tags'">{{alert.message}}</div>
+                        <div class="alert alert-success" role="alert" ng-if="alert.message!='' && alert.type === 'success'">{{alert.message}}</div>	
                 </div>
             </div><!-- row -->
             </form>
