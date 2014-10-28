@@ -304,36 +304,38 @@ def getJsonProperties(item):
             entry['goal'] = 100
 
     # comments
-    discussion = discussionLib.getDiscussionForThing(item)
-    if discussion:    
-        entry['discussion'] = discussion['urlCode']
-        entry['numComments'] = 0
-        if 'numComments' in item:
-            entry['numComments'] = item['numComments']
+    if 'discussion_child' in item:    
+        entry['discussion'] = item['discussion_child']
 
-        entry['userCommented'] = False
-        if c.authuser:
-            result = commentLib.checkUserCommentInDiscussion(c.authuser, entry['discussion'])
-            if result:
-                entry['userCommented'] = True
-    
-    author = userLib.getUserByID(item.owner)
+    entry['numComments'] = 0
+    if 'numComments' in item:
+        entry['numComments'] = item['numComments']
 
-    #hack to show initiative authors/coauthors
-    # better to add featured author data to the object
-    if author['name'] == 'Civinomics Facilitator' and item.objType == 'initiative':
+
+    # hack to show initiative authors/coauthors better to add featured author data to the object
+    if item['user_name'] == 'Civinomics Facilitator' and item.objType == 'initiative':
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
         if len(coAuthors) != 0:
             f = coAuthors[0]
             author = userLib.getUserByID(f.owner)
-        
-    # author data
-    # CCN - need to find a way to optimize this lookup
-    entry['authorName'] = author['name']
-    entry['authorPhoto'] = utils._userImageSource(author)
-    entry['authorCode'] = author['urlCode']
-    entry['authorURL'] = author['url']
-    entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+        else:
+            entry['authorName'] = item['user_name']
+            entry['authorPhoto'] = item['user_avatar']
+            entry['authorCode'] = item['userCode']
+            entry['authorURL'] = item['user_url']
+            entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+    else:
+        entry['authorName'] = item['user_name']
+        entry['authorPhoto'] = item['user_avatar']
+        entry['authorCode'] = item['userCode']
+        entry['authorURL'] = item['user_url']
+        entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+
 
     # special case for meetings
     if item.objType == 'meeting':
@@ -431,34 +433,44 @@ def getJsonInitiativesShort(item):
         entry['netVotes'] = int(item['ups']) - int(item['downs'])
 
     # comments
-    discussion = discussionLib.getDiscussionForThing(item)
-    if discussion:    
-        entry['discussion'] = discussion['urlCode']
-        entry['numComments'] = 0
-        if 'numComments' in item:
-            entry['numComments'] = item['numComments']
-
+    if 'discussion_child' in item:    
+        entry['discussion'] = item['discussion_child']
         entry['userCommented'] = False
         if c.authuser:
             result = commentLib.checkUserCommentInDiscussion(c.authuser, entry['discussion'])
             if result:
                 entry['userCommented'] = True
+
+    entry['numComments'] = 0
+    if 'numComments' in item:
+        entry['numComments'] = item['numComments']
     
-    author = userLib.getUserByID(item.owner)
     #hack to show initiative authors/coauthors
     # better to add featured author data to the object
-    if author['name'] == 'Civinomics Facilitator' and item.objType == 'initiative':
+    if item['user_name'] == 'Civinomics Facilitator':
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
         if len(coAuthors) != 0:
             f = coAuthors[0]
             author = userLib.getUserByID(f.owner)
-    # author data
-    # CCN - need to find a way to optimize this lookup
-    entry['authorName'] = author['name']
-    entry['authorPhoto'] = utils._userImageSource(author)
-    entry['authorCode'] = author['urlCode']
-    entry['authorURL'] = author['url']
-    entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+            entry['authorName'] = author['name']
+            entry['authorPhoto'] = utils._userImageSource(author)
+            entry['authorCode'] = author['urlCode']
+            entry['authorURL'] = author['url']
+            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+        else:
+            entry['authorName'] = item['user_name']
+            entry['authorPhoto'] = item['user_avatar']
+            entry['authorCode'] = item['userCode']
+            entry['authorURL'] = item['user_url']
+            entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+    else:
+        entry['authorName'] = item['user_name']
+        entry['authorPhoto'] = item['user_avatar']
+        entry['authorCode'] = item['userCode']
+        entry['authorURL'] = item['user_url']
+        entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+
+
     
     if 'readOnly' in item:
         entry['readOnly'] = item['readOnly']
