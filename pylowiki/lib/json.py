@@ -376,3 +376,100 @@ def getJsonProperties(item):
         entry['readOnly'] = '0'
 
     return entry
+
+
+def getJsonInitiativesShort(item):
+    myRatings = {}
+    if 'ratings' in session:
+        myRatings = session['ratings']
+
+    entry = {}
+    # item attributes
+    entry['title'] = item['title']
+    log.info('%s' % item['title'])
+    entry['objType'] = item.objType
+    entry['text'] = item['description']
+    entry['urlCode'] = item['urlCode']
+    entry['url'] = item['url']
+    entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
+    entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+    entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+
+    # assuming for now...
+    entry['parentObjType'] = 'workshop'
+
+    if 'views' in item:
+        views = int(item['views'])
+    else:
+        views = 1
+    views += 1
+    item['views'] = str(views)
+    dbHelpers.commit(item)
+    entry['views'] = item['views']
+
+    #photo
+    if 'directoryNum_photos' in item:
+        entry['mainPhoto'] = "/images/photos/%s/photo/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+        entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
+    else: 
+        entry['mainPhoto'] = "/images/icons/generalInitiative.jpg"
+        entry['thumbnail'] = "/images/icons/generalInitiative.jpg"
+
+    # user rating
+    if entry['urlCode'] in myRatings:
+        entry['rated'] = myRatings[entry['urlCode']]
+        entry['vote'] = 'voted'
+    else:
+        entry['rated'] = 0
+        entry['vote'] = 'nvote'
+
+    # votes
+    if 'ups' in item:
+        entry['voteCount'] = int(item['ups']) + int(item['downs'])
+        entry['ups'] = int(item['ups'])
+        entry['downs'] = int(item['downs'])
+        entry['netVotes'] = int(item['ups']) - int(item['downs'])
+
+    # comments
+    discussion = discussionLib.getDiscussionForThing(item)
+    if discussion:    
+        entry['discussion'] = discussion['urlCode']
+        entry['numComments'] = 0
+        if 'numComments' in item:
+            entry['numComments'] = item['numComments']
+
+        entry['userCommented'] = False
+        if c.authuser:
+            result = commentLib.checkUserCommentInDiscussion(c.authuser, entry['discussion'])
+            if result:
+                entry['userCommented'] = True
+    
+    author = userLib.getUserByID(item.owner)
+    #hack to show initiative authors/coauthors
+    # better to add featured author data to the object
+    if author['name'] == 'Civinomics Facilitator' and item.objType == 'initiative':
+        coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
+        if len(coAuthors) != 0:
+            f = coAuthors[0]
+            author = userLib.getUserByID(f.owner)
+    # author data
+    # CCN - need to find a way to optimize this lookup
+    entry['authorName'] = author['name']
+    entry['authorPhoto'] = utils._userImageSource(author)
+    entry['authorCode'] = author['urlCode']
+    entry['authorURL'] = author['url']
+    entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+    
+    if 'readOnly' in item:
+        entry['readOnly'] = item['readOnly']
+    else:
+        entry['readOnly'] = "0"
+
+    if 'adopted' in item and item['adopted'] == '1':
+        entry['status'] = 'adopted'
+    elif 'disabled' in item and item['disabled'] == '1':
+        entry['status'] = 'disabled'
+    else:
+        entry['status'] = '0'
+
+    return entry

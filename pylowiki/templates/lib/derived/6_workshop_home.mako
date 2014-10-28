@@ -626,7 +626,7 @@
 </%def>
 
 <%def name="workshopList()">
-  <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3' ng-show="showList">
+  <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='20' ng-show="showList">
 
     <div ng-if="thisPhaseStatus == 'past'" class="alert alert-warning" ng-cloak>This phase has concluded.</div>
     <div ng-if="thisPhaseStatus == 'future'" class="alert alert-warning" ng-cloak>This phase has not started yet.</div>

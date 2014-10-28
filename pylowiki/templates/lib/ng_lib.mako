@@ -1170,9 +1170,9 @@
 
 <%def name="summary_condensed()">
     <span ng-init="stringLimit=60">
-        <span>{{item.html | limitTo:stringLimit}}
+        <span>{{item.text | limitTo:stringLimit}}
 
-            <span ng-show="item.html.length > 60 && stringLimit == 60"><a ng-click="stringLimit = 10000">...more</a></span>
+            <span ng-show="item.text.length > 60 && stringLimit == 60"><a ng-click="stringLimit = 10000">...more</a></span>
             <span><a ng-show="stringLimit == 10000" ng-click="stringLimit = 60"> less</a></span>
 
         </span>
