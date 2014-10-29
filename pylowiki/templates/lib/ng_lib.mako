@@ -626,31 +626,26 @@
 
 
 <%def name="initiative_listing_condensed()">
-    <div class="media well search-listing initiative-listing" style="height: 415px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
             <div class="row">
                 <div class="col-sm-12">
+                    <p style="line-height: 16px;"><small>${metaData()}</small></p>
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-photo full-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                            <div class="landscape-id-photo" style="background-image:url('{{item.mainPhoto}}')"></div>
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-12" style="height: 155px;">
+                <div class="col-sm-12">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    <p style="line-height: 16px;"><small>${metaData()}</small></p>
                     <!--
                     <p ng-init="stringLimit=300" class="markdown"><small><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small></p>
                     -->
-                    <h4>
-                        <small class="grey centered">Estimated Cost:</small>
-                        <span class="pull-right">{{item.cost | currency}}</span>
-                    </h4>
                 </div>
             </div>
             <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    ${yesNoVoteFooter(noStats = True)}
                     <div ng-controller="demographicsController">
                     {{checkDemographics(item.parentHref)}}
                         <span ng-if="demographics.required == ''"> ${yesNoVoteFooter(noStats = True)}</span>
@@ -661,6 +656,7 @@
                     	${rateCriteria()}
                     	</div>
                     </div>
+                    <div class="spacer"></div>
                 % endif
             </div>
         </div>
