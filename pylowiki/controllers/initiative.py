@@ -92,7 +92,10 @@ class InitiativeController(BaseController):
 
         # only the author or an admin can edit 
         c.iPrivs = False
-
+        if 'workshop_subcategory_tags' in c.initiative:
+            log.info(c.initiative['workshop_subcategory_tags'])
+        else:
+            log.info("Nope")
         facilitator = False
         f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)
         if f != False and f != 'NoneType' and len(f) != 0:

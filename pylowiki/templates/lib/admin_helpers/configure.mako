@@ -260,6 +260,7 @@
                         <button type="submit" class="btn btn-warning btn-lg">Save Tags</button>
                     % endif
                 </div><!-- col-sm-5 -->
+                </form>
                 <div class="col-sm-5" ng-controller="tagsController">
                     <br />
                     <strong>Subcategory tags:</strong>
@@ -275,7 +276,7 @@
                     <div class="alert alert-danger" role="alert" 
                     ng-if="alert.message!='' && alert.type == 'error'">{{alert.message}}</div>	                               
                         <div class="input-group">
-                            <input type="text" size="100" maxlength = "100" placeholder="Add a criteria" ng-model="tagsName" class="addGoal form-control" id="">
+                            <input type="text" size="100" maxlength = "100" placeholder="Add a tag" ng-model="tagsName" class="addGoal form-control" id="">
                             <span class="input-group-btn">
                                 <button class="btn btn-primary" type="button" value="add" ng-click="addTagsToList(tagsName)">add</button>
                             </span><!-- input-group-btn -->
@@ -285,7 +286,6 @@
                         <div class="alert alert-success" role="alert" ng-if="alert.message!='' && alert.type === 'success'">{{alert.message}}</div>	
                 </div>
             </div><!-- row -->
-            </form>
         </div><!-- browse -->
     </div><!-- section-header -->
 

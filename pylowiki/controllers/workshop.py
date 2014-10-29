@@ -383,13 +383,30 @@ class WorkshopController(BaseController):
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
     
+    def updateChildren(self, thing):
+        children = generic.getChildrenOfParent(thing)
+        if children is not False:
+            for child in children:
+                log.info(vars(child))
+                child['workshop_subcategory_tags'] = c.w['workshop_subcategory_tags']
+                dbHelpers.commit(child)       
+        
     @h.login_required
     def addSubcategoryTags(self, workshopCode, workshopURL, tags):
         c.title = "Configure Workshop"
         c.w['workshop_subcategory_tags'] = tags
         dbHelpers.commit(c.w)
         alertMsg = "Your subcategory tags have been added."
+        children = generic.getChildrenOfParent(c.w)
+        log.info(len(children))
+        for child in children:
+            log.info(keys(child))
+            child['workshop_subcategory_tags'] = c.w['workshop_subcategory_tags']
+            dbHelpers.commit(child)
         return json.dumps({'statusCode': 1 , 'alertType': 'success', 'alertMsg' : alertMsg})
+    
+    
+     
     
 
     @h.login_required

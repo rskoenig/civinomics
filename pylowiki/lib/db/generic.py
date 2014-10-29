@@ -120,6 +120,8 @@ def linkChildToParent(child, parent):
         child['workshop_url'] = parent['workshop_url']
         if 'workshopCode' in parent:
             child['workshopCode'] = parent['workshopCode']
+    if 'workshop_subcategory_tags' in parent:
+        child['workshop_subcategory_tags'] = parent['workshop_subcategory_tags']
     if parent.objType == 'workshop':
         child['workshop_title'] = parent['title']
         child['workshop_url'] = parent['url']
