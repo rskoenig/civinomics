@@ -325,13 +325,19 @@ def getJsonProperties(item):
             entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
         else:
             entry['authorName'] = item['user_name']
-            entry['authorPhoto'] = item['user_avatar']
+            if 'user_avatar' in item:
+                entry['authorPhoto'] = item['user_avatar']
+            else:
+                entry['authorPhoto'] = '/images/hamilton.png'
             entry['authorCode'] = item['userCode']
             entry['authorURL'] = item['user_url']
             entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
     else:
         entry['authorName'] = item['user_name']
-        entry['authorPhoto'] = item['user_avatar']
+        if 'user_avatar' in item:
+            entry['authorPhoto'] = item['user_avatar']
+        else:
+            entry['authorPhoto'] = '/images/hamilton.png'
         entry['authorCode'] = item['userCode']
         entry['authorURL'] = item['user_url']
         entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
@@ -459,13 +465,19 @@ def getJsonInitiativesShort(item):
             entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
         else:
             entry['authorName'] = item['user_name']
-            entry['authorPhoto'] = item['user_avatar']
+            if 'user_avatar' in item:
+                entry['authorPhoto'] = item['user_avatar']
+            else:
+                entry['authorPhoto'] = '/images/hamilton.png'
             entry['authorCode'] = item['userCode']
             entry['authorURL'] = item['user_url']
             entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
     else:
         entry['authorName'] = item['user_name']
-        entry['authorPhoto'] = item['user_avatar']
+        if 'user_avatar' in item:
+            entry['authorPhoto'] = item['user_avatar']
+        else:
+            entry['authorPhoto'] = '/images/hamilton.png'
         entry['authorCode'] = item['userCode']
         entry['authorURL'] = item['user_url']
         entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
