@@ -24,28 +24,32 @@ function commentsController($rootScope, $scope, $http, editService) {
 			$scope.commentsLoading = true	
 			$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 				if (data.statusCode == 1){
-					$scope.commentsResult = true;
+					$scope.commentsResult = false;
 				} 
 				else if (data.statusCode === 0){
-					$scope.commentsResult = false;
+					$scope.commentsResult = true;
 					$scope.comments = data.result;
 				}
 				$scope.commentsLoading = false;
 				$scope.commentsHidden = false;
+				$scope.showNewComment = true;
 			})
 		} else {
-			$scope.commentsHidden = true
+			$scope.commentsHidden = true;
+			$scope.showNewComment = false;
 		}
 	};
 
 	$scope.getUpdatedComments = function(){
 		$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
 			if (data.statusCode == 1){
-				$scope.commentsResult = true;
+				$scope.commentsResult = false;
 			} 
 			else if (data.statusCode === 0){
-				$scope.commentsResult = false;
+				$scope.commentsResult = true;
 				$scope.comments = data.result;
+				$scope.commentsHidden = false;
+				$scope.showNewComment = true;
 			}
 			$scope.newCommentLoading = false
 		})
@@ -59,6 +63,16 @@ function commentsController($rootScope, $scope, $http, editService) {
 		}
 	};
 
+	$scope.showNewComment = false;
+	$scope.toggleNewComment = function(){
+		if ($scope.showNewComment == true){
+			$scope.showNewComment = false;
+			$scope.commentsHidden = true;
+		} else{
+			$scope.showNewComment = true;
+		}
+	}
+
 	$scope.submitComment = function(){
 		$scope.newCommentLoading = true
 		$scope.commentData = {'type':$scope.type, 'thingCode': $scope.thingCode, 'discussionCode': $scope.discussionCode, 'parentCode': $scope.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
@@ -68,6 +82,7 @@ function commentsController($rootScope, $scope, $http, editService) {
             $scope.getUpdatedComments();
             $scope.commentRole = '';
             $scope.commentText = '';
+            $scope.commented = true
         });
 	};
 	
