@@ -197,8 +197,9 @@ def getChildrenOfParentWithTypes(parent, thingTypes = None):
 def updateChildrenCaracteristic(thing, caracteristic):
     value = thing[caracteristic]
     children = getChildrenOfParentWithTypes(thing)
+    log.info(len(children))
     for child in children:
-        child['readOnly'] = value
+        child[caracteristic] = value
         commit(child)
 
 def setReadOnly(thing, value = '1'):

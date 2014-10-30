@@ -50,6 +50,9 @@
     <h4> 
         <a href="${c.scopeHref}"><img class="thumbnail span flag small-flag border right-space" style="margin-bottom: 0;" src="${c.scopeFlag}"></a>
         ${lib_6.showTags(c.initiative)}
+        %if 'subcategory_tags' in c.initiative:
+        ${lib_6.showSubcategoryTags(c.initiative)}
+        %endif
         % if 'workshopCode' in c.initiative and c.initiative['workshopCode']:
             <a class="no-highlight overlay" href="/workshop/${c.initiative['workshopCode']}/${c.initiative['workshop_url']}"> / ${c.initiative['workshop_title']}</a>
         % endif

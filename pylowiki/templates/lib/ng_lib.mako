@@ -127,11 +127,21 @@
                         <img class="thumbnail tight initiative-thumb no-top no-bottom" src="{{item.thumbnail}}">
                     </a>
                 </div>
-                <div class="col-xs-10 col-sm-8">
+                <div class="col-xs-10 col-sm-7">
                     <strong><a ng-href="{{item.href}}">{{item.title}}</a></strong><br>
                     ${summary_condensed()}
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
+                    <span ng-hide="true">
+                        {{tagList = item.subcategory_tags.split("|")}} 
+                        {{tagValue = tag.replace(" ", "_")}}
+                    </span>
+                    <div ng-repeat="tag in tagList">
+                            <span style="font-size:small; color:grey;">{{tag}}</span>
+                        <br/>
+                    </div>
+                </div>
+                <div class="col-sm-2">
                     ${author(size = 'xs')}
                 </div>
             </div><!-- row -->
