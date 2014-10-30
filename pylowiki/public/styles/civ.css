@@ -3393,6 +3393,15 @@ margin-right: -13px;
   /*text-transform:uppercase;*/
 }
 
+@media (max-width: 767px){
+  h1.initiative-title{
+    margin-top:10px;
+    font-size: 26px;
+  }
+}
+
+
+
 .initiative-title.edit{
   /*background-color:#dff0d8;*/
   background-color: whitesmoke;
@@ -3414,9 +3423,17 @@ margin-right: -13px;
 }
 
 .initiative-summary{
-  font-size: 1.5em;
+  font-size: 1.3em;
   line-height: 1.7em;
 }
+
+@media (max-width: 767px){
+  .initiative-summary{
+    font-size: 1em;
+    line-height: 2em;
+  }
+}
+
 .initiative-summary h1, .initiative-summary h2, .initiative-summary h3, .initiative-summary h4, .initiative-summary h5, .initiative-summary h6{
   font-weight: 300;
 }

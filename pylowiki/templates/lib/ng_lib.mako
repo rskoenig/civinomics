@@ -131,7 +131,7 @@
                     <strong><a ng-href="{{item.href}}">{{item.title}}</a></strong><br>
                     ${summary_condensed()}
                 </div>
-                <div class="col-sm-3">
+                <div class="col-xs-10 col-xs-offset-2 col-sm-3">
                     ${author(size = 'xs')}
                 </div>
             </div><!-- row -->
