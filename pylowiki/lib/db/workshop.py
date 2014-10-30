@@ -179,7 +179,8 @@ def getInitiativeCountForWorkshop(code, adopted = 0, deleted = 0):
         q = meta.Session.query(Thing)\
             .filter_by(objType = 'initiative')\
             .filter(Thing.data.any(wc('workshopCode', code)))\
-            .filter(Thing.data.any(wc('deleted', deleted)))
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('public', '1')))
         if adopted == 1:
             q = q.filter(Thing.data.any(wc('adopted', '1')))
         
