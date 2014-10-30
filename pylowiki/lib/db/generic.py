@@ -177,10 +177,30 @@ def getChildrenOfParent(parent):
     try:
         return meta.Session.query(Thing)\
             .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+            .filter(Thing.objType.in_(activityTypes))\
             .all()
     except:
         return False
         
+def getChildrenOfParentWithTypes(parent, thingTypes = None):
+    parentCode = parent.objType.replace("Unpublished", "")  + 'Code'
+    if thingTypes is None:
+        thingTypes = ['initiative', 'resource', 'idea']
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+            .filter(Thing.objType.in_(thingTypes))\
+            .all()
+    except:
+        return False
+        
+def updateChildrenCaracteristic(thing, caracteristic):
+    value = thing[caracteristic]
+    children = getChildrenOfParentWithTypes(thing)
+    for child in children:
+        child['readOnly'] = value
+        commit(child)
+
 def setReadOnly(thing, value = '1'):
     thing['readOnly'] = value
     commit(thing)
@@ -188,6 +208,7 @@ def setReadOnly(thing, value = '1'):
     for child in children:
         child['readOnly'] = value
         commit(child)
+
         
 def getThingByID(thingID):
     try:

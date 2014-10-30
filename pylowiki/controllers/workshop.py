@@ -397,18 +397,9 @@ class WorkshopController(BaseController):
         c.w['workshop_subcategory_tags'] = tags
         dbHelpers.commit(c.w)
         alertMsg = "Your subcategory tags have been added."
-        children = generic.getChildrenOfParent(c.w)
-        log.info(len(children))
-        for child in children:
-            log.info(keys(child))
-            child['workshop_subcategory_tags'] = c.w['workshop_subcategory_tags']
-            dbHelpers.commit(child)
+        generic.updateChildrenCaracteristic(c.w, 'workshop_subcategory_tags')
         return json.dumps({'statusCode': 1 , 'alertType': 'success', 'alertMsg' : alertMsg})
     
-    
-     
-    
-
     @h.login_required
     def configurePublicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"

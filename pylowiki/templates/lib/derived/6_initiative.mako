@@ -596,6 +596,10 @@
         countySelected = ""
         if c.initiative:
             iScope = c.initiative['scope']
+            if 'workshop_subcategory_tags' in c.initiative:
+                subcategoryTags = c.initiative['workshop_subcategory_tags'].split("|")
+            else:
+                subcategoryTags = False
         else:
             iScope = "0|0|0|0|0|0|0|0|0|0"
         scopeList = iScope.split('|')
@@ -649,7 +653,24 @@
             % endfor
             </select>
             <p class="text-info">The topic area associated with your initiative.</p>
+        </div><!-- form-group -->
+
+         %if subcategoryTags:
+        <div class="form-group">
+            <label for="subcategory" class="control-label" required><strong>Subcategory Tag:</strong></label><br/>
+            % for tag in subcategoryTags:
+                <% 
+                    selected = ""
+                    if 'subcategory_tags' in c.initiative:
+                        if tag in c.initiative['subcategory_tags']:
+                            selected = "checked"
+                %>
+                <input type="checkbox" name="subcategory" value="${tag}" ${selected}/> ${tag}</option><br/>
+            % endfor
+            <p class="text-info">The particular topic area associated with your initiative.</p>
         </div><!-- row -->
+        %endif
+
 
         <div class="form-group">
             <label for="description" class="control-label" required><strong>Cost Estimate:</strong></label>

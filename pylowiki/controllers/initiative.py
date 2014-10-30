@@ -92,8 +92,8 @@ class InitiativeController(BaseController):
 
         # only the author or an admin can edit 
         c.iPrivs = False
-        if 'workshop_subcategory_tags' in c.initiative:
-            log.info(c.initiative['workshop_subcategory_tags'])
+        if 'subcategory_tags' in c.initiative:
+            log.info(c.initiative['subcategory_tags'])
         else:
             log.info("Nope")
         facilitator = False
@@ -391,6 +391,9 @@ class InitiativeController(BaseController):
             c.initiative['background'] = request.params['background']
         if 'proposal' in request.params:
             c.initiative['proposal'] = request.params['proposal']
+        if 'subcategory' in request.params:
+            log.info(request.params['subcategory'])
+            c.initiative['subcategory_tags'] = "|".join(request.params.getall('subcategory'))
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form
