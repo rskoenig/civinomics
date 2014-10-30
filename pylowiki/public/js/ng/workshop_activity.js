@@ -14,7 +14,7 @@ function activityWorkshopController($scope, $http) {
 	$scope.activitySliceLoading = false;
 	$scope.noMoreSlices = false;
 	$scope.busy = false;
-	$scope.sliceSize = 7;
+	$scope.sliceSize = 21;
 	$scope.numAdopted = 0;
 	$scope.numIdeas = 0;
 	$scope.numDiscussions = 0;
