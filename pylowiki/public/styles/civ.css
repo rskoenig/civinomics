@@ -826,8 +826,14 @@ div.unread-message:hover {
 
 .horizontal-list.iconListing{
   margin-left: 0px;
-  font-size: .85em;
+  font-size: .9em;
   font-weight: 500;
+  color:grey;
+}
+
+.horizontal-list.iconListing .btn{
+  margin-bottom: 0;
+  /*background-color: whitesmoke;*/
 }
 
 
@@ -1293,12 +1299,19 @@ img.avatar, .avatar{
    margin-right: 15px;
 }
 
-.avatar.topbar-avatar{
+.avatar.topbar-avatar, .avatar.avatar-nav{
     height:30px;
     width:30px;
     min-width: 20px;
     margin-bottom:0;
     margin-top: -5px;
+}
+
+.avatar.avatar-xs{
+    height:20px;
+    width:20px;
+    min-width: 20px;
+    margin-bottom:0;
 }
 
 .navbar .nav .topbar-avatar-link{
@@ -1853,7 +1866,7 @@ a.no-border:hover{
 }
 
 .med-green{
-    color:#00903e;
+    color:#4cae4c;;
 }
 
 .red{
@@ -1867,7 +1880,7 @@ a.no-border:hover{
     color:#ffffff;
 }
 .orange{
-    color:#D15D00;
+    color:#f0ad4e;
 }
 .purple{
     color:#56005D;
@@ -3794,6 +3807,7 @@ table.table-inline{
 
 .comment-main-cell{
   padding: 10px;
+  vertical-align: top;
 }
 
 .comment-row{
@@ -3827,7 +3841,7 @@ table.table-inline{
 }
 
 .activity-comments .avatar{
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   margin-left: 10px;
   margin-right: 0;
 }

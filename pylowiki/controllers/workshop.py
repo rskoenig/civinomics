@@ -1576,10 +1576,16 @@ class WorkshopController(BaseController):
             workshopActivity = activityLib.getActivityForWorkshop(sliceSize, offset, c.w['urlCode'], sort, c.w['public_private'], itemType = [objectType])
         else:
             workshopActivity = activityLib.getActivityForWorkshop(sliceSize, offset, c.w['urlCode'], sort, c.w['public_private'])
-        for item in workshopActivity:
-            entry = jsonLib.getJsonProperties(item)
-            result.append(entry)
 
+        if objectType == 'Initiative':
+            for item in workshopActivity:
+                entry = jsonLib.getJsonInitiativesShort(item)
+                result.append(entry)
+
+        else:
+            for item in workshopActivity:
+                entry = jsonLib.getJsonProperties(item)
+                result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':  result})
