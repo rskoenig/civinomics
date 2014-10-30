@@ -2176,6 +2176,37 @@
       % endfor
 </%def>
 
+<%def name="showSubcategoryTags(item)">
+    <% 
+        try:
+          tagList = item['subcategory_tags'].split('|')
+        except (KeyError, AttributeError):
+            return ""
+    %>
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <span> / </span><a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+          % endif
+      % endfor
+</%def>
+
+<%def name="showSubcategoryTagsJSON(tL)">
+    <% 
+        tagList = tl.split('|')
+    %>
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <span> / </span><a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+          % endif
+      % endfor
+</%def>
+
 <%def name="showScope(item)">
     <%  
         try:

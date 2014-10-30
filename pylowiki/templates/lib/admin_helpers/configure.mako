@@ -217,7 +217,6 @@
         <div id="demographics-wizard" ng-if="hasDemographics">
             <br\>
             <ul class="list-unstyled">
-            {{demographics.list[1].key}}
                 <li ng-repeat="demo in demographics.list">
                 <input type="checkbox" ng-model="demo.checked" ng-change="updateList('${c.w['urlCode']}','${c.w['url']}')"> {{demo.text}}<br/>
                 </li>
@@ -261,8 +260,32 @@
                         <button type="submit" class="btn btn-warning btn-lg">Save Tags</button>
                     % endif
                 </div><!-- col-sm-5 -->
+                </form>
+                <div class="col-sm-5" ng-controller="tagsController">
+                    <br />
+                    <strong>Subcategory tags:</strong>
+                    %if 'workshop_subcategory_tags' in c.w:
+                        <span ng-init="initTags('${c.w['workshop_subcategory_tags']}')"></span>
+                    %endif
+                    <ul>
+                        <li ng-repeat="tag in subcategories.tagsList" ng-if="subcategories.tagsList.length > 0">
+                            <span class="goal-title">{{tag}}      </span>
+                            <a class="inline" class="" ng-click="deleteTagsFromList(tag)"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal" style="width:45%"></a></span>
+                        </li>
+                    </ul>
+                    <div class="alert alert-danger" role="alert" 
+                    ng-if="alert.message!='' && alert.type == 'error'">{{alert.message}}</div>	                               
+                        <div class="input-group">
+                            <input type="text" size="100" maxlength = "100" placeholder="Add a tag" ng-model="tagsName" class="addGoal form-control" id="">
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" value="add" ng-click="addTagsToList(tagsName)">add</button>
+                            </span><!-- input-group-btn -->
+                        </div><!-- input-group -->
+                        <button class="btn btn-warning btn-lg pull-right" style="margin-top:10px" ng-click="sendTagsList('${c.w['urlCode']}','${c.w['url']}')">Save</button>
+                        <div class="alert alert-warning" role="alert" ng-if="alert.message!='' && alert.type === 'tags'">{{alert.message}}</div>
+                        <div class="alert alert-success" role="alert" ng-if="alert.message!='' && alert.type === 'success'">{{alert.message}}</div>	
+                </div>
             </div><!-- row -->
-            </form>
         </div><!-- browse -->
     </div><!-- section-header -->
 
