@@ -831,6 +831,22 @@ div.unread-message:hover {
   color:grey;
 }
 
+
+@media (max-width: 767px){
+  .horizontal-list.iconListing{
+    width:100%;
+    padding-left: 0;
+  }
+  .horizontal-list.iconListing li{
+    width:48%;
+    margin-right: 0;
+    display: inline-block;
+  }
+
+}
+
+
+
 .horizontal-list.iconListing .btn{
   margin-bottom: 0;
   /*background-color: whitesmoke;*/
