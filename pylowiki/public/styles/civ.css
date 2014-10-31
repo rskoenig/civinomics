@@ -612,6 +612,10 @@ background-color: #fff;
 font-size: 14px;
 }
 
+#sign_in {
+  padding: 15px;
+}
+
 #signupLoginModal .social-sign-in-separator span {
   background-image: none;
   background-color: #ffffff;
