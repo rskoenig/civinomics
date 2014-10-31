@@ -635,7 +635,26 @@
       <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{thing}}s. Be the first to add one!</span>
     </div>
 
-    <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
+    <form class="form-horizontal">
+      <div class="col-sm-4" style="padding-left:0; padding-right: 0; margin-bottom: 5px;">
+        <input ng-model="query3" class="form-control" placeholder="Search">
+      </div>
+
+      % if 'workshop_subcategory_tags' in c.w:
+        <% subcategories = c.w['workshop_subcategory_tags'].split('|') %>
+        <div class="col-xs-6 col-sm-2 col-sm-offset-3" style="padding-left:0; padding-right: 0; margin-bottom: 5px;">
+          <select ng-model="query4" class="form-control">
+            <option value="">Subcategory</option> 
+          % for sc in subcategories:
+            <option value="${sc}">${sc}</option>              
+          % endfor
+          </select>
+        </div>
+      % endif
+
+    </form>
+
+    <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | filter:query3 | filter:query4 | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
       <tr>
         <td ng-if="item.objType == 'initiative'">
           ${ng_helpers.general_listing_yesno_condensed()}
@@ -660,8 +679,10 @@
       </tr>
     </table>
 
-    <div class="centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+    <div class="row centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+      <div class="col-xs-12">
         <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
     </div>
 
   </div><!-- infinite-scroll -->

@@ -92,7 +92,19 @@ class InitiativeController(BaseController):
 
         # only the author or an admin can edit 
         c.iPrivs = False
-
+        if 'workshop_subcategory_tags' in c.initiative and c.initiative['workshop_subcategory_tags'] is not None:
+            if 'subcategory_tags' in c.initiative and c.initiative['subcategory_tags'] is not None:
+                tempList = c.initiative['subcategory_tags'].split("|")
+                for tag in tempList:
+                    if tag not in c.initiative['workshop_subcategory_tags'].split("|"):
+                        tempList.remove(tag)
+                if len(tempList) == 0 :
+                    c.initiative['subcategory_tags'] = False
+                else:
+                    c.initiative['subcategory_tags'] = "|".join(tempList)
+        else:
+            log.info("Nope")
+            
         facilitator = False
         f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)
         if f != False and f != 'NoneType' and len(f) != 0:
@@ -388,6 +400,9 @@ class InitiativeController(BaseController):
             c.initiative['background'] = request.params['background']
         if 'proposal' in request.params:
             c.initiative['proposal'] = request.params['proposal']
+        if 'subcategory' in request.params:
+            log.info(request.params['subcategory'])
+            c.initiative['subcategory_tags'] = "|".join(request.params.getall('subcategory'))
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form

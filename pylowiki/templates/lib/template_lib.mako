@@ -507,7 +507,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
-                <div class="col-sm-8">
+                <div class="col-xs-12 col-sm-8">
                     <label class="radio">
                         <input type="radio" name="memberType" id="memberType1" ng-model="user.memberType" value="professional" checked>
                         Individual <span class="light">(vote, suggest new ideas)</span>

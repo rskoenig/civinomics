@@ -382,6 +382,10 @@ def getJsonProperties(item):
         entry['readOnly'] = '1'
     else:
         entry['readOnly'] = '0'
+        
+        #Subcategory tags
+    if 'subcategory_tags' in item:
+        entry['subcategory_tags'] = item['subcategory_tags']
 
     return entry
 
@@ -482,7 +486,9 @@ def getJsonInitiativesShort(item):
         entry['authorURL'] = item['user_url']
         entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
 
-
+    #Subcategory tags
+    if 'subcategory_tags' in item:
+        entry['subcategory_tags'] = item['subcategory_tags']
     
     if 'readOnly' in item:
         entry['readOnly'] = item['readOnly']

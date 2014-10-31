@@ -129,7 +129,7 @@ class WorkshopController(BaseController):
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'configurePhase','adminWorkshopHandler', 'preferences']
+        ,'configureStartWorkshopHandler', 'configurePhase','adminWorkshopHandler', 'preferences', 'addSubcategoryTags']
         
         scoped = ['display', 'info', 'activity', 'publicStats', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
@@ -382,7 +382,24 @@ class WorkshopController(BaseController):
         session.save()
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
-
+    
+    def updateChildren(self, thing):
+        children = generic.getChildrenOfParent(thing)
+        if children is not False:
+            for child in children:
+                log.info(vars(child))
+                child['workshop_subcategory_tags'] = c.w['workshop_subcategory_tags']
+                dbHelpers.commit(child)       
+        
+    @h.login_required
+    def addSubcategoryTags(self, workshopCode, workshopURL, tags):
+        c.title = "Configure Workshop"
+        c.w['workshop_subcategory_tags'] = tags
+        dbHelpers.commit(c.w)
+        alertMsg = "Your subcategory tags have been added."
+        generic.updateChildrenCaracteristic(c.w, 'workshop_subcategory_tags')
+        return json.dumps({'statusCode': 1 , 'alertType': 'success', 'alertMsg' : alertMsg})
+    
     @h.login_required
     def configurePublicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"

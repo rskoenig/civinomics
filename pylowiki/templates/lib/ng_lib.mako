@@ -127,11 +127,23 @@
                         <img class="thumbnail tight initiative-thumb no-top no-bottom" src="{{item.thumbnail}}">
                     </a>
                 </div>
-                <div class="col-xs-10 col-sm-8">
+                <div class="col-xs-10 col-sm-6">
                     <strong><a ng-href="{{item.href}}">{{item.title}}</a></strong><br>
                     ${summary_condensed()}
                 </div>
-                <div class="col-sm-3">
+
+                <div class="col-xs-10 col-xs-offset-2 col-sm-offset-0 col-sm-2">
+                    <span ng-hide="true">
+                        {{tagList = item.subcategory_tags.split("|")}} 
+                        {{tagValue = tag.replace(" ", "_")}}
+                    </span>
+                    <div ng-repeat="tag in tagList">
+                            <span style="font-size:small; color:grey;">{{tag}}</span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div class="col-xs-10 col-xs-offset-2 col-sm-offset-0 col-sm-3">
                     ${author(size = 'xs')}
                 </div>
             </div><!-- row -->
@@ -154,6 +166,17 @@
                                     {{getCriteriaList(item.parentHref, item.urlCode)}}
                                     <div class="panel-heading">
                                         <ul class="horizontal-list iconListing">
+
+
+                                            <li>
+                                                <a class="grey" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
+                                            </li>
+                                            <li>
+                                                <a class="grey" ng-click="getComments()">Total Comments ({{numComments}})</a>
+                                            </li>
+                                            <li class="hidden-xs grey">
+                                                |
+                                            </li>
                                             <li ng-show="!ratingComplete" ng-cloak>
                                                 <a class="orange" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
                                                     <span class="glyphicon glyphicon-unchecked"></span>
@@ -178,16 +201,7 @@
                                                     Commented
                                                 </a>
                                             </li>
-                                            <li class="grey">
-                                                |
-                                            </li>
-
-                                            <li>
-                                                <a class="grey" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
-                                            </li>
-                                            <li>
-                                                <a class="grey" ng-click="getComments()">Total Comments ({{numComments}})</a>
-                                            </li>
+                                            
                                         </ul>
                                     </div><!-- panel-heading -->
 
