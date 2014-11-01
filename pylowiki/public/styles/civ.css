@@ -837,7 +837,7 @@ div.unread-message:hover {
 
 
 @media (max-width: 767px){
-  .horizontal-list.iconListing{
+  .horizontal-list, .horizontal-list.iconListing{
     width:100%;
     padding-left: 0;
   }
@@ -891,6 +891,12 @@ h1.workshop-title{
   height: 40px;
   width: 45px;
   background-repeat: none;
+}
+
+@media (max-width: 767px){
+  .brand-bottom{
+    margin-top:10px;
+  }
 }
 
 @media (max-width: 1201px){
@@ -3072,6 +3078,13 @@ button.signup, button.login{
   left: auto;
   right: auto;
 }
+
+@media (max-width: 399px){
+  .slogan{
+    margin-top: 160px;
+  }
+}
+
 
 .slogan2{
   margin-top: 20px;
