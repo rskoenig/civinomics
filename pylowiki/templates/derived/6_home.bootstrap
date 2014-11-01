@@ -19,7 +19,7 @@
     ###
     ### Activity Feed
     ###
-    <div class="col-sm-7 col-md-7">
+    <div class="col-sm-11 col-md-7">
 	
     	
       ${lib_6.create(createClass = "well-green")}
