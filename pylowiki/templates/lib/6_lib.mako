@@ -820,7 +820,7 @@
             return
         if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
             return
-        if c.w['allowIdeas'] == '0' and thing == 'ideas' and not (c.privs['admin'] or c.privs['facilitator']):
+        if c.w['allowIdeas'] == '0' and not (c.privs['admin'] or c.privs['facilitator']):
             return
 
         printStr = ''
@@ -2312,13 +2312,17 @@
                 <div class="col-xs-12">
                     <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
                     </span>
-                    <p>
-                        <label>Add<span ng-show="phase"> {{thing}}</span>: &nbsp;</label>
-                        <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
-                            <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
-                        </select>    
 
-                    </p>
+                    <div class="row">
+                        <div class="col-xs-12" style="display: inline-block">
+
+                            <label>Add <span ng-show="phase">{{thing}}: &nbsp;</span></label>
+                            <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
+                                <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
+                            </select>    
+
+                        </div>   
+                    </div>
 
                     ###Basic
                     % if 'user' in session:
