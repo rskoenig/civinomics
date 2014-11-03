@@ -355,12 +355,18 @@ class RegisterController(BaseController):
                     return redirect(returnPage)
                 else:
                     log.info("c.w no")
+                    returnPage = "/home"
+                    user['laston'] = time.time()
                     # not a guest, just a new twitter signup.
                     # add twitter userid to user
                     user['unactivatedTwitterAuthId'] = twitterId
                     user['activated'] = u'0'
                     commit(user)
+                    session["user"] = user['name']
+                    session["userCode"] = user['urlCode']
+                    session["userURL"] = user['url']
                     log.info('postalCode8 expect number: %s'%user['postalCode'])
+                    c.authuser = user
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
