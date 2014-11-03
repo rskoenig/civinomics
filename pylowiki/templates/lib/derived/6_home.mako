@@ -35,8 +35,6 @@
 <%def name="followingInitiatives()">
 	<div ng-controller="followCtrl">
 
-		${geoFlagInfo()}
-
       	<div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
 	        % if c.authuser:
                 

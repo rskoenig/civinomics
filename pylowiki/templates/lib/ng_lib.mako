@@ -4,7 +4,7 @@
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl">
             <div class="row">
-                <div class="col-xs-11">
+                <div class="col-xs-12">
 
                     <div class="row">
                         <div class="col-xs-12">
@@ -18,10 +18,6 @@
                     <a ng-if="item.link" class="break" ng-href="{{item.link}}">{{item.link}}</a>
                     <div class="spacer"></div>
 
-                </div>
-                <div class="col-xs-1">
-                    <span ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</span>
-                    <span ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</span>
                 </div>
             </div>
             <div class="row">
@@ -725,7 +721,7 @@
 <%def name="position_listing()">
     <div class="media well search-listing" ng-class="{pro : item.position == 'support', con : item.position == 'oppose'}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType='discussion'">
         <div class="row" ng-controller="yesNoVoteCtrl">
-            <div class="col-xs-11">
+            <div class="col-xs-12">
                 ${meta2()}
 
                 <div class="spacer"></div>
@@ -741,9 +737,6 @@
                         <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-xs-1">
-                ${upDownVoteBlock()}
             </div>
         </div>
         <div class="row">
@@ -930,6 +923,43 @@
     % endif
     </div>
     <br>
+</%def>
+
+<%def name="upDownVoteHorizontal(**kwargs)"> 
+    <div class="up-down-horizontal">
+    <%
+        if 'readonly' in kwargs:
+            readonly = kwargs['readonly']
+        else:
+            readonly = "0"
+    %>
+    % if readonly == "1":
+        <a class="upVote {{voted}}">
+            <i class="glyphicon glyphicon-chevron-up {{voted}}"></i>
+        </a>
+        <span class="centered chevron-score"> {{netVotes}} </span>
+        <a class="downVote {{voted}}">
+            <i class="glyphicon glyphicon-chevron-down {{voted}}"></i>
+        </a>
+        <small>Voting Closed</small>
+    % elif 'user' in session:
+        <a ng-click="updateYesVote()" class="upVote {{voted}}">
+            <i class="glyphicon glyphicon-chevron-up {{voted}}"></i>
+        </a>
+        <span class="centered chevron-score"> {{netVotes}} </span>
+        <a ng-click="updateNoVote()" class="downVote {{voted}}">
+            <i class="glyphicon glyphicon-chevron-down {{voted}}"></i>
+        </a>
+    % else:
+        <a href="#signupLoginModal" data-toggle="modal" class="upVote">
+            <i class="glyphicon glyphicon-chevron-up"></i>
+        </a>
+        <span class="centered chevron-score"> {{netVotes}} </span>
+        <a href="#signupLoginModal" data-toggle="modal" class="downVote">
+            <i class="iglyphicon glyphicon-chevron-down"></i>
+        </a>
+    % endif
+    </div>
 </%def>
 
 <%def name="rateCriteria(**kwargs)">
@@ -1233,6 +1263,11 @@
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
                         <ul class="horizontal-list iconListing">
+                            <li ng-if="item.objType == 'resource' || item.objType == 'discussion' || item.objType == 'position'">
+                                <span ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</span>
+                                <span ng-if="item.readOnly == '0'">
+                                ${upDownVoteHorizontal(readonly = '0')}</span>
+                            </li>
                             <li ng-if="item.objType != 'workshop'">
                                 <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                                 <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
@@ -1594,7 +1629,7 @@
             </td>
             <td style="padding: 10px 0px;">
                 <form class="no-bottom form-inline" ng-submit="submitComment()">
-                    <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px;">
+                    <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px; margin-bottom:0">
                         % if c.authuser:
                             % if c.privs and not c.privs['provisional']:
                                 <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
@@ -1608,7 +1643,7 @@
                                 <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                             </a>
                         % endif
-                        <div class="left-space comment-type" ng-show="type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate'">
+                        <div class="left-space comment-type" ng-show="(type == 'initiative' || type == 'idea' || 'ballotmeasure' || 'ballotcandidate') && commentText != None ">
                             <span class="radio inline right-space">
                                 <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
                             </span>
@@ -1626,7 +1661,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="form-group" style="vertical-align:top;">
+                    <div class="form-group" style="vertical-align:top;" ng-show="commentText != None">
                         % if c.authuser:
                             % if c.privs and not c.privs['provisional']:
                                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -1670,6 +1705,14 @@
             </td>
             <td class="comment-main-cell">
                 <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
+                <span class="comment-vote">
+                    <span ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
+                        <span ng-controller="yesNoVoteCtrl">
+                            ${upDownVoteHorizontal()}
+                        </span>
+                    </span>
+                </span>
+
                 <br>
                 <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
                 <div class="accordion" id="revisions">
@@ -1723,13 +1766,6 @@
                     </div><!-- collapse -->
                 </div><!-- ng-show -->
                 % endif
-            </td>
-            <td class="col-xs-1 comment-vote">
-                <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
-                    <div ng-controller="yesNoVoteCtrl">
-                        ${upDownVoteBlock()}
-                    </div>
-                </div>
             </td>
         </tr>
     </table>
