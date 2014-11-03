@@ -531,7 +531,7 @@
             </div>
         </form>
         <script src="/js/signup.js" type="text/javascript"></script>
-        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" class="green green-hover" data-toggle="tab">Log in</a></p>
+        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
 </%def>
 
 <%def name="loginForm()">
@@ -561,8 +561,8 @@
             </div>
         </div>
     </form>
-    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a></p>
-    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
+    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab"> Forgot password?</a></p>
+    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" data-toggle="tab">Sign up</a></p>
 </%def>
 
 <%def name="forgotPassword()">
@@ -593,7 +593,7 @@
         </div><!-- row -->
         <div class="row">
             <div class="col-sm-11 centered">
-                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
+                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab"> Back to log in</a>
             </div><!-- col-sm-11 -->
         </div><!-- row -->
     </form>
