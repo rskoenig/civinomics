@@ -664,7 +664,7 @@
             % for tag in subcategoryTags:
                 <% 
                     selected = ""
-                    if 'subcategory_tags' in c.initiative:
+                    if 'subcategory_tags' in c.initiative and c.initiative['subcategory_tags'] is not None:
                         if tag in c.initiative['subcategory_tags']:
                             selected = "checked"
                 %>
