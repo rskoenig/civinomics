@@ -82,7 +82,7 @@
                 </a>
             </div>
             <div class="col-sm-6 centered" style="height: 100%;">
-                <img src="/images/splash/citizen_collage.jpg" style="margin: auto auto;">
+                <img src="/images/splash/citizen_collage.jpg" style="margin: auto auto; max-width: 100%">
                 <div class="spacer"></div>
                 <p>
                     <ul class="spaced-bullets">
