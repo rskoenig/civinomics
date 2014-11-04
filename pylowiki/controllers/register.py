@@ -137,7 +137,7 @@ class RegisterController(BaseController):
         """ This is an intermediary page for the signup process when a facebook user first
         creates an account. """
 
-        c.title = c.heading = "Registration using your Facbook Account"
+        c.title = c.heading = "Registration using your Facebook Account"
         c.success = False
         splashMsg = {}
         splashMsg['type'] = 'success'
@@ -165,6 +165,7 @@ class RegisterController(BaseController):
 
     def twitterSigningUp( self ):
         log.info("register:twitterSigningUp signing up with twt")
+        log.info(vars(request.params))
         """ handles creating an account for a twitter user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
@@ -173,6 +174,7 @@ class RegisterController(BaseController):
         returnPage = "/signup"
         name = False
         postalCode = False
+#        email = False
         log.info('postalCode1 expect false: %s'%postalCode)
         checkTOS = False
         c.title = c.heading = "Registration"
@@ -353,12 +355,18 @@ class RegisterController(BaseController):
                     return redirect(returnPage)
                 else:
                     log.info("c.w no")
+                    returnPage = "/home" 
+                    user['laston'] = time.time()
                     # not a guest, just a new twitter signup.
                     # add twitter userid to user
                     user['unactivatedTwitterAuthId'] = twitterId
                     user['activated'] = u'0'
                     commit(user)
+                    session["user"] = user['name']
+                    session["userCode"] = user['urlCode']
+                    session["userURL"] = user['url']
                     log.info('postalCode8 expect number: %s'%user['postalCode'])
+                    c.authuser = user
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
@@ -485,6 +493,12 @@ class RegisterController(BaseController):
         #    log.info('password2 missing')
         #else:
         #    password2 = request.params['password2']
+#         session['facebookAuthId'] = facebookAuthId
+#         session['fbEmail'] = email
+#         session['fbAccessToken'] = access
+#         session['fbName'] = name
+#         session['fbBigPic'] = bigPic
+#         session['fbSmallPic'] = smallPic
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])
@@ -534,7 +548,7 @@ class RegisterController(BaseController):
             log.info('chkTOS missing')
         else:
             checkTOS = request.params['chkTOS']
-
+        log.info(vars(session))
         schema = plaintextForm()
         try:
             namecheck = name.replace(' ', '')
@@ -581,10 +595,11 @@ class RegisterController(BaseController):
                 session['splashMsg'] = splashMsg
                 session.save() 
                 return redirect('/signup')
-            
+            log.info(facebookAuthId)
             user = getUserByFacebookAuthId( facebookAuthId )
             if not user:
                 log.info("did not find by fb id")
+                log.info(email)
                 user = getUserByEmail( email )
 
 
@@ -706,6 +721,7 @@ class RegisterController(BaseController):
                             returnPage = "/"
                             return redirect(returnPage)
                 log.info("register:fbSigningUp found user, should have been logged in")
+                log.info(user)
                 splashMsg['content'] = "You should have been logged in already"
                 session['splashMsg'] = splashMsg
                 session.save() 

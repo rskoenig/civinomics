@@ -73,14 +73,19 @@ class HomeController(BaseController):
 #         log.info("in get following initiatives")
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
+#             log.info(session['facilitatorInitiatives'])
         else:
+            session['facilitatorInitiatives'] = []
+            session.save()
             facilitatorInitiativeCodes = []
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
         else:
+            session['bookmarkedInitiatives'] = []
+            session.save()
             bookmarkedInitiativeCodes = []
-
+        
         interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
         # reverse list so most recent first
         interestedInitiativeCodes = interestedInitiativeCodes[::-1]

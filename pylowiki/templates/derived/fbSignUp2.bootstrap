@@ -4,12 +4,10 @@
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="login-bg"></div>
 <div class="login">
-  <div class="container">
+  <div class="container login-container">
       <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well login">
+          <div class="col-sm-6 col-sm-offset-3 well well-login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -18,35 +16,34 @@
                       </div>
                   % endif
                   <div class="login-top">
-                      <h2> Login </h2>
+                      <h2 class="centered no-top"> Login </h2>
+                      <hr>
                   </div>
                   <div class="login-body">
                       <form id="sign_in" action="/fbSigningUp" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
-                          <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
-                              <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Postal Code: </label>
-                              <div class="controls">
-                                  <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
-                                  <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
-                                  <div id="postalCodeResult"></div>
-                              </div>
-                          </div>
-                          <div class="row">
-                              <div class="span4 offset1">
-                                  <input type="hidden" name="chkTOS" id="chkTOS" value="true">
-                                  <small>By signing up, you agree to our <a href="/corp/terms" target="_blank" style="color: #075D00;">terms of use</a> and <a href="/corp/privacy" target="_blank" style="color: #075D00;">privacy policy</small>
-                              </div>
-                          </div>
-                          <div class="control-group">
-                              <div class="controls">
-                                  <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Sign up</button>
-                                  <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Sign up</button>
+                          <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} ">
+                                    <label class="col-sm-3 control-label" for="postalCode"><!--<i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title=""></i>--> Zip Code: </label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                                        <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
+                                        <div id="postalCodeResult"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-6">
+                                        <span id="terms">&nbsp;</span>
+                                    </div>
+                                </div>
+                          <div class="form-group">
+                              <div class="col-sm-offset-3 col-sm-6">
+                                  <button class="btn btn-block btn-lg btn-success disabled" ng-show="signupForm.$invalid">Submit</button>
+                                  <button type="submit" class="btn btn-block btn-lg btn-success" ng-show="signupForm.$valid">Submit</button>
                               </div>
                           </div>
                       </form>
                   </div>
                   
-              </div><!-- main-well -->
-          </div><!-- sapn6 -->
+          </div><!-- col-sm-6 -->
       </div><!-- row -->
   </div><!-- container -->
 </div><!-- login -->
