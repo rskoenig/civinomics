@@ -90,12 +90,13 @@ class HomeController(BaseController):
         interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
         # reverse list so most recent first
         interestedInitiativeCodes = interestedInitiativeCodes[::-1]
-
+        
+        searchInitiatives = list(set(interestedInitiativeCodes + facilitatorInitiatives))
         offset = int(offset)
         limit = int(limit)
         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
 
-        interestedInitiatives = initiativeLib.getInitiatives(list(set(interestedInitiativeCodes)))
+        interestedInitiatives = initiativeLib.getInitiatives(searchInitiatives)
 #         for code in interestedInitiativeCodes:
 #             #log.info('%s' % code)
 #             i = initiativeLib.getInitiative(code)
