@@ -74,7 +74,10 @@ class HomeController(BaseController):
         # is session['facilitatorInitiatives'] even being used right now?
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
+#             log.info(session['facilitatorInitiatives'])
         else:
+            session['facilitatorInitiatives'] = []
+            session.save()
             facilitatorInitiativeCodes = []
 
         facilitatorInitiatives = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
@@ -85,8 +88,10 @@ class HomeController(BaseController):
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
         else:
+            session['bookmarkedInitiatives'] = []
+            session.save()
             bookmarkedInitiativeCodes = []
-
+        
         interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
         # reverse list so most recent first
         interestedInitiativeCodes = interestedInitiativeCodes[::-1]

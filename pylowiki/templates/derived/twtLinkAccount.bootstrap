@@ -4,12 +4,10 @@
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="login-bg"></div>
 <div class="login">
-  <div id="fbSignUp" class="container">
+  <div id="fbSignUp" class="container login-container">
       <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well login">
+          <div class="col-sm-6 col-sm-offset-3 well well-login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -18,44 +16,45 @@
                       </div>
                   % endif
                   <div class="login-top">
-                      <h2> Link your Civinomics account with Twitter</h2>
-                      <p>Since you haven't used Twitter to log in on Civinomics 
-                        yet, we need you to verify your identity by entering the password you use with your existing Civinomics account.</p>
+                      <h2 class="centered no-top"> Link your Civinomics account with Twitter</h2>
+                      <hr>
                   </div>
+                  <p>Since you haven't used Twitter to log in on Civinomics 
+                        yet, we need you to verify your identity by entering the password you use with your existing Civinomics account.</p>
                   <div class="login-body">
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
                           <form id="sign_in" action="/twtLinkAccountHandler" class="form form-horizontal" method="post">
-                              <div class="control-group">
-                                  <label class="control-label" for="email"> Email: </label>
-                                  <div class="controls">
+                              <div class="form-group">
+                                  <label class="col-sm-3 control-label" for="email"> Email: </label>
+                                  <div class="col-sm-6 controls">
                                       ${c.email}
                                   </div>
                               </div>
-                              <div class="control-group">
-                                  <label class="control-label" for="passphrase"> Password: </label>
-                                  <div class="controls">
-                                      <input type="password" name="password" id="password">
+                              <div class="form-group">
+                                  <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
+                                  <div class="col-sm-6 controls">
+                                      <input class="form-control" type="password" name="password" id="password">
                                   </div>
                               </div>
-                              <div class="control-group">
-                                  <div class="controls">
-                                      <button type="submit" class="btn btn-primary"> Log in </button>
+                              <div class="form-group">
+                                  <div class="col-sm-6 col-sm-offset-3 controls">
+                                      <button type="submit" class="btn btn-lg btn-block btn-success"> Log in </button>
                                       
                                   </div>
                               </div>
                           </form>
                       % endif
                   </div>
-                  <div class="login-bottom">
-                      
-                      <text class="form-subtext"><a href="/forgotPassword" style="color: #075D00; padding-top:20px;"> Forgot password?</a></text>
-                      <text class="form-subtext pull-right"><a href="/signup" style="color: #075D00; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
-                      </label>
-                      
+                  <div class="row" style="padding:15px;">
+                      <div class="col-sm-6">
+                        <text class="form-subtext"><a href="/forgotPassword"> Forgot password?</a></text>
+                      </div>
+                      <div class="col-sm-6">
+                        <text class="form-subtext pull-right"><a href="/signup"> Don't have a Civinomics account yet?</a></text>
+                      </div>
                   </div>
-              </div><!-- main-well -->
           </div><!-- sapn6 -->
       </div><!-- row -->
   </div><!-- container -->

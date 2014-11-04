@@ -21,10 +21,10 @@ function createController($scope, $http) {
 	
 	$scope.showAll = false
 	if ($scope.thing == undefined) {
-	    $scope.thing = 'Idea';
+	    $scope.thing = 'Initiative';
 	}
 	$scope.file = "";
-	$scope.thingList = ['Idea','Initiative', 'Resource', 'Discussion', 'Workshop']
+	$scope.thingList = ['Initiative', 'Discussion', 'Resource', 'Workshop']
 	$scope.tagList = []
 	$scope.id1 = ""
 	$scope.id2 = ""
