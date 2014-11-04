@@ -118,6 +118,148 @@
     </div>
 </%def>
 
+<%def name="general_listing_yesno_condensed()">
+    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+        <div ng-controller="yesNoVoteCtrl" id="{{item.url}}"> 
+            <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
+                <div class="col-xs-2 col-sm-1">
+                    <a href = '{{item.href}}'>
+                        <img class="thumbnail tight initiative-thumb no-top no-bottom" src="{{item.thumbnail}}">
+                    </a>
+                </div>
+                <div class="col-xs-10 col-sm-6">
+                    <strong><a ng-href="{{item.href}}">{{item.title}}</a></strong><br>
+                    ${summary_condensed()}
+                </div>
+
+                <div class="col-xs-10 col-xs-offset-2 col-sm-offset-0 col-sm-2">
+                    <span ng-hide="true">
+                        {{tagList = item.subcategory_tags.split("|")}} 
+                        {{tagValue = tag.replace(" ", "_")}}
+                    </span>
+                    <div ng-repeat="tag in tagList">
+                            <span style="font-size:small; color:grey;">{{tag}}</span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div class="col-xs-10 col-xs-offset-2 col-sm-offset-0 col-sm-3">
+                    ${author(size = 'xs')}
+                </div>
+            </div><!-- row -->
+
+            <div class="row" ng-if="item.thumbnail == False || item.thumbnail=='0'">
+                <div class="col-xs-12">
+                    <h4 class="listed-item-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
+                    ${status()}
+                    ${text()}
+                </div>
+            </div><!-- row -->
+
+            <div ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;"></div>
+            <div ng-controller="commentsController">
+                <div class="row" style="min-height: 50px;">
+                    <div class="actions">
+                        % if not c.authuser or c.authuser['memberType'] != 'organization':
+                            <div ng-switch="item.parentObjType" ng-cloak>
+                                <div ng-switch-when="workshop" ng-controller="ratingsController">
+                                    {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                    <div class="panel-heading">
+                                        <ul class="horizontal-list iconListing">
+
+
+                                            <li>
+                                                <a class="grey" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
+                                            </li>
+                                            <li>
+                                                <a class="grey" ng-click="getComments()">Total Comments ({{numComments}})</a>
+                                            </li>
+                                            <li class="hidden-xs grey">
+                                                |
+                                            </li>
+                                            <li ng-show="!ratingComplete" ng-cloak>
+                                                <a class="orange" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                    <span class="glyphicon glyphicon-unchecked"></span>
+                                                    Rate
+                                                </a>
+                                            </li>
+                                            <li class="med-green" ng-show="ratingComplete" ng-cloak>
+                                                <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                    <span class="glyphicon glyphicon-check"></span>
+                                                    Rated
+                                                </a>
+                                            </li>
+                                            <li ng-show="!(item.userCommented || commented)">
+                                                <a class="orange" ng-click="toggleNewComment()">
+                                                    <span class="glyphicon glyphicon-unchecked left-space"></span>
+                                                    Comment
+                                                </a>
+                                            </li>
+                                            <li ng-show="item.userCommented || commented">
+                                                <a ng-click="getComments()" class="med-green">
+                                                    <span class="glyphicon glyphicon-check"></span>
+                                                    Commented
+                                                </a>
+                                            </li>
+                                            
+                                        </ul>
+                                    </div><!-- panel-heading -->
+
+                                    <div ng-switch="rating.type">
+                                        <div ng-switch-when="criteria">
+                                            <div ng-show="showRatingPanel">
+                                                %if 'user' in session:
+                                                 ${rateCriteria()}
+                                                 <div ng-if="hasVoted">
+                                                    <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                                                        {{checkDemographics(item.parentHref)}}
+                                                        ${demographics()}
+                                                    </div>
+                                                </div>
+                                                %else:
+                                                    ${rateCriteria(readOnly = "1")}
+                                                %endif
+                                            </div>
+                                        </div><!-- close criteria inner-->
+                                        <div ng-switch-when="yesno">
+                                            <span ng-if="item.readOnly == '1'">
+                                                ${yesNoVoteFooter(readonly = "1")}
+                                            </span>
+                                            <span ng-if="item.readOnly == '0'">
+                                                ${yesNoVoteFooter(readonly = "0")}
+                                            </span>
+                                        </div> <!-- close yesno inner-->
+                                        <div ng-switch-default>
+        
+                                        </div> <!-- close default inner-->
+                                    </div><!-- close switch rating-type -->
+                                </div><!-- close ng-switch when workshop-->
+                                <div ng-switch-default>
+                                    <span ng-if="item.readOnly == '1'">
+                                        ${yesNoVoteFooter(readonly = "1")}
+                                    </span>
+                                    </span>
+                                    <span ng-if="item.readOnly == '0'">
+                                        ${yesNoVoteFooter(readonly = "0")}
+                                    </span>
+                                </div> <!-- close default outer-->
+                            </div><!-- ng-switch -->
+                        % endif
+
+                        <div ng-show="showNewComment" style="padding-bottom: 19px;">
+                            <span ng-show="item.readOnly == '1'">${addComment(readonly = '1')}</span>
+                            <span ng-show="item.readOnly == '0'">${addComment(readonly = '0')}</span>
+                        </div>
+                        <div>
+                            ${commentList()}
+                        </div>
+                    </div><!-- actions -->
+                </div><!-- row -->
+            </div><!-- commentsController -->
+        </div><!-- yesno vote ctrl -->
+    </div><!-- media-well -->
+</%def>
+
 
 
 <%def name="basic_listing()">
@@ -498,31 +640,26 @@
 
 
 <%def name="initiative_listing_condensed()">
-    <div class="media well search-listing initiative-listing" style="height: 415px;" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+    <div class="media well search-listing initiative-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
         <div ng-controller="yesNoVoteCtrl"> 
             <div class="row">
                 <div class="col-sm-12">
+                    <p style="line-height: 16px;"><small>${metaData()}</small></p>
                     <div class="listed-photo">
                         <a href = '{{item.href}}'>
-                            <div class="i-photo full-photo" style="background-image:url('{{item.mainPhoto}}');"/></div> 
+                            <div class="landscape-id-photo" style="background-image:url('{{item.mainPhoto}}')"></div>
                         </a>
                     </div>
                 </div>
-                <div class="col-sm-12" style="height: 155px;">
+                <div class="col-sm-12">
                     <h4 class="listed-item-title initiative-title"><a ng-href="{{item.href}}">{{item.title}}</a></h4>
-                    <p style="line-height: 16px;"><small>${metaData()}</small></p>
                     <!--
                     <p ng-init="stringLimit=300" class="markdown"><small><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess()}</small></p>
                     -->
-                    <h4>
-                        <small class="grey centered">Estimated Cost:</small>
-                        <span class="pull-right">{{item.cost | currency}}</span>
-                    </h4>
                 </div>
             </div>
             <div class="row" ng-controller="ratingsController">
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
-                    ${yesNoVoteFooter(noStats = True)}
                     <div ng-controller="demographicsController">
                     {{checkDemographics(item.parentHref)}}
                         <span ng-if="demographics.required == ''"> ${yesNoVoteFooter(noStats = True)}</span>
@@ -533,6 +670,7 @@
                     	${rateCriteria()}
                     	</div>
                     </div>
+                    <div class="spacer"></div>
                 % endif
             </div>
         </div>
@@ -888,7 +1026,7 @@
     		</table>
             </div><!-- col-md-3 -->
             <div class="col-xs-12 rating-details ${locationClass}">
-                <small ng-if="!showAverage"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowAverage()">view my ratings</a></small>
+                <small ng-if="!showAverage"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowMyRatings()">view my ratings</a></small>
             </div>
 		</div>
 	</div> <!-- container-div -->
@@ -935,17 +1073,15 @@
 </%def>
 
 <%def name="metaData(*args)">
-    <span ng-repeat="tag in item.tags"><span class="label workshop-tag {{tag}}">{{tag}}</span> </span>
-
     % if 'inline' in args:
-        <img class="thumbnail flag inline-title-flag border no-bottom" src="{{item.flag}}"> 
+        <img class="thumbnail flag inline-title-flag border no-bottom" src="{{item.flag}}">
 
     % else:
         <img class="thumbnail flag mini-flag border no-bottom" src="{{item.flag}}"> 
     % endif
     <a style="text-transform: capitalize;" ng-href="{{item.scopeHref}}">{{item.scopeName}}</a>
 
-    <span ng-repeat="tag in item.tags"> / <span class="label workshop-tag {{tag}}">{{tag}}</span>
+    <span ng-repeat="tag in item.tags"> / <span class="label workshop-tag {{tag}}">{{tag}}</span></span>
 
     <span ng-if="item.parentHref && item.parentTitle != ''"> / <a ng-href="{{item.parentHref}}">{{item.parentTitle}}</a></span>
 </%def>
@@ -986,8 +1122,15 @@
     </small>
 </%def>
 
-<%def name="author()">
-    <img class="avatar avatar-md inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+<%def name="author(**kwargs)">
+    <%
+        if 'size' in kwargs:
+            authorClass = 'avatar-' + kwargs['size'] 
+        else:
+            authorClas = 'avatar-md'
+    %>
+
+    <img class="avatar ${authorClass} inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <a href="{{item.authorHref}}">{{item.authorName}}</a> 
 </%def>
 
@@ -1032,6 +1175,17 @@
             <br>
         </div>
     </div>
+</%def>
+
+<%def name="summary_condensed()">
+    <span ng-init="stringLimit=60">
+        <span>{{item.text | limitTo:stringLimit}}
+
+            <span ng-show="item.text.length > 60 && stringLimit == 60"><a ng-click="stringLimit = 10000">...more</a></span>
+            <span><a ng-show="stringLimit == 10000" ng-click="stringLimit = 60"> less</a></span>
+
+        </span>
+    </span>
 </%def>
 
 <%def name="fullText()">
@@ -1084,109 +1238,19 @@
                     <div class="col-xs-12 iconListing-row">
                         <ul class="horizontal-list iconListing">
                             <li ng-if="item.objType != 'workshop'">
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
+                                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
                             </li>
                             <li ng-show="(item.objType != 'ballotmeasure' && item.objType != 'ballotcandidate')"><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
                             % if c.authuser and c.authuser['memberType'] == 'organization':
-                                <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a class="no-highlight" ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
+                                <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
                             % endif 
                         </ul>
                     </div>
                 </div>
 
-                ### Comments
-                <div class="activity-comments">
-                <table class="activity-comments">
-                    <tr class="centered" ng-show="commentsLoading" ng-cloak>
-                        <td></td>
-                        <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
-                    </tr>
+                ${commentList()}
 
-                    <tr ng-show="newCommentLoading" ng-cloak>
-                        <td></td>
-                        <td>
-                            <div class="centered">
-                                <i class="icon-spinner icon-spin icon-2x"></i>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
-
-                        <td class="comment-avatar-cell">
-                            <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
-                        </td>
-                        <td class="comment-main-cell">
-                            <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
-                            <br>
-                            <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
-                            <div class="accordion" id="revisions">
-                                <div ng-repeat="rev in comment.revisionList">
-                                    <div class="accordion-group">
-                                        <div class="accordion-heading">
-                                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
-                                            Revision: {{rev.date}}
-                                            </a>
-                                        </div><!-- accordian-heading -->
-                                        <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
-                                            <div class="accordion-inner">
-                                                <p>Position: {{rev.role}}</p>
-                                                Comment: <span ng-bind-html="rev.html"></span>
-                                            </div><!-- accordian-inner -->
-                                        </div><!-- accordian-body -->
-                                    </div><!-- accordian-group -->
-                                </div><!-- ng-repeat -->
-                            </div><!-- accordian -->
-                            % if readonly == '0':
-                            <div ng-show="(comment.canEdit == 'yes')">
-                                <div class="btn-group btn-group-xs">
-                                    <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
-                                    <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
-                                </div><!-- btn-group -->
-                                <div id="edit-{{comment.urlCode}}" class="collapse">
-                                    <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
-                                        <form class="no-bottom" ng-submit="submitEditComment()">
-                                            <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
-                                            <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                            <div ng-show="(comment.doCommentRole == 'yes')">
-                                                &nbsp;
-                                                <label class="radio inline">
-                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
-                                                </label>
-                                                <label class="radio inline">
-                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
-                                                </label>
-                                                <label class="radio inline">
-                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
-                                                </label>
-                                                <label class="radio inline">
-                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
-                                                </label>
-                                                <label class="radio inline">
-                                                    <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
-                                                </label>
-                                            </div><!-- ng-show -->
-                                        </form>
-                                    </div><!-- controller -->
-                                </div><!-- collapse -->
-                            </div><!-- ng-show -->
-                            % endif
-                        </td>
-                        <td class="col-xs-1 comment-vote">
-                            <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
-                                <div ng-controller="yesNoVoteCtrl">
-                                    % if readonly == '0':
-                                        ${upDownVoteBlock(readonly = '0')}
-                                    % else:
-                                        ${upDownVoteBlock(readonly = '1')}
-                                    % endif
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                </div><!-- activity comments -->
             </div>
         </div>
     % endif
@@ -1207,8 +1271,8 @@
                     <td colspan="2" style="padding: 10px;">
                         <ul class="horizontal-list iconListing">
                             <li>
-                                <a ng-show="item.numComments == '0'" class="no-highlight" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
-                                <a ng-show="!(item.numComments == '0')" class="no-highlight" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="!(item.numComments == '0')" class="grey" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                             </li>
                             <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
                         </ul>
@@ -1583,4 +1647,95 @@
         </tr>
     </table>
     % endif
+</%def>
+
+<%def name="commentList()">
+    ### Comments
+    <div class="activity-comments">
+    <table class="activity-comments">
+        <tr class="centered" ng-show="commentsLoading" ng-cloak>
+            <td></td>
+            <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
+        </tr>
+
+        <tr ng-show="newCommentLoading" ng-cloak>
+            <td></td>
+            <td>
+                <div class="centered">
+                    <i class="icon-spinner icon-spin icon-2x"></i>
+                </div>
+            </td>
+        </tr>
+
+        <tr ng-repeat="comment in comments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
+
+            <td class="comment-avatar-cell">
+                <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
+            </td>
+            <td class="comment-main-cell">
+                <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
+                <br>
+                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                <div class="accordion" id="revisions">
+                    <div ng-repeat="rev in comment.revisionList">
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                                Revision: {{rev.date}}
+                                </a>
+                            </div><!-- accordian-heading -->
+                            <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    <p>Position: {{rev.role}}</p>
+                                    Comment: <span ng-bind-html="rev.html"></span>
+                                </div><!-- accordian-inner -->
+                            </div><!-- accordian-body -->
+                        </div><!-- accordian-group -->
+                    </div><!-- ng-repeat -->
+                </div><!-- accordian -->
+                % if readonly == '0':
+                <div ng-show="(comment.canEdit == 'yes')">
+                    <div class="btn-group btn-group-xs">
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
+                        <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
+                    </div><!-- btn-group -->
+                    <div id="edit-{{comment.urlCode}}" class="collapse">
+                        <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
+                            <form class="no-bottom" ng-submit="submitEditComment()">
+                                <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                <div ng-show="(comment.doCommentRole == 'yes')">
+                                    &nbsp;
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
+                                    </label>
+                                </div><!-- ng-show -->
+                            </form>
+                        </div><!-- controller -->
+                    </div><!-- collapse -->
+                </div><!-- ng-show -->
+                % endif
+            </td>
+            <td class="col-xs-1 comment-vote">
+                <div class="row" ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
+                    <div ng-controller="yesNoVoteCtrl">
+                        ${upDownVoteBlock()}
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    </div><!-- activity comments -->
 </%def>

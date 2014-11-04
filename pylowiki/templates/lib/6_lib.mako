@@ -1440,15 +1440,18 @@
     <%
         if type(user) == type(1L):
             user = userLib.getUserByID(user)
-        userGeo = getGeoInfo(user.id)[0]
-        geoLinkStr = ''
-        
-        geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'city'), userGeo['cityTitle'])
-        geoLinkStr += ', '
-        geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'state'), userGeo['stateTitle'])
-        if 'comment' not in kwargs:
-            geoLinkStr += ', '
-            geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'country'), userGeo['countryTitle'])
+        if user:
+            try:
+                userGeo = getGeoInfo(user.id)[0]
+                geoLinkStr = ''
+                geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'city'), userGeo['cityTitle'])
+                geoLinkStr += ', '
+                geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'state'), userGeo['stateTitle'])
+                if 'comment' not in kwargs:
+                    geoLinkStr += ', '
+                    geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'country'), userGeo['countryTitle'])
+            except:
+                geoLinkStr = ''
     %>
     ${geoLinkStr | n}
 </%def>
@@ -2162,6 +2165,37 @@
         except KeyError:
           tagList = item['workshop_category_tags'].split('|')
         tagList = tagList[:3]
+    %>
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <span> / </span><a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+          % endif
+      % endfor
+</%def>
+
+<%def name="showSubcategoryTags(item)">
+    <% 
+        try:
+          tagList = item['subcategory_tags'].split('|')
+        except (KeyError, AttributeError):
+            return ""
+    %>
+      % for tag in tagList:
+          % if tag and tag != '':
+              <% 
+                tagValue = tag.replace(" ", "_")
+              %>
+              <span> / </span><a class="label label-default workshop-tag ${tagValue}" href="/searchTags/${tagValue}/" >${tag}</a>
+          % endif
+      % endfor
+</%def>
+
+<%def name="showSubcategoryTagsJSON(tL)">
+    <% 
+        tagList = tl.split('|')
     %>
       % for tag in tagList:
           % if tag and tag != '':

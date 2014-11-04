@@ -37,9 +37,24 @@ app.controller('ratingsController', function($scope, $http){
 	$scope.hasCriteria = false;
 	$scope.showAverage = false;
 	$scope.hasVoted = false;
-	
+
+	$scope.showRatingPanel = false;
 	$scope.changeShowAverage = function(){
-    	$scope.showAverage = !$scope.showAverage;
+		if ($scope.showRatingPanel == true && $scope.showAverage == true) {
+    		$scope.showRatingPanel = false;
+    	} else{
+    		$scope.showRatingPanel = true;
+    	};
+    	$scope.showAverage = true;
+	}
+
+	$scope.changeShowMyRatings = function(){
+		if ($scope.showRatingPanel == true && $scope.showAverage == false) {
+    		$scope.showRatingPanel = false;
+    	} else{
+    		$scope.showRatingPanel = true;
+    	};
+    	$scope.showAverage = false;
 	}
 	
 	$scope.addCriteriaToList = function(){
@@ -70,6 +85,7 @@ app.controller('ratingsController', function($scope, $http){
 					$scope.rating.type = 'criteria';
 					$scope.rating.criteriaList = data.criteria;
 					//Do something if they were added correctly (probably just update message or continue)
+					$scope.checkRatingComplete()
 				} 
 				else if (data.statusCode === 0){
     				$scope.rating.type = 'yesno';			
@@ -79,7 +95,7 @@ app.controller('ratingsController', function($scope, $http){
 	};
 	
 	$scope.sendCriteriaList = function(workshopCode, workshopUrl){
-        $scope.alert.type = '';
+        	$scope.alert.type = '';
 		$scope.alert.message = '';
 		var baseUrl = "/workshop/"+workshopCode+"/"+workshopUrl+"/criteria/add/";
 		if ($scope.rating.type === "criteria" && $scope.rating.criteriaList.length > 0 ) { //Make this a switch block?
@@ -87,8 +103,8 @@ app.controller('ratingsController', function($scope, $http){
 			requestUrl = baseUrl + criteria;
 		    $http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
-    				$scope.alert.message = 'Criteria added correctly.';	
-                    $scope.alert.type = 'criteria'
+    					$scope.alert.message = 'Criteria added correctly.';	
+                    			$scope.alert.type = 'criteria';
 					//Do something if they were added correctly (probably just update message or continue)
 				} 
 				else if (data.statusCode === 0){
@@ -104,6 +120,8 @@ app.controller('ratingsController', function($scope, $http){
 			$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 					//Do something if they were added correctly (probably just update message or continue)
+					$scope.alert.message = 'Rating set to yes/no.';	
+                    			$scope.alert.type = 'yesno';
 				} 
 				else if (data.statusCode === 0){
 					//Do something if it fails					
@@ -121,6 +139,11 @@ app.controller('ratingsController', function($scope, $http){
 		$scope.rating.type = 'criteria';
 		$scope.rating.criteriaList = criteriaString.split("|");
 	};
+	
+	$scope.initYesno = function(){
+		$scope.rating.type = 'yesno';
+	};
+	
 	
 	$scope.addVote = function(hover, amount, criteria){
     	hover = !hover;
@@ -141,6 +164,7 @@ app.controller('ratingsController', function($scope, $http){
 				if (data.statusCode == 1){
 					$scope.vote = criteria.amount;
 					$scope.getCriteriaList(parentHref,thingCode);
+					$scope.checkRatingComplete()
 				} 
 				else if (data.statusCode === 0){			
 				}
@@ -156,6 +180,17 @@ app.controller('ratingsController', function($scope, $http){
 		}
 		listStr += list[i];
 		return listStr;
+	};
+
+	$scope.checkRatingComplete = function() {
+		$scope.ratingComplete = true;
+		for (i = 0; i < $scope.rating.criteriaList.length; i++) { 
+			if ($scope.rating.criteriaList[i]['amount'] == '0'){
+				$scope.ratingComplete = false;
+				break
+			};
+		}
+
 	};
 	
 	

@@ -24,6 +24,7 @@ import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.pmember      	as pMemberLib
 import pylowiki.lib.db.initiative   	as initiativeLib
 import pylowiki.lib.db.discussion   	as discussionLib
+import pylowiki.lib.db.geoInfo   	    as geoInfoLib
 
 # twython imports
 from twython import Twython
@@ -199,6 +200,12 @@ class LoginController(BaseController):
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
         name, email, access, expires, signed, facebookAuthId, smallPic, bigPic = id1.split("&")
+        
+        if name:
+            log.info("fbAuthCheckEmail name is %s"%name)
+            
+        if email:
+            log.info("fbAuthCheckEmail email is %s"%email)
         
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
@@ -537,6 +544,20 @@ class LoginController(BaseController):
         return redirect("/login")
 
     def logUserIn(self, user, **kwargs):
+        # patch to catch cases where user was created without a geoInfo
+        geoInfo = geoInfoLib.getGeoInfo(user.id)
+        if not geoInfo:
+            log.info("user %s has no geoInfo."%user['name'])
+            postalCode = user['postalCode']
+            if postalCode != '':
+                geoInfoLib.GeoInfo(postalCode, "United States", user.id )
+                                                        # patch to catch cases where user was created without a geoInfo
+                geoInfo = geoInfoLib.getGeoInfo(user.id)
+                if not geoInfo:
+                    log.info("user %s STILL has no geoInfo."%user['name'])
+            else:
+                log.info("user %s has no postal code!"%user['name'])
+                
         # NOTE - need to store the access token? kee in session or keep on user?
         # keeping it on the user will allow interaction with user's facebook after they've logged off
         # and by other people
@@ -544,7 +565,6 @@ class LoginController(BaseController):
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        #log.info("login:logUserIn session save")
 
         c.authuser = user
         
@@ -563,6 +583,7 @@ class LoginController(BaseController):
         session["positions"] = positions
         session.save()
         
+        
         # get their workshops and initiatives of interest
         followLib.setWorkshopFollowsInSession()
         followLib.setUserFollowsInSession()
@@ -573,29 +594,15 @@ class LoginController(BaseController):
         followLib.setInitiativeFollowsInSession()
 
         #log.info("login:logUserIn")
-        if 'iPhoneApp' in kwargs:
-            if kwargs['iPhoneApp'] != True:
-                if 'externalAuthType' in user.keys():
-                    log.info("login:logUserIn externalAuthType in user keys")
-                    if user['externalAuthType'] == 'facebook':
-                        log.info("login:logUserIn externalAuthType facebook")
-                        user['facebookAccessToken'] = session['fbAccessToken']
-                        if 'fbSmallPic' in session:
-                            user['facebookProfileSmall'] = session['fbSmallPic']
-                            user['facebookProfileBig'] = session['fbBigPic']
-                    else:
-                        user['externalAuthType'] = ''
-        else:
-            if 'externalAuthType' in user.keys():
-                log.info("login:logUserIn externalAuthType in user keys")
-                if user['externalAuthType'] == 'facebook':
-                    log.info("login:logUserIn externalAuthType facebook")
-                    user['facebookAccessToken'] = session['fbAccessToken']
-                    if 'fbSmallPic' in session:
-                        user['facebookProfileSmall'] = session['fbSmallPic']
-                        user['facebookProfileBig'] = session['fbBigPic']
-                else:
-                    user['externalAuthType'] = ''
+        if 'externalAuthType' in user.keys():
+            log.info("login:logUserIn externalAuthType in user keys")
+            if user['externalAuthType'] == 'facebook' and 'fbAccessToken' in session:
+                user['facebookAccessToken'] = session['fbAccessToken']
+                if 'fbSmallPic' in session:
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
+            else:
+                user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -664,8 +671,9 @@ class LoginController(BaseController):
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user, iPhoneApp=iPhoneApp)
-
-                        if query['alURL'] != "/login" and query['alURL'] != "/signup":                            
+                        log.info("loginURL is %s"%loginURL)
+                                
+                        if query['alURL'] != "/login" and query['alURL'] != "/loginResetPassword" and query['alURL'] != "/loginNoExtAuth" and query['alURL'] != "/signup":                            
                             loginURL = query['alURL']
                         if len(query['alURL'].split("/")) >= 3:
                             workshopCode = query['alURL'].split("/")[2]
@@ -675,6 +683,8 @@ class LoginController(BaseController):
                                 wUrl = "/workshop/"+workshop['urlCode']+"/"+workshop['url']
                                 user['participatingWorkshop'] = wUrl + "|" + workshop['title']
                                 commit(user)
+                                
+                        log.info("loginURL is now %s"%loginURL)
 
                         if 'returnTo' in session:
                             returnPage = session['returnTo']
@@ -693,7 +703,9 @@ class LoginController(BaseController):
                             #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
                         else:
+                            log.info("returning %s"%loginURL)
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnTo':loginURL})
+
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'

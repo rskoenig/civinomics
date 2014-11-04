@@ -78,7 +78,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.objType = 'initiatives';
     //$scope.objType = 'workshops';
     if(action === 'splash'){
-        $scope.orderProp = '-voteCount';
+        $scope.orderProp = '-date';
     } else {
         $scope.orderProp = '-date';
     }

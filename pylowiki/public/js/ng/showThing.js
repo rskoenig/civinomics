@@ -5,11 +5,20 @@ function showThingCtrl($scope, $http, $location, $anchorScroll) {
             $scope.initiativeTitle = '';
         }
     };
-
+    
     $scope.scrollTo = function(id) {
       $location.hash(id);
       $anchorScroll();
    	}
+
+   	$scope.location = $location.absUrl()
+   	// need to get to the bottom of why angular is injecting a '/' at the end of the url this hack works in the meantime...
+	var splitLocation = $scope.location.split("#")
+	if (splitLocation.length > 1) {
+		$scope.hash = splitLocation[1]
+		$scope.hash = $scope.hash.replace('/', '')
+		$scope.scrollTo($scope.hash)
+	};
 
     $scope.getUrl = '/' + $scope.objType + '/' + $scope.thingCode + '/' + $scope.thingUrl + '/json';
 

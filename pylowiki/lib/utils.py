@@ -92,6 +92,16 @@ def commentLinker(comment):
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/discussion/show/' + comment['discussionCode']
     elif 'discType' in comment and comment['discType'] == 'organization_position':
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/position/show/' + comment['discussionCode']
+    elif 'initiativeCode' in comment:
+        if 'resourceCode' in comment:
+            # this is a comment on a resource in an initiative
+            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/resource/' + comment['resourceCode'] + '/' + comment['parent_url']
+        elif comment['parent_url'] == comment['initiative_url']:
+            # this is an initiative
+            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/show'
+        elif comment['parent_url'] != comment['initiative_url']:
+            # this is a comment on an initiative update
+            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/updateShow/' + comment['discussionCode']
     elif 'workshopCode' in comment:
         if 'ideaCode' in comment:
             # /workshop/4OOt/civinomicon-transportation/idea/4PUI/explore-ferry-servic
@@ -103,16 +113,6 @@ def commentLinker(comment):
             # this is a discussion in a workshop
             # /workshop/4OOt/civinomicon-transportation/discussion/4SKj/no-fin
             itemLink = '/workshop/' + comment['workshopCode'] + '/' +  comment['workshop_url'] + '/discussion/' + comment['discussionCode'] + '/' + comment['parent_url']
-    elif 'initiativeCode' in comment:
-        if 'resourceCode' in comment:
-            # this is a comment on a resource in an initiative
-            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/resource/' + comment['resourceCode'] + '/' + comment['parent_url']
-        elif comment['parent_url'] == comment['initiative_url']:
-            # this is an initiative
-            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/show'
-        elif comment['parent_url'] != comment['initiative_url']:
-            # this is a comment on an initiative update
-            itemLink = '/initiative/' + comment['initiativeCode'] + '/' +  comment['initiative_url'] + '/updateShow/' + comment['discussionCode']
     elif 'photoCode' in comment:
         # this is a comment on a photo
         itemLink = '/profile/' + comment['profileCode'] + '/' + comment['profile_url']  + '/photo/show/' + comment['photoCode']

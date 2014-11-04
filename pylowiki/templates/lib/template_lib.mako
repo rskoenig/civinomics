@@ -286,21 +286,21 @@
     </div><!-- kludge for case of missing close div tag -->
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer rounded well">
-                <div class="col-sm-8 no-left">
+            <div class="row">
+                <div class="col-sm-12 text-right" style="padding-top:40px">
                     <ul class="horizontal-list">
-                        <li><a class="green green-hover" href="/corp/about">About</a></li> 
-                        <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
-                        <li><a class="green green-hover" href="/corp/polling">Polling</a></li>
-                        <li><a class="green green-hover" href="/corp/contact">Contact</a></li>
-                        <li><a class="green green-hover" href="/corp/terms">Terms</a></li>
-                        <li><a class="green green-hover" href="/help">Help</a></li>
-                        <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
+                        <li><a class="grey" href="/corp/about">About</a></li> 
+                        <li><a class="grey" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a class="grey" href="/corp/polling">Polling</a></li>
+                        <li><a class="grey" href="/corp/contact">Contact</a></li>
+                        <li><a class="grey" href="/corp/terms">Terms</a></li>
+                        <li><a class="grey" href="/help">Help</a></li>
+                        <li><a class="grey" href="#" id="footerFeedbackButton">Feedback</a></li>
+                        <li class="grey">
+                            © 2014 Civinomics
+                        </li>
                     </ul>
-                </div><!-- col-sm-8 -->
-                <div class="span pull-right">
-                  © 2014 Civinomics
-                </div><!-- span pull-right -->
+                </div><!-- div text-right -->
             </div><!-- row footer well -->
         </div><!-- footerContainer -->
     </div><!-- baseTemplate_footer -->
@@ -431,6 +431,7 @@
             <h2 ng-show="showTitle == 'sTitle'" class="no-top centered" ng-cloak>Sign up</h2>
             <h2 ng-show="showTitle == 'lTitle'" class="no-top centered" ng-cloak>Log in</h2>
             <h2 ng-show="showTitle == 'pTitle'" class="no-top centered" ng-cloak>Forgot Password</h2>
+            <hr>
         % endif
         ${fields_alert()}
         % if c.splashMsg:
@@ -499,9 +500,17 @@
                     <input class="form-control" type="password" name="password" id="passphrase" ng-model= "user.password" required>
                 </div>
             </div>
+            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
+                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
-                <div class="col-sm-8">
+                <div class="col-xs-12 col-sm-8">
                     <label class="radio">
                         <input type="radio" name="memberType" id="memberType1" ng-model="user.memberType" value="professional" checked>
                         Individual <span class="light">(vote, suggest new ideas)</span>
@@ -510,14 +519,6 @@
                         <input type="radio" name="memberType" id="memberType2" ng-model="user.memberType" value="organization">
                         Organization <span class="light">(take positions, have members)</span>
                     </label>
-                </div>
-            </div>
-            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
-                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
-                <div class="col-sm-4">
-                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
-                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
-                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
                 </div>
             </div>
             <div class="form-group">
@@ -554,7 +555,7 @@
             <label class="col-sm-3  control-label" for="passphrase"> Password: </label>
             <div class="col-sm-8">
                 <input class="form-control" type="password" ng-model="user.password" id="password"><br>
-                <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
+                
             </div>
         </div>
         <div class="form-group">
@@ -563,27 +564,41 @@
             </div>
         </div>
     </form>
+    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a></p>
     <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
 </%def>
 
 <%def name="forgotPassword()">
-    <div class="row-fluid">
-        <div class="span8 offset2">
-            <p class="centered">Enter your email and click 'Reset Password.' Then check your inbox for your new password.</p>
-        </div>
+    <div class="row">
+        <div class="col-sm-11">
+            <p class="centered">Enter your email and click 'Reset Password.'</p>
+            <p class="centered">Your new password will be emailed to you.</p>
+        </div><!-- col-sm-11 -->
+    </div><!-- row -->
     <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
-        <div class="control-group">
-            <label class="control-label" for="email"> Email: </label>
-            <div class="controls">
-                <input type="email" name="email" id="email"><br>
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="control-group centered">
+                    <div class="controls">
+                        <strong>Email: </strong><input type="email" name="email" id="email"><br>
+                    </div><!-- controls -->
+                </div><!-- control-group -->
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="control-group centered spacer">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-success"> Reset Password </button>
+                    </div><!-- controls -->
+                </div><!-- control-group -->
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-sm-11 centered">
                 <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-success"> Reset Password </button>
-            </div>
-        </div>
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
     </form>
 </%def>
 
@@ -619,6 +634,7 @@
                 <div class="modal-body">
                     ${tabbableSignupLogin()}
                 </div>
+                <!--
                 <div class="modal-footer">
                     <div class="row centered tcs">
                       <div class="col-sm-10 col-sm-offset-1">
@@ -626,6 +642,7 @@
                       </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>
