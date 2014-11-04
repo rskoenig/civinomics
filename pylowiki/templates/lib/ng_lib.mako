@@ -935,28 +935,28 @@
     %>
     % if readonly == "1":
         <a class="upVote {{voted}}">
-            <i class="glyphicon glyphicon-chevron-up {{voted}}"></i>
+            <span class="glyphicon glyphicon-chevron-up {{voted}}"></span>
         </a>
         <span class="centered chevron-score"> {{netVotes}} </span>
         <a class="downVote {{voted}}">
-            <i class="glyphicon glyphicon-chevron-down {{voted}}"></i>
+            <span class="glyphicon glyphicon-chevron-down {{voted}}"></span>
         </a>
         <small>Voting Closed</small>
     % elif 'user' in session:
         <a ng-click="updateYesVote()" class="upVote {{voted}}">
-            <i class="glyphicon glyphicon-chevron-up {{voted}}"></i>
+            <span class="glyphicon glyphicon-chevron-up {{voted}}"></span>
         </a>
         <span class="centered chevron-score"> {{netVotes}} </span>
         <a ng-click="updateNoVote()" class="downVote {{voted}}">
-            <i class="glyphicon glyphicon-chevron-down {{voted}}"></i>
+            <span class="glyphicon glyphicon-chevron-down {{voted}}"></span>
         </a>
     % else:
         <a href="#signupLoginModal" data-toggle="modal" class="upVote">
-            <i class="glyphicon glyphicon-chevron-up"></i>
+            <span class="glyphicon glyphicon-chevron-up"></span>
         </a>
         <span class="centered chevron-score"> {{netVotes}} </span>
         <a href="#signupLoginModal" data-toggle="modal" class="downVote">
-            <i class="iglyphicon glyphicon-chevron-down"></i>
+            <span class="glyphicon glyphicon-chevron-down"></span>
         </a>
     % endif
     </div>
