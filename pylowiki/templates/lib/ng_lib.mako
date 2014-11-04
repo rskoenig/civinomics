@@ -1624,7 +1624,7 @@
                 % if c.authuser:
                     ${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}
                 % else:
-                    <img src="/images/hamilton.png" class="media-object avatar topbar-avatar">
+                    <img src="/images/hamilton.png" class="media-object avatar small-avatar">
                 % endif
             </td>
             <td style="padding: 10px 0px;">
