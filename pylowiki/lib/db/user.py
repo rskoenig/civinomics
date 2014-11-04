@@ -86,11 +86,7 @@ def getUserByEmail(email, disabled = '0'):
         return False
 
 def getUserByFacebookAuthId( userid ):
-    log.info("getUserByFacebookAuthId: " + userid)
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
-    except:
-        return False
+    return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).all()
 
 def getUserByTwitterId( twitterid ):
     try:
@@ -400,11 +396,11 @@ class User(object):
         u['activationHash'] = hash
         commit(u)
         Revision(u, u)
+        toEmail = u['email']
         if noSendEmail == 1:
             log.info("Successful account creation (ext auth activated) for %s" %toEmail)
             return
         
-        toEmail = u['email']
         frEmail = c.conf['activation.email']
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
