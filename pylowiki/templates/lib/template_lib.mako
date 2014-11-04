@@ -332,12 +332,21 @@
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         
                     </ul>
+                    
+                    <ul class="horizontal-list display-xs">
+                        <li><a href="/corp/contact">Contact</a></li>
+                        <li><a href="/corp/terms">Terms</a></li>
+                        <li><a href="/corp/privacy">Privacy</a></li>
+                        <li>© 2014 Civinomics, Inc. </li>
+                    </ul>
+
+
                 </div>
-                <div class="col-sm-2 centered">
+                <div class="col-sm-2 centered brand-bottom">
                     <img src="/images/logo_white_simple.png">
                 </div>
                 <div class="col-sm-5">
-                    <ul class="horizontal-list">
+                    <ul class="horizontal-list hidden-xs">
                         <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>

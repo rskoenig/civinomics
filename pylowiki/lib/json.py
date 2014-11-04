@@ -312,35 +312,40 @@ def getJsonProperties(item):
         entry['numComments'] = item['numComments']
 
 
-    # hack to show initiative authors/coauthors better to add featured author data to the object
-    if item['user_name'] == 'Civinomics Facilitator' and item.objType == 'initiative':
-        coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
-        if len(coAuthors) != 0:
-            f = coAuthors[0]
-            author = userLib.getUserByID(f.owner)
-            entry['authorName'] = author['name']
-            entry['authorPhoto'] = utils._userImageSource(author)
-            entry['authorCode'] = author['urlCode']
-            entry['authorURL'] = author['url']
-            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-        else:
-            entry['authorName'] = item['user_name']
-            if 'user_avatar' in item:
-                entry['authorPhoto'] = item['user_avatar']
-            else:
-                entry['authorPhoto'] = '/images/hamilton.png'
-            entry['authorCode'] = item['userCode']
-            entry['authorURL'] = item['user_url']
-            entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
-    else:
-        entry['authorName'] = item['user_name']
-        if 'user_avatar' in item:
-            entry['authorPhoto'] = item['user_avatar']
-        else:
-            entry['authorPhoto'] = '/images/hamilton.png'
+    if 'user_name' in item:
+        entry['authorName'] = item['user_name']    
         entry['authorCode'] = item['userCode']
         entry['authorURL'] = item['user_url']
         entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+        entry['authorPhoto'] = item['user_avatar']
+
+        #hack to show initiative authors/coauthors
+        # better to add featured author data to the object
+        if item['user_name'] == 'Civinomics Facilitator':
+            coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
+            if len(coAuthors) != 0:
+                f = coAuthors[0]
+                author = userLib.getUserByID(f.owner)
+                entry['authorName'] = author['name']
+                entry['authorPhoto'] = utils._userImageSource(author)
+                entry['authorCode'] = author['urlCode']
+                entry['authorURL'] = author['url']
+                entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+            else:
+                author = userLib.getUserByID(item.owner)
+                entry['authorName'] = item['user_name']
+                entry['authorPhoto'] = item['user_avatar']
+                entry['authorCode'] = item['userCode']
+                entry['authorURL'] = item['user_url']
+                entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+    else:
+        author = userLib.getUserByID(item.owner)
+        entry['authorName'] = author['name']
+        entry['authorPhoto'] = utils._userImageSource(author)
+        entry['authorCode'] = author['urlCode']
+        entry['authorURL'] = author['url']
+        entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
 
     # special case for meetings
@@ -455,36 +460,44 @@ def getJsonInitiativesShort(item):
     if 'numComments' in item:
         entry['numComments'] = item['numComments']
     
-    #hack to show initiative authors/coauthors
-    # better to add featured author data to the object
-    if item['user_name'] == 'Civinomics Facilitator':
-        coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
-        if len(coAuthors) != 0:
-            f = coAuthors[0]
-            author = userLib.getUserByID(f.owner)
-            entry['authorName'] = author['name']
-            entry['authorPhoto'] = utils._userImageSource(author)
-            entry['authorCode'] = author['urlCode']
-            entry['authorURL'] = author['url']
-            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-        else:
-            entry['authorName'] = item['user_name']
-            if 'user_avatar' in item:
-                entry['authorPhoto'] = item['user_avatar']
-            else:
-                entry['authorPhoto'] = '/images/hamilton.png'
-            entry['authorCode'] = item['userCode']
-            entry['authorURL'] = item['user_url']
-            entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
-    else:
-        entry['authorName'] = item['user_name']
-        if 'user_avatar' in item:
-            entry['authorPhoto'] = item['user_avatar']
-        else:
-            entry['authorPhoto'] = '/images/hamilton.png'
+
+
+    if 'user_name' in item:
+        entry['authorName'] = item['user_name']    
         entry['authorCode'] = item['userCode']
         entry['authorURL'] = item['user_url']
         entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+        entry['authorPhoto'] = item['user_avatar']
+
+        #hack to show initiative authors/coauthors
+        # better to add featured author data to the object
+        if item['user_name'] == 'Civinomics Facilitator':
+            coAuthors = facilitatorLib.getFacilitatorsByInitiative(item)
+            if len(coAuthors) != 0:
+                f = coAuthors[0]
+                author = userLib.getUserByID(f.owner)
+                entry['authorName'] = author['name']
+                entry['authorPhoto'] = utils._userImageSource(author)
+                entry['authorCode'] = author['urlCode']
+                entry['authorURL'] = author['url']
+                entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+            else:
+                author = userLib.getUserByID(item.owner)
+                entry['authorName'] = item['user_name']
+                entry['authorPhoto'] = item['user_avatar']
+                entry['authorCode'] = item['userCode']
+                entry['authorURL'] = item['user_url']
+                entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
+    else:
+        author = userLib.getUserByID(item.owner)
+        entry['authorName'] = author['name']
+        entry['authorPhoto'] = utils._userImageSource(author)
+        entry['authorCode'] = author['urlCode']
+        entry['authorURL'] = author['url']
+        entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+
+        
 
     #Subcategory tags
     if 'subcategory_tags' in item:
