@@ -4,14 +4,10 @@
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/liberty.jpg' alt="">
-</div>
 <div class="login">
-  <div class="container">
+  <div class="container login-container">
       <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well login">
+          <div class="col-sm-6 col-sm-offset-3 well well-login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -20,14 +16,15 @@
                       </div>
                   % endif
                   <div class="login-top">
-                      <h2> Logging In </h2>
+                      <h2 class="centered no-top"> Logging In </h2>
+                      <hr>
                   </div>
                   <div class="login-body">
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
                           <div id="fbLoggingIn">
-                            <p>Thank you, we are now logging you in using your Facebook identity.</p>
+                            <p>Thank you. We are now logging you in using your Facebook identity...</p>
                           </div>
                       % endif
                   </div>
@@ -39,7 +36,6 @@
                       
                   </div>
               </div><!-- main-well -->
-          </div><!-- sapn6 -->
       </div><!-- row -->
   </div><!-- container -->
 </div><!-- login -->

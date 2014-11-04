@@ -96,7 +96,7 @@ class LoginController(BaseController):
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         # callback url is set in the app on twitter, otherwise it can be set in this call
-        auth = twitter.get_authentication_tokens(force_login=True)
+        auth = twitter.get_authentication_tokens(force_login=False)
 
         # From the auth variable, save the oauth_token and oauth_token_secret for later use 
         # (these are not the final auth tokens).
@@ -111,7 +111,7 @@ class LoginController(BaseController):
         log.info("twythonLogin2")
         # The callback from twitter will include a verifier as a parameter in the URL.
         # The final step is exchanging the request token for an access token. The access 
-        # token is the “key” for opening the Twitter API
+        # token is the â€œkeyâ€ for opening the Twitter API
         #oauth_verifier = request.GET['oauth_verifier']
 
         oauth_verifier = request.params['oauth_verifier']
@@ -206,6 +206,18 @@ class LoginController(BaseController):
             
         if email:
             log.info("fbAuthCheckEmail email is %s"%email)
+        
+        if utils.badEmail(email):
+             # simple is best, this next line is what was here
+             # if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+             # invalid email, could be the 'undefined' case
+             # we'll make a unique email for this user
+             if 'facebookAuthId' in session:
+                 email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                 log.info("created email %s"%email)
+             else:
+                 email = "%s@%s.com"%(facebookAuthId,facebookAuthId)
+                 log.info("created email %s"%email)
         
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
