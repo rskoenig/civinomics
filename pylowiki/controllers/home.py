@@ -95,7 +95,7 @@ class HomeController(BaseController):
         limit = int(limit)
         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
 
-        interestedInitiatives = initiativeLib.getInitiatives(interestedInitiativeCodes)
+        interestedInitiatives = initiativeLib.getInitiatives(list(set(interestedInitiativeCodes)))
 #         for code in interestedInitiativeCodes:
 #             #log.info('%s' % code)
 #             i = initiativeLib.getInitiative(code)
