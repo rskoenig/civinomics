@@ -653,31 +653,34 @@
       % endif
 
     </form>
+    <div class="row">
+      <div class="col-xs-12">
+        <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | filter:query3:strict | filter:query4:strict | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
+          <tr>
+            <td ng-if="item.objType == 'initiative'">
+              ${ng_helpers.general_listing_yesno_condensed()}
+            </td>
 
-    <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | filter:query3:strict | filter:query4:strict | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
-      <tr>
-        <td ng-if="item.objType == 'initiative'">
-          ${ng_helpers.general_listing_yesno_condensed()}
-        </td>
+            <td ng-if="item.objType == 'idea'">
+              ${ng_helpers.idea_listing()}
+            </td>
 
-        <td ng-if="item.objType == 'idea'">
-          ${ng_helpers.idea_listing()}
-        </td>
+            <td ng-if="item.objType == 'resource'">
+              ${ng_helpers.resource_listing()}
+            </td>
 
-        <td ng-if="item.objType == 'resource'">
-          ${ng_helpers.resource_listing()}
-        </td>
+            <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+              ${ng_helpers.discussion_listing()}
+            </td>
 
-        <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
-          ${ng_helpers.discussion_listing()}
-        </td>
+            <td ng-if="item.objType == 'photo'">
+              ${ng_helpers.photo_listing()}
+            </td>
 
-        <td ng-if="item.objType == 'photo'">
-          ${ng_helpers.photo_listing()}
-        </td>
-
-      </tr>
-    </table>
+          </tr>
+        </table>
+      </div>
+    </div>
 
     <div class="row centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
       <div class="col-xs-12">
