@@ -95,11 +95,11 @@ class HomeController(BaseController):
         limit = int(limit)
         interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
 
-        interestedInitiatives = []
-        for code in interestedInitiativeCodes:
-            #log.info('%s' % code)
-            i = initiativeLib.getInitiative(code)
-            interestedInitiatives.append(i)
+        interestedInitiatives = initiativeLib.getInitiatives(interestedInitiativeCodes)
+#         for code in interestedInitiativeCodes:
+#             #log.info('%s' % code)
+#             i = initiativeLib.getInitiative(code)
+#             interestedInitiatives.append(i)
 
         if len(interestedInitiatives) == 0:
             return json.dumps({'statusCode':1})
