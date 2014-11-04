@@ -837,11 +837,11 @@ div.unread-message:hover {
 
 
 @media (max-width: 767px){
-  .horizontal-list, .horizontal-list.iconListing{
+  .actions.checkbox .horizontal-list, .horizontal-list.iconListing{
     width:100%;
     padding-left: 0;
   }
-  .horizontal-list.iconListing li{
+  .actions.checkbox .horizontal-list.iconListing li{
     width:48%;
     margin-right: 0;
     display: inline-block;
@@ -849,7 +849,9 @@ div.unread-message:hover {
 
 }
 
-
+.actions-container{
+  padding: 0 15px;
+}
 
 .horizontal-list.iconListing .btn{
   margin-bottom: 0;
@@ -3847,7 +3849,7 @@ table.table-inline{
   padding-top: 10px;
 }
 .comment-avatar-cell img{
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .comment-type .radio.inline{
@@ -3869,7 +3871,6 @@ table.table-inline{
 }
 
 .comment-vote{
-  padding-top: 10px;
   float: right;
 }
 

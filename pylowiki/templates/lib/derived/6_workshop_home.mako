@@ -636,7 +636,7 @@
     </div>
 
     <form class="form-horizontal">
-      <div class="col-sm-4" style="padding-left:0; padding-right: 0; margin-bottom: 5px;">
+      <div class="col-sm-5" style="padding-left:0; padding-right: 0; margin-bottom: 5px;">
         <input ng-model="query3" class="form-control" placeholder="Search">
       </div>
 
