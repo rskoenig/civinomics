@@ -355,7 +355,7 @@ class RegisterController(BaseController):
                     return redirect(returnPage)
                 else:
                     log.info("c.w no")
-                    returnPage = "/home"
+                    returnPage = "/home" 
                     user['laston'] = time.time()
                     # not a guest, just a new twitter signup.
                     # add twitter userid to user
