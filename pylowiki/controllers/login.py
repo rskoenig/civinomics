@@ -111,7 +111,7 @@ class LoginController(BaseController):
         log.info("twythonLogin2")
         # The callback from twitter will include a verifier as a parameter in the URL.
         # The final step is exchanging the request token for an access token. The access 
-        # token is the â€œkeyâ€ for opening the Twitter API
+        # token is the “key” for opening the Twitter API
         #oauth_verifier = request.GET['oauth_verifier']
 
         oauth_verifier = request.params['oauth_verifier']
@@ -218,7 +218,6 @@ class LoginController(BaseController):
              else:
                  email = "%s@%s.com"%(facebookAuthId,facebookAuthId)
                  log.info("created email %s"%email)
-        
 
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
         # ajax it over here
@@ -242,7 +241,8 @@ class LoginController(BaseController):
         else:
             if user:
                 log.info("found user by facebook id")
-
+        
+        log.info("Data is: %s %s %s %s %s %s", facebookAuthId, email, access, name, bigPic, smallPic)
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
@@ -272,7 +272,10 @@ class LoginController(BaseController):
         splashMsg['title'] = 'Error'
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
-        #if 'fbAccessToken' in session and 'fbEmail' in session:
+        if 'fbAccessToken' not in session and 'fbEmail' not in session and 'facebookAuthId' not in session:
+            splashMsg['content'] = "Something went wrong, please try logging in again."
+            return redirect("login/")
+            
         facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
