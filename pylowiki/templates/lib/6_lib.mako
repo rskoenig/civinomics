@@ -1130,6 +1130,8 @@
             parentBase = 'profile'
         elif dparent.objType.replace("Unpublished", "") == 'initiative':
             parentBase = 'initiative'
+        else:
+            parentBase = dparent.objType.replace("Unpublished", "")
             
         if 'noHref' in kwargs:
             linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
@@ -1967,6 +1969,8 @@
                                         dparent = c.initiative
                                     elif c.user:
                                         dparent = c.user
+                                    elif c.thing:
+                                        dparent = c.thing
                                     else:
                                         dparent = None
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 

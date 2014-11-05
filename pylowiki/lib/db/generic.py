@@ -206,9 +206,10 @@ def setReadOnly(thing, value = '1'):
     thing['readOnly'] = value
     commit(thing)
     children = getChildrenOfParent(thing)
-    for child in children:
-        child['readOnly'] = value
-        commit(child)
+    if children:
+        for child in children:
+            child['readOnly'] = value
+            commit(child)
 
         
 def getThingByID(thingID):
