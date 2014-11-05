@@ -39,11 +39,13 @@ def getBinaryRatingForThing(user, thing):
 def getCriteriaRatingForThingUser(user, thing, criteria):
     try:
         thingCode = '%sCode' % thing.objType
+        log.info(Thing)
         q = meta.Session.query(Thing)\
             .filter_by(objType = 'rating')\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('criteria', criteria)))\
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
+        log.info(q)
         return q
     except:
         return False
