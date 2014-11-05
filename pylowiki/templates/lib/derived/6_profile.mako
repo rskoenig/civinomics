@@ -942,9 +942,10 @@
                 <div class="col-xs-12">
                     <span class="profile-dash-button pull-right">
                         % if c.authuser:
-                            % if c.user['email'] == c.authuser['email']:
+                            % if c.user['email'] == c.authuser['email'] or c.isAdmin == True:
                                 <a class="btn btn-default" href="/profile/${c.user['urlCode']}/${c.user['url']}/edit"><strong>Edit Profile</strong></a>
-                            % else:
+                            % endif
+                            % if c.user['email'] != c.authuser['email']:
                                 ${followButton(c.user)}
                             % endif
                         % endif
