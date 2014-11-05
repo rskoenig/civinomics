@@ -115,7 +115,7 @@
 </%def>
 
 <%def name="general_listing_yesno_condensed()">
-    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal">
+    <div class="media well search-listing {{item.status}}" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; objType=item.objType; goal=item.goal; condensed = true;">
         <div ng-controller="yesNoVoteCtrl" id="{{item.url}}"> 
             <div class="row" ng-if="item.thumbnail && item.thumbnail!='0'">
                 <div class="col-xs-2 col-sm-1">
@@ -158,46 +158,64 @@
                             <div ng-switch="item.parentObjType" ng-cloak>
                                 <div ng-switch-when="workshop" ng-controller="ratingsController">
                                     {{getCriteriaList(item.parentHref, item.urlCode)}}
-                                    <div class="panel-heading">
-                                        <ul class="horizontal-list iconListing">
-                                            <li ng-show="!ratingComplete" ng-cloak>
-                                                <a class="orange" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
-                                                    <span class="glyphicon glyphicon-unchecked"></span>
-                                                    Rate
-                                                </a>
-                                            </li>
-                                            <li class="med-green" ng-show="ratingComplete" ng-cloak>
-                                                <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
-                                                    <span class="glyphicon glyphicon-check"></span>
-                                                    Rated
-                                                </a>
-                                            </li>
-                                            <li ng-show="!(item.userCommented || commented)">
-                                                <a class="orange" ng-click="toggleNewComment()">
-                                                    <span class="glyphicon glyphicon-unchecked left-space"></span>
-                                                    Comment
-                                                </a>
-                                            </li>
-                                            <li ng-show="item.userCommented || commented">
-                                                <a ng-click="getComments()" class="med-green">
-                                                    <span class="glyphicon glyphicon-check"></span>
-                                                    Commented
-                                                </a>
-                                            </li>
-                                            <li class="grey hidden-xs">
-                                                |
-                                            </li>
-
-                                            <li>
-                                                <a class="grey" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
-                                            </li>
-                                            <li>
-                                                <a class="grey" ng-click="getComments()">Total Comments ({{numComments}})</a>
-                                            </li>
-                                        </ul>
-                                    </div><!-- icon-container -->
 
                                     <div ng-switch="rating.type">
+                                        <div class="panel-heading">
+                                            <ul class="horizontal-list iconListing">
+                                                <li ng-switch-when="yesno" ng-show="!voted">
+                                                    <a class="orange" ng-click="toggleVoting()">
+                                                        <span class="glyphicon glyphicon-unchecked"></span>
+                                                        Vote
+                                                    </a>
+                                                </li>
+                                                <li class="med-green" ng-switch-when="yesno" ng-show="voted" ng-cloak>
+                                                    <a class="med-green" ng-click="toggleVoting()">
+                                                        <span class="glyphicon glyphicon-check"></span>
+                                                        Voted
+                                                    </a>
+                                                </li>
+                                                <li ng-switch-when="criteria" ng-show="!ratingComplete" ng-cloak>
+                                                    <a class="orange" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                        <span class="glyphicon glyphicon-unchecked"></span>
+                                                        Rate
+                                                    </a>
+                                                </li>
+                                                <li class="med-green" ng-switch-when="criteria" ng-show="ratingComplete" ng-cloak>
+                                                    <a class="med-green" data-toggle="collapse" data-parent="#accordion" href="#rate{{item.url}}" ng-click="changeShowMyRatings()">
+                                                        <span class="glyphicon glyphicon-check"></span>
+                                                        Rated
+                                                    </a>
+                                                </li>
+                                                <li ng-show="!(item.userCommented || commented)">
+                                                    <a class="orange" ng-click="toggleNewComment()">
+                                                        <span class="glyphicon glyphicon-unchecked left-space"></span>
+                                                        Comment
+                                                    </a>
+                                                </li>
+                                                <li ng-show="item.userCommented || commented">
+                                                    <a ng-click="getComments()" class="med-green">
+                                                        <span class="glyphicon glyphicon-check"></span>
+                                                        Commented
+                                                    </a>
+                                                </li>
+                                                <li class="grey hidden-xs">
+                                                    |
+                                                </li>
+                                                <li ng-switch-when="yesno">
+                                                    <a class="grey" ng-click="toggleVoting()">
+                                                        Total Votes ({{totalVotes}})
+                                                    </a>
+                                                </li>
+                                                <li ng-switch-when="criteria">
+                                                    <a class="grey" ng-click="changeShowAverage()">Total Ratings ({{rating.criteriaList[1].numVotes}})</a>
+                                                </li>
+                                                <li>
+                                                    <a class="grey" ng-click="getComments()">Total Comments ({{numComments}})</a>
+                                                </li>
+                                            </ul>
+                                        </div><!-- icon-container -->
+
+                                    
                                         <div ng-switch-when="criteria">
                                             <div ng-show="showRatingPanel">
                                                 %if 'user' in session:
@@ -213,7 +231,7 @@
                                                 %endif
                                             </div>
                                         </div><!-- close criteria inner-->
-                                        <div ng-switch-when="yesno">
+                                        <div ng-switch-when="yesno" ng-show="showVotes">
                                             <span ng-if="item.readOnly == '1'">
                                                 ${yesNoVoteFooter(readonly = "1")}
                                             </span>
@@ -226,7 +244,7 @@
                                         </div> <!-- close default inner-->
                                     </div><!-- close switch rating-type -->
                                 </div><!-- close ng-switch when workshop-->
-                                <div ng-switch-default>
+                                <div ng-switch-default ng-show="showVotes">
                                     <span ng-if="item.readOnly == '1'">
                                         ${yesNoVoteFooter(readonly = "1")}
                                     </span>
@@ -235,7 +253,7 @@
                                         ${yesNoVoteFooter(readonly = "0")}
                                     </span>
                                 </div> <!-- close default outer-->
-                            </div><!-- ng-switch -->
+                            </div><!-- ng-switch parent-obj-type -->
                         % endif
 
                         <div ng-show="showNewComment" style="padding-bottom: 19px;">
@@ -866,8 +884,8 @@
                 -->
                 <div class="col-sm-12">
                     <small class="grey">
-                        {{totalVotes}} votes<span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> </span>
-                        <span ng-if="voted || item.readOnly == '1'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+                        <span ng-if="!condensed">{{totalVotes}} votes<span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> </span> </span>
+                        <span ng-if="voted || item.readOnly == '1'"><span ng-if="!condensed">| </span><span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
                     </small>
                 </div>
             </div>
