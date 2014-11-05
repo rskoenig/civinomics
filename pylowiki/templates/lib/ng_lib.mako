@@ -66,33 +66,33 @@
                 % if not c.authuser or c.authuser['memberType'] != 'organization':
                         <div ng-switch="item.parentObjType" ng-cloak>
                             <div ng-switch-when="workshop" ng-controller="ratingsController">
-                                        {{getCriteriaList(item.parentHref, item.urlCode)}}
-                                        <div ng-switch="rating.type">
-                                            <div ng-switch-when="criteria">
-                                                %if 'user' in session:
-                                                 ${rateCriteria()}
-                                                 <div ng-if="hasVoted">
-                                                    <div ng-show="demographics.required != ''" ng-controller="demographicsController">
-                                                        {{checkDemographics(item.parentHref)}}
-                                                        ${demographics()}
-                                                    </div>
-                                                </div>
-                                                 %else:
-                                                 ${rateCriteria(readOnly = "1")}
-                                                 %endif
-                                            </div><!-- close criteria inner-->
-                                            <div ng-switch-when="yesno">
-                                                <span ng-if="item.readOnly == '1'">
-                                                    ${yesNoVoteFooter(readonly = "1")}
-                                                </span>
-                                                <span ng-if="item.readOnly == '0'">
-                                                    ${yesNoVoteFooter(readonly = "0")}
-                                                </span>
-                                            </div> <!-- close yesno inner-->
-                                            <div ng-switch-default>
-        
-                                            </div> <!-- close default inner-->
-                                        </div> <!-- close switch inner-->
+                                {{getCriteriaList(item.parentHref, item.urlCode)}}
+                                <div ng-switch="rating.type">
+                                    <div ng-switch-when="criteria">
+                                        %if 'user' in session:
+                                         ${rateCriteria()}
+                                         <div ng-if="hasVoted">
+                                            <div ng-show="demographics.required != ''" ng-controller="demographicsController">
+                                                {{checkDemographics(item.parentHref)}}
+                                                ${demographics()}
+                                            </div>
+                                        </div>
+                                         %else:
+                                         ${rateCriteria(readOnly = "1")}
+                                         %endif
+                                    </div><!-- close criteria inner-->
+                                    <div ng-switch-when="yesno">
+                                        <span ng-if="item.readOnly == '1'">
+                                            ${yesNoVoteFooter(readonly = "1")}
+                                        </span>
+                                        <span ng-if="item.readOnly == '0'">
+                                            ${yesNoVoteFooter(readonly = "0")}
+                                        </span>
+                                    </div> <!-- close yesno inner-->
+                                    <div ng-switch-default>
+
+                                    </div> <!-- close default inner-->
+                                </div> <!-- close switch inner-->
                             </div><!-- close when outer-->
                             <div ng-switch-default>
                                         <span ng-if="item.readOnly == '1'">

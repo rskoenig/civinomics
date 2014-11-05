@@ -67,7 +67,7 @@
     	
     	${lib_6.create(createClass = "well-green")}
     	
-	  	<div>
+	  	<div class="geo-activity">
 		  	<div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='4'>
 				<table ng-repeat="item in activity | filter: showConditionalType" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
 				<!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
@@ -153,6 +153,10 @@
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/geo_profile.js')}"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/create.js')}"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="headScripts2()">
+	<script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/criteria.js')}"></script>
 </%def>
 
 <%def name="extraScripts()">
