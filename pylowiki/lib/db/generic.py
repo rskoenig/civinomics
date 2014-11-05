@@ -177,7 +177,6 @@ def getChildrenOfParent(parent):
     try:
         return meta.Session.query(Thing)\
             .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
-            .filter(Thing.objType.in_(activityTypes))\
             .all()
     except:
         return False
