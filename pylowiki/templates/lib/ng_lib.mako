@@ -153,7 +153,7 @@
             <div ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;"></div>
             <div ng-controller="commentsController">
                 <div class="row" style="min-height: 50px;">
-                    <div class="actions checkbox">
+                    <div class="actions">
                         % if not c.authuser or c.authuser['memberType'] != 'organization':
                             <div ng-switch="item.parentObjType" ng-cloak>
                                 <div ng-switch-when="workshop" ng-controller="ratingsController">
