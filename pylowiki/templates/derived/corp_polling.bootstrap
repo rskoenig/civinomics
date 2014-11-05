@@ -1,0 +1,24 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/lib/corp_lib.mako"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="mako" file="/lib/mako_lib.mako" />
+
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <h1>Polling</h1> 
+        <div id="caseStudyImage">
+            <div id="polling-hero" class="hero-unit picture-well">
+                <p class="lead">Leverage tablet computers to get input more dynamically than ever before.</p>
+		${mako.formatEmail("info@civinomics.com", "Request a quote", 5)}
+            </div>
+        </div>
+        <div>
+            <h4>Published Results</h4>
+			${helpers.list_results(c.reports)}
+		</div>
+    </div> <!-- /.row-fluid -->
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/email.js')}"></script>
+</%def>
