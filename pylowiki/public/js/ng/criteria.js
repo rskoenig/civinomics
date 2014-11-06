@@ -1,7 +1,6 @@
 var app = angular.module('civ');
 
 app.controller('ratingsController', function($scope, $http){
-
 	$scope.alert = {
 		message : '',
 		type: ''

@@ -118,7 +118,7 @@
                             <hr class="narrow">
                             <div class="row">
                                 <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
-                                 % if 'workshopCode' in c.initiative:
+                                    % if 'workshopCode' in c.initiative:
                                         <div ng-controller="ratingsController">
                                             {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
                                             <div ng-switch="rating.type">
@@ -143,16 +143,15 @@
                                                     </div>
                                                 </div> <!-- close yesno inner-->
                                                 <div ng-switch-default>
-                                                </div> <!-- close default inner-->
-                                            </div> <!-- close switch inner-->
-                                        %else:
-                                            <div ng-controller="yesNoVoteCtrl">
-                                                    ${ng_lib.yesNoVoteBlock()}
-                                            </div>
-                                        %endif
-                                    </div>
-                                </div>
-                            </div>
+                                            </div> <!-- close default inner-->
+                                        </div> <!-- close switch inner-->
+                                    %else:
+                                        <div ng-controller="yesNoVoteCtrl">
+                                            ${ng_lib.yesNoVoteBlock()}
+                                        </div>
+                                    %endif
+                                </div><!-- col-xs-12 -->
+                            </div><! -- row -->
                         % endif
                     <!--
                     <hr class="narrow">
