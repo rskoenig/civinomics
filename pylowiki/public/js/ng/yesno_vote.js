@@ -22,6 +22,18 @@ function yesNoVoteCtrl($scope) {
         $scope.voted = 'noVoted';
     }
 
+
+    if ($scope.condensed) {
+        $scope.showVotes = false
+    };  
+    $scope.toggleVoting = function(){
+        if ($scope.showVotes == false){
+            $scope.showVotes = true;
+        } else {
+            $scope.showVotes = false;
+        }
+    }
+
     $scope.updateYesVote = function(){
         $scope.hasVoted = true;
         if ($scope.voted == ''){

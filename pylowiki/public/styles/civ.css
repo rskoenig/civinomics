@@ -4174,7 +4174,7 @@ background-color: #d9534f;
 }
 
 @media (min-width: 768px){
-  .home-activity .criteria-col{
+  .home-activity .criteria-col, .geo-activity .criteria-col{
     width: 50%;
   }
 }

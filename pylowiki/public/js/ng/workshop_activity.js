@@ -187,7 +187,7 @@ function activityWorkshopController($scope, $http) {
 		};
 
 		$scope.orderProp = '';
-		$scope.thing = 'resource';
+		$scope.thing = 'Resource';
 		$scope.query = {objType:'Resource'};
 		$scope.query2 = '!disabled';
 		if ($scope.allowResources == '0') {
