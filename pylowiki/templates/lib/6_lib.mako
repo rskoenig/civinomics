@@ -1089,11 +1089,11 @@
 <%def name="discussionLink(d, p, **kwargs)">
     <%
         if 'workshopCode' in d and p != None:
-            log.info("It has a discussion code")
             if 'noHref' in kwargs:
                 discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
             else:
                 discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(p["urlCode"], p["url"], d["urlCode"], d["url"])
+            log.info("bout to comment link append")
             discussionStr += commentLinkAppender(**kwargs)
             if 'noHref' in kwargs:
                 discussionStr += ''

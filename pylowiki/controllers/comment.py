@@ -133,6 +133,11 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(payload['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
+            elif thing.objType == 'discussion':
+                discussion = thing
+                parentCommentID = 0
+                parentAuthor = userLib.getUserByID(discussion.owner)
+
             log.info(c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
@@ -273,7 +278,7 @@ class CommentController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
-        log.info(urlCode)
+        log.info("is this undefined? %s" %urlCode)
         for comment in comments:
             entry = {}
             entry['text'] = comment['data']
