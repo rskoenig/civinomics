@@ -14,6 +14,9 @@ function signupController($scope, $http) {
         chkTOS : 'true'
     };
     
+    $scope.returnTo = "";
+    $scope.backFromController = false;
+    
     $scope.alertMessage = ''
     
     $scope.clearEmail = function() {
@@ -49,7 +52,8 @@ function signupController($scope, $http) {
     	$http.post(signupUrl, $scope.user).success(function(data){   	
     	    console.log(data);
     	    if (data.statusCode == 0){
-                window.location.assign(data.returnTo);
+                $scope.returnTo = data.returnTo;
+				$scope.backFromController = true;
     	    }
 			else if (data.statusCode === 2){
                 $scope.alertMessage = data.message;
@@ -68,5 +72,9 @@ function signupController($scope, $http) {
                 $scope.alertMessage = data.message;
 			}
     	});
+	};
+	
+	$scope.goToUrl = function(url){
+    	window.location.assign(url);
 	};
 }

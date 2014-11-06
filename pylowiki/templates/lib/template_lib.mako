@@ -477,70 +477,80 @@
 </%def>
 
 <%def name="signupForm()">
-        <form id="sign_in" class="form-horizontal" ng-controller="signupController" name="signupForm" role="form" ng-submit="submitSignup()">
-            %if 'returnTo' in session: 
-                <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
-            %else:
-                <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
-            %endif
-            <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
-            <input type="hidden"  ng-model="user.country" value="United States">
-             
-            <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
-                <label class="col-sm-3 control-label" for="name"> Full name: </label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" name="name" id="name" ng-model="user.name" ng-pattern="fullNameRegex" required>
-                    <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+        <div ng-controller="signupController" ng-switch="backFromController">
+            <div ng-switch-when="false">
+            <form id="sign_in" class="form-horizontal" name="signupForm" role="form" ng-submit="submitSignup()">
+                
+                %if 'returnTo' in session: 
+                    <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
+                %else:
+                    <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+                %endif
+                <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
+                <input type="hidden"  ng-model="user.country" value="United States">
+                 
+                <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
+                    <label class="col-sm-3 control-label" for="name"> Full name: </label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" name="name" id="name" ng-model="user.name" ng-pattern="fullNameRegex" required>
+                        <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="email"> Email: </label>
-                <div class="col-sm-8">
-                    <input class="form-control" type="email" name="email" id="email" ng-model="user.email" required>
-                    <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="email"> Email: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="email" name="email" id="email" ng-model="user.email" required>
+                        <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
-                <div class="col-sm-8">
-                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "user.password" required>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="password" name="password" id="passphrase" ng-model= "user.password" required>
+                    </div>
                 </div>
-            </div>
-            <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
-                <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
-                <div class="col-sm-4">
-                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
-                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
-                    <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
+                <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
+                    <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
+                    <div class="col-sm-4">
+                        <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                        <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
+                        <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
-                <div class="col-xs-12 col-sm-8">
-                    <label class="radio">
-                        <input type="radio" name="memberType" id="memberType1" ng-model="user.memberType" value="professional" checked>
-                        Individual <span class="light">(vote, suggest new ideas)</span>
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="memberType" id="memberType2" ng-model="user.memberType" value="organization">
-                        Organization <span class="light">(take positions, have members)</span>
-                    </label>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <label class="radio">
+                            <input type="radio" name="memberType" id="memberType1" ng-model="user.memberType" value="professional" checked>
+                            Individual <span class="light">(vote, suggest new ideas)</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="memberType" id="memberType2" ng-model="user.memberType" value="organization">
+                            Organization <span class="light">(take positions, have members)</span>
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="terms">&nbsp;</label>
-                <div class="col-sm-8">
-                    <span id="terms">&nbsp;</span>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="terms">&nbsp;</label>
+                    <div class="col-sm-8">
+                        <span id="terms">&nbsp;</span>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group text-center">
-                <div class="col-sm-6 col-sm-offset-3">
-                    <button type="submit" name="submit" class="btn btn-success btn-block btn-lg">Sign up</button>
+                <div class="form-group text-center">
+                    <div class="col-sm-6 col-sm-offset-3">
+                        <button type="submit" name="submit" class="btn btn-success btn-block btn-lg">Sign up</button>
+                    </div>
                 </div>
+            </form>
+            <script src="/js/signup.js" type="text/javascript"></script>
+            <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
             </div>
-        </form>
-        <script src="/js/signup.js" type="text/javascript"></script>
-        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
+            <div ng-switch-when="true">
+                You have registered successfully. Your account isn't activated, so while you can continue navigating, you won't be able to comment or rate until you activate it.
+                
+                <button class="btn btn-success btn-block btn-lg" ng-click="goToUrl(returnTo)">Continue</button>
+            </div>
+        </div>
 </%def>
 
 <%def name="loginForm()">
