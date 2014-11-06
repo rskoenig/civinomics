@@ -92,18 +92,19 @@ class InitiativeController(BaseController):
 
         # only the author or an admin can edit 
         c.iPrivs = False
-        if 'workshop_subcategory_tags' in c.initiative and c.initiative['workshop_subcategory_tags'] is not None:
-            if 'subcategory_tags' in c.initiative and c.initiative['subcategory_tags'] is not None:
-                tempList = c.initiative['subcategory_tags'].split("|")
-                for tag in tempList:
-                    if tag not in c.initiative['workshop_subcategory_tags'].split("|"):
-                        tempList.remove(tag)
-                if len(tempList) == 0 :
-                    c.initiative['subcategory_tags'] = False
-                else:
-                    c.initiative['subcategory_tags'] = "|".join(tempList)
-        else:
-            log.info("Nope")
+        if c.initiative:
+            if 'workshop_subcategory_tags' in c.initiative and c.initiative['workshop_subcategory_tags'] is not None:
+                if 'subcategory_tags' in c.initiative and c.initiative['subcategory_tags'] is not None:
+                    tempList = c.initiative['subcategory_tags'].split("|")
+                    for tag in tempList:
+                        if tag not in c.initiative['workshop_subcategory_tags'].split("|"):
+                            tempList.remove(tag)
+                    if len(tempList) == 0 :
+                        c.initiative['subcategory_tags'] = False
+                    else:
+                        c.initiative['subcategory_tags'] = "|".join(tempList)
+            else:
+                log.info("Nope")
             
         facilitator = False
         f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)

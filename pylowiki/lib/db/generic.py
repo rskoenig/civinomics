@@ -177,7 +177,6 @@ def getChildrenOfParent(parent):
     try:
         return meta.Session.query(Thing)\
             .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
-            .filter(Thing.objType.in_(activityTypes))\
             .all()
     except:
         return False
@@ -206,9 +205,10 @@ def setReadOnly(thing, value = '1'):
     thing['readOnly'] = value
     commit(thing)
     children = getChildrenOfParent(thing)
-    for child in children:
-        child['readOnly'] = value
-        commit(child)
+    if children:
+        for child in children:
+            child['readOnly'] = value
+            commit(child)
 
         
 def getThingByID(thingID):
