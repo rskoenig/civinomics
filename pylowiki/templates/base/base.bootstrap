@@ -41,7 +41,7 @@
       <![endif]-->  
       <script type="text/javascript">
       $(document).ready(function() {
-        $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+        $("body").tooltip({ selector: '[data-toggle=tooltip]', trigger: 'click hover', container: 'body'});
         });     
         </script>    
     </head>
@@ -98,7 +98,7 @@
         %>
         <script type="text/javascript" src="/js/vendor/async.min.js"></script>
         <div id="fb-root"></div>
-      <!--  <script>
+        <script>
 
             // Load the SDK asynchronously
             (function(d, s, id) {
@@ -211,7 +211,7 @@
                         status     : true,
                         cookie     : true,  // enable cookies to allow the server to access the session
                         xfbml      : true,  // parse social plugins on this page
-                        version    : 'v2.0' // use version 2.0
+                        version    : 'v2.1' // use version 2.0
                     });
                     
                     FB.Event.subscribe('auth.login', login_event);
@@ -267,18 +267,15 @@
                 var result = '';
                 async.series([
                     function(callback) {
-                        FB.api(
-                          {
-                            method: 'fql.query',
-                            query: 'SELECT name, pic_square, pic_big FROM user WHERE uid=' + response.authResponse.userID 
-                          },
-                          function(apiResponse) {
-                            name = apiResponse[0].name;
-                            smallPic = apiResponse[0].pic_square;
-                            bigPic = apiResponse[0].pic_big;
+                        var query = '/fql?q={SELECT name, pic_square, pic_big FROM user WHERE uid=' + response.authResponse.userID + '}';
+                        FB.api('/me/', 'get', {fields: 'first_name, last_name, picture'}, function(apiResponse){
+            			    console.log(apiResponse);
+                            name = apiResponse.first_name + ' ' + apiResponse.last_name;
+                            console.log(apiResponse.picture.data.url);
+                            smallPic = apiResponse.picture.data.url;
+                            bigPic = apiResponse.picture.data.url;
                             callback();
-                          }
-                        );                    
+                        });                    
                     },
                     function(callback) {
                         // perform fbauthcheck now that the pic urls have been loaded
@@ -335,6 +332,7 @@
                 thePicFql.wait(function (rows) {
                   // the big pic link
                   thePic = rows[0].url;
+                  console.log(thePic);
                 });
                 callback(null, thePic);
             }
@@ -345,7 +343,7 @@
                 result = fbCheckAccount(response, authResponse, smallPic, bigPic);            
                 callback(null, result);
             }
-        </script> -->
+        </script>
     
     </body>
 </html>

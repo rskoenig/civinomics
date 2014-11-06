@@ -459,6 +459,8 @@
             dparent = c.w
         elif c.user:
             dparent = c.user
+        elif c.thing:
+            dparent = c.thing
 
         continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>

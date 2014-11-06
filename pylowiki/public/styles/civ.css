@@ -171,7 +171,7 @@ h5.h45, h4.h45{
 }
 
 .container{
-  margin-bottom:20px;
+  padding-bottom:20px;
 }
 
 @media(max-width: 1200px){
@@ -837,11 +837,11 @@ div.unread-message:hover {
 
 
 @media (max-width: 767px){
-  .horizontal-list.iconListing{
+  .actions.checkbox .horizontal-list, .horizontal-list.iconListing{
     width:100%;
     padding-left: 0;
   }
-  .horizontal-list.iconListing li{
+  .actions.checkbox .horizontal-list.iconListing li{
     width:48%;
     margin-right: 0;
     display: inline-block;
@@ -849,7 +849,9 @@ div.unread-message:hover {
 
 }
 
-
+.actions-container{
+  padding: 0 15px;
+}
 
 .horizontal-list.iconListing .btn{
   margin-bottom: 0;
@@ -891,6 +893,12 @@ h1.workshop-title{
   height: 40px;
   width: 45px;
   background-repeat: none;
+}
+
+@media (max-width: 767px){
+  .brand-bottom{
+    margin-top:10px;
+  }
 }
 
 @media (max-width: 1201px){
@@ -2422,23 +2430,23 @@ background-color: whitesmoke;
   padding-right: 10px;
 }
 
-.upVote > .icon-chevron-sign-up, .downVote > .icon-chevron-sign-down, .nullvote .icon-chevron-sign-up, .nullvote .icon-chevron-sign-down{
+.upVote > .icon-chevron-sign-up, .downVote > .icon-chevron-sign-down, .nullvote .icon-chevron-sign-up, .nullvote .icon-chevron-sign-down, .upVote > .glyphicon-chevron-up, .downVote > .glyphicon-chevron-down, .nullvote .glyphicon-chevron-up, .nullvote .glyphicon-chevron-down{
   color: #b6b6b6;
 }
 
-.upVote > .icon-chevron-sign-up:hover, .nullvote .icon-chevron-sign-up:hover{
+.upVote > .icon-chevron-sign-up:hover, .nullvote .icon-chevron-sign-up:hover, .upVote > .glyphicon-chevron-up:hover, .nullvote .glyphicon-chevron-up:hover{
   color: #90ccaa;
 }
 
-.icon-chevron-sign-up.yesVoted, .icon-chevron-sign-up.voted{
+.icon-chevron-sign-up.yesVoted, .icon-chevron-sign-up.voted, .glyphicon-chevron-up.yesVoted, .glyphicon-chevron-up.voted{
   color: #00903e;
 }
 
-.downVote > .icon-chevron-sign-down:hover, .nullvote .icon-chevron-sign-down:hover{
+.downVote > .icon-chevron-sign-down:hover, .nullvote .icon-chevron-sign-down:hover, .downVote > .glyphicon-chevron-down:hover, .nullvote .glyphicon-chevron-down:hover{
   color: #d1979b
 }
 
-.icon-chevron-sign-down.noVoted, .icon-chevron-sign-down.voted{
+.icon-chevron-sign-down.noVoted, .icon-chevron-sign-down.voted, .glyphicon-chevron-down.noVoted, .glyphicon-chevron-down.voted{
   color: #90000a;
 }
 
@@ -3072,6 +3080,13 @@ button.signup, button.login{
   left: auto;
   right: auto;
 }
+
+@media (max-width: 399px){
+  .slogan{
+    margin-top: 160px;
+  }
+}
+
 
 .slogan2{
   margin-top: 20px;
@@ -3834,7 +3849,7 @@ table.table-inline{
   padding-top: 10px;
 }
 .comment-avatar-cell img{
-  margin-left: 10px;
+  margin-left: 5px;
 }
 
 .comment-type .radio.inline{
@@ -3850,8 +3865,13 @@ table.table-inline{
 .comment-row{
   border-top: 1px solid #ddd;
 }
+
+.up-down-horizontal{
+  display: inline-block;
+}
+
 .comment-vote{
-  padding-top: 10px;
+  float: right;
 }
 
 .activity-item .avatar{
@@ -4153,9 +4173,12 @@ background-color: #d9534f;
   height:24px
 }
 
-.home-activity .criteria-col{
-  width: 50%;
+@media (min-width: 768px){
+  .home-activity .criteria-col, .geo-activity .criteria-col{
+    width: 50%;
+  }
 }
+
 
 .criteria-list{
     margin-left: -5px;

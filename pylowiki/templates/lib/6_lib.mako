@@ -71,7 +71,11 @@
                 
 
                 title = c.facebookShare.title
-                description = c.facebookShare.description
+                descriptionLines = c.facebookShare.description.splitlines()
+                desc = ""
+                for line in descriptionLines:
+                    desc += line
+                description = desc
 
                 # this is an elaborate way to get the item or workshop's description loaded as the caption
                 caption = c.facebookShare.caption
@@ -820,7 +824,7 @@
             return
         if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
             return
-        if c.w['allowIdeas'] == '0' and thing == 'ideas' and not (c.privs['admin'] or c.privs['facilitator']):
+        if c.w['allowIdeas'] == '0' and not (c.privs['admin'] or c.privs['facilitator']):
             return
 
         printStr = ''
@@ -1126,6 +1130,8 @@
             parentBase = 'profile'
         elif dparent.objType.replace("Unpublished", "") == 'initiative':
             parentBase = 'initiative'
+        else:
+            parentBase = dparent.objType.replace("Unpublished", "")
             
         if 'noHref' in kwargs:
             linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
@@ -1963,6 +1969,8 @@
                                         dparent = c.initiative
                                     elif c.user:
                                         dparent = c.user
+                                    elif c.thing:
+                                        dparent = c.thing
                                     else:
                                         dparent = None
                                     linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
@@ -2312,13 +2320,17 @@
                 <div class="col-xs-12">
                     <span class="glyphicon glyphicon-remove pull-right" ng-if="showAll" ng-click="changeShowAll()">
                     </span>
-                    <p>
-                        <label>Add<span ng-show="phase"> {{thing}}</span>: &nbsp;</label>
-                        <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
-                            <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
-                        </select>    
 
-                    </p>
+                    <div class="row">
+                        <div class="col-xs-12" style="display: inline-block">
+
+                            <label>Add <span ng-show="phase">{{thing}}: &nbsp;</span></label>
+                            <select ng-model="thing" ng-show="!(phase)" ng-change="showAll = true">
+                                <option ng-repeat="objType in thingList" ng-value="objType">{{objType}}</option>
+                            </select>    
+
+                        </div>   
+                    </div>
 
                     ###Basic
                     % if 'user' in session:

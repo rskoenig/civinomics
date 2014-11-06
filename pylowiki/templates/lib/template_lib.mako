@@ -332,12 +332,21 @@
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         
                     </ul>
+                    
+                    <ul class="horizontal-list display-xs">
+                        <li><a href="/corp/contact">Contact</a></li>
+                        <li><a href="/corp/terms">Terms</a></li>
+                        <li><a href="/corp/privacy">Privacy</a></li>
+                        <li>© 2014 Civinomics, Inc. </li>
+                    </ul>
+
+
                 </div>
-                <div class="col-sm-2 centered">
+                <div class="col-sm-2 centered brand-bottom">
                     <img src="/images/logo_white_simple.png">
                 </div>
                 <div class="col-sm-5">
-                    <ul class="horizontal-list">
+                    <ul class="horizontal-list hidden-xs">
                         <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>
@@ -417,13 +426,6 @@
 
 
 <%def name="tabbableSignupLogin(*args)">
- <% 
-      ####
-      #### After Login URL
-      ####
-      alURL = url.current()
-      session['afterLoginURL'] = alURL
-    %>
     % if c.conf['read_only.value'] == 'true':
       <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
@@ -443,7 +445,7 @@
                 </div> 
             </div>
         % endif
-      <!-- ${socialLogins()} -->
+      ${socialLogins()}
       <div ng-show="showTitle == 'sTitle'" ng-cloak>
         ${signupForm()}
       </div>
@@ -457,6 +459,10 @@
 </%def>
 
 <%def name="socialLogins()">
+    <%
+       # session['returnToSocial'] = url.current()
+       # session.save()
+    %>
     <div class="row social-login centered">
         <div id="fbLoginButton2">
             <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
@@ -534,7 +540,7 @@
             </div>
         </form>
         <script src="/js/signup.js" type="text/javascript"></script>
-        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" class="green green-hover" data-toggle="tab">Log in</a></p>
+        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
 </%def>
 
 <%def name="loginForm()">
@@ -564,8 +570,8 @@
             </div>
         </div>
     </form>
-    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a></p>
-    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
+    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab"> Forgot password?</a></p>
+    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" data-toggle="tab">Sign up</a></p>
 </%def>
 
 <%def name="forgotPassword()">
@@ -596,7 +602,7 @@
         </div><!-- row -->
         <div class="row">
             <div class="col-sm-11 centered">
-                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
+                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab"> Back to log in</a>
             </div><!-- col-sm-11 -->
         </div><!-- row -->
     </form>
@@ -608,19 +614,19 @@
       ####
       #### After Login URL
       ####
-      alURL = url.current()
+      #alURL = url.current()
       #alURL= session._environ['PATH_INFO']
-      if not alURL:
-        alURL = request.url
-      if 'QUERY_STRING' in session._environ :
-        alURL = alURL + '?' + session._environ['QUERY_STRING'] 
+      #if not alURL:
+      #  alURL = request.url
+      #if 'QUERY_STRING' in session._environ :
+      #  alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL
-      if '{{' in alURL:
-        try:
-            alURL = session._environ['HTTP_REFERER']
-        except:
-            alURL = '/browse/initiatives'
-      session['afterLoginURL'] = alURL
+      #if '{{' in alURL:
+      #  try:
+      #      alURL = session._environ['HTTP_REFERER']
+      #  except:
+      #      alURL = '/browse/initiatives'
+      #session['afterLoginURL'] = alURL
     %>
     <div class="modal fade" id="signupLoginModal" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
         <div class="modal-dialog">

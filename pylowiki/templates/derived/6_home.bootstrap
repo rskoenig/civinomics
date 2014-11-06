@@ -19,14 +19,10 @@
     ###
     ### Activity Feed
     ###
-    <div class="col-sm-7 col-md-7">
-    	
-	%if c.authuser and 'participatingWorkshop' in c.authuser:
-  	 <div class="alert alert-warning" role="alert">Click here to go back to <a href="${c.authuser['participatingWorkshop'].split("|")[0]}">${c.authuser['participatingWorkshop'].split("|")[1]}</a></div>
-  	%endif
+    <div class="col-sm-11 col-md-7">
 	
     	
-      ${lib_6.create()}
+      ${lib_6.create(createClass = "well-green")}
 
       <div class="home-activity" infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='3'>
 
@@ -70,6 +66,10 @@
             <td ng-if="item.objType == 'photo'">
               ${ng_helpers.photo_listing()}
             </td>
+            
+            <td ng-if="item.objType == 'comment'">
+              ${ng_helpers.comment_listing()}
+            </td>
           </tr>
         </table>
   	  
@@ -80,7 +80,13 @@
       </div><!-- infinite-scroll -->
     </div><!-- /col-sm-8 -->
 
-    <div class="col-sm-4">
+    <div class="col-sm-4 hidden-sm hidden-xs">
+
+      ${helpers.geoFlagInfo()}
+
+      %if c.authuser and 'participatingWorkshop' in c.authuser:
+       <div class="alert alert-warning" role="alert">Click here to go back to <a href="${c.authuser['participatingWorkshop'].split("|")[0]}">${c.authuser['participatingWorkshop'].split("|")[1]}</a></div>
+      %endif
 
       ${helpers.elections()}
       
