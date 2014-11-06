@@ -545,10 +545,21 @@
             <script src="/js/signup.js" type="text/javascript"></script>
             <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
             </div>
-            <div ng-switch-when="true">
-                You have registered successfully. Your account isn't activated, so while you can continue navigating, you won't be able to comment or rate until you activate it.
-                
-                <button class="btn btn-success btn-block btn-lg" ng-click="goToUrl(returnTo)">Continue</button>
+            <div ng-switch-when="true" style="text-align:center">
+            <p>
+                <h4>Welcome</h4>
+                You have registered successfully.
+                <br><br>
+                Your account isn't activated, so while you can continue navigating, you won't be able to comment or rate until you activate it.
+                <br><br>
+                Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.
+                </p>
+                    <div class="form-group text-center">
+                    <div class="col-sm-6 col-sm-offset-3">
+                    <button class="btn btn-success btn-block btn-lg" ng-click="goToUrl(returnTo)">Continue</button>
+                    </div>
+                </div>
+                <br>
             </div>
         </div>
 </%def>
