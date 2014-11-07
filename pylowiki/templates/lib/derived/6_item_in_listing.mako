@@ -87,7 +87,7 @@
                     if thing['type'] == 'photo':
                         link = link + '<div class="spacer"></div><img src="' + thing['info'] + '">'
             elif thing.objType == 'revision':
-                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
+                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, None, embed=True), thing['title'])
                 if thing['objType'] == 'resource':
                     link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(thing['link'], lib_6.ellipsisIZE(thing['link'], 75))
                     if 'info' in thing:
