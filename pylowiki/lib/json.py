@@ -306,6 +306,12 @@ def getJsonProperties(item):
     # comments
     if 'discussion_child' in item:    
         entry['discussion'] = item['discussion_child']
+    elif item.objType == 'disucssion':
+        entry['discussion'] = item['urlCode']
+    else:
+        discussion = discussionLib.getDiscussionForThing(item)
+        if discussion:    
+            entry['discussion'] = discussion['urlCode']
 
     entry['numComments'] = 0
     if 'numComments' in item:
