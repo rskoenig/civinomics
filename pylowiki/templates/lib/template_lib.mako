@@ -546,13 +546,11 @@
             <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
             </div>
             <div ng-switch-when="true" style="text-align:center">
-                <h4>Welcome</h4>
+                <h4>Success!</h4>
                 <p style="padding-left:10%; padding-right:10%">
-                You have registered successfully.
+                Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from us, try checking your junk mail folder.
                 <br><br>
-                Your account isn't activated, so while you can continue navigating, you won't be able to comment or rate until you activate it.
-                <br><br>
-                Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.
+                You can continue navigating but you won't be able to comment or add things until you activate your account. 
                 </p>
                     <div class="form-group text-center">
                     <div class="col-sm-6 col-sm-offset-3">
