@@ -191,6 +191,7 @@ app.controller('ratingsController', function($scope, $http){
 		}
 		if ($scope.ratingComplete) {
 			$scope.showAverage = true;
+			$scope.rating.criteriaList[1].numVotes += 1;
 		};
 
 	};
