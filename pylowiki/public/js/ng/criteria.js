@@ -164,9 +164,6 @@ app.controller('ratingsController', function($scope, $http){
 					$scope.vote = criteria.amount;
 					$scope.getCriteriaList(parentHref,thingCode);
 					$scope.checkRatingComplete()
-					if ($scope.ratingComplete){
-    					$scope.rating.criteriaList[1].numVotes += 1;
-					}
 				} 
 				else if (data.statusCode === 0){			
 				}
@@ -189,9 +186,13 @@ app.controller('ratingsController', function($scope, $http){
 		for (i = 0; i < $scope.rating.criteriaList.length; i++) { 
 			if ($scope.rating.criteriaList[i]['amount'] == '0'){
 				$scope.ratingComplete = false;
-				break;
+				break
 			};
+		}
+		if ($scope.ratingComplete) {
+			$scope.showAverage = true;
 		};
+
 	};
 	
 	
