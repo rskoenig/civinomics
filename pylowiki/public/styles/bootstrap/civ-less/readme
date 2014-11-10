@@ -1,0 +1,33 @@
+WHAT GOES HERE?
+---------------
+All civinomics-specific LESS files go into this directory.
+
+INSTRUCTIONS
+------------
+When you're done editing a file, make sure it's
+imported in the main ../civinomics.less file.
+Then recompile the main .less file.
+
+CONVENTIONS
+-----------
+Style and Layout:
+LESS files should be split into two parts, one for
+the style, and another for the layout.
+Example - I might want to create a new element with
+class "foo" and style it. Under "layout" I'd put
+something like '.foo {padding: 5px;}' and under
+"style", '.foo {color: blue;}'
+Also see ./columns.less
+
+Naming classes:
+All civinomics-specific classes should be prefixed with civ-.
+Example - if I want to style a header, I will
+do something like <h2 class="civ-col">Blah blah</h2>.
+
+
+THOUGHTS
+--------
+Since saving one file and compiling another
+gets annoying, use https://github.com/Thimoteus/watchtowr
+It will recompile a LESS file when it detects any changes
+to the @import'ed files.
