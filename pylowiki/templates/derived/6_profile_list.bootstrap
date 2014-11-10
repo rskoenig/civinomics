@@ -1,0 +1,45 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+
+<div class="spacer"></div>
+<div class="row" ng-controller="profileController">
+    <div class="col-sm-8">
+    <%
+        if c.listingType == 'discussions' or c.listingType == 'resources' or c.listingType == 'ideas':
+            if c.listingType == 'discussions':
+                helpers.listCreatedThings(c.user, c.things, 'Conversations')
+            else:
+                helpers.listCreatedThings(c.user, c.things, c.thingsTitle)
+        else:
+            if c.listingType == 'watching':
+                helpers.listInterestedThings(c.user, c.things, 'Bookmarks')
+            else:
+                helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
+    %>
+    </div>
+    <div class="col-sm-4">
+        ${dashboard.profileDashboard()}
+    </div><!--/.col-sm-4-->
+</div>
+
+<%def name="extraScripts()">
+    <script type="text/javascript">
+        $('.hoverTip').tooltip();
+    </script>
+    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+        });
+    </script>
+</%def>
