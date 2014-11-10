@@ -26,6 +26,8 @@ def make_map():
     # 
     ########################################################################################################
     map.connect('/santacruzwater{end:/?}', controller='actionlist', action='santacruzwater')
+    map.connect('/water9{end:/?}', controller='actionlist', action='water9')
+    map.connect('/waternine{end:/?}', controller='actionlist', action='water9')
     map.connect('/santacruzwater/login{end:/?}', controller='actionlist', action='santacruzwaterlogin')
     map.connect('/santacruzwater/signup{end:/?}', controller='actionlist', action='santacruzwatersignup')
 
