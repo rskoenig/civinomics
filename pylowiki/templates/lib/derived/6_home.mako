@@ -37,8 +37,6 @@
 
       	<div infinite-scroll='getFollowSlice()' infinite-scroll-disabled='followLoading' infinite-scroll-distance='5'>
 	        % if c.authuser:
-                
-                ${welcomeActivationAlert()}
 
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
                 	<h4 class="well-header grey">Following</h4>
@@ -128,24 +126,6 @@
 			</div>
 		</div>
 	</div>
-</%def>
-
-<%def name="welcomeActivationAlert()">
-	% if c.authuser and c.authuser['activated'] == '0':
-      <div class="spacer"></div>
-      <div class="alert alert-success">
-        <h4>Welcome!</h4> 
-        <p>Check your inbox for a confirmation email to finish setting up your account. If you don't see an email from, try checking your junk mail folder.</p>
-        <p>You can't add comments until you click on the link in the confirmation email.</p>
-        <br>
-        <div class="row">
-          <div class="col-xs-8 col-xs-offset-2">
-            <button class="btn btn-success btn-block resendActivateEmailButton" data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
-          </div>
-        </div>
-        <div class="top-space" id="resendMessage"></div>
-      </div>
-    % endif
 </%def>
 
 <%def name="elections()">

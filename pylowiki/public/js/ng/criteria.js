@@ -189,6 +189,9 @@ app.controller('ratingsController', function($scope, $http){
 				break
 			};
 		}
+		if ($scope.ratingComplete) {
+			$scope.showAverage = true;
+		};
 
 	};
 	
