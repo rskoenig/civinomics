@@ -721,7 +721,7 @@
             <div class="row">
                 <div class="col-xs-11">
                     <p>${authorPosting()} <small class="left-space right-space">in</small> <small>${metaData()}</small></p>
-                    <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
+                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight">{{item.text}}</a>
                 </div>
                 <div class="col-xs-1">
                     <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
