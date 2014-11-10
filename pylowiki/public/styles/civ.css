@@ -3855,6 +3855,17 @@ table.table-inline{
   margin-left: 5px;
 }
 
+.small-radio{
+  line-height: 10px;
+}
+.small-radio span{
+  margin-top:0;
+  margin-bottom: 0;
+}
+.small-radio span input{
+  margin-top: -1px
+}
+
 .comment-type .radio.inline{
   margin-bottom: 0;
   font-size: .85em;
@@ -4172,8 +4183,8 @@ background-color: #d9534f;
   height:35px
 }
 .sidebar.rating-details{
-  margin: 0 19px;
-  height:24px
+  margin: 0 0px;
+  height:35px
 }
 
 @media (min-width: 768px){

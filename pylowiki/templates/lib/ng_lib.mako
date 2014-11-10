@@ -1070,8 +1070,8 @@
     			</tr>
     		</table>
             </div><!-- col-md-3 -->
-            <div class="col-xs-12 rating-details ${locationClass}">
-                <small ng-if="!showAverage"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowMyRatings()">view my ratings</a></small>
+            <div class="col-xs-12 rating-details text-center ${locationClass}">
+                <small ng-if="!showAverage && ratingComplete"><a ng-click="changeShowAverage()">view averages</a></small><small ng-if="showAverage"><a ng-click="changeShowMyRatings()">view my ratings</a></small>
             </div>
 		</div>
 	</div> <!-- container-div -->
@@ -1617,10 +1617,9 @@
         <div class="" id="resendMessage"></div>
         </div>
         <div ng-show="closingDemoWindow == true" class="animate-switch">
-            <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a>
-            <h4>Do you want to provide demographic information later?</h4>
-            <p>If you are not sure, you can choose to respond next time you participate.</p>
-            <ul class="list-unstyled centered" style="text-align:left; margin-left:40%">  
+            <!-- <a ng-click="changeClosingWindow()"><span class="glyphicon glyphicon-arrow-left pull-right"></span></a> -->
+            <h4 style="word-break: keep-all;">Do you want to provide demographic information later?</h4>
+            <ul class="list-unstyled" style="text-align:left; margin-left:10%">  
                 <li><input type="radio" ng-model="userDemographics['optout']" value="0"> <b>Yes</b>, ask me again later.</li>
                 <li><input type="radio" ng-model="userDemographics['optout']" value="True"> <b>No</b>, I want to opt out.</li>
             </ul>
