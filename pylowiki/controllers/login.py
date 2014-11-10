@@ -196,6 +196,8 @@ class LoginController(BaseController):
         return redirect("/login")
 
     def fbAuthCheckEmail(self, id1):
+        log.info("Fb3")
+        log.info(vars(session))
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
@@ -242,7 +244,7 @@ class LoginController(BaseController):
             if user:
                 log.info("found user by facebook id")
         
-        log.info("Data is: %s %s %s %s %s %s", facebookAuthId, email, access, name, bigPic, smallPic)
+        #log.info("Data is: %s %s %s %s %s %s", facebookAuthId, email, access, name, bigPic, smallPic)
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
@@ -261,6 +263,7 @@ class LoginController(BaseController):
             return "not found"
 
     def fbLoginHandler(self):
+        log.info("Fb2")
         # NOTE - find when this function is used compared to the one right before this
         # send user to page where id will be anych tested again - if it agrees with who
         # this process started with, we log them in
@@ -524,6 +527,7 @@ class LoginController(BaseController):
 
 
     def fbLoggingIn(self):
+        log.info("Fb1")
         # this page has already confirmed we're authd and logged in, just need to 
         # log this person in now
         facebookAuthId = session['facebookAuthId']
@@ -634,6 +638,10 @@ class LoginController(BaseController):
             if 'loginResetPassword' in loginURL:
                 loginURL = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
             session.pop('afterLoginURL')
+            session.save()
+        if 'returnToSocial' in session and session['returnToSocial'] is not '/login' and session['returnToSocial'] is not '/signup':
+            loginURL = session['returnToSocial']
+            session.pop('returnToSocial')
             session.save()
         else:
             log.info("No after login url")
