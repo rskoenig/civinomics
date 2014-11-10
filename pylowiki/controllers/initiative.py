@@ -797,6 +797,3 @@ class InitiativeController(BaseController):
     def getJson(self):
         entry = jsonLib.getJsonProperties(c.initiative)
         return json.dumps({'statusCode':1, 'thing': entry})
-
-        
-            

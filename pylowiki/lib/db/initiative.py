@@ -20,6 +20,16 @@ def getInitiative(initiativeCode):
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('urlCode', initiativeCode))).one()
     except:
         return False
+        
+def getInitiatives(initiativeCodes):
+    try:
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative', 'initiativeUnpublished']))\
+        .filter(Thing.data.any(wc('deleted', '0')))\
+        .filter(Thing.data.any(and_(Data.key == 'urlCode',Data.value.in_(initiativeCodes))))\
+        .all()
+    except:
+        return False
 
 def getInitiativeByURL(initiativeURL):
     try:
