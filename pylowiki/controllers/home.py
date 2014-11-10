@@ -323,7 +323,7 @@ class HomeController(BaseController):
         commments = int(comments)
 
         if type == 'all':
-            recentActivity = activityLib.getRecentActivity(max, 0, offset)
+            recentActivity = activityLib.getRecentActivity(max, 1, offset)
             #log.info("oh right")
 
         elif type == 'following' and c.authuser:
@@ -365,7 +365,7 @@ class HomeController(BaseController):
             log.info(countyScopes)
             #log.info("in old geo scope function")
             # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-            countyActivity = activityLib.getRecentGeoActivity(max, countyScopes, 0, offset)
+            countyActivity = activityLib.getRecentGeoActivity(max, countyScopes, 1, offset)
             if countyActivity:
                 recentActivity = countyActivity
             else:
@@ -382,9 +382,9 @@ class HomeController(BaseController):
 
             if objectType is not 'all':
                 #log.info("Getting an object of type %s for scope %s"%(objectType, scope))
-                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset, itemType = [objectType])
+                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 1, offset, itemType = [objectType])
             else:
-                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset)
+                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 1, offset)
                 
             if geoActivity:
                 recentActivity = geoActivity
@@ -437,7 +437,7 @@ class HomeController(BaseController):
                 return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
         else:
-            recentActivity = activityLib.getRecentActivity(max, 0, offset)
+            recentActivity = activityLib.getRecentActivity(max, 1, offset)
             
         for item in recentActivity:
             entry = jsonLib.getJsonProperties(item)

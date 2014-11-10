@@ -719,14 +719,16 @@
     <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
         <div ng-controller="yesNoVoteCtrl">
             <div class="row">
-                <div class="col-xs-11">
-                    <p>${authorPosting()} <small class="left-space right-space">in</small> <small>${metaData()}</small></p>
-                    <a ng-href="{{item.parentHref}}" class="no-highlight">{{item.text}}</a>
+                <div class="col-xs-12">
+                    ${meta2()}
+                    <p class="top-space">
+                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight">{{item.text}}</a>
+                    </p>
                 </div>
-                <div class="col-xs-1">
-                    <div class="row" ng-if="item.readOnly == '1'">${upDownVoteBlock(readonly = '1')}</div>
-                    <div class="row" ng-if="item.readOnly == '0'">${upDownVoteBlock(readonly = '0')}</div>
-                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12" ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</div>
+                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')}</div>
             </div>
         </div>
     </div>
@@ -1187,7 +1189,7 @@
 <%def name="authorPosting()">
     <img class="avatar small-avatar inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
     <small>
-        <a href="{{item.authorHref}}" class="green green-hover">{{item.authorName}}</a> 
+        <a href="{{item.authorHref}}">{{item.authorName}}</a> 
         <span class="date">{{item.fuzzyTime}} ago</span>
     </small>
 </%def>
