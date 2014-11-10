@@ -1,0 +1,134 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_initiative.mako" />
+<%namespace name="ihelpers" file="/lib/derived/6_initiative_home.mako" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="ng_lib" file="/lib/ng_lib.mako" />
+
+
+<% lib.return_to() %>
+
+<style>
+    html,body{
+       background-color: #fff;
+    }
+</style>
+
+%if c.cover_url:
+    <div class="policy-cover" style="background-image:url('${c.cover_url}')">
+%else:
+    <div class="policy-cover" style="background: grey;">
+%endif
+        <div class="darkened-bg-cover"></div>
+    </div>
+
+<span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}';"></span>
+<div class="container" ng-controller="showThingCtrl">
+    <div class="row">
+        <div class="col-sm-9 col-md-9">
+            <div class="row" style="width: 100%; min-height:300px;">
+
+                <div class="col-xs-12 white">
+                    ${helpers.iTags()}
+                </div>
+
+                <div class="col-xs-2">
+                    <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
+                </div>
+
+                <% titleSpan = "col-xs-10" %>
+                <div class="${titleSpan}" style="position:relative;">
+                    <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
+                </div>
+
+            </div>
+
+            <div id="summary"></div>
+
+            <div class="top-offset">
+                <div class="row">
+                    <div class="col-sm-2 hidden-xs">
+                        ${helpers.iMenu()}
+                    </div>
+                    <div class="col-sm-10">
+                        ${next.body()}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 col-md-3" id="sidebar">
+            ${helpers.iControlPanel()}
+        </div><!-- span4 -->
+    </div><!-- row -->
+</div><!-- row -->
+
+
+<%def name="headScripts()">
+    % if c.facebookShare:
+        % if c.facebookShare.facebookAppId:
+            % if c.facebookShare.facebookAppId:
+                <meta property="fb:app_id" content="${c.facebookShare.facebookAppId}" />
+            % endif
+            % if c.facebookShare.title:
+                <meta property="og:title" content="${c.facebookShare.title}" />
+            % endif
+            <meta property="og:site_name" content="Civinomics"/>
+            <meta property="og:locale" content="en_US" /> 
+            % if c.facebookShare.url:
+                <meta property="og:url" content="${c.facebookShare.url}" />
+            % endif
+            % if c.facebookShare.description:
+                <meta property="og:description" content="${c.facebookShare.description}" />
+            % endif
+            % if c.facebookShare.image:
+                <meta property="og:image" content="${c.facebookShare.image}"/>
+            % endif
+        % endif
+    % endif
+    <script src="${lib_6.fingerprintFile('/js/ng/showThing.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="extraScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/positions.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/criteria.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+      $(".facebook.unpublished").tooltip();
+      $(".email-invite").tooltip();
+
+      $('#info a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+      $('#photos a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+      $('#authors a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
+        })
+
+   </script>
+   <script src="/js/bootstrap/bootstrap-affix.js"></script>
+    <script type="text/javascript"> 
+        $('#initiative-dashboard').affix({offset: 0})
+    </script> 
+    <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+    </script>
+    <script type="text/javascript"> 
+        $('#inner-sidebar').affix({offset: 130})
+        <!-- $('body').scrollspy({target: '#sidebar'}) -->
+        $(window).scrollspy({wrap: $('#wrap')[0]});
+    </script> 
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+    % endif
+</%def>
