@@ -48,6 +48,11 @@
     <body ${self.bodyTag_extras()}>
         ${template_lib.mainNavbar()}
         <div class="hidden-md hidden-lg" style="height:60px;"></div>
+
+        % if c.authuser and c.privs['provisional']:
+            ${template_lib.welcomeActivationAlert()}
+        % endif
+
         ${next.body()}
 
         % if c.authuser and c.privs:

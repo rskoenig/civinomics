@@ -17,6 +17,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 <%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" name="commentHelpers" />
 
 <%def name="iMenu()">
 
@@ -114,14 +115,20 @@
                                 ${lib_6.orgPosition(c.initiative)}
                             </div>
                         % else:
-                            <h4 class="text-center gray">Vote</h4>
-                            <hr class="narrow">
-                            <div class="row">
-                                <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
-                                    % if 'workshopCode' in c.initiative:
-                                        <div ng-controller="ratingsController">
-                                            {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
-                                            <div ng-switch="rating.type">
+
+                            % if 'workshopCode' in c.initiative:
+                                <div ng-controller="ratingsController" ng-cloak>
+                                    {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
+
+                                    <div ng-switch="rating.type">
+                                        <h4 ng-switch-when="criteria" class="text-center gray">Rate</h4>
+
+                                        <h4 ng-switch-when="yesno" class="text-center gray">Vote</h4>
+
+                                        <hr class="narrow">
+
+                                        <div class="row">
+                                            <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
                                                 <div ng-switch-when="criteria"  ng-controller="demographicsController">
                                                     %if 'user' in session:
                                                      <div ng-hide="inDemographics" >
@@ -143,16 +150,26 @@
                                                     </div>
                                                 </div> <!-- close yesno inner-->
                                                 <div ng-switch-default>
-                                            </div> <!-- close default inner-->
-                                        </div> <!-- close switch inner-->
-                                    %else:
+                                            </div><!-- col-xs-10 -->
+                                        </div><!-- row -->
+                                    </div> <!-- close default inner-->
+                                </div> <!-- close switch inner-->
+
+                            %else:
+                                <h4 class="text-center gray">Vote</h4>
+                                <hr class="narrow">
+                                <div class="row">
+                                    <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
                                         <div ng-controller="yesNoVoteCtrl">
                                             ${ng_lib.yesNoVoteBlock()}
                                         </div>
-                                    %endif
-                                </div><!-- col-xs-12 -->
-                            </div><! -- row -->
+                                    </div>
+                                </div>
+                                </div>
+                            %endif
+
                         % endif
+
                     <!--
                     <hr class="narrow">
                     <div>
@@ -170,7 +187,14 @@
                       </table>
                     </div>
                     -->
-                    <div class="row centered i-social-buttons">
+                    % if c.initiative['public'] == '1':
+                        % if c.initiative.objType != 'revision':
+                            <div class="col-xs-12">
+                                ${commentHelpers.justComment(c.initiative, c.discussion)}
+                            </div>
+                        % endif
+                    % endif
+                    <div class="col-xs-12 centered i-social-buttons">
                         <hr class="narrow">
                         <span>
                             % if c.initiative['public'] == '1':

@@ -723,3 +723,14 @@
     </div>
     <script src="${lib_6.fingerprintFile('/js/ng/demographics.js')}" type="text/javascript"></script>
 </%def>
+
+<%def name="welcomeActivationAlert()">
+    % if c.authuser and c.authuser['activated'] == '0':
+      <div class="alert alert-warning" style="margin: -10px -10px 10px;">
+        <p class="left-space">Go to <strong>${c.authuser['email']}</strong> to finish setting up your account. Make sure to check your spam folder. Already confirmed? Reload the page.
+            <button class="btn btn-default btn-sm resendActivateEmailButton no" style='margin:0 10px;' data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+            <span id="resendMessage"></span>
+        </p>
+      </div>
+    % endif
+</%def>

@@ -34,6 +34,64 @@
     %>
 </%def>
 
+<%def name="justComment(thing, discussion, **kwargs)">
+    % if 'user' in session and discussion.objType != 'comment' and not c.privs['provisional']:
+        % if thing['disabled'] != '1':
+            <form action="/comment/add/handler" id="commentAddHandler_root">
+                <input type="hidden" id="type" name="type" value="${thing.objType}" />
+                <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
+                <input type="hidden" name="parentCode" value="0" />
+                <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
+                <textarea rows="3" class="col-xs-12 col-lg-12 form-control" style="margin-bottom: 10px;" name="comment-textarea" placeholder="Add a comment..."></textarea>
+                % if thing.objType == 'idea' or thing.objType == 'initiative':
+                    <% log.info("thing type is %s"%thing.objType) %>
+                    <div class="row text-center top-space">
+                        <div class="col-xs-12">
+                            <small class="small-radio">
+                                <span class="radio inline right-space">
+                                    <input type=radio name="commentRole" value="neutral" checked>Neutral
+                                </span>
+                                <span class="radio inline right-space">
+                                    <input type=radio name="commentRole" value="yes">Pro
+                                </span>
+                                <span class="radio inline right-space">
+                                    <input type=radio name="commentRole" value="no">Con
+                                </span>
+                                <span class="radio inline right-space">
+                                    <input type=radio name="commentRole" value="question">Question
+                                </span>
+                                <span class="radio inline right-space">
+                                    <input type=radio name="commentRole" value="suggestion">Suggestion
+                                </span>
+                            </small>
+                        </div><!- col-xs-12 -->
+                    </div><!-- row -->
+                % endif
+                <button type="submit" class="btn btn-primary btn-block" name = "submit" value = "reply">Submit</button></span>
+            </form>
+        % endif
+    % elif 'user' not in session and discussion.objType != 'comment':
+            <a href="#signupLoginModal" data-toggle='modal'>
+                <textarea rows="3" class="col-xs-12 col-lg-12 form-control" style="margin-bottom: 10px;" name="comment-textarea" placeholder="Add a comment..."></textarea>
+            </a>
+        <div class="row">
+            <div class="col-xs-12">
+                <a href="#signupLoginModal" data-toggle='modal' title="Login to comment." class="btn btn-primary btn-block">Submit</a>
+            </div>
+        </div>
+    % elif c.privs['provisional']:
+        <a href="#activateAccountModal" data-toggle='modal'>
+            <textarea rows="3" class="col-xs-12 col-lg-12 form-control" style="margin-bottom: 10px;" name="comment-textarea" placeholder="Add a comment..."></textarea>
+        </a>
+        <div class="row">
+            <div class="col-xs-12">
+                <a href="#activateAccountModal" data-toggle='modal' title="Login to comment." class="btn btn-primary btn-block">Submit</a>
+            </div>
+        </div>
+    % endif
+</%def>
+
+
 <%def name="loginToAddComment(thing)">
     ########################################################################
     ##
