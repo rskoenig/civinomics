@@ -1,0 +1,29 @@
+The problem is: ${c.problemType}
+
+The reporter has already tried to take action through flagging (Y/N): ${c.alreadyFlagged}
+
+The name of the offending user is: ${c.offendingUser}
+
+This problem started approximately: ${c.startTime}
+
+Here is an in-depth description of the problem:
+${c.problem}
+
+The reporter was ${c.loggedIn} logged in when they submitted this form:
+
+User Name: ${c.userName}
+User Email: ${c.userEmail}
+
+
+This report has been added to the JIRA issue tracker. Please reply as soon as possible to:
+
+${c.reporterEmail}
+
+to confirm that you received this message.
+
+
+
+Best regards and keep up the good fight of helping our users.
+
+
+Civinomics Help Desk
