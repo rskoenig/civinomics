@@ -81,7 +81,7 @@
                         % elif itemType == 'listener' or itemType == 'listenerUnpublished':
                             <td><a href="/listener/${item['urlCode']}/listenerShow/">
                             %if 'name' in item:
-                                ${item['name']} 
+                                ${item['name']} - 
                             %endif
                             ${item['title']} </a></td>
                         % elif itemType == 'election' or itemType == 'electionUnpublished':
