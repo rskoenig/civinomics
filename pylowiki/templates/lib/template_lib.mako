@@ -460,8 +460,8 @@
 
 <%def name="socialLogins()">
     <%
-       # session['returnToSocial'] = url.current()
-       # session.save()
+       session['returnToSocial'] = url.current()
+       session.save()
     %>
     <div class="row social-login centered">
         <div id="fbLoginButton2">

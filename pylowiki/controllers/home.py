@@ -70,7 +70,8 @@ class HomeController(BaseController):
         if not c.authuser:
             return json.dumps({'statusCode':1})
 
-#         log.info("in get following initiatives")
+        # log.info("in get following initiatives")
+        # is session['facilitatorInitiatives'] even being used right now?
         if 'facilitatorInitiatives' in session:
             facilitatorInitiativeCodes = session['facilitatorInitiatives']
 #             log.info(session['facilitatorInitiatives'])
@@ -78,6 +79,11 @@ class HomeController(BaseController):
             session['facilitatorInitiatives'] = []
             session.save()
             facilitatorInitiativeCodes = []
+
+        facilitatorInitiatives = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
+        if len(facilitatorInitiatives) != 0:
+            for f in facilitatorInitiatives:
+                facilitatorInitiativeCodes.append(f['initiativeCode'])            
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
@@ -89,16 +95,19 @@ class HomeController(BaseController):
         interestedInitiativeCodes = session['facilitatorInitiatives'] + session['bookmarkedInitiatives']
         # reverse list so most recent first
         interestedInitiativeCodes = interestedInitiativeCodes[::-1]
-
+        log.info(len(interestedInitiativeCodes))
+        log.info(len(list(set(interestedInitiativeCodes))))
+        
+        fullCodeList = list(set(interestedInitiativeCodes + facilitatorInitiatives))
         offset = int(offset)
         limit = int(limit)
-        interestedInitiativeCodes = interestedInitiativeCodes[offset:limit]
+        followingInitiatives = fullCodeList[offset:limit]
 
-        interestedInitiatives = []
-        for code in interestedInitiativeCodes:
-            #log.info('%s' % code)
-            i = initiativeLib.getInitiative(code)
-            interestedInitiatives.append(i)
+        interestedInitiatives = initiativeLib.getInitiatives(followingInitiatives)
+#         for code in interestedInitiativeCodes:
+#             #log.info('%s' % code)
+#             i = initiativeLib.getInitiative(code)
+#             interestedInitiatives.append(i)
 
         if len(interestedInitiatives) == 0:
             return json.dumps({'statusCode':1})
@@ -191,6 +200,11 @@ class HomeController(BaseController):
             
         else:
             facilitatorInitiativeCodes = []
+
+        facilitatorInitiatives = facilitatorLib.getInitiativeFacilitatorsByUser(c.authuser)
+        if len(facilitatorInitiatives) != 0:
+            for f in facilitatorInitiatives:
+                facilitatorInitiativeCodes.append(f['initiativeCode']) 
 
         if 'bookmarkedInitiatives' in session:
             bookmarkedInitiativeCodes = session['bookmarkedInitiatives']
@@ -309,7 +323,7 @@ class HomeController(BaseController):
         commments = int(comments)
 
         if type == 'all':
-            recentActivity = activityLib.getRecentActivity(max, 0, offset)
+            recentActivity = activityLib.getRecentActivity(max, 1, offset)
             #log.info("oh right")
 
         elif type == 'following' and c.authuser:
@@ -351,7 +365,7 @@ class HomeController(BaseController):
             log.info(countyScopes)
             #log.info("in old geo scope function")
             # this is sorted by reverse date order by the SELECT in getRecentGeoActivity
-            countyActivity = activityLib.getRecentGeoActivity(max, countyScopes, 0, offset)
+            countyActivity = activityLib.getRecentGeoActivity(max, countyScopes, 1, offset)
             if countyActivity:
                 recentActivity = countyActivity
             else:
@@ -368,9 +382,9 @@ class HomeController(BaseController):
 
             if objectType is not 'all':
                 #log.info("Getting an object of type %s for scope %s"%(objectType, scope))
-                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset, itemType = [objectType])
+                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 1, offset, itemType = [objectType])
             else:
-                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 0, offset)
+                geoActivity = activityLib.getRecentGeoActivity(max, scopes, 1, offset)
                 
             if geoActivity:
                 recentActivity = geoActivity
@@ -423,7 +437,7 @@ class HomeController(BaseController):
                 return json.dumps({'statusCode': 1 , 'alertMsg' : alertMsg , 'alertType' : 'alert-info' })
 
         else:
-            recentActivity = activityLib.getRecentActivity(max, 0, offset)
+            recentActivity = activityLib.getRecentActivity(max, 1, offset)
             
         for item in recentActivity:
             entry = jsonLib.getJsonProperties(item)

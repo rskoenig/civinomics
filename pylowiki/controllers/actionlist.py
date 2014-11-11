@@ -101,6 +101,9 @@ class ActionlistController(BaseController):
         session.save()
         #THIS IS PROBABLY THE HACKIEST THING EVER 
         return redirect('/signup')
+
+    def water9( self ):
+        return redirect('http://blog.civinomics.com/2014/11/10/final-rating-deadline-this-tuesday-watch-water-for-santa-cruz-county/')
         
     def rss( self ):
         c.activity = getRecentActivity(30)

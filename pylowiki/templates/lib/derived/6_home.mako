@@ -43,7 +43,7 @@
                 	<div ng-repeat="item in followInitiatives">
                     	<div ng-init="url=item.url; code=item.urlCode">
                          	<div ng-controller="follow_unfollowCtrl">
-                          
+                           
                             <table class="activity-item follow" ng-show="following" ng-hide="trashed" ng-cloak>
                               	<tr>
 	                                <td rowspan="2" class="avatar-cell">
