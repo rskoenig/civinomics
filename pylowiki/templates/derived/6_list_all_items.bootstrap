@@ -79,7 +79,11 @@
                         % elif itemType == 'meeting' or itemType == 'meetingUnpublished':
                             <td><a href="/meeting/${item['urlCode']}/${item['url']}/show/">${item['meetingDate']} ${item['title']}</a></td>
                         % elif itemType == 'listener' or itemType == 'listenerUnpublished':
-                            <td><a href="/listener/${item['urlCode']}/listenerShow/">${item['name']} ${item['title']}</a></td>
+                            <td><a href="/listener/${item['urlCode']}/listenerShow/">
+                            %if 'name' in item:
+                                ${item['name']} 
+                            %endif
+                            ${item['title']} </a></td>
                         % elif itemType == 'election' or itemType == 'electionUnpublished':
                             <td><a href="/election/${item['urlCode']}/${item['url']}/show/">${item['electionDate']} ${item['title']}</a></td>
                         % elif itemType == 'ballot' or itemType == 'ballotUnpublished':
