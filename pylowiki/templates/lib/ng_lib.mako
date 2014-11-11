@@ -16,7 +16,7 @@
 
                     <h4 class="listed-item-title"><a class="no-highlight" ng-href="{{item.href}}" target="_blank">{{item.title}}</a></h4>
                     <p><a ng-if="item.link" class="break" ng-href="{{item.link}}">{{item.link}}</a></p>
-                    <span ng-bind-html="item.html">
+                    <span class="markdown" ng-bind-html="item.html"></span>
                     <div class="spacer"></div>
 
                 </div>
@@ -722,7 +722,8 @@
                 <div class="col-xs-12">
                     ${meta2()}
                     <p class="top-space">
-                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight">{{item.text}}</a>
+                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight">
+                        <p class="markdown"><span ng-bind-html="item.html"></span></p></a>
                     </p>
                 </div>
             </div>
