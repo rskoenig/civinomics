@@ -527,6 +527,13 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/json{end:/?}', controller = 'initiative', action = 'getJson', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/initiative/{handler:handler/?}', controller = 'initiative', action = 'initiativeNewHandler', parentObj='workshop', parentCode = '{parentCode}')
+    
+    ################
+    # Leaderboards #
+    ################
+    
+    #Initiatives
+    map.connect('/leaderboard{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
 
     ################
     # Messaging    #
@@ -581,6 +588,7 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    
     ################
     # Browse       #
     ################

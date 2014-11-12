@@ -626,20 +626,14 @@ class LoginController(BaseController):
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
         commit(user)
-        log.info("login:logUserIn commit user")
-        log.info(request.url)
-        log.info(c.returnTo)
-        log.info(session)
         if 'afterLoginURL' in session:
-            log.info("there's one!!")
-            log.info(session['afterLoginURL'])
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
             if 'loginResetPassword' in loginURL:
                 loginURL = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
             session.pop('afterLoginURL')
             session.save()
-        if 'returnToSocial' in session and session['returnToSocial'] is not '/login' and session['returnToSocial'] is not '/signup':
+        if 'returnToSocial' in session and session['returnToSocial'] != "/login" and session['returnToSocial'] != '/signup':
             loginURL = session['returnToSocial']
             session.pop('returnToSocial')
             session.save()
