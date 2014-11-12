@@ -639,7 +639,9 @@ class LoginController(BaseController):
                 loginURL = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
             session.pop('afterLoginURL')
             session.save()
-        if 'returnToSocial' in session and session['returnToSocial'] is not '/login' and session['returnToSocial'] is not '/signup':
+        if 'returnToSocial' in session and session['returnToSocial'] != "/login" and session['returnToSocial'] != '/signup':
+            log.info("Returning to social!!")
+            log.info(session['returnToSocial'])
             loginURL = session['returnToSocial']
             session.pop('returnToSocial')
             session.save()
