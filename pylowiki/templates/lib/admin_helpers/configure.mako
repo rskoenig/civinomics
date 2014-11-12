@@ -249,7 +249,7 @@
                             <% checked = 'unchecked' %>
                         % endif
                         <label class="checkbox">
-                        <input type="checkbox" name="categoryTags" value="${tag}" ${checked} /> ${tag}
+                        <input type="checkbox" id="categoryTags" name="categoryTags" value="${tag}" ${checked} /> ${tag}
                         </label><br />
                     % endfor
                     </fieldset>
@@ -289,16 +289,8 @@
         </div><!-- browse -->
     </div><!-- section-header -->
 
-    <script>
-        $(function(){
-            var max = 2;
-            var checkboxes = $('input[type="checkbox"]');
-
-            checkboxes.change(function(){
-                var current = checkboxes.filter(':checked').length;
-                checkboxes.filter(':not(:checked)').prop('disabled', current >= max);
-                });
-        });
+    <script type="text/javascript">
+        checkboxlimit(document.forms.workshop_tags.categoryTags, 2);
     </script>
 </%def>
 
