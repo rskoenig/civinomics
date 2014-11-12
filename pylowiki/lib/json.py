@@ -323,7 +323,10 @@ def getJsonProperties(item):
         entry['authorCode'] = item['userCode']
         entry['authorURL'] = item['user_url']
         entry['authorHref'] = '/profile/' + item['userCode'] + '/' + item['user_url']
-        entry['authorPhoto'] = item['user_avatar']
+        if 'user_avatar' in item:
+            entry['authorPhoto'] = item['user_avatar']
+        else: 
+            entry['authorPhoto'] = ""
 
         #hack to show initiative authors/coauthors
         # better to add featured author data to the object

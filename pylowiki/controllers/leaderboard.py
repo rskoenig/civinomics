@@ -1,9 +1,10 @@
 import logging, datetime, time, pickle
 
-import pylowiki.lib.db.workshop as workshopLib
-import pylowiki.lib.db.rating as ratingsLib
-import pylowiki.lib.db.initiative as initiativeLib
-import simplejson as json
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.rating       as ratingsLib
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.json            as jsonLib
+import simplejson                   as json
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
@@ -15,6 +16,12 @@ log = logging.getLogger(__name__)
 def totalYesnoInitiative(init):
     "Given an initiative, returns the amount of ups and downs"
     return int(init['ups']) + int(init['downs'])
+
+def jsonizeInitiative(i):
+    entry = {}
+    
+    return entry
+
 
 class LeaderboardController(BaseController):
 
@@ -29,9 +36,13 @@ class LeaderboardController(BaseController):
        log.info("hah")
     
     def getInitiatives(self): 
+        log.info("?")
         unsortedInitiativeList = initiativeLib.getAllYesNoInitiatives()
         sortedList = sorted(unsortedInitiativeList, key = lambda initiative: totalYesnoInitiative(initiative), reverse = True)
-        return json.dumps({'statusCode':'1', 'list':sortedList})
+        log.info(sortedList[0]['title'])
+        finalList = [jsonLib.getJsonProperties(item) for item in sortedList[0:10]]
+        return json.dumps({'statusCode':'1', 'list':finalList})
+    
         
 
 # OLD CODE, not used
