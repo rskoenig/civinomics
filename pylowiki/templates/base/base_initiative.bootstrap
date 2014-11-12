@@ -58,7 +58,9 @@
             </div>
         </div>
         <div class="col-sm-3 col-md-3" id="sidebar">
-            ${helpers.iControlPanel()}
+            % if c.initiative.objType != 'initiativeUnpublished':
+                ${helpers.iControlPanel()}
+            % endif
         </div><!-- span4 -->
     </div><!-- row -->
 </div><!-- row -->

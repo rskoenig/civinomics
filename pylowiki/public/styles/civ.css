@@ -1657,27 +1657,36 @@ a.yesVote, a.noVote{
   position: fixed;
   width: 362px;
 }
-/*
-voting ribbon triangle
-.initiative-well-wrapper:before{
-  content: ' ';
-  position: absolute;
-  width: 0;
-  height: 0;
-  left: 0px;
-  top: 94.2%;
-  border: 100px solid;
-  border-left-width: 181px;
-  border-right-width: 181px;
-  border-color: whitesmoke transparent transparent transparent;
+
+.i-control-panel{
+  position:fixed;
+  width: inherit;
+  max-width: 280px;
 }
-*/
+@media (max-width: 767px){
+  .i-control-panel{
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1030;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .i-control-panel .initiative-well{
+    min-height: 20px;
+    margin-bottom: -4px;
+    border-radius: 0;
+  }
+}
 
 .well.initiative-well{
   margin-top: 0;
   padding-top: 10px;
   background-color:whitesmoke;
   position: relative;
+  overflow:visible;
   /*
   -webkit-border-radius: 5px 5px 0 0;
   -moz-border-radius: 5px 5px 0 0;
@@ -1686,7 +1695,7 @@ voting ribbon triangle
   */
 }
 
-.initiative-well.action-panel, .i-edit-menu {
+.initiative-well, .i-edit-menu {
   min-height:325px;
 }
 

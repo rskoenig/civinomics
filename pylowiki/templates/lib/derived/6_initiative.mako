@@ -62,192 +62,128 @@
 </%def>
 
 <%def name="iControlPanel()">
-    <div style="position:fixed; width: inherit; max-width: 280px;">
-        % if c.iPrivs and c.editInitiative and c.initiative.objType != 'initiativeUnpublished':
-            <div class="section-wrapper overview well initiative-well action-panel" style="background-color: whitesmoke;">
-                <div class="row">
-                    <div class="col-xs-12">
-                    % if c.initiative['public'] == '0' and c.complete:
-                        <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
-                            <button type="submit" class="btn btn-lg btn-success btn-block" name="public" value="publish">Publish</button>
-                        </form>
-                        <div class="alert alert-warning top-space">You have added all of the required information. Click 'Publish' to make your initiative publicly discoverable.</div>
-                    % elif c.initiative['public'] == '0':
-                        <button class="btn btn-lg btn-warning btn-block" disabled>Publish</button>
-                        <br>
-                        <div class="alert alert-warning top-space">You must complete all required information and upload a picture before you can publish.</div>
+    <div class="i-control-panel">
+        <div class="well initiative-well">
+            <div class="row">
+                <div class="col-xs-12">
 
+                    % if c.initiative.objType == 'revision':
+                        <a class="btn btn-default" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
                     % else:
-                        <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
-                            <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>
-                        </form>
-                        <div class="alert alert-warning top-space" style="margin-bottom: 0;">Unpublished initiatives don't show up in searches or on public listings.</div>
-                    % endif
-                    </div>
-                </div>
 
-                <div class="row centered i-social-buttons">
-                    <hr class="narrow">
-                    <a class="btn btn-default" target="_blank" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
-                </div>
-
-            </div>
-        % elif not c.editInitiative and c.initiative.objType == 'initiative':
-            <div class="section-wrapper overview well initiative-well action-panel" style="overflow:visible;">
-                % if c.initiative.objType != 'revision':
-                        % if c.initiative['public'] == '0':
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    % if c.initiative['public'] == '0':
-                                        <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
-                                            <button type="submit" class="btn btn-lg btn-success btn-block" name="public" value="publish">Publish</button>
-                                        </form>
-                                    % endif
-                                    <div class="alert alert-warning top-space">This initiative is not yet published. It does not show up in searches or on public listings.</div>
-                                </div>
+                        % if c.initiative['public'] == '0' and c.iPrivs:
+                            <form method="POST" name="publish" id="publish" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">
+                                <button type="submit" class="btn btn-lg btn-success btn-block" name="public" value="publish">Publish</button>
+                            </form>
+                            <div class="alert alert-warning top-space">
+                                This initiative is not yet published. It does not show up in searches or public listings.
                             </div>
-                        % elif c.authuser and c.authuser['memberType'] == 'organization':
-                            <h4 class="text-center gray">Position</h4>
-                            <hr class="narrow">
-                            <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
-                            <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
-                            <div ng-controller="positionsCtrl">
-                                ${lib_6.orgPosition(c.initiative)}
+                        % elif c.initiative['public'] == '1' and c.iPrivs and c.editInitiative:
+                            <form method="POST" name="publish" id="publish" action="/unpublish/initiative/${c.initiative['urlCode']}">
+                                <button type="submit" class="btn btn-lg btn-warning btn-block" name="public" value="unpublish">Unpublish</button>
+                            </form>
+                            <div class="alert alert-warning top-space" style="margin-bottom: 0;">Unpublished initiatives don't show up in searches or public listings.</div>
+                        % elif c.initiative['public'] == '1':
+
+                            <h4 class="text-center">
+                            <a class="visible-xs-inline hidden-sm hidden-md hidden-lg" data-toggle="collapse" href="#iControlCollapse" aria-expanded="false" aria-controls="iControlCollapse">Vote and Comment</a>
+                            </h4>
+
+                            <div id="iControlCollapse" ng-class="{in: !xs}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="iControlCollapse">
+                                ${iControlPanelInner()}
                             </div>
-                        % else:
-
-                            % if 'workshopCode' in c.initiative:
-                                <div ng-controller="ratingsController" ng-cloak>
-                                    {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
-
-                                    <div ng-switch="rating.type">
-                                        <h4 ng-switch-when="criteria" class="text-center gray">Rate</h4>
-
-                                        <h4 ng-switch-when="yesno" class="text-center gray">Vote</h4>
-
-                                        <hr class="narrow">
-
-                                        <div class="row">
-                                            <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
-                                                <div ng-switch-when="criteria"  ng-controller="demographicsController">
-                                                    %if 'user' in session:
-                                                     <div ng-hide="inDemographics" >
-                                                     ${ng_lib.rateCriteria(type = 'sidebar')}
-                                                     </div>
-                                                     <div ng-if="hasVoted">
-                                                        <div ng-show="demographics.required != ''">
-                                                            {{checkDemographics(item.parentHref)}}
-                                                            ${ng_lib.demographics()}
-                                                        </div>
-                                                    </div>
-                                                     %else:
-                                                     ${ng_lib.rateCriteria(readOnly = "1", type = 'sidebar')}
-                                                     %endif
-                                                </div><!-- close criteria inner-->
-                                                <div ng-switch-when="yesno">
-                                                    <div ng-controller="yesNoVoteCtrl">
-                                                    ${ng_lib.yesNoVoteBlock()}
-                                                    </div>
-                                                </div> <!-- close yesno inner-->
-                                                <div ng-switch-default>
-                                            </div><!-- col-xs-10 -->
-                                        </div><!-- row -->
-                                    </div> <!-- close default inner-->
-                                </div> <!-- close switch inner-->
-
-                            %else:
-                                <h4 class="text-center gray">Vote</h4>
-                                <hr class="narrow">
-                                <div class="row">
-                                    <div class="col-xs-10 col-xs-offset-1" ng-init="inPage = true;" ng-cloak>
-                                        <div ng-controller="yesNoVoteCtrl">
-                                            ${ng_lib.yesNoVoteBlock()}
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            %endif
 
                         % endif
 
-                    <!--
-                    <hr class="narrow">
-                    <div>
-                    <table id="metrics">
-                        <tr>
-                          <td class="clickable" style="padding-left: 0px;" ng-click="toggleAdopted()">
-                            <span class="workshop-metrics">Comments</span><br>
-                              <strong ng-cloak>${c.numComments}</strong>
-                          </td>
-                          <td class="clickable" ng-click="toggleIdeas()">
-                            <span class="workshop-metrics">Views</span><br>
-                              <strong ng-cloak>${c.initiative['views']}</strong>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-                    -->
-                    % if c.initiative['public'] == '1':
-                        % if c.initiative.objType != 'revision':
-                            <div class="col-xs-12">
-                                ${commentHelpers.justComment(c.initiative, c.discussion)}
-                            </div>
-                        % endif
-                    % endif
-                    <div class="col-xs-12 centered i-social-buttons">
                         <hr class="narrow">
-                        <span>
-                            % if c.initiative['public'] == '1':
-                               
+                        <div class="centered">
+                            % if c.editInitiative:
+                                <a class="btn btn-default" target="civ-preview-${c.initiative['urlCode']}" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                            % elif c.iPrivs:
+                                <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                            % endif
+                            % if c.initiative['public'] == '1' and not c.editInitiative:
                                 ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
-
-                                % if c.initiativeHome and c.initiative.objType != 'revision':
-                                    ${ihelpers.watchButton(c.initiative)}
-                                % endif
-
-                                % if c.iPrivs:
-                                    <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
-                                % endif
-                                <!-- % if c.initiative['public'] == '1':
-                                    <a href="/workshop/${c.initiative['urlCode']}/${c.initiative['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-                                #%endif -->
+                                ${ihelpers.watchButton(c.initiative)}
                             % endif
-                            
-                            % if c.initiative.objType != 'revision':
-                                % if c.iPrivs:
-                                    <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                % endif
-                            % else:
-                                <a class="btn btn-default" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
-                            % endif
-
-                        </span>
-                    </div>
-                    <!--
-                    <div class="row">
-                        <div class="span10 offset2">
-                            <label class="checkbox grey">
-                            <input type="checkbox" class="shareVote" name="shareVote" value="shareVote"> Show how I voted when sharing
-                            </label>
                         </div>
+
+                    % endif
+
+                </div><!-- col-xs-12 -->
+            </div><!-- row -->
+        </div><!-- initiative-well -->
+    </div> <!-- i-control-panel -->
+</%def>
+
+<%def name="iControlPanelInner()">
+    % if c.authuser and c.authuser['memberType'] == 'organization':
+        <h4 class="text-center gray hidden-xs">Position</h4>
+        <hr class="narrow">
+        <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
+        <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+        <div ng-controller="positionsCtrl">
+            ${lib_6.orgPosition(c.initiative)}
+        </div>
+
+    % elif 'workshopCode' in c.initiative:
+        <div ng-controller="ratingsController" ng-cloak>
+            {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
+
+            <div ng-switch="rating.type">
+                <h4 ng-switch-when="criteria" class="text-center gray hidden-xs">Rate</h4>
+
+                <h4 ng-switch-when="yesno" class="text-center gray hidden-xs">Vote</h4>
+
+                <hr class="narrow">
+
+                <div ng-init="inPage = true;" ng-cloak></div>
+                <div ng-switch-when="criteria" ng-controller="demographicsController">
+                    %if 'user' in session:
+                        <div ng-hide="inDemographics" >
+                            <div class="row">
+                                <div class="col-xs-10 col-xs-offset-1">
+                                    ${ng_lib.rateCriteria(type = 'sidebar')}
+                                </div>
+                            </div>
+                        </div>
+                         <div ng-if="hasVoted">
+                            <div ng-show="demographics.required != ''">
+                                {{checkDemographics(item.parentHref)}}
+                                ${ng_lib.demographics()}
+                            </div>
+                        </div>
+                     %else:
+                        <div class="row">
+                            <div class="col-xs-10 col-xs-offset-1">
+                                ${ng_lib.rateCriteria(readOnly = "1", type = 'sidebar')}
+                            </div>
+                        </div>
+                     %endif
+                </div><!-- close criteria inner-->
+                <div ng-switch-when="yesno">
+                    <div ng-controller="yesNoVoteCtrl">
+                        ${ng_lib.yesNoVoteBlock()}
                     </div>
-                    -->
-                    <!-- 
-                    <h4 class="section-header smaller section-header-inner">Fund It</h4>
-                    <br>
-                    <div>$136,000 of ${c.initiative['cost']}</div>
-                    <div class="progress">
-                      <div class="bar bar-primary" style="width: 35%;"></div>
-                    </div>
-                    <small class="pull-right grey" style="margin-top: -20px;">43 funders</small><br>
-                    <div class="row centered">
-                        <button class="btn-large btn-success btn">Fund Initiative</button>
-                    </div>
-                    -->
-                % endif 
-            </div><!-- section-wrapper -->
-        % endif
-    </div> <!-- position:fixed -->
+                </div> <!-- close yesno inner-->
+            </div> <!-- close default inner-->
+        </div> <!-- close switch inner-->
+
+    %else:
+
+        <h4 class="text-center gray hidden-xs">Vote</h4>
+        <hr class="narrow">
+        <div ng-init="inPage = true;" ng-cloak>
+            <div ng-controller="yesNoVoteCtrl">
+                ${ng_lib.yesNoVoteBlock()}
+            </div>
+        </div>
+
+    %endif
+
+    ${commentHelpers.justComment(c.initiative, c.discussion)}
+
 </%def>
 
 <%def name="geoSelect()">

@@ -1,4 +1,4 @@
-function showThingCtrl($scope, $http, $location, $anchorScroll) {
+function showThingCtrl($scope, $http, $location, $anchorScroll, $window) {
 	$scope.costRegex = /^(\-)?(([1-9]\d{0,2}(,\d{3})*)|(([1-9]\d*)?\d))$/;
     $scope.clearTitle = function() {
         if ($scope.initiativeTitle == 'New Initiative'){
@@ -19,6 +19,32 @@ function showThingCtrl($scope, $http, $location, $anchorScroll) {
 		$scope.hash = $scope.hash.replace('/', '')
 		$scope.scrollTo($scope.hash)
 	};
+
+	$scope.$watch(function(){
+       return $window.innerWidth;
+    }, function(value) {
+       $scope.windowSize = value;
+       if(value >= 768){
+    		$scope.xs = false;
+    	} else{
+    		$scope.xs = true;
+    	};
+   });
+
+	$(window).resize(function(){
+    	if(window.innerWidth >= 768){
+    		$scope.xs = false;
+    	} else{
+    		$scope.xs = true;
+    	};
+
+	    $scope.$apply(function(){
+	       console.log('window resizing')
+	       console.log($scope.xs)
+	       console.log(window.innerWidth)
+	    });
+	});
+
 
     $scope.getUrl = '/' + $scope.objType + '/' + $scope.thingCode + '/' + $scope.thingUrl + '/json';
 

@@ -1011,7 +1011,7 @@
             %endif
     		    <td>
                     <span class="criteria-name">{{criteria.criteria}}</span>
-                    <a data-toggle="tooltip" data-placement="bottom" data-trigger="click hover" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip" ></a><br/>
+                    <a data-toggle="tooltip" data-placement="bottom" data-trigger="click hover" data-original-title="{{descriptions[criteria.criteria]}}" class="glyphicon glyphicon-question-sign criteria-tooltip no-highlight" ></a><br/>
     		        <span ng-switch="showAverage">
             %if readOnly:
     		            
