@@ -536,8 +536,8 @@ def make_map():
     map.connect('/leaderboard/{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
     map.connect('/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}')
     map.connect('/leaderboard/initiatives/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}', limit = '{limit}')
-    map.connect('/leaderboard/initiatives/{workshopCode}/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', offset = '{offset}', limit = '{limit}')
-    map.connect('/workshop/{workshopCode}/{workshopURL}/stats', controller="leaderboard", action="renderWorkshopLeaderboard", workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/stats', controller="workshop", action="renderWorkshopLeaderboard", workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     ################
     # Messaging    #

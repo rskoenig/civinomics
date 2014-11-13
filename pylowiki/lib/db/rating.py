@@ -50,7 +50,6 @@ def getCriteriaRatingForThingUser(user, thing, criteria):
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('criteria', criteria)))\
             .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).one()
-        log.info(q)
         return q
     except:
         return False

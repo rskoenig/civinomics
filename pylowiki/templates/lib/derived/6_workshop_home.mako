@@ -950,6 +950,38 @@
     </div>
 </%def>
 
-
-
-
+<%def name="leaderboard()">
+    <div class="well" ng-controller="leaderboardController" ng-cloak>
+    
+    <h4 class="well-header grey">Leaderboard</h4>
+    <div class="centered" ng-show="loading || sliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i>
+    </div>
+        <table class="table table-condensed" ng-show="!(loading || sliceLoading)">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Votes</th>
+                    %if c.w:
+                    %for criteria in c.w['rating_criteria'].split("|"):
+                       <th>${criteria}</th>
+                    %endfor
+                    %endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in leaderboard.list">
+                    <td>{{item['title']}}</td>
+                    <td>{{item['numVotes']}}</td>
+                        %if c.w:
+                            %for criteria in c.w['rating_criteria'].split("|"):
+                                <td>{{item['${criteria}']}}</td>
+                            %endfor
+                        %endif
+                </tr>
+            </tbody>
+        </table>
+        <p><a href="#" ng-if="!firstSector" ng-click="getSector('less')">previous 10</a> <a href="#" ng-click="getSector('more')">next 10</a> </p>
+    </div>
+    
+</%def>

@@ -53,9 +53,9 @@ class LeaderboardController(BaseController):
 
     def __before__(self, action, workshopCode = None, offset = 0, limit = 10):
         log.info("Before")
-        log.info(action)
+        log.info(action) 
     
-    def getWorkshopInitiativesWithCriteria(self, workshopCode, offset = 0, limit = 10):
+    def getWorkshopInitiativesWithCriteria(self, workshopCode, workshopURL, offset = 0, limit = 10):
         try:
             end = int(offset) + int(limit)   
             unsortedRawInitiativeList = initiativeLib.getWorkshopCriteriaInitiatives(workshopCode)
