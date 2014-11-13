@@ -68,7 +68,9 @@
                 <div class="col-xs-12">
 
                     % if c.initiative.objType == 'revision':
-                        <a class="btn btn-default" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
+                        <div class="centered">
+                            <a class="btn btn-default" href="/initiative/${c.initiative['initiativeCode']}/${c.initiative['initiative_url']}/show"><strong>View Current Version</strong></a>
+                        </div>
                     % else:
 
                         % if c.initiative['public'] == '0' and c.iPrivs:
@@ -85,9 +87,7 @@
                             <div class="alert alert-warning top-space" style="margin-bottom: 0;">Unpublished initiatives don't show up in searches or public listings.</div>
                         % elif c.initiative['public'] == '1':
 
-                            <h4 class="text-center">
-                            <a class="visible-xs-inline hidden-sm hidden-md hidden-lg" data-toggle="collapse" href="#iControlCollapse" aria-expanded="false" aria-controls="iControlCollapse">Vote and Comment</a>
-                            </h4>
+                            <a class="visible-xs-inline hidden-sm hidden-md hidden-lg" data-toggle="collapse" href="#iControlCollapse" aria-expanded="false" aria-controls="iControlCollapse"><h4 class="text-center">Vote and Comment</h4></a>
 
                             <div id="iControlCollapse" ng-class="{in: !xs}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="iControlCollapse">
                                 ${iControlPanelInner()}

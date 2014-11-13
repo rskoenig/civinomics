@@ -42,32 +42,36 @@
                 <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
                 <input type="hidden" name="parentCode" value="0" />
                 <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-                <textarea rows="3" class="col-xs-12 col-lg-12 form-control" style="margin-bottom: 10px;" name="comment-textarea" placeholder="Add a comment..."></textarea>
-                % if thing.objType == 'idea' or thing.objType == 'initiative':
-                    <% log.info("thing type is %s"%thing.objType) %>
-                    <div class="row text-center top-space">
-                        <div class="col-xs-12">
-                            <small class="small-radio">
-                                <span class="radio inline right-space">
-                                    <input type=radio name="commentRole" value="neutral" checked>Neutral
-                                </span>
-                                <span class="radio inline right-space">
-                                    <input type=radio name="commentRole" value="yes">Pro
-                                </span>
-                                <span class="radio inline right-space">
-                                    <input type=radio name="commentRole" value="no">Con
-                                </span>
-                                <span class="radio inline right-space">
-                                    <input type=radio name="commentRole" value="question">Question
-                                </span>
-                                <span class="radio inline right-space">
-                                    <input type=radio name="commentRole" value="suggestion">Suggestion
-                                </span>
-                            </small>
-                        </div><!- col-xs-12 -->
-                    </div><!-- row -->
-                % endif
-                <button type="submit" class="btn btn-primary btn-block" name = "submit" value = "reply">Submit</button></span>
+                <span ng-init="commentText = '';"></span>
+                <textarea rows="3" class="col-xs-12 col-lg-12 form-control" style="margin-bottom: 10px;" ng-model="commentText" name="comment-textarea" placeholder="Add a comment..."></textarea>
+                <span ng-show="commentText != ''">
+                    % if thing.objType == 'idea' or thing.objType == 'initiative':
+                        <% log.info("thing type is %s"%thing.objType) %>
+                        <div class="row text-center top-space">
+                            <div class="col-xs-12">
+                                <small class="small-radio">
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="neutral" checked>Neutral
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="yes">Pro
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="no">Con
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="question">Question
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="suggestion">Suggestion
+                                    </span>
+                                </small>
+                            </div><!- col-xs-12 -->
+                        </div><!-- row -->
+                    % endif
+                    <button type="submit" class="btn btn-primary btn-block" name = "submit" value = "reply">Submit</button></span>
+                </span>
+
             </form>
         % endif
     % elif 'user' not in session and discussion.objType != 'comment':

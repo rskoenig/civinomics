@@ -800,17 +800,31 @@
                 readonly = "0"
 
         %>
-        % if readonly == "1":
-            <a class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
-            <a class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
-        % elif 'user' in session:
-            <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
-            <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+        <div class="row">
+            % if readonly == "1":
+                <div class="col-xs-6 col-sm-12">
+                    <a class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <a class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            % elif 'user' in session:
+                <div class="col-xs-6 col-sm-12">
+                    <a ng-click="updateYesVote()" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <a ng-click="updateNoVote()" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            % else:
+                <div class="col-xs-6 col-sm-12">
+                    <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
+                </div>
+                <div class="col-xs-6 col-sm-12">
+                    <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
+                </div>
+            % endif
+        </div>
 
-        % else:
-            <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-success btn-vote {{voted}}">YES</a>
-            <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-block btn-danger btn-vote {{voted}}">NO</a>
-        % endif
         % if readonly == "1":
             Voting Closed
         % endif
