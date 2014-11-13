@@ -37,10 +37,11 @@ class LeaderboardController(BaseController):
     
     def getInitiatives(self, offset = 0, limit = 10): 
         end = int(offset) + int(limit)
+       
         unsortedInitiativeList = initiativeLib.getAllYesNoInitiatives()
         sortedList = sorted(unsortedInitiativeList, key = lambda initiative: totalYesnoInitiative(initiative), reverse = True)
-        log.info(sortedList[0]['title'])
         finalList = [jsonLib.getJsonProperties(item) for item in sortedList[int(offset):end]]
+
         return json.dumps({'statusCode':'1', 'list':finalList})
     
         
