@@ -25,7 +25,7 @@ def jsonizeInitiative(i):
 
 class LeaderboardController(BaseController):
 
-    def __before__(self, action, workshopCode = None):
+    def __before__(self, action, workshopCode = None, offset = 0, limit = 10):
         log.info("Before")
         log.info(action)
     
@@ -35,12 +35,12 @@ class LeaderboardController(BaseController):
     def getInitiativesWithCriteria(self, workshopCode):
        log.info("hah")
     
-    def getInitiatives(self): 
-        log.info("?")
+    def getInitiatives(self, offset = 0, limit = 10): 
+        end = int(offset) + int(limit)
         unsortedInitiativeList = initiativeLib.getAllYesNoInitiatives()
         sortedList = sorted(unsortedInitiativeList, key = lambda initiative: totalYesnoInitiative(initiative), reverse = True)
         log.info(sortedList[0]['title'])
-        finalList = [jsonLib.getJsonProperties(item) for item in sortedList[0:10]]
+        finalList = [jsonLib.getJsonProperties(item) for item in sortedList[int(offset):end]]
         return json.dumps({'statusCode':'1', 'list':finalList})
     
         

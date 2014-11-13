@@ -533,7 +533,9 @@ def make_map():
     ################
     
     #Initiatives
-    map.connect('/leaderboard{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
+    map.connect('/leaderboard/{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
+    map.connect('/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}')
+    map.connect('/leaderboard/initiatives/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}', limit = '{limit}')
 
     ################
     # Messaging    #
