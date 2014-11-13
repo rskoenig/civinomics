@@ -26,14 +26,10 @@ def getRatingForThing(user, thing):
         return False
 
 def getRatingCountForThing(thing):
-    try:
-        thingCode = '%sCode' % thing.objType
-        return meta.Session.query(Thing)\
-            .filter_by(objType = rating)\
-            .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).count()
-    except:
-        return False
-
+    thingCode = '%sCode' % thing.objType
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'rating')\
+        .filter(Thing.data.any(wc(thingCode, thing['urlCode']))).count()
 
 def getBinaryRatingForThing(user, thing):
     try:
@@ -60,7 +56,7 @@ def getCriteriaRatingForThingUser(user, thing, criteria):
         return False
         
 
-def getCriteriaRatingForThing(workshopCode, thing, criteria):
+def getCriteriaRatingForThing(thing, criteria):
     thingCode = '%sCode' % thing.objType
     q = meta.Session.query(Thing)\
         .filter_by(objType = 'rating')\

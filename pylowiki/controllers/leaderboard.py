@@ -5,6 +5,7 @@ import pylowiki.lib.db.rating       as ratingsLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.json            as jsonLib
 import simplejson                   as json
+import pylowiki.lib.fuzzyTime           as fuzzyTime
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
@@ -17,11 +18,36 @@ def totalYesnoInitiative(init):
     "Given an initiative, returns the amount of ups and downs"
     return int(init['ups']) + int(init['downs'])
 
-def jsonizeInitiative(i):
+def jsonizeWorkshopInitiative(item):
     entry = {}
     
+    entry['title'] = item['title']
+    entry['objType'] = item.objType
+    entry['urlCode'] = item['urlCode']
+    entry['url'] = item['url']
+    entry['href'] = '/initiative/' + item['urlCode'] + '/' + item['url']
+    entry['date'] = item.date.strftime('%Y-%m-%d at %H:%M:%S')
+    entry['fuzzyTime'] = fuzzyTime.timeSince(item.date)
+    
+    entry['parentObjType'] = 'workshop'
+    
+    entry['numVotes'] = str(ratingsLib.getRatingCountForThing(item))
+    workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
+    criteriaList = workshop['rating_criteria'].split('|')
+    
+    #Getting the criteria averages
+    for c in criteriaList:
+        entry[c] = str(getAverageForCriteria(item, c))
+        
     return entry
 
+def getAverageForCriteria(thing, criteria):
+    try:
+        ratings = ratingsLib.getCriteriaRatingForThing(thing, criteria)
+        amounts = [int(item['amount']) for item in ratings]
+        return (sum(amounts)/len(ratings))
+    except:
+        return 0
 
 class LeaderboardController(BaseController):
 
@@ -29,11 +55,16 @@ class LeaderboardController(BaseController):
         log.info("Before")
         log.info(action)
     
-    def index(self):
-        log.info("WTF?")
-    
-    def getInitiativesWithCriteria(self, workshopCode):
-       log.info("hah")
+    def getWorkshopInitiativesWithCriteria(self, workshopCode, offset = 0, limit = 10):
+        try:
+            end = int(offset) + int(limit)   
+            unsortedRawInitiativeList = initiativeLib.getWorkshopCriteriaInitiatives(workshopCode)
+            unsortedInitiativeList = [jsonizeWorkshopInitiative(item) for item in unsortedRawInitiativeList]
+            sortedList = sorted(unsortedInitiativeList, key = lambda initiative: int(initiative['numVotes']), reverse = True)
+            log.info(sortedList[0]['numVotes'])
+            return json.dumps({'statusCode':'1', 'list':sortedList[int(offset):end]})
+        except:
+            return json.dumps({'statusCode':'0'})
     
     def getInitiatives(self, offset = 0, limit = 10): 
         end = int(offset) + int(limit)

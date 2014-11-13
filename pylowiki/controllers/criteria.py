@@ -104,15 +104,14 @@ class CriteriaController(BaseController):
         thing = ideaLib.getIdea(thingCode)
         if not thing:
             thing = initiativeLib.getInitiative(thingCode)
-        result = ratingLib.getCriteriaRatingForThing(workshopCode, thing, criteria)
-        if len(result) == 0:
+        ratings = ratingLib.getCriteriaRatingForThing(thing, criteria)
+        
+        if len(ratings) == 0:
             amount = 0  
             numVotes = 0
         else:
-            sumVotes = 0
-            numVotes  = len(result)
-            for vote in result:
-                sumVotes += int(vote['amount'])
-            amount = int(sumVotes/numVotes)
+            amounts = [int(item['amount']) for item in ratings]
+            amount = (sum(amounts)/len(ratings))
+            numVotes = len(ratings)
            # log.info("%s %s", sumVotes, numVotes)
         return [amount, numVotes]

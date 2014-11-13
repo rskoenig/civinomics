@@ -67,9 +67,19 @@ def getAllInitiatives():
 def getAllYesNoInitiatives():
     try:
         return meta.Session.query(Thing)\
-        .filter(Thing.objType.in_(['initiative', 'initiativeUnpublished']))\
+        .filter(Thing.objType.in_(['initiative']))\
         .filter(not_(Thing.data.any(wk('workshopCode'))))\
         .all()
+    except:
+        return False
+        
+def getWorkshopCriteriaInitiatives(workshopCode):
+    try:
+        q = meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative']))\
+        .filter(Thing.data.any(wc('workshopCode', workshopCode)))
+        log.info(str(q))
+        return q.all()
     except:
         return False
 
