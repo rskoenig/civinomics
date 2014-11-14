@@ -955,28 +955,37 @@
     
     <h4 class="well-header grey">Leaderboard</h4>
     <div class="centered" ng-show="loading || sliceLoading" ng-cloak>
-          <i class="icon-spinner icon-spin icon-4x"></i>
+          <i class="icon-spinner icon-spin icon-4x"></i><br/>
+          Gathering data...
     </div>
         <table class="table table-condensed" ng-show="!(loading || sliceLoading)">
             <thead>
                 <tr>
-                    <th>Title</th>
+                    <th></th>
+                    <th></th>
                     <th>Votes</th>
+                    <th>Comments</th>
                     %if c.w:
                     %for criteria in c.w['rating_criteria'].split("|"):
                        <th>${criteria}</th>
                     %endfor
+                    <th>Total</th>
                     %endif
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="item in leaderboard.list">
-                    <td>{{item['title']}}</td>
+                    <td><a href = '{{item.href}}'>
+                        <img class="thumbnail tight initiative-thumb no-top no-bottom" style="width:51px" src="{{item.thumbnail}}">
+                    </a></td>
+                    <td><a ng-href="{{item.href}}">{{item.title}}</a></strong></td>
                     <td>{{item['numVotes']}}</td>
+                    <td>{{item['numComments']}}</td>
                         %if c.w:
                             %for criteria in c.w['rating_criteria'].split("|"):
                                 <td>{{item['${criteria}']}}</td>
                             %endfor
+                             <td>{{item['totalVotes']}}</td>
                         %endif
                 </tr>
             </tbody>

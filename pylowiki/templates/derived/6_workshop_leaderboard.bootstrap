@@ -18,6 +18,9 @@
   </div>
 </div>
 <div class="row hidden-xs ">
+  <div class="col-xs-12">
+    ${helpers.workshopTimeline()}
+  </div>
 </div>
 <div class="row">
     <div class="col-xs-12">
