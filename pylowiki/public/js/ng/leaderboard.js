@@ -4,7 +4,8 @@ function leaderboardController ($scope, $http){
         type: "initiatives",
         list: [],
         offset: 0,
-        limit: 10
+        limit: 10,
+        sortBy: ''
     };
     
     $scope.loading = true;
@@ -17,7 +18,9 @@ function leaderboardController ($scope, $http){
         if ($scope.busy) return;
         $scope.busy = true;
         var requestUrl = "leaderboard/"+$scope.leaderboard.type+"/"+$scope.leaderboard.offset;
-        console.log(requestUrl)
+        if ($scope.leaderboard.sortBy != ''){
+            requestUrl += "/" + $scope.leaderboard.sortBy;
+        }
 		$http.get(requestUrl).success(function(data){
 				if (data.statusCode == 1){
 				    console.log("Yes");
@@ -49,6 +52,11 @@ function leaderboardController ($scope, $http){
             $scope.firstSector = true;
         };
         
+        $scope.getLeaderboard();
+    };
+    
+    $scope.changeSorting = function(sortBy){
+        $scope.leaderboard.sortBy = sortBy;
         $scope.getLeaderboard();
     };
     

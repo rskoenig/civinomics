@@ -963,13 +963,12 @@
                 <tr>
                     <th></th>
                     <th></th>
-                    <th>Votes</th>
-                    <th>Comments</th>
+                    <th><a href="" ng-click="changeSorting('numVotes')">Votes</a></th>
+                    <th><a href="" ng-click="changeSorting('numComments')">Comments</a></th>
                     %if c.w:
                     %for criteria in c.w['rating_criteria'].split("|"):
-                       <th>${criteria}</th>
+                       <th><a href="" ng-click="changeSorting('${criteria}')">${criteria}</a></th>
                     %endfor
-                    <th>Total</th>
                     %endif
                 </tr>
             </thead>
@@ -985,7 +984,6 @@
                             %for criteria in c.w['rating_criteria'].split("|"):
                                 <td>{{item['${criteria}']}}</td>
                             %endfor
-                             <td>{{item['totalVotes']}}</td>
                         %endif
                 </tr>
             </tbody>
