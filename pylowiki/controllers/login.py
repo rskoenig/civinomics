@@ -111,7 +111,7 @@ class LoginController(BaseController):
         log.info("twythonLogin2")
         # The callback from twitter will include a verifier as a parameter in the URL.
         # The final step is exchanging the request token for an access token. The access 
-        # token is the “key” for opening the Twitter API
+        # token is the â€œkeyâ€ for opening the Twitter API
         #oauth_verifier = request.GET['oauth_verifier']
 
         oauth_verifier = request.params['oauth_verifier']

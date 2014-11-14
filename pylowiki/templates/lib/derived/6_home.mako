@@ -144,3 +144,25 @@
 		</div>
 	% endif
 </%def>
+
+<%def name="leaderboardHome()">
+    <div class="well" ng-controller="leaderboardController" ng-init="leaderboard.type = 'initiatives'" ng-cloak>
+    <h4 class="well-header grey">Leaderboard</h4>
+    <p>initiatives members </p>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Votes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in leaderboard.list">
+                    <td>{{item['title']}}</td>
+                    <td>{{item['voteCount']}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><a href="#" ng-if="!firstSector" ng-click="getSector('less')">previous 10</a> <a href="#" ng-click="getSector('more')">next 10</a>     <a href="#">show all</a></p>
+    </div>
+</%def>
