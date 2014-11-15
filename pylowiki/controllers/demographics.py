@@ -1,13 +1,17 @@
 import logging
+import csv
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to
 from pylowiki.lib.base import BaseController, render
+# from collections import Counter
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import simplejson                   as json
 import pylowiki.lib.db.user         as userLib
+import collections
+
 
 log = logging.getLogger(__name__)
 
@@ -47,8 +51,52 @@ log = logging.getLogger(__name__)
 #   Output: JSON stauts 1/0 depending on the result (+errors?)
 #
 
-class DemographicsController(BaseController):
+def writeCsv(data, path):
+    with open(path, "wb") as csvFile:
+        writer = csv.writer(csvFile, delimiter=';')
+        for line in data:
+            log.info("line is %s", line)
+            writer.writerow(line)
 
+def parseUserDemo(user, demo):
+    try:
+        demographicsKeys = {
+                'birthday' : 0,
+                'gender': 1,
+                'ethnicity': 2,
+                'education': 3,
+                'kids': 4,
+                'house': 5,
+                'income': 6,
+                'language': 7,
+                'residential': 8,
+                'multifamily': 9,
+                'peoplehousehold': 10
+        }
+        userDemo = user['demographics'].split('|')
+        if userDemo[demographicsKeys[demo]] != '0':
+            return userDemo[demographicsKeys[demo]]
+    except:
+        pass
+        
+def dictionarize(listing):
+    result = {}
+    for item in listing:
+        if item in result:
+            result[item] += 1
+        else:
+            result[item] = 1
+    return result
+        
+def listize(d):
+    result = []
+    for key, value in d.iteritems():
+        result.append(key)
+        result.append(value)
+    return result
+
+
+class DemographicsController(BaseController):
     def __before__(self, action, workshopCode = None, worshopURL = None, userCode = None, demographics = None):
         self.demographicsKeys = {
             'birthday' : 0,
@@ -75,6 +123,31 @@ class DemographicsController(BaseController):
             
         workshopLib.setWorkshopPrivs(self.workshop)
         
+
+    def exportCsv(self, workshopCode):
+        workshop = workshopLib.getWorkshopByCode(workshopCode)
+        if 'demographics' not in workshop:
+            log.info('no demographics')
+
+        demographicsList = workshop['demographics'].split('|')
+        allUsersWithDemo = userLib.getAllUsersWithDemographics()
+
+        demoData = []
+        for demoname in demographicsList:
+                demoRaw = [parseUserDemo(u, demoname) for u in allUsersWithDemo if parseUserDemo(u, demoname)]
+                demo = dictionarize(demoRaw)
+                demoData.append(demoname)
+                demoData.append([[k,v] for k,v in demo.iteritems()])
+                log.info(demo.items())
+        path = "pylowiki/public/temp/" + workshopCode + ".csv"
+        writeCsv(demoData, path)
+#         validDemoList = [parseUserDemo(u, demographicsList) for u in allUsersWithDemo if parseUserDemo(u, demographicsList)]
+#         log.info(validDemoList)
+#         path = "pylowiki/public/temp/" + workshopCode + ".csv"
+         
+        
+        
+    
 
     def setWorkshopDemographics(self, workshopCode, workshopURL, demographics):
         self.workshop['demographics'] = demographics
