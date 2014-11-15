@@ -60,7 +60,12 @@ function leaderboardController ($scope, $http){
         $scope.getLeaderboard();
     };
     
+    $scope.$watch($scope.leaderboard.type, function(newValue){
+     console.log($scope.leaderboard.type);   
     $scope.getLeaderboard();
+    });
+    
+   
     
 	/*
 $scope.alert = {

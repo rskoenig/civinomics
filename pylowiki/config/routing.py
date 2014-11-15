@@ -536,6 +536,10 @@ def make_map():
     map.connect('/leaderboard/{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
     map.connect('/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}')
     map.connect('/leaderboard/initiatives/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}', limit = '{limit}')
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/ideas/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    
+    
     map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
     map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}/{sortBy}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}', sortBy = '{sortBy}')
     map.connect('/workshop/{workshopCode}/{workshopURL}/stats', controller="workshop", action="renderWorkshopLeaderboard", workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
