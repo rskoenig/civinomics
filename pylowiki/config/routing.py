@@ -527,6 +527,22 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/json{end:/?}', controller = 'initiative', action = 'getJson', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/initiative/{handler:handler/?}', controller = 'initiative', action = 'initiativeNewHandler', parentObj='workshop', parentCode = '{parentCode}')
+    
+    ################
+    # Leaderboards #
+    ################
+    
+    #Initiatives
+    map.connect('/leaderboard/{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
+    map.connect('/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}')
+    map.connect('/leaderboard/initiatives/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}', limit = '{limit}')
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/ideas/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}/{sortBy}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}', sortBy = '{sortBy}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/stats', controller="workshop", action="renderWorkshopLeaderboard", workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     ################
     # Messaging    #
@@ -581,6 +597,7 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    
     ################
     # Browse       #
     ################

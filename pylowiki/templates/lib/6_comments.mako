@@ -99,7 +99,7 @@
     ##
     ########################################################################
 
-    <div class="row">
+    <div class="row hidden-print">
         <div class="col-sm-1">
             <img src="/images/hamilton.png" class="avatar med-avatar">
         </div>
@@ -122,7 +122,7 @@
     ##
     ########################################################################
 
-    <div class="row">
+    <div class="row hidden-print">
         <div class="col-sm-1">
             ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
         </div>
@@ -149,7 +149,7 @@
             return
     %>
     <div class="spacer"></div>
-    <form action="/comment/add/handler" id="commentAddHandler_root">
+    <form class="hidden-print" action="/comment/add/handler" id="commentAddHandler_root">
         <input type="hidden" id="type" name="type" value="${thing.objType}" />
         <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
         <input type="hidden" name="parentCode" value="0" />
@@ -357,17 +357,17 @@
     %>
     <div class="${headerClass}" style="border-bottom: 1px solid #ddd">
         <!--<button class="panel-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${commentID}" href="#${collapseID}">
-            Hide
         </button> -->
         <%
-            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar no-bottom no-top", linkClass="inline")
-            lib_6.userLink(author, className="inline")
+            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar no-bottom no-top hidden-print", linkClass="inline")
+            lib_6.userLink(author, className="inline hidden-print")
             role = ''
             roles = ['admin', 'facilitator', 'listener']
             if comment['addedAs'] in roles:
                 role = '(%s)' % comment['addedAs']
         %>
-        ${role} from ${lib_6.userGeoLink(author, comment=True)}
+        <span class="visible-print-inline right-space-md">${author['name']}</span>
+        <span class="hidden-print">${role} from ${lib_6.userGeoLink(author, comment=True)}</span>
         <small class="grey">
             <% date = timeSince(comment.date) %>
             ${date} ago
@@ -391,7 +391,7 @@
                             else:
                                 dparent = None
                         %>
-                        <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n}>Parent</a>
+                        <a class="hidden-print" ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n}>Parent</a>
                     % endif
                 % endif
             % endif
@@ -412,7 +412,7 @@
     <div id="${collapseID}" class="${thisClass}">
         <div class="panel-body">
             <div class="row">
-                <div class="col-xs-1">
+                <div class="col-xs-1 hidden-print">
                     <%
                         if c.thing['disabled'] == '0':
                             lib_6.upDownVote(comment)
@@ -449,7 +449,7 @@
         editID = 'edit-%s' % comment['urlCode']
         adminID = 'admin-%s' % comment['urlCode']
     %>
-    <div class="row">
+    <div class="row hidden-print">
         <%
             if 'readOnly' in comment and comment['readOnly'] == '1':
                 readonly = '1'

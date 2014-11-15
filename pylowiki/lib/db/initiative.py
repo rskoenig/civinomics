@@ -6,7 +6,7 @@ from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from sqlalchemy import and_, not_, or_
-from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl, with_key as wk
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.discussion   as discussionLib
@@ -61,6 +61,25 @@ def setInitiativesForUserInSession():
 def getAllInitiatives():
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).all()
+    except:
+        return False
+
+def getAllYesNoInitiatives():
+    try:
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative']))\
+        .filter(not_(Thing.data.any(wk('workshopCode'))))\
+        .all()
+    except:
+        return False
+        
+def getWorkshopCriteriaInitiatives(workshopCode):
+    try:
+        q = meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative']))\
+        .filter(Thing.data.any(wc('workshopCode', workshopCode)))
+        log.info(str(q))
+        return q.all()
     except:
         return False
 
