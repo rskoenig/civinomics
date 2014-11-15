@@ -2,6 +2,7 @@ import logging, datetime, time, pickle
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.rating       as ratingsLib
+import pylowiki.lib.db.idea       as ideaLib
 import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.json            as jsonLib
 import simplejson                   as json
@@ -45,24 +46,26 @@ def jsonizeWorkshopInitiative(item):
     
     if 'numVotes' in item:
         criteriaList = item['criteriaList'].split('|')
-        entry['numVotes'] = item['numVotes']
+        entry['voteCount'] = item['numVotes']
         for c in criteriaList: 
             entry[c] = item[c]
     else:
-        item['numVotes'] = str(ratingsLib.getRatingCountForThing(item)/4)
-        entry['numVotes'] = item['numVotes']
-        
         workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
-        criteriaList = workshop['rating_criteria'].split('|')
-        item['criteriaList'] = workshop['rating_criteria']
-
-        #Getting the criteria averages
-        entry['totalVotes'] = 0
-        for c in criteriaList: 
-            item[c] = getAverageForCriteria(item, c)
-            entry[c] = item[c]
+        if 'rating_criteria' in workshop:
+            criteriaList = workshop['rating_criteria'].split('|')
+            item['criteriaList'] = workshop['rating_criteria']
+    
+            item['numVotes'] = str(ratingsLib.getRatingCountForThing(item)/4)
+            entry['voteCount'] = item['numVotes']
+            #Getting the criteria averages
+            entry['totalVotes'] = 0
+            for c in criteriaList: 
+                item[c] = getAverageForCriteria(item, c)
+                entry[c] = item[c]
         
-        dbHelpers.commit(item)
+            dbHelpers.commit(item)
+        else:
+            entry['voteCount'] = int(item['ups']) + int(item['downs'])
         
     return entry
 
@@ -80,12 +83,19 @@ class LeaderboardController(BaseController):
         log.info("Before")
         log.info(action) 
     
-    def getWorkshopInitiativesWithCriteria(self, workshopCode, workshopURL, offset = 0, limit = 10, sortBy = 'numVotes'):
+    def getWorkshopInitiativesWithCriteria(self, workshopCode, workshopURL, offset = 0, limit = 10, sortBy = 'voteCount'):
         end = int(offset) + int(limit)   
         unsortedRawInitiativeList = initiativeLib.getWorkshopCriteriaInitiatives(workshopCode)
         unsortedInitiativeList = [jsonizeWorkshopInitiative(item) for item in unsortedRawInitiativeList]
         sortedList = sorted(unsortedInitiativeList, key = lambda initiative: int(initiative[sortBy]), reverse = True)
-        log.info(sortedList[0]['numVotes'])
+        return json.dumps({'statusCode':'1', 'list':sortedList[int(offset):end]})
+        
+    def getWorkshopIdeas(self, workshopCode, workshopURL, offset = 0, limit = 10):
+        end = int(offset) + int(limit)   
+        unsortedRawIdeaList = ideaLib.getAllIdeasInWorkshop(workshopCode)
+        unsortedIdeaList = [jsonLib.getJsonProperties(item) for item in unsortedRawIdeaList]
+        sortedList = sorted(unsortedIdeaList, key = lambda idea: totalYesnoInitiative(idea), reverse = True)
+
         return json.dumps({'statusCode':'1', 'list':sortedList[int(offset):end]})
     
     def getInitiatives(self, offset = 0, limit = 10): 

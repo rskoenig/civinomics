@@ -950,7 +950,7 @@
     </div>
 </%def>
 
-<%def name="leaderboard()">
+<%def name="leaderboard(type = 'initiatives')">
     <div class="well" ng-controller="leaderboardController" ng-cloak>
     
     <h4 class="well-header grey">Leaderboard</h4>
@@ -958,32 +958,40 @@
           <i class="icon-spinner icon-spin icon-4x"></i><br/>
           Gathering data...
     </div>
-        <table class="table table-condensed" ng-show="!(loading || sliceLoading)">
+        <table class="table table-condensed" ng-show="!(loading || sliceLoading)" ng-init="leaderboard.type = '${type}'">
             <thead>
                 <tr>
+                    % if type != 'ideas':
                     <th></th>
+                    %endif
                     <th></th>
-                    <th><a href="" ng-click="changeSorting('numVotes')">Votes</a></th>
+                    <th><a href="" ng-click="changeSorting('voteCount')">Votes</a></th>
                     <th><a href="" ng-click="changeSorting('numComments')">Comments</a></th>
                     %if c.w:
-                    %for criteria in c.w['rating_criteria'].split("|"):
-                       <th><a href="" ng-click="changeSorting('${criteria}')">${criteria}</a></th>
-                    %endfor
+                        %if 'rating_criteria' in c.w:
+                            %for criteria in c.w['rating_criteria'].split("|"):
+                               <th><a href="" ng-click="changeSorting('${criteria}')">${criteria}</a></th>
+                            %endfor
+                        %endif
                     %endif
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="item in leaderboard.list">
+                % if type != 'ideas':
                     <td><a href = '{{item.href}}'>
                         <img class="thumbnail tight initiative-thumb no-top no-bottom" style="width:51px" src="{{item.thumbnail}}">
                     </a></td>
+                %endif
                     <td><a ng-href="{{item.href}}">{{item.title}}</a></strong></td>
-                    <td>{{item['numVotes']}}</td>
+                    <td>{{item['voteCount']}}</td>
                     <td>{{item['numComments']}}</td>
                         %if c.w:
-                            %for criteria in c.w['rating_criteria'].split("|"):
-                                <td>{{item['${criteria}']}}</td>
-                            %endfor
+                            %if 'rating_criteria' in c.w:
+                                %for criteria in c.w['rating_criteria'].split("|"):
+                                    <td>{{item['${criteria}']}}</td>
+                                %endfor
+                            %endif
                         %endif
                 </tr>
             </tbody>
