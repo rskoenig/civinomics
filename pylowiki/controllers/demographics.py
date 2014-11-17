@@ -2,7 +2,7 @@ import logging
 import csv
 
 from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons.controllers.util import abort, redirect_to, redirect
 from pylowiki.lib.base import BaseController, render
 # from collections import Counter
 
@@ -144,6 +144,8 @@ class DemographicsController(BaseController):
         
         path = "pylowiki/public/temp/" + workshopCode + ".csv"
         writeCsv(demoData, path)
+        
+        return redirect("/temp/"+ workshopCode + ".csv")
 #         validDemoList = [parseUserDemo(u, demographicsList) for u in allUsersWithDemo if parseUserDemo(u, demographicsList)]
 #         log.info(validDemoList)
 #         path = "pylowiki/public/temp/" + workshopCode + ".csv"
