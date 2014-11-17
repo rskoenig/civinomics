@@ -65,6 +65,13 @@ def getAllUsersWithDemographics(disabled = '0', deleted = '0'):
         .filter(Thing.data.any(not_(wc('demographics', '-1'))))\
         .all()
 
+def getNumberOptedOutUsers(disabled = '0', deleted = '0'):
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('demographics', '-1')))\
+        .count()
+
 def getAllCurators(disabled = '0', deleted = '0'):
     try:
         return meta.Session.query(Thing)\

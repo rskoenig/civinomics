@@ -55,8 +55,8 @@ def writeCsv(data, path):
     with open(path, "wb") as csvFile:
         writer = csv.writer(csvFile, delimiter=';')
         for line in data:
-            log.info("line is %s", line)
-            writer.writerow(line)
+            for thing in line:
+                writer.writerow(thing)
 
 def parseUserDemo(user, demo):
     try:
@@ -134,11 +134,14 @@ class DemographicsController(BaseController):
 
         demoData = []
         for demoname in demographicsList:
-                demoRaw = [parseUserDemo(u, demoname) for u in allUsersWithDemo if parseUserDemo(u, demoname)]
-                demo = dictionarize(demoRaw)
-                demoData.append(demoname)
-                demoData.append([[k,v] for k,v in demo.iteritems()])
-                log.info(demo.items())
+            demoRaw = [parseUserDemo(u, demoname) for u in allUsersWithDemo if parseUserDemo(u, demoname)]
+            demo = dictionarize(demoRaw)
+            demoData.append([['demographic', demoname]])
+            demoData.append([[k,v] for k,v in demo.iteritems()])
+            demoData.append([[' ', ' ']])
+        optedOut = userLib.getNumberOptedOutUsers()
+        demoData.append([['opted out', str(optedOut)]])
+        
         path = "pylowiki/public/temp/" + workshopCode + ".csv"
         writeCsv(demoData, path)
 #         validDemoList = [parseUserDemo(u, demographicsList) for u in allUsersWithDemo if parseUserDemo(u, demographicsList)]
