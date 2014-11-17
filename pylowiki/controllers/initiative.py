@@ -36,7 +36,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson', 'initiativePrintComments']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler', 'promoteIdea']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -659,6 +659,16 @@ class InitiativeController(BaseController):
         c.initiativeHome = True
 
         return render('/derived/6_initiative_home.bootstrap')
+
+    def initiativePrintComments(self):
+        
+        c.numComments = 0
+        if 'numComments' in c.initiative:
+            c.numComments = c.initiative['numComments']
+
+        c.initiativeHome = True
+
+        return render('/derived/6_initiative_print_comments.bootstrap')
 
 
     def getInitiativeAuthors(self):

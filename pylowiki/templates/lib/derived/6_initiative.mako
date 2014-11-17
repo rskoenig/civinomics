@@ -27,6 +27,7 @@
             <li><a href="#info" role="tab" data-toggle="tab">Info</a></li>
             <li><a href="#photos" role="tab" data-toggle="tab">Photos</a></li>
             <li><a href="#users" role="tab" data-toggle="tab">Users</a></li>
+            <li><a href="#reporting" role="tab" data-toggle="tab">Reporting</a></li>
 
             <!--
             <li><a href="#iStats" data-toggle="tab">Stats</a></li>
@@ -732,3 +733,10 @@
         <button type="submit" class="btn btn-success btn-block btn-lg top" name="submit_summary">Save Changes</button>
     </form>
 </%def>
+
+<%def name="reporting()">
+    <h2 class="no-top">Reporting</h2>
+    <div class="spacer"></div>
+    <a class="btn btn-default btn-lg" target="_blank" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/printComments">Print Comments</a>
+</%def>
+

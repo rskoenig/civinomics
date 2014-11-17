@@ -9,85 +9,83 @@
 
     ${ihelpers.showDescription()}
 
-    <div class="hidden-print">
-        % if c.initiative['funding_summary']:
-            <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
-            ${ihelpers.showFunding_Summary()}
-        % endif
-        % if c.initiative['cost']:
-            ${ihelpers.showCost(c.initiative)}
-        % endif
+    % if c.initiative['funding_summary']:
+        <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
+        ${ihelpers.showFunding_Summary()}
+    % endif
+    % if c.initiative['cost']:
+        ${ihelpers.showCost(c.initiative)}
+    % endif
 
-        % if c.initiative['proposal'] or c.initiative['background']:
-            <br>
+    % if c.initiative['proposal'] or c.initiative['background']:
+        <br>
+        <!--
+        <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+            Read Full Text
+        </a>
+        <div id="fullText" class="panel-collapse collapse">
+        -->
+        <div id="fullText">
+            % if c.initiative['background']:
+                ${ihelpers.showBackground()}
+            % endif
+
+            % if c.initiative['proposal']:
+                ${ihelpers.showProposal()}
+            % endif
+
             <!--
-            <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
-                Read Full Text
-            </a>
-            <div id="fullText" class="panel-collapse collapse">
-            -->
-            <div id="fullText">
-                % if c.initiative['background']:
-                    ${ihelpers.showBackground()}
-                % endif
-
-                % if c.initiative['proposal']:
-                    ${ihelpers.showProposal()}
-                % endif
-
-                <!--
-                <br>
-                <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
-                    Close Full Text
-                </a>-->
-            </div>
-        % endif
-
-        <hr>
-        ${ihelpers.showAuthor(c.initiative)}
-        % if c.initiative.objType == 'revision':
-            This is a revision dated ${c.initiative.date}<br />
-        % else:
             <br>
-            <div class="text-right">
-                ${ihelpers.initiativeModerationPanel(c.initiative)}
-            </div>
-        % endif
-        <hr>
-        % if 'workshopCode' in c.initiative:
-        <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
-            <div ng-controller="ratingsController">
-                {{getCriteriaList(item.parentHref, item.urlCode)}}
-                <div ng-switch="rating.type">
-                    <div ng-switch-when="criteria">
-
-                    </div><!-- close criteria inner-->
-                    <div ng-switch-when="yesno">
-                        <div ng-controller="positionsCtrl">
-                            ${ng_lib.showSupportOppose()}
-                        </div>
-                    </div> <!-- close yesno inner-->
-                    <div ng-switch-default>
-                    </div> <!-- close default inner-->
-                </div> <!-- close switch inner-->
-            </div>
-        %else:
-        <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
-            <div ng-controller="positionsCtrl">
-                    ${ng_lib.showSupportOppose()}
-                </div>
-        %endif
-
-        <hr>
-        <h3 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h3>
-        ${ihelpers.listResources()}
-        <hr>
-        <div id="updates">
-            <h3 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h3>
-            ${ihelpers.showUpdateList()}
+            <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+                Close Full Text
+            </a>-->
         </div>
+    % endif
 
-    </div><!-- hidden-print -->
+    <hr>
+    ${ihelpers.showAuthor(c.initiative)}
+    % if c.initiative.objType == 'revision':
+        This is a revision dated ${c.initiative.date}<br />
+    % else:
+        <br>
+        <div class="text-right">
+            ${ihelpers.initiativeModerationPanel(c.initiative)}
+        </div>
+    % endif
+    <hr>
+    % if 'workshopCode' in c.initiative:
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+        <div ng-controller="ratingsController">
+            {{getCriteriaList(item.parentHref, item.urlCode)}}
+            <div ng-switch="rating.type">
+                <div ng-switch-when="criteria">
+
+                </div><!-- close criteria inner-->
+                <div ng-switch-when="yesno">
+                    <div ng-controller="positionsCtrl">
+                        ${ng_lib.showSupportOppose()}
+                    </div>
+                </div> <!-- close yesno inner-->
+                <div ng-switch-default>
+                </div> <!-- close default inner-->
+            </div> <!-- close switch inner-->
+        </div>
+    %else:
+    <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
+        <div ng-controller="positionsCtrl">
+                ${ng_lib.showSupportOppose()}
+            </div>
+    %endif
+
+    <hr>
+    <h3 id="resources" class="initiative-title">Resources <span class="hidden-print">${ihelpers.addResourceButton()}<span></h3>
+    ${ihelpers.listResources()}
+    <hr>
+    <div id="updates">
+        <h3 class="initiative-title bottom-space-md">Updates <span class="hidden-print">${ihelpers.addUpdateButton()}</span></h3>
+        ${ihelpers.showUpdateList()}
+    </div>
+
 
     % if c.initiative.objType != 'initiativeUnpublished':
         <hr>

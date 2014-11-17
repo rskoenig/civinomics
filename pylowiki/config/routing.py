@@ -517,6 +517,7 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/show{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
+    map.connect('/initiative/{id1}/{id2}/printComments{end:/?}', controller = 'initiative', action = 'initiativePrintComments', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/photo/upload/handler{end:/?}', controller = 'initiative', action = 'photoUploadHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{code}/{id2}/follow/handler{end:/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/initiative/{id1}/{id2}/resourceEdit/{id3}{end:/?}', controller = 'initiative', action = 'resourceEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')

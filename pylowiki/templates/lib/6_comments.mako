@@ -300,13 +300,15 @@
             backgroundShade = ' evenComment'
         
     %>
-    <div class="panel panel-default">
-        <span class="comment-id-offset" id="${commentID}"> &nbsp; </span>
-        <div class="${backgroundShade}">
-            ${commentHeading(comment, author, commentID, collapseID, parent)}
-            ${commentContent(comment, commentType, curDepth, maxDepth, author, commentID, collapseID)}
+    % if comment['deleted'] != '1':
+        <div class="panel panel-default">
+            <span class="comment-id-offset" id="${commentID}"> &nbsp; </span>
+            <div class="${backgroundShade}">
+                ${commentHeading(comment, author, commentID, collapseID, parent)}
+                ${commentContent(comment, commentType, curDepth, maxDepth, author, commentID, collapseID)}
+            </div>
         </div>
-    </div>
+    % endif
 </%def>
 
 <%def name="commentHeading(comment, author, commentID, collapseID, parent)">
