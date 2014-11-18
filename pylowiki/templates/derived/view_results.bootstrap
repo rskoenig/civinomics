@@ -1,0 +1,39 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/view_results/helpers.mako" />
+
+<div class="row-fluid">
+    <div class="span12">
+        ${helpers.showTitle('Results for %s' % c.survey['title'])}
+    </div>
+</div>
+${helpers.spacer()}
+<div class="row-fluid">
+    ${helpers.inlineSpacer(2)}
+    <div class="span8">
+        ${helpers.showBasicTable(c.results, c.survey)}
+    </div>
+    ${helpers.inlineSpacer(2)}
+</div>
+
+<div class="row-fluid">
+    ${helpers.showTitle('Previously generated files')}
+    ${helpers.spacer()}
+    ${helpers.inlineSpacer(2)}
+    <div class="span8">
+        ${helpers.previousResults(c.survey, c.resultFiles)}
+    </div>
+    ${helpers.inlineSpacer(2)}
+</div>
+
+<%def name = 'extraStyles()'>
+    
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    
+</%def>
