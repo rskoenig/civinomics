@@ -241,14 +241,13 @@ def editResource(resource, title, text, link, owner):
 def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None, **kwargs):
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
-    eObj = getEObj(link)
-    if not eObj:
-        return False
     a = Thing('resource', owner.id)
+    eObj = getEObj(link)
+    if eObj:
+        setAttributes(a, eObj)
     if 'tags' in kwargs:
             a['tags'] = kwargs['tags']
     a['link'] = link
-    setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:

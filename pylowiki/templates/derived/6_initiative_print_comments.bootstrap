@@ -49,25 +49,23 @@
             <div class="top-offset">
                 <div class="row">
                     <div class="col-sm-2 hidden-xs hidden-print">
-                        ${helpers.iMenu()}
+                    
                     </div>
                     <div class="col-sm-10">
-                        ${next.body()}
+                        <h3 id="comments" class="initiative-title">Comments</h3>
+                        ${comments(c.initiative, c.discussion)}
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-sm-3 col-md-3 hidden-print" id="sidebar">
-            ${helpers.iControlPanel()}
+            
         </div><!-- span4 -->
     </div><!-- row -->
 </div><!-- row -->
 
 
 <%def name="headScripts()">
-    
-    <link rel="image_src" href="https://civinomics.com${c.thumbnail_url}" / ><!--formatted-->
-
     % if c.facebookShare:
         % if c.facebookShare.facebookAppId:
             % if c.facebookShare.facebookAppId:
