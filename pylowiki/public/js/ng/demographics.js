@@ -5,6 +5,21 @@ function demographicsController($scope, $http){
 		type: ''
 	};
 	
+	$scope.test = [
+    	{
+        	'label': 'test',
+        	'value': 10
+    	},
+    	{
+        	'label': 'test2',
+        	'value': 20
+    	},
+    	{
+        	'label': 'test3',
+        	'value': 30
+    	}	
+	]
+	
 	$scope.demographics = {
 	    indexList : {
     	    birthday: 0,
@@ -162,5 +177,25 @@ function demographicsController($scope, $http){
 		listStr += list[i];
 		return listStr;
 	};
+	
+	$scope.makeGraph = function(demoName) {
+    	var selector = "#chart"+$scope.demoName+" svg";
+    	
+    	var data = $scope.test;
+        nv.addGraph(function() {
+        console.log("is this even working");
+          var chart = nv.models.pieChart()
+              .x(function(d) { return d.label })
+              .y(function(d) { return d.value })
+              .showLabels(true);
+        
+            d3.select(selector)
+                .datum(data)
+                .transition().duration(1200)
+                .call(chart);
+        
+          return chart;
+          });
+    };
 	
 };

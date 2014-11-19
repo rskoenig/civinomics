@@ -2,6 +2,7 @@
    import pylowiki.lib.db.workshop     as workshopLib
    import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
+   from pylowiki.controllers.demographics import getDemographicsGraphData
    import pylowiki.lib.db.activity as activityLib
    import pylowiki.lib.db.facilitator   as facilitatorLib
    import pylowiki.lib.utils   as utils
@@ -1000,3 +1001,26 @@
     </div>
     
 </%def>
+
+<%def name="loadDemoGraph(demographic)">
+    <div id="chart${demographic}" ng-controller="demographicsController">
+        <svg style="height:400px"></svg>
+        <script type="text/javascript">
+        var data${demographic} = ${getDemographicsGraphData(c.w['urlCode'], demographic)};
+        nv.addGraph(function() {
+          var chart = nv.models.pieChart()
+              .x(function(d) { return d.label })
+              .y(function(d) { return d.value })
+              .showLabels(true);
+        
+            d3.select("#chart${demographic} svg")
+                .datum(data${demographic})
+              .transition().duration(1200)
+                .call(chart);
+        
+          return chart;
+        });
+    </script>
+
+    </div>
+    </%def>

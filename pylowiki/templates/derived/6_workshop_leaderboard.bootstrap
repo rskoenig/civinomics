@@ -28,6 +28,18 @@
             ${helpers.leaderboard(c.w['phase'])}
         %endif
     </div>
+    <div class="col-xs-12">
+        %if 'demographics' in c.w:
+            Show demographics here. I will first do it without the module to avoid merging conflicts.
+             <div class="well" ng-cloak>
+                <h4 class="well-header grey">Demographics</h4>
+                %for demographic in c.w['demographics'].split('|'):
+                	${helpers.loadDemoGraph(demographic)}
+                %endfor	
+            </div>
+            
+        %endif
+    </div>
 </div>
 
 <%def name="extraScripts2()">
@@ -52,6 +64,9 @@
 </%def>
 
 <%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/vendor/d3.v3.min.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/nv.d3.js')}" type="text/javascript"></script>
+    
     <script src="${lib_6.fingerprintFile('/js/ng/listeners.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/workshop_ideas.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}" type="text/javascript"></script>

@@ -94,6 +94,25 @@ def listize(d):
         result.append(key)
         result.append(value)
     return result
+    
+def getDemographicsGraphData(urlCode, demographic):
+    workshop = workshopLib.getWorkshopByCode(urlCode)
+    if 'demographics' not in workshop:
+        log.info('no demographics')
+
+    allUsersWithDemo = userLib.getAllUsersWithDemographics()
+
+    demoData = []
+    demoRaw = [parseUserDemo(u, demographic) for u in allUsersWithDemo if parseUserDemo(u, demographic)]
+    demo = dictionarize(demoRaw)
+    for k,v in demo.iteritems():
+        thing = {}
+        thing['label'] = str(k)
+        thing['value'] = str(v)
+        demoData.append(thing)
+    #demoData.append({'label': k, 'value': v} for k,v in demo.iteritems())
+    log.info(demoData)
+    return demoData
 
 
 class DemographicsController(BaseController):
