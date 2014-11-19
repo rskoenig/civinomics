@@ -1,0 +1,50 @@
+<div class="row-fluid">    
+  <ul class="thumbnails" ng-cloak>
+    ###
+    ### Carousel
+    ###
+    
+      <li class="span4 wrap-voting-group scope">
+        % if len(c.newWorkshops) <= 3:
+        <div id="myCarousel" class="carousel slide">
+          <ol class="carousel-indicators">
+              <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+              <li data-target="#myCarousel" data-slide-to="1"></li>
+              <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+            <!-- Carousel items -->
+            <div class="carousel-inner">
+              <div class="active item">
+                ${helpers.homeSlide(c.newWorkshops[0])}
+              </div>
+              <div class="item">
+                ${helpers.homeSlide(c.newWorkshops[1])}
+              </div>
+              <div class="item">
+                ${helpers.homeSlide(c.newWorkshops[2])}
+              </div>
+            </div>
+          </div><!-- #myCarousel -->
+          % endif
+        </li>
+
+      ###
+      ### My Places
+      ###
+      <li ng-repeat="geo in geos" class="span4 wrap-voting-group scope" style="background-image:url({{geo.photo}}); background-size: cover; background-position: center center;">
+        <a href="{{geo.href}}">
+          <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+          <table class="lead tile-title">
+            <tr>
+              <td>
+                <img class="thumbnail flag small-flag" src="{{geo.flag}}">
+              </td>
+              <td style="padding-left: 5px;">
+                <span ng-show="!(geo.level == 'Country' || geo.level == 'Postalcode' || geo.level == 'County')">{{geo.level}} of</span> {{geo.name}} <span ng-show="geo.level == 'County'">{{geo.level}}</span>
+              </td>
+            </tr>
+          </table>
+        </a>
+      </li>
+    </ul><!-- thumbnails -->
+</div><!-- row-fluid -->
