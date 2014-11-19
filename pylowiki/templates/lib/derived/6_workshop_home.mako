@@ -961,6 +961,11 @@
           <i class="icon-spinner icon-spin icon-4x"></i><br/>
           Gathering data...
     </div>
+        %if c.w:
+          %if 'rating_criteria' in c.w:
+            <p ng-show="!(loading || sliceLoading)">Click on column headers to sort results.</p>
+          %endif
+        %endif
         <table class="table table-condensed" ng-show="!(loading || sliceLoading)" ng-init="leaderboard.type = '${type}'">
             <thead>
                 <tr>
@@ -968,7 +973,19 @@
                     <th></th>
                     %endif
                     <th></th>
-                    <th><a href="" ng-click="changeSorting('voteCount')">Votes</a></th>
+                    <th>
+                      <a href="" ng-click="changeSorting('voteCount')">
+                        %if c.w:
+                          %if 'rating_criteria' in c.w:
+                            Ratings
+                          % else:
+                            Votes
+                          % endif
+                        % else:
+                          Votes
+                        % endif
+                      </a>
+                    </th>
                     <th><a href="" ng-click="changeSorting('numComments')">Comments</a></th>
                     %if c.w:
                         %if 'rating_criteria' in c.w:
