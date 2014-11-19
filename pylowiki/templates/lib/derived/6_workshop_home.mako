@@ -510,9 +510,6 @@
       <a class="no-highlight" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
         {{workshopTitle}}
       </a>
-      %if c.display:
-        <a ng-click="toggleBrief()" ng-show="!(showBrief)" class="brief"><span class="label label-info">Read Background</span></a>
-      %endif
     </h1>
 </%def>
 
