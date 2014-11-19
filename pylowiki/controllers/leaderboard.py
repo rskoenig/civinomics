@@ -66,6 +66,9 @@ def jsonizeWorkshopInitiative(item):
             dbHelpers.commit(item)
         else:
             entry['voteCount'] = int(item['ups']) + int(item['downs'])
+
+        entry['ups'] = item['ups']
+        entry['downs'] = item['downs']
         
     return entry
 

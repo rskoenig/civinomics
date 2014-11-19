@@ -764,14 +764,27 @@
 <%def name="workshopMenu2()">
   <div class="workshop-menu" ng-cloak> 
     <ul class="nav nav-pills nav-stacked">
-      <li><a ng-click="toggleBrief()">Background</a></li>
+      <li><a ng-click="toggleBrief()">Background {{location.hash}}</a></li>
       <li><a ng-click="toggleInitiatives()">Initiatives</a>
-        <ul class="nav">
+        <!--
+        <ul class="nav" ng-if="showInitiatives">
         % for i in c.workshopInitiatives: 
             <li><a href="/initiative/${i['urlCode']}/${i['url']}" target="_blank">${i['title']}</a></li>
         % endfor
         </ul>
+        -->
       </li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/stats">Leaderboard</a></li>
+    </ul>
+  </div>
+</%def>
+
+<%def name="workshopMenu3()">
+  <div class="workshop-menu" ng-cloak> 
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}#brief">Background</a></li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}#initiatives">Initiatives</a></li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/stats">Leaderboard</a></li>
     </ul>
   </div>
 </%def>
@@ -946,7 +959,7 @@
 <%def name="leaderboard(type = 'initiatives')">
     <div class="well" ng-controller="leaderboardController" ng-cloak>
     
-    <h4 class="well-header grey">Leaderboard</h4>
+    <p class="workshop-metrics-lg">Leaderboard</p>
     <div class="centered" ng-show="loading || sliceLoading" ng-cloak>
           <i class="icon-spinner icon-spin icon-4x"></i><br/>
           Gathering data...
@@ -965,6 +978,8 @@
                             %for criteria in c.w['rating_criteria'].split("|"):
                                <th><a href="" ng-click="changeSorting('${criteria}')">${criteria}</a></th>
                             %endfor
+                        %else:
+                          <th><span class="pull-right">%</span></th>
                         %endif
                     %endif
                 </tr>
@@ -973,18 +988,26 @@
                 <tr ng-repeat="item in leaderboard.list">
                 % if type != 'ideas':
                     <td><a href = '{{item.href}}'>
-                        <img class="thumbnail tight initiative-thumb no-top no-bottom" style="width:51px" src="{{item.thumbnail}}">
+                        <img class="i-photo i-photo-xs" src="{{item.thumbnail}}">
                     </a></td>
                 %endif
                     <td><a ng-href="{{item.href}}">{{item.title}}</a></strong></td>
-                    <td>{{item['voteCount']}}</td>
-                    <td>{{item['numComments']}}</td>
+                    <td class="centered">{{item['voteCount']}}</td>
+                    <td class="centered">{{item['numComments']}}</td>
                         %if c.w:
                             %if 'rating_criteria' in c.w:
                                 %for criteria in c.w['rating_criteria'].split("|"):
-                                    <td>{{item['${criteria}']}}</td>
+                                    <td class="centered">{{item['${criteria}']}}</td>
                                 %endfor
+                            %else:
+                              <td>
+                                <span class="pull-right">
+                                  <strong class="med-green" ng-if="item['ups'] >= item['downs']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                                  <strong class="red" ng-if="item['downs'] > item['ups']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                                </span>
+                              </td>
                             %endif
+
                         %endif
                 </tr>
             </tbody>

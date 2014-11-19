@@ -24,14 +24,7 @@
 </div>
 <div class="row">
   <div class="hidden-xs hidden-sm col-md-2 no-right">
-
-    <div ng-if="showInitiatives || showBrief" ng-cloak>
-      ${helpers.workshopMenu2()}
-    </div>
-    <div ng-if="!(showInitiatives)" ng-cloak>
-      ${helpers.showGoals2(c.goals)}
-    </div>
-
+    ${helpers.workshopMenu2()}
   </div>
   <div class="col-md-10" style="margin-top: 12px;">
 
