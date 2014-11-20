@@ -4099,6 +4099,9 @@ svg{
   .initiative-title{
     font-size: 24px;
   }
+  textarea, textarea.form-control, input, input.form-control{
+    font-size: 16px;
+  }
 }
 
 .markdown img, p.markdown, .markdown p, .markdown span{
