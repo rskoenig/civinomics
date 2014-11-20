@@ -40,49 +40,42 @@
 
                 <div class="well" ng-show="followInitiatives.length >= 1" ng-cloak>
                 	<h4 class="well-header grey">Following</h4>
-                	<div ng-repeat="item in followInitiatives">
-                    	<div ng-init="url=item.url; code=item.urlCode">
-                         	<div ng-controller="follow_unfollowCtrl">
-                           
-                            <table class="activity-item follow" ng-show="following" ng-hide="trashed" ng-cloak>
-                              	<tr>
-	                                <td rowspan="2" class="avatar-cell">
-	                                  <a href = '{{item.href}}'>
-	                                      <div class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div> 
-	                                  </a>
-	                                </td>
-	                                <td colspan="2" class="title-cell">
-	                                  <a class="no-highlight" href = '{{item.href}}'><h5 class="initiative-title listed-item-title">{{item.title}}</h5></a>
-	                                  <div class="btn-group pull-right follow-actions">
-	                                    <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
-	                                      <i class="grey icon-gear"></i>
-	                                    </a>
-	                                    <ul class="dropdown-menu">
-	                                      <li  ng-if="!(item.authorID == '${c.authuser.id}')"><a ng-click="changeFollow()">Unfollow</a></li>
-	                                      <li ng-if="item.authorID == '${c.authuser.id}'"><a href = '{{item.href}}/edit'>Edit</a></li>
-	                                      <li ng-if="item.authorID == '${c.authuser.id}'"><a ng-click="trashThing()">Delete</a></li>
-	                                    </ul>
-	                                  </div>
-	                                </td>
-								</tr>
-								<tr>
-	                                <td class="vote-progress">
-		                            	<small class="grey">{{item.voteCount}} votes</small>
-										<div>
-										  <div class="progress vote-progress">
-										    <div class="progress-bar" role="progress-bar" style="width: {{100 * item.voteCount / item.goal | number:0}}%;"></div>
-										  </div>
-										  <small ng-if="item.goal == 100" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this idea to become an initiative.">{{item.goal - item.voteCount | number}} NEEDED</small>
-										  <small ng-if="!(item.goal == 100)" class="grey pull-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</small>
-										</div>
-	                                </td>
-	                                <td class="text-right">
-	                                  <small>
-	                                  <span class="green">{{100 * item.ups / item.voteCount | number:0}}% YES</span> | <span class="red">{{100 * item.downs / item.voteCount | number:0}}% NO</span>
-	                                  </small>
-	                                </td>
-								</tr>
-                            </table>
+                	<div ng-init="url=item.url; code=item.urlCode">
+                     	<div ng-controller="follow_unfollowCtrl">
+	                     	<table class="table table-condensed">
+					            <thead>
+					                <tr>
+					                    <th colspan="2">Title</th>
+					                    <th>Votes</th>
+					                    <th><span class="pull-right">%</span></th>
+					                </tr>
+					            </thead>
+					            <tbody>
+					                <tr ng-repeat="item in followInitiatives" ng-show="following" ng-hide="trashed" ng-cloak>
+					                	<td><img class="i-photo i-photo-xs" ng-src="{{item['thumbnail']}}"/></td>
+					                    <td>
+					                    	<a class="no-highlight" ng-href="/initiative/{{item['urlCode']}}/{{item['url']}}">{{item['title']}}</a>
+					                    	<!--
+					                    	<div class="btn-group" style>
+			                                    <a class="btn clear dropdown-toggle" data-toggle="dropdown" href="#">
+			                                      <i class="grey icon-gear"></i>
+			                                    </a>
+			                                    <ul class="dropdown-menu">
+			                                      <li  ng-if="!(item.authorID == '${c.authuser.id}')"><a ng-click="changeFollow()">Unfollow</a></li>
+			                                      <li ng-if="item.authorID == '${c.authuser.id}'"><a href = '{{item.href}}/edit'>Edit</a></li>
+			                                      <li ng-if="item.authorID == '${c.authuser.id}'"><a ng-click="trashThing()">Delete</a></li>
+			                                    </ul>
+			                                 </div>
+			                                 -->
+					                    </td>
+					                    <td>{{item['voteCount']}}</td>
+					                    <td>
+					                    	<strong class="med-green" ng-if="item['ups'] >= item['downs']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+					                    	<strong class="red" ng-if="item['downs'] > item['ups']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+					                    </td>
+					                </tr>
+					            </tbody>
+					        </table>
 						</div><!-- follow_unfollowCtrl -->
 					</div><!-- ng-init -->
 				</div><!-- ng-repeat -->
@@ -143,4 +136,34 @@
 		  </div><!-- electionsHomeController -->
 		</div>
 	% endif
+</%def>
+
+<%def name="leaderboardHome()">
+    <div class="well" ng-controller="leaderboardController" ng-init="leaderboard.type = 'initiatives'" ng-cloak>
+    <h4 class="well-header grey">Leaderboard</h4>
+    
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="2">Title</th>
+                    <th>Votes</th>
+                    <th><span class="pull-right">%</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in leaderboard.list">
+                	<td><img class="i-photo i-photo-xs" ng-src="{{item['thumbnail']}}"/></td>
+                    <td>
+                    	<a class="no-highlight" ng-href="/initiative/{{item['urlCode']}}/{{item['url']}}">{{item['title']}}</a>
+                    </td>
+                    <td>{{item['voteCount']}}</td>
+                    <td>
+                    	<strong class="med-green" ng-if="item['ups'] >= item['downs']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                    	<strong class="red" ng-if="item['downs'] > item['ups']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p><a href="#" ng-if="!firstSector" ng-click="getSector('less')">previous 10</a> <a href="#" ng-click="getSector('more')">next 10</a> <!--| <a href="#">show all</a> --></p>
+    </div>
 </%def>

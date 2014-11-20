@@ -6,9 +6,9 @@ from pylons import tmpl_context as c, session, config, request
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from sqlalchemy import or_
+from sqlalchemy import or_, not_
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, greaterThan_characteristic as gtc
+from dbHelpers import with_characteristic as wc, with_key as wk, with_characteristic_like as wcl, greaterThan_characteristic as gtc, greaterThan_characteristic as gtc
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
@@ -57,6 +57,20 @@ def getAllUsers(disabled = '0', deleted = '0'):
     except:
         return False
         
+def getAllUsersWithDemographics(disabled = '0', deleted = '0'):
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wk('demographics')))\
+        .filter(Thing.data.any(not_(wc('demographics', '-1'))))\
+        .all()
+
+def getNumberOptedOutUsers(disabled = '0', deleted = '0'):
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('demographics', '-1')))\
+        .count()
 
 def getAllCurators(disabled = '0', deleted = '0'):
     try:

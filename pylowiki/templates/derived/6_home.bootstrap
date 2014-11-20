@@ -89,7 +89,7 @@
       %endif
 
       ${helpers.elections()}
-      
+      ${helpers.leaderboardHome()}
       ${helpers.followingInitiatives()}
 
     </div><!-- /col-sm-4 -->
@@ -97,6 +97,7 @@
 </div>
 
 <%def name="headScripts()">
+  <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/leaderboard.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/activity.js')}"></script>
   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/following.js')}"></script>

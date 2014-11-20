@@ -510,9 +510,6 @@
       <a class="no-highlight" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
         {{workshopTitle}}
       </a>
-      %if c.display:
-        <a ng-click="toggleBrief()" ng-show="!(showBrief)" class="brief"><span class="label label-info">Read Background</span></a>
-      %endif
     </h1>
 </%def>
 
@@ -764,14 +761,27 @@
 <%def name="workshopMenu2()">
   <div class="workshop-menu" ng-cloak> 
     <ul class="nav nav-pills nav-stacked">
-      <li><a ng-click="toggleBrief()">Background</a></li>
+      <li><a ng-click="toggleBrief()">Background {{location.hash}}</a></li>
       <li><a ng-click="toggleInitiatives()">Initiatives</a>
-        <ul class="nav">
+        <!--
+        <ul class="nav" ng-if="showInitiatives">
         % for i in c.workshopInitiatives: 
             <li><a href="/initiative/${i['urlCode']}/${i['url']}" target="_blank">${i['title']}</a></li>
         % endfor
         </ul>
+        -->
       </li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/stats">Leaderboard</a></li>
+    </ul>
+  </div>
+</%def>
+
+<%def name="workshopMenu3()">
+  <div class="workshop-menu" ng-cloak> 
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}#brief">Background</a></li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}#initiatives">Initiatives</a></li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/stats">Leaderboard</a></li>
     </ul>
   </div>
 </%def>
@@ -920,14 +930,7 @@
 
     <div class="well" ng-show="showInitiatives" ng-cloak>
       <p class="workshop-metrics-lg">Initiatives</p>
-      <p>The following initiatives are submited to the Water Supply Advisory Committee by members of the public. Please rate them in terms of the following critiera:
-
-        <ul>
-          <li><strong>Effectiveness:</strong> The expected decrease in demand OR increase in storage or supply related to this proposal.</li>
-          <li><strong>Practicability:</strong> Cost, community and political support, regulatory considerations.</li>
-          <li><strong>Environment:</strong> Environmental consequences, considering energy intensity, and riverine, marine, and terrestrial benefits or impacts.</li>
-          <li><strong>Local Economy:</strong> Potential to create sustainable local jobs in the planning, implementation, and support of the proposal.</li>
-        </ul>
+      <p>In the initiatives phase we develop ideas into concrete proposals that can be compared based on a common set of metrics.
       </p>
     </div>
 
@@ -950,6 +953,80 @@
     </div>
 </%def>
 
+<%def name="leaderboard(type = 'initiatives')">
+    <div class="well" ng-controller="leaderboardController" ng-cloak>
+    
+    <p class="workshop-metrics-lg">Leaderboard</p>
+    <div class="centered" ng-show="loading || sliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i><br/>
+          Gathering data...
+    </div>
+        %if c.w:
+          %if 'rating_criteria' in c.w:
+            <p ng-show="!(loading || sliceLoading)">Click on column headers to sort results.</p>
+          %endif
+        %endif
+        <table class="table table-condensed" ng-show="!(loading || sliceLoading)" ng-init="leaderboard.type = '${type}'">
+            <thead>
+                <tr>
+                    % if type != 'ideas':
+                    <th></th>
+                    %endif
+                    <th></th>
+                    <th>
+                      <a href="" ng-click="changeSorting('voteCount')">
+                        %if c.w:
+                          %if 'rating_criteria' in c.w:
+                            Ratings
+                          % else:
+                            Votes
+                          % endif
+                        % else:
+                          Votes
+                        % endif
+                      </a>
+                    </th>
+                    <th><a href="" ng-click="changeSorting('numComments')">Comments</a></th>
+                    %if c.w:
+                        %if 'rating_criteria' in c.w:
+                            %for criteria in c.w['rating_criteria'].split("|"):
+                               <th><a href="" ng-click="changeSorting('${criteria}')">${criteria}</a></th>
+                            %endfor
+                        %else:
+                          <th><span class="pull-right">%</span></th>
+                        %endif
+                    %endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in leaderboard.list">
+                % if type != 'ideas':
+                    <td><a href = '{{item.href}}'>
+                        <img class="i-photo i-photo-xs" src="{{item.thumbnail}}">
+                    </a></td>
+                %endif
+                    <td><a ng-href="{{item.href}}">{{item.title}}</a></strong></td>
+                    <td class="centered">{{item['voteCount']}}</td>
+                    <td class="centered">{{item['numComments']}}</td>
+                        %if c.w:
+                            %if 'rating_criteria' in c.w:
+                                %for criteria in c.w['rating_criteria'].split("|"):
+                                    <td class="centered">{{item['${criteria}']}}</td>
+                                %endfor
+                            %else:
+                              <td>
+                                <span class="pull-right">
+                                  <strong class="med-green" ng-if="item['ups'] >= item['downs']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                                  <strong class="red" ng-if="item['downs'] > item['ups']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                                </span>
+                              </td>
+                            %endif
 
-
-
+                        %endif
+                </tr>
+            </tbody>
+        </table>
+        <p><a href="#" ng-if="!firstSector" ng-click="getSector('less')">previous 10</a> <a href="#" ng-click="getSector('more')">next 10</a> </p>
+    </div>
+    
+</%def>

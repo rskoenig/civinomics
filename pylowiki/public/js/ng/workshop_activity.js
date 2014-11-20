@@ -1,5 +1,14 @@
 
-function activityWorkshopController($scope, $http) {
+function activityWorkshopController($scope, $http, $location) {
+
+	$scope.location = $location.absUrl()
+   	// need to get to the bottom of why angular is injecting a '/' at the end of the url this hack works in the meantime...
+	var splitLocation = $scope.location.split("#")
+	if (splitLocation.length > 1) {
+		$scope.hash = splitLocation[1]
+		$scope.hash = $scope.hash.replace('/', '')
+	};
+
     $scope.addThing = 'Idea';
     if ($scope.allowIdeas == '0') {
         $scope.addThing = 'Discussion';
@@ -465,7 +474,7 @@ function activityWorkshopController($scope, $http) {
 	} else if ($scope.phase == 'ideas'){
 		$scope.ideasClass = 'active-phase';
 		$scope.toggleIdeas();
-	} else if ($scope.phase == 'initiatives'){
+	} else if ($scope.phase == 'initiatives' || $scope.hash == 'initiatives'){
 		$scope.initiativesClass = 'active-phase';
 		$scope.toggleInitiatives();
 	} else if ($scope.phase == 'final rating'){
@@ -477,6 +486,10 @@ function activityWorkshopController($scope, $http) {
 	} else if ($scope.phase == 'impact'){
 		$scope.impactClass = 'active-phase';
 		$scope.toggleImpact();
+	};
+
+	if ($scope.hash == 'brief'){
+		$scope.toggleBrief();
 	};
 
 }

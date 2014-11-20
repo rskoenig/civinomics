@@ -1278,7 +1278,7 @@
          user = userLib.getUserByID(user.owner)
       if user.objType == 'listener':
          user = userLib.getUserByEmail(user['email'])
-      imgStr += '<a href="'
+      imgStr += '<a class="hidden-print" href="'
       imgStr += userLink(user, raw=True)
       imgStr += '"'
       if 'linkClass' in kwargs:

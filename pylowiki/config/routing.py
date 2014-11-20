@@ -157,6 +157,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/get{end:/?}', controller='demographics', action='checkWorkshopDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/set{end:/?}', controller='demographics', action='setUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/check{end:/?}', controller='demographics', action='checkUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/export{end:/?}', controller='demographics', action='exportCsv', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     #Workshop subcategory tags
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/tags/add/{tags}{end:/?}',controller='workshop', action='addSubcategoryTags', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', tags = '{tags}')
@@ -517,6 +518,7 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/show{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
+    map.connect('/initiative/{id1}/{id2}/printComments{end:/?}', controller = 'initiative', action = 'initiativePrintComments', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/photo/upload/handler{end:/?}', controller = 'initiative', action = 'photoUploadHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{code}/{id2}/follow/handler{end:/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/initiative/{id1}/{id2}/resourceEdit/{id3}{end:/?}', controller = 'initiative', action = 'resourceEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
@@ -527,6 +529,22 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/json{end:/?}', controller = 'initiative', action = 'getJson', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/initiative/{handler:handler/?}', controller = 'initiative', action = 'initiativeNewHandler', parentObj='workshop', parentCode = '{parentCode}')
+    
+    ################
+    # Leaderboards #
+    ################
+    
+    #Initiatives
+    map.connect('/leaderboard/{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
+    map.connect('/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}')
+    map.connect('/leaderboard/initiatives/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}', limit = '{limit}')
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/ideas/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}/{sortBy}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}', sortBy = '{sortBy}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/stats', controller="workshop", action="renderWorkshopLeaderboard", workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     ################
     # Messaging    #
@@ -581,6 +599,7 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    
     ################
     # Browse       #
     ################

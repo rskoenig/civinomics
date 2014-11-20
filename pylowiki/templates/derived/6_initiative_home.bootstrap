@@ -6,6 +6,7 @@
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 
 <% lib.return_to() %>
+
     ${ihelpers.showDescription()}
 
     % if c.initiative['funding_summary']:
@@ -81,11 +82,11 @@
     %endif
 
     <hr>
-    <h3 id="resources" class="initiative-title">Resources ${ihelpers.addResourceButton()}</h3>
+    <h3 id="resources" class="initiative-title">Resources <span class="hidden-print">${ihelpers.addResourceButton()}<span></h3>
     ${ihelpers.listResources()}
     <hr>
     <div id="updates">
-        <h3 class="initiative-title bottom-space-md">Updates ${ihelpers.addUpdateButton()}</h3>
+        <h3 class="initiative-title bottom-space-md">Updates <span class="hidden-print">${ihelpers.addUpdateButton()}</span></h3>
         ${ihelpers.showUpdateList()}
     </div>
 
