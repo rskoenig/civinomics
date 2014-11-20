@@ -828,18 +828,25 @@
         % if readonly == "1":
             Voting Closed
         % endif
-        <div ng-cloak>
-            <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
-            <small><span ng-if="item.readOnly == '1'">| <span class="green">{{(item.ups / item.voteCount * 100) | number:0}}% YES</span> | <span class="red">{{(item.downs / item.voteCount * 100) | number:0}}% NO</span></span></small> 
-            <div class="progress" style="height: 12px; margin-bottom: 5px;">
-                <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 text-right">
-                    <small ng-if="item.goal == 100" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
-                    <small ng-if="!(item.goal == 100)" class="grey text-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+        <div class="row text-center" ng-cloak>
+            <div class="col-xs-12">
+                <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
+                <small><span ng-if="item.readOnly == '1'">| <span class="green">{{(item.ups / item.voteCount * 100) | number:0}}% YES</span> | <span class="red">{{(item.downs / item.voteCount * 100) | number:0}}% NO</span></span></small> 
+
+                <!--
+                <div class="progress" style="height: 12px; margin-bottom: 5px;">
+                    <div class="progress-bar" role="progress-bar" style="width: {{100 * totalVotes / goal | number:0}}%;"></div>
                 </div>
-            <div>
+                <div class="row">
+                    <div class="col-xs-12 text-right">
+                        <small ng-if="item.goal == 100" class="grey clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes needed for this initiative to advance.">{{goal - totalVotes | number:0}} NEEDED</small>
+
+                        <small ng-if="!(item.goal == 100)" class="grey text-right clickable" tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{goal - totalVotes | number}} NEEDED</small>
+
+                    </div>
+                </div>
+                -->
+            </div>
         </div>
     </div>
 </%def>
@@ -902,7 +909,12 @@
                 -->
                 <div class="col-sm-12">
                     <small class="grey">
-                        <span ng-if="!condensed">{{totalVotes}} votes<span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> </span> </span>
+                        <span ng-if="!condensed">{{totalVotes}} vote<span ng-if="totalVotes > 1">s</span>
+                            <!--
+                            <span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> 
+                            </span> 
+                            -->
+                        </span>
                         <span ng-if="voted || item.readOnly == '1'"><span ng-if="!condensed">| </span><span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
                     </small>
                 </div>

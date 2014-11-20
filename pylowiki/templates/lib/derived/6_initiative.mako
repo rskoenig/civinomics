@@ -91,23 +91,26 @@
 
                             <div id="iControlCollapse" ng-class="{in: !xs}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="iControlCollapse">
                                 ${iControlPanelInner()}
-                            </div>
 
                         % endif
 
-                        <hr class="narrow">
-                        <div class="centered">
-                            % if c.editInitiative:
-                                <a class="btn btn-default" target="civ-preview-${c.initiative['urlCode']}" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
-                            % elif c.iPrivs:
-                                <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
-                                <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
-                            % endif
-                            % if c.initiative['public'] == '1' and not c.editInitiative:
-                                ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
-                                ${ihelpers.watchButton(c.initiative)}
-                            % endif
-                        </div>
+                                <hr class="narrow">
+                                <div class="centered">
+                                    % if c.editInitiative:
+                                        <a class="btn btn-default" target="civ-preview-${c.initiative['urlCode']}" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show"><strong>View Initiative</strong></a>
+                                    % elif c.iPrivs:
+                                        <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit"><strong>Edit Initiative</strong></a>
+                                        <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
+                                    % endif
+                                    % if c.initiative['public'] == '1' and not c.editInitiative:
+                                        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
+                                        ${ihelpers.watchButton(c.initiative)}
+                                    % endif
+                                </div>
+
+                        % if c.initiative['public'] == '1':
+                            </div>
+                        % endif
 
                     % endif
 
