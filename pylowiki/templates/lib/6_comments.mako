@@ -153,51 +153,56 @@
             return
     %>
     <div class="spacer"></div>
-    <form action="/comment/add/handler" id="commentAddHandler_root">
+    <form action="/comment/add/handler" id="commentAddHandler_root" class="bottom-space-md">
         <input type="hidden" id="type" name="type" value="${thing.objType}" />
         <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
         <input type="hidden" name="parentCode" value="0" />
         <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-        <div class="row">
-            <div class="col-sm-1">
-                ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
-            </div>
-            <div class="col-sm-11">
-                <textarea rows="2" class="col-sm-12 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea>
-            </div>
-        </div><!-- row -->
-        % if thing.objType == 'idea' or thing.objType == 'initiative':
-            <% log.info("thing type is %s"%thing.objType) %>
-            <div class="row top-space">
-                <div class="col-sm-1">
-                </div>
-                <div class="col-sm-11">
-                    <small>
-                        <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="neutral" checked> Neutral
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="yes"> Pro
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="no"> Con
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="question"> Question
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type=radio name="commentRole" value="suggestion"> Suggestion
-                        </span>
-                    </small>
-                    <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button></span>
-                </div><!- col-sm-11 -->
-            </div><!-- row -->
-        % else:
-        <div class="row">
-            <span class="help-block comment-help-block">Please keep comments civil and on-topic.
-            <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button></span>
-        </div><!-- row -->
-        % endif
+        <table class="full-width">
+            <tr>
+                <td class="comment-avatar-cell" style="padding-top:0;">
+                    ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+                </td>
+                <td>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span ng-init="commentText = ''"></span>
+                            <textarea ng-model="commentText" rows="2" class="col-sm-12 form-control" name="comment-textarea" placeholder="Add a comment..."></textarea>
+                        </div>
+                    </div><!-- row -->
+                    % if thing.objType == 'idea' or thing.objType == 'initiative':
+                        <% log.info("thing type is %s"%thing.objType) %>
+                        <div class="row top-space" ng-show="commentText != ''">
+                            <div class="col-sm-12">
+                                <small>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="neutral" checked> Neutral
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="yes"> Pro
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="no"> Con
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="question"> Question
+                                    </span>
+                                    <span class="radio inline right-space">
+                                        <input type=radio name="commentRole" value="suggestion"> Suggestion
+                                    </span>
+                                </small>
+                                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button></span>
+                            </div><!- col-sm-11 -->
+                        </div><!-- row -->
+                    % else:
+                    <div class="row">
+                        <span class="help-block comment-help-block">Please keep comments civil and on-topic.
+                        <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button></span>
+                    </div><!-- row -->
+                    % endif
+                </td>
+            </tr>
+        </table>
     </form>
 </%def>
 
@@ -341,7 +346,7 @@
                     headerClass += " favor"
 
                 elif comment['commentRole'] == 'question':
-                    roleClass += "question"
+                    roleClass += "text-primary"
                     roleLabel += "Question"
                     headerClass += " question"
 
@@ -363,23 +368,33 @@
         <!--<button class="panel-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${commentID}" href="#${collapseID}">
             Hide
         </button> -->
-        <%
-            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar no-bottom no-top", linkClass="inline")
-            lib_6.userLink(author, className="inline")
-            role = ''
-            roles = ['admin', 'facilitator', 'listener']
-            if comment['addedAs'] in roles:
-                role = '(%s)' % comment['addedAs']
-        %>
-        ${role} from ${lib_6.userGeoLink(author, comment=True)}
-        <small class="grey">
-            <% date = timeSince(comment.date) %>
-            ${date} ago
-        </small>
+        <table>
+            <tr>
+                <td>
+                    <%
+                        lib_6.userImage(author, className="inline avatar small-avatar comment-avatar no-bottom no-top", linkClass="inline")
+                    %>
+                </td>
+                <td>   
+                    <% 
+                        lib_6.userLink(author, className="inline")
+                        role = ''
+                        roles = ['admin', 'facilitator', 'listener']
+                        if comment['addedAs'] in roles:
+                            role = '(%s)' % comment['addedAs']
+                    %>
+                    ${role} from ${lib_6.userGeoLink(author, comment=True)}
+                    <small class="grey">
+                        <% date = timeSince(comment.date) %>
+                        ${date} ago
+                    </small>
         
-        % if roleClass != '':
-            <span class="pull-right ${roleClass}">${roleLabel}</span>
-        % endif
+                    % if roleClass != '':
+                        <span class="left-space ${roleClass}">${roleLabel}</span>
+                    % endif
+                </td>
+            </tr>
+        </table>
         <span class="pull-right disabledComment-notice">
             <small>
             % if parent:
@@ -416,13 +431,7 @@
     <div id="${collapseID}" class="${thisClass}">
         <div class="panel-body">
             <div class="row">
-                <div class="col-xs-1">
-                    <%
-                        if c.thing['disabled'] == '0':
-                            lib_6.upDownVote(comment)
-                    %>
-                </div> <!--/.col-xs-1-->
-                <div class="col-xs-11 comment-data">
+                <div class="col-xs-12 comment-data">
                     ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK, render_flags = misaka.HTML_SKIP_IMAGES) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
@@ -460,7 +469,10 @@
             else:
                 readonly = '0'
         %>
-        <div class="col-sm-11 col-sm-offset-1">
+        <div class="col-xs-12">
+            % if c.thing['disabled'] == '0':
+                <span class="right-space-md">${lib_6.upDownVoteHorizontal(comment)}</span>
+            % endif
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
                     % if readonly == '0':

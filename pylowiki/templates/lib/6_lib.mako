@@ -632,6 +632,82 @@
    </div>
 </%def>
 
+<%def name="upDownVoteHorizontal(thing)">
+      % if thing['disabled'] == '1' or thing.objType == 'revision':
+         </div> <!-- /.voteWrapper -->
+         <% return %>
+      % endif
+      <% rating = int(thing['ups']) - int(thing['downs']) %>
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
+         <% 
+            rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            if rated:
+               if rated['amount'] == '1':
+                  voted = "voted"
+                  commentClass = 'upVote'
+                  voteClass = 'glyphicon glyphicon-chevron-up voted'
+               else:
+                  voted = ""
+                  commentClass = 'upVote'
+                  voteClass = 'glyphicon glyphicon-chevron-up'
+            else:
+               voted = ""
+               commentClass = 'upVote'
+               voteClass = 'glyphicon glyphicon-chevron-up'
+               
+            if 'readOnly' in thing:
+                readonly = thing['readOnly']
+            else:
+                readonly = "0"
+         %>
+         % if readonly == "1":
+            <a href="#" class="${voted}" style="color: #b6b6b6">
+         % elif thing.objType != 'comment':
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${voted} ${commentClass}">
+         % else:
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${voted} ${commentClass}">
+         % endif
+         <i class="${voteClass}"></i>
+         </a>
+         <span class="centered chevron-score"> ${rating}</span>
+         <%
+            if rated:
+               if rated['amount'] == '-1':
+                  voted = "voted"
+                  commentClass = 'downVote'
+                  voteClass = 'glyphicon glyphicon-chevron-down voted'
+               else:
+                  voted = ""
+                  commentClass = 'downVote'
+                  voteClass = 'glyphicon glyphicon-chevron-down'
+            else:
+               voted = ""
+               commentClass = 'downVote'
+               voteClass = 'glyphicon glyphicon-chevron-down'
+         %>
+         % if readonly == "1":
+            <a href="#" class="${voted}" style="color: #b6b6b6">
+         % elif thing.objType != 'comment':
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${voted} ${commentClass}">
+         % else:
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${voted} ${commentClass}">
+         % endif
+         <i class="${voteClass}"></i>
+         </a>
+         % if readonly == "1":
+            <span class="centered"><small>Voting Complete</small></span>
+         % endif
+      % else:
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+         <i class="icon-chevron-sign-up icon-2x"></i>
+         </a>
+         <span class="centered chevron-score"> ${rating}</span>
+         <a href="#signupLoginModal" data-toggle='modal' rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+         <i class="icon-chevron-sign-down icon-2x"></i>
+         </a>
+      % endif
+</%def>
+
 <%def name="showPositions(thing)">
     <% 
         pStr = ""
