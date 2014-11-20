@@ -153,7 +153,7 @@
             return
     %>
     <div class="spacer"></div>
-    <form class="hidden-print" action="/comment/add/handler" id="commentAddHandler_root" class="bottom-space-md">
+    <form class="hidden-print bottom-space-md" action="/comment/add/handler" id="commentAddHandler_root">
         <input type="hidden" id="type" name="type" value="${thing.objType}" />
         <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
         <input type="hidden" name="parentCode" value="0" />
@@ -384,7 +384,7 @@
                         if comment['addedAs'] in roles:
                             role = '(%s)' % comment['addedAs']
                     %>
-                    <span class="visible-print-inline right-space-md">${author['name']}</span>
+                    <span class="visible-print right-space-md">${author['name']}</span>
                     <span class="hidden-print">${role} from ${lib_6.userGeoLink(author, comment=True)}</span>
                     <small class="grey">
                         <% date = timeSince(comment.date) %>
