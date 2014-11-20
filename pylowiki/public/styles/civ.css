@@ -3421,7 +3421,7 @@ margin-right: -13px;
 }
 
 .initiative-title{
-  /*text-transform:uppercase;*/
+  margin-top: 10px;
 }
 
 @media (max-width: 767px){
@@ -4071,13 +4071,34 @@ svg{
 }
 
 .policy-cover{
-  height: 300px;
+  min-height: 300px;
   background-size: cover;
   background-position: center center;
   position: absolute;
   z-index: 0;
   width: 100%;
   margin-top: -10px;
+  padding-bottom: 20px
+}
+.policy-cover-inner{
+  width: 100%;
+  min-height:300px;
+  padding-bottom: 20px
+}
+.policy-cover-inner h4 .parent-title{
+  font-size: .75em;
+}
+
+@media (max-width: 768px){
+  .policy-cover{
+    min-height: 300px;
+  }
+  .policy-cover-inner{
+    min-height:300px;
+  }
+  .initiative-title{
+    font-size: 24px;
+  }
 }
 
 .markdown img, p.markdown, .markdown p, .markdown span{

@@ -55,7 +55,7 @@
         ${lib_6.showSubcategoryTags(c.initiative)}
         %endif
         % if 'workshopCode' in c.initiative and c.initiative['workshopCode']:
-            <a class="no-highlight overlay" href="/workshop/${c.initiative['workshopCode']}/${c.initiative['workshop_url']}"> / ${c.initiative['workshop_title']}</a>
+            <a class="no-highlight overlay parent-title" href="/workshop/${c.initiative['workshopCode']}/${c.initiative['workshop_url']}"> / ${c.initiative['workshop_title']}</a>
         % endif
         
     </h4>
