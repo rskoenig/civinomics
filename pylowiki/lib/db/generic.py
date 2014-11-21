@@ -75,6 +75,7 @@ def linkChildToParent(child, parent):
         child['initiative_tags'] = parent['tags']
         child['initiative_scope'] = parent['scope']
         child['initiative_title'] = parent['title']
+        child['initiativeCode'] = parent['urlCode']
     if 'initiativeCode' in parent and 'initiative_url' in parent and child.objType != 'rating':
         child['initiativeCode'] = parent['initiativeCode']
         child['initiative_url'] = parent['initiative_url']
@@ -90,13 +91,13 @@ def linkChildToParent(child, parent):
         child['meeting_scope'] = parent['meeting_scope']
     if parent.objType == 'election':
         child['election_url'] = parent['url']
-        child['election_public'] = parent['election_public']
+        child['election_published'] = parent['election_published']
         child['election_scope'] = parent['scope']
         child['election_date'] = parent['electionDate']
     if 'electionCode' in parent and 'election_url' in parent and child.objType != 'rating':
         child['electionCode'] = parent['electionCode']
         child['election_url'] = parent['election_url']
-        child['election_public'] = parent['election_public']
+        child['election_published'] = parent['election_published']
         child['election_scope'] = parent['election_scope']
         child['election_date'] = parent['election_date']
     if parent.objType == 'ballot':
@@ -119,6 +120,8 @@ def linkChildToParent(child, parent):
         child['workshop_url'] = parent['workshop_url']
         if 'workshopCode' in parent:
             child['workshopCode'] = parent['workshopCode']
+    if 'workshop_subcategory_tags' in parent:
+        child['workshop_subcategory_tags'] = parent['workshop_subcategory_tags']
     if parent.objType == 'workshop':
         child['workshop_title'] = parent['title']
         child['workshop_url'] = parent['url']
@@ -178,13 +181,35 @@ def getChildrenOfParent(parent):
     except:
         return False
         
+def getChildrenOfParentWithTypes(parent, thingTypes = None):
+    parentCode = parent.objType.replace("Unpublished", "")  + 'Code'
+    if thingTypes is None:
+        thingTypes = ['initiative', 'resource', 'idea']
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+            .filter(Thing.objType.in_(thingTypes))\
+            .all()
+    except:
+        return False
+        
+def updateChildrenCaracteristic(thing, caracteristic):
+    value = thing[caracteristic]
+    children = getChildrenOfParentWithTypes(thing)
+    log.info(len(children))
+    for child in children:
+        child[caracteristic] = value
+        commit(child)
+
 def setReadOnly(thing, value = '1'):
     thing['readOnly'] = value
     commit(thing)
     children = getChildrenOfParent(thing)
-    for child in children:
-        child['readOnly'] = value
-        commit(child)
+    if children:
+        for child in children:
+            child['readOnly'] = value
+            commit(child)
+
         
 def getThingByID(thingID):
     try:

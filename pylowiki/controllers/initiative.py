@@ -18,6 +18,7 @@ import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.json            as jsonLib
 
 from pylowiki.lib.facebook          import FacebookShareObject
@@ -31,16 +32,19 @@ log = logging.getLogger(__name__)
 
 class InitiativeController(BaseController):
     
-    def __before__(self, action, id1 = None, id2 = None, id3 = None):
+    def __before__(self, action, id1 = None, id2 = None, id3 = None, parentObj = None, parentCode = None):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson']
-        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson', 'initiativePrintComments']
+        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler', 'promoteIdea']
         c.saveMessageClass = 'alert-success'
         c.error = False
-        if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
-            c.user = userLib.getUserByCode(id1)
+        if action == 'initiativeNewHandler' or action == 'promoteIdea':
+            if id1 is not None:
+                c.user = userLib.getUserByCode(id1)
+            elif c.authuser:
+                c.user = c.authuser
             if not c.user:
                 abort(404)
         elif action in existingList and id1 is not None and id2 is not None:
@@ -88,7 +92,20 @@ class InitiativeController(BaseController):
 
         # only the author or an admin can edit 
         c.iPrivs = False
-
+        if c.initiative:
+            if 'workshop_subcategory_tags' in c.initiative and c.initiative['workshop_subcategory_tags'] is not None:
+                if 'subcategory_tags' in c.initiative and c.initiative['subcategory_tags'] is not None:
+                    tempList = c.initiative['subcategory_tags'].split("|")
+                    for tag in tempList:
+                        if tag not in c.initiative['workshop_subcategory_tags'].split("|"):
+                            tempList.remove(tag)
+                    if len(tempList) == 0 :
+                        c.initiative['subcategory_tags'] = False
+                    else:
+                        c.initiative['subcategory_tags'] = "|".join(tempList)
+            else:
+                log.info("Nope")
+            
         facilitator = False
         f = facilitatorLib.getFacilitatorsByUserAndInitiative(c.authuser, c.initiative)
         if f != False and f != 'NoneType' and len(f) != 0:
@@ -162,21 +179,63 @@ class InitiativeController(BaseController):
         userLib.setUserPrivs()
 
 
-    def initiativeNewHandler(self):
-        if 'initiativeTitle' in request.params:
-            title = request.params['initiativeTitle']
+    def promoteIdea(self):
+        # store request.params['reason'] somewhere 
+        # functionality to message author of the (now) initiative
+        # functionality to mark idea as promoted and make it read only
+        log.info("Hey author! Your idea has been promoted!")
+        self.initiativeNewHandler()
+
+        return render('/derived/6_initiative_edit.bootstrap')
+
+
+    def initiativeNewHandler(self, parentObj = None, parentCode = None):
+        if request.params:
+            payload = request.params  
+        elif request.body and json.loads(request.body):
+            payload = json.loads(request.body)
+        else:
+            payload = ''
+
+        if parentObj == 'workshop':
+            if parentCode != None:
+                wCode = parentCode
+                workshop = workshopLib.getWorkshopByCode(wCode)
+        elif 'workshopCode' in payload:
+            wCode = payload['workshopCode']
+            workshop = workshopLib.getWorkshopByCode(wCode)
+        else:
+            workshop = None
+
+        if 'initiativeTitle' in payload:
+            title = payload['initiativeTitle']
+        elif 'title' in payload:
+            title = payload['title']
         else:
             title = 'New Initiative'
             
-        if 'initiativeDescription' in request.params:
-            description = request.params['initiativeDescription']
+        if 'initiativeDescription' in payload:
+            description = payload['initiativeDescription']
+        elif 'text' in payload:
+            description = payload['text']
         else:
             description = ''
 
+        if 'tags' in payload:
+            tags = payload['tags']
+        elif parentObj:
+            if parentObj == 'workshop':
+                tags = workshop['workshop_category_tags']
+        else:
+            tags = ''
+
         # the scope if initiative is created from a geoSearch page
-        if 'initiativeRegionScope' in request.params:
-            scope = request.params['initiativeRegionScope']
-            
+        if 'initiativeRegionScope' in payload:
+            scope = payload['initiativeRegionScope']
+        elif parentObj:
+            if parentObj == 'workshop':
+                if 'workshop_public_scope' in workshop:
+                    scope = workshop['workshop_public_scope']
         else:
             scope = '0|0|united-states|0|0|0|0|0|0|0'
             
@@ -184,7 +243,8 @@ class InitiativeController(BaseController):
 
         c.thumbnail_url = "/images/icons/generalInitiative.jpg"
         c.bgPhoto_url = "'" + c.thumbnail_url + "'"
-        
+
+
         # shortcut scoping for 'My County, My City, My Zip Code'
         #if 'initiativeScope' in request.params:
         #  level = request.params['initiativeScope']
@@ -207,7 +267,7 @@ class InitiativeController(BaseController):
         
             
         #create the initiative
-        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, goal = goal)
+        c.initiative = initiativeLib.Initiative(c.user, title, description, scope, tag = tags, workshop = workshop, goal = goal)
         log.info('%s goal is %s' % (c.initiative['title'], c.initiative['goal']))
         
         session['facilitatorInitiatives'].append(c.initiative['urlCode'])
@@ -293,6 +353,8 @@ class InitiativeController(BaseController):
         if 'public' in request.params and request.params['public'] == 'publish':
             if c.complete and c.initiative['public'] == '0':
                 c.initiative['public'] = '1'
+                if 'workshop_searchable' in c.initiative:
+                    c.initiative['workshop_searchable'] = '1'
                 startTime = datetime.datetime.now(None)
                 c.initiative['publishDate'] = startTime
                 c.initiative['unpublishDate'] = u'0000-00-00'
@@ -339,6 +401,9 @@ class InitiativeController(BaseController):
             c.initiative['background'] = request.params['background']
         if 'proposal' in request.params:
             c.initiative['proposal'] = request.params['proposal']
+        if 'subcategory' in request.params:
+            log.info(request.params['subcategory'])
+            c.initiative['subcategory_tags'] = "|".join(request.params.getall('subcategory'))
 
 
         # update the scope based on info in the scope dropdown selector, if they're in the submitted form
@@ -570,7 +635,11 @@ class InitiativeController(BaseController):
             views = int(c.initiative['views']) + 1
             c.initiative['views'] = str(views)
             dbHelpers.commit(c.initiative)
-
+        
+        if 'parentObjType' in c.initiative:
+            log.info("Has parent and it's %s", c.initiative['parentObjType'])
+            log.info(c.initiative)
+        
         c.numComments = 0
         if 'numComments' in c.initiative:
             c.numComments = c.initiative['numComments']
@@ -580,10 +649,26 @@ class InitiativeController(BaseController):
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
+
+        c.summary = c.initiative['description']
+        c.summary = c.summary.split(' ')
+        c.summary = c.summary[0:108]
+        c.summary = ' '.join(c.summary)
+
                 
         c.initiativeHome = True
 
         return render('/derived/6_initiative_home.bootstrap')
+
+    def initiativePrintComments(self):
+        
+        c.numComments = 0
+        if 'numComments' in c.initiative:
+            c.numComments = c.initiative['numComments']
+
+        c.initiativeHome = True
+
+        return render('/derived/6_initiative_print_comments.bootstrap')
 
 
     def getInitiativeAuthors(self):
@@ -722,5 +807,3 @@ class InitiativeController(BaseController):
     def getJson(self):
         entry = jsonLib.getJsonProperties(c.initiative)
         return json.dumps({'statusCode':1, 'thing': entry})
-        
-            

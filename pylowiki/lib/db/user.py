@@ -6,9 +6,9 @@ from pylons import tmpl_context as c, session, config, request
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from sqlalchemy import or_
+from sqlalchemy import or_, not_
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, greaterThan_characteristic as gtc
+from dbHelpers import with_characteristic as wc, with_key as wk, with_characteristic_like as wcl, greaterThan_characteristic as gtc, greaterThan_characteristic as gtc
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
@@ -57,6 +57,20 @@ def getAllUsers(disabled = '0', deleted = '0'):
     except:
         return False
         
+def getAllUsersWithDemographics(disabled = '0', deleted = '0'):
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wk('demographics')))\
+        .filter(Thing.data.any(not_(wc('demographics', '-1'))))\
+        .all()
+
+def getNumberOptedOutUsers(disabled = '0', deleted = '0'):
+    return meta.Session.query(Thing)\
+        .filter_by(objType = 'user')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('demographics', '-1')))\
+        .count()
 
 def getAllCurators(disabled = '0', deleted = '0'):
     try:
@@ -71,7 +85,7 @@ def getUsers(limit, offset = '0',disabled = '0', deleted = '0'):
     q = meta.Session.query(Thing)\
         .filter_by(objType = 'user')\
         .filter(Thing.data.any(wc('disabled', disabled)))\
-		.offset(offset)
+		.order_by('-date').offset(offset)
     if limit:
         postList = q.limit(limit)
     else: 
@@ -86,11 +100,7 @@ def getUserByEmail(email, disabled = '0'):
         return False
 
 def getUserByFacebookAuthId( userid ):
-    log.info("getUserByFacebookAuthId: " + userid)
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
-    except:
-        return False
+    return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
 
 def getUserByTwitterId( twitterid ):
     try:
@@ -186,8 +196,28 @@ def searchOrganizations(uKeys, uValues, deleted = u'0', disabled = u'0', activat
         return query.all()
     except sa.orm.exc.NoResultFound:
         return False
-        
 
+def searchUsersAndOrgs(uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'1', count = False):
+    try:
+        if type(uKeys) != type([]):
+            u_keys = [uKeys]
+            u_values = [uValues]
+        else:
+            u_keys = uKeys
+            u_values = uValues
+        map_user = map(wcl, u_keys, u_values)
+        query =  meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('activated', activated)))\
+            .filter(Thing.data.any(reduce(or_, map_user)))
+        if count:
+            return query.count()
+        return query.all()
+    except sa.orm.exc.NoResultFound:
+        return False
+        
 def getUserPosts(user, active = 1):
     returnList = []
     thingTypes = ['resource', 'comment', 'discussion', 'idea', 'initiative']
@@ -380,11 +410,11 @@ class User(object):
         u['activationHash'] = hash
         commit(u)
         Revision(u, u)
+        toEmail = u['email']
         if noSendEmail == 1:
             log.info("Successful account creation (ext auth activated) for %s" %toEmail)
             return
         
-        toEmail = u['email']
         frEmail = c.conf['activation.email']
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 

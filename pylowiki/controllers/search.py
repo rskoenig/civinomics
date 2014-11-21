@@ -427,6 +427,9 @@ class SearchController(BaseController):
         if self.searchType == "orgURL":
             # This is a search for organizations
             people = userLib.searchOrganizations(['name', 'url'], [self.query, self.query])
+        elif self.searchType == "usersAndOrgs":
+            # This is a search for both people and organizations
+            people = userLib.searchUsersAndOrgs(['greetingMsg', 'name'], [self.query, self.query])
         else:
             people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
         if len(people) == 0:

@@ -5,13 +5,17 @@
    import pylowiki.lib.db.activity as activityLib
    import pylowiki.lib.db.facilitator   as facilitatorLib
    import pylowiki.lib.utils   as utils
+   import pylowiki.lib.graphData       as graphData
    import misaka as m
    
    import logging
    log = logging.getLogger(__name__)
+
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="ng_helpers" file="/lib/ng_lib.mako" />
+<%namespace name="d3Lib" file="/lib/d3_lib.mako"/>
 
 <%def name="whoListening()">
     % if c.activeListeners:
@@ -286,7 +290,7 @@
     <div class="${spanX}">
         <ul class="gallery thumbnails no-bottom" data-clearing>
         <%
-          for slide in slides:
+          for slide in slides[0:4]:
             if slide['deleted'] != '1':
               if 'hero' in args:
                 _slideListing(slide, slideNum, 'hero')
@@ -402,8 +406,8 @@
 
 <%def name="showInfo(workshop)">
     <div>
-    % if c.information and 'data' in c.information: 
-        ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
+    % if c.information and 'data' in c.information:
+        ${m.html(c.information['data']) | n}
     % endif
     </div>
 </%def>
@@ -422,6 +426,21 @@
             % endif
         % endfor
         </ul>
+        </div><!-- workshopGoals -->
+    % endif
+</%def>
+
+<%def name="showGoals2(goals)">
+    % if len(goals) == 0:
+        <p>This workshop has no goals!</p>
+    % else:
+        <div class="well goals" id="workshopGoals">
+          <% goalNum = 1 %>
+          % for goal in goals:
+            <h4>Goal ${goalNum}</h4>
+            <p>${goal['title']}</p>
+            <% goalNum += 1 %>
+          % endfor
         </div><!-- workshopGoals -->
     % endif
 </%def>
@@ -451,6 +470,10 @@
     ${scopeString | n}
 </%def>
 
+<%def name="metaData()">
+  <h4 class="inline">${displayWorkshopFlag(c.w, size='small-flag', noTitle = True)} ${lib_6.showTags(c.w)}</h4>
+</%def>
+
 <%def name="displayWorkshopFlag(w, **kwargs)">
     <%
         workshopFlag = '/images/flags/generalFlag.gif'
@@ -471,89 +494,539 @@
           obj = kwargs['objType'].title()
         else:
           obj = 'Workshop'
-
     %>
-    <a href="${href}"><img class="thumbnail flag ${flagSize}" src="${workshopFlag}"></a>
-    % if 'workshopFor' in kwargs and w['public_private'] == 'public':
-        ${obj} for
-        % if name == 'Earth':
-          <a href="${href}">${name}</a>
-        % else:
-          the <a href="${href}">${level} of ${name}</a>
-        % endif
+    <a href="${href}"><img class="thumbnail flag ${flagSize} no-bottom" src="${workshopFlag}"></a>
+    % if not 'noTitle' in kwargs:
+      % if name == 'Earth':
+        <a href="${href}">${name}</a>
+      % else:
+        <a href="${href}">${level} of ${name}</a>
+      % endif
     % endif
 </%def>
 
+<%def name="workshopTitle()"> 
+    <h1 class="workshop-title"> 
+      <a class="no-highlight" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
+        {{workshopTitle}}
+      </a>
+    </h1>
+</%def>
 
 <%def name="workshopHero()">
   <div class="well well workshop-hero">
     <div class="workshop-hero-image" style="background-image: url(${c.backgroundImage})">
       <div>
         <span class="link-span med-gradient-workshop"></span><!-- used to make entire div a link -->
-        
         <div class="workshop-title-group">
-          <h1 class="workshop-title"> 
-            <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
-              {{workshopTitle}}
-            </a>
-          </h1>
-          <h4 style="color: #fff">${displayWorkshopFlag(c.w, size='small-flag', workshopFor=True)} ${lib_6.showTags(c.w)}</h4>
+          ${workshopTitle()}
         </div>
+
       </div>
     </div><!-- background-image -->
     <div class="hero-bottom">
-      % if 'user' in session:
-        <span class="pull-right">
-          ${watchButton(c.w)}
-          % if c.adminPanel:
-            ${viewButton()}
-          % else:
-            % if c.privs['admin'] or c.privs['facilitator']: 
-              ${configButton(c.w)}
-            % endif
-          % endif
-        </span>
-      % endif
-      <span class = "share-icons pull-right">
-        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
-        ${lib_6.mailToShare(c.w)}
-        % if c.w['public_private'] == 'public':
-          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
-        %endif
-      </span>
-      <table id="metrics">
-        <tr>
-          <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
-            <span class="workshop-metrics">Ideas</span><br>
-              <strong ng-cloak>${c.numIdeas}</strong>
-          </td>
-          <td class="clickable" ng-click="toggleAdopted()">
-            <span class="workshop-metrics">Adopted</span><br>
-              <strong ng-cloak>${c.numAdopted}</strong>
-          </td>
-          <td class="clickable" ng-click="toggleDiscussions()">
-            <span class="workshop-metrics">discussions</span><br>
-              <strong ng-cloak>${c.numDiscussions}</strong>
-          </td>
-          <td class="clickable" ng-click="toggleResources()">
-            <span class="workshop-metrics">Resources</span><br>
-              <strong ng-cloak>${c.numResources}</strong>
-          </td>
 
-          <!--
-          <td>
-            <span class="workshop-metrics">Views</span><br>
-              <strong ng-cloak>{{numViews}}</strong>
-          </td>
-          -->
-          <!--
-          <td>
-            <span class="workshop-metrics">Participants</span><br>
-              <strong ng-cloak>{{numParticipants}}</strong>
-          </td>
-          -->
-        </tr>
-      </table>
+      ${workshopActions()}
+
+      ${workshopMetrics()}
+
     </div><!-- workshopIdeasCtrl -->
   </div><!-- workshop-hero -->
+</%def>
+
+<%def name="workshopAddForm()">
+  <div ng-show="showAddForm" ng-cloak>
+    <table class="addNewObj">
+      <tr>
+        <td class="well" style="padding: 10px;">
+          % if c.privs and not c.privs['provisional']:
+            <form class="no-bottom" ng-submit="submitNewObj()">
+                <div class="form-group">
+                  <select name="thing" ng-model="addThing">
+                    % if c.w['allowIdeas'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                      <option value="idea">Idea</option>
+                      <option value="initiative">Initiative</option>
+                    % endif
+                    <option value="discussion">Discussion</option>
+                    % if c.w['allowResources'] == '1' or (c.privs and (c.privs['admin'] or c.privs['facilitator'])):
+                      <option value="resource">Resource</option>
+                    % endif
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="newObjTitle">Title</label>
+                  <input type="text" class="form-control" ng-submit="submitNewObj()" name="newObjTitle" ng-model="newObjTitle" placeholder="Enter title...">
+                </div>
+                <div class="form-group" ng-show="addThing == 'resource'">
+                  <label for="newObjLink">Link</label>
+                  <input type="text" class="form-control" name="newObjLink" ng-model="newObjLink" placeholder="http://">
+                </div>
+                <div class="form-group">
+                  <label for="newObjText">Additional Info</label>
+                  <textarea class="form-control" ng-submit="submitNewObj()" name="newObjText" ng-model="newObjText" placeholder="Enter additional info..."></textarea>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-success pull-right" style="vertical-align: top;">Submit</button>
+                  <button class="btn btn-default pull-right right-space" style="vertical-align: top;" ng-click="cancelAddForm()">Cancel</button>
+                </div>
+            </form>
+          % endif
+        </td>
+      </tr>
+    </table>
+  </div>
+</%def>
+
+<%def name="workshopListFilters()">
+  <div class="row" ng-show="!showStats" ng-cloak>
+    <div class="col-xs-12">
+      <table>
+        <tr>
+        
+          <!--<td style="vertical-align: middle;">
+            <span class="lead grey expl-phrase right-indent" style="text-transform: capitalize;"><span ng-if="showSummary">All Activity</span><span ng-if="!showSummary">{{thing}}s</span></span>
+          </td>-->
+
+          <td style="padding-bottom: 10px;">
+            <ul class="nav nav-pills" ng-cloak>
+              <li ng-class="{active : orderProp == ''}"><a ng-click="orderProp = ''">Recent</a></li>
+              <li ng-class="{active : orderProp == '-netVotes'}"><a ng-click="orderProp = '-netVotes'">Top Rated</a></li>
+              <li ng-class="{active : orderProp == '-voteCount'}"><a ng-click="orderProp = '-voteCount'">Most Votes</a></li>
+              <li ng-class="{active : orderProp == '-numComments'}"><a ng-click="orderProp = '-numComments'">Most Comments</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    Status <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-class="{active : query2 = {status:'proposed'}">
+                        <a ng-click="query2 = {status:'proposed'}">Proposed</a>
+                    </li>
+                    <li ng-class="{active : query2 = {status:'adopted'}">
+                        <a ng-click="query2 = {status:'adopted'}">Adopted</a>
+                    </li>
+                    <li ng-class="{active : query2 = {status:'disabled'}">
+                        <a ng-click="query2 = {status:'disabled'}">Disabled</a>
+                    </li>
+                    <li class="search-right-column-link" ng-class="showingPhotos.class">
+                        <a href="#photos" data-toggle="tab" ng-click="searchPhotos()">
+                            Photos <span class="pull-right">(${c.numPhotos}) </span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</%def>
+
+<%def name="workshopList()">
+  <div infinite-scroll='getActivitySlice()' infinite-scroll-disabled='activityLoading' infinite-scroll-distance='20' ng-show="showList">
+
+    <div ng-if="thisPhaseStatus == 'past'" class="alert alert-warning" ng-cloak>This phase has concluded.</div>
+    <div ng-if="thisPhaseStatus == 'future'" class="alert alert-warning" ng-cloak>This phase has not started yet.</div>
+    <div class="alert alert-info" ng-class="alertType" ng-if="((alertMsg && !(alertMsg == '')) || (activity | filter:query).length == 0) && thisPhaseStatus == 'present'" ng-cloak>
+      <span ng-show="query == ''">{{alertMsg}}</span>
+      <span ng-show="!(query == '') && (activity | filter:query).length == 0">There are no {{thing}}s. Be the first to add one!</span>
+    </div>
+
+    <form class="form-horizontal">
+      <div class="col-sm-5" style="padding-left:0; padding-right: 0; margin-bottom: 5px;">
+        <input ng-model="query3" class="form-control" placeholder="Search">
+      </div>
+
+      % if 'workshop_subcategory_tags' in c.w:
+        <% subcategories = c.w['workshop_subcategory_tags'].split('|') %>
+        <div class="col-xs-6 col-sm-2 col-sm-offset-3" style="padding-left:0; padding-right: 0; margin-bottom: 5px;">
+          <select ng-model="query4.subcategory_tags" class="form-control">
+            <option value="">Subcategory</option> 
+          % for sc in subcategories:
+            <option value="${sc}">${sc}</option>              
+          % endfor
+          </select>
+        </div>
+      % endif
+
+    </form>
+    <div class="row">
+      <div class="col-xs-12">
+        <table ng-if="thisPhaseStatus != 'future'" ng-repeat="item in activity | filter:query | filter:query2 | filter:query3:strict | filter:query4:strict | orderBy:orderProp" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading && !showStats" ng-cloak>
+          <tr>
+            <td ng-if="item.objType == 'initiative'">
+              ${ng_helpers.general_listing_yesno_condensed()}
+            </td>
+
+            <td ng-if="item.objType == 'idea'">
+              ${ng_helpers.idea_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'resource'">
+              ${ng_helpers.resource_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'discussion' || item.objType == 'update' ">
+              ${ng_helpers.discussion_listing()}
+            </td>
+
+            <td ng-if="item.objType == 'photo'">
+              ${ng_helpers.photo_listing()}
+            </td>
+
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="row centered" ng-show="activityLoading || activitySliceLoading" ng-cloak>
+      <div class="col-xs-12">
+        <i class="icon-spinner icon-spin icon-4x"></i>
+      </div>
+    </div>
+
+  </div><!-- infinite-scroll -->
+</%def>
+
+<%def name="workshopStats()">
+  <div class="well" ng-show="showStats" ng-cloak>
+    <span class="grey" ng-if="activity.length == 0"> There are no stats yet...</span>
+
+    <% c.blank, c.jsonConstancyDataIdeas, c.jsonConstancyDataDiscussions, c.jsonConstancyDataResources = graphData.buildConstancyData(c.w, c.activity, typeFilter='all', cap=56) %>
+
+    ${d3Lib.includeD3()}
+    % if len(c.jsonConstancyDataIdeas) > 2:
+      ${d3Lib.constancyChart(c.jsonConstancyDataIdeas, "ideaChart", "Ideas", "ForestGreen", "DarkSlateGrey")}
+    % endif
+    % if len(c.jsonConstancyDataResources) > 2:
+      ${d3Lib.constancyChart(c.jsonConstancyDataResources, "resourceChart", "Resources", "MidnightBlue", "DarkSlateGrey")}
+    % endif
+    % if len(c.jsonConstancyDataDiscussions) > 2:
+      ${d3Lib.constancyChart(c.jsonConstancyDataDiscussions, "discussionChart", "Discussions", "DarkOrange", "DarkSlateGrey")}
+    % endif
+
+  </div>
+</%def>
+
+<%def name="workshopBrief()">
+  <div class="well wiki-well" ng-show="showBrief" ng-cloak>
+    <div ng-cloak>
+      <p class="workshop-metrics-lg">Background</p>
+      <div class="row">
+        <div class="col-xs-12">
+          ${slideshow(c.w, 'listing')}
+        </div>
+      </div>
+      <p class="description">
+        ${c.w['description']}
+      </p>
+
+
+      <hr class="list-header">
+
+      ${showInfo(c.w)}
+
+      <!--
+
+      <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+            Read More
+        </a>
+        <div id="fullText" class="panel-collapse collapse">
+
+            ${showInfo(c.w)}
+
+            <br>
+            <a class="btn btn-lg btn-default" data-toggle="collapse" data-parent="#accordion" href="#fullText">
+                Close
+            </a>
+        </div>
+      -->
+    </div>
+  </div>
+</%def>
+
+<%def name="workshopMenu()">
+  <ul class="nav nav-pills workshop-menu">
+    <li ng-class="{active: showSummary == true}">
+      <a ng-click="toggleSummary()">Summary</a>
+    </li>
+    <li ng-class="{active : showInfo == true}"><a ng-click="toggleInfo()">Info</a></li>
+    <li ng-class="{active: showIdeas == true}"><a ng-click="toggleIdeas()">Ideas</a></li>
+    <li ng-class="{active: showDiscussions == true}"><a ng-click="toggleDiscussions()">Discussions</a></li>
+    <li ng-class="{active: showResources == true}"><a ng-click="toggleResources()">Resources</a></li>
+    <li ng-class="{active: showStats == true}"><a ng-click="toggleStats()">Stats</a></li>
+  </ul>
+</%def>
+
+<%def name="workshopMenu2()">
+  <div class="workshop-menu" ng-cloak> 
+    <ul class="nav nav-pills nav-stacked">
+      <li><a ng-click="toggleBrief()">Background {{location.hash}}</a></li>
+      <li><a ng-click="toggleInitiatives()">Initiatives</a>
+        <!--
+        <ul class="nav" ng-if="showInitiatives">
+        % for i in c.workshopInitiatives: 
+            <li><a href="/initiative/${i['urlCode']}/${i['url']}" target="_blank">${i['title']}</a></li>
+        % endfor
+        </ul>
+        -->
+      </li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/stats">Leaderboard</a></li>
+    </ul>
+  </div>
+</%def>
+
+<%def name="workshopMenu3()">
+  <div class="workshop-menu" ng-cloak> 
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}#brief">Background</a></li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}#initiatives">Initiatives</a></li>
+      <li><a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/stats">Leaderboard</a></li>
+    </ul>
+  </div>
+</%def>
+
+<%def name="addBtn()">
+  <%
+    if 'readOnly' in c.w and c.w['readOnly'] == '1':
+      readonly = '1'
+    else:
+      readonly = '0'
+  %>
+  % if readonly == '0':
+    % if c.authuser:
+      % if c.privs and not c.privs['provisional']:
+        <button class="btn btn-lg btn-block btn-success addBtn" ng-show="showAddBtn" ng-click="toggleAddForm()" ng-cloak>Add {{addThing}}</button>
+      % else:
+        <a class="btn btn-lg btn-block btn-success addBtn" href="#activateAccountModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addThing}}</a>
+      % endif
+    % else:
+      <a class="btn btn-lg btn-block btn-success addBtn" href="#signupLoginModal" data-toggle='modal' ng-show="showAddBtn"  ng-cloak>Add {{addThing}}</a>
+    % endif
+  % endif
+</%def>
+
+<%def name="workshopActions()">
+  % if 'user' in session:
+    <span class="pull-right">
+      ${watchButton(c.w)}
+      % if c.adminPanel:
+        ${viewButton()}
+      % else:
+        % if c.privs['admin'] or c.privs['facilitator']: 
+          ${configButton(c.w)}
+        % endif
+      % endif
+    </span>
+  % endif
+  <span class = "share-icons pull-right">
+    ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True)}
+    ${lib_6.mailToShare(c.w)}
+    % if c.w['public_private'] == 'public':
+      <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><i class="icon-rss icon-2x"></i></a>
+    %endif
+  </span>
+</%def>
+
+<%def name="workshopMetrics()">
+  <table id="metrics">
+    <tr>
+      <td class="clickable" style="padding-left: 0px;" ng-click="toggleIdeas()">
+        <span class="workshop-metrics">Ideas</span><br>
+          <strong ng-cloak>${c.numIdeas}</strong>
+      </td>
+      <td class="clickable" ng-click="toggleAdopted()">
+        <span class="workshop-metrics">Adopted</span><br>
+          <strong ng-cloak>${c.numAdopted}</strong>
+      </td>
+      <td class="clickable" ng-click="toggleDiscussions()">
+        <span class="workshop-metrics">discussions</span><br>
+          <strong ng-cloak>${c.numDiscussions}</strong>
+      </td>
+      <td class="clickable" ng-click="toggleResources()">
+        <span class="workshop-metrics">Resources</span><br>
+          <strong ng-cloak>${c.numResources}</strong>
+      </td>
+
+      <!--
+      <td>
+        <span class="workshop-metrics">Views</span><br>
+          <strong ng-cloak>{{numViews}}</strong>
+      </td>
+      -->
+      <!--
+      <td>
+        <span class="workshop-metrics">Participants</span><br>
+          <strong ng-cloak>{{numParticipants}}</strong>
+      </td>
+      -->
+    </tr>
+  </table>
+</%def>
+
+<%def name="workshopTimeline()">
+  <div class="btn-group btn-group-justified timeline">
+    <div class="btn-group" ng-click="toggleResources()">
+      <button type="button" class="btn btn-default {{researchClass}}" ng-click="toggleResearch()">
+        <span class="workshop-metrics">Research</span><br>
+        <strong ng-cloak>${c.numResources}</strong>
+      </button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default {{ideasClass}}" ng-click="toggleIdeas()">
+        <span class="workshop-metrics">Ideas</span><br>
+        <strong ng-cloak>${c.numIdeas}</strong>
+      </button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default {{initiativesClass}}" ng-click="toggleInitiatives()">
+        <span class="workshop-metrics">Initiatives</span><br>
+        <strong ng-cloak>${c.numInitiatives}</strong>
+      </button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default {{finalClass}}" ng-click="toggleFinal()">
+        <span class="workshop-metrics">Final Rating</span><br>
+        <strong ng-cloak>${c.numFinal}</strong>
+      </button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default {{adoptedClass}}" ng-click="toggleAdopted()">
+        <span class="workshop-metrics">Winners Announced</span><br>
+        <strong ng-cloak>${c.numAdopted}</strong>
+      </button>
+    </div>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default {{impactClass}}" ng-click="toggleImpact()">
+        <span class="workshop-metrics">Impact</span><br>
+        <strong ng-cloak>${c.numUpdates}</strong>
+      </button>
+    </div>
+  </div>
+
+</%def>
+
+
+<%def name="workshopOfficials()">
+  <div class="well well-subMenu" >
+    <span>Officials</span>
+    <hr class="subMenu">
+    ${showFacilitators()}
+    ${whoListening()}
+  </div> <!--/.browse-->
+</%def>
+
+<%def name="workshopPhaseDescriptions()">
+  <div class="well" ng-show="showResearch" ng-cloak>
+      <p class="workshop-metrics-lg">Research</p>
+      <p>In the research phase we collect data, stories, news, and any other information that will help us learn about the problem.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showIdeas" ng-cloak>
+      <p class="workshop-metrics-lg">Ideas</p>
+      <p>In the ideas phase we brainstorm solutions to the problem using everything we learned during the research phase.</p>
+    </div>
+
+    <div class="well" ng-show="showInitiatives" ng-cloak>
+      <p class="workshop-metrics-lg">Initiatives</p>
+      <p>In the initiatives phase we develop ideas into concrete proposals that can be compared based on a common set of metrics.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showFinal" ng-cloak>
+      <p class="workshop-metrics-lg">Final Rating</p>
+      <p>In the final rating phase you cast your vote for the best initiatives - additional edits to the initiatives are not allowed at this time.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showAdopted" ng-cloak>
+      <p class="workshop-metrics-lg">Winning Initiatives</p>
+      <p>Winning initiatives announced. How the winners are determined depends on the workshop facilitators. Some may choose to use voting as the only factor. Others may include their own assessment of factors such as how well an initiative meets the workshop goals or its feasibility.
+      </p>
+    </div>
+
+    <div class="well" ng-show="showImpact" ng-cloak>
+      <p class="workshop-metrics-lg">Impact</p>
+      <p>In the impact phase we follow the progress of each of the winning initiatives to see how they're doing and continue learning and refinement.
+      </p>
+    </div>
+</%def>
+
+<%def name="leaderboard(type = 'initiatives')">
+    <div class="well" ng-controller="leaderboardController" ng-cloak>
+    
+    <p class="workshop-metrics-lg">Leaderboard</p>
+    <div class="centered" ng-show="loading || sliceLoading" ng-cloak>
+          <i class="icon-spinner icon-spin icon-4x"></i><br/>
+          Gathering data...
+    </div>
+        %if c.w:
+          %if 'rating_criteria' in c.w:
+            <p ng-show="!(loading || sliceLoading)">Click on column headers to sort results.</p>
+          %endif
+        %endif
+        <table class="table table-condensed" ng-show="!(loading || sliceLoading)" ng-init="leaderboard.type = '${type}'">
+            <thead>
+                <tr>
+                    % if type != 'ideas':
+                    <th></th>
+                    %endif
+                    <th></th>
+                    <th>
+                      <a href="" ng-click="changeSorting('voteCount')">
+                        %if c.w:
+                          %if 'rating_criteria' in c.w:
+                            Ratings
+                          % else:
+                            Votes
+                          % endif
+                        % else:
+                          Votes
+                        % endif
+                      </a>
+                    </th>
+                    <th><a href="" ng-click="changeSorting('numComments')">Comments</a></th>
+                    %if c.w:
+                        %if 'rating_criteria' in c.w:
+                            %for criteria in c.w['rating_criteria'].split("|"):
+                               <th><a href="" ng-click="changeSorting('${criteria}')">${criteria}</a></th>
+                            %endfor
+                        %else:
+                          <th><span class="pull-right">%</span></th>
+                        %endif
+                    %endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in leaderboard.list">
+                % if type != 'ideas':
+                    <td><a href = '{{item.href}}'>
+                        <img class="i-photo i-photo-xs" src="{{item.thumbnail}}">
+                    </a></td>
+                %endif
+                    <td><a ng-href="{{item.href}}">{{item.title}}</a></strong></td>
+                    <td class="centered">{{item['voteCount']}}</td>
+                    <td class="centered">{{item['numComments']}}</td>
+                        %if c.w:
+                            %if 'rating_criteria' in c.w:
+                                %for criteria in c.w['rating_criteria'].split("|"):
+                                    <td class="centered">{{item['${criteria}']}}</td>
+                                %endfor
+                            %else:
+                              <td>
+                                <span class="pull-right">
+                                  <strong class="med-green" ng-if="item['ups'] >= item['downs']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                                  <strong class="red" ng-if="item['downs'] > item['ups']">{{item['ups'] / item['voteCount'] * 100 | number:0}}%</strong>
+                                </span>
+                              </td>
+                            %endif
+
+                        %endif
+                </tr>
+            </tbody>
+        </table>
+        <p><a href="#" ng-if="!firstSector" ng-click="getSector('less')">previous 10</a> <a href="#" ng-click="getSector('more')">next 10</a> </p>
+    </div>
+    
 </%def>

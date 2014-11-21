@@ -6,7 +6,7 @@ from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from sqlalchemy import and_, not_, or_
-from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl, with_key as wk
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.discussion   as discussionLib
@@ -18,6 +18,22 @@ log = logging.getLogger(__name__)
 def getInitiative(initiativeCode):
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('urlCode', initiativeCode))).one()
+    except:
+        return False
+        
+def getInitiatives(initiativeCodes):
+    try:
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative', 'initiativeUnpublished']))\
+        .filter(Thing.data.any(wc('deleted', '0')))\
+        .filter(Thing.data.any(and_(Data.key == 'urlCode',Data.value.in_(initiativeCodes))))\
+        .all()
+    except:
+        return False
+
+def getInitiativeByURL(initiativeURL):
+    try:
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('url', initiativeURL))).one()
     except:
         return False
 
@@ -48,6 +64,25 @@ def getAllInitiatives():
     except:
         return False
 
+def getAllYesNoInitiatives():
+    try:
+        return meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative']))\
+        .filter(not_(Thing.data.any(wk('workshopCode'))))\
+        .all()
+    except:
+        return False
+        
+def getWorkshopCriteriaInitiatives(workshopCode):
+    try:
+        q = meta.Session.query(Thing)\
+        .filter(Thing.objType.in_(['initiative']))\
+        .filter(Thing.data.any(wc('workshopCode', workshopCode)))
+        log.info(str(q))
+        return q.all()
+    except:
+        return False
+
 def getPublishedInitiatives():
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('public', '1'))).all()
@@ -63,7 +98,7 @@ def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False
         else:
             p_keys = keys
             p_values = values
-        log.info("search initiatives %s %s"%(keys, values))
+        #log.info("search initiatives %s %s"%(keys, values))
         map_initiatives = map(wcl, p_keys, p_values)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'initiative')\
@@ -117,6 +152,7 @@ def Initiative(owner, title, description, scope, goal = None, workshop = None, *
     generic.linkChildToParent(i, owner)
     if workshop is not None:
         generic.linkChildToParent(i, workshop)
+        i['workshop_searchable'] = '0' 
     commit(i)
     i['urlCode'] = utils.toBase62(i)
     i['title'] = title

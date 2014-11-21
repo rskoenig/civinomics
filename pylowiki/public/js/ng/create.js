@@ -18,10 +18,13 @@ function createController($scope, $http) {
 	}
 	
 	// Scope
+	
 	$scope.showAll = false
-	$scope.thing = "Idea"
+	if ($scope.thing == undefined) {
+	    $scope.thing = 'Initiative';
+	}
 	$scope.file = "";
-	$scope.thingList = ['Initiative', 'Workshop', 'Resource', 'Discussion', 'Idea']
+	$scope.thingList = ['Initiative', 'Discussion', 'Resource', 'Workshop']
 	$scope.tagList = []
 	$scope.id1 = ""
 	$scope.id2 = ""
@@ -52,7 +55,6 @@ function createController($scope, $http) {
 	}
 	
 	$scope.getCountyList = function() {
-		alert($scope.state);
         $http.get('/geo/countyListJSON/'+ $scope.country + '/' + $scope.state).success(function(data){
             $scope.countyList = data.result;
             $scope.showCountySelect = true;
@@ -176,10 +178,8 @@ function createController($scope, $http) {
 	    }
 	    
 	    $("#imgAvatar").change(function(){
-	    	alert("YUP");
 	        readURL(this);
 	    });
 	    $("#imgCover").change(function(){
-	    	alert("AHA");
 	        readURL2(this);
 	    });

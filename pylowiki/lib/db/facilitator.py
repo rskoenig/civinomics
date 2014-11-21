@@ -4,15 +4,23 @@ import pickle
 
 from pylons import session, tmpl_context as c
 from pylowiki.model import Thing, meta
-from dbHelpers import commit, with_characteristic as wc
+from dbHelpers import commit, with_characteristic as wc, without_key as wok, with_key as wk
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
+from sqlalchemy import not_
 
 log = logging.getLogger(__name__)
 
 # Getters
 def isFacilitator( user, workshop ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '0'))).all()
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator')\
+   .filter_by(owner = user.id)\
+   .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+   .filter(not_(Thing.data.any(wk('initiative_url'))))\
+   .filter(Thing.data.any(wc('disabled', '0')))\
+   .filter(Thing.data.any(wc('pending', '0')))\
+   .all()
+
    if f:
       return True
    else:
@@ -28,21 +36,41 @@ def getFacilitatorByCode(code):
         return False
 
 def isPendingFacilitator( user, workshop ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '1'))).all()
+   f = meta.Session.query(Thing)\
+   .filter_by(objType = 'facilitator')\
+   .filter_by(owner = user.id)\
+   .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+   .filter(Thing.data.any(wc('disabled', '0')))\
+   .filter(Thing.data.any(wc('pending', '1'))).all()
    if f:
       return True
    else:
       return False
 
 def getFacilitatorsByWorkshop( workshop, disabled = '0'):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).all()
-    except:
-        return False
+    q = meta.Session.query(Thing)\
+    .filter_by(objType = 'facilitator')\
+    .filter(Thing.data.any(wc('disabled', disabled)))\
+    .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+    .filter(not_(Thing.data.any(wk('initiative_url'))))\
+    .all()
+
+    return q
 
 def getFacilitatorsByUser(user, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+        return False
+
+def getInitiativeFacilitatorsByUser(user, disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'facilitator')\
+        .filter_by(owner = user.id)\
+        .filter(Thing.data.any(wk('initiative_url')))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .all()
     except:
         return False
         
@@ -87,6 +115,17 @@ def getFacilitatorsByInitiative(initiative, disabled = '0'):
     except:
         return False
 
+def getFacilitatorsByInitiativeCode(initiativeCode, disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'facilitator')\
+        .filter(Thing.data.any(wc('initiativeCode', initiativeCode)))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('pending', '0')))\
+        .all()
+    except:
+        return False        
+
 def getFacilitatorsByUserAndInitiative(user, item, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('initiativeCode', item['urlCode']))).filter(Thing.data.any(wc('disabled', disabled))).all()
@@ -99,6 +138,7 @@ def getFacilitatorInWorkshop(user, workshop):
             .filter_by(objType = 'facilitator')\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .filter(not_(Thing.data.any(wk('initiative_url'))))\
             .one()
     except:
         return False

@@ -89,7 +89,7 @@ class FacilitatorController(BaseController):
             existing = True
             f = fObj
           # check to see if active user is among the coauthors:
-          if fObj.owner == c.authuser.id and fObj['disabled'] != '1':
+          if fObj.owner == c.authuser.id and fObj['disabled'] != '1' or userLib.isAdmin(c.authuser.id):
             privs = True
 
         if c.authuser.id == i.owner or privs:
@@ -135,6 +135,7 @@ class FacilitatorController(BaseController):
             itemURL = request.params['initiativeURL']
             itemType = 'i'
             mType = "CoAuthor"
+
         if itemCode and itemCode != '':
             if 'messageCode' not in request.params:
                 abort(404)
@@ -151,11 +152,9 @@ class FacilitatorController(BaseController):
             doF = False
 
             for f in fList:
-              try:
-                if f['workshopCode'] == item['urlCode']:
-                  doF = f
-              except:
-                if f['initiativeCode'] == item['urlCode']:
+              if 'workshopCode' in f and f['workshopCode'] == item['urlCode']:
+                doF = f
+              elif 'initiativeCode' in f and f['initiativeCode'] == item['urlCode']:
                   doF = f
 
             if doF and 'acceptInvite' in request.params:
@@ -277,6 +276,7 @@ class FacilitatorController(BaseController):
 
     @h.login_required
     def iFacilitateResignHandler(self, code, url, userCode):
+        log.info("here")
         removeAuthor = userLib.getUserByCode(userCode)
         i = initiativeLib.getInitiative(code)
         iFacilitators = facilitatorLib.getAllFacilitatorsByInitiative(i)
@@ -288,7 +288,7 @@ class FacilitatorController(BaseController):
           if fObj.owner == c.authuser.id and fObj['disabled'] != '1':
             privs = True
         # check to see if the user is the original author or is resigning:
-        if c.authuser.id == i.owner or c.authuser == removeAuthor:
+        if c.authuser.id == i.owner or c.authuser == removeAuthor or userLib.isAdmin(c.authuser.id):
           privs = True
 
         if privs:
@@ -311,7 +311,8 @@ class FacilitatorController(BaseController):
               alertMsg = '%s has been removed as a coauthor!' % removeAuthor['name']
               return json.dumps({'statusCode':0, 'alertMsg':alertMsg, 'alertType':'success'})
         else:
-          abort(404)
+            log.info(privs)
+            abort(404)
 
         
     @h.login_required

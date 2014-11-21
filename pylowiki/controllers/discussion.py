@@ -96,7 +96,7 @@ class DiscussionController(BaseController):
 
     def topic(self, workshopCode, workshopURL, discussionCode, discussionURL):
         #get the scope to display jurisidction flag
-        if c.w['public_private'] == 'public':
+        if c.w and c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
         
         # sharing - extra details
@@ -113,7 +113,10 @@ class DiscussionController(BaseController):
         # update url for this item
         c.facebookShare.updateUrl(utils.thingURL(c.w, c.thing))
         # set description to be that of the topic's description
-        c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        if 'text' in c.thing:
+            c.facebookShare.description = utils.getTextFromMisaka(c.thing['text'])
+        else:
+            c.facebookShare.description = ''
         #################################################
 
         if 'views' not in c.thing:

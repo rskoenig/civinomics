@@ -144,12 +144,16 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
     except:
        return False  
 
-def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0', deleted = '0'):
-    objectList = ['idea', 'resource', 'discussion', 'initiative']
+def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0', deleted = '0', itemType = ''):
+    log.info('itemtype = %s' % itemType)
+    if itemType == '' or itemType == 'all':
+        objectList = ['idea', 'resource', 'discussion', 'initiative']
+    else:
+        objectList = itemType
     workshop = generic.getThing(workshopCode)
     public_private = workshop['public_private']
     if public_private == 'public':
-        svalue = '1'
+        svalue = workshop['published']
     else:
         svalue = '2'
         
@@ -221,7 +225,6 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
 
 
 def getRecentActivity(limit, comments = 0, offset = 0):
-        log.info("in getRecentActivity")
         objectList = ['idea', 'resource', 'discussion', 'initiative', 'photo']
         if comments:
             objectList.append('comment')
@@ -236,7 +239,6 @@ def getRecentActivity(limit, comments = 0, offset = 0):
             postList = q.limit(limit)
         else:
             postList = q.all()
-
         if postList:
             return postList
         else:
@@ -289,7 +291,7 @@ def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = '')
         postList += q.all()
     
     return postList
-    
+
 def getUpcomingGeoMeetings(limit, scope, comments = 0, offset = 0):
     now = datetime.datetime.now()
     twodays = datetime.timedelta(days=2)

@@ -12,7 +12,7 @@
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#civ-main-nav">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -25,8 +25,8 @@
                 % endif
             </div>
 
-            <div class="collapse navbar-collapse">
-
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="civ-main-nav">
                 <form class="navbar-form navbar-left" action="/search">
                   <div class="form-group">
                     <input type="text" class="form-control" name="searchQuery" placeholder="Search">
@@ -87,20 +87,20 @@
                                 numMessages = messageLib.getMessages_count(c.authuser, read = '0', count = True)
                                 if numMessages:
                                     if numMessages > 0:
-                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                                        messageCount += '<span class="badge badge-danger left-space"> %s</span>' % numMessages
                             %>
                             <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="glyphicon glyphicon-envelope"></i></i>${messageCount | n}</a>
                         </li>
                         <li class="dropdown">
-                            <a href="#"  style="padding-bottom:0px;" class="dropdown-toggle" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                            <a href="#" class="dropdown-toggle" style="padding-bottom:0px;" data-toggle="dropdown">${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a></li>
                                 % if c.authuser['activated'] == '1':
-                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a>
+                                    <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/edit#tab4">Reset Password</a></li>
                                 % endif
                                 <li><a href="/help">Help</a></li>
                                 <li class="divider"></li>
-                                <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                                <li><a href="/login/logout">Logout</a></li>
                             </ul>
                         </li>
                     % else:
@@ -110,7 +110,7 @@
                     % endif
 
                 </ul>
-            </div><!-- /.navbar-collapse -->
+            </div>
         </div><!-- container fluid -->
     </nav>
 </%def>
@@ -286,21 +286,21 @@
     </div><!-- kludge for case of missing close div tag -->
     <div id="baseTemplate_footer">
         <div id="footerContainer" class="container">
-            <div class="row footer rounded well">
-                <div class="col-sm-8 no-left">
+            <div class="row">
+                <div class="col-sm-12 text-right" style="padding-top:40px">
                     <ul class="horizontal-list">
-                        <li><a class="green green-hover" href="/corp/about">About</a></li> 
-                        <li><a class="green green-hover" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
-                        <li><a class="green green-hover" href="/corp/polling">Polling</a></li>
-                        <li><a class="green green-hover" href="/corp/contact">Contact</a></li>
-                        <li><a class="green green-hover" href="/corp/terms">Terms</a></li>
-                        <li><a class="green green-hover" href="/help">Help</a></li>
-                        <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
+                        <li><a class="grey" href="/corp/about">About</a></li> 
+                        <li><a class="grey" href="http://civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a class="grey" href="/corp/polling">Polling</a></li>
+                        <li><a class="grey" href="/corp/contact">Contact</a></li>
+                        <li><a class="grey" href="/corp/terms">Terms</a></li>
+                        <li><a class="grey" href="/help">Help</a></li>
+                        <li><a class="grey" href="#" id="footerFeedbackButton">Feedback</a></li>
+                        <li class="grey">
+                            © 2014 Civinomics
+                        </li>
                     </ul>
-                </div><!-- col-sm-8 -->
-                <div class="span pull-right">
-                  © 2014 Civinomics
-                </div><!-- span pull-right -->
+                </div><!-- div text-right -->
             </div><!-- row footer well -->
         </div><!-- footerContainer -->
     </div><!-- baseTemplate_footer -->
@@ -332,12 +332,21 @@
                         <li><a href="/corp/caseStudies">Case Studies</a></li>
                         
                     </ul>
+                    
+                    <ul class="horizontal-list display-xs">
+                        <li><a href="/corp/contact">Contact</a></li>
+                        <li><a href="/corp/terms">Terms</a></li>
+                        <li><a href="/corp/privacy">Privacy</a></li>
+                        <li>© 2014 Civinomics, Inc. </li>
+                    </ul>
+
+
                 </div>
-                <div class="col-sm-2 centered">
+                <div class="col-sm-2 centered brand-bottom">
                     <img src="/images/logo_white_simple.png">
                 </div>
                 <div class="col-sm-5">
-                    <ul class="horizontal-list">
+                    <ul class="horizontal-list hidden-xs">
                         <li><a href="/corp/contact">Contact</a></li>
                         <li><a href="/corp/terms">Terms</a></li>
                         <li><a href="/corp/privacy">Privacy</a></li>
@@ -424,6 +433,7 @@
             <h2 ng-show="showTitle == 'sTitle'" class="no-top centered" ng-cloak>Sign up</h2>
             <h2 ng-show="showTitle == 'lTitle'" class="no-top centered" ng-cloak>Log in</h2>
             <h2 ng-show="showTitle == 'pTitle'" class="no-top centered" ng-cloak>Forgot Password</h2>
+            <hr>
         % endif
         ${fields_alert()}
         % if c.splashMsg:
@@ -449,6 +459,10 @@
 </%def>
 
 <%def name="socialLogins()">
+    <%
+       session['returnToSocial'] = url.current()
+       session.save()
+    %>
     <div class="row social-login centered">
         <div id="fbLoginButton2">
             <a href="#" class="fbLogin"><img src="/images/f-login.png"></a>
@@ -463,49 +477,54 @@
 </%def>
 
 <%def name="signupForm()">
-        <form id="sign_in" action="/signup/handler" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST" role="form">
-            <input type="hidden"  name="country" value="United States">
-            <input type="hidden" name="memberType" value="professional">
-
+        <form id="sign_in" class="form-horizontal" ng-controller="signupController" name="signupForm" role="form" ng-submit="submitSignup()">
+            %if 'returnTo' in session: 
+                <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
+            %else:
+                <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+            %endif
+            <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
+            <input type="hidden"  ng-model="user.country" value="United States">
+             
             <div ng-class=" {'form-group': true, 'error': signupForm.name.$error.pattern} ">
                 <label class="col-sm-3 control-label" for="name"> Full name: </label>
                 <div class="col-sm-8">
-                    <input type="text" class="form-control" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                    <input type="text" class="form-control" name="name" id="name" ng-model="user.name" ng-pattern="fullNameRegex" required>
                     <span class="error help-block" ng-show="signupForm.name.$error.pattern" ng-cloak>Use only letters, numbers, spaces, and _ (underscore)</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="email"> Email: </label>
                 <div class="col-sm-8">
-                    <input class="form-control" type="email" name="email" id="email" ng-model="email" required>
+                    <input class="form-control" type="email" name="email" id="email" ng-model="user.email" required>
                     <span class="error help-block" ng-show="signupForm.email.$error.email" ng-cloak>Not a valid email!</span>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label" for="passphrase"> Password: </label>
                 <div class="col-sm-8">
-                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
-                <div class="col-sm-8">
-                    <label class="radio">
-                        <input type="radio" name="memberType" id="memberType1" ng-model="memberType1" value="professional" checked>
-                        Individual <span class="light">(vote, suggest new ideas)</span>
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="memberType" id="memberType2" ng-model="memberType2" value="organization">
-                        Organization <span class="light">(take positions, have members)</span>
-                    </label>
+                    <input class="form-control" type="password" name="password" id="passphrase" ng-model= "user.password" required>
                 </div>
             </div>
             <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} " ng-cloak>
                 <label class="col-sm-3 control-label" for="postalCode"> Zip Code: </label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                    <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="user.postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                     <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
                     <div id="postalGeoString">{{geos[0]['name']}}{{geos[0]['sep']}} {{geos[1]['name']}}{{geos[1]['sep']}} {{geos[3]['name']}}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="memberType">Membership Type:</label>
+                <div class="col-xs-12 col-sm-8">
+                    <label class="radio">
+                        <input type="radio" name="memberType" id="memberType1" ng-model="user.memberType" value="professional" checked>
+                        Individual <span class="light">(vote, suggest new ideas)</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="memberType" id="memberType2" ng-model="user.memberType" value="organization">
+                        Organization <span class="light">(take positions, have members)</span>
+                    </label>
                 </div>
             </div>
             <div class="form-group">
@@ -521,22 +540,28 @@
             </div>
         </form>
         <script src="/js/signup.js" type="text/javascript"></script>
-        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" class="green green-hover" data-toggle="tab">Log in</a></p>
+        <p class="centered"> Already have an account? <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab">Log in</a></p>
 </%def>
 
 <%def name="loginForm()">
-    <form id="sign_in" action="/loginHandler" class="form-horizontal" method="post">
+    <form id="sign_in" class="form-horizontal" ng-controller="signupController" ng-submit="submitLogin()">
+        <div class="alert alert-danger" ng-if="alertMessage != ''" role="alert">{{alertMessage}}</div>
+        %if 'returnTo' in session: 
+            <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${session['returnTo']}'}}">
+        %else:
+            <input type="hidden" ng-model="user.alURL" value="{{user.alURL = '${url.current()}'}}">
+        %endif
         <div class="form-group">
             <label class="col-sm-3 control-label" for="email"> Email: </label>
             <div class="col-sm-8">
-                <input class="form-control" type="email" name="email" id="email" required>
+                <input class="form-control" type="email" ng-model="user.email" id="email" required>            
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-3  control-label" for="passphrase"> Password: </label>
             <div class="col-sm-8">
-                <input class="form-control" type="password" name="password" id="password"><br>
-                <a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab" class="green green-hover"> Forgot password?</a>
+                <input class="form-control" type="password" ng-model="user.password" id="password"><br>
+                
             </div>
         </div>
         <div class="form-group">
@@ -545,27 +570,41 @@
             </div>
         </div>
     </form>
-    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" class="green green-hover" data-toggle="tab">Sign up</a></p>
+    <p class="centered"><a href="#forgot" ng-click="switchPasswordTitle()" data-toggle="tab"> Forgot password?</a></p>
+    <p class="centered">Don't have an account? <a href="#signup" ng-click="switchSignupTitle()" data-toggle="tab">Sign up</a></p>
 </%def>
 
 <%def name="forgotPassword()">
-    <div class="row-fluid">
-        <div class="span8 offset2">
-            <p class="centered">Enter your email and click 'Reset Password.' Then check your inbox for your new password.</p>
-        </div>
+    <div class="row">
+        <div class="col-sm-11">
+            <p class="centered">Enter your email and click 'Reset Password.'</p>
+            <p class="centered">Your new password will be emailed to you.</p>
+        </div><!-- col-sm-11 -->
+    </div><!-- row -->
     <form id="forgot_password" action="/forgotPasswordHandler" class="form form-horizontal" method="post">
-        <div class="control-group">
-            <label class="control-label" for="email"> Email: </label>
-            <div class="controls">
-                <input type="email" name="email" id="email"><br>
-                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab" class="green green-hover"> Back to log in</a>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-success"> Reset Password </button>
-            </div>
-        </div>
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="control-group centered">
+                    <div class="controls">
+                        <strong>Email: </strong><input type="email" name="email" id="email"><br>
+                    </div><!-- controls -->
+                </div><!-- control-group -->
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-sm-11">
+                <div class="control-group centered spacer">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-success"> Reset Password </button>
+                    </div><!-- controls -->
+                </div><!-- control-group -->
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
+        <div class="row">
+            <div class="col-sm-11 centered">
+                <a href="#login" ng-click="switchLoginTitle()" data-toggle="tab"> Back to log in</a>
+            </div><!-- col-sm-11 -->
+        </div><!-- row -->
     </form>
 </%def>
 
@@ -575,18 +614,19 @@
       ####
       #### After Login URL
       ####
-      alURL= session._environ['PATH_INFO']
-      if 'QUERY_STRING' in session._environ :
-        alURL = alURL + '?' + session._environ['QUERY_STRING'] 
+      #alURL = url.current()
+      #alURL= session._environ['PATH_INFO']
+      #if not alURL:
+      #  alURL = request.url
+      #if 'QUERY_STRING' in session._environ :
+      #  alURL = alURL + '?' + session._environ['QUERY_STRING'] 
       # handles exception with geo pages where angular appends itself to URL
-      if '{{' in alURL:
-        try:
-            alURL = session._environ['HTTP_REFERER']
-        except:
-            alURL = '/browse/initiatives'
-      if 'zip/lookup' in alURL or '/signup' in alURL:
-        alURL = '/home'
-      session['afterLoginURL'] = alURL
+      #if '{{' in alURL:
+      #  try:
+      #      alURL = session._environ['HTTP_REFERER']
+      #  except:
+      #      alURL = '/browse/initiatives'
+      #session['afterLoginURL'] = alURL
     %>
     <div class="modal fade" id="signupLoginModal" tabindex="-1" role="dialog" aria-labelledby="signupLoginModal" aria-hidden="true" ng-controller="signupController" ng-init="showTitle = 'sTitle'">
         <div class="modal-dialog">
@@ -600,6 +640,7 @@
                 <div class="modal-body">
                     ${tabbableSignupLogin()}
                 </div>
+                <!--
                 <div class="modal-footer">
                     <div class="row centered tcs">
                       <div class="col-sm-10 col-sm-offset-1">
@@ -607,6 +648,7 @@
                       </div>
                     </div>
                 </div>
+                -->
             </div>
         </div>
     </div>
@@ -637,3 +679,58 @@
 </%def>
 
 
+<%def name="demographicsModal()">
+    <div class="modal fade" id="demographicsModal" tabindex="-1" role="dialog" aria-labelledby="demographicsModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" ng-controller="demographicsController">
+                <div class="modal-header">
+                    <h3 class="no-top">Missing Required Demographics <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button></h3>
+                </div>
+                <div class="modal-body">
+                    <p>You can't add comments, ideas, discussions or resources until you've provided the demographics required by this workshop.</p>
+                    <p>This data is only going to be considered for statistic purposes in the workshop that requires it, and will never be shared.</p>
+                    <ul class="list-unstyled centered">
+                        %if c.w and 'demographics' in c.w:
+                        <li ng-repeat="d in '${c.w['demographics']}'.split('|')">
+                           <br/> {{demographics.values[demographics.indexList[d]].text}} <br/>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'radio'" ng-repeat="v in demographics.values[demographics.indexList[d]].values">
+                                <input type="radio" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" value="{{v}}"> {{v}} <br/>
+                            </span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'select'">
+                                <select ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]" ng-options="v for v in demographics.values[demographics.indexList[d]].values">
+                                </select>
+                            </span>
+                            <span ng-if="demographics.values[demographics.indexList[d]].type == 'date'">
+                                <input type="date" ng-model="userDemographics[demographics.values[demographics.indexList[d]].name]">
+                            </span>
+                        </li>
+                        <li><input type="checkbox" name="opt-out">I would like to opt out from the demographics.</input></li>
+                        %else:
+                            <p>Please access the workshop in order to fill in your demographics or opt out and continue</p>
+                        %endif
+                    </ul>
+                    <div class="" id="resendMessage"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal" aria-hidden="true"
+                    %if c.w:
+                     ng-click="sendUserDemographics('${c.w['urlCode']}','${c.w['url']}')"
+                    %endif
+                     >Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="${lib_6.fingerprintFile('/js/ng/demographics.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name="welcomeActivationAlert()">
+    % if c.authuser and c.authuser['activated'] == '0':
+      <div class="alert alert-warning" style="margin: -10px -10px 10px;">
+        <p class="left-space">Go to <strong>${c.authuser['email']}</strong> to finish setting up your account. Make sure to check your spam folder. Already confirmed? Reload the page.
+            <button class="btn btn-default btn-sm resendActivateEmailButton no" style='margin:0 10px;' data-URL-list="user_${c.authuser['urlCode']}_${c.authuser['url']}">Resend Activation Email</button>
+            <span id="resendMessage"></span>
+        </p>
+      </div>
+    % endif
+</%def>

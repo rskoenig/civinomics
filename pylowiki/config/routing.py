@@ -19,6 +19,17 @@ def make_map():
     map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
+    
+    ########################################################################################################
+    # 
+    # Special Event routes
+    # 
+    ########################################################################################################
+    map.connect('/santacruzwater{end:/?}', controller='actionlist', action='santacruzwater')
+    map.connect('/water9{end:/?}', controller='actionlist', action='water9')
+    map.connect('/waternine{end:/?}', controller='actionlist', action='water9')
+    map.connect('/santacruzwater/login{end:/?}', controller='actionlist', action='santacruzwaterlogin')
+    map.connect('/santacruzwater/signup{end:/?}', controller='actionlist', action='santacruzwatersignup')
 
     ########################################################################################################
     # 
@@ -120,6 +131,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePublicWorkshopHandler{end:/?}', controller = 'workshop', action = 'configurePublicWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'preferences', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePhase/handler{end:/?}', controller = 'workshop', action = 'configurePhase', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # workshop rss
     map.connect('/activity/rss{end:/?}', controller='actionlist', action='rss')
@@ -135,6 +147,21 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/update{end:/?}', controller = 'goals', action = 'update')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/delete{end:/?}', controller = 'goals', action = 'delete')
 
+	#Workshop rating criteria
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/add/{criteria}{end:/?}',controller='criteria', action='addToWorkshop', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', criteria = '{criteria}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/rate/{thingCode}/{criteria}/{rating}{end:/?}',controller='criteria', action='rateCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thingCode = '{thingCode}', criteria = '{criteria}', rating = '{rating}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/criteria/get/{thingCode}{end:/?}',controller='criteria', action='getWorkshopCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thingCode = '{thingCode}')
+    
+    #Workshop demographics
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/add/{demographics}{end:/?}', controller='demographics', action='setWorkshopDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/get{end:/?}', controller='demographics', action='checkWorkshopDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/set{end:/?}', controller='demographics', action='setUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', demographics = '{demographics}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/check{end:/?}', controller='demographics', action='checkUserDemographics', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/demographics/export{end:/?}', controller='demographics', action='exportCsv', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    
+    #Workshop subcategory tags
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/tags/add/{tags}{end:/?}',controller='workshop', action='addSubcategoryTags', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', tags = '{tags}')
+    
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/slide/edit', controller = 'slideshow', action = 'edit')
@@ -181,8 +208,9 @@ def make_map():
     map.connect('/getActivitySlice/{comments}/{type}/{scope}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', scope = '{scope}', offset = '{offset}')
     map.connect('/getActivitySlice/{comments}/{type}/{scope}/{objectType}/{offset}{end:/?}' , controller = 'home', action = 'getActivity', comments = '{comments}', type = '{type}', scope = '{scope}', objectType = '{objectType}', offset = '{offset}')
 
-    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}') 
-    map.connect('/workshop/{workshopCode}/{workshopURL}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/{sliceSize}/getActivity{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', sliceSize= '{sliceSize}') 
+    map.connect('/workshop/{workshopCode}/{workshopURL}/{sliceSize}/getActivity/{offset}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}', sliceSize= '{sliceSize}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/{sliceSize}/getActivity/{offset}/{objectType}{end:/?}', controller = 'workshop', action = 'getWorkshopActivity', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', objectType = '{objectType}', offset = '{offset}', sliceSize= '{sliceSize}')
     
     # following
     map.connect('/getFollowInitiatives/{offset}/{limit}{end:/?}' , controller = 'home', action = 'getFollowingInitiatives', offset = '{offset}', limit = '{limit}')
@@ -484,11 +512,13 @@ def make_map():
     ###############
     map.connect('/create/initiative{end:/?}', controller = 'create', action = 'showCreateForm')
     map.connect('/profile/{id1}/{id2}/newInitiative{end:/?}', controller = 'initiative', action = 'initiativeNewHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/initiative/{id1}/{id2}/promoteIdea{end:/?}', controller = 'initiative', action = 'promoteIdea', id1 = '{id1}', id2 = '{id2}')
     map.connect('/initiative/{id1}/{id2}/getAuthors{end:/?}', controller = 'initiative', action = 'getInitiativeAuthors', id1 = '{id1}', id2 = '{id2}', id3 = None )
     map.connect('/initiative/{id1}/{id2}/edit{end:/?}', controller = 'initiative', action = 'initiativeEdit', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/editHandler{end:/?}', controller = 'initiative', action = 'initiativeEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/show{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}{end:/?}', controller = 'initiative', action = 'initiativeShowHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
+    map.connect('/initiative/{id1}/{id2}/printComments{end:/?}', controller = 'initiative', action = 'initiativePrintComments', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{id1}/{id2}/photo/upload/handler{end:/?}', controller = 'initiative', action = 'photoUploadHandler', id1 = '{id1}', id2 = '{id2}', id3 = None)
     map.connect('/initiative/{code}/{id2}/follow/handler{end:/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/initiative/{id1}/{id2}/resourceEdit/{id3}{end:/?}', controller = 'initiative', action = 'resourceEdit', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
@@ -498,7 +528,24 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateEditHandler/{id3}{end:/?}', controller = 'initiative', action = 'updateEditHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/json{end:/?}', controller = 'initiative', action = 'getJson', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/initiative/{handler:handler/?}', controller = 'initiative', action = 'initiativeNewHandler', parentObj='workshop', parentCode = '{parentCode}')
     
+    ################
+    # Leaderboards #
+    ################
+    
+    #Initiatives
+    map.connect('/leaderboard/{end:/?}', controller = 'leaderboard', action = 'getInitiatives')
+    map.connect('/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}')
+    map.connect('/leaderboard/initiatives/{offset}/{limit}{end:/?}', controller = 'leaderboard', action = 'getInitiatives', offset = '{offset}', limit = '{limit}')
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/ideas/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopIdeas', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    
+    
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/leaderboard/initiatives/{offset}/{sortBy}{end:/?}', controller = 'leaderboard', action = 'getWorkshopInitiativesWithCriteria', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', offset = '{offset}', sortBy = '{sortBy}')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/stats', controller="workshop", action="renderWorkshopLeaderboard", workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+
     ################
     # Messaging    #
     ################
@@ -552,6 +599,7 @@ def make_map():
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    
     ################
     # Browse       #
     ################

@@ -241,17 +241,13 @@ def editResource(resource, title, text, link, owner):
 def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None, **kwargs):
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
-    eObj = getEObj(link)
-    if not eObj:
-        return False
     a = Thing('resource', owner.id)
-    if 'geoScope' in kwargs:
-        a['scope'] = kwargs['geoScope']
-        a['public'] = '1'
+    eObj = getEObj(link)
+    if eObj:
+        setAttributes(a, eObj)
     if 'tags' in kwargs:
             a['tags'] = kwargs['tags']
     a['link'] = link
-    setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
@@ -276,6 +272,10 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
     else:
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, title = title)
+        # if it has a workshop parent, it needs to use the workshop_public_scope and workshop_searchable keys
+        if 'geoScope' in kwargs:
+            a['scope'] = kwargs['geoScope']
+            a['public'] = '1'
     a['discussion_child'] = d.d['urlCode']
     commit(a)
     return a

@@ -23,27 +23,14 @@
   </div>
 </div>
 <div class="row">
-  <div class="hidden-xs hidden-sm col-md-2 no-right">
-    ${helpers.workshopMenu2()}
-  </div>
-  <div class="col-md-10" style="margin-top: 12px;">
-
-    ${helpers.workshopBrief()}
-
-    ${helpers.workshopPhaseDescriptions()}
-
-    
-    % if c.w['allowIdeas'] == '1':
-      <div ng-show="showAddForm" ng-cloak>
-        ${lib_6.create(createClass = "well-green", parentCode = c.w['urlCode'], parentObjType = 'workshop', returnTo = lib_6.workshopLink(c.w, embed=True,raw=True))}
-      </div>
-    % endif
-
-    ${helpers.workshopList()}
-
-    ${helpers.workshopStats()}
-
-  </div>
+    <div class="hidden-xs hidden-sm col-md-2 no-right">
+      ${helpers.workshopMenu3()}
+    </div>
+    <div class="col-md-10" style="margin-top: 12px;">
+        %if 'phase' in c.w:
+            ${helpers.leaderboard(c.w['phase'])}
+        %endif
+    </div>
 </div>
 
 <%def name="extraScripts2()">
@@ -64,6 +51,7 @@
     <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/comments.js')}" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/criteria.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/leaderboard.js')}"></script>
 </%def>
 
 <%def name="headScripts()">

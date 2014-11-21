@@ -87,7 +87,24 @@ class ActionlistController(BaseController):
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
     '''
+    def santacruzwater( self ):
+        return redirect('/workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention')
+        
+    def santacruzwaterlogin( self ):
+        #THIS IS PROBABLY THE HACKIEST THING EVER
+        session['returnTo'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        session.save()
+        return redirect('/login')
+        
+    def santacruzwatersignup( self ):
+        session['returnTo'] = "workshop/4VQV/submissions-for-the-santa-cruz-water-supply-convention"
+        session.save()
+        #THIS IS PROBABLY THE HACKIEST THING EVER 
+        return redirect('/signup')
 
+    def water9( self ):
+        return redirect('http://blog.civinomics.com/2014/11/10/final-rating-deadline-this-tuesday-watch-water-for-santa-cruz-county/')
+        
     def rss( self ):
         c.activity = getRecentActivity(30)
         feed = feedgenerator.Rss201rev2Feed(
@@ -126,10 +143,13 @@ class ActionlistController(BaseController):
             if item.objType == 'resource':
                activityStr += 'A new resource added to ' + baseTitle + ' by ' + userName
             elif item.objType == 'discussion':
-                if 'initiativeCode' in item:
-                    activityStr += 'A new progress report added to ' + baseTitle + ' by ' + userName
+                if item['discType'] == "update" or item['discType'] == 'general':
+                    if 'initiativeCode' in item:
+                        activityStr += 'A new progress report added to ' + baseTitle + ' by ' + userName
+                    else:
+                        activityStr += 'A new discussion started in ' + baseTitle + ' by ' + userName
                 else:
-                    activityStr += 'A new discussion started in ' + baseTitle + ' by ' + userName
+                    continue
             elif item.objType == 'idea':
                 activityStr += 'A new idea posed in ' + baseTitle + ' by ' + userName
             elif item.objType == 'initiative':
