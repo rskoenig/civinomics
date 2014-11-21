@@ -172,7 +172,7 @@ class SlideshowController(BaseController):
             if s['deleted'] == 0:
                 published += 1
         value = request.params['slides']
-        log.info(value)
+        log.info(value) 
         if value == '_published' or value == '_unpublished':
             return
         
