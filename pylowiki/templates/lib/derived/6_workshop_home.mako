@@ -1023,4 +1023,5 @@
     </script>
 
     </div>
+    <div style="clear: both;"></div>
     </%def>
