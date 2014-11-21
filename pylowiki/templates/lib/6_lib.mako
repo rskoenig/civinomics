@@ -633,10 +633,6 @@
 </%def>
 
 <%def name="upDownVoteHorizontal(thing)">
-      % if thing['disabled'] == '1' or thing.objType == 'revision':
-         </div> <!-- /.voteWrapper -->
-         <% return %>
-      % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['provisional'])  and not self.isReadOnly():
          <% 

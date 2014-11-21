@@ -310,13 +310,15 @@
         
     %>
     % if comment['deleted'] != '1':
-        <div class="panel panel-default">
-            <span class="comment-id-offset" id="${commentID}"> &nbsp; </span>
-            <div class="${backgroundShade}">
-                ${commentHeading(comment, author, commentID, collapseID, parent)}
-                ${commentContent(comment, commentType, curDepth, maxDepth, author, commentID, collapseID)}
+        % if comment['disabled'] != '1':
+            <div class="panel panel-default">
+                <span class="comment-id-offset" id="${commentID}"> &nbsp; </span>
+                <div class="${backgroundShade}">
+                    ${commentHeading(comment, author, commentID, collapseID, parent)}
+                    ${commentContent(comment, commentType, curDepth, maxDepth, author, commentID, collapseID)}
+                </div>
             </div>
-        </div>
+        % endif
     % endif
 </%def>
 
@@ -471,9 +473,7 @@
                 readonly = '0'
         %>
         <div class="col-xs-12">
-            % if c.thing['disabled'] == '0':
-                <span class="right-space-md">${lib_6.upDownVoteHorizontal(comment)}</span>
-            % endif
+            <span class="right-space-md">${lib_6.upDownVoteHorizontal(comment)}</span>
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
                     % if readonly == '0':
