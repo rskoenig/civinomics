@@ -727,9 +727,48 @@
                     </p>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" ng-controller="commentEditController">
+                {{editing}}
                 <div class="col-xs-12" ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</div>
-                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')}</div>
+                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')} 
+                    <div class="btn-group btn-group-xs" ng-show="(item.canEdit == 'yes')">
+                        <button class="btn btn-default" type="button" ng-show="(item.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{item.urlCode}}" ng-click="(editing = !editing)">Edit</button>
+                        <!-- <button class="btn btn-default" type="button" ng-show="(item.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{item.urlCode}}">Trash</button> -->
+                    </div><!-- btn-group -->
+                </div>
+                <div>
+                            <div id="edit-{{item.urlCode}}" class="collapse" ng-show="editing">
+                                    <div ng-init="urlCode = item.urlCode; commentEditText = item.text; commentEditRole = item.commentRole;">
+                                        <form class="no-bottom" ng-submit="submitListingEditComment()">
+                                            <div class="form-group">
+                                                <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{item.text}}</textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                                <div ng-show="(item.doCommentRole == 'yes')">
+                                                    &nbsp;
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                                    </label>
+                                                    <label class="radio inline">
+                                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
+                                                    </label>
+                                                </div><!-- ng-show -->
+                                            </div>
+                                        </form>
+                                    </div><!-- controller -->
+                                </div><!-- collapse -->
+                            </div><!-- ng-show -->
+
             </div>
         </div>
     </div>
