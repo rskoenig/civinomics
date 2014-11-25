@@ -1,4 +1,4 @@
-<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" /> 
 
 <%def name="general_listing_updown()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
@@ -1713,7 +1713,7 @@
                     <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px; margin-bottom:0">
                         % if c.authuser:
                             % if c.privs and not c.privs['provisional']:
-                                <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                <textarea class="form-control new-comment"  rows="{{getTextAreaRows()}}" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                             % else:
                                 <a href="#activateAccountModal" data-toggle='modal'>
                                 <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>

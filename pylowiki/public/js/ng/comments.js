@@ -18,7 +18,16 @@ function commentsController($rootScope, $scope, $http, editService) {
 	$scope.commentsLoading = false;
 	$scope.commentsHidden = true;
 	$scope.newCommentLoading = false;
+	$scope.commentText = "";
+	$scope.textArea = 1;
 
+    $scope.getTextAreaRows = function() {
+       var newRows = Math.ceil($scope.commentText.length/58);
+       if (newRows > 1) 
+            return newRows;
+        else
+            return $scope.textArea;
+    }
 	$scope.getComments = function(){
 		if ($scope.commentsHidden == true){
 			$scope.commentsLoading = true	
