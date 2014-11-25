@@ -1,4 +1,4 @@
-<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" /> 
 
 <%def name="general_listing_updown()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
