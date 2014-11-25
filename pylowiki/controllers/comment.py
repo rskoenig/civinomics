@@ -29,9 +29,7 @@ log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
 
 class CommentController(BaseController):
-    
     def __before__(self, action, workshopCode = None, workshopURL = None, urlCode = None):
-        log.info(c.privs)
         shareOk = False
         shareUrl = None
         if workshopURL is None:
@@ -121,14 +119,12 @@ class CommentController(BaseController):
                     return json.dumps({'statusCode':1})
             
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
-                log.info("1")
                 # Reply to an existing comment
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
                 parentAuthor = userLib.getUserByID(parentComment.owner)
             elif 'discussionCode' in payload:
-                log.info("2")
                 # Root level comment
                 discussion = discussionLib.getDiscussion(payload['discussionCode'])
                 parentCommentID = 0
@@ -138,7 +134,6 @@ class CommentController(BaseController):
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
 
-            log.info(c.privs)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
                 if 'commentRole' in payload:
@@ -229,7 +224,6 @@ class CommentController(BaseController):
                                 mailLib.sendCommentMail(author['email'], c.authuser, thing, thing, comment)  
             
             if request.params:
-                log.info("commentCCN where oh where")
                 if thing.objType == 'initiative' or 'initiativeCode' in thing and thing.objType != 'discussion':
                     return redirect(utils.initiativeURL(thing) + '#comment-' + comment['urlCode'])
                 elif 'workshopCode' in thing:   
@@ -242,7 +236,6 @@ class CommentController(BaseController):
                 return json.dumps({'statusCode':0})
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
-            log.info("commentCCN got error")
             if request.params:
                 return redirect(session['return_to'])
             elif json.loads(request.body):
@@ -278,7 +271,6 @@ class CommentController(BaseController):
         if 'ratings' in session:
 		    myRatings = session['ratings']
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
-        log.info("is this undefined? %s" %urlCode)
         for comment in comments:
             entry = {}
             entry['text'] = comment['data']

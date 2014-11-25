@@ -716,23 +716,55 @@
 </%def>
 
 <%def name="comment_listing()">
-    <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
-        <div ng-controller="yesNoVoteCtrl">
+<div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;"  ng-controller="commentEditController">
+        <div>
             <div class="row">
                 <div class="col-xs-12">
                     ${meta2()}
                     <p class="top-space">
-                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight">
+                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight" ng-show="!editing">
                         <p class="markdown"><span ng-bind-html="item.html"></span></p></a>
                     </p>
+                    <div id="edit-{{item.urlCode}}" ng-show="editing">
+                        <div ng-init="urlCode = item.urlCode; commentEditText = item.text; commentEditRole = item.commentRole;">
+                            <form class="no-bottom" ng-submit="submitListingEditComment()">
+                                <div>
+                                    <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{item.text}}</textarea>
+                                </div>
+                                <div ng-show="(item.doCommentRole == 'yes')">
+                                    &nbsp;
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
+                                    </label>
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top; margin:5px">Submit</button>
+                                </div><!-- ng-show -->
+                            </form>
+                        </div>
+                    </div><!-- ng-shw -->
                 </div>
             </div>
-            <div class="row">
+            <div class="row"  ng-controller="yesNoVoteCtrl">
                 <div class="col-xs-12" ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</div>
-                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')}</div>
-            </div>
+                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')} 
+                    <div class="btn-group btn-group-xs" ng-show="(item.canEdit == 'yes')">
+                        <button class="btn btn-default" type="button" ng-show="(item.canEdit == 'yes')" class="btn btn-xs" ng-click="changeEditing()">Edit</button>
+                    </div><!-- btn-group -->
+                </div>
+            </div><!-- row -->
         </div>
-    </div>
+</div>
 </%def>
 
                     

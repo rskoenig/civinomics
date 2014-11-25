@@ -101,15 +101,31 @@ function commentsController($rootScope, $scope, $http, editService) {
 }
 
 function commentEditController($rootScope, $scope, $http, editService) {
-        $scope.submitEditComment = function(){
-		$scope.newCommentLoading = true;
-		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
-		$scope.editCommentURL = '/comment/edit/handler';
-		$http.post($scope.editCommentURL, commentData).success(function(data){
-            editService.prepBroadcast();
-        });
-	};
-    
+        $scope.submitEditComment = function() {
+    		$scope.newCommentLoading = true;
+    		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
+    		$scope.editCommentURL = '/comment/edit/handler';
+    		$http.post($scope.editCommentURL, commentData).success(function(data){
+                editService.prepBroadcast();
+            });
+    	};
+    	
+    	$scope.editing = false;
+    	
+    	$scope.submitListingEditComment = function() {
+            var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
+    		$scope.editCommentURL = '/comment/edit/handler';
+    		$scope.item.html = $scope.commentEditText;
+    		$scope.item.position = $scope.commentEditRole;
+    		$http.post($scope.editCommentURL, commentData).success(function(data){
+                $scope.editing = false;
+            });
+    	};
+    	
+    	$scope.changeEditing = function() {
+        	$scope.editing = !$scope.editing;
+    	};
+
 }
 
 commentEditController.$inject = ['$rootScope', '$scope', '$http', 'editService'];
