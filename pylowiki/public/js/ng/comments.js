@@ -92,7 +92,6 @@ function commentsController($rootScope, $scope, $http, editService) {
 }
 
 function commentEditController($rootScope, $scope, $http, editService) {
-    console.log($scope.item);
         $scope.submitEditComment = function() {
     		$scope.newCommentLoading = true;
     		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
@@ -112,8 +111,6 @@ function commentEditController($rootScope, $scope, $http, editService) {
     		$scope.item.position = $scope.commentEditRole;
     		$http.post($scope.editCommentURL, commentData).success(function(data){
                 $scope.editing = false;
-                console.log(commentData);
-                console.log(data);
             });
     	};
     	
