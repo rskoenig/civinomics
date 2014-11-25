@@ -92,6 +92,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 }
 
 function commentEditController($rootScope, $scope, $http, editService) {
+    console.log($scope.item);
         $scope.submitEditComment = function() {
     		$scope.newCommentLoading = true;
     		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
@@ -101,16 +102,23 @@ function commentEditController($rootScope, $scope, $http, editService) {
             });
     	};
     	
-    	$scope.editing = true;
+    	$scope.editing = false;
     	
     	$scope.submitListingEditComment = function() {
+    	    console.log($scope.commentEditText);
             var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
     		$scope.editCommentURL = '/comment/edit/handler';
-    		$scope.editing = false;
     		$scope.item.html = $scope.commentEditText;
+    		$scope.item.position = $scope.commentEditRole;
     		$http.post($scope.editCommentURL, commentData).success(function(data){
-                
+                $scope.editing = false;
+                console.log(commentData);
+                console.log(data);
             });
+    	};
+    	
+    	$scope.changeEditing = function() {
+        	$scope.editing = !$scope.editing;
     	};
 
 }
