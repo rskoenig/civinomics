@@ -212,7 +212,6 @@ def getJsonProperties(item):
             workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
         else:
-            log.info("no parentObjType item is %s"%item.keys())
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
         
         # comment author
@@ -419,7 +418,6 @@ def getJsonProperties(item):
                 entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
             else:
                 entry['agendaPostDate'] = item['agendaPostDate']
-                log.info("postDate is %s"%item['agendaPostDate'])
         else:
             entry['agendaPostDate'] = ""
         entry['meetingTime'] = item['meetingTime']
@@ -463,7 +461,6 @@ def getJsonInitiativesShort(item):
     entry = {}
     # item attributes
     entry['title'] = item['title']
-    log.info('%s' % item['title'])
     entry['objType'] = item.objType
     entry['text'] = item['description']
     entry['urlCode'] = item['urlCode']
