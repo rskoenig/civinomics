@@ -1,0 +1,95 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
+<div id="fbSignUp" class="container login-container">
+    <div class="row">
+        % if c.success:
+            <div class="span6 offset3" style="padding-top:150px;">
+                <div class="success-well">
+                    <div class="login-top">
+                        <h2 class="centered no-top">Success!</h2>
+                        <hr>
+                    <div>
+                    Check your email to finish setting up your account.
+                    If you don't see an email from us in your inbox, try checking your junk mail folder.
+                </div>
+            </div>
+        % else: 
+            <div class="col-sm-6 col-sm-offset-3 well well-login">
+                    % if c.splashMsg:
+                        <% message = c.splashMsg %>
+                        <div class="alert alert-${message['type']}">
+                            <button data-dismiss="alert" class="close">x</button>
+                            <strong>${message['title']}</strong> ${message['content']}
+                        </div>
+                    % endif
+                    <div class="login-top">
+                        <h2 class="centered no-top"> Complete Facebook Signup </h2>
+                        <hr>
+                    </div>
+                    % if c.conf['read_only.value'] == 'true':
+                        <h1> Sorry, Civinomics is in read only mode right now </h1>
+                    % else:
+                        <div class="login-body" style="border-bottom:none;">
+                            <form id="sign_in" action="/signup/fbSigningUp" class="form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+                                <input type="hidden" name="country" value="United States">
+                                <input type="hidden" name="memberType" value="professional">
+                                <div ng-class=" {'form-group': true, 'error': signupForm.postalCode.$error.pattern} ">
+                                    <label class="col-sm-3 control-label" for="postalCode"><!--<i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title=""></i>--> Zip Code: </label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                                        <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
+                                        <div id="postalCodeResult"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-6">
+                                        <span id="terms">&nbsp;</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="submit">&nbsp;</label>
+                                    <div class="col-sm-6 col-sm-offset-3">
+                                        <button type="submit" name="submit" class="btn btn-success btn-lg btn-block">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="spacer"></div>
+                            <div class="row" style="padding:15px;">
+                                <div class="col-sm-6">
+                                    <a href="/signupNoExtAuth" rel="tooltip" data-placement="bottom" data-original-title="sign up without facebook"><span><i class="pull-left"></i>Signup without Facebook</span></a>
+                                </div>
+                                <div class="col-sm-6">
+                                    <a href="/loginNoExtAuth" rel="tooltip" data-placement="bottom" data-original-title="login without facebook"><span><i class="pull-left"></i>Login without Facebook</span></a>
+                                </div>
+                            </div>
+                            <script src="/js/signup.js" type="text/javascript"></script>
+                            <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/zipLookup.js')}"></script>
+                        </div>
+                    % endif
+            </div>
+        % endif
+    </div>
+</div>
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+    </script>
+</%def>
+
+<%def name="bodyTag_extras()">
+    ng-app
+</%def>
+
