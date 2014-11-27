@@ -474,7 +474,9 @@
                 readonly = '0'
         %>
         <div class="col-xs-12">
-                <span class="right-space-md" ng-init="yesVotes = ${comment['ups']};noVotes = ${comment['downs']}; netVotes = ${int(comment['ups']) + int(comment['downs'])}">${ng_lib.upDownVoteHorizontal()}</span>
+            <span ng-controller="yesNoVoteCtrl">
+                <span class="right-space-md" ng-init="yesVotes = ${comment['ups']}; noVotes = ${comment['downs']}; netVotes = ${int(comment['ups']) + int(comment['downs'])}; objType = 'comment'; urlCode = '${comment['urlCode']}'">${ng_lib.upDownVoteHorizontal()}</span>
+            </span>
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
                     % if readonly == '0':
