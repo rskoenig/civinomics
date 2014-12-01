@@ -56,6 +56,7 @@ class InitiativeController(BaseController):
                             
             if c.initiative:
                 #log.info("got initiative")
+                c.title = c.initiative['title']
                 c.user = userLib.getUserByCode(c.initiative['userCode'])
 
                 scopeProps = utils.getPublicScope(c.initiative)
