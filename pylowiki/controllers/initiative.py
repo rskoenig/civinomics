@@ -611,6 +611,7 @@ class InitiativeController(BaseController):
         
         if 'directoryNum_photos' not in c.initiative:
             c.initiative['directoryNum_photos'] = '0'
+            dbHelpers.commit(c.initiative)
             
         jsonResponse =  {'files': [
                             {
