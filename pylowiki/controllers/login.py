@@ -55,7 +55,6 @@ class LoginController(BaseController):
                 session.pop('afterLoginURL')
                 session.save()
             if 'returnToSocial' in session and session['returnToSocial'] != "/login" and session['returnToSocial'] != '/signup':
-                log.info("Returning to social!!")
                 log.info(session['returnToSocial'])
                 loginURL = session['returnToSocial']
                 session.pop('returnToSocial')
