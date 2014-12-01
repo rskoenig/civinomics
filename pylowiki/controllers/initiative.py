@@ -560,66 +560,68 @@ class InitiativeController(BaseController):
         else:
             log.info("I'm not a cover")
             image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
-        
-        width = min(image.size)
-        x = 0
-        y = 0
-        if 'width' in request.params:
-            width = request.params['width']
-            if not width or width == 'undefined':
-                width = 100
-            else:
-                width = int(float(width))
-        if 'x' in request.params:
-            x = request.params['x']
-            if not x or x == 'undefined':
-                x = 0
-            else:
-                x = int(float(x))
-        if 'y' in request.params:
-            y = request.params['y']
-            if not y or y == 'undefined':
-                y = 0
-            else:
-                y = int(float(y))
-        dims = {'x': x, 
-                'y': y, 
-                'width':width,
-                'height':width}
-        clientWidth = -1
-        clientHeight = -1
-        if 'clientWidth' in request.params:
-            clientWidth = request.params['clientWidth']
-            if not clientWidth or clientWidth == 'null':
-                clientWidth = -1
-        if 'clientHeight' in request.params:
-            clientHeight = request.params['clientHeight']
-            if not clientHeight or clientHeight == 'null':
-                clientHeight = -1
-        
-        if cover:
-            picType = 'cover'
-        else:
-            picType = 'photos'
-             
-        image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
-        image = imageLib.resizeImage(image, imageHash, 480, 480)
-        image = imageLib.saveImage(image, imageHash, picType, 'photo')
-        image = imageLib.resizeImage(image, imageHash, 160, 160)
-        image = imageLib.saveImage(image, imageHash, picType, 'thumbnail')
-        
-        
-        if 'directoryNum_photos' not in c.initiative:
-            c.initiative['directoryNum_photos'] = '0'
-            dbHelpers.commit(c.initiative)
+        try:
+            width = min(image.size)
+            x = 0
+            y = 0
+            if 'width' in request.params:
+                width = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
+            dims = {'x': x, 
+                    'y': y, 
+                    'width':width,
+                    'height':width}
+            clientWidth = -1
+            clientHeight = -1
+            if 'clientWidth' in request.params:
+                clientWidth = request.params['clientWidth']
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
+                clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
             
-        jsonResponse =  {'files': [
-                            {
-                                'name':filename,
-                                'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(c.initiative['directoryNum_photos'], imageHash),
-                                'image_hash':imageHash
-                            }
-                        ]}
+            if cover:
+                picType = 'cover'
+            else:
+                picType = 'photos'
+                 
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
+            image = imageLib.saveImage(image, imageHash, picType, 'photo')
+            image = imageLib.resizeImage(image, imageHash, 160, 160)
+            image = imageLib.saveImage(image, imageHash, picType, 'thumbnail')
+            
+            
+            if 'directoryNum_photos' not in c.initiative:
+                c.initiative['directoryNum_photos'] = '0'
+                dbHelpers.commit(c.initiative)
+                
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(c.initiative['directoryNum_photos'], imageHash),
+                                    'image_hash':imageHash
+                                }
+                            ]}
+        except:
+            jsonResponse = {'status':'0'}
         return json.dumps(jsonResponse)
         
             
