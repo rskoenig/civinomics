@@ -43,8 +43,8 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
-    def __before__(self):
-        if c.authuser:
+    def __before__(self, action):
+        if c.authuser and action != 'logout':
             loginURL = '/'
             if 'afterLoginURL' in session:
                 log.info(session['afterLoginURL'])

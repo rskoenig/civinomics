@@ -33,11 +33,27 @@ class plaintextForm(formencode.Schema):
 
 class RegisterController(BaseController):
 
-    def __before__(self):
+    def __before__(self, action):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
         if c.authuser:
-            log.info(c.authuser)
+            loginURL = '/'
+            if 'afterLoginURL' in session:
+                log.info(session['afterLoginURL'])
+                # look for accelerator cases: workshop home, item listing, item home
+                loginURL = session['afterLoginURL']
+                if 'loginResetPassword' in loginURL:
+                    loginURL = '/profile/' + c.authuser['urlCode'] + '/' + c.authuser['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
+            if 'returnToSocial' in session and session['returnToSocial'] != "/login" and session['returnToSocial'] != '/signup':
+                log.info("Returning to social!!")
+                log.info(session['returnToSocial'])
+                loginURL = session['returnToSocial']
+                session.pop('returnToSocial')
+                session.save()
+            
+            return redirect(loginURL)
 
     def splashDisplay(self):
         c.title = config['custom.titlebar']
