@@ -12,6 +12,7 @@ function yesNoVoteCtrl($scope) {
     }
 
     // set the appropriate voting icon
+    console.log($scope.rated);
     if ($scope.rated == 0) {
         $scope.voted = '';
     }
