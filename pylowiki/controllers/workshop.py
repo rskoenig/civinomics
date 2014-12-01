@@ -151,8 +151,6 @@ class WorkshopController(BaseController):
         else:
             c.backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
 
-
-
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
         
