@@ -36,6 +36,8 @@ class RegisterController(BaseController):
     def __before__(self):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
+        if c.authuser:
+            log.info(c.authuser)
 
     def splashDisplay(self):
         c.title = config['custom.titlebar']
@@ -765,9 +767,10 @@ class RegisterController(BaseController):
         # look for accelerator cases: workshop home, item listing, item home
             returnPage = session['afterLoginURL']
             if 'loginResetPassword' in returnPage:
-                returnPage = '/profile/' + user['urlCode'] + '/' + user['url'] + '/edit#tab4'
-                session.pop('afterLoginURL')
-                session.save()
+                if c.authuser:
+                    returnPage = '/profile/' + c.authuser['urlCode'] + '/' + c.authuser['url'] + '/edit#tab4'
+                    session.pop('afterLoginURL')
+                    session.save()
 
         if 'alURL' in query and query['alURL'] is not '':
             returnPage = query['alURL']
