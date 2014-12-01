@@ -609,7 +609,9 @@ class InitiativeController(BaseController):
         image = imageLib.saveImage(image, imageHash, picType, 'thumbnail')
         
         
-        
+        if 'directoryNum_photos' not in c.initiative:
+            c.initiative['directoryNum_photos'] = '0'
+            
         jsonResponse =  {'files': [
                             {
                                 'name':filename,
