@@ -476,16 +476,21 @@
         <div class="col-xs-12">
             <span ng-controller="yesNoVoteCtrl">
                 <%
-                if str(comment['urlCode']) in session['ratings']: 
-                    hasVoted = 'true'
-                    if session['ratings'][comment['urlCode']] == '1':
-                        votedValue = 'yesVoted'
-                    elif session['ratings'][comment['urlCode']] == '-1':
-                        votedValue = 'noVoted'
-                    else:
+                if 'ratings' in session:
+                    if str(comment['urlCode']) in session['ratings']: 
+                        hasVoted = 'true'
+                        if session['ratings'][comment['urlCode']] == '1':
+                            votedValue = 'yesVoted'
+                        elif session['ratings'][comment['urlCode']] == '-1':
+                            votedValue = 'noVoted'
+                        else:
+                            votedValue = ''
+                    else: 
+                        hasVoted = 'false'
                         votedValue = ''
                 else: 
                     hasVoted = 'false'
+                    votedValue = ''
                 %>
                 <span class="right-space-md" ng-init="yesVotes = ${comment['ups']}; noVotes = ${comment['downs']}; netVotes = ${int(comment['ups']) - int(comment['downs'])}; objType = 'comment'; urlCode = '${comment['urlCode']}'; hasVoted = ${hasVoted}; voted = '${votedValue}'">${ng_lib.upDownVoteHorizontal()}</span>
             </span>
