@@ -23,6 +23,7 @@ import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.db.dbHelpers        as dbHelpers
+import pylowiki.lib.db.revision     as  revisionLib
 
 import urllib2
 
@@ -211,8 +212,57 @@ def getJsonProperties(item):
             workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
         else:
-            log.info("no parentObjType item is %s"%item.keys())
             entry['parentHref'] = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+        
+        # comment author
+        author = userLib.getUserByID(item.owner)
+        entry['authorName'] = author['name']
+        entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+        entry['authorPhoto'] = utils._userImageSource(author)
+        if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+            entry['canEdit'] = 'yes'
+        else:
+            entry['canEdit'] = 'no'
+            
+        # get revisions
+        revisions = revisionLib.getRevisionsForThing(item)
+        if revisions:
+            entry['revisions'] = 'yes'
+        else:
+            entry['revisions'] = 'no'
+        entry['revisionList'] = []
+        if revisions:
+            for rev in revisions:
+                revision = {}
+                code = rev['urlCode'] 
+                date = str(rev.date)
+                text = rev['data']
+                html = m.html(rev['data'], render_flags=m.HTML_SKIP_HTML)
+                if 'commentRole' in rev:
+                    role = rev['commentRole']
+                else:
+                    role = 'Neutral'
+                    
+                if role == 'yes':
+                    role = 'Pro'
+                elif role == 'no':
+                    role = 'Con'
+                else:
+                    role = 'Neutral'
+                    
+                revision['date'] = date
+                revision['urlCode'] = code
+                revision['text'] = text
+                revision['html'] = html
+                revision['role'] = role
+                entry['revisionList'].append(revision)
+        entry['commentRole'] = ''
+        if 'commentRole' in item:
+            entry['commentRole'] = item['commentRole']
+        if 'ideaCode' in item or 'initiativeCode' in item or 'meetingCode' in item:
+            entry['doCommentRole'] = 'yes'
+        else:
+            entry['doCommentRole'] = 'no'
 
     if 'parentTitle' in entry:
         if len(entry['parentTitle']) >= 35:
@@ -368,7 +418,6 @@ def getJsonProperties(item):
                 entry['agendaPostDate'] = "%s-%s-%s"%(dList[1], dList[2], dList[0])
             else:
                 entry['agendaPostDate'] = item['agendaPostDate']
-                log.info("postDate is %s"%item['agendaPostDate'])
         else:
             entry['agendaPostDate'] = ""
         entry['meetingTime'] = item['meetingTime']
@@ -412,7 +461,6 @@ def getJsonInitiativesShort(item):
     entry = {}
     # item attributes
     entry['title'] = item['title']
-    log.info('%s' % item['title'])
     entry['objType'] = item.objType
     entry['text'] = item['description']
     entry['urlCode'] = item['urlCode']

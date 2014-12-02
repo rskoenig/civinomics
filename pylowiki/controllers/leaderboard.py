@@ -83,8 +83,7 @@ def getAverageForCriteria(thing, criteria):
 class LeaderboardController(BaseController):
 
     def __before__(self, action, workshopCode = None, offset = 0, limit = 10):
-        log.info("Before")
-        log.info(action) 
+        log.info("Before and action is %s", action)
     
     def getWorkshopInitiativesWithCriteria(self, workshopCode, workshopURL, offset = 0, limit = 10, sortBy = 'voteCount'):
         end = int(offset) + int(limit)   

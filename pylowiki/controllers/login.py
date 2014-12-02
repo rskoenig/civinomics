@@ -43,6 +43,25 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
+    def __before__(self, action):
+        if c.authuser and action != 'logout':
+            loginURL = '/'
+            if 'afterLoginURL' in session:
+                log.info(session['afterLoginURL'])
+                # look for accelerator cases: workshop home, item listing, item home
+                loginURL = session['afterLoginURL']
+                if 'loginResetPassword' in loginURL:
+                    loginURL = '/profile/' + c.authuser['urlCode'] + '/' + c.authuser['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
+            if 'returnToSocial' in session and session['returnToSocial'] != "/login" and session['returnToSocial'] != '/signup':
+                log.info(session['returnToSocial'])
+                loginURL = session['returnToSocial']
+                session.pop('returnToSocial')
+                session.save()
+            
+            return redirect(loginURL)
+
     @h.login_required
     def shareFacebookHandler(self, id1):
         # create the share object
