@@ -1,10 +1,10 @@
 import logging, string
 
-from urllib import quote
-from zlib import adler32
-from pylons import session, tmpl_context as c
+from urllib  import quote
+from zlib    import adler32
 from hashlib import md5
-from pylons import tmpl_context         as c, config, session
+from pylons  import session, tmpl_context as c, config, session
+
 import pylowiki.lib.db.user             as userLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
@@ -23,7 +23,7 @@ import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.db.dbHelpers        as dbHelpers
-import pylowiki.lib.db.revision     as  revisionLib
+import pylowiki.lib.db.revision         as  revisionLib
 
 import urllib2
 
