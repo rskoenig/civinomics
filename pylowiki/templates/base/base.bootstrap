@@ -289,9 +289,7 @@
             			    console.log(apiResponse);
                             name = apiResponse.first_name + ' ' + apiResponse.last_name;
                             callback();
-                        }); 
-                        
-                                          
+                        });               
                     },
                     function(callback) {
                         // perform fbauthcheck now that the pic urls have been loaded

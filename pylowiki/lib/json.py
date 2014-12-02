@@ -1,10 +1,11 @@
 import logging, string
+import requests
 
-from urllib  import quote
-from zlib    import adler32
+from urllib import quote
+from zlib import adler32
+from pylons import session, tmpl_context as c
 from hashlib import md5
-from pylons  import session, tmpl_context as c, config, session
-
+from pylons import tmpl_context         as c, config, session
 import pylowiki.lib.db.user             as userLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.photo            as photoLib
@@ -23,7 +24,7 @@ import pylowiki.lib.db.meeting          as meetingLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.fuzzyTime           as fuzzyTime
 import pylowiki.lib.db.dbHelpers        as dbHelpers
-import pylowiki.lib.db.revision         as  revisionLib
+import pylowiki.lib.db.revision     as  revisionLib
 
 import urllib2
 
@@ -392,6 +393,7 @@ def getJsonProperties(item):
                 entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
 
             else:
+                #Isn't this wrong? What's author doing here?
                 author = userLib.getUserByID(item.owner)
                 entry['authorName'] = item['user_name']
                 entry['authorPhoto'] = item['user_avatar']
@@ -405,6 +407,19 @@ def getJsonProperties(item):
         entry['authorCode'] = author['urlCode']
         entry['authorURL'] = author['url']
         entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+    
+    if 's50x50' in entry['authorPhoto'] or 'https://graph.facebook.com/' in entry['authorPhoto']:
+        log.info("Replacing the picture")
+        author = userLib.getUserByID(item.owner)
+        if 'facebookAuthId' in author:
+            graphUrl = 'https://graph.facebook.com/' + author['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
+            response = requests.request("GET", graphUrl)
+            item['user_avatar'] = response.url
+            dbHelpers.commit(item)
+            entry['authorPhoto'] = item['user_avatar']
+        else:
+            entry['authorPhoto'] = utils._userImageSource(author)
+       
 
 
     # special case for meetings
