@@ -555,10 +555,8 @@ class InitiativeController(BaseController):
         imageHash = imageLib.generateHash(filename, c.authuser)
         
         if cover:
-            log.info("I'm a cover!!")
             image = imageLib.saveImage(image, imageHash, 'cover', 'orig', thing = c.initiative)
         else:
-            log.info("I'm not a cover")
             image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
         try:
             width = min(image.size)

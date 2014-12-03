@@ -100,7 +100,10 @@ def getUserByEmail(email, disabled = '0'):
         return False
 
 def getUserByFacebookAuthId( userid ):
-    return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).first()
+    except:
+        return False
 
 def getUserByTwitterId( twitterid ):
     try:
