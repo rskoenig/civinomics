@@ -184,7 +184,6 @@ h5.h45, h4.h45{
 
 @media(min-width: 767px){
   .container.splash-container{
-    min-width: 940px;
     background-color: #fff;
   }
 }
@@ -3299,6 +3298,8 @@ button.close{
   position: relative;
   height: 500px;
   margin-top: -60px;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 #bg {
