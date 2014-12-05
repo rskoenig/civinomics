@@ -402,6 +402,10 @@ def _userImageSource(user, **kwargs):
                 source = user['facebookProfileBig']
             else:
                 source = user['facebookProfileSmall']
+            if len(source) == 0:
+                if 'facebookAuthId' in author:
+                    graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
+                    source = requests.request("GET", graphUrl)
         elif kwargs['forceSource'] == 'twitter':
             source = user['twitterProfilePic']
 
@@ -417,6 +421,10 @@ def _userImageSource(user, **kwargs):
                     source = user['facebookProfileBig']
                 else:
                     source = user['facebookProfileSmall']
+                if len(source) == 0:
+                    if 'facebookAuthId' in author:
+                        graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
+                        source = requests.request("GET", graphUrl)
             elif user['avatarSource'] == 'twitter':
                 gravatar = False
                 source = user['twitterProfilePic']
@@ -433,6 +441,10 @@ def _userImageSource(user, **kwargs):
                         source = user['facebookProfileBig']
                     else:
                         source = user['facebookProfileSmall']
+                    if len(source) == 0:
+                        if 'facebookAuthId' in author:
+                            graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
+                            source = requests.request("GET", graphUrl)
     if large and gravatar:
         source += '&s=200'
     return source
