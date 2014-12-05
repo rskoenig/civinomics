@@ -639,6 +639,10 @@ class LoginController(BaseController):
                 if 'fbSmallPic' in session:
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
+                else:
+                    graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
+                    user['facebookProfileSmall'] = requests.request("GET", graphUrl)
+                    user['facebookProfileBig'] = user['facebookProfileSmall']
             else:
                 user['externalAuthType'] = ''
         user['laston'] = time.time()
