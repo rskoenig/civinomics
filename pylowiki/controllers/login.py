@@ -808,27 +808,25 @@ class LoginController(BaseController):
         user = userLib.getUserByEmail( email ) 
         if user:
             if email != config['app_conf']['admin.email']:
-                password = userLib.generatePassword() 
-                userLib.changePassword( user, password )
-                commit( user ) # commit database change
-
+                passwordHash = userLib.forcePasswordChange(user) 
+                link = "http://www.civinomics.com/resetPassword/%s"%passwordHash
+                session['email'] = email
+                session.save()
                 toEmail = user['email']
                 frEmail = 'Civinomics Helpdesk <helpdesk@civinomics.com>' 
                 subject = 'Password Recovery'
-                message = '''We have created a new password for you.\n\n 
-Your password has been reset to: ''' + password
+                message = '''We received a request to reset the password associated with this email address. If you made this request, follow this link to reset your password:\n''' 
+                message += link
                 message += '''
-Please use this password to login at the Civinomics login page:\n
-https://civinomics.com/login.\n\n
-You can change your password to something you prefer on your profile page.\n\n'''
+If you did not make this request, you can safely disregard this email.
 
-
+Thanks,
+The Civinomics Team\n\n'''
                 mailLib.send( toEmail, frEmail, subject, message )
-
                 log.info( "Successful forgot password for " + email )
                 splashMsg['type'] = 'success'
                 splashMsg['title'] = 'Success'
-                splashMsg['content'] = '''A new password was emailed to you.'''
+                splashMsg['content'] = '''Follow the instructions in the email to reset your password.'''
                 session['alert'] = splashMsg
                 session.save()
                 return redirect('/loginResetPassword')
@@ -844,6 +842,36 @@ You can change your password to something you prefer on your profile page.\n\n''
             session['alert'] = splashMsg
             session.save()
             return redirect('/forgotPassword')
+
+    def resetPasswordDisplay(self, hash):
+        user = userLib.getUserByEmail(session['email'])
+        #session.pop('email')
+        log.info(hash)
+        
+        if 'changePassword' not in user or user['changePassword'] != hash: 
+            c.splashMsg = False
+            splashMsg = {}
+            splashMsg['type'] = 'Error'
+            splashMsg['title'] = 'Error'
+            splashMsg['content'] = '''This link is no longer valid.'''
+            session['alert'] = splashMsg
+            session.save()
+            return redirect('/forgotPassword')
+        else:
+            return render("/derived/6_passwordReset.bootstrap")
+    
+    def resetPasswordHandler(self):
+        password = request.params["password"]
+        user = userLib.getUserByEmail(session['email'])
+        session.pop('email')
+        
+        userLib.changePassword(user, password)
+        user['changePassword'] = ''
+        commit(user)
+        url = LoginController.logUserIn(self, user)
+        redirect(url)
+        
+        
 
     @login_required
     def changepass(self):
