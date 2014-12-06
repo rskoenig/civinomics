@@ -419,7 +419,6 @@ def getJsonProperties(item):
             entry['authorPhoto'] = item['user_avatar']
         else:
             entry['authorPhoto'] = utils._userImageSource(author)
-    log.info(len(entry['authorPhoto']))
     if len(entry['authorPhoto']) == 0:
         log.info("Empty pic")
         author = userLib.getUserByID(item.owner)

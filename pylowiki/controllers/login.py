@@ -641,7 +641,8 @@ class LoginController(BaseController):
                     user['facebookProfileBig'] = session['fbBigPic']
                 else:
                     graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
-                    user['facebookProfileSmall'] = requests.request("GET", graphUrl)
+                    req = requests.request("GET", graphUrl)
+                    user['facebookProfileSmall'] = req.url
                     user['facebookProfileBig'] = user['facebookProfileSmall']
             else:
                 user['externalAuthType'] = ''
