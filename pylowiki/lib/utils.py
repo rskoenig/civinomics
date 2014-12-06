@@ -1,4 +1,5 @@
 import logging, string
+import requests
 
 from urllib import quote
 from zlib import adler32
@@ -398,14 +399,16 @@ def _userImageSource(user, **kwargs):
             else:
                 source = '/images/hamilton.png'
         elif kwargs['forceSource'] == 'facebook':
+            log.info("Forced!")
             if large:
                 source = user['facebookProfileBig']
             else:
                 source = user['facebookProfileSmall']
             if len(source) == 0:
-                if 'facebookAuthId' in author:
+                if 'facebookAuthId' in user:
                     graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
-                    source = requests.request("GET", graphUrl)
+                    response = requests.request("GET", graphUrl)
+                    source = response.url
         elif kwargs['forceSource'] == 'twitter':
             source = user['twitterProfilePic']
 
@@ -416,15 +419,17 @@ def _userImageSource(user, **kwargs):
                     source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
                     gravatar = False
             elif user['avatarSource'] == 'facebook':
+                log.info("Source!")
                 gravatar = False
                 if large:
                     source = user['facebookProfileBig']
                 else:
                     source = user['facebookProfileSmall']
                 if len(source) == 0:
-                    if 'facebookAuthId' in author:
+                    if 'facebookAuthId' in user:
                         graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
-                        source = requests.request("GET", graphUrl)
+                        response = requests.request("GET", graphUrl)
+                        source = response.url
             elif user['avatarSource'] == 'twitter':
                 gravatar = False
                 source = user['twitterProfilePic']
@@ -435,6 +440,7 @@ def _userImageSource(user, **kwargs):
             # with the above user['avatarSource'] == 'facebook': ..
             if 'facebookSource' in user.keys():
                 if user['facebookSource'] == u'1':
+                    log.info("Keys!")
                     gravatar = False
                     # NOTE - when to provide large or small link?
                     if large:
@@ -442,9 +448,10 @@ def _userImageSource(user, **kwargs):
                     else:
                         source = user['facebookProfileSmall']
                     if len(source) == 0:
-                        if 'facebookAuthId' in author:
+                        if 'facebookAuthId' in user:
                             graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
-                            source = requests.request("GET", graphUrl)
+                            response = requests.request("GET", graphUrl)
+                            source = response.url
     if large and gravatar:
         source += '&s=200'
     return source
