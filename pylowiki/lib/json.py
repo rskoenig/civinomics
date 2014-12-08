@@ -468,6 +468,13 @@ def getJsonProperties(item):
     if 'subcategory_tags' in item:
         entry['subcategory_tags'] = item['subcategory_tags']
 
+    if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+        entry['canEdit'] = 'yes'
+    else:
+        entry['canEdit'] = 'no'
+    
+    log.info(entry['canEdit'])
+    
     return entry
 
 
