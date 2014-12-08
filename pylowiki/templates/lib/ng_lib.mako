@@ -1800,7 +1800,7 @@
 
                 <br>
                 <p ng-init="stringLimit=300" class="markdown" ng-show="!editing"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
-                <div class="accordion" id="revisions">
+                <div class="accordion" id="revisions"  ng-show="!editing && showRevisions">
                     <div ng-repeat="rev in comment.revisionList">
                         <div class="accordion-group">
                             <div class="accordion-heading">
@@ -1820,13 +1820,15 @@
                 % if readonly == '0':
                 <div ng-show="(comment.canEdit == 'yes')">
                     <div class="btn-group btn-group-xs">
-                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}" ng-click="editing = true">Edit</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="editing = true">Edit</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
                         <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
                     </div><!-- btn-group -->
-                    <div id="edit-{{comment.urlCode}}" class="collapse">
+                    <div id="edit-{{comment.urlCode}}" ng-show = "editing">
                         <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
                             <form class="no-bottom" ng-submit="submitEditComment()">
                                 <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                <br/><br/>
                                 <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
                                 <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
                                 <div ng-show="(comment.doCommentRole == 'yes')">
