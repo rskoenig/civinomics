@@ -1821,7 +1821,7 @@
                 <div ng-show="(comment.canEdit == 'yes')">
                     <div class="btn-group btn-group-xs">
                         <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="editing = true">Edit</button>
-                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing && comment.revisionList.length > 0" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
                         <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
                     </div><!-- btn-group -->
                     <div id="edit-{{comment.urlCode}}" ng-show = "editing">

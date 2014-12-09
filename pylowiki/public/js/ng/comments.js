@@ -105,6 +105,7 @@ function commentEditController($rootScope, $scope, $http, editService) {
         $scope.submitEditComment = function() {
     		$scope.newCommentLoading = true;
     		$scope.$parent.editing = !$scope.$parent.editing;
+    		$scope.comment.html = $scope.commentEditText;
     		var commentData = {'commentCode': $scope.urlCode, 'commentText': $scope.commentEditText, 'commentRole': $scope.commentEditRole, 'submit': $scope.submit};
     		$scope.editCommentURL = '/comment/edit/handler';
     		$http.post($scope.editCommentURL, commentData).success(function(data){
