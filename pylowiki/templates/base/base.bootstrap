@@ -274,18 +274,25 @@
                 var result = '';
                 async.series([
                     function(callback) {
-                        var query = '/fql?q={SELECT name, pic_square, pic_big FROM user WHERE uid=' + response.authResponse.userID + '}';
-                        FB.api('/me/', 'get', {fields: 'first_name, last_name, picture'}, function(apiResponse){
-            			    console.log(apiResponse);
+                        FB.api(
+                            "/me/picture?redirect=0&height=200&type=normal&width=200",
+                            function (apiResponse) {
+                              if (response && !response.error) {
+                                smallPic = apiResponse.data.url;
+                                bigPic = apiResponse.data.url;
+                              }
+                            }
+                        ); 
+                        
+                        console.log(callback);
+                        FB.api('/me/', 'get', {fields: 'first_name, last_name'}, function(apiResponse){
                             name = apiResponse.first_name + ' ' + apiResponse.last_name;
-                            console.log(apiResponse.picture.data.url);
-                            smallPic = apiResponse.picture.data.url;
-                            bigPic = apiResponse.picture.data.url;
                             callback();
-                        });                    
+                        });               
                     },
                     function(callback) {
                         // perform fbauthcheck now that the pic urls have been loaded
+                        console.log(smallPic);
                         callFbCheckAccount(name, response.authResponse, smallPic, bigPic, function(err, checkResult) {
                             if (err) return callback(err);
                             result = checkResult;

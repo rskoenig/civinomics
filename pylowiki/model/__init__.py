@@ -146,7 +146,8 @@ t_thing = Table('thing', meta.metadata,
                 Column('objType', Unicode(100)),
                 Column('date', DateTime, default = d.datetime.now),
                 Column('owner', Integer),
-                Column('sort', Unicode(40), default = None))
+                Column('sort', Unicode(40), default = None),
+                Column('lastUpdated', DateTime, default = d.datetime.now))
 
 t_data = Table('data', meta.metadata,
               Column('thing_id', Integer, ForeignKey('thing.id'),

@@ -43,6 +43,25 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
+    def __before__(self, action):
+        if c.authuser and action != 'logout':
+            loginURL = '/'
+            if 'afterLoginURL' in session:
+                log.info(session['afterLoginURL'])
+                # look for accelerator cases: workshop home, item listing, item home
+                loginURL = session['afterLoginURL']
+                if 'loginResetPassword' in loginURL:
+                    loginURL = '/profile/' + c.authuser['urlCode'] + '/' + c.authuser['url'] + '/edit#tab4'
+                session.pop('afterLoginURL')
+                session.save()
+            if 'returnToSocial' in session and session['returnToSocial'] != "/login" and session['returnToSocial'] != '/signup':
+                log.info(session['returnToSocial'])
+                loginURL = session['returnToSocial']
+                session.pop('returnToSocial')
+                session.save()
+            
+            return redirect(loginURL)
+
     @h.login_required
     def shareFacebookHandler(self, id1):
         # create the share object
@@ -620,6 +639,11 @@ class LoginController(BaseController):
                 if 'fbSmallPic' in session:
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
+                else:
+                    graphUrl = 'https://graph.facebook.com/' + user['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
+                    req = requests.request("GET", graphUrl)
+                    user['facebookProfileSmall'] = req.url
+                    user['facebookProfileBig'] = user['facebookProfileSmall']
             else:
                 user['externalAuthType'] = ''
         user['laston'] = time.time()
@@ -789,27 +813,25 @@ class LoginController(BaseController):
         user = userLib.getUserByEmail( email ) 
         if user:
             if email != config['app_conf']['admin.email']:
-                password = userLib.generatePassword() 
-                userLib.changePassword( user, password )
-                commit( user ) # commit database change
-
+                passwordHash = userLib.forcePasswordChange(user) 
+                link = "http://www.civinomics.com/resetPassword/%s"%passwordHash
+                session['email'] = email
+                session.save()
                 toEmail = user['email']
                 frEmail = 'Civinomics Helpdesk <helpdesk@civinomics.com>' 
                 subject = 'Password Recovery'
-                message = '''We have created a new password for you.\n\n 
-Your password has been reset to: ''' + password
+                message = '''We received a request to reset the password associated with this email address. If you made this request, follow this link to reset your password:\n''' 
+                message += link
                 message += '''
-Please use this password to login at the Civinomics login page:\n
-https://civinomics.com/login.\n\n
-You can change your password to something you prefer on your profile page.\n\n'''
+If you did not make this request, you can safely disregard this email.
 
-
+Thanks,
+The Civinomics Team\n\n'''
                 mailLib.send( toEmail, frEmail, subject, message )
-
                 log.info( "Successful forgot password for " + email )
                 splashMsg['type'] = 'success'
                 splashMsg['title'] = 'Success'
-                splashMsg['content'] = '''A new password was emailed to you.'''
+                splashMsg['content'] = '''Follow the instructions in the email to reset your password.'''
                 session['alert'] = splashMsg
                 session.save()
                 return redirect('/loginResetPassword')
@@ -825,6 +847,36 @@ You can change your password to something you prefer on your profile page.\n\n''
             session['alert'] = splashMsg
             session.save()
             return redirect('/forgotPassword')
+
+    def resetPasswordDisplay(self, hash):
+        user = userLib.getUserByEmail(session['email'])
+        #session.pop('email')
+        log.info(hash)
+        
+        if 'changePassword' not in user or user['changePassword'] != hash: 
+            c.splashMsg = False
+            splashMsg = {}
+            splashMsg['type'] = 'Error'
+            splashMsg['title'] = 'Error'
+            splashMsg['content'] = '''This link is no longer valid.'''
+            session['alert'] = splashMsg
+            session.save()
+            return redirect('/forgotPassword')
+        else:
+            return render("/derived/6_passwordReset.bootstrap")
+    
+    def resetPasswordHandler(self):
+        password = request.params["password"]
+        user = userLib.getUserByEmail(session['email'])
+        session.pop('email')
+        
+        userLib.changePassword(user, password)
+        user['changePassword'] = ''
+        commit(user)
+        url = LoginController.logUserIn(self, user)
+        redirect(url)
+        
+        
 
     @login_required
     def changepass(self):

@@ -141,6 +141,7 @@ class WorkshopController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+        c.title = c.w['title']
         #log.info("workshop before")
         c.mainImage = mainImageLib.getMainImage(c.w)
         if c.mainImage['pictureHash'] == 'supDawg':
@@ -149,8 +150,6 @@ class WorkshopController(BaseController):
             c.backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
         else:
             c.backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-
-
 
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)

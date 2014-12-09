@@ -1,4 +1,4 @@
-<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" /> 
 
 <%def name="general_listing_updown()">
     <div class="media well search-listing" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
@@ -275,7 +275,8 @@
 
 <%def name="basic_listing()">
     <td class="avatar-cell"><div ng-if="item.thumbnail" class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div></td>
-    <td><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
+    <td ng-show="(item.objType != 'comment')"><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
+    <td ng-show="(item.objType == 'comment')">{{item.title}} | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
 </%def>
 
 
@@ -716,23 +717,55 @@
 </%def>
 
 <%def name="comment_listing()">
-    <div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;">
-        <div ng-controller="yesNoVoteCtrl">
+<div ng-class="{pro : item.position == 'yes', con : item.position == 'no', neutral : item.position == 'neutral'}" class="media well search-listing-comment" ng-init="rated=item.rated; urlCode=item.urlCode;url=item.url; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes; objType=item.objType;"  ng-controller="commentEditController">
+        <div>
             <div class="row">
                 <div class="col-xs-12">
                     ${meta2()}
                     <p class="top-space">
-                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight">
+                    <a ng-href="{{item.parentHref}}#comment-{{item.urlCode}}" class="no-highlight" ng-show="!editing">
                         <p class="markdown"><span ng-bind-html="item.html"></span></p></a>
                     </p>
+                    <div id="edit-{{item.urlCode}}" ng-show="editing">
+                        <div ng-init="urlCode = item.urlCode; commentEditText = item.text; commentEditRole = item.commentRole;">
+                            <form class="no-bottom" ng-submit="submitListingEditComment()">
+                                <div>
+                                    <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{item.text}}</textarea>
+                                </div>
+                                <div ng-show="(item.doCommentRole == 'yes')">
+                                    &nbsp;
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                    </label>
+                                    <label class="radio inline">
+                                        <input type="radio" name="commentRole-{{item.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
+                                    </label>
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top; margin:5px">Submit</button>
+                                </div><!-- ng-show -->
+                            </form>
+                        </div>
+                    </div><!-- ng-shw -->
                 </div>
             </div>
-            <div class="row">
+            <div class="row"  ng-controller="yesNoVoteCtrl">
                 <div class="col-xs-12" ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</div>
-                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')}</div>
-            </div>
+                <div class="col-xs-12" ng-if="item.readOnly == '0'">${upDownVoteHorizontal(readonly = '0')} 
+                    <div class="btn-group btn-group-xs" ng-show="(item.canEdit == 'yes')">
+                        <button class="btn btn-default" type="button" ng-show="(item.canEdit == 'yes')" class="btn btn-xs" ng-click="changeEditing()">Edit</button>
+                    </div><!-- btn-group -->
+                </div>
+            </div><!-- row -->
         </div>
-    </div>
+</div>
 </%def>
 
                     
@@ -1681,7 +1714,7 @@
                     <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px; margin-bottom:0">
                         % if c.authuser:
                             % if c.privs and not c.privs['provisional']:
-                                <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
+                                <textarea class="form-control new-comment"  rows="{{getTextAreaRows()}}" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
                             % else:
                                 <a href="#activateAccountModal" data-toggle='modal'>
                                 <textarea class="form-control new-comment"  rows="1" ng-submit="submitComment()" name="commentText" ng-model="commentText" placeholder="Add a comment..."></textarea>
@@ -1730,6 +1763,10 @@
 </%def>
 
 <%def name="commentList()">
+    <%
+        if not 'readonly' in locals() or not 'readonly' in globals():
+            readonly = '0'
+    %>
     ### Comments
     <div class="activity-comments">
     <table class="activity-comments">
@@ -1763,8 +1800,8 @@
                 </span>
 
                 <br>
-                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
-                <div class="accordion" id="revisions">
+                <p ng-init="stringLimit=300" class="markdown" ng-show="!editing"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                <div class="accordion" id="revisions"  ng-show="!editing && showRevisions">
                     <div ng-repeat="rev in comment.revisionList">
                         <div class="accordion-group">
                             <div class="accordion-heading">
@@ -1784,14 +1821,19 @@
                 % if readonly == '0':
                 <div ng-show="(comment.canEdit == 'yes')">
                     <div class="btn-group btn-group-xs">
-                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="editing = true">Edit</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing && comment.revisionList.length > 0" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
                         <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
                     </div><!-- btn-group -->
-                    <div id="edit-{{comment.urlCode}}" class="collapse">
+                    <div id="edit-{{comment.urlCode}}" ng-show = "editing">
                         <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
                             <form class="no-bottom" ng-submit="submitEditComment()">
                                 <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
-                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                <br/><br/>
+                                <div style="margin-top: 15px;">
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                    <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
+                                </div>
                                 <div ng-show="(comment.doCommentRole == 'yes')">
                                     &nbsp;
                                     <label class="radio inline">

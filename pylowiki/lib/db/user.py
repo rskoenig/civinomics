@@ -100,7 +100,10 @@ def getUserByEmail(email, disabled = '0'):
         return False
 
 def getUserByFacebookAuthId( userid ):
-    return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).one()
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('facebookAuthId', userid))).first()
+    except:
+        return False
 
 def getUserByTwitterId( twitterid ):
     try:
@@ -285,6 +288,16 @@ def generatePassword():
     from random import choice
     pool, size = letters + digits, 20
     hash =  ''.join([choice(pool) for i in range(size)])
+    return hash
+
+def forcePasswordChange(user):
+    """Return a system generated hash for a temporary password"""
+    from string import letters, digits
+    from random import choice
+    pool, size = letters + digits, 20
+    hash =  ''.join([choice(pool) for i in range(size)])
+    user['changePassword'] = hash
+    commit(user)
     return hash
     
 def setUserPrivs():

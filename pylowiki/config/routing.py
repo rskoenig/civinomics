@@ -377,6 +377,8 @@ def make_map():
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
     map.connect('/{loginResetPassword:loginResetPassword/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/resetPassword/{hash}{end:/?}', controller='login', action='resetPasswordDisplay', hash = '{hash}')
+    map.connect('/resetPasswordHandler{end:/?}', controller = 'login', action = 'resetPasswordHandler')
 
     # external authentication routes
     map.connect('/fbLinkAccountHandler{end:/?}', controller = 'login', action = 'fbLinkAccountHandler')

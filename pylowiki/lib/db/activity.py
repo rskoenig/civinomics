@@ -25,6 +25,8 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
             .order_by('-date').offset(offset)
         if limit:
             initialActivityList = q.limit(limit)
+        else:
+            initialActivityList = q.all()
         
         # Messy
         for activity in initialActivityList:
@@ -145,7 +147,6 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
        return False  
 
 def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0', deleted = '0', itemType = ''):
-    log.info('itemtype = %s' % itemType)
     if itemType == '' or itemType == 'all':
         objectList = ['idea', 'resource', 'discussion', 'initiative']
     else:
@@ -268,7 +269,6 @@ def getInitiativeActivity(limit, comments = 0, offset = 0, geoScope = False):
             return []
 
 def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = ''):
-    #log.info("In getRecentGeoActivity and itemType is %s" % itemType)
     postList = []
     if itemType is '':
         objectList = ['idea', 'workshop', 'resource', 'discussion', 'initiative', 'photo']
