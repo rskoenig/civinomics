@@ -1829,8 +1829,10 @@
                             <form class="no-bottom" ng-submit="submitEditComment()">
                                 <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
                                 <br/><br/>
-                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
+                                <div style="margin-top: 15px;">
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                    <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
+                                </div>
                                 <div ng-show="(comment.doCommentRole == 'yes')">
                                     &nbsp;
                                     <label class="radio inline">

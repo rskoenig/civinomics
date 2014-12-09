@@ -423,6 +423,8 @@ def getJsonProperties(item):
         log.info("Empty pic")
         author = userLib.getUserByID(item.owner)
         entry['authorPhoto'] = utils._userImageSource(author, kwargs={'forceSource':'facebook'})
+        item['user_avatar'] = entry['authorPhoto']
+        dbHelpers.commit(item)
 
 
     # special case for meetings
