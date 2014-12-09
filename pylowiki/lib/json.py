@@ -409,7 +409,7 @@ def getJsonProperties(item):
         entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
     
     if 's50x50' in entry['authorPhoto'] or 'https://graph.facebook.com/' in entry['authorPhoto']:
-        log.info("Replacing the picture")
+        log.info("Replacing the picture because %s", entry['authorPhoto'])
         author = userLib.getUserByID(item.owner)
         if 'facebookAuthId' in author:
             graphUrl = 'https://graph.facebook.com/' + author['facebookAuthId'] + '/picture?height=200&type=normal&width=200'
@@ -419,7 +419,12 @@ def getJsonProperties(item):
             entry['authorPhoto'] = item['user_avatar']
         else:
             entry['authorPhoto'] = utils._userImageSource(author)
-       
+    if len(entry['authorPhoto']) == 0:
+        log.info("Empty pic")
+        author = userLib.getUserByID(item.owner)
+        entry['authorPhoto'] = utils._userImageSource(author, kwargs={'forceSource':'facebook'})
+        item['user_avatar'] = entry['authorPhoto']
+        dbHelpers.commit(item)
 
 
     # special case for meetings
@@ -465,6 +470,13 @@ def getJsonProperties(item):
     if 'subcategory_tags' in item:
         entry['subcategory_tags'] = item['subcategory_tags']
 
+    if 'user' in session and (c.authuser.id == item.owner or userLib.isAdmin(c.authuser.id)):
+        entry['canEdit'] = 'yes'
+    else:
+        entry['canEdit'] = 'no'
+    
+    log.info(entry['canEdit'])
+    
     return entry
 
 

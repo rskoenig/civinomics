@@ -278,21 +278,21 @@
                             "/me/picture?redirect=0&height=200&type=normal&width=200",
                             function (apiResponse) {
                               if (response && !response.error) {
-                                console.log(apiResponse);
                                 smallPic = apiResponse.data.url;
                                 bigPic = apiResponse.data.url;
                               }
                             }
                         ); 
-                        console.log("this is called every time");
+                        
+                        console.log(callback);
                         FB.api('/me/', 'get', {fields: 'first_name, last_name'}, function(apiResponse){
-            			    console.log(apiResponse);
                             name = apiResponse.first_name + ' ' + apiResponse.last_name;
                             callback();
                         });               
                     },
                     function(callback) {
                         // perform fbauthcheck now that the pic urls have been loaded
+                        console.log(smallPic);
                         callFbCheckAccount(name, response.authResponse, smallPic, bigPic, function(err, checkResult) {
                             if (err) return callback(err);
                             result = checkResult;

@@ -289,6 +289,16 @@ def generatePassword():
     pool, size = letters + digits, 20
     hash =  ''.join([choice(pool) for i in range(size)])
     return hash
+
+def forcePasswordChange(user):
+    """Return a system generated hash for a temporary password"""
+    from string import letters, digits
+    from random import choice
+    pool, size = letters + digits, 20
+    hash =  ''.join([choice(pool) for i in range(size)])
+    user['changePassword'] = hash
+    commit(user)
+    return hash
     
 def setUserPrivs():
     c.privs = {}
