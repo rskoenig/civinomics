@@ -356,10 +356,10 @@ class ProfileController(BaseController):
         
             
     def getUserTrash(self, id1, id2):
-        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, None, None, '1')
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
-            
+        
         result = []
         for item in c.unpublishedActivity:
             objType = item.objType.replace("Unpublished", "")
