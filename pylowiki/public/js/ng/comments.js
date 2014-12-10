@@ -30,7 +30,6 @@ function commentsController($rootScope, $scope, $http, editService) {
             return $scope.textArea;
     }
 	$scope.getComments = function(){
-	    console.log("Getting comments");
 		if ($scope.commentsHidden == true){
 			$scope.commentsLoading = true	
 			$http.get('/getComments/' + $scope.discussionCode ).success(function(data){
@@ -101,7 +100,9 @@ function commentsController($rootScope, $scope, $http, editService) {
 	    $scope.getUpdatedComments();
     });
 
-    $scope.getComments();
+    if ($scope.numComments > 0){
+        $scope.getComments();
+    }
 }
 
 function commentEditController($rootScope, $scope, $http, editService) {
