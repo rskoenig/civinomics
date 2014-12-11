@@ -21,6 +21,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 	$scope.newCommentLoading = false;
 	$scope.commentText = "";
 	$scope.textArea = 1;
+    $scope.limitComments = 0;
 
     $scope.getTextAreaRows = function() {
        var newRows = Math.ceil($scope.commentText.length/58);
@@ -96,12 +97,19 @@ function commentsController($rootScope, $scope, $http, editService) {
         });
 	};
 	
+	
 	$scope.$on('editDone', function() {
 	    $scope.getUpdatedComments();
     });
-
+    
+    
     if ($scope.numComments > 0){
         $scope.getComments();
+        if ($scope.numComments > 3){
+            $scope.limitComments = 3;
+        } else {
+            $scope.limitComments = $scope.numComments;
+        }
     }
 }
 
