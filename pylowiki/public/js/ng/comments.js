@@ -22,6 +22,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 	$scope.commentText = "";
 	$scope.textArea = 1;
     $scope.limitComments = 0;
+    $scope.showMore = false;
 
     $scope.getTextAreaRows = function() {
        var newRows = Math.ceil($scope.commentText.length/58);
@@ -107,9 +108,16 @@ function commentsController($rootScope, $scope, $http, editService) {
         $scope.getComments();
         if ($scope.numComments > 3){
             $scope.limitComments = 3;
+            $scope.showMore = true;
         } else {
             $scope.limitComments = $scope.numComments;
+            $scope.showMore = false;
         }
+    }
+    
+    $scope.removeLimit = function() {
+        $scope.limitComments = $scope.numComments;
+        $scope.showMore = false;
     }
 }
 

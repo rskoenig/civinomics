@@ -1783,8 +1783,13 @@
                 </div>
             </td>
         </tr>
+        <tr ng-if="showMore">
+            <td></td>
+            <td><a  ng-if="showMore" ng-click="removeLimit()">View {{numComments - 3}} more comments</a></td>
+            
+        </tr>
 
-        <tr ng-repeat="comment in comments | limitTo: limitComments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
+        <tr ng-repeat="comment in comments | limitTo: -limitComments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
 
             <td class="comment-avatar-cell">
                 <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
