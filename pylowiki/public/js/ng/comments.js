@@ -60,8 +60,10 @@ function commentsController($rootScope, $scope, $http, editService) {
 			else if (data.statusCode === 0){
 				$scope.commentsResult = true;
 				$scope.comments = data.result;
+				$scope.limitComments = $scope.numComments;
 				$scope.commentsHidden = false;
 				$scope.showNewComment = true;
+				$scope.$apply();
 			}
 			$scope.newCommentLoading = false
 		})
@@ -86,15 +88,22 @@ function commentsController($rootScope, $scope, $http, editService) {
 	}
 
 	$scope.submitComment = function(){
-		$scope.newCommentLoading = true
-		$scope.commentData = {'type':$scope.type, 'thingCode': $scope.thingCode, 'discussionCode': $scope.discussionCode, 'parentCode': $scope.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
+		$scope.newCommentLoading = true;
+		$scope.commentData = 
+        		{'type':$scope.type, 
+        		'thingCode': $scope.thingCode, 
+        		'discussionCode': $scope.discussionCode, 
+        		'parentCode': $scope.parentCode, 
+        		'comment-textarea': $scope.commentText, 
+        		'commentRole': $scope.commentRole, 
+        		'submit': $scope.submit};
 		$scope.newCommentURL = '/comment/add/handler';
 		$http.post($scope.newCommentURL, $scope.commentData).success(function(data){
 			$scope.numComments = Number($scope.numComments) + 1;
             $scope.getUpdatedComments();
             $scope.commentRole = '';
             $scope.commentText = '';
-            $scope.commented = true
+            $scope.commented = true;
         });
 	};
 	

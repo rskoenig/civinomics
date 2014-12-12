@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import re
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -234,6 +235,13 @@ class CommentController(BaseController):
                     return redirect(utils.profileDiscussionURL(thing))
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
+                
+            #updating the date of the parent
+            #first of all, see if the comment is a reply to another comment
+            #if so, travel up until the root
+            #if not, update the thing's lastUpdated
+            regex = re.compile('.Code')
+            log.info(regex)
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             if request.params:
