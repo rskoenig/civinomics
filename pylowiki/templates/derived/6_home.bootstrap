@@ -32,7 +32,7 @@
             {{alertMsg}}
         </div>
   	  
-        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak {{item.objType}}>
           <!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
           <tr>
             <td ng-if="item.objType == 'workshop'">
