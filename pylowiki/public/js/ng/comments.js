@@ -41,6 +41,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 				else if (data.statusCode === 0){
 					$scope.commentsResult = true;
 					$scope.comments = data.result;
+					$scope.updateLimit();
 				}
 				$scope.commentsLoading = false;
 				$scope.commentsHidden = false;
@@ -60,7 +61,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 			else if (data.statusCode === 0){
 				$scope.commentsResult = true;
 				$scope.comments = data.result;
-				$scope.limitComments = $scope.numComments;
+				$scope.updateLimit();
 				$scope.commentsHidden = false;
 				$scope.showNewComment = true;
 				$scope.$apply();
@@ -112,22 +113,25 @@ function commentsController($rootScope, $scope, $http, editService) {
 	    $scope.getUpdatedComments();
     });
     
-    
-    if ($scope.numComments > 0){
-        $scope.getComments();
+    $scope.updateLimit = function() {
         if ($scope.numComments > 3){
             $scope.limitComments = 3;
             $scope.showMore = true;
         } else {
             $scope.limitComments = $scope.numComments;
             $scope.showMore = false;
-        }
-    }
+        };
+    };
     
     $scope.removeLimit = function() {
         $scope.limitComments = $scope.numComments;
         $scope.showMore = false;
-    }
+    };
+    
+    if ($scope.numComments > 0){
+        $scope.getComments();
+        $scope.updateLimit();
+    };
 }
 
 function commentEditController($rootScope, $scope, $http, editService) {
