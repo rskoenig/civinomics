@@ -1785,7 +1785,7 @@
         </tr>
         <tr ng-if="showMore">
             <td></td>
-            <td><a  ng-if="showMore" ng-click="removeLimit()">View {{numComments - 3}} more comments</a></td>
+            <td><a ng-if="showMore && !commentsLoading" ng-click="removeLimit()">View {{numComments - 3}} more comment<span ng-if="(numComments - 3)>1">s</span></a></td>
             
         </tr>
         <tr ng-repeat="comment in comments | limitTo: -limitComments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
