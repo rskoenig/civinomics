@@ -25,6 +25,8 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
             .order_by('-date').offset(offset)
         if limit:
             initialActivityList = q.limit(limit)
+        else:
+            initialActivityList = q.all()
         
         # Messy
         for activity in initialActivityList:

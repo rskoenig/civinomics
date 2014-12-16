@@ -275,7 +275,8 @@
 
 <%def name="basic_listing()">
     <td class="avatar-cell"><div ng-if="item.thumbnail" class="i-photo small-i-photo" style="background-image:url('{{item.thumbnail}}');"/></div></td>
-    <td><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
+    <td ng-show="(item.objType != 'comment')"><a href="{{item.href}}">{{item.title}}</a> | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
+    <td ng-show="(item.objType == 'comment')">{{item.title}} | {{item.objType}} | deleted by: {{item.unpublishedBy}}</td>
 </%def>
 
 
@@ -1762,6 +1763,10 @@
 </%def>
 
 <%def name="commentList()">
+    <%
+        if not 'readonly' in locals() or not 'readonly' in globals():
+            readonly = '0'
+    %>
     ### Comments
     <div class="activity-comments">
     <table class="activity-comments">
@@ -1795,8 +1800,8 @@
                 </span>
 
                 <br>
-                <p ng-init="stringLimit=300" class="markdown"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
-                <div class="accordion" id="revisions">
+                <p ng-init="stringLimit=300" class="markdown" ng-show="!editing"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                <div class="accordion" id="revisions"  ng-show="!editing && showRevisions">
                     <div ng-repeat="rev in comment.revisionList">
                         <div class="accordion-group">
                             <div class="accordion-heading">
@@ -1816,14 +1821,19 @@
                 % if readonly == '0':
                 <div ng-show="(comment.canEdit == 'yes')">
                     <div class="btn-group btn-group-xs">
-                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#edit-{{comment.urlCode}}">Edit</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="editing = true">Edit</button>
+                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing && comment.revisionList.length > 0" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
                         <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
                     </div><!-- btn-group -->
-                    <div id="edit-{{comment.urlCode}}" class="collapse">
+                    <div id="edit-{{comment.urlCode}}" ng-show = "editing">
                         <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
                             <form class="no-bottom" ng-submit="submitEditComment()">
                                 <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
-                                <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                <br/><br/>
+                                <div style="margin-top: 15px;">
+                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                    <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
+                                </div>
                                 <div ng-show="(comment.doCommentRole == 'yes')">
                                     &nbsp;
                                     <label class="radio inline">

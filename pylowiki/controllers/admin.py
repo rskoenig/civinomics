@@ -185,7 +185,7 @@ class AdminController(BaseController):
             entry['date'] = str(o.date)
             entry['objType'] = 'user'
             entry['name'] = o['name']
-            entry['image'] = _userImageSource(o, className ='avatar small-avatar') 
+            entry['image'] = utils._userImageSource(o, className ='avatar small-avatar') 
             entry['link'] = userLink(o)
             entry['urlCode'] = o['urlCode']
             entry['url'] = o['url']

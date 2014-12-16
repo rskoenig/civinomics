@@ -356,10 +356,10 @@ class ProfileController(BaseController):
         
             
     def getUserTrash(self, id1, id2):
-        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, None, None, '1')
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
-            
+        
         result = []
         for item in c.unpublishedActivity:
             objType = item.objType.replace("Unpublished", "")
@@ -371,14 +371,16 @@ class ProfileController(BaseController):
                 entry['url']= item['url']
                 entry['urlCode']=item['urlCode']
                 entry['title'] = item['title']
+                href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
             else:
                 entry['url']= ''
-                entry['urlCode']= ''
+                entry['urlCode']= item['urlCode']
                 entry['title'] = item['data']
+                href = '/' + entry['objType'] + '/' + entry['urlCode']
+                
             if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
 				entry['thumbnail'] = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos'])
                 
-            href = '/' + entry['objType'] + '/' + entry['urlCode'] + '/' + entry['url']
             if entry['objType'] == 'initiative' or entry['objType'] == 'meeting' or entry['objType'] == 'ballot' or entry['objType'] == 'election' or entry['objType'] == 'ballotcandidate':
                 href += '/show'
             if entry['objType'] == 'agendaitem':
@@ -391,8 +393,12 @@ class ProfileController(BaseController):
                 href = '/ballot/' + mCode + '/' + mURL + '/ballotmeasure/' + item['urlCode']
                 
             entry['href'] = href
+            
+            if 'unpublished_by' in item:    
+                entry['unpublishedBy'] = item['unpublished_by']
+            else:
+                entry['unpublishedBy'] = 'owner'
                 
-            entry['unpublishedBy'] = item['unpublished_by']
             result.append(entry)
             
         if len(result) == 0:
