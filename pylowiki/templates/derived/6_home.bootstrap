@@ -32,7 +32,7 @@
             {{alertMsg}}
         </div>
   	  
-        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak>
+        <table ng-repeat="item in activity" id="{{item.urlCode}}"  class="activity-item" ng-show="!activityLoading" ng-cloak {{item.objType}}>
           <!-- <tr><td>${ng_helpers.authorPosting()}</td></tr> -->
           <tr>
             <td ng-if="item.objType == 'workshop'">
@@ -65,10 +65,6 @@
 
             <td ng-if="item.objType == 'photo'">
               ${ng_helpers.photo_listing()}
-            </td>
-            
-            <td ng-if="item.objType == 'comment'">
-              ${ng_helpers.comment_listing()}
             </td>
           </tr>
         </table>

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import re
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -25,8 +26,84 @@ import pylowiki.lib.utils           as  utils
 import pylowiki.lib.alerts          as  alertsLib
 import pylowiki.lib.mail            as  mailLib
 
+from datetime import datetime
+
 log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
+
+def jsonizeComment(comment):
+    if 'ratings' in session:
+        myRatings = session['ratings']
+    entry = {}
+    entry['text'] = comment['data']
+    entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
+    entry['urlCode'] = comment['urlCode']
+    entry['voteCount'] = int(comment['ups']) + int(comment['downs'])
+    entry['ups'] = int(comment['ups'])
+    entry['downs'] = int(comment['downs'])
+    entry['netVotes'] = int(comment['ups']) - int(comment['downs'])
+    if entry['urlCode'] in myRatings:
+        entry['rated'] = myRatings[entry['urlCode']]
+    else:
+        entry['rated'] = 0
+
+    entry['commentRole'] = ''
+    if 'commentRole' in comment:
+        entry['commentRole'] = comment['commentRole']
+            
+    if 'ideaCode' in comment or 'initiativeCode' in comment or 'meetingCode' in comment:
+        entry['doCommentRole'] = 'yes'
+    else:
+        entry['doCommentRole'] = 'no'
+
+    entry['date'] = fuzzyTime.timeSince(comment.date)
+
+    # comment author
+    author = userLib.getUserByID(comment.owner)
+    entry['authorName'] = author['name']
+    entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+    entry['authorPhoto'] = utils._userImageSource(author)
+    if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
+        entry['canEdit'] = 'yes'
+    else:
+        entry['canEdit'] = 'no'
+
+    # get revisions
+    revisions = revisionLib.getRevisionsForThing(comment)
+    if revisions:
+        entry['revisions'] = 'yes'
+        entry['revisionList'] = map(jsonizeRevisions, revisions)
+    else:
+        entry['revisions'] = 'no'
+        entry['revisionList'] = [] 
+        
+    return entry
+
+def jsonizeRevisions(rev):
+    revision = {}
+    code = rev['urlCode'] 
+    date = str(rev.date)
+    text = rev['data']
+    html = m.html(rev['data'], render_flags=m.HTML_SKIP_HTML)
+    if 'commentRole' in rev:
+        role = rev['commentRole']
+    else:
+        role = 'Neutral'
+        
+    if role == 'yes':
+        role = 'Pro'
+    elif role == 'no':
+        role = 'Con'
+    else:
+        role = 'Neutral'
+        
+    revision['date'] = date
+    revision['urlCode'] = code
+    revision['text'] = text
+    revision['html'] = html
+    revision['role'] = role
+    return revision
+
 
 class CommentController(BaseController):
     def __before__(self, action, workshopCode = None, workshopURL = None, urlCode = None):
@@ -234,6 +311,13 @@ class CommentController(BaseController):
                     return redirect(utils.profileDiscussionURL(thing))
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
+                
+            #updating the date of the parent
+            #first of all, see if the comment is a reply to another comment
+            #if so, travel up until the root
+            #if not, update the thing's lastUpdated
+            regex = re.compile('.Code')
+            log.info(regex)
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             if request.params:
@@ -268,79 +352,14 @@ class CommentController(BaseController):
     def jsonCommentsForItem(self, urlCode):
         result = []
         myRatings = []
-        if 'ratings' in session:
-		    myRatings = session['ratings']
+        start = datetime.now()
         comments = commentLib.getCommentsInDiscussionByCode(urlCode)
-        for comment in comments:
-            entry = {}
-            entry['text'] = comment['data']
-            entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
-            entry['urlCode'] = comment['urlCode']
-            entry['voteCount'] = int(comment['ups']) + int(comment['downs'])
-            entry['ups'] = int(comment['ups'])
-            entry['downs'] = int(comment['downs'])
-            entry['netVotes'] = int(comment['ups']) - int(comment['downs'])
-            if entry['urlCode'] in myRatings:
-                entry['rated'] = myRatings[entry['urlCode']]
-            else:
-                entry['rated'] = 0
-
-            entry['commentRole'] = ''
-            if 'commentRole' in comment:
-                entry['commentRole'] = comment['commentRole']
-                    
-            if 'ideaCode' in comment or 'initiativeCode' in comment or 'meetingCode' in comment:
-                entry['doCommentRole'] = 'yes'
-            else:
-                entry['doCommentRole'] = 'no'
-
-            entry['date'] = fuzzyTime.timeSince(comment.date)
-
-            # comment author
-            author = userLib.getUserByID(comment.owner)
-            entry['authorName'] = author['name']
-            entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-            entry['authorPhoto'] = utils._userImageSource(author)
-            if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
-                entry['canEdit'] = 'yes'
-            else:
-                entry['canEdit'] = 'no'
-                
-            # get revisions
-            revisions = revisionLib.getRevisionsForThing(comment)
-            if revisions:
-                entry['revisions'] = 'yes'
-            else:
-                entry['revisions'] = 'no'
-            entry['revisionList'] = []
-            if revisions:
-                for rev in revisions:
-                    revision = {}
-                    code = rev['urlCode'] 
-                    date = str(rev.date)
-                    text = rev['data']
-                    html = m.html(rev['data'], render_flags=m.HTML_SKIP_HTML)
-                    if 'commentRole' in rev:
-                        role = rev['commentRole']
-                    else:
-                        role = 'Neutral'
-                        
-                    if role == 'yes':
-                        role = 'Pro'
-                    elif role == 'no':
-                        role = 'Con'
-                    else:
-                        role = 'Neutral'
-                        
-                    revision['date'] = date
-                    revision['urlCode'] = code
-                    revision['text'] = text
-                    revision['html'] = html
-                    revision['role'] = role
-                    entry['revisionList'].append(revision)
-                
-            result.append(entry)
-
+        gettingCommentsTime = datetime.now()
+        result = map(jsonizeComment,comments)
+        makingResult = datetime.now()
+        if len(result) > 3:
+            log.info("Getting the comments was " + str(gettingCommentsTime-start))
+            log.info("Jsonizing the comments was " + str(makingResult-gettingCommentsTime))
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})

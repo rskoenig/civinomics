@@ -323,7 +323,7 @@ class HomeController(BaseController):
         commments = int(comments)
 
         if type == 'all':
-            recentActivity = activityLib.getRecentActivity(max, 1, offset)
+            recentActivity = activityLib.getRecentActivity(max, 0, offset)
             #log.info("oh right")
 
         elif type == 'following' and c.authuser:
