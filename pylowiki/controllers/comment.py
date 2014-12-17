@@ -34,6 +34,8 @@ import pylowiki.lib.helpers as h
 def jsonizeComment(comment):
     if 'ratings' in session:
         myRatings = session['ratings']
+    else:
+        myRatings = {}
     entry = {}
     entry['text'] = comment['data']
     entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
