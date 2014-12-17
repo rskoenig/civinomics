@@ -312,12 +312,6 @@ class CommentController(BaseController):
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
                 
-            #updating the date of the parent
-            #first of all, see if the comment is a reply to another comment
-            #if so, travel up until the root
-            #if not, update the thing's lastUpdated
-            regex = re.compile('.Code')
-            log.info(regex)
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             if request.params:
