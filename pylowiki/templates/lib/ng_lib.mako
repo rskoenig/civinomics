@@ -1703,7 +1703,7 @@
     <div class="activity-comments" style="padding-left: 3%; margin-bottom: 15px;border-spacing: 2px; border-color: gray;">
     <table class="activity-comments">
         <tr ng-hide="newCommentLoading">
-            <td class="comment-avatar-cell">
+            <td class="comment-avatar-cell" style="padding-top:0px !important;">
                 % if c.authuser:
                     ${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}
                 % else:
