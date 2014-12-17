@@ -4308,3 +4308,12 @@ background-color: #d9534f;
 .demographics a{
     color:black;
 }
+
+.i-top-image{
+  margin-top: -10px;
+  padding-bottom: 20px;
+  position:relative;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+}
