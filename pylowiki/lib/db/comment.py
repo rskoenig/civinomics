@@ -189,6 +189,10 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+    elif discussion['discType'] == 'update' and 'initiativeCode' in discussion:
+        initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
+        thisComment = generic.linkChildToParent(thisComment, initiative)
+        attachedThing = discussion
     elif discussion['discType'] == 'resource' and 'initiativeCode' not in discussion:
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
     elif discussion['discType'] == 'organization_general' or discussion['discType'] == 'organization_position':
@@ -202,6 +206,7 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
             
     thisComment = generic.linkChildToParent(thisComment, discussion)
     if attachedThing is not None:
+        updateParentDate(attachedThing)
         if attachedThing.id != discussion.id:
             thisComment = generic.linkChildToParent(thisComment, attachedThing)
         nComments = 0
@@ -256,3 +261,10 @@ def setDiscussionProperties(comment, discussion):
     discussion['numComments'] = int(discussion['numComments']) + 1
     commit(discussion)
         
+        
+def updateParentDate(thing):
+    log.info("Parent thing type is %s"%thing.objType)
+    log.info(thing.lastUpdated)
+    log.info(datetime.now())
+    thing.lastUpdated = datetime.now()
+    commit(thing)
