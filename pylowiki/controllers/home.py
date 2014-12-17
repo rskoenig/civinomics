@@ -323,7 +323,7 @@ class HomeController(BaseController):
         commments = int(comments)
 
         if type == 'all':
-            recentActivity = activityLib.getRecentActivity(max, 1, offset)
+            recentActivity = activityLib.getRecentActivity(max, 0, offset)
             #log.info("oh right")
 
         elif type == 'following' and c.authuser:
@@ -439,10 +439,12 @@ class HomeController(BaseController):
         else:
             recentActivity = activityLib.getRecentActivity(max, 1, offset)
             
-        for item in recentActivity:
-            entry = jsonLib.getJsonProperties(item)
-
-            result.append(entry)
+#         for item in recentActivity:
+#             entry = jsonLib.getJsonProperties(item)
+# 
+#             result.append(entry)
+#             
+        result = map(jsonLib.getJsonProperties, recentActivity)
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})

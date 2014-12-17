@@ -21,6 +21,8 @@ function commentsController($rootScope, $scope, $http, editService) {
 	$scope.newCommentLoading = false;
 	$scope.commentText = "";
 	$scope.textArea = 1;
+    $scope.limitComments = 0;
+    $scope.showMore = false;
 
     $scope.getTextAreaRows = function() {
        var newRows = Math.ceil($scope.commentText.length/58);
@@ -29,6 +31,7 @@ function commentsController($rootScope, $scope, $http, editService) {
         else
             return $scope.textArea;
     }
+    
 	$scope.getComments = function(){
 		if ($scope.commentsHidden == true){
 			$scope.commentsLoading = true	
@@ -39,6 +42,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 				else if (data.statusCode === 0){
 					$scope.commentsResult = true;
 					$scope.comments = data.result;
+					$scope.updateLimit();
 				}
 				$scope.commentsLoading = false;
 				$scope.commentsHidden = false;
@@ -58,8 +62,10 @@ function commentsController($rootScope, $scope, $http, editService) {
 			else if (data.statusCode === 0){
 				$scope.commentsResult = true;
 				$scope.comments = data.result;
+				$scope.updateLimit();
 				$scope.commentsHidden = false;
 				$scope.showNewComment = true;
+				$scope.$apply();
 			}
 			$scope.newCommentLoading = false
 		})
@@ -84,21 +90,49 @@ function commentsController($rootScope, $scope, $http, editService) {
 	}
 
 	$scope.submitComment = function(){
-		$scope.newCommentLoading = true
-		$scope.commentData = {'type':$scope.type, 'thingCode': $scope.thingCode, 'discussionCode': $scope.discussionCode, 'parentCode': $scope.parentCode, 'comment-textarea': $scope.commentText, 'commentRole': $scope.commentRole, 'submit': $scope.submit};
+		$scope.newCommentLoading = true;
+		$scope.commentData = 
+        		{'type':$scope.type, 
+        		'thingCode': $scope.thingCode, 
+        		'discussionCode': $scope.discussionCode, 
+        		'parentCode': $scope.parentCode, 
+        		'comment-textarea': $scope.commentText, 
+        		'commentRole': $scope.commentRole, 
+        		'submit': $scope.submit};
 		$scope.newCommentURL = '/comment/add/handler';
 		$http.post($scope.newCommentURL, $scope.commentData).success(function(data){
 			$scope.numComments = Number($scope.numComments) + 1;
             $scope.getUpdatedComments();
             $scope.commentRole = '';
             $scope.commentText = '';
-            $scope.commented = true
+            $scope.commented = true;
         });
 	};
+	
 	
 	$scope.$on('editDone', function() {
 	    $scope.getUpdatedComments();
     });
+    
+    $scope.updateLimit = function() {
+        if ($scope.numComments > 3){
+            $scope.limitComments = 3;
+            $scope.showMore = true;
+        } else {
+            $scope.limitComments = $scope.numComments;
+            $scope.showMore = false;
+        };
+    };
+    
+    $scope.removeLimit = function() {
+        $scope.limitComments = $scope.numComments;
+        $scope.showMore = false;
+    };
+    
+    if ($scope.numComments > 0){
+        $scope.getComments();
+        $scope.updateLimit();
+    };
 }
 
 function commentEditController($rootScope, $scope, $http, editService) {

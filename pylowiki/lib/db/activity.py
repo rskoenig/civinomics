@@ -22,7 +22,7 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
         q = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('deleted', '0')))\
-            .order_by('-date').offset(offset)
+            .order_by('-lastUpdated').offset(offset)
         if limit:
             initialActivityList = q.limit(limit)
         else:
@@ -56,7 +56,7 @@ def getMemberActivity(user, unpublished = '0'):
     
     initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
         .filter_by(owner = user.id)\
-        .order_by('-date').all()
+        .order_by('-lastUpdated').all()
     # Messy
     for activity in initialActivityList:
         if activity.objType.replace("Unpublished", "") == 'discussion' and activity['discType'] != 'general':
@@ -120,7 +120,7 @@ def getAllMemberPosts(user):
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
-            .order_by('-date').all()
+            .order_by('-lastUpdated').all()
     except:
         return False
 
@@ -164,7 +164,7 @@ def getActivityForWorkshop(limit, offset, workshopCode, sort = 0, disabled = '0'
         .filter(Thing.data.any(wc('deleted', u'0')))\
         .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
         .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == svalue))))\
-        .order_by('-date')\
+        .order_by('-lastUpdated')\
         .offset(offset)
 
     if limit:
@@ -189,7 +189,7 @@ def getActivityCountForWorkshop(workshopCode, disabled = '0', deleted = '0'):
             .filter(Thing.objType.in_(objTypes))\
             .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .all()
     # Messy
     count = 0
@@ -217,7 +217,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('workshop_searchable', u'1')))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .all()
             
         return activityList
@@ -234,7 +234,7 @@ def getRecentActivity(limit, comments = 0, offset = 0):
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key.ilike('%searchable'), Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .offset(offset)
         if limit:
             postList = q.limit(limit)
@@ -254,7 +254,7 @@ def getInitiativeActivity(limit, comments = 0, offset = 0, geoScope = False):
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .offset(offset)
         if geoScope:
             q.filter(Thing.data.any(wkcl('scope', geoScope)))
@@ -283,7 +283,7 @@ def getRecentGeoActivity(limit, scopes, comments = 0, offset = 0, itemType = '')
         .filter(Thing.data.any(wc('deleted', u'0')))\
         .filter(Thing.data.any(or_(wkcl('scope', scopes[0]),  wkcl('scope', scopes[1]), wkcl('scope', scopes[2]))))\
         .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
-        .order_by('-date')\
+        .order_by('-lastUpdated')\
         .offset(offset)
     if limit:
         postList += q.limit(limit)
@@ -328,7 +328,7 @@ def getActivityForWorkshopList(limit, workshops, comments = 0, offset = 0):
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wkil('workshopCode', workshops)))\
             .filter(Thing.data.any(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key == 'workshop_searchable', Data.value == u'1'))))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .offset(offset)
         if limit:
             postList = q.limit(limit)
@@ -350,7 +350,7 @@ def getActivityForInitiativeList(limit, initiatives, comments = 0, offset = 0):
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(wc('initiative_public', u'1')))\
             .filter(Thing.data.any(wkil('initiativeCode', initiatives)))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .offset(offset)
         if limit:
             postList = q.limit(limit)
@@ -372,7 +372,7 @@ def getActivityForUserList(limit, users, comments = 0, offset = 0):
             .filter(Thing.data.any(wc('disabled', u'0')))\
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key.ilike('%searchable'), Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
-            .order_by('-date')\
+            .order_by('-lastUpdated')\
             .offset(offset)
         if limit:
             postList = q.limit(limit)
@@ -396,7 +396,7 @@ def getActivityForObjectAndUserList(limit, objects, users, comments = 0, offset 
             .filter(Thing.data.any(wc('deleted', u'0')))\
             .filter(Thing.data.any(or_(or_(and_(Data.key.ilike('%public'), Data.value == u'1'), and_(Data.key.ilike('%searchable'), Data.value == u'1')), and_(Data.key == 'format', Data.value == 'png'))))\
             .filter(Thing.data.any(or_(or_(wkil('initiativeCode', objects), wkil('workshopCode', objects), Thing.owner.in_(users)))))\
-            .order_by('-date').offset(offset)
+            .order_by('-lastUpdated').offset(offset)
         
         if limit:
             postList = q.limit(limit)
