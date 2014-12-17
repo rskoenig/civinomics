@@ -1,0 +1,27 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/list_owned_surveys/helpers.mako" />
+
+<div class="row-fluid">
+    % if c.surveys:
+        <% surveyNumber = 1 %>
+        % for survey in c.surveys:
+            <div id="accordion" class="accordion">
+                <div class="accordion-group">
+                    ${helpers.showSurvey(survey, surveyNumber)}
+                </div>
+            </div>
+            <% surveyNumber += 1 %>
+        % endfor
+    % endif
+</div>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+
+</%def>
