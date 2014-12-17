@@ -23,6 +23,7 @@ function commentsController($rootScope, $scope, $http, editService) {
 	$scope.textArea = 1;
     $scope.limitComments = 0;
     $scope.showMore = false;
+    $scope.commentRole = 'neutral';
 
     $scope.getTextAreaRows = function() {
        var newRows = Math.ceil($scope.commentText.length/58);
