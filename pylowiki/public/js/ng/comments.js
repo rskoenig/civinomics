@@ -65,7 +65,6 @@ function commentsController($rootScope, $scope, $http, editService) {
 				$scope.updateLimit();
 				$scope.commentsHidden = false;
 				$scope.showNewComment = true;
-				$scope.$apply();
 			}
 			$scope.newCommentLoading = false
 		})
