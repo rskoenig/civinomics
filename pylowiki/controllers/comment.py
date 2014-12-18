@@ -34,6 +34,8 @@ import pylowiki.lib.helpers as h
 def jsonizeComment(comment):
     if 'ratings' in session:
         myRatings = session['ratings']
+    else:
+        myRatings = {}
     entry = {}
     entry['text'] = comment['data']
     entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
@@ -212,7 +214,7 @@ class CommentController(BaseController):
                 parentAuthor = userLib.getUserByID(discussion.owner)
 
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate' or thing.objType == 'discussion':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
@@ -312,12 +314,6 @@ class CommentController(BaseController):
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
                 
-            #updating the date of the parent
-            #first of all, see if the comment is a reply to another comment
-            #if so, travel up until the root
-            #if not, update the thing's lastUpdated
-            regex = re.compile('.Code')
-            log.info(regex)
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             if request.params:

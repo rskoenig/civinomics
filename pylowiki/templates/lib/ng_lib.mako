@@ -1336,7 +1336,7 @@
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;">
             <div ng-controller="commentsController">
 
-                ${addComment()}
+                
 
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
@@ -1361,7 +1361,7 @@
                 </div>
 
                 ${commentList()}
-
+                ${addComment()}
             </div>
         </div>
     % endif
@@ -1697,16 +1697,17 @@
             readonly = '0'
     %>  
     % if readonly == '0':
-    <table class="criteria-table listing col-xs-11">
+    <div class="activity-comments" style="padding-left: 3%; margin-bottom: 15px;border-spacing: 2px; border-color: gray;">
+    <table class="activity-comments">
         <tr ng-hide="newCommentLoading">
-            <td class="comment-avatar-cell">
+            <td class="comment-avatar-cell" style="padding-top:0px !important;">
                 % if c.authuser:
                     ${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}
                 % else:
                     <img src="/images/hamilton.png" class="media-object avatar small-avatar">
                 % endif
             </td>
-            <td style="padding: 10px 0px;">
+            <td>
                 <form class="no-bottom form-inline" ng-submit="submitComment()">
                     <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px; margin-bottom:0">
                         % if c.authuser:
@@ -1751,11 +1752,14 @@
                             <a href="#signupLoginModal" data-toggle='modal' class="btn btn-primary">Submit</a>
                         % endif
                     </div>
+                                            
+
                 </form>
             </td>
             <td></td>
         </tr>
     </table>
+    </div>
     % endif
 </%def>
 
