@@ -2552,6 +2552,14 @@ background-color: whitesmoke;
   margin-bottom: 5px;
 }
 
+.stat{
+  font-weight: 500;
+}
+
+.stat2:before {
+content: "\00b7";
+}
+
 .form-horizontal.stats .control-group{
   margin-bottom: 0;
 }
@@ -4226,6 +4234,15 @@ background-color: #d9534f;
   margin: 0 19px;
   height:35px
 }
+@media (max-width: 575px){
+  .rating-details{
+    display: block;
+  }
+  .vote-block{
+    text-align: center;
+  }
+}
+
 .sidebar.rating-details{
   margin: 0 0px;
   height:35px
