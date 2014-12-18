@@ -1624,11 +1624,11 @@
                 <tr ng-if="support.length == 0">
                     <td>There are no supporters yet.</td>
                 </tr>
-                <tr ng-repeat="item in support">
-                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
+                <tr ng-repeat="pro in support">
+                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{pro.authorPhoto}}"></td>
                     <td>
-                        <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br><small class="grey">{{item.fuzzyTime}} ago</small>
-                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                        <a ng-href="{{pro.authorHref}}"><strong>{{pro.authorName}}</strong></a><br><small class="grey">{{pro.date}} ago</small>
+                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="pro.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
                     </td>
                 </tr>
             </table>
@@ -1646,7 +1646,7 @@
                     <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
                     <td>
                         <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br>
-                        <small class="grey">{{item.fuzzyTime}} ago</small>
+                        <small class="grey">{{item.date}} ago</small>
                         <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
                     </td>
                 </tr>
