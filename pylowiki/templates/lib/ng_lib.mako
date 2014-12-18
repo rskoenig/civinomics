@@ -1219,10 +1219,7 @@
         <table>
             <tr>
                 <td>
-                    <img class="avatar avatar-md inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
-                </td>
-                <td class="grey-links">
-                    <a href="{{item.authorHref}}">{{item.authorName}}</a> in ${tags()} ${date()}
+                    ${tags()} by <a href="{{item.authorHref}}">{{item.authorName}}</a> ${date()}
                 </td>
             </tr>
         </table>

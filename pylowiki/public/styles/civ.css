@@ -41,6 +41,10 @@ h5.listed-item-title, h4.listed-item-title, h3.listed-item-title, h2.listed-item
   color: #333333;
 }
 
+.listed-item-title a:hover{
+  color: #428bca;
+}
+
 a.a-default{
   color: #428bca !important;
 }
