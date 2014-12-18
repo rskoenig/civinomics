@@ -16,6 +16,29 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="showAuthorSimple(item)">
+    <%
+        showNum = 3
+        remaining = len(c.authors) - showNum
+    %>
+    <span class="grey">
+    Added by:
+    % for author in c.authors[:showNum]:
+        % if author != c.authors[0] and len(c.authors) >= 3:
+            ,
+        % endif
+        % if author == c.authors[-1] and len(c.authors) > 1:
+            and
+        % endif
+        ${lib_6.userLink(author)}
+    % endfor
+    % if remaining >= 1:
+        , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
+    % endif
+    </span>
+    <span class="grey">${item['fuzzyTime']} ago</span>
+</%def>
+
 <%def name="showAuthor(item)">
     <div class="tabbable">
         <div class="tab-content">
@@ -27,7 +50,7 @@
                             remaining = len(c.authors) - showNum
                         %>
                         <td>
-                            <span class="grey">Authors: </span>
+                            <span class="grey">Added by: </span>
                             % for author in c.authors[:showNum]:
                                 ${lib_6.userImage(author, className="avatar small-avatar")}
                             % endfor
@@ -47,6 +70,7 @@
                                 , and <a href="#allAuthors" data-toggle="tab">${remaining} more.</a>
                             % endif
                             </span>
+                            <span class="grey">${item['fuzzyTime']} ago</span>
                         </td>
                     </tr>
                 </table>
@@ -76,9 +100,6 @@
             </div><!-- tab-pane -->
         </div><!-- tabcontent -->
     </div><!-- tabbable -->
-    <span class="grey">
-        Published: ${item.date}
-    </span>
 </%def>
 
 <%def name="showUpdateList()">
@@ -171,7 +192,9 @@
         % for item in c.resources:
             <% 
                 iconClass = ""
-                if item['type'] == 'link' or item['type'] == 'general':
+                if 'type' not in item:
+                    iconClass="icon-link"
+                elif item['type'] == 'link' or item['type'] == 'general':
                     iconClass="icon-link"
                 elif item['type'] == 'photo':
                     iconClass="icon-picture"
@@ -205,10 +228,11 @@
             title = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, c.thing['title'])
             if c.thing.objType == 'resource':
                     link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(c.thing['link'], lib_6.ellipsisIZE(c.thing['link'], 75))
-                    if c.thing['type'] == 'rich' or c.thing['type'] == 'video':
-                        link = link + '<div class="spacer"></div>' + c.thing['info']
-                    if c.thing['type'] == 'photo':
-                        link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
+                    if 'type' in c.thing:
+                        if c.thing['type'] == 'rich' or c.thing['type'] == 'video':
+                            link = link + '<div class="spacer"></div>' + c.thing['info']
+                        if c.thing['type'] == 'photo':
+                            link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
         %>
         <h4>${title | n}</h4>
         ${link | n}
@@ -280,7 +304,7 @@
         publishID = 'publish-%s' % thing['urlCode']
         unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
-    <div class="btn-group">
+    <div class="btn-group pull-right">
         % if thing['disabled'] == '0' and thing.objType != 'initiativeUnpublished':
             <a class="btn btn-default btn-sm accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
@@ -322,7 +346,9 @@
         % endif
     % endif
     % if c.revisions:
-        <div id="revisions" class="collapse">
+        <div id="revisions" class="collapse text-right">
+            <br>
+            <br>
             <ul class="unstyled">
             % for revision in c.revisions:
                 <li>Revision: <a href="/initiative/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>

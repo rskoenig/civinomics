@@ -21,6 +21,13 @@
 
                 </div>
             </div>
+            <div class="row">    
+                <div class="col-xs-12">
+                    <span ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</span>
+                    <span ng-if="item.readOnly == '0'">
+                    ${upDownVoteHorizontal(readonly = '0')}</span>
+                </div>
+            </div>
             <div class="row">
                 <span ng-show="item.readOnly == '1'">${actions(readonly = '1')}</span>
                 <span ng-show="item.readOnly == '0'">${actions(readonly = '0')}</span>
@@ -35,7 +42,7 @@
 
             <div class="row" id="{{item.url}}">
                 <div class="col-xs-12">
-                    ${meta2()}
+                    ${meta3()}
                 </div>
             </div>
 
@@ -296,7 +303,7 @@
                 <p>{{item.location}}</p>
                 <p ng-show="(item.agendaItemCount != '0')"><a href="{{item.href}}">View, vote and comment on agenda items.</a></p>
                 <p ng-show="(item.agendaItemCount == '0' && item.agendaPostDate != '')">Agenda posted: {{item.agendaPostDate}}</p>
-                <i class="icon-eye-open"></i> Views ({{item.views}})
+                <i class="icon-eye-open left-space"></i> Views ({{item.views}})
             </div>
         </div><!-- row -->
     </div><!-- media-well -->
@@ -885,7 +892,7 @@
 </%def>
 
 <%def name="yesNoVoteFooter(**kwargs)">
-    <div class="actions centered" style="padding:10px; padding-bottom: 10px;">
+    <div class="actions" style="padding:10px; padding-bottom: 10px;">
         <%
             if 'readonly' in kwargs:
                 readonly = kwargs['readonly']
@@ -901,58 +908,26 @@
                 criteria = False
             
         %>
-        % if readonly == "1":
-            <div class="row centered">
-                <div class="col-sm-12">
+        <div class="row vote-block">
+            <div class="col-sm-12">
+                % if readonly == "1":
                     Voting Closed.<br>
                     <a class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
                     <a class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
-                </div>
-            </div>
-        % elif 'user' in session:
-            <div class="row centered">
-                <div class="col-sm-12">
+                % elif 'user' in session:
                     <a ng-click="updateYesVote()" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
                     <a ng-click="updateNoVote()" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
-                </div>
-            </div>
-        % elif 'user' in session and criteria:
-            ${rateCriteria()}
-        % elif 'user' not in session and criteria:
-            
-        % else:
-            <div class="row centered">
-                <div class="col-sm-12">
+                % elif 'user' in session and criteria:
+                    ${rateCriteria()}
+                % elif 'user' not in session and criteria:
+                    
+                % else:
                     <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-success btn-vote {{voted}}">YES</a>
                     <a href="#signupLoginModal" role="button" data-toggle="modal" class="btn btn-lg btn-danger btn-vote {{voted}}">NO</a>
-                </div>
+                % endif
+                ${votingDetails()}
             </div>
-        % endif
-        % if not 'noStats' in kwargs:
-            <div class="row text-center rating-details">
-                <!-- multi-colored progress bar test
-                <div class="progress col-sm-8">
-                    <div class="progress-bar progress-bar-success" style="width: {{100 * yesVotes / 3 | number:0}}%">
-                        <span class="sr-only">{{100 * yesVotes / 3 | number:0}}% Complete (success)</span>
-                    </div>
-                    <div class="progress-bar progress-bar-danger" style="width: {{100 * noVotes / 3 | number:0}}%">
-                        <span class="sr-only">{{100 * noVotes / 3 | number:0}}% Complete (danger)</span>
-                    </div>
-                </div>
-                -->
-                <div class="col-sm-12">
-                    <small class="grey">
-                        <span ng-if="!condensed">{{totalVotes}} vote<span ng-if="totalVotes > 1">s</span>
-                            <!--
-                            <span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> 
-                            </span> 
-                            -->
-                        </span>
-                        <span ng-if="voted || item.readOnly == '1'"><span ng-if="!condensed">| </span><span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
-                    </small>
-                </div>
-            </div>
-        % endif
+        </div>
     </div>
     <div ng-if="item.parentObjType == 'workshop'">    
         <div ng-if="hasVoted">
@@ -965,6 +940,23 @@
             ${rateCriteria()}
     	</div>
     </div>
+</%def>
+
+<%def name="votingDetails(**kwargs)">
+    % if not 'noStats' in kwargs:
+        <span class="rating-details grey stat">
+            <span class="stat"ng-if="!condensed">{{totalVotes}} vote<span ng-if="totalVotes > 1">s</span>
+                <!--
+                <span ng-if="item.goal">, <span class="grey " tooltip-placement="bottom" tooltip-popup-delay="1000" tooltip="Number of votes calculated based on the total voting population of the initiative's scope.">{{item.goal - item.voteCount | number}} NEEDED</span> 
+                </span> 
+                -->
+            </span>
+            <span class="stat2" ng-if="voted || item.readOnly == '1'"><span ng-if="!condensed"></span><span class="med-green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+            <span class="stat stat2">
+                {{item.views}} views
+            </span>
+        </span>
+    % endif
 </%def>
 
 <%def name="upDownVoteBlock(**kwargs)"> 
@@ -1219,10 +1211,22 @@
         <table>
             <tr>
                 <td>
-                    <img class="avatar avatar-md inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
+                   <img class="avatar avatar-md inline" ng-src="{{item.authorPhoto}}" alt="{{item.authorName}}" title="{{item.authorName}}">
                 </td>
-                <td class="grey-links">
+                <td>
                     <a href="{{item.authorHref}}">{{item.authorName}}</a> in ${tags()} ${date()}
+                </td>
+            </tr>
+        </table>
+    </small>
+</%def>
+
+<%def name="meta3(*args)">
+    <small>
+        <table>
+            <tr>
+                <td>
+                    ${tags()} by <a href="{{item.authorHref}}">{{item.authorName}}</a> ${date()}
                 </td>
             </tr>
         </table>
@@ -1298,13 +1302,9 @@
 <%def name="fullText()">
     
     <div ng-if="item.fullText != ''">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a class="a-default" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
-            Full Text
+        <a class="a-default" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
+            read more
             </a>
-          </h4>
-        </div>
         <div id="fullText{{item.url}}" class="panel-collapse collapse">
 
             <p class="markdown markdown-listed"><span ng-bind-html="item.fullText"></span></p>
@@ -1338,33 +1338,8 @@
     % if not c.searchQuery or c.geoScope:
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;">
             <div ng-controller="commentsController">
-
-                ${addComment()}
-
-                <div class="row">
-                    <div class="col-xs-12 iconListing-row">
-                        <div class="actions-container">
-                            <ul class="horizontal-list iconListing">
-                                <li ng-if="item.objType == 'resource' || item.objType == 'discussion' || item.objType == 'position'">
-                                    <span ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</span>
-                                    <span ng-if="item.readOnly == '0'">
-                                    ${upDownVoteHorizontal(readonly = '0')}</span>
-                                </li>
-                                <li ng-if="item.objType != 'workshop'">
-                                    <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
-                                    <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
-                                </li>
-                                <li ng-show="(item.objType != 'ballotmeasure' && item.objType != 'ballotcandidate')"><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
-                                % if c.authuser and c.authuser['memberType'] == 'organization':
-                                    <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
-                                % endif 
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
                 ${commentList()}
-
+                ${addComment()}
             </div>
         </div>
     % endif
@@ -1700,16 +1675,17 @@
             readonly = '0'
     %>  
     % if readonly == '0':
-    <table class="criteria-table listing col-xs-11">
+    <div class="activity-comments" style="padding-left: 3%; margin-bottom: 15px;border-spacing: 2px; border-color: gray;">
+    <table class="activity-comments">
         <tr ng-hide="newCommentLoading">
-            <td class="comment-avatar-cell">
+            <td class="comment-avatar-cell" style="padding-top:0px !important;">
                 % if c.authuser:
                     ${lib_6.userImage(c.authuser, className="media-object avatar small-avatar", linkClass="topbar-avatar-link")}
                 % else:
                     <img src="/images/hamilton.png" class="media-object avatar small-avatar">
                 % endif
             </td>
-            <td style="padding: 10px 0px;">
+            <td>
                 <form class="no-bottom form-inline" ng-submit="submitComment()">
                     <div class="form-group col-sm-10 col-xs-11" style="margin-left: 0; padding-left:0; margin-right:10px; margin-bottom:0">
                         % if c.authuser:
@@ -1754,11 +1730,14 @@
                             <a href="#signupLoginModal" data-toggle='modal' class="btn btn-primary">Submit</a>
                         % endif
                     </div>
+                                            
+
                 </form>
             </td>
             <td></td>
         </tr>
     </table>
+    </div>
     % endif
 </%def>
 
@@ -1769,12 +1748,20 @@
     %>
     ### Comments
     <div class="activity-comments">
+    <div class="row" style="padding: 10px;">
+        <div class="col-xs-12">
+            <span class="stat">
+                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> {{numComments}} comments</a>
+                <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> {{numComments}} comments</a>
+            </span><span class="stat" ng-if="showMore"><a ng-if="showMore && !commentsLoading" ng-click="removeLimit()"> view {{numComments - 3}} previous</a></span>
+        </div>
+    </div>
+            
     <table class="activity-comments">
         <tr class="centered" ng-show="commentsLoading" ng-cloak>
             <td></td>
             <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
         </tr>
-
         <tr ng-show="newCommentLoading" ng-cloak>
             <td></td>
             <td>
@@ -1782,11 +1769,6 @@
                     <i class="icon-spinner icon-spin icon-2x"></i>
                 </div>
             </td>
-        </tr>
-        <tr ng-if="showMore">
-            <td></td>
-            <td><a ng-if="showMore && !commentsLoading" ng-click="removeLimit()">View {{numComments - 3}} more comment<span ng-if="(numComments - 3)>1">s</span></a></td>
-            
         </tr>
         <tr ng-repeat="comment in comments | limitTo: -limitComments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
 

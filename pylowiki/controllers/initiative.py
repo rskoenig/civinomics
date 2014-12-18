@@ -20,6 +20,7 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.json            as jsonLib
+import pylowiki.lib.fuzzyTime       as fuzzyTime
 
 from pylowiki.lib.facebook          import FacebookShareObject
 import pylowiki.lib.helpers         as h
@@ -647,6 +648,8 @@ class InitiativeController(BaseController):
         c.numComments = 0
         if 'numComments' in c.initiative:
             c.numComments = c.initiative['numComments']
+
+        c.initiative['fuzzyTime'] = fuzzyTime.timeSince(c.initiative.date)
 
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)

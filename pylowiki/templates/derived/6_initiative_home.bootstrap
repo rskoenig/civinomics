@@ -13,7 +13,7 @@
         <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
         ${ihelpers.showFunding_Summary()}
     % endif
-    % if c.initiative['cost']:
+    % if c.initiative['cost'] and c.initiative['cost'] != '0':
         ${ihelpers.showCost(c.initiative)}
     % endif
 
@@ -43,14 +43,13 @@
     % endif
 
     <hr>
-    ${ihelpers.showAuthor(c.initiative)}
+    ${ihelpers.showAuthorSimple(c.initiative)}
     % if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
-        <br>
-        <div class="text-right">
+        <span>
             ${ihelpers.initiativeModerationPanel(c.initiative)}
-        </div>
+        </span>
     % endif
     <hr>
     % if 'workshopCode' in c.initiative:
