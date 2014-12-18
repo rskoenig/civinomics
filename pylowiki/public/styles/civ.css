@@ -2410,6 +2410,31 @@ li.thumbnail-gallery{
   margin-top: 0px;
 }
 
+.share-icon-group{
+  font-size: 1.3em;
+}
+
+.icon-circle.facebook{
+  color: #3b5998;
+}
+
+.icon-circle.twitter{
+  color: #33ccff;
+}
+
+.icon-circle.rss{
+  color: #FF6600;
+}
+
+
+.i-social-buttons{
+  margin-top: 0px;
+}
+
+.action-buttons{
+  margin-top: 40px;
+}
+
 .action-buttons{
   margin-top: 40px;
 }
