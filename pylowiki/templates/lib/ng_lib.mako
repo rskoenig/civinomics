@@ -1593,7 +1593,7 @@
     </div>
     <div class="row" ng-show="!positionsLoading" ng-cloak>
         <div class="col-sm-6">
-            <h4 class="initiative-title">Support</h4>
+            <h3 class="initiative-title">Support</h3>
             <!-- a supporter -->
             <table class="table pro">
                 <tr ng-if="support.length == 0">
@@ -1609,7 +1609,7 @@
             </table>
         </div>
         <div class="col-sm-6">
-            <h4 class="initiative-title">Oppose</h4>
+            <h3 class="initiative-title">Oppose</h3>
             <!-- an opposer -->
             <table class="table con">
                 <tr ng-if="oppose.length == 0">

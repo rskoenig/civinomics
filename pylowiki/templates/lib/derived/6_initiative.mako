@@ -153,7 +153,7 @@
 
 <%def name="iControlPanelInner()">
     % if c.authuser and c.authuser['memberType'] == 'organization':
-        <h4 class="text-center gray hidden-xs">Position</h4>
+        <h3 class="i-control-panel-header hidden-xs">Position</h3>
         <hr class="narrow">
         <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
         <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
@@ -166,9 +166,9 @@
             {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
 
             <div ng-switch="rating.type">
-                <h4 ng-switch-when="criteria" class="text-center gray hidden-xs">Rate</h4>
+                <h3 ng-switch-when="criteria" class="i-control-panel-header hidden-xs">Rate</h3>
 
-                <h4 ng-switch-when="yesno" class="text-center gray hidden-xs">Vote</h4>
+                <h3 ng-switch-when="yesno" class="i-control-panel-header hidden-xs">Vote</h3>
 
                 <hr class="narrow">
 
@@ -206,7 +206,7 @@
 
     %else:
 
-        <h4 class="text-center gray hidden-xs">Vote</h4>
+        <h3 class="i-control-panel-header hidden-xs">Vote</h3>
         <hr class="narrow">
         <div ng-init="inPage = true;" ng-cloak>
             <div ng-controller="yesNoVoteCtrl">
