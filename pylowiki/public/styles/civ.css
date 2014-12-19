@@ -1666,6 +1666,11 @@ a.yesVote, a.noVote{
   width: inherit;
   max-width: 280px;
 }
+
+.i-control-panel-header{
+  margin-top: 5px;
+  text-align: center;
+}
 @media (max-width: 767px){
   .i-control-panel{
     position: fixed;
@@ -2583,6 +2588,12 @@ background-color: whitesmoke;
 
 .stat2:before {
 content: "\00b7";
+}
+
+.i-stats{
+  color: #ffffff;
+  font-family: georgia, serif;
+  font-style: italic;
 }
 
 .form-horizontal.stats .control-group{
