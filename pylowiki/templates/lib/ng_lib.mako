@@ -25,7 +25,7 @@
                 <div class="col-xs-12">
                     <span ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</span>
                     <span ng-if="item.readOnly == '0'">
-                    ${upDownVoteHorizontal(readonly = '0')}</span>
+                    ${upDownVoteHorizontal(readonly = '0')}</span><span class="stat stat2 grey"> {{item.numComments}} comments</span>
                 </div>
             </div>
             <div class="row">
@@ -869,9 +869,9 @@
             Voting Closed
         % endif
         <div class="row text-center" ng-cloak>
-            <div class="col-xs-12">
-                <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'">| <span class="green">{{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
-                <small><span ng-if="item.readOnly == '1'">| <span class="green">{{(item.ups / item.voteCount * 100) | number:0}}% YES</span> | <span class="red">{{(item.downs / item.voteCount * 100) | number:0}}% NO</span></span></small> 
+            <div class="col-xs-12 stat">
+                <small class="grey">{{totalVotes}} votes <span ng-if="voted && item.readOnly == '0'" class="stat2"><span class="med-green"> {{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span></small>
+                <small><span ng-if="item.readOnly == '1'">| <span class="med-green">{{(item.ups / item.voteCount * 100) | number:0}}% YES</span> | <span class="red">{{(item.downs / item.voteCount * 100) | number:0}}% NO</span></span></small> 
 
                 <!--
                 <div class="progress" style="height: 12px; margin-bottom: 5px;">
@@ -952,6 +952,9 @@
                 -->
             </span>
             <span class="stat2" ng-if="voted || item.readOnly == '1'"><span ng-if="!condensed"></span><span class="med-green"> {{yesPercent | number:0}}% YES</span> | <span class="red">{{noPercent | number:0}}% NO</span></span>
+            <span class="stat stat2">
+                {{numComments}} comments
+            </span>
             <span class="stat stat2">
                 {{item.views}} views
             </span>
@@ -1360,7 +1363,7 @@
                     <td colspan="2" style="padding: 10px;">
                         <ul class="horizontal-list iconListing">
                             <li>
-                                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
+                                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()">Comments ({{numComments}})</a>
                                 <a ng-show="!(item.numComments == '0')" class="grey" ng-click="getComments()"><i class="icon-comments"></i> Comments ({{numComments}})</a>
                             </li>
                             <li><i class="icon-eye-open"></i> Views ({{item.views}})</li>
@@ -1593,7 +1596,7 @@
     </div>
     <div class="row" ng-show="!positionsLoading" ng-cloak>
         <div class="col-sm-6">
-            <h4 class="initiative-title">Support</h4>
+            <h3 class="initiative-title">Support</h3>
             <!-- a supporter -->
             <table class="table pro">
                 <tr ng-if="support.length == 0">
@@ -1609,7 +1612,7 @@
             </table>
         </div>
         <div class="col-sm-6">
-            <h4 class="initiative-title">Oppose</h4>
+            <h3 class="initiative-title">Oppose</h3>
             <!-- an opposer -->
             <table class="table con">
                 <tr ng-if="oppose.length == 0">
@@ -1748,103 +1751,100 @@
     %>
     ### Comments
     <div class="activity-comments">
-    <div class="row" style="padding: 10px;">
-        <div class="col-xs-12">
-            <span class="stat">
-                <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> {{numComments}} comments</a>
-                <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> {{numComments}} comments</a>
-            </span><span class="stat" ng-if="showMore"><a ng-if="showMore && !commentsLoading" ng-click="removeLimit()"> view {{numComments - 3}} previous</a></span>
+        <div class="row" ng-if="showMore" style="padding: 10px;">
+            <div class="col-xs-12">
+                <span class="stat"><a ng-if="showMore && !commentsLoading" ng-click="removeLimit()"><i class="icon-comments"></i> view {{numComments - 3}} previous</a></span>
+            </div>
         </div>
-    </div>
-            
-    <table class="activity-comments">
-        <tr class="centered" ng-show="commentsLoading" ng-cloak>
-            <td></td>
-            <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
-        </tr>
-        <tr ng-show="newCommentLoading" ng-cloak>
-            <td></td>
-            <td>
-                <div class="centered">
-                    <i class="icon-spinner icon-spin icon-2x"></i>
-                </div>
-            </td>
-        </tr>
-        <tr ng-repeat="comment in comments | limitTo: -limitComments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
+                
+        <table class="activity-comments">
+            <tr class="centered" ng-show="commentsLoading" ng-cloak>
+                <td></td>
+                <td><i class="icon-spinner icon-spin icon-2x bottom-space-med"></i></td>
+            </tr>
+            <tr ng-show="newCommentLoading" ng-cloak>
+                <td></td>
+                <td>
+                    <div class="centered">
+                        <i class="icon-spinner icon-spin icon-2x"></i>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-repeat="comment in comments | limitTo: -limitComments" ng-class="{pro : comment.commentRole == 'yes', con : comment.commentRole == 'no', neutral : comment.commentRole == 'neutral', question : comment.commentRole == 'question', suggestion : comment.commentRole == 'suggestion', hidden : commentsHidden}" class="comment-row">
 
-            <td class="comment-avatar-cell">
-                <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
-            </td>
-            <td class="comment-main-cell">
-                <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
-                <span class="comment-vote">
-                    <span ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
-                        <span ng-controller="yesNoVoteCtrl">
-                            ${upDownVoteHorizontal()}
+                <td class="comment-avatar-cell">
+                    <img class="media-object avatar small-avatar" ng-src="{{comment.authorPhoto}}" alt="{{comment.authorName}}" title="{{comment.authorName}}">
+                </td>
+                <td class="comment-main-cell">
+                    <small><a class="no-highlight" ng-href="{{comment.authorHref}}"><strong>{{comment.authorName}}</strong></a><span class="date">{{comment.date}} ago</span></small>
+                    <span class="comment-vote">
+                        <span ng-init="objType='comment'; rated=comment.rated; urlCode=comment.urlCode; totalVotes=comment.voteCount; yesVotes=comment.ups; noVotes=comment.downs; netVotes=comment.netVotes">
+                            <span ng-controller="yesNoVoteCtrl">
+                                ${upDownVoteHorizontal()}
+                            </span>
                         </span>
                     </span>
-                </span>
 
-                <br>
-                <p ng-init="stringLimit=300" class="markdown" ng-show="!editing"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
-                <div class="accordion" id="revisions"  ng-show="!editing && showRevisions">
-                    <div ng-repeat="rev in comment.revisionList">
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
-                                Revision: {{rev.date}}
-                                </a>
-                            </div><!-- accordian-heading -->
-                            <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
-                                <div class="accordion-inner">
-                                    <p>Position: {{rev.role}}</p>
-                                    Comment: <span ng-bind-html="rev.html"></span>
-                                </div><!-- accordian-inner -->
-                            </div><!-- accordian-body -->
-                        </div><!-- accordian-group -->
-                    </div><!-- ng-repeat -->
-                </div><!-- accordian -->
-                % if readonly == '0':
-                <div ng-show="(comment.canEdit == 'yes')">
-                    <div class="btn-group btn-group-xs">
-                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="editing = true">Edit</button>
-                        <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing && comment.revisionList.length > 0" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
-                        <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
-                    </div><!-- btn-group -->
-                    <div id="edit-{{comment.urlCode}}" ng-show = "editing">
-                        <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
-                            <form class="no-bottom" ng-submit="submitEditComment()">
-                                <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
-                                <br/><br/>
-                                <div style="margin-top: 15px;">
-                                    <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
-                                    <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
-                                </div>
-                                <div ng-show="(comment.doCommentRole == 'yes')">
-                                    &nbsp;
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
-                                    </label>
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
-                                    </label>
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
-                                    </label>
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
-                                    </label>
-                                    <label class="radio inline">
-                                        <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
-                                    </label>
-                                </div><!-- ng-show -->
-                            </form>
-                        </div><!-- controller -->
-                    </div><!-- collapse -->
-                </div><!-- ng-show -->
-                % endif
-            </td>
-        </tr>
-    </table>
+                    <br>
+                    <p ng-init="stringLimit=300" class="markdown" ng-show="!editing"><span ng-bind-html="comment.html | limitTo:stringLimit"></span>${moreLessComment()}</p>
+                    <div class="accordion" id="revisions"  ng-show="!editing && showRevisions">
+                        <div ng-repeat="rev in comment.revisionList">
+                            <div class="accordion-group">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#revisions" href="#rev-{{rev.urlCode}}">
+                                    Revision: {{rev.date}}
+                                    </a>
+                                </div><!-- accordian-heading -->
+                                <div id="rev-{{rev.urlCode}}" class="accordion-body collapse">
+                                    <div class="accordion-inner">
+                                        <p>Position: {{rev.role}}</p>
+                                        Comment: <span ng-bind-html="rev.html"></span>
+                                    </div><!-- accordian-inner -->
+                                </div><!-- accordian-body -->
+                            </div><!-- accordian-group -->
+                        </div><!-- ng-repeat -->
+                    </div><!-- accordian -->
+                    % if readonly == '0':
+                    <div ng-show="(comment.canEdit == 'yes')">
+                        <div class="btn-group btn-group-xs">
+                            <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing" class="btn btn-xs" data-toggle="collapse" ng-click="editing = true">Edit</button>
+                            <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes') && !editing && comment.revisionList.length > 0" class="btn btn-xs" data-toggle="collapse" ng-click="showRevisions = !showRevisions">Revisions</button>
+                            <!-- <button class="btn btn-default" type="button" ng-show="(comment.canEdit == 'yes')" class="btn btn-xs" data-toggle="collapse" data-target="#unpublish-{{comment.urlCode}}">Trash</button> -->
+                        </div><!-- btn-group -->
+                        <div id="edit-{{comment.urlCode}}" ng-show = "editing">
+                            <div ng-controller="commentEditController" ng-init="urlCode = comment.urlCode; commentEditText = comment.text; commentEditRole = comment.commentRole;">
+                                <form class="no-bottom" ng-submit="submitEditComment()">
+                                    <textarea class="col-xs-10 form-control" ng-model="commentEditText" name="data">{{comment.text}}</textarea>
+                                    <br/><br/>
+                                    <div style="margin-top: 15px;">
+                                        <button type="submit" class="btn btn-success" style="vertical-align: top;">Submit</button>
+                                        <span class="btn btn-warning" style="vertical-align: top;" ng-click="$parent.editing = false">Cancel</span>
+                                    </div>
+                                    <div ng-show="(comment.doCommentRole == 'yes')">
+                                        &nbsp;
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="neutral" ng-model="commentEditRole"> Neutral
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="yes" ng-model="commentEditRole"> Pro
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="no" ng-model="commentEditRole"> Con
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="question" ng-model="commentEditRole"> Question
+                                        </label>
+                                        <label class="radio inline">
+                                            <input type="radio" name="commentRole-{{comment.urlCode}}" value="suggestion" ng-model="commentEditRole"> Suggestion
+                                        </label>
+                                    </div><!-- ng-show -->
+                                </form>
+                            </div><!-- controller -->
+                        </div><!-- collapse -->
+                    </div><!-- ng-show -->
+                    % endif
+                </td>
+            </tr>
+        </table>
     </div><!-- activity comments -->
 </%def>
