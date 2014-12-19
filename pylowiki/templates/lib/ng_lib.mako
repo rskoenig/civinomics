@@ -1625,10 +1625,22 @@
                     <td>There are no supporters yet.</td>
                 </tr>
                 <tr ng-repeat="pro in support">
-                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{pro.authorPhoto}}"></td>
+                    
                     <td>
-                        <a ng-href="{{pro.authorHref}}"><strong>{{pro.authorName}}</strong></a><br><small class="grey">{{pro.date}} ago</small>
-                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="pro.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                        <div class="row" style="margin: 0">
+                            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{pro.authorPhoto}}"></div>
+                            <div class="col-xs-10"><a ng-href="{{pro.authorHref}}"><strong>{{pro.authorName}}</strong></a><small class="grey">, {{pro.authorDescription}}</small> - <small class="grey">{{pro.date}} ago</small></div>
+                        </div>
+                        <div class="col-xs-12" style="margin-top: 10px">
+                            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="pro.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                            <span class="comment-vote">
+                                <span ng-init="objType='comment'; rated=pro.rated; urlCode=pro.urlCode; totalVotes=pro.voteCount; yesVotes=pro.ups; noVotes=pro.downs; netVotes=pro.netVotes">
+                                    <span ng-controller="yesNoVoteCtrl">
+                                        ${upDownVoteHorizontal()}
+                                    </span>
+                                </span>
+                            </span>
+                        <div>
                     </td>
                 </tr>
             </table>
@@ -1642,12 +1654,23 @@
                         There are no opponents yet.
                     </td>
                 </tr>
-                <tr ng-repeat="item in oppose"> 
-                    <td style="vertical-align:top;"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></td>
+                <tr ng-repeat="pro in oppose">
+                    
                     <td>
-                        <a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><br>
-                        <small class="grey">{{item.date}} ago</small>
-                        <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                        <div class="row" style="margin: 0">
+                            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{pro.authorPhoto}}"></div>
+                            <div class="col-xs-10"><a ng-href="{{pro.authorHref}}"><strong>{{pro.authorName}}</strong></a><small class="grey">, {{pro.authorDescription}}</small> - <small class="grey">{{pro.date}} ago</small></div>
+                        </div>
+                        <div class="col-xs-12" style="margin-top: 10px">
+                            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="pro.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                            <span class="comment-vote">
+                                <span ng-init="objType='comment'; rated=pro.rated; urlCode=pro.urlCode; totalVotes=pro.voteCount; yesVotes=pro.ups; noVotes=pro.downs; netVotes=pro.netVotes">
+                                    <span ng-controller="yesNoVoteCtrl">
+                                        ${upDownVoteHorizontal()}
+                                    </span>
+                                </span>
+                            </span>
+                        <div>
                     </td>
                 </tr>
             </table>
