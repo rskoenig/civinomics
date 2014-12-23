@@ -1641,8 +1641,8 @@ a.yesVote, a.noVote{
 
 .well.well-green{
   color: #3c763d;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
+  background-color: rgba(71, 164, 71,.4);
+  border-color: rgba(71, 164, 71,.8);
 }
 
 .search-listing .well.yesNoWell{
@@ -3541,12 +3541,16 @@ table.pro, table.con{
   border-radius: 5px;
 }
 
+table.pro tr:first-child td, table.con tr:first-child td{
+  border-top: none;
+}
+
 tr.con, .panel-heading.against, .con{
-  background-color: #f2dede;
+  background-color: rgba(210, 50, 45,.4);
 }
 
 tr.pro, .panel-heading.favor, .pro{
-  background-color: #dff0d8;
+  background-color: rgba(71, 164, 71,.4);
 }
 tr.neutral, .panel-heading.neutral, .neutral{
   background-color: #e0e0e0;
@@ -4373,4 +4377,8 @@ background-color: #d9534f;
   z-index: 0;
   background-size: cover;
   background-position: center;
+}
+
+.header-num{
+  font-weight: 200;
 }

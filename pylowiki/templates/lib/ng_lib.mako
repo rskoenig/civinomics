@@ -1596,11 +1596,11 @@
     </div>
     <div class="row" ng-show="!positionsLoading" ng-cloak>
         <div class="col-sm-6">
-            <h3 class="initiative-title">Support</h3>
+            <h3 class="initiative-title">Pros <span class="header-num"> {{support.length}}</span></h3>
             <!-- a supporter -->
             <table class="table pro">
                 <tr ng-if="support.length == 0">
-                    <td>There are no supporters yet.</td>
+                    <td>There are no pros yet.</td>
                 </tr>
                 <tr ng-repeat="item in support">
                     
@@ -1624,12 +1624,12 @@
             </table>
         </div>
         <div class="col-sm-6">
-            <h3 class="initiative-title">Oppose</h3>
+            <h3 class="initiative-title">Cons <span class="header-num"> {{oppose.length}}</span></h3>
             <!-- an opposer -->
             <table class="table con">
                 <tr ng-if="oppose.length == 0">
                     <td>
-                        There are no opponents yet.
+                        There are no cons yet.
                     </td>
                 </tr>
                 <tr ng-repeat="item in oppose">
