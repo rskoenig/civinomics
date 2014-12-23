@@ -17,7 +17,9 @@ import pylowiki.lib.db.geoInfo      as  geoInfoLib
 import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
-import pylowiki.lib.fuzzyTime           as fuzzyTime    
+import pylowiki.lib.fuzzyTime           as fuzzyTime   
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.discussion   as discussionLib 
 import misaka as m
 import simplejson as json
 
@@ -65,6 +67,7 @@ def jsonizeComment(comment):
     entry['authorName'] = author['name']
     entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
     entry['authorPhoto'] = utils._userImageSource(author)
+    entry['authorDescription'] = author['greetingMsg']
     if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
         entry['canEdit'] = 'yes'
     else:
@@ -378,6 +381,15 @@ class CommentController(BaseController):
 
         return json.dumps({'statusCode':1})
 
+    def getProCons(self, urlCode):
+        thing = initiativeLib.getInitiative(urlCode)
+        disc = discussionLib.getDiscussionForThing(thing)
+        
+        comments = commentLib.getCommentsInDiscussionByCode(disc['urlCode'])
+        proList = [jsonizeComment(pro) for pro in comments if ('commentRole' in pro and pro['commentRole'] == 'yes')]
+        conList = [jsonizeComment(con) for con in comments if ('commentRole' in con and con['commentRole'] == 'no')]
+        return json.dumps({'statusCode':0, 'pros':proList, 'cons':conList})
+        
         
         
     ####################################################
