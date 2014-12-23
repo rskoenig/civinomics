@@ -1166,9 +1166,9 @@
     % endif
 </%def>
 
-<%def name="moreLess()">
-    <a ng-show="item.text.length > 799 && stringLimit == 800" ng-click="stringLimit = 1000000">... more</a>
-    <a href="#{{item.urlCode}}" ng-show="item.text.length > 800 && stringLimit == 1000000" ng-click="stringLimit = 800">less</a>
+<%def name="moreLess(stringLimit = 799)">
+    <a ng-show="item.text.length > (${stringLimit}-1) && stringLimit == ${stringLimit}" ng-click="stringLimit = 1000000">... more</a>
+    <a ng-show="item.text.length > ${stringLimit} && stringLimit == 1000000" ng-click="stringLimit = ${stringLimit}">less</a>
 </%def>
 
 <%def name="moreLessComment()">
@@ -1624,17 +1624,17 @@
                 <tr ng-if="support.length == 0">
                     <td>There are no supporters yet.</td>
                 </tr>
-                <tr ng-repeat="pro in support">
+                <tr ng-repeat="item in support">
                     
                     <td>
                         <div class="row" style="margin: 0">
-                            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{pro.authorPhoto}}"></div>
-                            <div class="col-xs-10"><a ng-href="{{pro.authorHref}}"><strong>{{pro.authorName}}</strong></a><small class="grey">, {{pro.authorDescription}}</small> - <small class="grey">{{pro.date}} ago</small></div>
+                            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></div>
+                            <div class="col-xs-10"><a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><small class="grey">, {{item.authorDescription}}</small> - <small class="grey">{{item.date}} ago</small></div>
                         </div>
                         <div class="col-xs-12" style="margin-top: 10px">
-                            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="pro.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess(stringLimit = 201)}</p>
                             <span class="comment-vote">
-                                <span ng-init="objType='comment'; rated=pro.rated; urlCode=pro.urlCode; totalVotes=pro.voteCount; yesVotes=pro.ups; noVotes=pro.downs; netVotes=pro.netVotes">
+                                <span ng-init="objType='comment'; rated=item.rated; urlCode=item.urlCode; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes">
                                     <span ng-controller="yesNoVoteCtrl">
                                         ${upDownVoteHorizontal()}
                                     </span>
@@ -1654,17 +1654,17 @@
                         There are no opponents yet.
                     </td>
                 </tr>
-                <tr ng-repeat="pro in oppose">
+                <tr ng-repeat="item in oppose">
                     
                     <td>
                         <div class="row" style="margin: 0">
-                            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{pro.authorPhoto}}"></div>
-                            <div class="col-xs-10"><a ng-href="{{pro.authorHref}}"><strong>{{pro.authorName}}</strong></a><small class="grey">, {{pro.authorDescription}}</small> - <small class="grey">{{pro.date}} ago</small></div>
+                            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></div>
+                            <div class="col-xs-10"><a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><small class="grey">, {{item.authorDescription}}</small> - <small class="grey">{{item.date}} ago</small></div>
                         </div>
                         <div class="col-xs-12" style="margin-top: 10px">
-                            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="pro.html | limitTo:stringLimit"></span>${moreLessStatement()}</p>
+                            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${moreLess(stringLimit = 201)}</p>
                             <span class="comment-vote">
-                                <span ng-init="objType='comment'; rated=pro.rated; urlCode=pro.urlCode; totalVotes=pro.voteCount; yesVotes=pro.ups; noVotes=pro.downs; netVotes=pro.netVotes">
+                                <span ng-init="objType='comment'; rated=item.rated; urlCode=item.urlCode; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes">
                                     <span ng-controller="yesNoVoteCtrl">
                                         ${upDownVoteHorizontal()}
                                     </span>
