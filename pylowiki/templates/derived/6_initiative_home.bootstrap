@@ -14,7 +14,6 @@
     % endif
 
     % if c.initiative['proposal'] or c.initiative['background'] or c.initiative['funding_summary']:
-        <br>
         <hr>
         <h3><a data-toggle="collapse" data-parent="#accordion" href="#fullText">
             Full Text
