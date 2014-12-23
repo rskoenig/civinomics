@@ -40,6 +40,7 @@
                     <% titleSpan = "col-xs-12 col-sm-10" %>
                     <div class="${titleSpan}" style="position:relative;">
                         <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
+                        <h4 class="i-stats" ng-cloak><span> {{item.voteCount}} votes </span><span class="stat2"> {{item.numComments}} comments</span></h4>
                     </div>
                 </div>
             </div>

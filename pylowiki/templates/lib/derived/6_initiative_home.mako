@@ -192,7 +192,9 @@
         % for item in c.resources:
             <% 
                 iconClass = ""
-                if item['type'] == 'link' or item['type'] == 'general':
+                if 'type' not in item:
+                    iconClass="icon-link"
+                elif item['type'] == 'link' or item['type'] == 'general':
                     iconClass="icon-link"
                 elif item['type'] == 'photo':
                     iconClass="icon-picture"
@@ -226,10 +228,11 @@
             title = '<a href="%s" class="listed-item-title">%s</a>' %(rURL, c.thing['title'])
             if c.thing.objType == 'resource':
                     link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(c.thing['link'], lib_6.ellipsisIZE(c.thing['link'], 75))
-                    if c.thing['type'] == 'rich' or c.thing['type'] == 'video':
-                        link = link + '<div class="spacer"></div>' + c.thing['info']
-                    if c.thing['type'] == 'photo':
-                        link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
+                    if 'type' in c.thing:
+                        if c.thing['type'] == 'rich' or c.thing['type'] == 'video':
+                            link = link + '<div class="spacer"></div>' + c.thing['info']
+                        if c.thing['type'] == 'photo':
+                            link = link + '<div class="spacer"></div><img src="' + c.thing['info'] + '">'
         %>
         <h4>${title | n}</h4>
         ${link | n}

@@ -104,8 +104,38 @@
                                         <a class="btn btn-default" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/updateEdit/new"><strong>Add Update</strong></a>
                                     % endif
                                     % if c.initiative['public'] == '1' and not c.editInitiative:
-                                        ${lib_6.facebookDialogShare2(shareOnWall=True, sendMessage=True, btn=True)}
                                         ${ihelpers.watchButton(c.initiative)}
+                                        <br>
+                                        <span class="share-icon-group">    
+
+                                            ${lib_6.facebookDialogShare2(shareOnWall=True, circle=True)}
+
+                                            <!--
+                                            <span class="icon-stack">
+                                              <i class="icon-circle icon-stack-base twitter"></i>
+                                              <i class="icon-twitter icon-light"></i>
+                                            </span>
+                                            -->
+
+                                            % if not c.privs['provisional'] and c.initiative:
+                                                <%
+                                                    subj = 'Vote on "' + c.initiative['title'] + '"'
+                                                    subj = subj.replace(' ','%20')
+                                                    body = lib_6.initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
+                                                %>
+                                                <a href="mailto:?subject=${subj}&body=${body}"><span class="icon-stack">
+                                                  <i class="icon-circle icon-stack-base"></i>
+                                                  <i class="icon-envelope icon-light"></i>
+                                                </span></a>
+                                            % endif
+
+                                            <!--
+                                            <span class="icon-stack">
+                                              <i class="icon-circle icon-stack-base rss"></i>
+                                              <i class="icon-code icon-light"></i>
+                                            </span>
+                                            -->
+                                        </span>
                                     % endif
                                 </div>
 
@@ -123,7 +153,7 @@
 
 <%def name="iControlPanelInner()">
     % if c.authuser and c.authuser['memberType'] == 'organization':
-        <h4 class="text-center gray hidden-xs">Position</h4>
+        <h3 class="i-control-panel-header hidden-xs">Position</h3>
         <hr class="narrow">
         <!-- this is the second call to positionsCtrl on the initative page - would be better to use a service -->
         <div ng-init="code = '${c.initiative['urlCode']}'; objType = 'initiative'"></div>
@@ -136,9 +166,9 @@
             {{getCriteriaList('${"/workshop/" + c.initiative['workshopCode'] + "/" + c.initiative['workshop_url']}', '${c.initiative['urlCode']}')}}
 
             <div ng-switch="rating.type">
-                <h4 ng-switch-when="criteria" class="text-center gray hidden-xs">Rate</h4>
+                <h3 ng-switch-when="criteria" class="i-control-panel-header hidden-xs">Rate</h3>
 
-                <h4 ng-switch-when="yesno" class="text-center gray hidden-xs">Vote</h4>
+                <h3 ng-switch-when="yesno" class="i-control-panel-header hidden-xs">Vote</h3>
 
                 <hr class="narrow">
 
@@ -176,7 +206,7 @@
 
     %else:
 
-        <h4 class="text-center gray hidden-xs">Vote</h4>
+        <h3 class="i-control-panel-header hidden-xs">Vote</h3>
         <hr class="narrow">
         <div ng-init="inPage = true;" ng-cloak>
             <div ng-controller="yesNoVoteCtrl">
