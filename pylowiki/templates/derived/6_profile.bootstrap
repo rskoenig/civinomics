@@ -27,7 +27,7 @@
             who = ''
 
         if 'alert' in session:
-            message = session['alert']
+            message = session['alert']['title']
             session.pop('alert')
             session.save()
         else:

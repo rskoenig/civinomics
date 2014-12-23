@@ -80,10 +80,6 @@
 
       ${helpers.geoFlagInfo()}
 
-      %if c.authuser and 'participatingWorkshop' in c.authuser:
-       <div class="alert alert-warning" role="alert">Click here to go back to <a href="${c.authuser['participatingWorkshop'].split("|")[0]}">${c.authuser['participatingWorkshop'].split("|")[1]}</a></div>
-      %endif
-
       ${helpers.elections()}
       ${helpers.leaderboardHome()}
       ${helpers.followingInitiatives()}
