@@ -1,0 +1,89 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/admin_helpers/6_account.mako" />
+
+<%
+    tab1active = "active"
+    tab2active = ""
+    tab3active = ""
+%>
+
+<div class="row-fluid">
+    <div class="tabbable">
+        <div class="span3">
+            <div class="section-wrapper">
+                <div class="browse">
+                    <h4 class="section-header" style="text-align: center"><br />Account Management</h4>
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update Account Info
+                        </a></li>
+                        <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Invoices
+                        </a></li>
+                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Event Log
+                        </a></li>
+                    </ul>
+                </div><!-- browse -->
+            </div><!-- section-wrapper -->
+        </div><!-- span3 -->
+        <div class="span8">
+            % if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
+            % else:
+            ${lib_6.fields_alert()}
+            <div class="tab-content">
+                <div class="tab-pane ${tab1active}" id="tab1">
+                    ${helpers.manage_account()}
+                </div><!-- tab1 -->
+                <div class="tab-pane ${tab2active}" id="tab2">
+                    ${helpers.show_invoices()}
+                </div><!-- tab2 -->
+                <div class="tab-pane ${tab3active}" id="tab3">
+                    ${helpers.show_events()}
+                </div><!-- tab3 -->
+            </div><!-- tab-content -->
+        % endif
+        </div><!-- span9 -->
+    </div><!-- tabbable template -->
+</div><!-- row-fluid -->
+    
+<%def name="headScripts()">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+    <script type="text/javascript">
+        Stripe.setPublishableKey('${c.stripeKey}');
+ 
+        function stripeResponseHandler(status, response) {
+            if (response.error) {
+                // Show the errors on the form
+                $('.payment-errors').html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error: </strong> ' + response.error.message + '<div>');
+                $('.submit-button').prop('disabled', false);
+            } else {
+                var $form = $('#paymentForm');
+                // token contains id, last4, and card type
+                var token = response.id;
+                // Insert the token into the form so it gets submitted to the server
+                $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                // and submit
+                $form.get(0).submit();
+            }
+        }
+        $(function() {
+            $('#paymentForm').submit(function(event) {
+                // Disable the submit button to prevent repeated clicks
+                $('.submit-button').prop('disabled', true);
+
+                Stripe.createToken({
+                    number: $('.card-number').val(),
+                    cvc: $('.card-cvc').val(),
+                    exp_month: $('.card-expiry-month').val(),
+                    exp_year: $('.card-expiry-year').val()
+                }, stripeResponseHandler);
+
+                // Prevent the form from submitting with the default action
+                return false;
+            });
+        });
+    </script>
+</%def>
+
