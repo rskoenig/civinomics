@@ -700,15 +700,10 @@ class ProfileController(BaseController):
         items['searchWorkshops'] = []
         items['searchUsers'] = []
         for thing in createdThings:
-            if thing['disabled'] == '0' and thing['deleted'] == '0':
-                if 'workshopCode' in thing:
+            if 'workshopCode' in thing:
+                if thing['disabled'] == '0' and thing['deleted'] == '0':
                     w = workshopLib.getWorkshopByCode(thing['workshopCode'])
-                elif thing['parentObjType'] == 'workshop':
-                    w = workshopLib.getWorkshopByCode(thing['parentHref'].split("/")[1])
-                    print "PARENT IS WS : " + thing['parentHref'].split("/")[1];
-                else:
-                    print "not WS related"
-                if workshopLib.isPublished(w) or isAdmin:
+                    if workshopLib.isPublished(w) or isAdmin:
                         if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
                             if thing.objType == 'resource':
                                 items['resources'].append(thing)

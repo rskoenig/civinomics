@@ -318,7 +318,6 @@ class HomeController(BaseController):
         # get recent activity and return it into json format
         result = []
         allActivity = []
-        print "asdfasdf"
         offset = int(offset)
         commments = int(comments)
 

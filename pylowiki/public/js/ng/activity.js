@@ -17,7 +17,7 @@ function activityController($scope, $http) {
 		if ($scope.code){
 	        $scope.activityUrl = '/getObjActivity/' + $scope.activityType + '/' + $scope.code + '/' + $scope.url
 	    }else{
-	    	$scope.activityUrl = '/getSiteActivity/' + $scope.activityType;
+	    	$scope.activityUrl = '/getSiteActivity/' + $scope.activityType
 	    }
 		$http.get($scope.activityUrl).success(function(data){
 			if (data.statusCode == 1){
