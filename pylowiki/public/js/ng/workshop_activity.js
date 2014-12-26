@@ -446,8 +446,6 @@ function activityWorkshopController($scope, $http, $location) {
 		$scope.showAddNew = false;
 		$scope.query = {objType:'Resource'};
 		$scope.query2 = '';
-		console.log("asdf")
-		console.log($scope);
 		$scope.thing = 'Resource';
 		if ($scope.allowResources == '0') {
             $scope.addThing = 'Discussion';

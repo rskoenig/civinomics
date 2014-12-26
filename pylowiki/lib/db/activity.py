@@ -8,6 +8,7 @@ from pylowiki.lib.utils import urlify
 import logging
 import datetime
 log = logging.getLogger(__name__)
+
 def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
     if unpublished == '1':
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished', 'ballotcandidateUnpublished']
@@ -64,7 +65,6 @@ def getMemberActivity(user, unpublished = '0'):
         .order_by('-lastUpdated').all()
     # Messy
     for activity in initialActivityList:
-
         if activity.objType.replace("Unpublished", "") == 'discussion' and activity['discType'] != 'general':
             continue
             

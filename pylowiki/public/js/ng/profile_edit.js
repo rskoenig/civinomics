@@ -78,7 +78,6 @@ function profileController($scope, $http) {
     $scope.getActivity = function() {
 		$scope.loading = true;
 		$http.get($scope.getActivityURL).success(function(data){
-            console.log("ACTIVITY URL: " + $scope.getActivityURL);
 			if (data.statusCode == 1){
 				$scope.activity = [];
 				$scope.alertMsg = data.alertMsg;

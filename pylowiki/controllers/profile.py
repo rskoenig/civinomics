@@ -638,7 +638,6 @@ class ProfileController(BaseController):
         c.following = items['following']
         c.watching = items['watching']
 
-    #TODO:drew:hotfix-700 :: figure out if this is ever getting called
     def _userItems(self, user):
         isUser = False
         isAdmin = False
