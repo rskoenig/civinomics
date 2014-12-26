@@ -2583,12 +2583,12 @@
     </div><!--/.row-->
     
     ## Reply
-    <div class="row collapse" id="#reply-{{item.urlCode}}">
+    <div class="row collapse" id="reply-{{item.urlCode}}">
         <div class="col-sm-11 col-sm-offset-1">
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <textarea name="comment-textarea" class="comment-reply col-sm-12 form-control" placeholder="Add a reply..."></textarea>
                 <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
-                <input type="hidden" name="thingCode" value = "{{item.parentCode}}" />
+                <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
                 <button type="submit" class="btn btn-primary left-space" name = "submit" value = "reply">Submit</button>
             </form>
         </div>

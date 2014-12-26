@@ -1287,10 +1287,8 @@
 <%def name="summary_condensed()">
     <span ng-init="stringLimit=60">
         <span>{{item.text | limitTo:stringLimit}}
-
             <span ng-show="item.text.length > 60 && stringLimit == 60"><a ng-click="stringLimit = 10000">...more</a></span>
             <span><a ng-show="stringLimit == 10000" ng-click="stringLimit = 60"> less</a></span>
-
         </span>
     </span>
 </%def>
@@ -1306,9 +1304,7 @@
           </h4>
         </div>
         <div id="fullText{{item.url}}" class="panel-collapse collapse">
-
             <p class="markdown markdown-listed"><span ng-bind-html="item.fullText"></span></p>
-
             <br>
             <!-- disorienting cause it doesnt go back to the top 
             <a class="btn btn-default" data-toggle="collapse" data-parent="#accordion" href="#fullText{{item.url}}">
@@ -1317,7 +1313,6 @@
             -->
         </div>
     </div>
-    
 </%def>
 
 <%def name="additionalMetrics()">
@@ -1338,9 +1333,6 @@
     % if not c.searchQuery or c.geoScope:
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;">
             <div ng-controller="commentsController">
-
-                
-
                 <div class="row">
                     <div class="col-xs-12 iconListing-row">
                         <div class="actions-container">
@@ -1639,9 +1631,9 @@
                                         ${upDownVoteHorizontal()}
                                     </span>
                                 </span>
-                                ${lib_6.commentFooterAngular()}
                             </span>
-                        <div>
+                        </div>
+                        ${lib_6.commentFooterAngular()}
                     </td>
                 </tr>
             </table>
