@@ -2,15 +2,13 @@ from pylowiki.model import Thing, Data, meta
 from sqlalchemy import and_, or_, not_
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc, with_key_characteristic_like as wkcl, with_key_in_list as wkil, without_characteristic as wo
 import pylowiki.lib.db.discussion   as discussionLib
-
 import pylowiki.lib.db.generic      as generic
 from pylowiki.lib.utils import urlify
-import pylowiki.lib.db.workshop     as workshopLib
 
 import logging
 import datetime
 log = logging.getLogger(__name__)
-
+# why am I getting import errors on : import pylowiki.lib.db.workshop as workshobLib, separately?
 def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
     if unpublished == '1':
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished', 'ballotcandidateUnpublished']
@@ -33,15 +31,15 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
         
         # Messy
         for activity in initialActivityList:
-            print "activity";
             if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:
                 continue
-            else:                
+            elif 'workshopCode' in activity and unpublished == '0':
+                code = activity['workshopCode']
+                ws = generic.getThing(code);
+                if ws['public_private'] == 'private' or ws['published'] == '0':
+                    continue
+            else:
                 finalActivityList.append(activity)
-            if activity.objType == 'resource' and 'workshopCode' in activity:
-                print "got one";
-                ws = workshopLib.getWorkshopByCode(activity.workshopCode);
-
         return finalActivityList
     except:
         return False

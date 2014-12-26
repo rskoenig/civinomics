@@ -19,7 +19,6 @@ function activityController($scope, $http) {
 	    }else{
 	    	$scope.activityUrl = '/getSiteActivity/' + $scope.activityType;
 	    }
-		//console.log("URL :" + $scope.activityUrl);
 		$http.get($scope.activityUrl).success(function(data){
 			if (data.statusCode == 1){
 				$scope.activityNoResult = true;
@@ -33,7 +32,6 @@ function activityController($scope, $http) {
 				$scope.activity = data.result;
 				
 			}
-			//console.log($scope.activity)
 			$scope.activityLoading = false;
 		})
 	};
