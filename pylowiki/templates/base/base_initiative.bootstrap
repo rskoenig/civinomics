@@ -15,54 +15,64 @@
     }
 </style>
 
-%if c.cover_url:
-    <div class="policy-cover" style="background-image:url('${c.cover_url}')">
-%else:
-    <div class="policy-cover" style="background: grey;">
-%endif
-        <div class="darkened-bg-cover"></div>
-    </div>
 
 <span ng-init="objType = 'initiative'; thingCode = '${c.initiative['urlCode']}'; thingUrl = '${c.initiative['url']}';"></span>
-<div class="container" ng-controller="showThingCtrl">
-    <div class="row">
-        <div class="col-sm-9 col-md-9">
-            <div class="row policy-cover-inner">
 
-                <div class="col-xs-12 white hidden-print">
-                    ${helpers.iTags()}
-                </div>
 
-                <div class="hidden-xs col-sm-2">
-                    <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
-                </div>
-
-                <% titleSpan = "col-xs-12 col-sm-10" %>
-                <div class="${titleSpan}" style="position:relative;">
-                    <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
-                </div>
-
-            </div>
-
-            <div id="summary"></div>
-
-            <div class="top-offset">
-                <div class="row">
-                    <div class="col-sm-2 hidden-xs hidden-print">
-                        ${helpers.iMenu()}
+<div ng-controller="showThingCtrl">
+%if c.cover_url:
+    <div class="i-top-image" style="background-image:url('${c.cover_url}')">
+%else:
+    <div class="i-top-image" style="background: grey;">
+%endif
+    <div class="darkened-bg-cover"></div>
+        <div class="container" style="position:relative; z-index:100">
+            <div class="row">
+                <div class="col-sm-9 col-md-9">
+                    <div class="col-xs-12 white hidden-print">
+                        ${helpers.iTags()}
                     </div>
-                    <div class="col-sm-10">
-                        ${next.body()}
+
+                    <div class="hidden-xs col-sm-2">
+                        <img class="thumbnail tight initiative-thumb" src="${c.thumbnail_url}">
+                    </div>
+
+                    <% titleSpan = "col-xs-12 col-sm-10" %>
+                    <div class="${titleSpan}" style="position:relative;">
+                        <h1 class="initiative-title"><a class="no-highlight overlay" href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}">${c.initiative['title']}</a></h1>
+                        <h4 class="i-stats" ng-cloak><span> {{item.voteCount}} votes </span><span class="stat2"> {{item.numComments}} comments</span></h4>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-3 col-md-3 hidden-print" id="sidebar">
-            % if c.initiative.objType != 'initiativeUnpublished':
-                ${helpers.iControlPanel()}
-            % endif
-        </div><!-- span4 -->
-    </div><!-- row -->
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-9">
+                
+
+                <div id="summary"></div>
+
+                <div class="top-offset">
+                    <div class="row">
+                        <div class="col-sm-2 hidden-xs hidden-print">
+                            ${helpers.iMenu()}
+                        </div>
+                        <div class="col-sm-10">
+                            ${next.body()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- row -->
+    </div>
+    <div class="col-sm-3 col-md-3 hidden-print" style="position: absolute; top: 60px; right: 10px;" id="sidebar">
+        % if c.initiative.objType != 'initiativeUnpublished':
+            ${helpers.iControlPanel()}
+        % endif
+    </div><!-- span4 -->
+    
 </div><!-- row -->
 
 

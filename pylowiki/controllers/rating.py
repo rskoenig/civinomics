@@ -17,6 +17,7 @@ import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.meeting      as meetingLib
 import pylowiki.lib.db.ballot       as ballotLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.generic      as genericLib
 import pylowiki.lib.utils           as utils
 
@@ -112,6 +113,15 @@ class RatingController(BaseController):
         
     @h.login_required
     def rateInitiative(self, code, amount):
+        thing = genericLib.getThing(code)
+        f = followLib.getFollow(c.authuser, thing)
+        if f:
+            if f['disabled'] == '1':
+                # previously followed, then unfollowed and here re-followed
+                followLib.FollowOrUnfollow(c.authuser, thing)
+        else:
+            followLib.FollowOrUnfollow(c.authuser, thing)
+            
         return redirect(session['return_to'])
         
     @h.login_required

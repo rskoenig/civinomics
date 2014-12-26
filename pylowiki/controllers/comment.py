@@ -17,7 +17,9 @@ import pylowiki.lib.db.geoInfo      as  geoInfoLib
 import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
-import pylowiki.lib.fuzzyTime           as fuzzyTime    
+import pylowiki.lib.fuzzyTime           as fuzzyTime   
+import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.discussion   as discussionLib 
 import misaka as m
 import simplejson as json
 
@@ -34,6 +36,8 @@ import pylowiki.lib.helpers as h
 def jsonizeComment(comment):
     if 'ratings' in session:
         myRatings = session['ratings']
+    else:
+        myRatings = {}
     entry = {}
     entry['text'] = comment['data']
     entry['html'] = m.html(entry['text'], render_flags=m.HTML_SKIP_HTML)
@@ -59,34 +63,15 @@ def jsonizeComment(comment):
     entry['date'] = fuzzyTime.timeSince(comment.date)
 
     # comment author
-    if 'authorName' not in comment:
-        author = userLib.getUserByID(comment.owner)
-        comment['authorName'] = author['name']
-        comment['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-        comment['authorPhoto'] = utils._userImageSource(author)
-        if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
-            entry['canEdit'] = 'yes'
-        else:
-            entry['canEdit'] = 'no'
-        try:
-            dbHelpers.commit(comment)
-        except:
-            log.info("Couldn't commit")
-        entry['authorName'] = author['name']
-        entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
-        entry['authorPhoto'] = utils._userImageSource(author)
-        if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
-            entry['canEdit'] = 'yes'
-        else:
-            entry['canEdit'] = 'no'
+    author = userLib.getUserByID(comment.owner)
+    entry['authorName'] = author['name']
+    entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
+    entry['authorPhoto'] = utils._userImageSource(author)
+    entry['authorDescription'] = author['greetingMsg']
+    if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
+        entry['canEdit'] = 'yes'
     else:
-        entry['authorName'] = comment['authorName']
-        entry['authorHref'] = comment['authorHref']
-        entry['authorPhoto'] = comment['authorPhoto']
-        if 'user' in session and (c.authuser.id == comment.owner or userLib.isAdmin(c.authuser.id)):
-            entry['canEdit'] = 'yes'
-        else:
-            entry['canEdit'] = 'no'
+        entry['canEdit'] = 'no'
 
     # get revisions
     revisions = revisionLib.getRevisionsForThing(comment)
@@ -232,7 +217,7 @@ class CommentController(BaseController):
                 parentAuthor = userLib.getUserByID(discussion.owner)
 
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate':
+            if thing.objType == 'idea' or thing.objType == 'initiative' or thing.objType == 'agendaitem' or thing.objType == 'ballotmeasure' or thing.objType == 'ballotcandidate' or thing.objType == 'discussion':
                 if 'commentRole' in payload:
                     commentRole = payload['commentRole']
                     comment['commentRole'] = commentRole
@@ -332,12 +317,6 @@ class CommentController(BaseController):
             elif json.loads(request.body):
                 return json.dumps({'statusCode':0})
                 
-            #updating the date of the parent
-            #first of all, see if the comment is a reply to another comment
-            #if so, travel up until the root
-            #if not, update the thing's lastUpdated
-            regex = re.compile('.Code')
-            log.info(regex)
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             if request.params:
@@ -377,9 +356,9 @@ class CommentController(BaseController):
         gettingCommentsTime = datetime.now()
         result = map(jsonizeComment,comments)
         makingResult = datetime.now()
-        if len(result) > 3:
-            log.info("Getting the comments was " + str(gettingCommentsTime-start))
-            log.info("Jsonizing the comments was " + str(makingResult-gettingCommentsTime))
+#         if len(result) > 3:
+#             log.info("Getting the comments was " + str(gettingCommentsTime-start))
+#             log.info("Jsonizing the comments was " + str(makingResult-gettingCommentsTime))
         if len(result) == 0:
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})
@@ -402,6 +381,15 @@ class CommentController(BaseController):
 
         return json.dumps({'statusCode':1})
 
+    def getProCons(self, urlCode):
+        thing = initiativeLib.getInitiative(urlCode)
+        disc = discussionLib.getDiscussionForThing(thing)
+        
+        comments = commentLib.getCommentsInDiscussionByCode(disc['urlCode'])
+        proList = [jsonizeComment(pro) for pro in comments if ('commentRole' in pro and pro['commentRole'] == 'yes')]
+        conList = [jsonizeComment(con) for con in comments if ('commentRole' in con and con['commentRole'] == 'no')]
+        return json.dumps({'statusCode':0, 'pros':proList, 'cons':conList})
+        
         
         
     ####################################################

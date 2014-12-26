@@ -189,6 +189,10 @@ def Comment(data, owner, discussion, privs, role = None, parent = 0):
         initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
         thisComment = generic.linkChildToParent(thisComment, initiative)
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+    elif discussion['discType'] == 'update' and 'initiativeCode' in discussion:
+        initiative = initiativeLib.getInitiative(discussion['initiativeCode'])
+        thisComment = generic.linkChildToParent(thisComment, initiative)
+        attachedThing = discussion
     elif discussion['discType'] == 'resource' and 'initiativeCode' not in discussion:
         attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
     elif discussion['discType'] == 'organization_general' or discussion['discType'] == 'organization_position':

@@ -439,10 +439,12 @@ class HomeController(BaseController):
         else:
             recentActivity = activityLib.getRecentActivity(max, 1, offset)
             
-        for item in recentActivity:
-            entry = jsonLib.getJsonProperties(item)
-
-            result.append(entry)
+#         for item in recentActivity:
+#             entry = jsonLib.getJsonProperties(item)
+# 
+#             result.append(entry)
+#             
+        result = map(jsonLib.getJsonProperties, recentActivity)
 
         if len(result) == 0:
             return json.dumps({'statusCode':1})

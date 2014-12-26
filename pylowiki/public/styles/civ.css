@@ -41,6 +41,10 @@ h5.listed-item-title, h4.listed-item-title, h3.listed-item-title, h2.listed-item
   color: #333333;
 }
 
+.listed-item-title a:hover{
+  color: #428bca;
+}
+
 a.a-default{
   color: #428bca !important;
 }
@@ -709,6 +713,7 @@ padding: 0;
 
 .workshop-tag{
     margin-right:3px;
+    background-color: #B28647;
 }
 
 .green-tag, .Outdoors, .Land, .Environment, .Animals, .Parks, .Parks_and_Rec{
@@ -1636,8 +1641,8 @@ a.yesVote, a.noVote{
 
 .well.well-green{
   color: #3c763d;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
+  background-color: rgba(71, 164, 71,.4);
+  border-color: rgba(71, 164, 71,.8);
 }
 
 .search-listing .well.yesNoWell{
@@ -1661,6 +1666,11 @@ a.yesVote, a.noVote{
   position:fixed;
   width: inherit;
   max-width: 280px;
+}
+
+.i-control-panel-header{
+  margin-top: 5px;
+  text-align: center;
 }
 @media (max-width: 767px){
   .i-control-panel{
@@ -1905,11 +1915,11 @@ a.no-border:hover{
 }
 
 .med-green{
-    color:#4cae4c;;
+    color:#47a447;;
 }
 
 .red{
-    color:#90000a;
+    color:#ac2925;
 }
 
 .grey{
@@ -2405,6 +2415,31 @@ li.thumbnail-gallery{
   margin-top: 0px;
 }
 
+.share-icon-group{
+  font-size: 1.3em;
+}
+
+.icon-circle.facebook{
+  color: #3b5998;
+}
+
+.icon-circle.twitter{
+  color: #33ccff;
+}
+
+.icon-circle.rss{
+  color: #FF6600;
+}
+
+
+.i-social-buttons{
+  margin-top: 0px;
+}
+
+.action-buttons{
+  margin-top: 40px;
+}
+
 .action-buttons{
   margin-top: 40px;
 }
@@ -2546,6 +2581,20 @@ background-color: whitesmoke;
 
 .media.well > p {
   margin-bottom: 5px;
+}
+
+.stat{
+  font-weight: 500;
+}
+
+.stat2:before {
+content: "\00b7";
+}
+
+.i-stats{
+  color: #ffffff;
+  font-family: georgia, serif;
+  font-style: italic;
 }
 
 .form-horizontal.stats .control-group{
@@ -3492,12 +3541,16 @@ table.pro, table.con{
   border-radius: 5px;
 }
 
+table.pro tr:first-child td, table.con tr:first-child td{
+  border-top: none;
+}
+
 tr.con, .panel-heading.against, .con{
-  background-color: #f2dede;
+  background-color: rgba(210, 50, 45,.4);
 }
 
 tr.pro, .panel-heading.favor, .pro{
-  background-color: #dff0d8;
+  background-color: rgba(71, 164, 71,.4);
 }
 tr.neutral, .panel-heading.neutral, .neutral{
   background-color: #e0e0e0;
@@ -4132,7 +4185,7 @@ svg{
 }
 
 .top-offset{
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 /*
@@ -4222,6 +4275,15 @@ background-color: #d9534f;
   margin: 0 19px;
   height:35px
 }
+@media (max-width: 575px){
+  .rating-details{
+    display: block;
+  }
+  .vote-block{
+    text-align: center;
+  }
+}
+
 .sidebar.rating-details{
   margin: 0 0px;
   height:35px
@@ -4306,4 +4368,17 @@ background-color: #d9534f;
 
 .demographics a{
     color:black;
+}
+
+.i-top-image{
+  margin-top: -10px;
+  padding-bottom: 10px;
+  position:relative;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.header-num{
+  font-weight: 200;
 }

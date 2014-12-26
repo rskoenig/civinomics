@@ -9,23 +9,20 @@
 
     ${ihelpers.showDescription()}
 
-    % if c.initiative['funding_summary']:
-        <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
-        ${ihelpers.showFunding_Summary()}
-    % endif
-    % if c.initiative['cost']:
+    % if c.initiative['cost'] and c.initiative['cost'] != '0':
         ${ihelpers.showCost(c.initiative)}
     % endif
 
-    % if c.initiative['proposal'] or c.initiative['background']:
-        <br>
-        <!--
-        <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
-            Read Full Text
-        </a>
+    % if c.initiative['proposal'] or c.initiative['background'] or c.initiative['funding_summary']:
+        <hr>
+        <h3><a data-toggle="collapse" data-parent="#accordion" href="#fullText">
+            Full Text
+        </a></h3>
         <div id="fullText" class="panel-collapse collapse">
-        -->
-        <div id="fullText">
+            % if c.initiative['funding_summary']:
+                <h3 class="initiative-title">Estimate Net Fiscal Impact</h3>
+                ${ihelpers.showFunding_Summary()}
+            % endif
             % if c.initiative['background']:
                 ${ihelpers.showBackground()}
             % endif
@@ -33,24 +30,17 @@
             % if c.initiative['proposal']:
                 ${ihelpers.showProposal()}
             % endif
-
-            <!--
-            <br>
-            <a class="btn btn-lg btn-info" data-toggle="collapse" data-parent="#accordion" href="#fullText">
-                Close Full Text
-            </a>-->
         </div>
     % endif
 
     <hr>
-    ${ihelpers.showAuthor(c.initiative)}
+    ${ihelpers.showAuthorSimple(c.initiative)}
     % if c.initiative.objType == 'revision':
         This is a revision dated ${c.initiative.date}<br />
     % else:
-        <br>
-        <div class="text-right">
+        <span>
             ${ihelpers.initiativeModerationPanel(c.initiative)}
-        </div>
+        </span>
     % endif
     <hr>
     % if 'workshopCode' in c.initiative:

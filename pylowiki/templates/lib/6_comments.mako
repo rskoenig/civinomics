@@ -70,7 +70,7 @@
                             </div><!- col-xs-12 -->
                         </div><!-- row -->
                     % endif
-                    <button type="submit" class="btn btn-primary btn-block" name = "submit" value = "reply">Submit</button></span>
+                    <button type="submit" class="btn btn-primary btn-block" name = "submit" value = "reply" ng-hide="submitting" ng-click="submitting = true">Submit</button></span>
                 </span>
 
             </form>
@@ -192,13 +192,13 @@
                                         <input type=radio name="commentRole" value="suggestion"> Suggestion
                                     </span>
                                 </small>
-                                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button></span>
+                                <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply" ng-hide="submitting" ng-click="submitting = true">Submit</button></span>
                             </div><!- col-sm-11 -->
                         </div><!-- row -->
                     % else:
                     <div class="row">
                         <span class="help-block comment-help-block">Please keep comments civil and on-topic.
-                        <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button></span>
+                        <button type="submit" class="btn btn-primary" name = "submit" value = "reply" ng-hide="submitting" ng-click="submitting = true">Submit</button></span>
                     </div><!-- row -->
                     % endif
                 </td>

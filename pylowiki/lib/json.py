@@ -475,8 +475,6 @@ def getJsonProperties(item):
     else:
         entry['canEdit'] = 'no'
     
-    log.info(entry['canEdit'])
-    
     return entry
 
 

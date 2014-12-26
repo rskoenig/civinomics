@@ -220,39 +220,38 @@
             };
         
         </script>
-        <div class="btn-group facebook">
-          % if 'btn' in kwargs:
-            <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
-              <strong><i class="glyphicon glyphicon-share-alt"></i> Share </strong>
+        % if 'circle' in kwargs:
+            <a href="#" target='_top' onClick="shareOnWall()">
+                <span class="icon-stack">
+                    <i class="icon-circle icon-stack-base facebook"></i>
+                    <i class="icon-facebook icon-light"></i>
+                </span>
             </a>
-          % else:
-            <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
-              <i class="icon-facebook-sign icon-2x"></i>
-            </a>
-          % endif
-          <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
-            % if not c.privs['provisional'] and c.initiative:
-                <%
-                    subj = 'Vote on "' + c.initiative['title'] + '"'
-                    subj = subj.replace(' ','%20')
-                    body = initiativeLink(c.initiative, embed=True, noHref=True, fullURL=True)
-                %>
+        %else:
+            <div class="btn-group facebook">
+              % if 'btn' in kwargs:
+                <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
+                  <strong><i class="glyphicon glyphicon-share-alt"></i> Share </strong>
+                </a>
+              % else:
+                <a class="btn dropdown-toggle clear" data-toggle="dropdown" href="#">
+                  <i class="icon-facebook-sign icon-2x"></i>
+                </a>
+              % endif
+              <ul class="dropdown-menu share-icons" style="margin-left: -50px;">
                 <li>
-                    <a href="mailto:?subject=${subj}&body=${body}"><i class="icon-envelope"></i> Email</i></a>
+                  % if shareOnWall:
+                    <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
+                  % endif
                 </li>
-            % endif
-            <li>
-              % if shareOnWall:
-                <a href="#" target='_top' onClick="shareOnWall()"><i class="icon-facebook-sign icon"></i> Post to Timeline</a>
-              % endif
-            </li>
-            <li>
-              % if sendMessage:
-                  <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
-              % endif
-            </li>
-          </ul>
-        </div>
+                <li>
+                  % if sendMessage:
+                      <a href="#" target='_top' onClick="messageFriends()"><i class="icon-user"></i> Share with Friends</a>
+                  % endif
+                </li>
+              </ul>
+            </div>
+        % endif
         
         
     % endif
