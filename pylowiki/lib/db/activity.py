@@ -4,7 +4,6 @@ from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
 from pylowiki.lib.utils import urlify
-
 import logging
 import datetime
 log = logging.getLogger(__name__)
