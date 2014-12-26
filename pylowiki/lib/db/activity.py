@@ -8,7 +8,6 @@ from pylowiki.lib.utils import urlify
 import logging
 import datetime
 log = logging.getLogger(__name__)
-# why am I getting import errors on : import pylowiki.lib.db.workshop as workshobLib, separately?
 def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
     if unpublished == '1':
         activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished', 'initiativeUnpublished', 'meetingUnpublished', 'agendaitemUnpublished', 'ballotUnpublished', 'ballotmeasureUnpublished', 'ballotcandidateUnpublished']
