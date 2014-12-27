@@ -35,14 +35,10 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
             elif 'workshopCode' in activity and unpublished == '0':
                 code = activity['workshopCode']
                 ws = generic.getThing(code)
-                #print "PUB:: " + activity['title'] + " : " + ws['published'] + " :" + ws['public_private']
                 if ws['public_private'] == 'private' or ws['published'] == '0':
-                   # print "    stopped!"
                     continue
-
             else:
                 finalActivityList.append(activity)
-                #print 'SHOWING ' + activity['title']
         return finalActivityList
     except:
         return False
