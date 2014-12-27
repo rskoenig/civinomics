@@ -37,6 +37,8 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
                 ws = generic.getThing(code)
                 if ws['public_private'] == 'private' or ws['published'] == '0':
                     continue
+                else:
+                    finalActivityList.append(activity)
             else:
                 finalActivityList.append(activity)
         return finalActivityList
