@@ -1663,7 +1663,8 @@
                                     </span>
                                 </span>
                             </span>
-                        <div>
+                        </div>
+                        ${lib_6.commentFooterAngular()}
                     </td>
                 </tr>
             </table>

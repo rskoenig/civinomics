@@ -1717,12 +1717,12 @@
     </div>
 </%def>
 
-<%def name="flagThingAngular()">
+<%def name="flagCommentAngular()">
     <div class="row collapse" id="flag-{{item.urlCode}}">
         <div class="col-sm-11 col-sm-offset-1 alert">
             <strong>Are you sure you want to flag this {{item.objType}}</strong>
             <br />
-            <a href="/flag/{{item.objType}}/{{item.urlcode}}" class="btn btn-danger flagCommentButton">Yes</a>
+            <a href="/flag/comment/{{item.urlCode}}" class="btn btn-danger flagCommentButton">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">No</a>
             <span id = "flagged_{{item.urlCode}}"></span>
         </div>
@@ -2595,7 +2595,7 @@
     </div>
     
     ## Flag
-    ${flagThingAngular()}
+    ${flagCommentAngular()}
     
     % if 'user' in session:
         ## Edit
