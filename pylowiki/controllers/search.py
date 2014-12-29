@@ -555,11 +555,13 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
+
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
             ikeys = ['initiative_tags']
             resources = resourceLib.searchResources(keys, values)
+            resources2 = None #prevent UnboundLocal
             iresources = resourceLib.searchInitiativeResources(ikeys, values)
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
@@ -574,6 +576,7 @@ class SearchController(BaseController):
             keys = ['title', 'text', 'link']
             values = [self.query, self.query, self.query]
             resources = resourceLib.searchResources(keys, values)
+            resources2 = None #prevent UnboundLocal
             iresources = resourceLib.searchInitiativeResources(keys, values)
 
 # Changed this to the following format because there was a huge time impact when having both lists
@@ -590,17 +593,16 @@ class SearchController(BaseController):
 #                     resources2.append(r)
 #                     
 #             resources = resources2
-        try:
-            if iresources:
-                if resources:
-                    for ri in iresources:
-                        resources.append(ri)
-            if resources2:
-                if resources:
-                    for r2 in resources2:
-                        resources.append(r2)
-        except UnboundLocalError: #thrown on ln 599 when resources2 wasn't initialized
-            pass
+
+        if iresources:
+            if resources:
+                for ri in iresources:
+                    resources.append(ri)
+
+        if resources2:
+            if resources:
+                for r2 in resources2:
+                    resources.append(r2)
 
         if not resources:
             return json.dumps({'statusCode':2})
@@ -703,20 +705,22 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            discussions = None
             independent_discussions = discussionLib.searchDiscussions(['scope'], values, hasworkshop = False)
         else:
             keys = ['title', 'text']
             values = [self.query, self.query]
             discussions = discussionLib.searchDiscussions(keys, values)
-        try:
-            if independent_discussions:
-                discussions += independent_discussions
-            if not discussions:
-                return json.dumps({'statusCode':2})
-            if len(discussions) == 0:
-                return json.dumps({'statusCode':2})
-        except UnboundLocalError:
-            pass
+            independent_discussions = None #prevent UnboundLocal on ln 716
+
+        if independent_discussions:
+            discussions += independent_discussions
+
+
+        if not discussions:
+            return json.dumps({'statusCode':2})
+        if len(discussions) == 0:
+            return json.dumps({'statusCode':2})
 
         titleToColourMapping = tagLib.getTagColouring()
 
