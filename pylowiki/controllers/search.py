@@ -560,6 +560,7 @@ class SearchController(BaseController):
             values = [self.query]
             ikeys = ['initiative_tags']
             resources = resourceLib.searchResources(keys, values)
+            resources2 = None
             iresources = resourceLib.searchInitiativeResources(ikeys, values)
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
@@ -568,14 +569,15 @@ class SearchController(BaseController):
             ikeys = ['initiative_scope']
             ivalues = [scope]
             resources = resourceLib.searchResources(keys, values)
-            resources2 = resourceLib.searchResources('scope', self.query, hasworkshop = False) 
+            resources2 = resourceLib.searchResources('scope', self.query, hasworkshop = False)
             iresources = resourceLib.searchInitiativeResources(ikeys, ivalues)
         else:
             keys = ['title', 'text', 'link']
             values = [self.query, self.query, self.query]
             resources = resourceLib.searchResources(keys, values)
+            resources2 = None
             iresources = resourceLib.searchInitiativeResources(keys, values)
-            
+
 # Changed this to the following format because there was a huge time impact when having both lists
 #         if iresources:
 #             if resources:
@@ -590,7 +592,7 @@ class SearchController(BaseController):
 #                     resources2.append(r)
 #                     
 #             resources = resources2
-        
+
         if iresources:
             if resources:
                 for ri in iresources:
@@ -600,7 +602,7 @@ class SearchController(BaseController):
             if resources:
                 for r2 in resources2:
                     resources.append(r2)
-        
+
         if not resources:
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
@@ -696,6 +698,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
+        independent_discussions = None
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]

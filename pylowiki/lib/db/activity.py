@@ -32,7 +32,14 @@ def getMemberPosts(user, limit = None, offset = None, unpublished = '0'):
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] not in discussionTypes:
                 continue
-            else:                
+            elif 'workshopCode' in activity and unpublished == '0':
+                code = activity['workshopCode']
+                ws = generic.getThing(code)
+                if ws['public_private'] == 'private' or ws['published'] == '0':
+                    continue
+                else:
+                    finalActivityList.append(activity)
+            else:
                 finalActivityList.append(activity)
         return finalActivityList
     except:
