@@ -13,6 +13,17 @@ function positionsCtrl($scope, $http) {
 
         });
     }
+    $scope.notFlagged = true;
+    
+    $scope.flag = function(urlCode){
+        var url = "/flag/comment/" + urlCode;
+        $http.get(url).success(
+            function (data) {
+                $scope.resultFlag = data.result;
+                $scope.notFlagged = false;
+            }
+        );
+    }
 
     $scope.checkingMadeStatement = true
     $scope.userStatement = {}
