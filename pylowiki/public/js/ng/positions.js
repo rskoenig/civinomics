@@ -12,15 +12,14 @@ function positionsCtrl($scope, $http) {
             $scope.checkingMadeStatement = false;
 
         });
-    }
-    $scope.notFlagged = true;
-    
-    $scope.flag = function(urlCode){
-        var url = "/flag/comment/" + urlCode;
+    }    
+    $scope.flag = function(item){
+        console.log(item.urlCode);
+        var url = "/flag/comment/" + item.urlCode;
         $http.get(url).success(
             function (data) {
-                $scope.resultFlag = data.result;
-                $scope.notFlagged = false;
+                item.resultFlag = data.result;
+                item.notFlagged = false;
             }
         );
     }

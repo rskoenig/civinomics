@@ -1719,16 +1719,16 @@
 
 <%def name="flagCommentAngular()">
     <div class="row collapse" id="flag-{{item.urlCode}}">
-        <div class="col-sm-11 col-sm-offset-1 alert">
-            <div ng-if="notFlagged">
+        <div class="col-sm-11 col-sm-offset-1 alert" ng-init="item.notFlagged = true">
+            <div ng-if="item.notFlagged">
             <strong>Are you sure you want to flag this comment?</strong>
             <br />
-            <a ng-click="flag(item.urlCode)" class="btn btn-danger flagCommentButton">Yes</a>
+            <a ng-click="flag(item)" class="btn btn-danger flagCommentButton">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">No</a>
             <span id = "flagged_{{item.urlCode}}"></span>
             </div>
-            <div ng-if="!notFlagged">
-                <span>{{resultFlag}}</span>
+            <div ng-if="!item.notFlagged">
+                <span>{{item.resultFlag}}</span>
                 <a class="btn accordion-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">Ok</a>
             </div>
         </div>
