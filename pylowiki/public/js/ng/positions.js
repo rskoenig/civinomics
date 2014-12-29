@@ -12,6 +12,16 @@ function positionsCtrl($scope, $http) {
             $scope.checkingMadeStatement = false;
 
         });
+    }    
+    $scope.flag = function(item){
+        console.log(item.urlCode);
+        var url = "/flag/comment/" + item.urlCode;
+        $http.get(url).success(
+            function (data) {
+                item.resultFlag = data.result;
+                item.notFlagged = false;
+            }
+        );
     }
 
     $scope.checkingMadeStatement = true

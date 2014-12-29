@@ -1717,6 +1717,24 @@
     </div>
 </%def>
 
+<%def name="flagCommentAngular()">
+    <div class="row collapse" id="flag-{{item.urlCode}}">
+        <div class="col-sm-11 col-sm-offset-1 alert" ng-init="item.notFlagged = true">
+            <div ng-if="item.notFlagged">
+            <strong>Are you sure you want to flag this comment?</strong>
+            <br />
+            <a ng-click="flag(item)" class="btn btn-danger flagCommentButton">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">No</a>
+            <span id = "flagged_{{item.urlCode}}"></span>
+            </div>
+            <div ng-if="!item.notFlagged">
+                <span>{{item.resultFlag}}</span>
+                <a class="btn accordion-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">Ok</a>
+            </div>
+        </div>
+    </div>
+</%def>
+
 <%def name="unpublishThing(thing, **kwargs)">
     <% unpublishID = 'unpublish-%s' % thing['urlCode'] %>
     <div class="row-fluid collapse" id="${unpublishID}">
@@ -2541,3 +2559,59 @@
     </div><!-- ng-init -->
 </%def>
 
+<%def name="commentFooterAngular()">
+    ########################################################################
+    ##
+    ## Displays the {reply, flag, edit, admin} buttons
+    ## 
+    ## comment          ->  The comment Thing
+    ## author           ->  The owner of the comment (a user Thing)
+    ##
+    ########################################################################
+    <div class="row hidden-print">
+        <div class="col-xs-12">
+            <div class="btn-group">
+                % if 'user' in session and not c.privs['provisional']:
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-{{item.urlCode}}">reply</a>
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
+                        % if c.privs['facilitator'] or c.privs['admin']:
+                            <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#edit-{{item.urlCode}}">edit</a>
+                        % endif
+                    % if c.privs['facilitator'] or c.privs['admin']:
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                    % endif
+                % elif not c.privs['provisional']:
+                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
+                    <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
+                % endif
+            </div>
+        </div><!--/.col-sm-11.offset1-->
+    </div><!--/.row-->
+    
+    ## Reply
+    <div class="row collapse" id="reply-{{item.urlCode}}">
+        <div class="col-sm-11 col-sm-offset-1">
+            <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
+                <textarea name="comment-textarea" class="comment-reply col-sm-12 form-control" placeholder="Add a reply..."></textarea>
+                <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
+                <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
+                <button type="submit" class="btn btn-primary left-space" name = "submit" value = "reply">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+    ## Flag
+    ${flagCommentAngular()}
+    
+    % if 'user' in session:
+        ## Edit
+        % if c.privs['admin'] or c.privs['facilitator']:
+            EDIT DOESNT WORK
+        % endif
+    
+        ## Admin
+        % if c.privs['facilitator'] or c.privs['admin']:
+            ADMIN DOESNT WORK EITHER
+        % endif
+    % endif
+</%def>
