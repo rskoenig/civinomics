@@ -555,13 +555,12 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
             ikeys = ['initiative_tags']
             resources = resourceLib.searchResources(keys, values)
-            resources2 = None #prevent UnboundLocal
+            resources2 = None
             iresources = resourceLib.searchInitiativeResources(ikeys, values)
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
@@ -576,7 +575,7 @@ class SearchController(BaseController):
             keys = ['title', 'text', 'link']
             values = [self.query, self.query, self.query]
             resources = resourceLib.searchResources(keys, values)
-            resources2 = None #prevent UnboundLocal
+            resources2 = None
             iresources = resourceLib.searchInitiativeResources(keys, values)
 
 # Changed this to the following format because there was a huge time impact when having both lists
@@ -699,29 +698,24 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
+        independent_discussions = None
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
-            discussions = None
             independent_discussions = discussionLib.searchDiscussions(['scope'], values, hasworkshop = False)
         else:
             keys = ['title', 'text']
             values = [self.query, self.query]
-            discussions = discussionLib.searchDiscussions(keys, values)
-            independent_discussions = None #prevent UnboundLocal on ln 716
-
+        discussions = discussionLib.searchDiscussions(keys, values)
         if independent_discussions:
             discussions += independent_discussions
-
-
         if not discussions:
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
-
         titleToColourMapping = tagLib.getTagColouring()
 
         myRatings = {}
