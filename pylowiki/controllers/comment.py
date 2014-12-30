@@ -64,6 +64,9 @@ def jsonizeComment(comment):
 
     # comment author
     author = userLib.getUserByID(comment.owner)
+    log.info(comment.owner)
+    entry['authorCode'] = comment.owner
+    log.info(c.authuser.id)
     entry['authorName'] = author['name']
     entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
     entry['authorPhoto'] = utils._userImageSource(author)

@@ -2574,9 +2574,8 @@
                 % if 'user' in session and not c.privs['provisional']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-{{item.urlCode}}">reply</a>
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
-                        % if c.privs['facilitator'] or c.privs['admin']:
-                            <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#edit-{{item.urlCode}}">edit</a>
-                        % endif
+
+                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-{{item.urlCode}}">edit</a>
                     % if c.privs['facilitator'] or c.privs['admin']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
@@ -2590,14 +2589,19 @@
     
     ## Reply
     <div class="row collapse" id="reply-{{item.urlCode}}">
-        <div class="col-sm-11 col-sm-offset-1">
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
-                <textarea name="comment-textarea" class="comment-reply col-sm-12 form-control" placeholder="Add a reply..."></textarea>
-                <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
-                <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
-                <button type="submit" class="btn btn-primary left-space" name = "submit" value = "reply">Submit</button>
+                <div class="col-xs-1" style="margin: 1px 3px 0px 5px">
+                    <img class="avatar sm-avatar" style="width:33px; height:33px; min-width: 0px" src="${utilsLib._userImageSource(c.authuser)}"\>
+                </div>
+                <div class="col-xs-7">
+                    <textarea class="comment-reply form-control" style="margin-left:5px; width:111%" placeholder="Add a reply..."></textarea>
+                    <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
+                    <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
+                </div>
+                <div class="col-xs-3">
+                    <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button>
+                </div>
             </form>
-        </div>
     </div>
     
     ## Flag
@@ -2605,9 +2609,9 @@
     
     % if 'user' in session:
         ## Edit
-        % if c.privs['admin'] or c.privs['facilitator']:
-            EDIT DOESNT WORK
-        % endif
+        <div class="row collapse" id="edit-{{item.urlCode}}" ng-if="${c.privs['facilitator']} == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}">
+            HELLO EDIT
+        </div>
     
         ## Admin
         % if c.privs['facilitator'] or c.privs['admin']:
