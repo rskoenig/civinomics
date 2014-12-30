@@ -2570,6 +2570,7 @@
     ########################################################################
     <div class="row hidden-print">
         <div class="col-xs-12">
+            <a ng-click="" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-{{item.urlCode}}">reply</a>

@@ -83,6 +83,13 @@ def jsonizeComment(comment):
         entry['revisions'] = 'no'
         entry['revisionList'] = [] 
         
+    #Getting reply numbers
+    if comment['children'] is not '0':
+        entry['replies'] = len(comment['children'].split(','))
+    else:
+        entry['replies'] = 0
+    log.info(entry['replies'])
+        
     return entry
 
 def jsonizeRevisions(rev):
