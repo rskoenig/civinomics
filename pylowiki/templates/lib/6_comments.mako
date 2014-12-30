@@ -531,7 +531,7 @@
     </div>
     
     ## Flag
-    ${lib_6.flagThing(comment)}
+    ${lib_6.flagCommentAngular()}
     
     % if 'user' in session:
         ## Edit

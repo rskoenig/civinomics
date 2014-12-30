@@ -575,7 +575,7 @@ class ProfileController(BaseController):
         return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):
-        # Called when visiting /profile/urlCode/url
+        # Called when visiting /profile/urlCode/url/resources
         self._basicSetup(id1, id2, 'resources')
         return render("/derived/6_profile_list.bootstrap")
     
@@ -638,7 +638,6 @@ class ProfileController(BaseController):
         c.following = items['following']
         c.watching = items['watching']
 
-    
     def _userItems(self, user):
         isUser = False
         isAdmin = False

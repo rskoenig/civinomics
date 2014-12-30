@@ -123,8 +123,8 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.loading = false;
     });
     $scope.numberOfPages=function(){
-        //return Math.ceil($scope.initiatives.length/$scope.pageSize); 
-        return Math.ceil($scope.initiatives.length/$scope.pageSize);
+        if ($scope.initiatives != null) return Math.ceil($scope.initiatives.length/$scope.pageSize);
+        else return 0;
     }
     
     $scope.searchWorkshops = function() {
@@ -162,7 +162,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.workshops.length/$scope.pageSize);                
+            if ($scope.workshops != null) return Math.ceil($scope.workshops.length/$scope.pageSize);
+            else return 0;
         }
     };
     
@@ -201,7 +202,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.people.length/$scope.pageSize);                
+            if ($scope.people != null) return Math.ceil($scope.people.length/$scope.pageSize);
+            else return 0;
         }
     };
     
@@ -240,7 +242,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.organizations.length/$scope.pageSize);                
+            if ($scope.organizations != null) return Math.ceil($scope.organizations.length/$scope.pageSize);
+            else return 0;
         }
     };
     
@@ -278,8 +281,10 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.resources.length/$scope.pageSize);                
+            if ($scope.resources != null) return Math.ceil($scope.resources.length/$scope.pageSize);
+            else return 0;
         }
     };
     
@@ -318,7 +323,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.discussions.length/$scope.pageSize);                
+            if ($scope.discussions != null) return Math.ceil($scope.discussions.length/$scope.pageSize);
+            else return 0;
         }
     };
     
@@ -357,7 +363,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.ideas.length/$scope.pageSize);                
+            if ($scope.ideas != null) return Math.ceil($scope.ideas.length/$scope.pageSize);
+            else return 0;
         }
     };
         
@@ -396,7 +403,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.photos.length/$scope.pageSize);                
+            if ($scope.photos != null) return Math.ceil($scope.photos.length/$scope.pageSize);
+            else return 0;
         }
     };
     
@@ -418,14 +426,14 @@ app.controller('SearchCtrl', function($scope, $http){
             {
                 $scope.noQuery = true;
                 $scope.noResult = true;
-                $scope.showingPhotos = {'class': 'active', 'show': false, 'create': true};
-                $scope.photos = null;
+                $scope.showingInitiatives = {'class': 'active', 'show': false, 'create': true};
+                $scope.initiatives = null;
             }
             else if (data.statusCode == 2)
             {
                 $scope.noResult = true;
                 $scope.showingInitiatives = {'class': 'active', 'show': false, 'create': true};
-                $scope.photos = null;
+                $scope.initiatives = null;
             }
             else if (data.statusCode === 0)
             {
@@ -435,7 +443,8 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.loading = false;
         });
         $scope.numberOfPages=function(){
-            return Math.ceil($scope.initiatives.length/$scope.pageSize);                
+            if ($scope.initiatives != null) return Math.ceil($scope.initiatives.length/$scope.pageSize);
+            else return 0;
         }
     };
 });
