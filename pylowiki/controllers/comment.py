@@ -172,13 +172,18 @@ class CommentController(BaseController):
             payload = json.loads(request.body)
         
         try:
+            log.info(vars(payload))
             payload['submit']
             parentCommentCode = payload['parentCode']
             thingCode = payload['thingCode']
+            log.info(parentCommentCode)
+            log.info(thingCode)
             thing = genericLib.getThing(thingCode)
             if not thing:
+                log.info("No thing")
                 return False
             if thing['disabled'] == '1':
+                log.info("No thing")
                 return False
             if 'workshopCode' in thing:
                 workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
@@ -195,9 +200,13 @@ class CommentController(BaseController):
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
 
+            log.info("here")
             data = payload['comment-textarea']
+            log.info("What the...")
             data = data.strip()
+            log.info("here2")
             if data == '':
+                log.info("No data")
                 alert = {'type':'error'}
                 alert['title'] = 'Add Comment failed.'
                 alert['content'] = 'No comment text entered.'
@@ -207,9 +216,13 @@ class CommentController(BaseController):
                     return redirect(session['return_to'])
                 elif json.loads(request.body):
                     return json.dumps({'statusCode':1})
-            
+            log.info("here3")
+            log.info(parentCommentCode)
+            log.info(parentCommentCode != '0')
+            log.info(parentCommentCode != '')
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
+                log.info("Replying to an existing comment")
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
@@ -327,6 +340,7 @@ class CommentController(BaseController):
                 
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            log.info("returning")
             if request.params:
                 return redirect(session['return_to'])
             elif json.loads(request.body):

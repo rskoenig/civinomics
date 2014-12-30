@@ -2595,7 +2595,7 @@
                     <img class="avatar sm-avatar" style="width:33px; height:33px; min-width: 0px" src="${utilsLib._userImageSource(c.authuser)}"\>
                 </div>
                 <div class="col-xs-7">
-                    <textarea class="comment-reply form-control" style="margin-left:5px; width:111%" placeholder="Add a reply..."></textarea>
+                    <textarea class="comment-reply form-control" name='comment-textarea' style="margin-left:5px; width:111%" placeholder="Add a reply..."></textarea>
                     <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
                     <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
                 </div>
