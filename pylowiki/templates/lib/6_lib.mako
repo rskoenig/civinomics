@@ -2573,7 +2573,7 @@
             <a ng-click="" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
-                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-{{item.urlCode}}">reply</a>
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-ng-{{item.urlCode}}">reply</a>
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
 
                         <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-{{item.urlCode}}">edit</a>
@@ -2589,7 +2589,7 @@
     </div><!--/.row-->
     
     ## Reply
-    <div class="row collapse" id="reply-{{item.urlCode}}">
+    <div class="row collapse" id="reply-ng-{{item.urlCode}}">
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <div class="col-xs-1" style="margin: 1px 3px 0px 5px">
                     <img class="avatar sm-avatar" style="width:33px; height:33px; min-width: 0px" src="${utilsLib._userImageSource(c.authuser)}"\>
