@@ -128,6 +128,9 @@ class CreateController(BaseController):
                 c.billingEmail = "billing@civinomics.com"
                 c.coupon = ''
             # end addition
+            else:
+                log.info("workshop privacy parameter exists but is not public, private or personal")
+                #perhaps this case should be handled here
         else:
             if self.validatePaymentForm():
                 wType = 'professional'
