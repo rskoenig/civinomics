@@ -146,7 +146,12 @@ class CreateController(BaseController):
         w = workshopLib.Workshop(title, c.authuser, scope, wType, description)
 
         if 'tags' in request.params:
-            w['workshop_category_tags'] = request.params['tags']
+            tag = request.params['tags'];
+            if tag[0] != '|':
+                tag = "|" + tag
+            if tag[len(tag)-1] != '|':
+                tag += '|'
+            w['workshop_category_tags'] = tag
             dbHelpers.commit(w)
             
         if request.params['avatar[]'] is not u'':
