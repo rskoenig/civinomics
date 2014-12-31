@@ -144,7 +144,7 @@ class CreateController(BaseController):
             description = request.params['description']
             
         w = workshopLib.Workshop(title, c.authuser, scope, wType, description)
-        
+
         if 'tags' in request.params:
             w['workshop_category_tags'] = request.params['tags']
             dbHelpers.commit(w)
@@ -156,7 +156,7 @@ class CreateController(BaseController):
             s = self.saveSlide(c.authuser, "Main Image", filename, fileitem)
             mainImageLib.setMainImage(c.authuser, w, s)
             dbHelpers.commit(w)
-            
+
         if request.params['privacy'] == 'public' and 'geoScope' in request.params:
             w['workshop_public_scope'] =  request.params['geoScope']
         else:
@@ -226,7 +226,17 @@ class CreateController(BaseController):
                     scope = workshop['workshop_public_scope']
                 if 'workshop_category_tags' in workshop:
                     tags = workshop['workshop_category_tags'].split('|')
-                    kwargs['tag'] = tags[0]
+
+                    #tags string should begin with |, so first tag is at index 1
+                    if len(tags) >= 2:
+                        kwargs['tag'] = tags[1]
+                    #in case pipe doesnt get appended
+                    elif len(tags) == 1:
+                        kwargs['tag'] = tags[0]
+                        log.info("workshop " + workshop['url'] + " has an incorrectly formatted tag attribute")
+                    else:
+                        log.info("workshop " + workshop['url'] + " has no tags")
+
         else:
             workshop = None
 

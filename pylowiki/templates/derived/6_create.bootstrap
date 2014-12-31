@@ -2,7 +2,7 @@
 <%namespace name="ng_lib" file="/lib/ng_lib.mako" />
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <div  ng-controller="createController">
-<h1>Create {{thing}}</h1>
+<h1 ng-cloak>Create {{thing}}</h1>
 % if c.authuser:
     <div ng-init="authorCode = '${c.authuser['urlCode']}'; authorUrl = '${c.authuser['url']}';"></div>
 %endif
@@ -15,7 +15,7 @@
               %if c.thingType:
                  ng-init="thing='${c.thingType}'"
               %endif 
-              >
+              ng-cloak>
 				<option ng-repeat="type in thingList" ng-value="type"
 				>{{type}}</option>
 			</select>
@@ -33,8 +33,8 @@
                 </div>
                 <div ng-show="thing == 'Initiative' || thing == 'Workshop'">
                 <hr>
-                <p class="lead">{{thing}} Images</p>
-                <h4>{{thing}} Photo</h4>
+                <p class="lead" ng-cloak>{{thing}} Images</p>
+                <h4 ng-cloak>{{thing}} Photo</h4>
 				        <input type="file" name="avatar[]" id="imgAvatar" />
 				        <img style="display:none;" id="avatar" name="avatar" src="#" alt="your {{thing}} image" />
                 <h4>Cover Photo</h4>
@@ -46,11 +46,11 @@
                     <p class="lead">Additional Fields</p>
                     <div class="create-additional" style="margin-bottom:25px">
                       <h4>Tag</h4>
-                    <select name="tags" ng-model="tag">
+                    <select name="tags" ng-model="tag" ng-cloak>
                     	%if c.tag:
 						{{tag = "${c.tag}"}}
 						%endif
-                    	<option ng-repeat="stag in tagList" ng-value="stag">{{stag}}</option>
+                    	<option ng-repeat="stag in tagList" ng-value="'|' + stag + '|'">{{stag}}</option>
                     </select>
 					&nbsp; &nbsp;
                  </div>
@@ -76,7 +76,7 @@
                     <input class="span6 input-large" type="text" ng-model="positionTitle" placeholder="Position Title"></input>
                     
                 </div>
-                <div ng-show="thing == 'Workshop'">
+                <div ng-show="thing == 'Workshop'" ng-init="workshopAccess='private'">
                 	<h4>Privacy level</h4>
                 	<select ng-model="workshopAccess" name="privacy" ng-required="thing == 'Workshop'">
                 		<option value="public">Public</option>
