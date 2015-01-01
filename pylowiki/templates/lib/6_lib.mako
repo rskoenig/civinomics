@@ -1778,22 +1778,26 @@
             elif 'ideaCode' in thing:
                 ctype = "idea"
             else:
-                ctype = "reguar"
+                ctype = "regular" #please confirm typo and remove this comment
 
             yesChecked = ""
             noChecked = ""
             neutralChecked = ""
-            
+            questionChecked = ""
+            suggestionChecked = ""
+
             if ctype != "regular":
                 if 'commentRole' in thing:
                     if thing['commentRole'] == 'yes':
                         yesChecked = 'checked'
                     elif thing['commentRole'] == 'no':
                         noChecked = 'checked'
-                    else:
+                    elif thing['commentRole'] == 'neutral':
                         neutralChecked = 'checked'
-                else:
-                    neutralChecked = 'checked'
+                    elif thing['commentRole'] == 'question':
+                        questionChecked = 'checked'
+                    elif thing['commentRole'] == 'suggestion':
+                        suggestionChecked = 'checked'
         if thing.objType == 'discussion' and 'position' in thing:
             supportChecked = ""
             opposeChecked = ""
@@ -1824,6 +1828,12 @@
                                 <span class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> Con
                                 </span>
+                                <label class="radio inline">
+                                    <input type="radio" name="commentRole${thing['urlCode']}" value="question" ${questionChecked}> Question
+                                </label>
+                                <label class="radio inline">
+                                    <input type="radio" name="commentRole${thing['urlCode']}" value="suggestion" ${suggestionChecked}> Suggestion
+                                </label>
                             </div>
                         </div>
                     % endif
