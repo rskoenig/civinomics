@@ -50,7 +50,7 @@
                     	%if c.tag:
 						{{tag = "${c.tag}"}}
 						%endif
-                    	<option ng-repeat="stag in tagList" ng-value="'|' + stag + '|'">{{stag}}</option>
+                    	<option ng-repeat="stag in tagList" ng-value="stag">{{stag}}</option>
                     </select>
 					&nbsp; &nbsp;
                  </div>
