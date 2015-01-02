@@ -1778,7 +1778,7 @@
             elif 'ideaCode' in thing:
                 ctype = "idea"
             else:
-                ctype = "regular" #please confirm typo and remove this comment
+                ctype = "reguar" #appears to be an obvious typo - please confirm and correct in new changeset
 
             yesChecked = ""
             noChecked = ""
@@ -1798,6 +1798,11 @@
                         questionChecked = 'checked'
                     elif thing['commentRole'] == 'suggestion':
                         suggestionChecked = 'checked'
+                    else:
+                        log.warn("commentRole is unexpected type")
+                        neutralChecked = 'checked'
+                else:
+                    neutralChecked = 'checked'
         if thing.objType == 'discussion' and 'position' in thing:
             supportChecked = ""
             opposeChecked = ""
