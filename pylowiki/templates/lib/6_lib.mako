@@ -1828,12 +1828,12 @@
                                 <span class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> Con
                                 </span>
-                                <label class="radio inline">
+                                <span class="radio inline">
                                     <input type="radio" name="commentRole${thing['urlCode']}" value="question" ${questionChecked}> Question
-                                </label>
-                                <label class="radio inline">
+                                </span>
+                                <span class="radio inline">
                                     <input type="radio" name="commentRole${thing['urlCode']}" value="suggestion" ${suggestionChecked}> Suggestion
-                                </label>
+                                </span>
                             </div>
                         </div>
                     % endif
