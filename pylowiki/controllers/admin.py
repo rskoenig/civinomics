@@ -325,7 +325,7 @@ class AdminController(BaseController):
             if 'initiativeCode' in c.thing or 'ideaCode' in c.thing:
                 if 'commentRole' + thingCode in request.params:
                     commentRole = request.params['commentRole' + thingCode]
-            
+
             c.thing = commentLib.editComment(c.thing, data, commentRole)
             if not c.thing:
                 alert = {'type':'error'}

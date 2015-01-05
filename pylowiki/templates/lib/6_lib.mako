@@ -1778,19 +1778,28 @@
             elif 'ideaCode' in thing:
                 ctype = "idea"
             else:
-                ctype = "reguar"
+                ctype = "reguar" #appears to be an obvious typo - please confirm and correct in new changeset
 
             yesChecked = ""
             noChecked = ""
             neutralChecked = ""
-            
+            questionChecked = ""
+            suggestionChecked = ""
+
             if ctype != "regular":
                 if 'commentRole' in thing:
                     if thing['commentRole'] == 'yes':
                         yesChecked = 'checked'
                     elif thing['commentRole'] == 'no':
                         noChecked = 'checked'
+                    elif thing['commentRole'] == 'neutral':
+                        neutralChecked = 'checked'
+                    elif thing['commentRole'] == 'question':
+                        questionChecked = 'checked'
+                    elif thing['commentRole'] == 'suggestion':
+                        suggestionChecked = 'checked'
                     else:
+                        log.warn("commentRole is unexpected type")
                         neutralChecked = 'checked'
                 else:
                     neutralChecked = 'checked'
@@ -1823,6 +1832,12 @@
                                 </span>
                                 <span class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> Con
+                                </span>
+                                <span class="radio inline">
+                                    <input type="radio" name="commentRole${thing['urlCode']}" value="question" ${questionChecked}> Question
+                                </span>
+                                <span class="radio inline">
+                                    <input type="radio" name="commentRole${thing['urlCode']}" value="suggestion" ${suggestionChecked}> Suggestion
                                 </span>
                             </div>
                         </div>
