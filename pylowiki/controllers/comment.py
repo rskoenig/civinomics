@@ -428,7 +428,6 @@ class CommentController(BaseController):
 
     def getReplies(self, urlCode):
         comment = commentLib.getCommentByCode(urlCode)
-        log.info(comment['children'].split(','))
         replies = [jsonizeComment(commentLib.getComment(url)) for url in comment['children'].split(',')]
         return json.dumps({'statusCode':0, 'replies':replies})
                 
