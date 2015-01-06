@@ -2601,12 +2601,12 @@
                 % endif
             </div>
             <div ng-controller="RepliesController">
-                <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
+                <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">{{showReplies ? 'Hide' : 'View'}} replies ({{item.replies}})</a>
                 ## Div for replies
                 <div ng-if="item.replies != 0" ng-show="showReplies">
                     <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
-                    <table class="activity-comments" ng-show="!loading">
-                        <tr ng-repeat="item in replyList">
+                    <table style="margin-top:10px" class="activity-comments" ng-show="!loading">
+                        <tr class="comment-row" ng-repeat="item in replyList">
    ##                         {{replyList}}
      ##                       hello
                             ${renderComment()}
@@ -2657,8 +2657,8 @@
 </%def>
 
 <%def name="renderComment()">
-    <td>
-        <div class="row" style="margin: 0">
+    <td style="padding: 5px 0px">
+        <div class="row">
             <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></div>
             <div class="col-xs-10"><a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><small class="grey">, {{item.authorDescription}}</small> - <small class="grey">{{item.date}} ago</small></div>
         </div>
