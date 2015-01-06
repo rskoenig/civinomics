@@ -64,6 +64,7 @@ def jsonizeComment(comment):
 
     # comment author
     author = userLib.getUserByID(comment.owner)
+    entry['authorCode'] = comment.owner
     entry['authorName'] = author['name']
     entry['authorHref'] = '/profile/' + author['urlCode'] + '/' + author['url']
     entry['authorPhoto'] = utils._userImageSource(author)
@@ -81,6 +82,13 @@ def jsonizeComment(comment):
     else:
         entry['revisions'] = 'no'
         entry['revisionList'] = [] 
+        
+    #Getting reply numbers
+    if comment['children'] != '0':
+        entry['replies'] = len(comment['children'].split(','))
+    else:
+        entry['replies'] = 0
+    log.info(entry['replies'])
         
     return entry
 
@@ -164,13 +172,16 @@ class CommentController(BaseController):
             payload = json.loads(request.body)
         
         try:
+            log.info(vars(payload))
             payload['submit']
             parentCommentCode = payload['parentCode']
             thingCode = payload['thingCode']
             thing = genericLib.getThing(thingCode)
             if not thing:
+                log.info("No thing")
                 return False
             if thing['disabled'] == '1':
+                log.info("No thing")
                 return False
             if 'workshopCode' in thing:
                 workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
@@ -187,9 +198,13 @@ class CommentController(BaseController):
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
 
+            log.info("here")
             data = payload['comment-textarea']
+            log.info("What the...")
             data = data.strip()
+            log.info("here2")
             if data == '':
+                log.info("No data")
                 alert = {'type':'error'}
                 alert['title'] = 'Add Comment failed.'
                 alert['content'] = 'No comment text entered.'
@@ -199,9 +214,13 @@ class CommentController(BaseController):
                     return redirect(session['return_to'])
                 elif json.loads(request.body):
                     return json.dumps({'statusCode':1})
-            
+            log.info("here3")
+            log.info(parentCommentCode)
+            log.info(parentCommentCode != '0')
+            log.info(parentCommentCode != '')
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
+                log.info("Replying to an existing comment")
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
@@ -319,6 +338,7 @@ class CommentController(BaseController):
                 
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            log.info("returning")
             if request.params:
                 return redirect(session['return_to'])
             elif json.loads(request.body):
@@ -363,11 +383,20 @@ class CommentController(BaseController):
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})
         
-    def jsonEditCommentHandler(self):
-        payload = json.loads(request.body)
+    def editCommentHandler(self):
+        if request.params:
+            payload = request.params 
+            json = False 
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+            json = True
+
         if 'commentCode' in payload:
             commentCode = payload['commentCode']
             comment = commentLib.getCommentByCode(commentCode)
+            thingCode = payload['thingCode']
+            thing = genericLib.getThing(thingCode)
+            log.info(vars(thing))
             # save a revision first
             revision = revisionLib.Revision(c.authuser, comment)
             if not comment:
@@ -377,9 +406,15 @@ class CommentController(BaseController):
                 comment['data'] = payload['commentText']
                 comment['commentRole'] = payload['commentRole']
                 dbHelpers.commit(comment)
-                return json.dumps({'statusCode':0})
-
-        return json.dumps({'statusCode':1})
+                if json:
+                    return json.dumps({'statusCode':0})
+                else:
+                    return redirect(utils.initiativeURL(thing) + '#comment-' + comment['urlCode'])
+        
+        if json:
+            return json.dumps({'statusCode':1})
+        else:
+            return redirect(utils.initiativeURL(thing))
 
     def getProCons(self, urlCode):
         thing = initiativeLib.getInitiative(urlCode)
@@ -390,7 +425,13 @@ class CommentController(BaseController):
         conList = [jsonizeComment(con) for con in comments if ('commentRole' in con and con['commentRole'] == 'no')]
         return json.dumps({'statusCode':0, 'pros':proList, 'cons':conList})
         
-        
+
+    def getReplies(self, urlCode):
+        comment = commentLib.getCommentByCode(urlCode)
+        log.info(comment['children'].split(','))
+        replies = [jsonizeComment(commentLib.getComment(url)) for url in comment['children'].split(',')]
+        return json.dumps({'statusCode':0, 'replies':replies})
+                
         
     ####################################################
     # 

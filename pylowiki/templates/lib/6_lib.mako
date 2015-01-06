@@ -1778,19 +1778,28 @@
             elif 'ideaCode' in thing:
                 ctype = "idea"
             else:
-                ctype = "reguar"
+                ctype = "reguar" #appears to be an obvious typo - please confirm and correct in new changeset
 
             yesChecked = ""
             noChecked = ""
             neutralChecked = ""
-            
+            questionChecked = ""
+            suggestionChecked = ""
+
             if ctype != "regular":
                 if 'commentRole' in thing:
                     if thing['commentRole'] == 'yes':
                         yesChecked = 'checked'
                     elif thing['commentRole'] == 'no':
                         noChecked = 'checked'
+                    elif thing['commentRole'] == 'neutral':
+                        neutralChecked = 'checked'
+                    elif thing['commentRole'] == 'question':
+                        questionChecked = 'checked'
+                    elif thing['commentRole'] == 'suggestion':
+                        suggestionChecked = 'checked'
                     else:
+                        log.warn("commentRole is unexpected type")
                         neutralChecked = 'checked'
                 else:
                     neutralChecked = 'checked'
@@ -1823,6 +1832,12 @@
                                 </span>
                                 <span class="radio inline">
                                     <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> Con
+                                </span>
+                                <span class="radio inline">
+                                    <input type="radio" name="commentRole${thing['urlCode']}" value="question" ${questionChecked}> Question
+                                </span>
+                                <span class="radio inline">
+                                    <input type="radio" name="commentRole${thing['urlCode']}" value="suggestion" ${suggestionChecked}> Suggestion
                                 </span>
                             </div>
                         </div>
@@ -2570,15 +2585,15 @@
     ########################################################################
     <div class="row hidden-print">
         <div class="col-xs-12">
+            
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
-                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-{{item.urlCode}}">reply</a>
+                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-ng-{{item.urlCode}}">reply</a>
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
-                        % if c.privs['facilitator'] or c.privs['admin']:
-                            <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#edit-{{item.urlCode}}">edit</a>
-                        % endif
+
+                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-small-{{item.urlCode}}">edit</a>
                     % if c.privs['facilitator'] or c.privs['admin']:
-                        <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                    ##    <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
                 % elif not c.privs['provisional']:
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
@@ -2589,29 +2604,96 @@
     </div><!--/.row-->
     
     ## Reply
-    <div class="row collapse" id="reply-{{item.urlCode}}">
-        <div class="col-sm-11 col-sm-offset-1">
+    <div class="row collapse" id="reply-ng-{{item.urlCode}}">
+        % if c.authuser or 'user' in session:
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
-                <textarea name="comment-textarea" class="comment-reply col-sm-12 form-control" placeholder="Add a reply..."></textarea>
-                <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
-                <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
-                <button type="submit" class="btn btn-primary left-space" name = "submit" value = "reply">Submit</button>
+                <div class="col-xs-1" style="margin: 1px 3px 0px 5px">
+                    <img class="avatar sm-avatar" style="width:33px; height:33px; min-width: 0px" src="${utilsLib._userImageSource(c.authuser)}"\>
+                </div>
+                <div class="col-xs-7">
+                    <textarea class="comment-reply form-control" name='comment-textarea' style="margin-left:5px; width:111%" placeholder="Add a reply..."></textarea>
+                    <input type="hidden" name="parentCode" value="{{item.urlCode}}" />
+                    <input type="hidden" name="thingCode" value = "{{$parent.urlCode}}" />
+                </div>
+                <div class="col-xs-3">
+                    <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button>
+                </div>
             </form>
-        </div>
+        % endif
     </div>
     
     ## Flag
     ${flagCommentAngular()}
     
-    % if 'user' in session:
+    % if c.authuser or 'user' in session:
         ## Edit
-        % if c.privs['admin'] or c.privs['facilitator']:
-            EDIT DOESNT WORK
-        % endif
+        <div class="collapse" id="edit-small-{{item.urlCode}}" ng-if="${c.privs['facilitator']} == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}">
+            <form action="/comment/edit/handler" method="post" id="commentEditHandler">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea class="form-control" name='commentText' rows="3" style="height: 100% !important">{{item.text}}</textarea>
+                        <input type="hidden" name="commentCode" value="{{item.urlCode}}" />
+                        <input type="hidden" name="thingCode" value = "{{$parent.$parent.urlCode}}" />
+                    </div>
+                    <div class="col-xs-9 comment-type" ng-init="commentRole = item.commentRole" style="margin-bottom: 5px">
+                        <span class="radio inline right-space">
+                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type="radio" name="commentRole" ng-model="commentRole" value="question"> Question 
+                        </span>
+                        <span class="radio inline right-space">
+                            <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
+                        </span>
+                    </div>
+                    <div class="col-xs-3" style="margin: 5px 0px">
+                        <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     
         ## Admin
         % if c.privs['facilitator'] or c.privs['admin']:
-            ADMIN DOESNT WORK EITHER
+            To be implemented.
         % endif
     % endif
+    
+    <div ng-controller="RepliesController">
+        <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">{{showReplies ? 'Hide' : 'View'}} replies ({{item.replies}})</a>
+        <div ng-if="item.replies != 0" ng-show="showReplies">
+            <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
+            <table style="margin-top:10px" class="activity-comments" ng-show="!loading">
+                <tr class="comment-row" ng-repeat="item in replyList">
+                    ${renderComment()}
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</%def>
+
+<%def name="renderComment()">
+    <td style="padding: 5px 0px">
+        <div class="row">
+            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></div>
+            <div class="col-xs-10"><a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><small class="grey">, {{item.authorDescription}}</small> - <small class="grey">{{item.date}} ago</small></div>
+        </div>
+        <div class="col-xs-12" style="margin-top: 10px">
+            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${ng_helpers.moreLess(stringLimit = 201)}</p>
+            <span class="comment-vote">
+                <span ng-init="objType='comment'; rated=item.rated; urlCode=item.urlCode; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes">
+                    <span ng-controller="yesNoVoteCtrl">
+                        ${ng_helpers.upDownVoteHorizontal()}
+                    </span>
+                </span>
+            </span>
+        </div>
+    </td>
 </%def>
