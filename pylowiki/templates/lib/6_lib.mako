@@ -2600,8 +2600,21 @@
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
             </div>
-            <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
-            {{item.showReplies}}
+            <div ng-controller="RepliesController">
+                <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
+                ## Div for replies
+                <div class="row" ng-if="item.replies != 0" ng-show="showReplies">
+                    <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
+                    <table class="activity-comments" ng-show="!loading">
+                        <tr ng-repeat="item in replyList">
+   ##                         {{replyList}}
+     ##                       hello
+                            ${renderComment()}
+                        </tr>
+                    </table>
+       ##             replies will go here
+                </div>
+            </div>
         </div><!--/.col-sm-11.offset1-->
     </div><!--/.row-->
     
@@ -2640,18 +2653,7 @@
         % endif
     % endif
     
-    ## Div for replies
-    <div class="row" ng-if="item.replies != 0" ng-show="item.showReplies || false">
-        <i class="icon-spinner icon-spin icon-2x" ng-show="item.loading" ng-cloak></i>
-        <table ng-show="!item.loading" ng-if="item.replies.length > 0">
-            <tr ng-repeat="item in item.replyList">
-                {{item.replyList}}
-                hello
-                ${renderComment()}
-            </tr>
-        </table>
-        replies will go here
-    </div>
+
 </%def>
 
 <%def name="renderComment()">
