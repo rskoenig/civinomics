@@ -1,0 +1,63 @@
+.headerSurvey {
+    height: 45px;
+    width:100%;
+    background-image: -moz-linear-gradient(top, #6ac160, #4f9746);
+    background-image: -ms-linear-gradient(top, #6ac160, #4f9746);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#6ac160), to(#4f9746));
+    background-image: -webkit-linear-gradient(top, #6ac160, #4f9746);
+    background-image: -o-linear-gradient(top, #6ac160, #4f9746);
+    background-image: linear-gradient(top, #6ac160, #4f9746);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1e1e1', endColorstr='#c8c8c8', GradientType=0);
+    
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    text-align:left;
+    font-size:x-large;
+    padding-top:15px;
+    padding-left:15px;
+    -moz-border-radius-bottomright: 70px;
+    border-bottom-right-radius: 70px;
+    color:white;
+}
+
+.logoSurvey {
+    float:right;
+}
+
+.caption {
+    background-color:black;
+    color:#CCC;
+    padding:4px 10px 4px 10px;
+    font-size:13px;
+    text-align:left;
+}
+
+.slideTitle{
+    padding-left:10px;
+    padding-right:10px;
+    display:block;
+    top:18%;
+    left:14%;
+}
+
+.slideFrame{
+    position:relative;
+}
+
+/*
+.leftArrow{
+    display: relative;
+    width: 50px;
+    height: 50px;
+    text-indent: -99999px;
+    background-image: url(/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png) no-repeat top center;
+}
+
+.leftArrow:hover{
+    background: url(/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x_green.png) no-repeat;
+}
+*/
