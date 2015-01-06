@@ -2590,7 +2590,7 @@
                 % if 'user' in session and not c.privs['provisional']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-ng-{{item.urlCode}}">reply</a>
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
-                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-small-{{item.urlCode}}">edit</a>
+                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' === 'True' || '${c.privs['admin']}' === 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-small-{{item.urlCode}}">edit</a>
                 % elif not c.privs['provisional']:
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
