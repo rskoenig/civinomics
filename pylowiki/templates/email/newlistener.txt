@@ -1,0 +1,24 @@
+Dear ${c.listenerName},
+
+A Civinomics Community Curator for your area has added you
+as a Listener for the ${c.listenerScope}.
+
+Civinomics is an online space for promoting civic participation.
+Listeners are experts on issues in their communities or in the 
+position to take action on topics of online workshops or intiatives 
+hosted on Civinomics. 
+
+As a listener, your role is to monitor the online forums related to 
+your area, and of course comment and add ideas of your own, if you 
+wish. Civinomics provides a convenient way for you to stay current 
+with the civic conversations in your community and interact with 
+your neighbors and constituents.
+
+Your participation will be of great value to other Civinomics members. 
+You can check out the Civinomics activity for your area here:
+${c.browseLink}
+
+Best regards,
+
+The Civinomics Team
+

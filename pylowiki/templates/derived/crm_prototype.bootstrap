@@ -1,0 +1,303 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<%namespace file="/lib/ng_lib.mako" name="ng_helpers" />
+<%!
+    from pylowiki.lib.db.user import isAdmin
+%>
+<%
+    lib.return_to()
+%>
+<div class="org-top" style="background-image: url('http://74fdc.files.wordpress.com/2013/07/tesla-factory-16.png');"></div>
+<div class="title-gradient"></div>
+<div class="container" style="position: relative; z-index: 2;">
+    <div class="row-fluid">
+        <div class="span9">
+            <div class="org-title">
+                <table class="title-table">
+                    <tr>
+                        <td>
+                            <img class="thumbnail org-thumbnail tight" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/p160x160/10151203_672965042749809_1570403495_n.jpg">
+                        </td>
+                        <td style="padding-left: 20px;">
+                            <h1>Ro Khanna for Congress</h1>
+                            <h4>CA-17th District</h4>
+                        </td>
+                    </tr>
+                </table>
+                <table class="media-table">
+                    <tr>
+                        <td>
+                            <div class="video-preview" style="background-image: url('https://i1.ytimg.com/vi/IXdr4ViVUHI/mqdefault.jpg')">
+                                <i class="icon-youtube-play icon-overlay icon-3x"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="video-preview" style="background-image: url('https://i1.ytimg.com/vi/FDNobR-hKEk/mqdefault.jpg')">
+                                <i class="icon-youtube-play icon-overlay icon-3x"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="video-preview" style="background-image: url('https://i1.ytimg.com/vi/6Mtjcb-FkfU/mqdefault.jpg')">
+                                <i class="icon-youtube-play icon-overlay icon-3x"></i>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            ########
+            ##### Body Content
+            ########
+            <div style="position: relative;">
+                <h3>About</h3>
+                <p>Ro Khanna, 37, is prepared to move beyond the finger pointing and game-playing with concrete solutions to create good paying jobs and to move America’s economy into the 21st century. He’ll be more than a vote; he’ll be a strong voice for the Bay Area’s working families and communities. Ro understands how critical innovation and technology are to maintaining America’s position as the greatest and most dynamic economy in the world. Just as important, he appreciates the diversity of our district and will continue to be an outspoken advocate in Washington for working together for the common good.<br><a href="#">read more...</a></p>
+                
+                <hr>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <h3>Support</h3>
+                        <table>
+                            <tr>
+                                <td class="medLarge-cell">
+                                    <img class="avatar medLarge-avatar" src="/images/crm/thiel.png">
+                                </td>
+                                <td>
+                                    <strong>Peter Thiel</strong><small class="grey"> posted October 10th, 2013</small><br>
+                                    I support innovation and I think Ro is the best way to achieve a more innovative congress.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="medLarge-cell">
+                                    <img class="avatar medLarge-avatar" src="/images/crm/sandberg.png">
+                                </td>
+                                <td>
+                                    <strong>Sheryl Sandberg</strong><small class="grey"> posted September 19th, 2013</small><br>
+                                    Ro has been a friend and advisor for many years. I know he will do a great job in congress.
+                                </td>
+                            </tr>
+                            <tr><td></td><td><a href="#">122 more</a></td></tr>
+                        </table>
+                    </div>
+                    <div class="span6">
+                        <h3>Oppose</h3>
+                        <table>
+                            <tr>
+                                <td class="medLarge-cell">
+                                    <img class="avatar medLarge-avatar" src="/images/crm/obama.png">
+                                </td>
+                                <td>
+                                    <strong>Barack Obama</strong><small class="grey"> posted March 5th, 2014</small><br>
+                                    Ro is a trickster and a charlatan, the only thing new he'll bring to Washington is his deceitful charm.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="medLarge-cell">
+                                    <img class="avatar medLarge-avatar" src="/images/crm/honda.png">
+                                </td>
+                                <td>
+                                    <strong>Mike Honda</strong><small class="grey"> posted November 16th, 2013</small><br>
+                                    Ro needs to live up to his campaign promises. He's been saying one thing and doing another
+                                </td>
+                            </tr>
+                            <tr><td></td><td><a href="#">19 more</a></td></tr>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+            <hr>
+            <h3>Initiatives Authored by Ro Khanna</h3>
+                <table class="initiative-table">
+                    <tr>
+                        <td class="i-photo-cell">
+                            <div class="i-photo" style="background-image: url('http://petitionbuzz-wisebeetle1.netdna-ssl.com/uploaded/12102162397c432721f43801928384a6ddeeb7.jpg')"></div>
+                        </td>
+                        <td>
+                        <strong>SB777 - Put America Back to Work Act</strong>
+                        <p>
+                            This bill would allocate $500 Million to new public works projects in all 50 states.
+                        </p>
+                        </td>
+                    </tr>
+                </table>
+                <table class="initiative-table">
+                    <tr>
+                        <td class="i-photo-cell">
+                            <div class="i-photo" style="background-image: url('http://d3n8a8pro7vhmx.cloudfront.net/rokhanna/pages/63/features/original/education.png?1364592287')"></div>
+                        </td>
+                        <td>
+                        <strong><a class="no-highlight" target="_blank" href="http://manu.civinomics.org:1985/initiative/4JvV/coding-in-highschools/show">Coding in Highschools</a></strong>
+                        <p>
+                            Make basic coding skills a required part of high-school education.
+                        </p>
+                        </td>
+                    </tr>
+                </table>
+                <table class="initiative-table">
+                    <tr>
+                        <td class="i-photo-cell">
+                            <div class="i-photo" style="background-image: url('http://d3n8a8pro7vhmx.cloudfront.net/rokhanna/pages/55/features/original/EnvironmentHero.png?1377095957')"></div>
+                        </td>
+                        <td>
+                        <strong>Renewable Energy Invstment Act</strong>
+                        <p>
+                            Fund the expansion of renewable energy infrastructure through state and federal funds that encourage more funding.
+                        </p>
+                        </td>
+                    </tr>
+                </table>
+            <hr>
+            <h3>Initiatives Ro Khanna Supports</h3>
+            <table class="initiative-table">
+                <tr>
+                    <td class="i-photo-cell">
+                        <div class="i-photo" style="background-image: url('http://www.urbancusp.com/wp-content/uploads/2014/02/immigration-reform-e1364745667867.jpg')"></div>
+                    </td>
+                    <td>
+                    <strong class="initiative-title">S. 744: Border Security, Economic Opportunity, and Immigration Modernization Act</strong>
+                    <p>
+                        To provide for comprehensive immigration reform and for other purposes.
+                    </p>
+                    <div class="well success-well">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img class="thumbnail org-thumbnail-small tight" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/p160x160/10151203_672965042749809_1570403495_n.jpg">
+                                </td>
+                                <td style="padding-left: 10px;">
+                                    <strong>Ro Khanna</strong> votes <strong class="green">YES</strong> <br>
+                                    <p>
+                                         I vote yes on this initiative becuase it will fuel the tech economy and provide a fair chance to immigrants.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    </td>
+                </tr>
+            </table>
+            <table class="initiative-table">
+                <tr>
+                    <td class="i-photo-cell">
+                        <div class="i-photo" style="background-image: url('/images/photos/0/orig/ececdaaa887dec09deddee9222b44bae.png')"></div>
+                    </td>
+                    <td>
+                    <strong class="initiative-title">PROP 41: VETERANS HOUSING AND HOMELESS PREVENTION BOND ACT OF 2014</strong>
+                    <p>
+                        Authorizes $600 million in general obligation bonds for affordable multifamily supportive housing to relieve homelessness, affordable transitional housing, affordable rental housing, or related facilitites for vterans and their families.
+                    </p>
+                    <div class="well success-well">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img class="thumbnail org-thumbnail-small tight" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-frc3/t1.0-1/p160x160/10151203_672965042749809_1570403495_n.jpg">
+                                </td>
+                                <td style="padding-left: 10px;">
+                                    <strong>Ro Khanna</strong> votes <strong class="green">YES</strong> <br>
+                                    <p>
+                                         I would have to be crazy to vote against veterans, simply crazy. That's why I'm not doing it. I vote yes.
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    </td>
+                </tr>
+            </table>
+            <!--
+            <hr>
+            <h3>Passed Initiatives</h3>
+            -->
+            <hr>
+            <h3>News</h3>
+            <div class="row-fluid">
+                <h4>Silicon Valley House race ‘unlike any other’</h4>
+                <p>From the <a href="#">San Francisco Chronicle</a></p>
+            </div>
+            <div class="row-fluid">
+                <h4>WEEK IN REVIEW: Press Exposes Vulnerabilities in Congressman Honda’s Campaign; Frames Choice Between Future and Past</h4>
+                <p>From the <a href="#">San Jose Mercury News</a></p>
+            </div>
+            <div class="row-fluid">
+                <h4>Khanna and Honda: A choice between future and past</h4>
+                <p>From the <a href="#">San Jose Mercury News</a></p>
+            </div>
+            
+            <div style="height: 200px;"></div>
+        </div>
+        
+        #########
+        ##### Side bar
+        #########
+        <div class="span3">
+            <div class="well">
+                <h4 class="centered module-header">Vote</h4>
+                <button class="btn btn-block btn-large btn-success">YES</button>
+                <button class="btn btn-block btn-large btn-danger">NO</button>
+            </div>
+            <div class="well">
+                <h2 class="centered module-header dollar">$1,974,501 <small class="grey"><em>raised</em></small></h2>
+
+                <input type="number" placeholder="Contribute..."></input>
+            </div>
+            
+            <div class="well">
+                <h4 class="centered module-header">Events</h4>
+                <small>
+                <table class="event"><tr><td></td><strong>APR 27 - </strong> Do Work in Newark</td><td></td><button class="btn btn-mini pull-right">Join</button></td></tr></table>
+                <table class="event"><tr><td></td><strong>APR 27 - </strong> Very Important -- GOTV Training With Some Voter Outreach First </td><td></td><button class="btn btn-mini pull-right">Join</button></td></tr></table>
+                <table class="event"><tr><td></td><strong>APR 28 - </strong> Canvass for Ro in Sunnyvale </td><td></td><button class="btn btn-mini pull-right">Join</button></td></tr></table>
+                </small>
+                <!-- <button class="btn btn-block btn-large btn-primary">Volunteer</button> -->
+            </div>
+            
+            <div class="well">
+                <h4 class="centered module-header">Activity</h4>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    
+
+
+<%def name = 'extraScripts()'>
+    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/activate.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 55,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/ng/org_topic.js')}" type="text/javascript"></script>
+    % endif
+
+</%def>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/activity.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/yesno_vote.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
+    <script type="text/javascript" src="${lib_6.fingerprintFile('/js/upDown.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-tab.js')}" type="text/javascript"></script>
+</%def>
+
+
