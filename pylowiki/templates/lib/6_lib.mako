@@ -2585,7 +2585,7 @@
     ########################################################################
     <div class="row hidden-print">
         <div class="col-xs-12">
-            <a ng-click="" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
+            
             <div class="btn-group">
                 % if 'user' in session and not c.privs['provisional']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-ng-{{item.urlCode}}">reply</a>
@@ -2600,11 +2600,15 @@
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
             </div>
+            <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
+            {{item.showReplies}}
         </div><!--/.col-sm-11.offset1-->
     </div><!--/.row-->
     
     ## Reply
+    
     <div class="row collapse" id="reply-ng-{{item.urlCode}}">
+        % if c.authuser or 'user' in session:
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <div class="col-xs-1" style="margin: 1px 3px 0px 5px">
                     <img class="avatar sm-avatar" style="width:33px; height:33px; min-width: 0px" src="${utilsLib._userImageSource(c.authuser)}"\>
@@ -2618,6 +2622,7 @@
                     <button type="submit" class="btn btn-primary" name = "submit" value = "reply">Submit</button>
                 </div>
             </form>
+        % endif
     </div>
     
     ## Flag
@@ -2634,4 +2639,36 @@
             ADMIN DOESNT WORK EITHER
         % endif
     % endif
+    
+    ## Div for replies
+    <div class="row" ng-if="item.replies != 0" ng-show="item.showReplies || false">
+        <i class="icon-spinner icon-spin icon-2x" ng-show="item.loading" ng-cloak></i>
+        <table ng-show="!item.loading" ng-if="item.replies.length > 0">
+            <tr ng-repeat="item in item.replyList">
+                {{item.replyList}}
+                hello
+                ${renderComment()}
+            </tr>
+        </table>
+        replies will go here
+    </div>
+</%def>
+
+<%def name="renderComment()">
+    <td>
+        <div class="row" style="margin: 0">
+            <div class="col-xs-2"><img class="avatar med-avatar" ng-src="{{item.authorPhoto}}"></div>
+            <div class="col-xs-10"><a ng-href="{{item.authorHref}}"><strong>{{item.authorName}}</strong></a><small class="grey">, {{item.authorDescription}}</small> - <small class="grey">{{item.date}} ago</small></div>
+        </div>
+        <div class="col-xs-12" style="margin-top: 10px">
+            <p ng-init="stringLimit=201" class="markdown"><span ng-bind-html="item.html | limitTo:stringLimit"></span>${ng_helpers.moreLess(stringLimit = 201)}</p>
+            <span class="comment-vote">
+                <span ng-init="objType='comment'; rated=item.rated; urlCode=item.urlCode; totalVotes=item.voteCount; yesVotes=item.ups; noVotes=item.downs; netVotes=item.netVotes">
+                    <span ng-controller="yesNoVoteCtrl">
+                        ${ng_helpers.upDownVoteHorizontal()}
+                    </span>
+                </span>
+            </span>
+        </div>
+    </td>
 </%def>

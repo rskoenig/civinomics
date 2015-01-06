@@ -84,7 +84,7 @@ def jsonizeComment(comment):
         entry['revisionList'] = [] 
         
     #Getting reply numbers
-    if comment['children'] is not '0':
+    if comment['children'] != '0':
         entry['replies'] = len(comment['children'].split(','))
     else:
         entry['replies'] = 0
@@ -412,7 +412,13 @@ class CommentController(BaseController):
         conList = [jsonizeComment(con) for con in comments if ('commentRole' in con and con['commentRole'] == 'no')]
         return json.dumps({'statusCode':0, 'pros':proList, 'cons':conList})
         
-        
+
+    def getReplies(self, urlCode):
+        comment = commentLib.getCommentByCode(urlCode)
+        log.info(comment['children'].split(','))
+        replies = [jsonizeComment(commentLib.getComment(url)) for url in comment['children'].split(',')]
+        return json.dumps({'statusCode':0, 'replies':replies})
+                
         
     ####################################################
     # 
