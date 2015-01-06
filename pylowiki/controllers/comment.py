@@ -88,7 +88,6 @@ def jsonizeComment(comment):
         entry['replies'] = len(comment['children'].split(','))
     else:
         entry['replies'] = 0
-    log.info(entry['replies'])
         
     return entry
 
@@ -172,7 +171,6 @@ class CommentController(BaseController):
             payload = json.loads(request.body)
         
         try:
-            log.info(vars(payload))
             payload['submit']
             parentCommentCode = payload['parentCode']
             thingCode = payload['thingCode']
@@ -198,11 +196,8 @@ class CommentController(BaseController):
                 if 'initiativeCode' in thing:
                     initiative = genericLib.getThing(thing['initiativeCode'])
 
-            log.info("here")
             data = payload['comment-textarea']
-            log.info("What the...")
             data = data.strip()
-            log.info("here2")
             if data == '':
                 log.info("No data")
                 alert = {'type':'error'}
@@ -214,10 +209,7 @@ class CommentController(BaseController):
                     return redirect(session['return_to'])
                 elif json.loads(request.body):
                     return json.dumps({'statusCode':1})
-            log.info("here3")
-            log.info(parentCommentCode)
-            log.info(parentCommentCode != '0')
-            log.info(parentCommentCode != '')
+
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
                 log.info("Replying to an existing comment")
@@ -396,7 +388,6 @@ class CommentController(BaseController):
             comment = commentLib.getCommentByCode(commentCode)
             thingCode = payload['thingCode']
             thing = genericLib.getThing(thingCode)
-            log.info(vars(thing))
             # save a revision first
             revision = revisionLib.Revision(c.authuser, comment)
             if not comment:
@@ -428,7 +419,6 @@ class CommentController(BaseController):
 
     def getReplies(self, urlCode):
         comment = commentLib.getCommentByCode(urlCode)
-        log.info(comment['children'].split(','))
         replies = [jsonizeComment(commentLib.getComment(url)) for url in comment['children'].split(',')]
         return json.dumps({'statusCode':0, 'replies':replies})
                 
