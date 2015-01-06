@@ -2603,7 +2603,7 @@
             <div ng-controller="RepliesController">
                 <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">View replies ({{item.replies}})</a>
                 ## Div for replies
-                <div class="row" ng-if="item.replies != 0" ng-show="showReplies">
+                <div ng-if="item.replies != 0" ng-show="showReplies">
                     <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
                     <table class="activity-comments" ng-show="!loading">
                         <tr ng-repeat="item in replyList">
