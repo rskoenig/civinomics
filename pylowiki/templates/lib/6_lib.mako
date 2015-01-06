@@ -2591,7 +2591,7 @@
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-ng-{{item.urlCode}}">reply</a>
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
 
-                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-small-{{item.urlCode}}">edit</a>
+                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-{{item.urlCode}}">edit</a>
                     % if c.privs['facilitator'] or c.privs['admin']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                     % endif
@@ -2600,10 +2600,26 @@
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
                 % endif
             </div>
+            <div ng-controller="RepliesController">
+                <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">{{showReplies ? 'Hide' : 'View'}} replies ({{item.replies}})</a>
+                ## Div for replies
+                <div ng-if="item.replies != 0" ng-show="showReplies">
+                    <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
+                    <table style="margin-top:10px" class="activity-comments" ng-show="!loading">
+                        <tr class="comment-row" ng-repeat="item in replyList">
+   ##                         {{replyList}}
+     ##                       hello
+                            ${renderComment()}
+                        </tr>
+                    </table>
+       ##             replies will go here
+                </div>
+            </div>
         </div><!--/.col-sm-11.offset1-->
     </div><!--/.row-->
     
     ## Reply
+    
     <div class="row collapse" id="reply-ng-{{item.urlCode}}">
         % if c.authuser or 'user' in session:
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
@@ -2625,57 +2641,18 @@
     ## Flag
     ${flagCommentAngular()}
     
-    % if c.authuser or 'user' in session:
+    % if 'user' in session:
         ## Edit
-        <div class="collapse" id="edit-small-{{item.urlCode}}" ng-if="${c.privs['facilitator']} == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}">
-            <form action="/comment/edit/handler" method="post" id="commentEditHandler">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <textarea class="form-control" name='commentText' rows="3" style="height: 100% !important">{{item.text}}</textarea>
-                        <input type="hidden" name="commentCode" value="{{item.urlCode}}" />
-                        <input type="hidden" name="thingCode" value = "{{$parent.$parent.urlCode}}" />
-                    </div>
-                    <div class="col-xs-9 comment-type" ng-init="commentRole = item.commentRole" style="margin-bottom: 5px">
-                        <span class="radio inline right-space">
-                            <input type="radio" name="commentRole" ng-model="commentRole" value="neutral"> Neutral 
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type="radio" name="commentRole" ng-model="commentRole" value="yes"> Pro 
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type="radio" name="commentRole" ng-model="commentRole" value="no"> Con 
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type="radio" name="commentRole" ng-model="commentRole" value="question"> Question 
-                        </span>
-                        <span class="radio inline right-space">
-                            <input type="radio" name="commentRole" ng-model="commentRole" value="suggestion"> Suggestion 
-                        </span>
-                    </div>
-                    <div class="col-xs-3" style="margin: 5px 0px">
-                        <button type="submit" class="btn btn-primary pull-right" name = "submit" value = "reply">Submit</button>
-                    </div>
-                </div>
-            </form>
+        <div class="row collapse" id="edit-{{item.urlCode}}" ng-if="${c.privs['facilitator']} == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}">
+            HELLO EDIT
         </div>
     
         ## Admin
         % if c.privs['facilitator'] or c.privs['admin']:
-            To be implemented.
+            ADMIN DOESNT WORK EITHER
         % endif
     % endif
     
-    <div ng-controller="RepliesController">
-        <a ng-click="toggleReplies(item)" ng-if="item.replies != 0">{{showReplies ? 'Hide' : 'View'}} replies ({{item.replies}})</a>
-        <div ng-if="item.replies != 0" ng-show="showReplies">
-            <i class="icon-spinner icon-spin icon-2x" ng-show="loading" ng-cloak></i>
-            <table style="margin-top:10px" class="activity-comments" ng-show="!loading">
-                <tr class="comment-row" ng-repeat="item in replyList">
-                    ${renderComment()}
-                </tr>
-            </table>
-        </div>
-    </div>
 
 </%def>
 

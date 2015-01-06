@@ -663,7 +663,7 @@ class InitiativeController(BaseController):
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
                 
-        log.info("7")
+        log.info("7") 
         c.summary = c.initiative['description']
         c.summary = c.summary.split(' ')
         c.summary = c.summary[0:108]
