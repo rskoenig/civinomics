@@ -176,8 +176,6 @@ class CommentController(BaseController):
             payload['submit']
             parentCommentCode = payload['parentCode']
             thingCode = payload['thingCode']
-            log.info(parentCommentCode)
-            log.info(thingCode)
             thing = genericLib.getThing(thingCode)
             if not thing:
                 log.info("No thing")
@@ -385,11 +383,20 @@ class CommentController(BaseController):
             return json.dumps({'statusCode':1})
         return json.dumps({'statusCode':0, 'result':result})
         
-    def jsonEditCommentHandler(self):
-        payload = json.loads(request.body)
+    def editCommentHandler(self):
+        if request.params:
+            payload = request.params 
+            json = False 
+        elif json.loads(request.body):
+            payload = json.loads(request.body)
+            json = True
+
         if 'commentCode' in payload:
             commentCode = payload['commentCode']
             comment = commentLib.getCommentByCode(commentCode)
+            thingCode = payload['thingCode']
+            thing = genericLib.getThing(thingCode)
+            log.info(vars(thing))
             # save a revision first
             revision = revisionLib.Revision(c.authuser, comment)
             if not comment:
@@ -399,9 +406,15 @@ class CommentController(BaseController):
                 comment['data'] = payload['commentText']
                 comment['commentRole'] = payload['commentRole']
                 dbHelpers.commit(comment)
-                return json.dumps({'statusCode':0})
-
-        return json.dumps({'statusCode':1})
+                if json:
+                    return json.dumps({'statusCode':0})
+                else:
+                    return redirect(utils.initiativeURL(thing) + '#comment-' + comment['urlCode'])
+        
+        if json:
+            return json.dumps({'statusCode':1})
+        else:
+            return redirect(utils.initiativeURL(thing))
 
     def getProCons(self, urlCode):
         thing = initiativeLib.getInitiative(urlCode)
