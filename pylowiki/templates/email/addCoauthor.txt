@@ -1,0 +1,8 @@
+${c.sender} has invited you to coauthor "${c.initiative}" on Civinomics.
+
+As a coauthor, you can help to revise the initiative proposal, background information, and expected fiscal impacts.
+Build support for this initiative by inviting you friends and colleageus to vote on it.  
+
+To accept, go to the following link and click 'accept':
+
+${c.messagesLink}

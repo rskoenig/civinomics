@@ -1,0 +1,26 @@
+<%!
+    import misaka as m
+    import pylowiki.lib.utils           as utils
+%>
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace file="/lib/derived/6_listener.mako" name="helpers" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/ng_lib.mako" name="ng_lib" />
+
+<% lib.return_to() %>
+
+<% 
+    if 'scope' not in c.listener:
+        scope = '0|0|united-states|0|california|0|0|0|0|0'
+    else:
+        scope = c.listener['scope']
+        
+    scopeInfo = utils.getPublicScope(scope) 
+%>
+<div class="row">
+    <div class="col-sm-9">
+        ${helpers.showInfo(c.listener, scopeInfo)}
+        ${helpers.listenerModeration(c.listener)}
+    </div><!-- col-sm-9 -->
+</div><!-- row -->
