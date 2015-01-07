@@ -28,10 +28,15 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="civ-main-nav">
                 <form class="navbar-form navbar-left" action="/search">
-                  <div class="form-group">
-                    <input type="text" class="form-control" name="searchQuery" placeholder="Search">
-                  </div>
-                  <button type="submit" class="btn btn-default">Submit</button>
+                    <div class="input-group">
+                      <div class="form-group">
+                        
+                            <input type="text" class="form-control" name="searchQuery" placeholder="Search">
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-default" type="button"><span class="icon icon-search"></span></button>
+                            </span>
+                      </div>
+                    </div>
                 </form>
                 
                 <ul class="nav navbar-nav navbar-right">
