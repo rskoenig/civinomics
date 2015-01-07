@@ -648,23 +648,21 @@ class InitiativeController(BaseController):
         c.numComments = 0
         if 'numComments' in c.initiative:
             c.numComments = c.initiative['numComments']
-
+        
         c.initiative['fuzzyTime'] = fuzzyTime.timeSince(c.initiative.date)
-
+        
         c.authors = [c.user]
         coAuthors = facilitatorLib.getFacilitatorsByInitiative(c.initiative)
         for author in coAuthors:
             if author['pending'] == '0' and author['disabled'] == '0':
                 c.authors.append(author)
-
+                
         c.summary = c.initiative['description']
         c.summary = c.summary.split(' ')
         c.summary = c.summary[0:108]
         c.summary = ' '.join(c.summary)
-
                 
         c.initiativeHome = True
-
         return render('/derived/6_initiative_home.bootstrap')
 
     def initiativePrintComments(self):
