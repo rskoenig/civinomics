@@ -131,7 +131,6 @@ class CreateController(BaseController):
             else:
                 log.warn("aborting because workshop privacy parameter exists but is not public, private or personal")
                 abort(404)
-                #perhaps this case should be handled here
         else:
             if self.validatePaymentForm():
                 wType = 'professional'
