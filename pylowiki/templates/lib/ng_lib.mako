@@ -1337,28 +1337,6 @@
     % if not c.searchQuery or c.geoScope:
         <div class="actions" ng-init="type = item.objType; discussionCode = item.discussion; parentCode = 0; thingCode = item.urlCode; submit = 'reply'; numComments = item.numComments; readonly = item.readOnly;">
             <div ng-controller="commentsController">
-                <div class="row">
-                    <div class="col-xs-12 iconListing-row">
-                        <div class="actions-container">
-                            <ul class="horizontal-list iconListing">
-                                <li ng-if="item.objType == 'resource' || item.objType == 'discussion' || item.objType == 'position'">
-                                    <span ng-if="item.readOnly == '1'">${upDownVoteHorizontal(readonly = '1')}</span>
-                                    <span ng-if="item.readOnly == '0'">
-                                    ${upDownVoteHorizontal(readonly = '0')}</span>
-                                </li>
-                                <li ng-if="item.objType != 'workshop'">
-                                    <a ng-show="item.numComments == '0'" class="grey" ng-click="showAddComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
-                                    <a ng-show="!(item.numComments == '0')" class="grey"  ng-click="getComments()"><span class="glyphicon glyphicon-comment"></span> Comments ({{numComments}})</a>
-                                </li>
-                                <li ng-show="(item.objType != 'ballotmeasure' && item.objType != 'ballotcandidate')"><i class="glyphicon glyphicon-eye-open"></i> Views ({{item.views}})</li>
-                                % if c.authuser and c.authuser['memberType'] == 'organization':
-                                    <li ng-if="item.objType == 'idea' || item.objType == 'initiative'"><a ng-href="{{item.href}}"><i class="glyphicon glyphicon-file"></i> Add position statement</a></li>
-                                % endif 
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
                 ${commentList()}
                 ${addComment()}
             </div>
