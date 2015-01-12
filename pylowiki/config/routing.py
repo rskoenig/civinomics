@@ -533,6 +533,9 @@ def make_map():
     map.connect('/initiative/{id1}/{id2}/updateShow/{id3}{end:/?}', controller = 'initiative', action = 'updateShow', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/initiative/{id1}/{id2}/json{end:/?}', controller = 'initiative', action = 'getJson', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/add/initiative/{handler:handler/?}', controller = 'initiative', action = 'initiativeNewHandler', parentObj='workshop', parentCode = '{parentCode}')
+    #widget
+    map.connect('/widget/{id1}/{id2}/{width}', controller='initiative', action='renderWidget', id1 = '{id1}', id2 = '{id2}', width='{width}')
+    
     
     ################
     # Leaderboards #

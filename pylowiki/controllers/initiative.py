@@ -37,7 +37,7 @@ class InitiativeController(BaseController):
         log.info("inititive before action is %s"%action)
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson', 'initiativePrintComments']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler', 'resourceEdit', 'updateEdit', 'updateEditHandler', 'updateShow', 'getInitiativeAuthors', 'getJson', 'initiativePrintComments', 'renderWidget']
         adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler', 'updateEdit', 'updateEditHandler', 'promoteIdea']
         c.saveMessageClass = 'alert-success'
         c.error = False
@@ -47,12 +47,14 @@ class InitiativeController(BaseController):
             elif c.authuser:
                 c.user = c.authuser
             if not c.user:
+                log.info("dead1")
                 abort(404)
         elif action in existingList and id1 is not None and id2 is not None:
             c.initiative = initiativeLib.getInitiative(id1)
             if not c.initiative:
                 c.initiative = revisionLib.getRevisionByCode(id1)
                 if not c.initiative:
+                    log.info("dead2")
                     abort(404)
                             
             if c.initiative:
@@ -87,9 +89,11 @@ class InitiativeController(BaseController):
 
             else:
                 #log.info("abort 1")
+                log.info("dead3")
                 abort(404)  
         else:
             #log.info("abort 2")
+            log.info("dead4")
             abort(404)
 
         # only the author or an admin can edit 
@@ -812,3 +816,6 @@ class InitiativeController(BaseController):
     def getJson(self):
         entry = jsonLib.getJsonProperties(c.initiative)
         return json.dumps({'statusCode':1, 'thing': entry})
+    
+    def renderWidget(self, width):
+        return render('/derived/6_widget.bootstrap')
