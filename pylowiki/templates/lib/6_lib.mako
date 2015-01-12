@@ -2590,11 +2590,7 @@
                 % if 'user' in session and not c.privs['provisional']:
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#reply-ng-{{item.urlCode}}">reply</a>
                         <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#flag-{{item.urlCode}}">flag</a>
-
-                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-small-{{item.urlCode}}">edit</a>
-                    % if c.privs['facilitator'] or c.privs['admin']:
-                    ##    <a class="btn btn-default btn-xs panel-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
-                    % endif
+                        <a class="btn btn-default btn-xs panel-toggle" ng-if="'${c.privs['facilitator']}' === 'True' || '${c.privs['admin']}' === 'True' || item.authorCode == ${c.authuser.id}" data-toggle="collapse" data-target="#edit-small-{{item.urlCode}}">edit</a>
                 % elif not c.privs['provisional']:
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">reply</a>
                     <a class="btn btn-default btn-xs panel-toggle" data-toggle="modal" data-target="#signupLoginModal">flag</a>
@@ -2605,7 +2601,7 @@
     
     ## Reply
     <div class="row collapse" id="reply-ng-{{item.urlCode}}">
-        % if c.authuser or 'user' in session:
+        % if 'user' in session:
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <div class="col-xs-1" style="margin: 1px 3px 0px 5px">
                     <img class="avatar sm-avatar" style="width:33px; height:33px; min-width: 0px" src="${utilsLib._userImageSource(c.authuser)}"\>
@@ -2625,9 +2621,9 @@
     ## Flag
     ${flagCommentAngular()}
     
-    % if c.authuser or 'user' in session:
+    % if 'user' in session:
         ## Edit
-        <div class="collapse" id="edit-small-{{item.urlCode}}" ng-if="${c.privs['facilitator']} == 'True' || ${c.privs['admin']} == 'True' || item.authorCode == ${c.authuser.id}">
+        <div class="collapse" id="edit-small-{{item.urlCode}}" ng-if="${c.privs['facilitator']} == 'True' || '${c.privs['admin']}' == 'True' || item.authorCode == ${c.authuser.id}">
             <form action="/comment/edit/handler" method="post" id="commentEditHandler">
                 <div class="row">
                     <div class="col-xs-12">
@@ -2658,11 +2654,6 @@
                 </div>
             </form>
         </div>
-    
-        ## Admin
-        % if c.privs['facilitator'] or c.privs['admin']:
-            To be implemented.
-        % endif
     % endif
     
     <div ng-controller="RepliesController">
